@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
@@ -25,6 +27,7 @@ import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
+import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GmStatisticEmptyTransactionDataBinder;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
@@ -41,19 +44,16 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         implements GMStatisticTransactionTableView {
 
     public static final int START_PAGE = 0;
-
-    private TextView tvSortBy;
-
     @Inject
     GMStatisticTransactionTablePresenter transactionTablePresenter;
-
     @GMTransactionTableSortBy
     int sortBy = GMTransactionTableSortBy.DELIVERED_AMT; // default to Pendapatan Bersih
     @GMTransactionTableSortType
     int sortType = GMTransactionTableSortType.DESCENDING; // this is for DESCENDING default
+    private TextView tvSortBy;
     private String[] gmStatSortBy;
     private boolean[] sortBySelections;
-    private int sortByIndexSelection = 2; // default to Pendapatan Bersih
+    private int sortByIndexSelection = 1; // default to Pendapatan Bersih
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
     private int sortTypeIndexSelection = 0; // this is for DESCENDING default
@@ -157,6 +157,24 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        emptyTransactionDataBinder.setEmptyTitleText(null);
+        emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
+        emptyTransactionDataBinder.setEmptyContentItemText(null);
+        return emptyTransactionDataBinder;
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
+        emptyTransactionDataBinder.setEmptyTitleText(null);
+        emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
+        emptyTransactionDataBinder.setEmptyContentItemText(null);
+        return emptyTransactionDataBinder;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         transactionTablePresenter.detachView();
@@ -178,24 +196,27 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                     case 2:
                         sortBy = GMTransactionTableSortBy.DELIVERED_AMT;
                         break;
-
                 }
                 if (previousSortBy == sortBy) {
                     return;
                 }
+                String itemTitle = item.getTitle().toString();
+
                 resetSelectionSortBy(sortByIndexSelection);
-                tvSortBy.setText(item.getTitle());
+                tvSortBy.setText(itemTitle);
                 GMStatisticTransactionTableAdapter gmAdapter = (GMStatisticTransactionTableAdapter)adapter;
                 gmAdapter.setSortBy(sortBy);
                 gmAdapter.notifyDataSetChanged();
 
                 loadData();
+
+                UnifyTracking.eventClickGMStatFilterTypeProductSold(itemTitle);
             }
         });
     }
 
     private void showSortType() {
-        showBottomSheetDialog(getString(R.string.gm_sort), gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(getString(R.string.gm_statistic_sort), gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
                 int previousSortType = sortType;

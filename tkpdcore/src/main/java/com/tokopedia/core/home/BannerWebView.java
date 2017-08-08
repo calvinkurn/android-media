@@ -14,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
@@ -25,7 +26,7 @@ import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 /**
  * Created by Nisie on 22/10/15.
  */
-public class BannerWebView extends TActivity implements
+public class BannerWebView extends TkpdCoreWebViewActivity implements
         FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
 
     private static final String FLAG_APP = "?flag_app=1";
@@ -33,7 +34,7 @@ public class BannerWebView extends TActivity implements
     private FragmentBannerWebView fragment;
     public static final String EXTRA_URL = "url";
 
-    @DeepLink({Constants.Applinks.PROMO, Constants.Applinks.PROMO_WITH_DASH})
+    @DeepLink({Constants.Applinks.PROMO, Constants.Applinks.PROMO_CATEGORY, Constants.Applinks.PROMO_WITH_DASH})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         String promoId = bundle.getString(ARGS_PROMO_ID, "");
         String result = TkpdBaseURL.URL_PROMO;
@@ -103,15 +104,5 @@ public class BannerWebView extends TActivity implements
         } catch (Exception e) {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

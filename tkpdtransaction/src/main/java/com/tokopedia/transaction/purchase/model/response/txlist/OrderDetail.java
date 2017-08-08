@@ -107,6 +107,79 @@ public class OrderDetail implements Parcelable {
     @Expose
     private String detailFreeReturnMsg;
 
+    @SerializedName("detail_complaint_popup_title")
+    @Expose
+    private String detailComplaintPopupTitle;
+    @SerializedName("detail_complaint_popup_msg")
+    @Expose
+    private String detailComplaintPopupMsg;
+
+    @SerializedName("detail_complaint_not_received_title")
+    @Expose
+    private String detailComplaintNotReceivedTitle;
+
+    @SerializedName("detail_complaint_not_received_msg")
+    @Expose
+    private String detailComplaintNotReceivedMsg;
+
+    @SerializedName("detail_finish_popup_title")
+    @Expose
+    private String detailFinishPopupTitle;
+    @SerializedName("detail_finish_popup_msg")
+    @Expose
+    private String detailFinishPopupMsg;
+
+    protected OrderDetail(Parcel in) {
+        detailInsurancePrice = in.readString();
+        detailOpenAmount = in.readString();
+        detailDropshipName = in.readString();
+        detailTotalAddFee = in.readString();
+        detailPartialOrder = in.readString();
+        detailQuantity = in.readString();
+        detailProductPriceIdr = in.readString();
+        detailInvoice = in.readString();
+        detailShippingPriceIdr = in.readString();
+        detailPdfPath = in.readString();
+        detailAdditionalFeeIdr = in.readString();
+        detailProductPrice = in.readString();
+        detailPreorder = in.readParcelable(DetailPreOrder.class.getClassLoader());
+        detailForceInsurance = in.readString();
+        detailOpenAmountIdr = in.readString();
+        detailAdditionalFee = in.readString();
+        detailDropshipTelp = in.readString();
+        detailOrderId = in.readString();
+        detailTotalAddFeeIdr = in.readString();
+        detailOrderDate = in.readString();
+        detailShippingPrice = in.readString();
+        detailPayDueDate = in.readString();
+        detailTotalWeight = in.readString();
+        detailInsurancePriceIdr = in.readString();
+        detailPdfUri = in.readString();
+        detailShipRefNum = in.readString();
+        detailPrintAddressUri = in.readString();
+        detailPdf = in.readString();
+        detailOrderStatus = in.readString();
+        detailFreeReturn = in.readInt();
+        detailFreeReturnMsg = in.readString();
+        detailComplaintPopupTitle = in.readString();
+        detailComplaintPopupMsg = in.readString();
+        detailComplaintNotReceivedTitle = in.readString();
+        detailComplaintNotReceivedMsg = in.readString();
+        detailFinishPopupTitle = in.readString();
+        detailFinishPopupMsg = in.readString();
+    }
+
+    public static final Creator<OrderDetail> CREATOR = new Creator<OrderDetail>() {
+        @Override
+        public OrderDetail createFromParcel(Parcel in) {
+            return new OrderDetail(in);
+        }
+
+        @Override
+        public OrderDetail[] newArray(int size) {
+            return new OrderDetail[size];
+        }
+    };
 
     public String getDetailOpenAmount() {
         return detailOpenAmount;
@@ -356,6 +429,57 @@ public class OrderDetail implements Parcelable {
         this.detailFreeReturnMsg = detailFreeReturnMsg;
     }
 
+    public String getDetailComplaintPopupTitle() {
+        return detailComplaintPopupTitle;
+    }
+
+    public void setDetailComplaintPopupTitle(String detailComplaintPopupTitle) {
+        this.detailComplaintPopupTitle = detailComplaintPopupTitle;
+    }
+
+    public String getDetailComplaintPopupMsg() {
+        return detailComplaintPopupMsg;
+    }
+
+    public void setDetailComplaintPopupMsg(String detailComplaintPopupMsg) {
+        this.detailComplaintPopupMsg = detailComplaintPopupMsg;
+    }
+
+    public String getDetailComplaintNotReceivedTitle() {
+        return detailComplaintNotReceivedTitle;
+    }
+
+    public void setDetailComplaintNotReceivedTitle(String detailComplaintNotReceivedTitle) {
+        this.detailComplaintNotReceivedTitle = detailComplaintNotReceivedTitle;
+    }
+
+    public String getDetailComplaintNotReceivedMsg() {
+        return detailComplaintNotReceivedMsg;
+    }
+
+    public void setDetailComplaintNotReceivedMsg(String detailComplaintNotReceivedMsg) {
+        this.detailComplaintNotReceivedMsg = detailComplaintNotReceivedMsg;
+    }
+
+    public String getDetailFinishPopupTitle() {
+        return detailFinishPopupTitle;
+    }
+
+    public void setDetailFinishPopupTitle(String detailFinishPopupTitle) {
+        this.detailFinishPopupTitle = detailFinishPopupTitle;
+    }
+
+    public String getDetailFinishPopupMsg() {
+        return detailFinishPopupMsg;
+    }
+
+    public void setDetailFinishPopupMsg(String detailFinishPopupMsg) {
+        this.detailFinishPopupMsg = detailFinishPopupMsg;
+    }
+
+
+    public OrderDetail() {
+    }
 
     @Override
     public int describeContents() {
@@ -364,85 +488,42 @@ public class OrderDetail implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.detailInsurancePrice);
-        dest.writeString(this.detailOpenAmount);
-        dest.writeString(this.detailDropshipName);
-        dest.writeString(this.detailTotalAddFee);
-        dest.writeString(this.detailPartialOrder);
-        dest.writeString(this.detailQuantity);
-        dest.writeString(this.detailProductPriceIdr);
-        dest.writeString(this.detailInvoice);
-        dest.writeString(this.detailShippingPriceIdr);
-        dest.writeString(this.detailPdfPath);
-        dest.writeString(this.detailAdditionalFeeIdr);
-        dest.writeString(this.detailProductPrice);
-        dest.writeParcelable(this.detailPreorder, flags);
-        dest.writeString(this.detailForceInsurance);
-        dest.writeString(this.detailOpenAmountIdr);
-        dest.writeString(this.detailAdditionalFee);
-        dest.writeString(this.detailDropshipTelp);
-        dest.writeString(this.detailOrderId);
-        dest.writeString(this.detailTotalAddFeeIdr);
-        dest.writeString(this.detailOrderDate);
-        dest.writeString(this.detailShippingPrice);
-        dest.writeString(this.detailPayDueDate);
-        dest.writeString(this.detailTotalWeight);
-        dest.writeString(this.detailInsurancePriceIdr);
-        dest.writeString(this.detailPdfUri);
-        dest.writeString(this.detailShipRefNum);
-        dest.writeString(this.detailPrintAddressUri);
-        dest.writeString(this.detailPdf);
-        dest.writeString(this.detailOrderStatus);
-        dest.writeInt(this.detailFreeReturn);
-        dest.writeString(this.detailFreeReturnMsg);
+        dest.writeString(detailInsurancePrice);
+        dest.writeString(detailOpenAmount);
+        dest.writeString(detailDropshipName);
+        dest.writeString(detailTotalAddFee);
+        dest.writeString(detailPartialOrder);
+        dest.writeString(detailQuantity);
+        dest.writeString(detailProductPriceIdr);
+        dest.writeString(detailInvoice);
+        dest.writeString(detailShippingPriceIdr);
+        dest.writeString(detailPdfPath);
+        dest.writeString(detailAdditionalFeeIdr);
+        dest.writeString(detailProductPrice);
+        dest.writeParcelable(detailPreorder, flags);
+        dest.writeString(detailForceInsurance);
+        dest.writeString(detailOpenAmountIdr);
+        dest.writeString(detailAdditionalFee);
+        dest.writeString(detailDropshipTelp);
+        dest.writeString(detailOrderId);
+        dest.writeString(detailTotalAddFeeIdr);
+        dest.writeString(detailOrderDate);
+        dest.writeString(detailShippingPrice);
+        dest.writeString(detailPayDueDate);
+        dest.writeString(detailTotalWeight);
+        dest.writeString(detailInsurancePriceIdr);
+        dest.writeString(detailPdfUri);
+        dest.writeString(detailShipRefNum);
+        dest.writeString(detailPrintAddressUri);
+        dest.writeString(detailPdf);
+        dest.writeString(detailOrderStatus);
+        dest.writeInt(detailFreeReturn);
+        dest.writeString(detailFreeReturnMsg);
+        dest.writeString(detailComplaintPopupTitle);
+        dest.writeString(detailComplaintPopupMsg);
+        dest.writeString(detailComplaintNotReceivedTitle);
+        dest.writeString(detailComplaintNotReceivedMsg);
+        dest.writeString(detailFinishPopupTitle);
+        dest.writeString(detailFinishPopupMsg);
     }
-
-    public OrderDetail() {
-    }
-
-    protected OrderDetail(Parcel in) {
-        this.detailInsurancePrice = in.readString();
-        this.detailOpenAmount = in.readString();
-        this.detailDropshipName = in.readString();
-        this.detailTotalAddFee = in.readString();
-        this.detailPartialOrder = in.readString();
-        this.detailQuantity = in.readString();
-        this.detailProductPriceIdr = in.readString();
-        this.detailInvoice = in.readString();
-        this.detailShippingPriceIdr = in.readString();
-        this.detailPdfPath = in.readString();
-        this.detailAdditionalFeeIdr = in.readString();
-        this.detailProductPrice = in.readString();
-        this.detailPreorder = in.readParcelable(DetailPreOrder.class.getClassLoader());
-        this.detailForceInsurance = in.readString();
-        this.detailOpenAmountIdr = in.readString();
-        this.detailAdditionalFee = in.readString();
-        this.detailDropshipTelp = in.readString();
-        this.detailOrderId = in.readString();
-        this.detailTotalAddFeeIdr = in.readString();
-        this.detailOrderDate = in.readString();
-        this.detailShippingPrice = in.readString();
-        this.detailPayDueDate = in.readString();
-        this.detailTotalWeight = in.readString();
-        this.detailInsurancePriceIdr = in.readString();
-        this.detailPdfUri = in.readString();
-        this.detailShipRefNum = in.readString();
-        this.detailPrintAddressUri = in.readString();
-        this.detailPdf = in.readString();
-        this.detailOrderStatus = in.readString();
-        this.detailFreeReturn = in.readInt();
-        this.detailFreeReturnMsg = in.readString();
-    }
-
-    public static final Creator<OrderDetail> CREATOR = new Creator<OrderDetail>() {
-        @Override
-        public OrderDetail createFromParcel(Parcel source) {
-            return new OrderDetail(source);
-        }
-
-        @Override
-        public OrderDetail[] newArray(int size) {
-            return new OrderDetail[size];
-        }
-    };
 }

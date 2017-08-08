@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface GMStatisticDashboardView extends CustomerView {
 
-    void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
+    void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, boolean isGoldMerchant);
 
     void onErrorLoadTransactionGraph(Throwable t);
 
@@ -35,7 +35,11 @@ public interface GMStatisticDashboardView extends CustomerView {
 
     void onSuccessGetCategory(String categoryName);
 
-    void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean goldMerchant);
+    void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant);
 
     void onErrorLoadMarketInsight(Throwable t);
+
+    void onErrorLoadShopInfo(Throwable t);
+
+    void onSuccessLoadShopInfo(boolean isGoldMerchant);
 }

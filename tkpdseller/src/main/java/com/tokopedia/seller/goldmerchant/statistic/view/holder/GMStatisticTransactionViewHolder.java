@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
@@ -19,7 +21,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageVi
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionDataSetConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.List;
 
@@ -36,11 +37,20 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     private TextView tvTransactionCount;
     private ArrowPercentageView arrowPercentageView;
     private View seeDetailView;
+    View viewNotGM;
 
     private String[] monthNamesAbrev;
 
     public GMStatisticTransactionViewHolder(View view) {
         transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
+        viewNotGM = transactionDataCardView.findViewById(R.id.transaction_data_container_non_gold_merchant);
+        viewNotGM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
+                Router.goToGMSubscribe(transactionDataCardView.getContext());
+            }
+        });
         transactionChart = (LineChartView) transactionDataCardView.findViewById(R.id.transaction_chart);
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);
         arrowPercentageView = (ArrowPercentageView) transactionDataCardView.findViewById(R.id.view_arrow_percentage);
@@ -52,6 +62,8 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
                 // force to move to new statistic
                 Intent intent = new Intent(context, GMStatisticTransactionActivity.class);
                 context.startActivity(intent);
+
+                UnifyTracking.eventClickGMStatSeeDetailTransaction();
             }
         });
         monthNamesAbrev = transactionDataCardView.getContext().getResources()
@@ -59,23 +71,24 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     }
 
     public void bindData(GMGraphViewWithPreviousModel totalTransactionModel, boolean isGoldMerchant) {
-        /* non gold merchant */
         if (!isGoldMerchant) {
-            setEmptyViewNoGM();
+            setViewNoGM();
             setEmptyStatePercentage();
-            // to make the content overlay
-            transactionDataCardView.getContentView().setVisibility(View.VISIBLE);
             seeDetailView.setClickable(false);
             return;
         }
+
+        viewNotGM.setVisibility(View.GONE);
 
         /* empty state */
         if (totalTransactionModel.values == null || totalTransactionModel.amount == 0) {
 
             setEmptyStatePercentage();
 
+            tvTransactionCount.setText(KMNumbers.getSummaryString(0));
+
             displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, true);
-            seeDetailView.setVisibility(View.INVISIBLE);
+            seeDetailView.setVisibility(View.GONE);
             setViewState(LoadingStateView.VIEW_CONTENT);
             return;
         }
@@ -86,7 +99,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         seeDetailView.setVisibility(View.VISIBLE);
 
         /* non empty state */
-        tvTransactionCount.setText(KMNumbers.getFormattedString(totalTransactionModel.amount));
+        tvTransactionCount.setText(KMNumbers.getSummaryString(totalTransactionModel.amount));
 
         Double diffSuccessTrans = totalTransactionModel.percentage;
         arrowPercentageView.setPercentage(diffSuccessTrans);
@@ -95,16 +108,9 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    private void setEmptyViewNoGM() {
-        transactionDataCardView.setEmptyViewRes(R.layout.partial_gm_statistic_transaction_empty_state_not_gm);
-        transactionDataCardView.getEmptyView().findViewById(R.id.move_to_gmsubscribe)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Router.goToGMSubscribe(transactionDataCardView.getContext());
-                    }
-                });
-        transactionDataCardView.setViewState(LoadingStateView.VIEW_EMPTY);
+    private void setViewNoGM() {
+        transactionDataCardView.setViewState(LoadingStateView.VIEW_CONTENT);
+        viewNotGM.setVisibility(View.VISIBLE);
     }
 
     private void setEmptyStatePercentage() {

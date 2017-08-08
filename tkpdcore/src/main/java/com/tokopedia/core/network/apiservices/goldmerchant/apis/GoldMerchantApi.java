@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.goldmerchant.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.product.model.goldmerchant.FeaturedProductServiceModel;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
 import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
@@ -24,5 +25,8 @@ public interface GoldMerchantApi {
 
     @GET(TkpdBaseURL.GoldMerchant.GET_SHOP_SCORE_DETAIL + "{shopId}")
     Observable<Response<ShopScoreDetailServiceModel>> getShopScoreDetail(@Path("shopId") String shopID);
+
+    @GET(TkpdBaseURL.GoldMerchant.GET_FEATURED_PRODUCTS)
+    Observable<Response<FeaturedProductServiceModel>> getShopFeaturedProducts(@Path("shopId") String shopId);
 
 }

@@ -97,7 +97,7 @@ public abstract class TActivity extends BaseActivity {
         return true;
     }
 
-    private boolean onHomeOptionSelected() {
+    public boolean onHomeOptionSelected() {
         KeyboardHandler.DropKeyboard(this, parentView);
         onBackPressed();
         return true;

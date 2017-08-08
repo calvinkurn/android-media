@@ -40,6 +40,7 @@ public interface HotList {
     String PRICE_START_FROM = "price_start";
     String URL_KEY = "url";
     String CATALOG_KEY = "catalog";
+    String TOPPICKS_KEY = "toppicks";
     String CATALOG_ID_KEY = "ctg_id";
     String DEPID_ID_KEY = "d_id";
     String JSON_QUERY_KEY = "json_query";

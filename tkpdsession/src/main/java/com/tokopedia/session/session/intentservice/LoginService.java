@@ -404,7 +404,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putString(AppEventTracking.EMAIL_KEY, accountsParameter.getEmail());
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
                                 result.putParcelable(ACCOUNTS, accountsParameter);
-                                sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
+                                SessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
 
                             }
 

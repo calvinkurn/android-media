@@ -16,6 +16,7 @@ public class ApplinkNotificationPass {
     private String ticker;
     private String applink;
     private String imageUrl;
+    private String bannerUrl;
     private Intent intent;
     private int notificationId;
     private List<String> contents;
@@ -33,6 +34,7 @@ public class ApplinkNotificationPass {
                                    String ticker,
                                    String applink,
                                    String imageUrl,
+                                   String bannerUrl,
                                    Intent intent,
                                    int notificationId,
                                    List<String> contents,
@@ -54,6 +56,7 @@ public class ApplinkNotificationPass {
         this.group = group;
         this.multiSender = multiSender;
         this.taskStackBuilder = taskStackBuilder;
+        this.bannerUrl = bannerUrl;
     }
 
     public String getTitle() {
@@ -160,12 +163,21 @@ public class ApplinkNotificationPass {
         this.taskStackBuilder = taskStackBuilder;
     }
 
+    public String getBannerUrl() {
+        return bannerUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
+
     public static class ApplinkNotificationPassBuilder {
         private String nestedTitle;
         private String nestedDescription;
         private String nestedTicker;
         private String nestedApplink;
         private String nestedImageUrl;
+        private String nestedBannerUrl;
         private Intent nestedIntent;
         private List<String> nestedContents;
         private int nestedNotificationId;
@@ -204,6 +216,11 @@ public class ApplinkNotificationPass {
 
         public ApplinkNotificationPassBuilder image(final String image) {
             this.nestedImageUrl = image;
+            return this;
+        }
+
+        public ApplinkNotificationPassBuilder banner(final String banner) {
+            this.nestedBannerUrl = banner;
             return this;
         }
 
@@ -254,6 +271,7 @@ public class ApplinkNotificationPass {
                     nestedTicker,
                     nestedApplink,
                     nestedImageUrl,
+                    nestedBannerUrl,
                     nestedIntent,
                     nestedNotificationId,
                     nestedContents,

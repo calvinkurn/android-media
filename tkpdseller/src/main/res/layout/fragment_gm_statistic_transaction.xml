@@ -54,13 +54,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="@dimen/gm_unfinished_margin_top">
 
                 <com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgressLayout
                     android:id="@+id/gm_statistic_trans_donut_progress_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/gm_unfinished_margin_top"
                     app:donut_pl_amount_text_size="32sp"
                     app:donut_pl_title="@string/gm_statistic_total_trans_text"
                     app:donut_pl_title_text_size="14sp">
@@ -88,6 +89,7 @@
             android:id="@+id/topads_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tcv_empty_layout="@layout/partial_gm_statistic_transaction_top_ads_empty_state"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_title="@string/gm_statistic_top_ads_amount_title_text">
 
@@ -117,12 +119,13 @@
                     android:id="@+id/tv_see_topads"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rect_stroke_gray"
+                    android:background="@drawable/rect_stroke_lighter_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
-                    android:padding="12dp"
-                    android:text="@string/gm_statistic_see_topads"
+                    android:padding="@dimen/gm_unfinished_margin_top"
+                    android:text="@string/gm_statistic_manage_topads"
+                    android:textColor="@color/wholesale_color"
                     android:textSize="@dimen/font_button"
                     android:textStyle="bold" />
             </LinearLayout>

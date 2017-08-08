@@ -13,7 +13,6 @@
         android:id="@+id/line_chart_container_gross"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/gmstat_padding_item_left_right"
         android:paddingLeft="@dimen/gmstat_padding_item_left_right"
         android:paddingRight="@dimen/gmstat_padding_item_left_right"
         android:paddingTop="8dp"
@@ -21,6 +20,7 @@
 
         <com.tokopedia.seller.common.williamchart.view.LineChartView
             android:id="@+id/line_chart_gross"
+            style="@style/LineChartView"
             android:layout_width="wrap_content"
             android:layout_height="240dp" />
     </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>

@@ -128,6 +128,13 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
     Call<String> makeLoginsynchronous(@FieldMap TKPDMapParam<String, Object> parameters);
 
+    @GET(TkpdBaseURL.Accounts.PATH_GET_INFO)
+    Observable<Response<String>> getUserInfo(@QueryMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.PATH_EDIT_PROFILE)
+    Observable<Response<TkpdResponse>> editProfile(@FieldMap TKPDMapParam<String, Object> parameters);
+
     @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
     Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
 }

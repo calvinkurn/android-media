@@ -31,8 +31,7 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
         itemTransactionTableLeft.setText(gmStatisticTransactionTableModel.productName);
         switch (sortBy){
             case GMTransactionTableSortBy.DELIVERED_AMT:
-                itemTransactionTableRight.setText(KMNumbers.formatRupiahString(itemTransactionTableRight.getContext(),
-                        gmStatisticTransactionTableModel.getDeliveredAmount()));
+                itemTransactionTableRight.setText(KMNumbers.formatRupiahString(gmStatisticTransactionTableModel.getDeliveredAmount()));
                 break;
             case GMTransactionTableSortBy.ORDER_SUM:
                 itemTransactionTableRight.setText(String.valueOf( gmStatisticTransactionTableModel.getOrderSum()));
@@ -50,7 +49,7 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
                         .setProductId(productId)
                         .build();
                 if (applicationContext != null && applicationContext instanceof PdpRouter) {
-                    ((PdpRouter) applicationContext).goToProductDetail(applicationContext, productPass);
+                    ((PdpRouter) applicationContext).goToProductDetail(itemView.getContext(), productPass);
                 }
 
             }

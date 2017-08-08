@@ -68,27 +68,27 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         void onSuccessVerification();
     }
 
-    private static final String FORMAT = "%02d";
+    protected static final String FORMAT = "%02d";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
     private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
-    private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
 
-    TextView verifyButton;
-    TextView skipButton;
-    TextView phoneNumberEditText;
-    TextView changePhoneNumberButton;
-    TextView requestOtpButton;
-    TextView countdownText;
-    TextView requestOtpCallButton;
-    View inputOtpView;
-    EditText otpEditText;
-    TextView tokocashText;
+    protected TextView verifyButton;
+    protected TextView skipButton;
+    protected TextView phoneNumberEditText;
+    protected TextView changePhoneNumberButton;
+    protected TextView requestOtpButton;
+    protected TextView countdownText;
+    protected TextView requestOtpCallButton;
+    protected View inputOtpView;
+    protected EditText otpEditText;
+    protected TextView tokocashText;
 
-    CountDownTimer countDownTimer;
-    IncomingSmsReceiver smsReceiver;
-    TkpdProgressDialog progressDialog;
-    LocalCacheHandler cacheHandler;
+    protected CountDownTimer countDownTimer;
+    protected IncomingSmsReceiver smsReceiver;
+    protected TkpdProgressDialog progressDialog;
+    protected LocalCacheHandler cacheHandler;
     PhoneVerificationFragmentListener listener;
 
     public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener) {
@@ -110,7 +110,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         return listener;
     }
 
-    private void findView(View view) {
+    protected void findView(View view) {
         verifyButton = (TextView) view.findViewById(R.id.verify_button);
         skipButton = (TextView) view.findViewById(R.id.skip_button);
         phoneNumberEditText = (TextView) view.findViewById(R.id.phone_number);
@@ -392,7 +392,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
-    private void finishProgressDialog() {
+    protected void finishProgressDialog() {
         if (progressDialog != null)
             progressDialog.dismiss();
     }
@@ -453,13 +453,18 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         skipButton.setEnabled(isEnabled);
     }
 
-    private void startTimer() {
+    protected void startTimer() {
         if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
             cacheHandler.putBoolean(HAS_PHONE_VERIF_TIMER, true);
             cacheHandler.setExpire(DEFAULT_COUNTDOWN_TIMER_SECOND);
             cacheHandler.applyEditor();
         }
 
+        runAnimation();
+        otpEditText.requestFocus();
+    }
+
+    protected void runAnimation() {
         countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * 1000, COUNTDOWN_INTERVAL_SECOND) {
             public void onTick(long millisUntilFinished) {
                 requestOtpButton.setVisibility(View.GONE);
@@ -477,10 +482,9 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             }
 
         }.start();
-        otpEditText.requestFocus();
     }
 
-    private void enableOtpButton() {
+    protected void enableOtpButton() {
         requestOtpButton.setVisibility(View.VISIBLE);
         countdownText.setVisibility(View.GONE);
         MethodChecker.setBackground(requestOtpButton,

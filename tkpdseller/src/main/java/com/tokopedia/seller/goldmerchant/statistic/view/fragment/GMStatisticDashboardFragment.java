@@ -1,6 +1,8 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
@@ -21,7 +23,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticProductViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticSummaryViewHolder;
@@ -40,7 +41,8 @@ import javax.inject.Inject;
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
-public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticDashboardView {
+public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment
+        implements GMStatisticDashboardView {
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -63,12 +65,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         datePickerPresenter.clearDatePickerSetting();
-        initNumberFormatter();
-    }
-
-    private void initNumberFormatter() {
-        KMNumbers.overrideSuffixes(1000L, "rb");
-        KMNumbers.overrideSuffixes(1000000L, "jt");
     }
 
     @Override
@@ -106,15 +102,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 }
             }
         });
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                hideSnackBarRetry();
-                loadDataByDate();
-            }
-        });
-        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        disableDateLabelView();
     }
 
     @Override
@@ -122,7 +116,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         loadDataByDate();
     }
 
-    public void loadDataByDate() {
+    private void loadDataByDate(){
         resetToLoading();
         gmDashboardPresenter.fetchData(getStartDate(), getEndDate());
     }
@@ -142,10 +136,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
+    public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, boolean isGoldMerchant) {
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel,
-                getTransactionGraph.isGoldMerchant());
+                isGoldMerchant);
     }
 
     @Override
@@ -195,8 +189,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean goldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindData(getKeywords, goldMerchant);
+    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindData(getKeywords, isGoldMerchant);
     }
 
     @Override
@@ -210,16 +204,40 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         showSnackbarRetry();
     }
 
-    private void showSnackbarRetry() {
-        if (!snackbarRetry.isShown()) {
-            snackbarRetry.showRetrySnackbar();
+    @Override
+    public void onErrorLoadShopInfo(Throwable t) {
+        showSnackbarRetry();
+    }
+
+    @Override
+    public void onSuccessLoadShopInfo(boolean isGoldMerchant) {
+        if (isGoldMerchant) {
+            enableDateLabelView();
+        } else {
+            disableDateLabelView();
         }
     }
 
-    private void hideSnackBarRetry() {
-        if (snackbarRetry.isShown()) {
-            snackbarRetry.hideRetrySnackbar();
+    private void showSnackbarRetry() {
+        if (snackbarRetry == null) {
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    loadDataByDate();
+                }
+            });
+            snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
+        //!important, the delay will help the snackbar re-show after it is being hidden.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isAdded()) {
+                    snackbarRetry.showRetrySnackbar();
+                }
+            }
+        },700);
     }
 
     @Override

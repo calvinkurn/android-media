@@ -1,16 +1,24 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
+import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.common.williamchart.model.TooltipModel;
+import com.tokopedia.seller.common.williamchart.renderer.TooltipFormatRenderer;
+import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
+import com.tokopedia.seller.common.williamchart.util.TooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
@@ -33,6 +41,8 @@ import java.util.List;
 
 public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
+    public static final int WIDTH_TOOLTIP_COMPARE = 30;
+    public static final int HEIGHT_TOOLTIP_COMPARE = 13;
     private final String[] gmStatTransactionEntries;
     private final boolean[] selections;
     private TitleCardView gmTitleCardView;
@@ -43,6 +53,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     private GMTransactionGraphViewModel gmTransactionGraphViewModel;
     private boolean compareDate;
+
+    private ArrayList<TooltipModel> tooltipModels;
 
     public GMTransactionGraphViewHolder(View view) {
         gmTitleCardView = (TitleCardView) view.findViewById(R.id.gold_merchant_statistic_card_view);
@@ -110,7 +122,11 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                 .setItemClickListener(new BottomSheetItemClickListener() {
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
-                        gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
+                        String itemTitle = item.getTitle().toString();
+
+                        UnifyTracking.eventClickGMStatFilterNameTransaction(itemTitle);
+
+                        gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, itemTitle);
                         resetSelection(gmStatGraphSelection);
                         bind(gmTransactionGraphViewModel, compareDate);
                     }
@@ -144,8 +160,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                     = GMStatisticUtil.joinDateAndGraph3(data.pDates, data.pValues, monthNamesAbrev);
 
             ArrayList<BaseWilliamChartModel> baseWilliamChartModels = new ArrayList<>();
-            baseWilliamChartModels.add(baseWilliamChartModel);
             baseWilliamChartModels.add(previousbaseWilliamChartModel);
+            baseWilliamChartModels.add(baseWilliamChartModel);
 
             showTransactionGraph(baseWilliamChartModels);
         } else {
@@ -168,7 +184,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
             case GMTransactionGraphType.NET_REVENUE:
             case GMTransactionGraphType.REJECTED_AMOUNT:
             case GMTransactionGraphType.SHIPPING_COST:
-                gmLineChartContainer.setAmount(KMNumbers.formatRupiahString(gmTitleCardView.getContext(), data.amount));
+                gmLineChartContainer.setAmount(KMNumbers.formatRupiahString(data.amount));
                 break;
             case GMTransactionGraphType.REJECT_TRANS:
             case GMTransactionGraphType.SUCCESS_TRANS:
@@ -179,10 +195,55 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     }
 
     private void showTransactionGraph(List<BaseWilliamChartModel> baseWilliamChartModels) {
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
+        tooltipModels = joinTooltipData(baseWilliamChartModels.get(0).getValues(), baseWilliamChartModels.get(1).getValues());
+        gmStatisticIncomeGraph.addDataDisplayDots(tooltipModels);
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1),
+                new EmptyDataTransactionDataSetConfig(), getTooltip(gmStatisticIncomeGraph.getContext(), getTooltipResLayout()), getTooltipConfiguration());
         baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    private TooltipConfiguration getTooltipConfiguration() {
+        return new TooltipConfiguration() {
+            @Override
+            public int width() {
+                return (int) Tools.fromDpToPx(WIDTH_TOOLTIP_COMPARE);
+            }
+
+            @Override
+            public int height() {
+                return (int) Tools.fromDpToPx(HEIGHT_TOOLTIP_COMPARE);
+            }
+        };
+    }
+
+    private ArrayList<TooltipModel> joinTooltipData(float[] values, float[] values1) {
+        ArrayList<TooltipModel> tooltipModels = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            tooltipModels.add(new TooltipModel("", String.format("%d,%d", (int) values[i], (int) values1[i])));
+        }
+        return tooltipModels;
+    }
+
+    private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
+        return new Tooltip(context,
+                layoutRes,
+                R.id.gm_stat_tooltip_textview,
+                new TooltipFormatRenderer() {
+                    @Override
+                    public void formatValue(List<TextView> textViews, TooltipModel tooltipModel) {
+                        String[] value = tooltipModels.get(tooltipModel.getPosition()).getValue().split(",");
+                        textViews.get(0).setText(KMNumbers.formatSuffixNumbers(Float.valueOf(value[0])));
+                        textViews.get(1).setText(KMNumbers.formatSuffixNumbers(Float.valueOf(value[1])));
+                    }
+                }, true);
+    }
+
+
+    @LayoutRes
+    private int getTooltipResLayout() {
+        return R.layout.gm_stat_tooltip_compare;
     }
 
     /**
@@ -193,7 +254,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
      */
     private void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
         BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
-
+        gmStatisticIncomeGraph.clearDataDisplayDots();
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModel);
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);

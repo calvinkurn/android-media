@@ -3,110 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="@dimen/margin_sm">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/font_loading_width_xl"
+        android:layout_height="@dimen/font_loading_width_xl"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        app:use_gradient="true"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:orientation="horizontal">
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            app:use_gradient="true"/>
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="170dp"
-            android:layout_height="10dp"
-            android:layout_marginLeft="6dp"
-            app:use_gradient="true"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="10dp"
-            android:layout_weight="1" />
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="100dp"
-            android:layout_height="10dp"
-            app:use_gradient="true"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="10dp"
-            android:layout_height="10dp" />
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="170dp"
-            android:layout_height="10dp"
-            android:layout_marginLeft="6dp"
-            app:use_gradient="true"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="10dp"
-            android:layout_weight="1" />
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="100dp"
-            android:layout_height="10dp"
-            app:use_gradient="true"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="@dimen/margin_small"
-        android:background="@drawable/line_separator_medium" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:orientation="horizontal">
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            app:use_gradient="true"/>
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="170dp"
-            android:layout_height="10dp"
-            android:layout_marginLeft="6dp"
-            app:use_gradient="true"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="10dp"
-            android:layout_weight="1" />
-
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="100dp"
-            android:layout_height="10dp"
-            app:use_gradient="true"/>
-    </LinearLayout>
+        app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="200dp"
-        android:layout_height="10dp"
-        android:layout_gravity="center_horizontal"
-        app:use_gradient="true"/>
+        android:layout_width="@dimen/font_loading_width_xxxl"
+        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_marginTop="@dimen/margin_sm"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/font_loading_width_xxxl"
+        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_marginTop="@dimen/margin_sm"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/font_loading_width_xxxl"
+        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_marginTop="@dimen/margin_sm"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/font_loading_width_xxxl"
+        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_marginTop="@dimen/margin_sm"
+        app:use_gradient="true" />
 </LinearLayout>

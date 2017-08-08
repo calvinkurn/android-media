@@ -42,13 +42,17 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.completetrip.di.CompleteTripComponent;
+import com.tokopedia.ride.completetrip.di.DaggerCompleteTripComponent;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
+import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
+import com.tokopedia.ride.ontrip.di.OnTripComponent;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.io.UnsupportedEncodingException;
@@ -56,6 +60,8 @@ import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -137,7 +143,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @BindView(R2.id.btn_topup_tokocash)
     TextView topupButtonTextView;
 
-    CompleteTripContract.Presenter presenter;
+    @Inject
+    CompleteTripPresenter presenter;
     private String requestId;
     private DriverVehicleAddressViewModel driverVehicleAddressViewModel;
     private Receipt receipt;
@@ -182,8 +189,17 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         setInitialVariable();
     }
 
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        CompleteTripComponent completeTripComponent = DaggerCompleteTripComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        completeTripComponent.inject(this);
+    }
+
     private void setInitialVariable() {
-        presenter = CompleteTripDependencyInjection.createPresenter(getActivity());
         requestId = getArguments().getString(EXTRA_REQUEST_ID);
         driverVehicleAddressViewModel = getArguments().getParcelable(EXTRA_DRIVER_VEHICLE_VIEW_MODEL);
     }

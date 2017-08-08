@@ -149,6 +149,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientDigitalAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -339,4 +340,5 @@ public class OkHttpFactory {
                 .addDebugInterceptor()
                 .build();
     }
+
 }
