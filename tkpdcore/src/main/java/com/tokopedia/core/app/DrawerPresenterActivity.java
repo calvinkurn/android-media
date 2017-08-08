@@ -159,7 +159,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             if (!GlobalConfig.isSellerApp()) {
                 getDrawerTopPoints();
                 getDrawerTokoCash();
-//                getProfileCompletion();
+                getProfileCompletion();
             }
         }
     }
