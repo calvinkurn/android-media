@@ -63,7 +63,7 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         Gson gson = new Gson();
 
                         return gson.toJson(fingerPrint);
-                        
+
                     }
                 });
     }
