@@ -41,7 +41,7 @@ import java.util.List;
 
 public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
-    public static final int WIDTH_TOOLTIP_COMPARE = 32;
+    public static final int WIDTH_TOOLTIP_COMPARE = 40;
     public static final int HEIGHT_TOOLTIP_COMPARE = 32;
     private final String[] gmStatTransactionEntries;
     private final boolean[] selections;
