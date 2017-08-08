@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:gravity="center"
-        android:background="@drawable/tooltip"
+        android:background="@drawable/selector_tooltip"
         android:orientation="vertical"
         android:paddingLeft="@dimen/gm_tooltip_text_compare_margin"
         android:paddingRight="@dimen/gm_tooltip_text_compare_margin"
