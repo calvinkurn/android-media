@@ -32,6 +32,8 @@ import rx.Subscriber;
 
 import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.ACCESS_TOKEN_EXTRAS;
 import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.ACCESS_XCOID_EXTRAS;
+import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CREDENTIAL_NUMBER_EXTRAS;
+import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CREDENTIAL_TYPE_EXTRAS;
 
 /**
  * Created by kris on 8/2/17. Tokopedia
@@ -136,6 +138,11 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     }
 
     @Override
+    public void showDialog() {
+        progressDialog.showDialog();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroyed();
@@ -218,7 +225,9 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             }
 
             @Override
-            public void onEdit(final String tokenId) {
+            public void onEdit(final String tokenId,
+                               final String credentialType,
+                               final String credentialNumber) {
                 progressDialog.showDialog();
                 presenter.onRegisterOneClickBcaChosen(new Subscriber<BcaOneClickData>() {
                     @Override
@@ -237,6 +246,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                         bundle.putString(ACCESS_TOKEN_EXTRAS,
                                 bcaOneClickData.getToken().getAccessToken());
                         bundle.putString(ACCESS_XCOID_EXTRAS, tokenId);
+                        bundle.putString(CREDENTIAL_TYPE_EXTRAS, credentialType);
+                        bundle.putString(CREDENTIAL_NUMBER_EXTRAS, credentialNumber);
                         Intent intent = new Intent(ListPaymentTypeActivity.this,
                                 BcaOneClickEditActivity.class);
                         intent.putExtras(bundle);

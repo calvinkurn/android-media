@@ -20,6 +20,8 @@ import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.AC
 import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.ACCESS_XCOID_EXTRAS;
 import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.API_KEY;
 import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.API_SEED;
+import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CREDENTIAL_NUMBER_EXTRAS;
+import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CREDENTIAL_TYPE_EXTRAS;
 import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.MERCHANT_ID;
 
 /**
@@ -42,8 +44,12 @@ public class BcaOneClickEditActivity extends TActivity implements BcaOneClickEdi
             public void onBCASuccess(String s, String s1, String s2, String s3) {
                 BcaOneClickRegisterData bcaOneClickRegisterData = new BcaOneClickRegisterData();
                 bcaOneClickRegisterData.setTokenId(s);
-                bcaOneClickRegisterData.setCredentialType(s1);
-                bcaOneClickRegisterData.setCredentialNumber(s2);
+                bcaOneClickRegisterData.setCredentialType(
+                        getIntent().getExtras().getString(CREDENTIAL_TYPE_EXTRAS)
+                );
+                bcaOneClickRegisterData.setCredentialNumber(
+                        getIntent().getExtras().getString(CREDENTIAL_NUMBER_EXTRAS)
+                );
                 bcaOneClickRegisterData.setMaxLimit(s3);
                 presenter.editUserDataBca(BcaOneClickEditActivity.this,
                         bcaOneClickRegisterData, new Subscriber<PaymentListModel>() {

@@ -38,6 +38,7 @@ public class BcaOneClickRecyclerAdapter extends RecyclerView.Adapter<BcaOneClick
     public void onBindViewHolder(BankListViewHolder holder, int position) {
         final String name = bcaOneClickUserModels.get(position).getTokenId();
         final String tokenId = bcaOneClickUserModels.get(position).getTokenId();
+        final String credentialType = bcaOneClickUserModels.get(position).getCredentialType();
         final String credentialNumber = bcaOneClickUserModels.get(position).getCredentialNo();
         holder.accountHolderName.setText(listener.getUserLoginAccountName());
         holder.dailyLimit.setText(bcaOneClickUserModels.get(position).getMaxLimit());
@@ -51,7 +52,7 @@ public class BcaOneClickRecyclerAdapter extends RecyclerView.Adapter<BcaOneClick
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onEdit(tokenId);
+                listener.onEdit(tokenId, credentialType, credentialNumber);
             }
         });
     }
@@ -87,7 +88,7 @@ public class BcaOneClickRecyclerAdapter extends RecyclerView.Adapter<BcaOneClick
     public interface ActionListener {
         void onDelete(String tokenId, String name, String credentialNumber);
 
-        void onEdit(String token);
+        void onEdit(String token, String credentialType, String credentialNumber);
 
         String getUserLoginAccountName();
     }
