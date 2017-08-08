@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:gravity="center"
-        android:minWidth="35dp"
+        android:minWidth="@dimen/gm_tooltip_text_min_width"
         android:background="@drawable/selector_tooltip"
         android:orientation="vertical"
         android:paddingLeft="@dimen/gm_tooltip_text_compare_margin"
@@ -29,14 +29,14 @@
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/iv_circle1"
+                    android:id="@+id/iv_circle_top"
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/circle_green" />
 
                 <TextView
-                    android:id="@+id/tv_text1"
+                    android:id="@+id/tv_text_top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -55,14 +55,14 @@
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/iv_circle2"
+                    android:id="@+id/iv_circle_bottom"
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/circle_grey_gmstat" />
 
                 <TextView
-                    android:id="@+id/tv_text2"
+                    android:id="@+id/tv_text_bottom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
