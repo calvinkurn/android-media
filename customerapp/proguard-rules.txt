@@ -190,7 +190,7 @@
 -keep class com.tokopedia.core.recharge.model.** { *; }
 
 
--keepattributes *Annotation*,EnclosingMethod,SignatureOrderHistoryView
+-keepattributes *Annotation*,EnclosingMethod,Signature
 
 -dontwarn com.squareup.okhttp.**
 # this is butterknife
