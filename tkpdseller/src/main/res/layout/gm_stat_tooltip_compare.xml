@@ -7,14 +7,14 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center|bottom"
         android:gravity="center"
         android:background="@drawable/tooltip"
         android:orientation="vertical"
         android:paddingLeft="@dimen/gm_tooltip_text_compare_margin"
         android:paddingRight="@dimen/gm_tooltip_text_compare_margin"
         android:paddingTop="@dimen/gm_tooltip_text_compare_margin"
-        android:paddingBottom="12dp">
+        android:paddingBottom="@dimen/gm_tooltip_text_bottom">
 
         <LinearLayout
             android:layout_width="wrap_content"
