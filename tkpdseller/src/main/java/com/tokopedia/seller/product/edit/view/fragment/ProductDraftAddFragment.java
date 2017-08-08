@@ -12,7 +12,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;

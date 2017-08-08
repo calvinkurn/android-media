@@ -27,7 +27,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.domain.interactor.YoutubeVideoUseCase;
-import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.seller.product.edit.utils.YoutubeVideoLinkUtils;
 import com.tokopedia.seller.product.edit.view.adapter.addurlvideo.AddUrlVideoAdapter;
 import com.tokopedia.seller.product.edit.view.adapter.addurlvideo.EmptyAddUrlVideoDataBinder;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoActView;

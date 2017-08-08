@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 

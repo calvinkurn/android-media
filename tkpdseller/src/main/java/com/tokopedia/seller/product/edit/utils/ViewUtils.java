@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.utils;
+package com.tokopedia.seller.product.edit.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;

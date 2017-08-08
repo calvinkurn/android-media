@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
+import com.tokopedia.seller.product.edit.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;

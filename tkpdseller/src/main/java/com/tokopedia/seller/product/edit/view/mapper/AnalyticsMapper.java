@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.edit.view.mapper;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 
 import java.util.ArrayList;

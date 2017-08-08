@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.utils.ScoringProductHelper;
+import com.tokopedia.seller.product.edit.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 
 /**

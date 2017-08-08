@@ -15,7 +15,7 @@ import com.tokopedia.seller.product.data.source.cloud.YoutubeVideoLinkCloud;
 import com.tokopedia.seller.product.data.source.cloud.api.YoutubeVideoLinkApi;
 import com.tokopedia.seller.product.edit.domain.YoutubeVideoRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.YoutubeVideoUseCase;
-import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.seller.product.edit.utils.YoutubeVideoLinkUtils;
 
 import dagger.Module;
 import dagger.Provides;

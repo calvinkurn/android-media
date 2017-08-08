@@ -22,7 +22,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.di.component.DaggerEtalasePickerComponent;
 import com.tokopedia.seller.product.edit.di.module.EtalasePickerModule;
-import com.tokopedia.seller.product.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.adapter.etalase.EtalasePickerAdapter;
 import com.tokopedia.seller.product.edit.view.adapter.etalase.EtalasePickerAdapterListener;
 import com.tokopedia.seller.product.edit.view.listener.EtalasePickerFragmentListener;

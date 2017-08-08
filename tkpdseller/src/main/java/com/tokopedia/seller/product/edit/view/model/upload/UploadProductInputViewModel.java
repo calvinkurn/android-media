@@ -2,10 +2,10 @@ package com.tokopedia.seller.product.edit.view.model.upload;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
-import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;

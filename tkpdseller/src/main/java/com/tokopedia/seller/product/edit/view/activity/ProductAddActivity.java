@@ -32,7 +32,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;

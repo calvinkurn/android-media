@@ -5,7 +5,7 @@ import android.util.Log;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.edit.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.edit.domain.model.YoutubeVideoModel;
-import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.seller.product.edit.utils.YoutubeVideoLinkUtils;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.edit.view.model.AddUrlVideoModel;
 

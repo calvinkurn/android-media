@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.source.cloud;
 
 import com.tokopedia.seller.product.data.source.cloud.api.YoutubeVideoLinkApi;
 import com.tokopedia.seller.product.data.source.cloud.model.youtube.YoutubeResponse;
-import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.seller.product.edit.utils.YoutubeVideoLinkUtils;
 
 import java.util.HashMap;
 import java.util.Map;

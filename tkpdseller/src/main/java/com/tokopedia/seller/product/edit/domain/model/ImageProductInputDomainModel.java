@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.edit.domain.model;
 
 
-import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
+import com.tokopedia.seller.product.edit.constant.ImageStatusTypeDef;
 
 /**
  * @author sebastianuskh on 4/10/17.

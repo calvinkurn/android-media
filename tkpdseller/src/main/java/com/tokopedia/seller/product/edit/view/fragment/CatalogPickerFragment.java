@@ -17,7 +17,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.di.component.CatalogPickerComponent;
-import com.tokopedia.seller.product.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.adapter.CatalogPickerAdapter;
 import com.tokopedia.seller.product.edit.view.listener.CatalogPickerView;

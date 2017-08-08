@@ -6,7 +6,7 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.seller.product.constant.ProductNetworkConstant;
+import com.tokopedia.seller.product.edit.constant.ProductNetworkConstant;
 
 import java.io.File;
 import java.util.Map;

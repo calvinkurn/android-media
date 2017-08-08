@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.data.mapper;
 
-import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
+import com.tokopedia.seller.product.edit.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.ProductPhotoListServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.ProductPhotoServiceModel;

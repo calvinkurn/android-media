@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
-import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
+import com.tokopedia.seller.product.edit.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;

@@ -14,7 +14,7 @@ import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseC
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.mapper.CategoryRecommDomainToViewMapper;
 import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;

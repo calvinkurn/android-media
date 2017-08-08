@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.data.source.cloud;
 
-import com.tokopedia.seller.product.constant.ProductNetworkConstant;
+import com.tokopedia.seller.product.edit.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 

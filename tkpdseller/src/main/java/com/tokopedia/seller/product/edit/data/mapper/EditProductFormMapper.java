@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
