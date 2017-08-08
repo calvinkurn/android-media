@@ -113,12 +113,15 @@ TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnC
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
                 params.setMargins(0, params.topMargin, 0, 0);
                 container.setLayoutParams(params);
+                recyclerView.setBackgroundColor(android.R.color.transparent);
                 break;
             case GRID:
                 recyclerView.setLayoutManager(gridLayoutManager);
+                recyclerView.setBackgroundColor(R.color.white);
                 break;
             case LIST:
                 recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setBackgroundColor(R.color.white);
                 break;
         }
     }
