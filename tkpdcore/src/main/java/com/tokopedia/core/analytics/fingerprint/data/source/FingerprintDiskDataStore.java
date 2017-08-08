@@ -1,17 +1,11 @@
 package com.tokopedia.core.analytics.fingerprint.data.source;
 
-import android.os.Build;
-
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataStore;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
-
-import java.util.Locale;
-import java.util.TimeZone;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -29,18 +23,18 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                     @Override
                     public FingerPrint call(FingerPrint fingerPrint) {
 
-                        String deviceName = Build.MODEL;
-                        String deviceFabrik = Build.MANUFACTURER;
-                        String deviceOS = Build.VERSION.RELEASE;
-                        boolean isRooted = Utilities.isDeviceRooted();
-                        String timezone = Utilities.getTimeZoneOffset();
-                        String userAgent = System.getProperty("http.agent");
-                        boolean isEmulator = Utilities.isDeviceEmulated();
-                        boolean isTablet = Utilities.isDeviceTablet(MainApplication.getAppContext());
-                        String screenReso = Utilities.getScreenResolution(MainApplication.getAppContext());
-                        String deviceLanguage = Locale.getDefault().toString();
-                        String ssid = Utilities.getSSID(MainApplication.getAppContext());
-                        String carrier = Utilities.getCarrierName(MainApplication.getAppContext());
+                        String deviceName   = Utilities.getDeviceModel();
+                        String deviceFabrik = Utilities.getDeviceFabrik();
+                        String deviceOS     = Utilities.getDeviceOS();
+                        boolean isRooted    = Utilities.isDeviceRooted();
+                        String timezone     = Utilities.getTimeZoneOffset();
+                        String userAgent    = Utilities.getHttpAgent();
+                        boolean isEmulator  = Utilities.isDeviceEmulated();
+                        boolean isTablet    = Utilities.isDeviceTablet(MainApplication.getAppContext());
+                        String screenReso     = Utilities.getScreenResolution(MainApplication.getAppContext());
+                        String deviceLanguage = Utilities.getLanguage();
+                        String ssid         = Utilities.getSSID(MainApplication.getAppContext());
+                        String carrier      = Utilities.getCarrierName(MainApplication.getAppContext());
 
                         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                                 .deviceName(deviceName)
@@ -69,8 +63,7 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         Gson gson = new Gson();
 
                         return gson.toJson(fingerPrint);
-
-
+                        
                     }
                 });
     }
