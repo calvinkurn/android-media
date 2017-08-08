@@ -21,8 +21,8 @@ import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.uploadproduct.UploadProductUseCase;
-import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
-import com.tokopedia.seller.product.view.presenter.AddProductServicePresenterImpl;
+import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
+import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

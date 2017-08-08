@@ -10,8 +10,8 @@ import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryFromSelectedUseCase;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryWithParentChildUseCase;
-import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
-import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenterImpl;
+import com.tokopedia.seller.product.edit.view.presenter.CategoryPickerPresenter;
+import com.tokopedia.seller.product.edit.view.presenter.CategoryPickerPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

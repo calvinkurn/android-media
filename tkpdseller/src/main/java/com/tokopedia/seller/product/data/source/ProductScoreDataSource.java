@@ -1,8 +1,8 @@
 package com.tokopedia.seller.product.data.source;
 
 import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCache;
-import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 import rx.Observable;
 

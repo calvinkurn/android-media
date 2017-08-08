@@ -18,7 +18,7 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 
 import org.parceler.Parcels;
 

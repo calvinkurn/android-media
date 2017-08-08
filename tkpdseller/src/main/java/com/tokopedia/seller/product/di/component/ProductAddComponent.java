@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
-import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 
 import dagger.Component;
 

@@ -6,7 +6,7 @@ import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import rx.Observable;
 import rx.functions.Func1;

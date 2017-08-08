@@ -20,7 +20,7 @@ import com.tokopedia.seller.product.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.view.service.UploadProductService;
+import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import javax.inject.Inject;
 

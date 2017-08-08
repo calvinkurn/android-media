@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.product.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.di.scope.AddProductServiceScope;
-import com.tokopedia.seller.product.view.service.UploadProductService;
+import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import dagger.Component;
 

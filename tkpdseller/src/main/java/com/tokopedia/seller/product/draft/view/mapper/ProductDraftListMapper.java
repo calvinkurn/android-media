@@ -7,7 +7,7 @@ import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
 

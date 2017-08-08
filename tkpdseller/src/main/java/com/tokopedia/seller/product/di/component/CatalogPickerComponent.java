@@ -5,7 +5,7 @@ import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.di.module.CatalogPickerModule;
-import com.tokopedia.seller.product.view.presenter.CatalogPickerPresenter;
+import com.tokopedia.seller.product.edit.view.presenter.CatalogPickerPresenter;
 
 import dagger.Component;
 

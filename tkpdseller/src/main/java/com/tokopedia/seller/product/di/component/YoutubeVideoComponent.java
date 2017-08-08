@@ -3,9 +3,9 @@ package com.tokopedia.seller.product.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.seller.product.di.module.YoutubeVideoModule;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
-import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoFragment;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
+import com.tokopedia.seller.product.edit.view.fragment.YoutubeAddVideoFragment;
 
 import dagger.Component;
 

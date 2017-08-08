@@ -10,10 +10,10 @@ import com.tokopedia.seller.product.data.source.cache.model.ProductScore.Indicat
 import com.tokopedia.seller.product.data.source.cache.model.ProductScore.JsonScoringProduct;
 import com.tokopedia.seller.product.data.source.cache.model.ProductScore.Scale;
 import com.tokopedia.seller.product.data.source.cache.model.ProductScore.ValueIndicator;
-import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.seller.product.view.model.scoringproduct.IndicatorScoreView;
-import com.tokopedia.seller.product.view.model.scoringproduct.TotalScoringProductView;
-import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.IndicatorScoreView;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.TotalScoringProductView;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 import java.io.IOException;
 import java.io.InputStream;

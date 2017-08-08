@@ -12,8 +12,8 @@ import com.tokopedia.seller.product.data.source.ProductScoreDataSource;
 import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCache;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.seller.product.view.presenter.ProductScoringDetailPresenter;
-import com.tokopedia.seller.product.view.presenter.ProductScoringDetailPresenterImpl;
+import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenter;
+import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

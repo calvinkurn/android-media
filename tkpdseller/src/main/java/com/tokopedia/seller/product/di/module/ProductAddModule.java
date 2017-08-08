@@ -44,8 +44,8 @@ import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
-import com.tokopedia.seller.product.view.presenter.ProductAddPresenterImpl;
+import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
+import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

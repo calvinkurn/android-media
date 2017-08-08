@@ -90,7 +90,7 @@ import com.tokopedia.seller.myproduct.presenter.ManageProductView;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.seller.myproduct.service.ProductServiceConstant;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

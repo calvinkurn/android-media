@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.domain.model;
 
 import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.constant.UploadToTypeDef;
-import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
 

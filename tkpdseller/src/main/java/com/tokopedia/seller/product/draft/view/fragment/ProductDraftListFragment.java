@@ -39,10 +39,10 @@ import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.view.activity.ProductDraftAddActivity;
-import com.tokopedia.seller.product.view.activity.ProductDraftEditActivity;
-import com.tokopedia.seller.product.view.service.UploadProductService;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
+import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;

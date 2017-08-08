@@ -5,8 +5,8 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
-import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 import rx.Observable;
 

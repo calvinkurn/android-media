@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.data.exception;
 
-import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 /**
  * Created by zulfikarrahman on 4/27/17.
