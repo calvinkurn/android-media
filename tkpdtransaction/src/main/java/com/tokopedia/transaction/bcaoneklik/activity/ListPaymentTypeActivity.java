@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -98,8 +97,6 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                     @Override
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
-                        NetworkErrorHelper.showSnackbar(ListPaymentTypeActivity.this,
-                                "Terjadi Kesalahan Mohon Ulangi Beberapa Saat Lagi");
                     }
 
                     @Override
@@ -158,7 +155,6 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             @Override
             public void onError(Throwable e) {
                 progressDialog.dismiss();
-                CommonUtils.UniversalToast(ListPaymentTypeActivity.this, e.getMessage());
             }
 
             @Override
