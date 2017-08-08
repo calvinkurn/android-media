@@ -166,11 +166,13 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void loadTopAds() {
-        presenter.getTopAdsParam().getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
-        presenter.loadTopAds();
+        if(!presenter.getTopAdsParam().getParam().get(TopAdsParams.KEY_PAGE).equals(String.valueOf(mPage))) {
+            presenter.getTopAdsParam().getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
+            presenter.loadTopAds();
+        }
     }
 
-    public void attachRecycleView(RecyclerView recyclerView){
+    public void attachRecycleView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }
 
@@ -255,10 +257,13 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         Log.d(TAG, "setTopAds size " + list.size() + " pos " + pos);
         if (list.size() > 0) {
             arrayList.add(pos, new TopAdsViewModel(list));
-            mPage++;
         } else {
             setShouldLoadAds(false);
         }
+    }
+
+    public void increasePage(){
+        mPage++;
     }
 
     @Override

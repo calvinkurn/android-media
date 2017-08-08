@@ -36,6 +36,7 @@ public class TopAdsParams {
     public static final String DEFAULT_KEY_ITEM = "2";
     public static final String DEFAULT_KEY_EP = "product";
     public static final String DEFAULT_KEY_DEVICE = "android";
+    public static final String DEFAULT_KEY_PAGE = "0";
     public static final String DEFAULT_KEY_SRC = "search";
 
     public static final String SRC_PRODUCT_FEED = "fav_product";
@@ -49,6 +50,7 @@ public class TopAdsParams {
         param = new TKPDMapParam<>();
         param.put(KEY_ITEM, DEFAULT_KEY_ITEM);
         param.put(KEY_DEVICE, DEFAULT_KEY_DEVICE);
+        param.put(KEY_PAGE, DEFAULT_KEY_PAGE);
     }
 
     public TKPDMapParam<String, String> getParam() {

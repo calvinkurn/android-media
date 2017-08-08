@@ -55,6 +55,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (loadMore)
                 return;
             if (loadListener != null && !unsetListener && placer.getItems().size() > itemTreshold) {
+                placer.increasePage();
                 showLoading();
                 loadListener.onLoad(placer.getPage(), totalItemsCount);
             }
