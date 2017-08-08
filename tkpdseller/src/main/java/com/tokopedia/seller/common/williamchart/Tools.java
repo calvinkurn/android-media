@@ -189,11 +189,6 @@ public class Tools {
 
     @LayoutRes
     private static int getTooltipResLayout() {
-        @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lollipop;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            layoutTooltip = R.layout.gm_stat_tooltip;
-        }
-        return layoutTooltip;
+        return R.layout.gm_stat_tooltip;
     }
 }
