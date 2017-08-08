@@ -47,6 +47,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,12 +64,12 @@ import rx.subscriptions.CompositeSubscription;
 import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_TITLE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_2;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_3;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INVALID_FRAGMENT_ID;
-import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 import static com.tokopedia.discovery.activity.BrowseProductActivity.REQUEST_SORT;
 import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.FILTER;
 import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
@@ -76,10 +77,9 @@ import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
 /**
  * Created by HenryPri on 29/03/17.
  */
-
 public class BrowsePresenterImpl implements BrowsePresenter {
 
-    private static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
+    public static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
     private static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
     private static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
@@ -128,6 +128,14 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             mFilterMapAtribut = new FilterMapAtribut();
             fetchIntent(intent);
             deleteFilterAndSortCache();
+            setFilterOptionsFromIntent(intent);
+            if (intent.hasExtra(EXTRA_BROWSE_MODEL) && intent.getParcelableExtra(EXTRA_BROWSE_MODEL) != null){
+                BrowseProductActivityModel temporary = intent.getParcelableExtra(EXTRA_BROWSE_MODEL);
+                if (temporary.getFilterOptions() != null && temporary.getFilterOptions().size() > 0) {
+                    browseModel.setFilterOptions(temporary.getFilterOptions());
+                    browseModel.setSource(temporary.getSource());
+                }
+            }
         } else {
             isBottomBarFirstTimeChange = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
             browseModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
@@ -202,6 +210,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                     browseView.showSearchPage();
                     break;
             }
+        }
+    }
+
+    private void setFilterOptionsFromIntent(Intent intent) {
+        Serializable filterOptions = intent.getSerializableExtra(BrowseProductRouter.EXTRA_FILTER);
+        if (filterOptions != null) {
+            browseModel.setFilterOptions((HashMap<String, String>) filterOptions);
         }
     }
 
@@ -297,20 +312,24 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 switchGridType();
                 break;
             case 3:
-                String shareUrl = browseView.getShareUrl();
-                if (StringUtils.isNotBlank(shareUrl)) {
-                    ShareData shareData = ShareData.Builder.aShareData()
-                            .setType(ShareData.DISCOVERY_TYPE)
-                            .setName(context.getString(R.string.message_share_catalog))
-                            .setTextContent(context.getString(R.string.message_share_category))
-                            .setUri(shareUrl)
-                            .build();
-                    if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                        shareData.setType(ShareData.CATEGORY_TYPE);
-                        shareData.setDescription(browseModel.getParentDepartement()+","
-                                +browseModel.getDepartmentId());
+                if (isFromCategory()) {
+                    browseView.openCategoryNavigation(browseModel.getDepartmentId());
+                } else {
+                    String shareUrl = browseView.getShareUrl();
+                    if (StringUtils.isNotBlank(shareUrl)) {
+                        ShareData shareData = ShareData.Builder.aShareData()
+                                .setType(ShareData.DISCOVERY_TYPE)
+                                .setName(context.getString(R.string.message_share_catalog))
+                                .setTextContent(context.getString(R.string.message_share_category))
+                                .setUri(shareUrl)
+                                .build();
+                        if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                            shareData.setType(ShareData.CATEGORY_TYPE);
+                            shareData.setDescription(browseModel.getParentDepartement()+","
+                                    +browseModel.getDepartmentId());
+                        }
+                        browseView.startShareActivity(shareData);
                     }
-                    browseView.startShareActivity(shareData);
                 }
                 break;
         }
@@ -492,7 +511,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
     }
-    private boolean isFromCategory() {
+    public boolean isFromCategory() {
         return !TextUtils.isEmpty(browseModel.getParentDepartement())
                 && !("0").equals(browseModel.getParentDepartement());
     }

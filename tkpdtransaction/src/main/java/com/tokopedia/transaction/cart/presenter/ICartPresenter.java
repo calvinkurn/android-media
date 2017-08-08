@@ -2,10 +2,12 @@ package com.tokopedia.transaction.cart.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public interface ICartPresenter {
 
     void processUpdateInsurance(@NonNull CartItemEditable cartItemEditable, boolean useInsurance);
 
-    void processCheckVoucherCode();
+    void processCheckVoucherCode(int instantVoucher);
 
     void processGetTickerGTM();
 
@@ -35,5 +37,13 @@ public interface ICartPresenter {
 
     void unSubscribeObservable();
 
-    void processCartRates(String token, List<CartItem> cartItemList);
+    void processCartRates(String token, String ut, List<CartItem> cartItemList);
+
+    void processValidationPayment(String paymentId);
+
+    void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway);
+
+    void processPaymentAnalytics(LocalCacheHandler localCacheHandler, ThanksTopPayData data);
+
+    void clearNotificationCart();
 }

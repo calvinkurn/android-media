@@ -3,9 +3,12 @@ package com.tokopedia.ride.common.ride.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
+import com.tokopedia.ride.common.ride.domain.model.RideHistoryWrapper;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.TimePriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 import com.tokopedia.ride.history.domain.model.RideHistory;
@@ -20,7 +23,7 @@ import rx.Observable;
 
 public interface BookingRideRepository {
     Observable<Product> getProduct(TKPDMapParam<String, Object> params);
-    
+
     Observable<List<Product>> getProducts(TKPDMapParam<String, Object> params);
 
     Observable<List<TimesEstimate>> getEstimatedTimes(TKPDMapParam<String, Object> params);
@@ -41,6 +44,8 @@ public interface BookingRideRepository {
 
     Observable<List<RideHistory>> getHistories(TKPDMapParam<String, Object> parameters);
 
+    Observable<RideHistoryWrapper> getHistoriesWithPagination(TKPDMapParam<String, Object> parameters);
+
     Observable<RideHistory> getHistory(TKPDMapParam<String, Object> parameters);
 
     Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters);
@@ -52,4 +57,8 @@ public interface BookingRideRepository {
     Observable<String> sendRating(String requestId, TKPDMapParam<String, Object> parameters);
 
     Observable<List<String>> getCancelReasons(TKPDMapParam<String, Object> parameters);
+
+    Observable<List<TimePriceEstimate>> getTimePriceEstimate(TKPDMapParam<String, Object> parameters);
+
+    Observable<List<PriceEstimate>> getPriceEstimate(TKPDMapParam<String, Object> parameters);
 }

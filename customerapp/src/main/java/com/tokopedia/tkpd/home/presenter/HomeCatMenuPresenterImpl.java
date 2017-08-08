@@ -2,10 +2,12 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.util.Log;
 
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.database.model.SimpleDatabaseModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
@@ -19,6 +21,7 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.Subscriber;
+
 /**
  * @author Kulomady on 10/4/16.
  */
@@ -32,12 +35,14 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
     private final HomeMenuInteractor homeMenuInteractor;
     private HomeCatMenuView view;
     HomeCategoryMenuDbManager dbManager;
+    private GlobalCacheManager globalCacheManager;
 
 
     public HomeCatMenuPresenterImpl(HomeCatMenuView view) {
         this.view = view;
         homeMenuInteractor = new HomeMenuInteractorImpl();
         dbManager = new HomeCategoryMenuDbManager();
+        globalCacheManager = new GlobalCacheManager();
     }
 
 
@@ -150,6 +155,11 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
             //clear data dulu sebelum di insert
             homeCategoryMenuDbManager.deleteAll();
             homeCategoryMenuDbManager.store(response.body());
+
+            globalCacheManager.store(new SimpleDatabaseModel.Builder()
+                    .key(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST)
+                    .value(response.body())
+                    .build());
             renderHomeCategoryMenu(homeCategoryMenuDbManager.getDataHomeCategoryMenu());
         } else {
             if (isViewNotNull())

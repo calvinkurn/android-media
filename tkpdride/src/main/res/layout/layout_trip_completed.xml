@@ -3,17 +3,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/on_trip_complete_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:layout_below="@+id/layout_loader"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/layout_loader"
+        android:background="@color/white">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -307,13 +306,15 @@
                         android:layout_below="@id/tv_label_cashback"
                         android:layout_marginBottom="8dp"
                         android:layout_marginTop="8dp"
-                        android:background="@color/grey_200" />
+                        android:background="@color/grey_200"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/label_total_charged"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/fare_sep"
+                        android:layout_marginTop="12dp"
                         android:drawablePadding="10dp"
                         android:gravity="center"
                         android:text="@string/complete_trip_tokocash_charged"
@@ -326,6 +327,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/fare_sep"
+                        android:layout_marginTop="12dp"
                         android:text="-"
                         android:textColor="@color/black_full"
                         android:textSize="12sp" />
@@ -336,8 +338,8 @@
                     android:id="@+id/rating_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="35dp"
+                    android:layout_marginTop="20dp"
                     android:visibility="gone">
 
                     <include
@@ -351,8 +353,7 @@
                     android:id="@+id/pending_fare_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="35dp"
-                    tools:visibility="visible"
+                    android:paddingBottom="40dp"
                     android:visibility="gone">
 
                     <include

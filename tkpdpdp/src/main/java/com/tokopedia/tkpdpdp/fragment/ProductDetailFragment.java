@@ -32,6 +32,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -601,12 +603,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProgressLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+  
     }
 
     @Override
     public void hideProgressLoading() {
-        progressBar.setVisibility(View.GONE);
+       
     }
 
     @Override
@@ -909,8 +911,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
         if (menu != null && menu.size() > 2) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
-            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
-            int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+            LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
             } else {
@@ -928,8 +930,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
             menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.share_thin_white));
-            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
-            int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+            LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
             } else {

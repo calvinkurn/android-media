@@ -14,10 +14,12 @@ public class GetShopProductParam implements Parcelable {
     private int selectedEtalase = 0;
     private int listState = 3;
     private int perPage = 8;
+    private boolean useAce;
 
     public GetShopProductParam() {
 
     }
+
 
     protected GetShopProductParam(Parcel in) {
         page = in.readInt();
@@ -27,6 +29,24 @@ public class GetShopProductParam implements Parcelable {
         selectedEtalase = in.readInt();
         listState = in.readInt();
         perPage = in.readInt();
+        useAce = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(page);
+        dest.writeString(keyword);
+        dest.writeString(etalaseId);
+        dest.writeString(orderBy);
+        dest.writeInt(selectedEtalase);
+        dest.writeInt(listState);
+        dest.writeInt(perPage);
+        dest.writeByte((byte) (useAce ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<GetShopProductParam> CREATOR = new Creator<GetShopProductParam>() {
@@ -40,22 +60,6 @@ public class GetShopProductParam implements Parcelable {
             return new GetShopProductParam[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(page);
-        parcel.writeString(keyword);
-        parcel.writeString(etalaseId);
-        parcel.writeString(orderBy);
-        parcel.writeInt(selectedEtalase);
-        parcel.writeInt(listState);
-        parcel.writeInt(perPage);
-    }
 
     public int getPage() {
         return page;
@@ -111,5 +115,13 @@ public class GetShopProductParam implements Parcelable {
 
     public void setPerPage(int perPage) {
         this.perPage = perPage;
+    }
+
+    public boolean isUseAce() {
+        return useAce;
+    }
+
+    public void setUseAce(boolean useAce) {
+        this.useAce = useAce;
     }
 }

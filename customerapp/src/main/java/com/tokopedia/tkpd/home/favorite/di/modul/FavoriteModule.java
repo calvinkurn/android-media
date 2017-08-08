@@ -74,12 +74,13 @@ public class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    GetAllDataFavoriteUseCase provideAllDataFavoriteUsecase(ThreadExecutor threadExecutor,
+    GetAllDataFavoriteUseCase provideAllDataFavoriteUsecase(@ActivityContext Context context,
+                                                            ThreadExecutor threadExecutor,
                                                             PostExecutionThread postExecutor,
                                                             GetFavoriteShopUsecase favUseCase,
                                                             GetWishlistUsecase wishlistUseCase,
                                                             GetTopAdsShopUseCase topAdsShopUseCase){
-        return new GetAllDataFavoriteUseCase(
+        return new GetAllDataFavoriteUseCase(context,
                 threadExecutor, postExecutor, favUseCase, wishlistUseCase, topAdsShopUseCase);
     }
 
@@ -95,6 +96,7 @@ public class FavoriteModule {
     @FavoriteScope
     @Provides
     GetInitialDataPageUsecase provideFavoriteWishlitUsecase(
+            @ActivityContext Context context,
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             GetFavoriteShopUsecase getFavoriteShopUsecase,
@@ -102,6 +104,7 @@ public class FavoriteModule {
             GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         return new GetInitialDataPageUsecase(
+                context,
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,

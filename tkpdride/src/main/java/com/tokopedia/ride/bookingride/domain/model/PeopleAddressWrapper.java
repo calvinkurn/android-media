@@ -7,14 +7,14 @@ import java.util.List;
  */
 
 public class PeopleAddressWrapper {
-    private PeopleAddressPaging paging;
+    private Paging paging;
     private List<PeopleAddress> addresses;
 
-    public PeopleAddressPaging getPaging() {
+    public Paging getPaging() {
         return paging;
     }
 
-    public void setPaging(PeopleAddressPaging paging) {
+    public void setPaging(Paging paging) {
         this.paging = paging;
     }
 

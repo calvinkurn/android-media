@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -156,6 +157,9 @@ public class CategoryProductStyle1View extends
         if (data.isInstantCheckout()) {
             cbInstantCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
+            cbInstantCheckout.setChecked(
+                    actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
+            );
         } else {
             cbInstantCheckout.setChecked(false);
             cbInstantCheckout.setVisibility(GONE);
@@ -222,6 +226,11 @@ public class CategoryProductStyle1View extends
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(cbInstantCheckout.isChecked())
+                    UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
+                else
+                    UnifyTracking.eventClickBeli(data.getName(), data.getName());
+
                 actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }
         };
@@ -276,6 +285,11 @@ public class CategoryProductStyle1View extends
             if (productSelected.getPromo() != null) {
                 preCheckoutProduct.setPromo(true);
             }
+        }
+        if (canBeCheckout) {
+            actionListener.storeLastInstantCheckoutUsed(
+                    data.getCategoryId(), cbInstantCheckout.isChecked()
+            );
         }
         preCheckoutProduct.setCategoryId(data.getCategoryId());
         preCheckoutProduct.setCategoryName(data.getName());

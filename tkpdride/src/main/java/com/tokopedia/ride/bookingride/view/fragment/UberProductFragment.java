@@ -2,13 +2,9 @@ package com.tokopedia.ride.bookingride.view.fragment;
 
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,74 +15,70 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.RideProductDependencyInjection;
-import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
+import com.tokopedia.ride.bookingride.view.UberProductPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductAdapterTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
-import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
-import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
 
-import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class UberProductFragment extends BaseFragment implements UberProductContract.View, RideProductItemClickListener {
-    OnFragmentInteractionListener mInteractionListener;
-    UberProductContract.Presenter mPresenter;
+
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
-    private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
 
     @BindView(R2.id.ride_product_list)
-    RecyclerView mRideProductsRecyclerView;
+    RecyclerView rideProductsRecyclerView;
     @BindView(R2.id.crux_cabs_home_ad)
-    LinearLayout mAdsContainerLinearLayout;
+    LinearLayout adsContainerLinearLayout;
     @BindView(R2.id.crux_cabs_ad_title)
-    TextView mAdsTitleTextView;
+    TextView adsTitleTextView;
     @BindView(R2.id.crux_cabs_ad_cross)
     ImageView mAdsCrossImageView;
     @BindView(R2.id.empty_product_list)
-    View mErrorLayout;
+    View errorLayout;
     @BindView(R2.id.tv_error_desc)
-    TextView mErrorDescriptionTextView;
+    TextView errorDescriptionTextView;
     @BindView(R2.id.empty_list_retry)
-    TextView mRetryButtonTextView;
+    TextView retryButtonTextView;
     @BindView(R2.id.product_list_progress)
     ProgressBar mProgressBar;
     @BindView(R2.id.layout_error_view)
-    View mErrorView;
+    View errorView;
     @BindView(R2.id.layout_progress_view)
-    View mProgressView;
+    View progressView;
+
+    @Inject
+    UberProductPresenter presenter;
 
     boolean isCompleteLocations;
-    boolean isOpenInterruptWebviewDialog;
-
-    List<RideProductViewModel> rideProductViewModels;
     private PlacePassViewModel source, destination;
-
-    RideProductAdapter mAdapter;
+    private RideProductAdapter adapter;
+    private OnFragmentInteractionListener interactionListener;
 
     public interface OnFragmentInteractionListener {
-        void onProductClicked(ConfirmBookingViewModel rideProductViewModel);
+        void onProductClicked(ConfirmBookingPassData confirmBookingPassData);
 
         void onMinimumTimeEstCalculated(String timeEst);
 
@@ -121,9 +113,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = RideProductDependencyInjection.createPresenter(getActivity().getApplicationContext());
-        mPresenter.attachView(this);
-        mPresenter.initialize();
+        presenter.attachView(this);
+        presenter.initialize();
         setViewListener();
         if (getArguments() != null) {
             source = getArguments().getParcelable(EXTRA_SOURCE);
@@ -132,14 +123,30 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_SOURCE, source);
+        outState.putParcelable(EXTRA_DESTINATION, destination);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            source = savedInstanceState.getParcelable(EXTRA_SOURCE);
+            destination = savedInstanceState.getParcelable(EXTRA_DESTINATION);
+        }
+    }
+
     private void setViewListener() {
         RideProductTypeFactory placeAutoCompleteTypeFactory = new RideProductAdapterTypeFactory(this);
-        mAdapter = new RideProductAdapter(placeAutoCompleteTypeFactory);
+        adapter = new RideProductAdapter(placeAutoCompleteTypeFactory);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        mRideProductsRecyclerView.setLayoutManager(layoutManager);
-        mRideProductsRecyclerView.setHasFixedSize(true);
-        mRideProductsRecyclerView.setAdapter(mAdapter);
+        rideProductsRecyclerView.setLayoutManager(layoutManager);
+        rideProductsRecyclerView.setHasFixedSize(true);
+        rideProductsRecyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -149,14 +156,14 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mInteractionListener = (OnFragmentInteractionListener) context;
+            interactionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException("Activity must implemented OnFragmentInteractionListener");
         }
@@ -166,7 +173,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void onAttach(Activity context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mInteractionListener = (OnFragmentInteractionListener) context;
+            interactionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException("Activity must implemented OnFragmentInteractionListener");
         }
@@ -181,31 +188,28 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                 return;
             }
 
-            ConfirmBookingViewModel confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
-            confirmBookingViewModel.setFareId(rideProductViewModel.getFareId());
-            confirmBookingViewModel.setSource(source);
-            confirmBookingViewModel.setDestination(destination);
-            confirmBookingViewModel.setProductDisplayName(rideProductViewModel.getProductName());
-            confirmBookingViewModel.setProductId(rideProductViewModel.getProductId());
-            confirmBookingViewModel.setPriceFmt(rideProductViewModel.getProductPriceFmt());
-            confirmBookingViewModel.setPrice(rideProductViewModel.getProductPrice());
-            confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
-            confirmBookingViewModel.setHeaderTitle(
+            ConfirmBookingPassData confirmBookingPassData = new ConfirmBookingPassData();
+            confirmBookingPassData.setSeatCount(1);
+            confirmBookingPassData.setSource(source);
+            confirmBookingPassData.setDestination(destination);
+            confirmBookingPassData.setProductDisplayName(rideProductViewModel.getProductName());
+            confirmBookingPassData.setProductId(rideProductViewModel.getProductId());
+            confirmBookingPassData.setPriceFmt(rideProductViewModel.getProductPriceFmt());
+
+            confirmBookingPassData.setProductImage(rideProductViewModel.getProductImage());
+            confirmBookingPassData.setHeaderTitle(
                     String.format(
                             getString(R.string.confirm_booking_header_title_format),
                             rideProductViewModel.getProductName(),
                             rideProductViewModel.getTimeEstimate())
             );
-            confirmBookingViewModel.setMaxCapacity(rideProductViewModel.getCapacity());
-            confirmBookingViewModel.setSurgeMultiplier(rideProductViewModel.getSurgeMultiplier());
-            confirmBookingViewModel.setSurgeConfirmationHref(rideProductViewModel.getSurgeConfirmationHref());
-            confirmBookingViewModel.setCancellationFee(rideProductViewModel.getCancellationFee());
-            confirmBookingViewModel.setPromoCode(rideProductViewModel.getPromoCode());
-            confirmBookingViewModel.setPromoDescription(rideProductViewModel.getPromoMessage());
-            mInteractionListener.onProductClicked(confirmBookingViewModel);
+            confirmBookingPassData.setMaxCapacity(rideProductViewModel.getCapacity());
+            confirmBookingPassData.setCancellationFee(rideProductViewModel.getCancellationFee());
+            interactionListener.onProductClicked(confirmBookingPassData);
         } else {
             //show message to enter destianation
-            mInteractionListener.showEnterDestError();
+            interactionListener.showEnterDestError();
+            NetworkErrorHelper.showSnackbar(getActivity(), "Please enter destination");
         }
     }
 
@@ -214,22 +218,25 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         this.destination = destination;
         this.source = source;
         isCompleteLocations = source != null && destination != null;
-        mPresenter.actionGetRideProducts(source, destination);
+        if (source != null && destination != null)
+            presenter.actionGetRideProducts(source, destination);
+        else
+            presenter.actionGetRideProducts(source);
     }
 
     @Override
     public void renderProductList(List<Visitable> datas) {
-        mAdapter.clearData();
-        mAdapter.setElement(datas);
+        adapter.clearData();
+        adapter.setElement(datas);
     }
 
     @Override
     public List<Visitable> getProductList() {
-        if (mAdapter == null) {
+        if (adapter == null) {
             return null;
         }
 
-        return mAdapter.getElements();
+        return adapter.getElements();
     }
 
     @OnClick(R2.id.crux_cabs_ad_cross)
@@ -241,64 +248,64 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         if (source != null) {
             hideErrorMessageLayout();
             showProgress();
-            mPresenter.actionGetRideProducts(source, destination);
+            presenter.actionGetRideProducts(source, destination);
         } else {
             //open a dialog to enter source location
-            mInteractionListener.showEnterSourceLocationActiity();
+            interactionListener.showEnterSourceLocationActiity();
         }
     }
 
     @Override
     public void showAdsBadges(String message) {
-        mInteractionListener.actionAdsShowed();
-        mAdsContainerLinearLayout.setVisibility(View.VISIBLE);
-        mAdsTitleTextView.setText(String.valueOf(message));
+        interactionListener.actionAdsShowed();
+        adsContainerLinearLayout.setVisibility(View.VISIBLE);
+        adsTitleTextView.setText(String.valueOf(message));
     }
 
     @Override
     public void hideAdsBadges() {
-        mInteractionListener.actionAdsHidden();
-        mAdsContainerLinearLayout.setVisibility(View.INVISIBLE);
+        interactionListener.actionAdsHidden();
+        adsContainerLinearLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showProgress() {
-        mProgressView.setVisibility(View.VISIBLE);
+        progressView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mProgressView.setVisibility(View.GONE);
+        progressView.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProductList() {
-        if (mRideProductsRecyclerView != null) {
-            mRideProductsRecyclerView.setVisibility(View.GONE);
+        if (rideProductsRecyclerView != null) {
+            rideProductsRecyclerView.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void showProductList() {
-        if (mRideProductsRecyclerView != null) {
-            mRideProductsRecyclerView.setVisibility(View.VISIBLE);
+        if (rideProductsRecyclerView != null) {
+            rideProductsRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void showErrorMessage(String message, String btnText) {
         hideProgress();
-        mErrorView.setVisibility(View.VISIBLE);
-        mErrorLayout.setVisibility(View.VISIBLE);
-        mErrorDescriptionTextView.setText(message);
+        errorView.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.VISIBLE);
+        errorDescriptionTextView.setText(message);
         if (btnText != null && !btnText.isEmpty()) {
-            mRetryButtonTextView.setVisibility(View.VISIBLE);
-            mRetryButtonTextView.setText(btnText);
+            retryButtonTextView.setVisibility(View.VISIBLE);
+            retryButtonTextView.setText(btnText);
         } else {
-            mRetryButtonTextView.setVisibility(View.INVISIBLE);
+            retryButtonTextView.setVisibility(View.INVISIBLE);
         }
 
-        mRetryButtonTextView.setOnClickListener(new View.OnClickListener() {
+        retryButtonTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 actionRetry();
@@ -308,15 +315,15 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void hideErrorMessage() {
-        if (mErrorView != null) {
-            mErrorView.setVisibility(View.GONE);
+        if (errorView != null) {
+            errorView.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void hideErrorMessageLayout() {
-        if (mErrorLayout != null) {
-            mErrorLayout.setVisibility(View.GONE);
+        if (errorLayout != null) {
+            errorLayout.setVisibility(View.GONE);
         }
     }
 
@@ -325,91 +332,32 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                                   String productId,
                                   int position,
                                   FareEstimate fareEstimate) {
-        mAdapter.setChangedItem(position, productEstimate);
+        adapter.setChangedItem(position, productEstimate);
     }
 
     @Override
     public void actionMinimumTimeEstResult(String timeEst) {
-        mInteractionListener.onMinimumTimeEstCalculated(timeEst);
+        interactionListener.onMinimumTimeEstCalculated(timeEst);
+    }
+
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
     }
 
     @Override
     public void onDestroyView() {
+        presenter.detachView();
         super.onDestroyView();
-        mPresenter.detachView();
     }
 
     @OnClick(R2.id.layout_cab_booking_header)
     public void actionProductListHeaderClicked() {
-        mInteractionListener.actionProductListHeaderClick();
-    }
-
-    @Override
-    public RequestParams getPromoParams() {
-        String deviceId = GCMHandler.getRegistrationId(getActivity());
-        String userId = SessionHandler.getLoginID(getActivity());
-        String hash = md5(userId + "~" + deviceId);
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetPromoUseCase.PARAM_USER_ID, userId);
-
-        requestParams.putString(GetPromoUseCase.PARAM_DEVICE_ID, deviceId);
-        requestParams.putString(GetPromoUseCase.PARAM_HASH, hash);
-        requestParams.putString(GetPromoUseCase.PARAM_OS_TYPE, "1");
-        requestParams.putString(GetPromoUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        return requestParams;
-    }
-
-    @Override
-    public void openInterruptConfirmationWebView(String tosUrl) {
-        if (!isOpenInterruptWebviewDialog) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
-            if (previousDialog != null) {
-                fragmentTransaction.remove(previousDialog);
-            }
-            fragmentTransaction.addToBackStack(null);
-            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
-            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-            dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
-            isOpenInterruptWebviewDialog = true;
-        }
-
-    }
-
-    @Override
-    public void showErrorTosConfirmation(final String tosUrl) {
-        hideProgress();
-        mErrorView.setVisibility(View.VISIBLE);
-        mErrorLayout.setVisibility(View.VISIBLE);
-        mErrorDescriptionTextView.setText(R.string.uber_product_confirm_tos);
-        mRetryButtonTextView.setText(R.string.uber_product_confirm_btn_text);
-        mRetryButtonTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openInterruptConfirmationWebView(tosUrl);
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_INTERRUPT_DIALOG:
-                isOpenInterruptWebviewDialog = false;
-                if (resultCode == Activity.RESULT_OK) {
-                    hideErrorMessageLayout();
-                    showProgress();
-                    String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
-                    String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
-                    if (key != null && key.length() > 0) {
-                        mPresenter.actionGetRideProducts(id, key, source, destination);
-                    } else {
-                        mPresenter.actionGetRideProducts(source, destination);
-                    }
-                }
-                break;
-            default:
-        }
+        interactionListener.actionProductListHeaderClick();
     }
 }

@@ -149,13 +149,8 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     }
 
     @Override
-    public Data getCategoryHeaderCache(int level) {
-        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL + level, Data.class);
-    }
-
-    @Override
-    public Observable<Map<String, Boolean>> checkProductsInWishlist(String userId,
-                                                                    List<ProductItem> productItemList) {
+    public void checkProductsInWishlist(String userId, List<ProductItem> productItemList,
+                                        Subscriber<Map<String, Boolean>> subscriber) {
 
         StringBuilder productIds = new StringBuilder();
 
@@ -166,18 +161,22 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
         productIds.deleteCharAt(productIds.length() - 1);
 
-        return mojitoSimpleService.getApi().checkWishlist(userId, productIds.toString())
-                .map(new Func1<Response<WishlistCheckResult>, Map<String, Boolean>>() {
-                    @Override
-                    public Map<String, Boolean> call(Response<WishlistCheckResult> wishlistCheckResultResponse) {
-                        Map<String, Boolean> resultMap = new HashMap<>();
-                        List<String> idList = wishlistCheckResultResponse.body().getCheckResultIds().getIds();
-                        for (String id : idList) {
-                            resultMap.put(id, true);
-                        }
-                        return resultMap;
+        getCompositeSubscription().add(mojitoSimpleService.getApi().checkWishlist(userId, productIds.toString())
+            .map(new Func1<Response<WishlistCheckResult>, Map<String, Boolean>>() {
+                @Override
+                public Map<String, Boolean> call(Response<WishlistCheckResult> wishlistCheckResultResponse) {
+                    Map<String, Boolean> resultMap = new HashMap<>();
+                    List<String> idList = wishlistCheckResultResponse.body().getCheckResultIds().getIds();
+                    for (String id : idList) {
+                        resultMap.put(id, true);
                     }
-                });
+                    return resultMap;
+                }
+            })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(subscriber)
+        );
     }
 
     @Override
@@ -463,4 +462,5 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                 )
         );
     }
+
 }

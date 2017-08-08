@@ -66,7 +66,7 @@ public class TokoCashProductAdapter extends RecyclerView.Adapter<TokoCashProduct
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.titleTextView.setText(productList.get(holder.getAdapterPosition()).getTitle());
         if (holder.getAdapterPosition() % 2 == 0) {
-            holder.container.setBackgroundColor(activity.getResources().getColor(R.color.grey_300));
+            holder.container.setBackgroundColor(activity.getResources().getColor(R.color.grey_200));
         } else {
             holder.container.setBackgroundColor(activity.getResources().getColor(R.color.white));
         }

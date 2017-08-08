@@ -33,6 +33,8 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -40,6 +42,9 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 
@@ -110,6 +115,8 @@ public class DrawerBuyerHelper extends DrawerHelper
     private void createDataGuest(ArrayList<DrawerItem> data) {
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home), TkpdState
                 .DrawerPosition.INDEX_HOME, true));
+        data.add(new DrawerItem(context.getString(R.string.title_category),
+                TkpdState.DrawerPosition.CATEGORY_NAVIGATION, true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_login), TkpdState
                 .DrawerPosition.LOGIN, true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_register), TkpdState
@@ -127,26 +134,30 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.icon_home,
                 TkpdState.DrawerPosition.INDEX_HOME,
                 true));
+        data.add(new DrawerItem(context.getString(R.string.title_category),
+                R.drawable.ic_category_black_bold,
+                TkpdState.DrawerPosition.CATEGORY_NAVIGATION,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_wishlist),
                 R.drawable.icon_wishlist,
                 TkpdState.DrawerPosition.WISHLIST,
                 true));
-        if (!sessionHandler.getShopID(context).equals("0")
-                && !sessionHandler.getShopID(context).equals("")) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
-                    R.drawable.ic_top_ads,
-                    TkpdState.DrawerPosition.SELLER_TOP_ADS,
-                    true));
-        }
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
-        if (!sessionHandler.getShopID(context).equals("0")
-                && !sessionHandler.getShopID(context).equals("")) {
+        if (!SessionHandler.getShopID(context).equals("0")
+                && !SessionHandler.getShopID(context).equals("")) {
             data.add(getSellerMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
                     false));
+        }
+        if (!SessionHandler.getShopID(context).equals("0")
+                && !SessionHandler.getShopID(context).equals("")) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
+                    R.drawable.ic_top_ads,
+                    TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                    true));
         }
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
@@ -166,11 +177,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_developer_option),
-                    TkpdState.DrawerPosition.DEVELOPER_OPTIONS,
-                    true));
-        }
     }
 
     private DrawerGroup getSellerMenu() {
@@ -391,6 +397,9 @@ public class DrawerBuyerHelper extends DrawerHelper
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
                     break;
+                case TkpdState.DrawerPosition.CATEGORY_NAVIGATION:
+                    context.startActivity(BrowseProductRouter.getCategoryNavigationIntent(context));
+                    break;
                 case TkpdState.DrawerPosition.WISHLIST:
                     Intent wishList = SimpleHomeRouter
                             .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
@@ -528,27 +537,25 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
-        if (topCashUrl != null && !topCashUrl.equals("")) {
-            String seamlessURL;
-            seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
-            Bundle bundle = new Bundle();
-            bundle.putString("url", seamlessURL);
-            if (context.getApplication() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) context.getApplication())
-                        .goToWallet(context, bundle);
-            }
+        if (context.getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
+            context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
         }
 
     }
 
     @Override
     public void onGoToTopCashWithOtp(String topCashUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", topCashUrl);
         if (context.getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, bundle);
+                    .goToWallet(context, topCashUrl);
         }
+    }
+
+    @Override
+    public void onGoToProfileCompletion() {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     private void onGoToCreateShop() {

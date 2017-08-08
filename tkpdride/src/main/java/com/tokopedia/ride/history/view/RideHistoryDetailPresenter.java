@@ -10,8 +10,11 @@ import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
+import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModelMapper;
 
 import java.net.UnknownHostException;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -23,6 +26,7 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
     private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
 
+    @Inject
     public RideHistoryDetailPresenter(GetSingleRideHistoryUseCase getSingleRideHistoryUseCase,
                                       GiveDriverRatingUseCase giveDriverRatingUseCase) {
         this.getSingleRideHistoryUseCase = getSingleRideHistoryUseCase;
@@ -69,7 +73,8 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
                     getView().showMainLayout();
                     getView().hideLoading();
                     getView().showHistoryDetailLayout();
-                    RideHistoryViewModel viewModel = getRideHistoryViewModel(getView().getMapSize(), rideHistory);
+                    RideHistoryViewModelMapper mapper = new RideHistoryViewModelMapper(getView().getMapKey());
+                    RideHistoryViewModel viewModel = mapper.transform(getView().getMapSize(), rideHistory);
                     getView().setHistoryViewModelData(viewModel);
                     getView().renderHistory(viewModel);
                     if (!getView().isRatingAvailable()) {
@@ -120,79 +125,5 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
                 }
             }
         });
-    }
-
-    @NonNull
-    private RideHistoryViewModel getRideHistoryViewModel(String mapSize, RideHistory rideHistory) {
-        RideHistoryViewModel viewModel = new RideHistoryViewModel();
-        viewModel.setDriverCarDisplay(String.format("%s %s %s",
-                rideHistory.getVehicle().getMake(),
-                rideHistory.getVehicle().getVehicleModel(),
-                rideHistory.getVehicle().getLicensePlate())
-        );
-        viewModel.setStatus(rideHistory.getStatus());
-//        viewModel.setFare(String.format("%s %s",
-//                rideHistory.getPayment().getCurrency(),
-//                rideHistory.getPayment().getTotalAmount())
-//        );
-//        viewModel.setTotalFare(String.format("%s %s",
-//                rideHistory.getPayment().getCurrency(),
-//                rideHistory.getPayment().getTotalAmount())
-//        );
-
-        viewModel.setFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setTotalFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setCashback(rideHistory.getCashbackAmount());
-        viewModel.setDiscount(rideHistory.getDiscountAmount());
-        viewModel.setCashbackDisplayFormat(RideHistoryViewModel.formaNumberToPriceString(rideHistory.getCashbackAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setDiscountDisplayFormat(RideHistoryViewModel.formaNumberToPriceString(rideHistory.getDiscountAmount(), rideHistory.getPayment().getCurrency()));
-
-        viewModel.setRequestTime(rideHistory.getRequestTime());
-        viewModel.setRequestId(rideHistory.getRequestId());
-        viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
-        viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
-        viewModel.setDisplayStatus(RideHistoryViewModel.transformToDisplayStatus(rideHistory.getStatus()));
-
-        if (rideHistory.getVehicle() != null) {
-            viewModel.setLicensePlateNumber(rideHistory.getVehicle().getLicensePlate());
-        }
-
-        LocationLatLng pickupObject = rideHistory.getPickup();
-        if (pickupObject != null) {
-            viewModel.setStartLatitude(pickupObject.getLatitude());
-            viewModel.setStartLongitude(pickupObject.getLongitude());
-            viewModel.setStartAddress(pickupObject.getAddress());
-        }
-
-        LocationLatLng destObject = rideHistory.getDestination();
-        if (destObject != null) {
-            viewModel.setEndLatitude(destObject.getLatitude());
-            viewModel.setEndLongitude(destObject.getLongitude());
-            viewModel.setEndAddress(destObject.getAddress());
-        }
-
-        viewModel.setMapImage(getMapImageUrl(viewModel.getStartLatitude(), viewModel.getStartLongitude(), viewModel.getEndLatitude(), viewModel.getEndLongitude(), mapSize));
-        viewModel.setRating(rideHistory.getRating());
-        viewModel.setHelpUrl(rideHistory.getHelpUrl());
-        return viewModel;
-    }
-
-    private String getMapImageUrl(double startlatitude, double startLongitude, double endLatitude, double endLongitude, String mapSize) {
-
-
-        StringBuffer urlBuffer = new StringBuffer("https://maps.googleapis.com/maps/api/staticmap?size=").append(mapSize);
-        urlBuffer.append("&markers=color:green|label:S|").append(startlatitude + "," + startLongitude)
-                .append("&zoom=13")
-                .append("&key=").append(getView().getMapKey());
-
-
-        if (endLatitude != 0 && endLongitude != 0) {
-            urlBuffer.append("&markers=color:red|label:D|").append(endLatitude + "," + endLongitude);
-        }
-
-        return urlBuffer.toString();
-
-        //String mapImageUrl = "https://maps.googleapis.com/maps/api/staticmap?size=500x140&markers=color:green|label:S|" + pickupLatLonString + "&zoom=13&key=" + getView().getMapKey();
-        //return mapImageUrl;
     }
 }

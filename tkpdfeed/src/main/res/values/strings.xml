@@ -22,7 +22,7 @@
     <string name="copy_promo_success">Kode promo berhasil disalin.</string>
     <string name="string_empty_feed">Oops, feed masih kosong</string>
     <string name="empty_feed_subtitle">Segera favoritkan toko yang Anda sukai untuk mendapatkan
-        update produk terbaru di isini.
+        update produk terbaru di sini.
     </string>
     <string name="search_shop">Cari Toko</string>
     <string name="feed_deleted">Feed ini telah dihapus.</string>
@@ -43,5 +43,6 @@
     <string name="share_sms">SMS</string>
     <string name="share_copy">Copy Link</string>
     <string name="share_others">Lainnya</string>
+    <string name="discount_off">% Off</string>
 
 </resources>

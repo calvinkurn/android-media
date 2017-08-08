@@ -5,9 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.seller.base.view.constant.ConstantView;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
 
 import java.util.Date;
 
@@ -78,7 +77,7 @@ public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == ConstantView.REQUEST_CODE_DATE && intent != null) {
+        if (requestCode == DatePickerConstant.REQUEST_CODE_DATE && intent != null) {
             long startDateTime = intent.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
             long endDateTime = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
             int selectionDatePickerType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, 0);
@@ -92,6 +91,6 @@ public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(this, startDate, endDate);
-        startActivityForResult(intent, ConstantView.REQUEST_CODE_DATE);
+        startActivityForResult(intent, DatePickerConstant.REQUEST_CODE_DATE);
     }
 }

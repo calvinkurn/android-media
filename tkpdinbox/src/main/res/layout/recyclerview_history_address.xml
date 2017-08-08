@@ -31,7 +31,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
-        android:textColor="@color/grey"
+        android:textColor="@color/label_text_color"
         android:textSize="@dimen/fontvs"
         />
 

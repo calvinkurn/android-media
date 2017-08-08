@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.tokocash;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
@@ -81,12 +80,11 @@ public class BottomSheetTokoCash extends BottomSheetDialog {
     }
 
     private void openTokoCashWebView(String redirectURL) {
-        Bundle bundle = new Bundle();
-        bundle.putString(TOKO_CASH_URL, redirectURL);
         if (context instanceof Activity) {
             if (((Activity) context).getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) ((Activity) context).getApplication())
-                        .goToWallet(context, bundle);
+                        .goToWallet(context, redirectURL);
+                dismiss();
             }
         }
     }

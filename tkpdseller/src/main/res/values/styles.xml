@@ -63,6 +63,21 @@
         <item name="android:background">@drawable/border_background_top</item>
     </style>
 
+    <style name="BaseCardViewLayoutMatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardElevation">1dp</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+
+    <style name="CardViewLayoutMatchParent" parent="BaseCardViewLayoutMatchParent">
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+    </style>
+
     <style name="LabelLayout.InnerExpandable">
         <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
         <item name="android:paddingRight">@dimen/product_inner_expandable_padding</item>
@@ -137,16 +152,23 @@
     </style>
 
     <style name="ExpandableStyle" parent="style_expandable_option_default">
-        <item name="eo_header_style">@style/ExpandableHeaderStyle</item>
+        <item name="eo_header_style">@style/ExpandableHeaderStylePadding</item>
         <item name="eo_text_option_style">@style/TextView.Subheading</item>
         <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 
-    <style name="ExpandableHeaderStyle" parent="eo_header_style">
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
+    <style name="ExpandableStyleNoItemPadding" parent="style_expandable_option_default">
+        <item name="eo_text_option_style">@style/TextView.Subheading</item>
+        <item name="eo_header_style">@style/eo_header_style</item>
+        <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
+    </style>
+
+    <style name="ExpandableHeaderStylePadding" parent="eo_header_style">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="ExpandableSwitchStyle" parent="eo_switch_style">
@@ -185,6 +207,20 @@
         <item name="android:actionModeStyle">@style/CustomActionMode</item>
         <item name="actionModeStyle">@style/CustomActionMode</item>
         <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
+    </style>
+
+    <style name="BottomSheetBuilder.DialogStyle" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetBuilder.BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/white</item>
+        <item name="behavior_hideable">true</item>
+        <item name="behavior_skipCollapsed">true</item>
+    </style>
+
+    <style name="LineChartView">
+        <item name="android:paddingRight">10dp</item>
     </style>
 
 </resources>

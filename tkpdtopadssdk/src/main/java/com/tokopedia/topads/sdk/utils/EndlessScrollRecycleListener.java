@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
+
 /**
  * @author by errysuprayogi on 4/14/17.
  */
@@ -46,11 +47,13 @@ public abstract class EndlessScrollRecycleListener extends RecyclerView.OnScroll
 
             lastVisibleItemPosition = getLastVisibleItem(lastVisibleItemPositions);
         } else if (layoutManager instanceof GridLayoutManager) {
+            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
             lastVisibleItemPosition
-                    = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
+                    = gridLayoutManager.findLastVisibleItemPosition();
         } else if (layoutManager instanceof LinearLayoutManager) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
             lastVisibleItemPosition
-                    = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+                    = linearLayoutManager.findLastVisibleItemPosition();
         }
 
         if (totalItemCount < previousTotalItemCount) {
@@ -71,6 +74,7 @@ public abstract class EndlessScrollRecycleListener extends RecyclerView.OnScroll
             onLoadMore(currentPage, totalItemCount);
             loading = true;
         }
+
     }
 
     public void resetState() {

@@ -28,6 +28,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -403,7 +404,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         display.getSize(size);
-        int imageWidth = (int) (size.x - 4) / 3;
+        int imageWidth = (size.x - 4) / 3;
         View view = super.onCreateView(parentView, savedInstanceState);
         initView(view);
         shopAvatar.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
@@ -478,4 +479,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         ShopEditorActivity.startOpenShopEditShippingActivity((AppCompatActivity) getActivity());
     }
 
+    @Override
+    public void sendBroadcastToAppWidget() {
+        AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+    }
 }

@@ -71,6 +71,7 @@ public class DataFavoriteMapper {
                 shopItem.setAdKey(item.getAdRefKey());
                 shopItem.setShopClickUrl(item.getShopClickUrl());
                 shopItem.setShopCoverUrl(item.getShopImageCover());
+                shopItem.setShopCoverEcs(item.getShopImageCoverEcs());
                 shopItem.setShopImageUrl(item.getShopImageUrl());
                 shopItem.setShopLocation(item.getShopLocation());
                 shopItem.setFav(item.isSelected());

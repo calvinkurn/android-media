@@ -32,7 +32,7 @@ public class NotificationUseCase extends UseCase<NotificationModel> {
         return notificationRepository.getNotification(requestParams.getParameters());
     }
 
-    public RequestParams getRequestParam(boolean isSeller) {
+    public static RequestParams getRequestParam(boolean isSeller) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_TYPE, isSeller ? 2 : 1);
         return params;

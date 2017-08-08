@@ -64,6 +64,8 @@ public class ActivitySellingTransaction extends TkpdActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
         DownloadResultReceiver.Receiver {
 
+    public static final String FROM_WIDGET_TAG = "from widget";
+
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     private TabLayout indicator;
@@ -111,6 +113,11 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
+    public static Intent createIntent(Context context, int tab){
+        return new Intent(context, ActivitySellingTransaction.class)
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, tab);
+    }
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
@@ -126,10 +133,19 @@ public class ActivitySellingTransaction extends TkpdActivity
         setAdapter();
         openTab();
 
+        setTrackerWidget();
+
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
 
         fragmentManager = getFragmentManager();
+    }
+
+    private void setTrackerWidget() {
+        boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
+        if(fromWidget){
+            UnifyTracking.eventAccessAppViewWidget();
+        }
     }
 
     @Override
@@ -170,7 +186,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
-                Log.d("Seller Page", "URL Clicked" + span);
                 if (span.getURL().equals("com.tokopedia.sellerapp")) {
                     startNewActivity(span.getURL());
                 } else {
@@ -219,7 +234,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             sellerTickerView.setText(strBuilder);
             sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
-            hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
+            hideTickerOpportunity(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
@@ -284,8 +299,8 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void openTab() {
         try {
-            mViewPager.setCurrentItem(getIntent().getExtras().getInt("tab"));
-            setDrawerPosition(getIntent().getExtras().getInt("tab"));
+            mViewPager.setCurrentItem(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
+            setDrawerPosition(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
         } catch (Exception e) {
             e.printStackTrace();
         }

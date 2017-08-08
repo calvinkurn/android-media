@@ -79,13 +79,17 @@
                     android:id="@+id/text_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="@dimen/fontvvvs"
-                    android:padding="@dimen/margin_vvvs"
-                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/fontvvs"
+                    android:paddingTop="@dimen/margin_vvvs"
+                    android:paddingBottom="@dimen/margin_vvvs"
+                    android:paddingLeft="@dimen/padding_vvs"
+                    android:paddingRight="@dimen/padding_vvs"
+                    android:layout_marginLeft="@dimen/media_grid_spacing"
                     android:layout_marginStart="@dimen/margin_vs"
                     android:textColor="@color/white"
                     android:background="@drawable/bg_rounded_corners_red"
+                    tools:text="10%OFF"
                     android:visibility="gone"/>
 
             </LinearLayout>
@@ -95,7 +99,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/rating"

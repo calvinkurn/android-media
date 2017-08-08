@@ -15,7 +15,7 @@ public class TopAdsParams {
     public static final String KEY_SRC = "src";
     public static final String KEY_PAGE = "page";
     public static final String KEY_DEPARTEMENT_ID = "dep_id";
-    public static final String KEY_HOTLIST_ID = "h";
+    public static final String KEY_HOTLIST_ID = "hc";
     public static final String KEY_QUERY = "q";
     public static final String KEY_PMIN = "pmin";
     public static final String KEY_PMAX = "pmax";
@@ -36,6 +36,7 @@ public class TopAdsParams {
     public static final String DEFAULT_KEY_ITEM = "2";
     public static final String DEFAULT_KEY_EP = "product";
     public static final String DEFAULT_KEY_DEVICE = "android";
+    public static final String DEFAULT_KEY_SRC = "search";
 
     public static final String SRC_PRODUCT_FEED = "fav_product";
 

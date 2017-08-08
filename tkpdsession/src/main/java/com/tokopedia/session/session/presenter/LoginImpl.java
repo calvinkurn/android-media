@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static android.R.attr.data;
 import static com.tokopedia.core.service.constant.DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN;
 
 /**
@@ -169,9 +170,9 @@ public class LoginImpl implements Login {
             @Override
             public void onSuccess(final LoginResult loginResult) {
                 Set<String> declinedPermissions = loginResult.getAccessToken().getDeclinedPermissions();
-                if(hasDeclinedPermission(declinedPermissions)){
-                    doFacebookLogin(fragment,callbackManager);
-                }else {
+                if (hasDeclinedPermission(declinedPermissions)) {
+                    doFacebookLogin(fragment, callbackManager);
+                } else {
                     requestProfileFacebook(loginResult);
                 }
             }
@@ -184,7 +185,7 @@ public class LoginImpl implements Login {
 
             @Override
             public void onError(FacebookException e) {
-                if(e instanceof FacebookAuthorizationException){
+                if (e instanceof FacebookAuthorizationException) {
                     LoginManager.getInstance().logOut();
                 }
                 loginView.showError(fragment.getActivity().getString(R.string.msg_network_error));
@@ -241,17 +242,17 @@ public class LoginImpl implements Login {
                             GraphResponse response) {
                         FacebookModel facebookModel =
                                 new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
-                        loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
+                        loginFacebook(facebookModel, loginResult.getAccessToken().getToken());
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields","id,name,gender,birthday,email");
+        parameters.putString("fields", "id,name,gender,birthday,email");
         request.setParameters(parameters);
         request.executeAsync();
     }
 
     private boolean hasDeclinedPermission(Set<String> declinedPermissions) {
-        return declinedPermissions.size()>0 && FacebookContainer.readPermissions.containsAll(declinedPermissions);
+        return declinedPermissions.size() > 0 && FacebookContainer.readPermissions.containsAll(declinedPermissions);
     }
 
     public void downloadProviderLogin() {
@@ -438,13 +439,14 @@ public class LoginImpl implements Login {
     @Override
     public void loginFacebook(FacebookModel facebookModel, String token) {
         LoginFacebookViewModel loginFacebookViewModel = new LoginFacebookViewModel();
-        loginFacebookViewModel.setFullName(facebookModel.getName());
-        loginFacebookViewModel.setGender(facebookModel.getGender());
-        loginFacebookViewModel.setBirthday(facebookModel.getBirthdayConverted());
-        loginFacebookViewModel.setFbToken(token);
-        loginFacebookViewModel.setFbId(facebookModel.getId());
-        loginFacebookViewModel.setEmail(facebookModel.getEmail());
-
+        if (facebookModel != null) {
+            loginFacebookViewModel.setFullName(facebookModel.getName());
+            loginFacebookViewModel.setGender(facebookModel.getGender());
+            loginFacebookViewModel.setBirthday(facebookModel.getBirthdayConverted());
+            loginFacebookViewModel.setFbToken(token);
+            loginFacebookViewModel.setFbId(facebookModel.getId());
+            loginFacebookViewModel.setEmail(facebookModel.getEmail());
+        }
         sendDataFromInternet(LoginModel.FacebookType, loginFacebookViewModel);
     }
 
@@ -453,6 +455,7 @@ public class LoginImpl implements Login {
         switch (type) {
             case LoginViewModel.ISPROGRESSSHOW:
                 loginViewModel.setIsProgressShow((boolean) data[0]);
+
                 break;
             case LoginViewModel.PASSWORD:
             case LoginViewModel.USERNAME:
@@ -474,13 +477,13 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
                             loginSecurityModel.getUser_id(),
                             modelData.getEmail());
-                    loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION, ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getPassword());
+                    loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION, ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getPassword());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.triggerSaveAccount();
-                    successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
-                    if(successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
-                        loginView.setSmartLock(SmartLockActivity.RC_SAVE, ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getPassword());
-                    }else {
+                    successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, LOGIN_ACCOUNTS_TOKEN));
+                    if (successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
+                        loginView.setSmartLock(SmartLockActivity.RC_SAVE, ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getPassword());
+                    } else {
                         loginView.destroyActivity();
                     }
                 } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {

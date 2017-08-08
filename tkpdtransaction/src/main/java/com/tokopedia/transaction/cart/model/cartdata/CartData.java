@@ -54,6 +54,9 @@ public class CartData implements Parcelable {
     @SerializedName("token_kero")
     @Expose
     private String tokenKero;
+    @SerializedName("ut")
+    @Expose
+    private String ut;
     @SerializedName("credit_card")
     @Expose
     private CreditCard creditCard;
@@ -81,6 +84,8 @@ public class CartData implements Parcelable {
     @SerializedName("donation")
     @Expose
     private CartDonation donation;
+    @SerializedName("promo_suggestion")
+    private CartPromo cartPromo;
 
     public String getGrandTotalWithoutLP() {
         return grandTotalWithoutLP;
@@ -258,12 +263,28 @@ public class CartData implements Parcelable {
         this.tokenKero = tokenKero;
     }
 
+    public String getUt() {
+        return ut;
+    }
+
+    public void setUt(String ut) {
+        this.ut = ut;
+    }
+
     public CartDonation getDonation() {
         return donation;
     }
 
     public void setDonation(CartDonation donation) {
         this.donation = donation;
+    }
+
+    public CartPromo getCartPromo() {
+        return cartPromo;
+    }
+
+    public void setCartPromo(CartPromo cartPromo) {
+        this.cartPromo = cartPromo;
     }
 
     public CartData() {
@@ -291,6 +312,7 @@ public class CartData implements Parcelable {
         dest.writeString(this.voucherCode);
         dest.writeString(this.token);
         dest.writeString(this.tokenKero);
+        dest.writeString(this.ut);
         dest.writeParcelable(this.creditCard, flags);
         dest.writeString(this.grandTotalIdr);
         dest.writeInt(this.cashback);
@@ -300,6 +322,7 @@ public class CartData implements Parcelable {
         dest.writeString(this.grandTotalWithoutLPIDR);
         dest.writeLong(this.cartShippingRate);
         dest.writeParcelable(this.donation, flags);
+        dest.writeParcelable(this.cartPromo, flags);
     }
 
     protected CartData(Parcel in) {
@@ -317,6 +340,7 @@ public class CartData implements Parcelable {
         this.voucherCode = in.readString();
         this.token = in.readString();
         this.tokenKero = in.readString();
+        this.ut= in.readString();
         this.creditCard = in.readParcelable(CreditCard.class.getClassLoader());
         this.grandTotalIdr = in.readString();
         this.cashback = in.readInt();
@@ -326,6 +350,7 @@ public class CartData implements Parcelable {
         this.grandTotalWithoutLPIDR = in.readString();
         this.cartShippingRate = in.readLong();
         this.donation = in.readParcelable(CartDonation.class.getClassLoader());
+        this.cartPromo = in.readParcelable(CartPromo.class.getClassLoader());
     }
 
     public static final Creator<CartData> CREATOR = new Creator<CartData>() {

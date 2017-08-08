@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.view.adapter.ItemClickListener;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
@@ -50,9 +51,9 @@ public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewMod
     @Override
     public void bind(RideHistoryViewModel element) {
         mItem = element;
-        rideStartTimeTextView.setText(element.getRequestTime());
+        rideStartTimeTextView.setText(RideUtils.convertTime(element.getRequestTime()));
         driverCarDisplayNameTextView.setText(element.getDriverCarDisplay());
-        rideFareTextView.setText(element.getFare());
+        rideFareTextView.setText(element.getTotalFare());
         if (element.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)){
             rideStatusTextView.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
         }else {

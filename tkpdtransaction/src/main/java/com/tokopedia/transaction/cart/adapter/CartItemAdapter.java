@@ -502,13 +502,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final CartItem cartData = cartItemEditable.getCartItem();
         final boolean isUseInsurance = cartItemEditable.isUseInsurance();
         List<CartInsurance> cartInsuranceList;
-        if (isUseInsurance) {
-            cartInsuranceList = CartInsurance.createListForAdapterUseInsurance();
-            holder.insuranceLayout.setVisibility(View.VISIBLE);
-        } else {
-            cartInsuranceList = CartInsurance.createListForAdapterNotUseInsurance();
-            holder.insuranceLayout.setVisibility(View.GONE);
-        }
+        if (isUseInsurance) cartInsuranceList = CartInsurance.createListForAdapterUseInsurance();
+        else cartInsuranceList = CartInsurance.createListForAdapterNotUseInsurance();
 
         ArrayAdapter<CartInsurance> cartInsuranceAdapter
                 = new ArrayAdapter<>(

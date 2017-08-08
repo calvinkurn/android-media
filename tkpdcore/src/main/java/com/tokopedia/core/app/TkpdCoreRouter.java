@@ -3,13 +3,17 @@ package com.tokopedia.core.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileSubscriber;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -35,11 +39,11 @@ public interface TkpdCoreRouter {
 
     void resetAddProductCache(Context context);
 
-    void goToWallet(Context context, Bundle bundle);
+    void goToWallet(Context context, String url);
 
     void goToMerchantRedirect(Context context);
 
-    void actionAppLink(Activity activity, String linkUrl);
+    void actionAppLink(Context context, String linkUrl);
 
     void actionAppLink(Context context, String linkUrl);
 
@@ -57,7 +61,16 @@ public interface TkpdCoreRouter {
 
     void onLogout(AppComponent appComponent);
 
+    void goToProfileCompletion(Context context);
+
     void goToCreateMerchantRedirect(Context context);
 
     void goToRegister(Context context);
+
+    Intent getLoginIntent(Context context);
+
+    Intent getRegisterIntent(Context context);
+
+    void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
+
 }

@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -28,9 +27,9 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedTrackingEventLabel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.WishlistListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.DetailFeedAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
@@ -241,10 +240,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToBuyProduct(String productId, String price) {
+    public void onGoToBuyProduct(String productId, String price, String imageSource) {
         ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
                 .setProductId(productId)
                 .setPrice(price)
+                .setImageUri(imageSource)
                 .build();
 
         Intent intent = TransactionAddToCartRouter
@@ -418,7 +418,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
-        if (adapter.getList().get(position) instanceof FeedDetailViewModel) {
+        if (adapter.getList().get(position) instanceof FeedDetailViewModel
+                && !adapter.getList().isEmpty()
+                && position < adapter.getList().size()
+                && adapter.getList().get(position) != null) {
             ((FeedDetailViewModel) adapter.getList().get(position)).setWishlist(isWishlist);
             adapter.notifyItemChanged(position);
         }

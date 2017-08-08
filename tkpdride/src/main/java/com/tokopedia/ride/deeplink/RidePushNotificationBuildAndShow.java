@@ -126,9 +126,11 @@ public class RidePushNotificationBuildAndShow {
                 switch (rideRequest.getStatus()) {
                     case RideStatus.ARRIVING:
                     case RideStatus.ACCEPTED:
+                        cancelActiveNotification(mContext);
                         showRideAccepted(mContext, rideRequest);
                         break;
                     case RideStatus.NO_DRIVER_AVAILABLE:
+                        cancelActiveNotification(mContext);
                         showNoDriverFoundNotification(mContext);
                         break;
                     case RideStatus.PROCESSING:
@@ -142,6 +144,7 @@ public class RidePushNotificationBuildAndShow {
                         showDriverCancelledRide(mContext);
                         break;
                     case RideStatus.RIDER_CANCELED:
+                        cancelActiveNotification(mContext);
                         break;
                     case RideStatus.COMPLETED:
                         if (rideRequest.getPayment() != null && rideRequest.getPayment().isReceiptReady()) {

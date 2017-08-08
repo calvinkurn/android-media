@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 
 import java.util.ArrayList;
@@ -73,10 +73,14 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
 
     @Override
     public int getItemCount() {
-        if (list.size() > 6)
-            return 6;
-        else
-            return list.size();
+        if (list != null && !list.isEmpty()) {
+            if (list.size() > 6)
+                return 6;
+            else
+                return list.size();
+        } else {
+            return 0;
+        }
     }
 
     public void setList(ArrayList<InspirationProductViewModel> list) {

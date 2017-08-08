@@ -49,4 +49,6 @@ public interface ShopCreateView extends BaseView {
     void goToEditShipping(OpenShopData openShopData);
 
     void startOpenShopEditShippingActivity();
+
+    void sendBroadcastToAppWidget();
 }

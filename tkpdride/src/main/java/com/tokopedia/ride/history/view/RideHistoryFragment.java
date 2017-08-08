@@ -3,20 +3,22 @@ package com.tokopedia.ride.history.view;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
+import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -24,7 +26,11 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.history.di.RideHistoryDependencyInjection;
+import com.tokopedia.ride.bookingride.domain.model.Paging;
+import com.tokopedia.ride.bookingride.view.adapter.EndlessRecyclerViewScrollListener;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.history.di.DaggerRideHistoryComponent;
+import com.tokopedia.ride.history.di.RideHistoryComponent;
 import com.tokopedia.ride.history.domain.GetRideHistoriesUseCase;
 import com.tokopedia.ride.history.view.adapter.ItemClickListener;
 import com.tokopedia.ride.history.view.adapter.RideHistoryAdapter;
@@ -32,7 +38,13 @@ import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFac
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryTypeFactory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -51,9 +63,14 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     RideHistoryAdapter adapter;
 
-    RideHistoryContract.Presenter mPresenter;
+    @Inject
+    RideHistoryPresenter presenter;
 
     OnFragmentInteractionListener mOnFragmentInteractionListener;
+
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+    private Paging paging;
+    private boolean isLoadMoreActive;
 
     public static Fragment newInstance() {
         return new RideHistoryFragment();
@@ -72,9 +89,8 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setViewListener();
-        mPresenter = RideHistoryDependencyInjection.createPresenter(getActivity());
-        mPresenter.attachView(this);
-        mPresenter.initialize();
+        presenter.attachView(this);
+        presenter.initialize();
     }
 
     private void setViewListener() {
@@ -82,9 +98,24 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
         adapter = new RideHistoryAdapter(rideHistoryTypeFactory);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (getUserVisibleHint())
+                    if (paging != null && !TextUtils.isEmpty(paging.getNextUrl())) {
+                        if (!isLoadMoreActive) {
+                            isLoadMoreActive = true;
+                            presenter.actionLoadMore();
+                        }
+                    }
+            }
+        };
+
+
         listRidesRecyclerView.setLayoutManager(layoutManager);
         listRidesRecyclerView.setHasFixedSize(true);
         listRidesRecyclerView.setAdapter(adapter);
+        listRidesRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
         refreshLayout.setOnRefreshListener(getRefreshListener());
     }
 
@@ -93,7 +124,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
         return new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mPresenter.actionRefreshHistoriesData();
+                presenter.actionRefreshHistoriesData();
             }
         };
     }
@@ -104,9 +135,18 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     }
 
     @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        RideHistoryComponent rideHistoryComponent = DaggerRideHistoryComponent.builder()
+                .rideComponent(component)
+                .build();
+        rideHistoryComponent.inject(this);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mPresenter.detachView();
+        presenter.detachView();
     }
 
     @Override
@@ -203,12 +243,35 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
         refreshLayout.setVisibility(View.GONE);
     }
 
+    @Override
+    public void setPaging(Paging paging) {
+        this.paging = paging;
+    }
+
+    @Override
+    public void showRetryLoadMoreLayout() {
+        isLoadMoreActive = false;
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                isLoadMoreActive = true;
+                presenter.actionLoadMore();
+            }
+        });
+    }
+
+    @Override
+    public void renderHistoryLoadMoreLists(ArrayList<Visitable> histories) {
+        isLoadMoreActive = false;
+        adapter.addElements(histories);
+    }
+
     @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryGetHistoriesListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                mPresenter.actionRefreshHistoriesData();
+                presenter.actionRefreshHistoriesData();
             }
         };
     }
@@ -236,4 +299,54 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
             throw new RuntimeException("must implement OnFragmentInteractionListener");
         }
     }
+
+    @Override
+    public void showLoadMoreLoading() {
+        adapter.addElement(new LoadingModel());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void hideLoadMoreLoading() {
+        adapter.removeItem(adapter.getItemCount() - 1);
+    }
+
+    @Override
+    public RequestParams getHistoriesLoadMoreParam() {
+        RequestParams requestParams = RequestParams.create();
+        Map<String, String> maps = splitQuery(Uri.parse(paging.getNextUrl()));
+        for (Map.Entry<String, String> imap : maps.entrySet()) {
+            requestParams.putString(imap.getKey(), imap.getValue());
+        }
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        requestParams.putString(GetRideHistoriesUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetRideHistoriesUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetRideHistoriesUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetRideHistoriesUseCase.PARAM_OS_TYPE, "1");
+        return requestParams;
+    }
+
+    private Map<String, String> splitQuery(Uri url) {
+        Map<String, String> queryPairs = new LinkedHashMap<>();
+        String query = url.getQuery();
+        if (!TextUtils.isEmpty(query)) {
+            String[] pairs = query.split("&|\\?");
+            for (String pair : pairs) {
+                int indexKey = pair.indexOf("=");
+                if (indexKey > 0 && indexKey + 1 <= pair.length()) {
+                    try {
+                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
+                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
+                    } catch (UnsupportedEncodingException | NullPointerException | IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return queryPairs;
+    }
+
+
 }

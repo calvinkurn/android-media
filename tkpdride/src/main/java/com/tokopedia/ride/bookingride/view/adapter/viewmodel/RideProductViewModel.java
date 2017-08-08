@@ -16,17 +16,11 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     private String productName;
     private String timeEstimate;
     private boolean surgePrice;
-    private float productPrice;
     private String productPriceFmt;
     private String baseFare;
-    private String fareId;
     private int capacity;
     private boolean enabled;
-    private float surgeMultiplier;
-    private String surgeConfirmationHref;
     private String cancellationFee;
-    private String promoCode;
-    private String promoMessage;
 
     public RideProductViewModel() {
     }
@@ -37,17 +31,11 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         productName = in.readString();
         timeEstimate = in.readString();
         surgePrice = in.readByte() != 0;
-        productPrice = in.readFloat();
         productPriceFmt = in.readString();
         baseFare = in.readString();
-        fareId = in.readString();
         capacity = in.readInt();
         enabled = in.readByte() != 0;
-        surgeMultiplier = in.readFloat();
-        surgeConfirmationHref = in.readString();
         cancellationFee = in.readString();
-        promoCode = in.readString();
-        promoMessage = in.readString();
     }
 
     public static final Creator<RideProductViewModel> CREATOR = new Creator<RideProductViewModel>() {
@@ -123,28 +111,12 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.baseFare = baseFare;
     }
 
-    public String getFareId() {
-        return fareId;
-    }
-
-    public void setFareId(String fareId) {
-        this.fareId = fareId;
-    }
-
     public int getCapacity() {
         return capacity;
     }
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    public float getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(float productPrice) {
-        this.productPrice = productPrice;
     }
 
     public boolean isEnabled() {
@@ -155,69 +127,12 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.enabled = enabled;
     }
 
-    public float getSurgeMultiplier() {
-        return surgeMultiplier;
-    }
-
-    public void setSurgeMultiplier(float surgeMultiplier) {
-        this.surgeMultiplier = surgeMultiplier;
-    }
-
-    public String getSurgeConfirmationHref() {
-        return surgeConfirmationHref;
-    }
-
-    public void setSurgeConfirmationHref(String surgeConfirmationHref) {
-        this.surgeConfirmationHref = surgeConfirmationHref;
-    }
-
     public String getCancellationFee() {
         return cancellationFee;
     }
 
     public void setCancellationFee(String cancellationFee) {
         this.cancellationFee = cancellationFee;
-    }
-
-    public String getPromoCode() {
-        return promoCode;
-    }
-
-    public void setPromoCode(String promoCode) {
-        this.promoCode = promoCode;
-    }
-
-    public String getPromoMessage() {
-        return promoMessage;
-    }
-
-    public void setPromoMessage(String promoMessage) {
-        this.promoMessage = promoMessage;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(productId);
-        parcel.writeString(productImage);
-        parcel.writeString(productName);
-        parcel.writeString(timeEstimate);
-        parcel.writeByte((byte) (surgePrice ? 1 : 0));
-        parcel.writeFloat(productPrice);
-        parcel.writeString(productPriceFmt);
-        parcel.writeString(baseFare);
-        parcel.writeString(fareId);
-        parcel.writeInt(capacity);
-        parcel.writeByte((byte) (enabled ? 1 : 0));
-        parcel.writeFloat(surgeMultiplier);
-        parcel.writeString(surgeConfirmationHref);
-        parcel.writeString(cancellationFee);
-        parcel.writeString(promoCode);
-        parcel.writeString(promoMessage);
     }
 
     @Override
@@ -241,11 +156,29 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         p.setDataPosition(0);
         RideProductViewModel copy = null;
         try {
-            copy = (RideProductViewModel) orig.getClass().getDeclaredConstructor(new Class[]{Parcel.class}).newInstance(p);
+            copy = orig.getClass().getDeclaredConstructor(new Class[]{Parcel.class}).newInstance(p);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return copy;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(productId);
+        parcel.writeString(productImage);
+        parcel.writeString(productName);
+        parcel.writeString(timeEstimate);
+        parcel.writeByte((byte) (surgePrice ? 1 : 0));
+        parcel.writeString(productPriceFmt);
+        parcel.writeString(baseFare);
+        parcel.writeInt(capacity);
+        parcel.writeByte((byte) (enabled ? 1 : 0));
+        parcel.writeString(cancellationFee);
+    }
 }

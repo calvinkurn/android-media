@@ -22,8 +22,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheet;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.List;
 
@@ -31,7 +31,8 @@ import java.util.List;
  * @author by errysuprayogi on 4/13/17.
  */
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnClickListener {
+public class
+TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
@@ -65,7 +66,6 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         recyclerView.setAdapter(adapter);
     }
 
-
     @Override
     public void bind(TopAdsViewModel element) {
         List<Item> list = element.getList();
@@ -82,9 +82,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
             Log.d(TAG, "Adapter Position " + getAdapterPosition());
-            if(clickListener != null){
+            if (clickListener != null) {
                 clickListener.onInfoClicked();
-            }else {
+            } else {
                 TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(context);
                 infoBottomSheet.show();
             }
@@ -95,10 +95,10 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         this.displayMode = displayMode;
     }
 
-    private void switchDisplay(Item item){
+    private void switchDisplay(Item item) {
         switch (displayMode) {
             case FEED:
-                if(item instanceof ShopFeedViewModel){
+                if (item instanceof ShopFeedViewModel) {
                     recyclerView.setLayoutManager(linearLayoutManager);
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);

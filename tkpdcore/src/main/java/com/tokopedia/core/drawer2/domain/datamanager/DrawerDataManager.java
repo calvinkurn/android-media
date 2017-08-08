@@ -26,4 +26,6 @@ public interface DrawerDataManager {
     void getNotification();
 
     void unsubscribe();
+
+    void getProfileCompletion();
 }

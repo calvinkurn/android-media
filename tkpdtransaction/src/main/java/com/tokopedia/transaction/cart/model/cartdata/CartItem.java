@@ -246,7 +246,8 @@ public class CartItem implements Parcelable {
     }
 
     public String getCartErrorMessage2() {
-        return cartErrorMessage2;
+        if(cartErrorMessage2 == null) return "";
+        else return cartErrorMessage2;
     }
 
     public void setCartErrorMessage2(String cartErrorMessage2) {
@@ -262,7 +263,8 @@ public class CartItem implements Parcelable {
     }
 
     public String getCartErrorMessage1() {
-        return cartErrorMessage1;
+        if(cartErrorMessage1 == null) return "";
+        else return cartErrorMessage1;
     }
 
     public void setCartErrorMessage1(String cartErrorMessage1) {

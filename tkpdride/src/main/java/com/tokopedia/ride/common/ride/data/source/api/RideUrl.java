@@ -11,6 +11,7 @@ public interface RideUrl {
 
     String PRODUCT = "/uber/product/detail";
     String PRODUCTS = "/uber/products";
+    String ESTIMATED_PRICE = "/uber/estimates/price";
     String ESTIMATED_TIME = "/uber/estimates/time";
     String ESTIMATED_FARE = "/uber/estimates/fare";
     String REQUEST_CREATE = "/uber/request";
@@ -20,6 +21,7 @@ public interface RideUrl {
     String PROMO = "/uber/offers";
     String REQUEST_MAP = "/uber/request/map";
     String TRANSACTIONS_ALL = "/uber/request/history";
+    String TRANSACTIONS_ALL_V2 = "/v2/uber/request/history"; //with pagination
     String TRANSACTION = "/uber/request/history";
     String REQUEST_CURRENT = "/uber/request/current";
     String RIDE_ADDRESS = "/user/address";

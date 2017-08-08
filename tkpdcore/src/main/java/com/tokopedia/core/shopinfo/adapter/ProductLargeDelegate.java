@@ -61,7 +61,7 @@ public class ProductLargeDelegate {
         public TextView textOriginalPrice;
         @BindView(R2.id.text_discount)
         public TextView textDiscount;
-        @BindString(R2.string.label_discount)
+        @BindString(R2.string.label_discount_percentage)
         public String discount;
 
         public VHolder(View itemView) {

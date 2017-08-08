@@ -32,6 +32,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -407,7 +408,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         tvTickerGTM.setVisibility(View.VISIBLE);
         tvTickerGTM.setAutoLinkMask(0);
         Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
-
     }
 
     @Override
@@ -717,6 +717,21 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (presenter.isValidOrder(this, orderData)) {
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
             presenter.sendAppsFlyerATC(this, orderData);
+
+            processCartAnalytics(mProductDetail);
+        }
+    }
+
+    private void processCartAnalytics(ProductDetail productDetail) {
+        if(productDetail != null) {
+            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
+            product.setCategoryName(productDetail.getProductCatName());
+            product.setCategoryId(productDetail.getProductCatId());
+            product.setName(productDetail.getProductName());
+            product.setId(productDetail.getProductId());
+            product.setPrice(productDetail.getProductPrice());
+
+            TrackingUtils.sendMoEngageAddToCart(product);
         }
     }
 

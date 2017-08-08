@@ -4,10 +4,7 @@ package com.tokopedia.sellerapp.activities.gmstat.models;
  * Created on 1/27/17.
  * @author normansyahputa
  */
-import android.os.Parcel;
 import android.support.test.runner.AndroidJUnit4;
-
-import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
