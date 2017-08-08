@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -15,7 +14,6 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -182,7 +180,4 @@ public class Utilities {
         return Locale.getDefault().toString();
     }
 
-    public static String getAndroidID(){
-        return Settings.Secure.getString(MainApplication.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-    }
 }

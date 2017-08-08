@@ -9,8 +9,8 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.GCMHandler;
 
 import java.io.IOException;
 import java.util.Map;
@@ -72,7 +72,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setAndroidID() {
-        String androidID = Utilities.getAndroidID();
+        String androidID = GCMHandler.getRegistrationId(context);
         if (!TextUtils.isEmpty(androidID)) {
             AppsFlyerLib.getInstance().setAndroidIdData(androidID);
             CommonUtils.dumper(TAG + " appsflyer sent android ID " + androidID + " ids");
