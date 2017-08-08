@@ -113,7 +113,7 @@
     <dimen name="gm_tooltip_text_compare_margin">6dp</dimen>
     <dimen name="gm_tooltip_compare_text_bottom">10dp</dimen>
     <dimen name="gm_tooltip_compare_text_top">2dp</dimen>
-    <dimen name="gm_tooltip_text_bottom">3dp</dimen>
+    <dimen name="gm_tooltip_text_bottom">5dp</dimen>
     <dimen name="gm_tooltip_text_compare_size">11sp</dimen>
     <dimen name="gm_tooltip_margin_top">10dp</dimen>
     <dimen name="gm_tooltip_margin_bottom">1dp</dimen>
