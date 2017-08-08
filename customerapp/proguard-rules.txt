@@ -275,11 +275,6 @@
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
 
--keep @interface com.tokopedia.tkpd.deeplink.** { *; }
--keepclasseswithmembers class * {
-    @com.tokopedia.tkpd.deeplink.* <methods>;
-}
-
 -keep class com.tokopedia.ride.common.animator.RouteMapAnimator
 -keepclasseswithmembers class com.tokopedia.ride.common.animator.RouteMapAnimator {
    public <methods>;

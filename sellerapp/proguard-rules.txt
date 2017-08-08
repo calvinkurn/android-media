@@ -89,11 +89,6 @@
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
 
--keep @interface com.tokopedia.sellerapp.deeplink.** { *; }
--keepclasseswithmembers class * {
-    @com.tokopedia.sellerapp.deeplink.* <methods>;
-}
-
 -keep class com.newrelic.agent.android.** { *; }
 -keepclasseswithmembers class * {
     @com.newrelic.agent.android.** *;
