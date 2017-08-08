@@ -10,11 +10,11 @@ public class DefaultTooltipConfiguration implements TooltipConfiguration {
 
     @Override
     public int width() {
-        return (int) Tools.fromDpToPx(21);
+        return (int) Tools.fromDpToPx(38);
     }
 
     @Override
     public int height() {
-        return (int) Tools.fromDpToPx(15);
+        return (int) Tools.fromDpToPx(20);
     }
 }

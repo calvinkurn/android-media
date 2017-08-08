@@ -182,7 +182,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     public void showError(Throwable detail) {
         hideLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
     }
 
     @Override

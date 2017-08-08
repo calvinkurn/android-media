@@ -105,11 +105,15 @@
     <bool name="tablet_landscape">false</bool>
     <integer name="bottomsheet_grid_columns">3</integer>
 
+    <dimen name="gm_tooltip_width">65dp</dimen>
+    <dimen name="gm_tooltip_height">25dp</dimen>
     <dimen name="gm_tooltip_compare_width">80dp</dimen>
     <dimen name="gm_tooltip_compare_height">45dp</dimen>
     <dimen name="gm_tooltip_dot_image">8dp</dimen>
     <dimen name="gm_tooltip_text_compare_margin">6dp</dimen>
-    <dimen name="gm_tooltip_text_bottom">12dp</dimen>
+    <dimen name="gm_tooltip_compare_text_bottom">8dp</dimen>
+    <dimen name="gm_tooltip_compare_text_top">2dp</dimen>
+    <dimen name="gm_tooltip_text_bottom">3dp</dimen>
     <dimen name="gm_tooltip_text_compare_size">11sp</dimen>
     <dimen name="gm_tooltip_margin_top">10dp</dimen>
     <dimen name="gm_tooltip_margin_bottom">1dp</dimen>
