@@ -405,7 +405,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
                                 result.putParcelable(ACCOUNTS, accountsParameter);
                                 SessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
-
                             }
 
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());
