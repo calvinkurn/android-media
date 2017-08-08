@@ -2,8 +2,8 @@ package com.tokopedia.seller.product.data.mapper;
 
 import com.tokopedia.seller.product.data.source.cloud.model.myetalase.EtalaseItem;
 import com.tokopedia.seller.product.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
-import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
-import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.MyEtalaseItemDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

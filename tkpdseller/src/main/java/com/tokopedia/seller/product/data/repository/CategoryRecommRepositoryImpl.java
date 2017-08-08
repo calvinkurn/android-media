@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.seller.product.data.source.CategoryRecommDataSource;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
-import com.tokopedia.seller.product.domain.CategoryRecommRepository;
+import com.tokopedia.seller.product.edit.domain.CategoryRecommRepository;
 
 import javax.inject.Inject;
 

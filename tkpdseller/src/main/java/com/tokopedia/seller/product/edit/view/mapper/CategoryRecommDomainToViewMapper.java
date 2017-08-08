@@ -1,8 +1,8 @@
 package com.tokopedia.seller.product.edit.view.mapper;
 
-import com.tokopedia.seller.product.domain.model.CategoryRecommDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductCategoryIdDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductCategoryPredictionDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductCategoryIdDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductCategoryPredictionDomainModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.CategoryRecommViewModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryIdViewModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;

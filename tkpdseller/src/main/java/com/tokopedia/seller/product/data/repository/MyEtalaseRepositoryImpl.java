@@ -2,8 +2,8 @@ package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.seller.product.data.mapper.MyEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.data.source.MyEtalaseDataSource;
-import com.tokopedia.seller.product.domain.MyEtalaseRepository;
-import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.edit.domain.MyEtalaseRepository;
+import com.tokopedia.seller.product.edit.domain.model.MyEtalaseDomainModel;
 
 import rx.Observable;
 

@@ -3,9 +3,9 @@ package com.tokopedia.seller.product.edit.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.data.exception.UploadProductException;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.seller.product.domain.interactor.uploadproduct.UploadProductUseCase;
-import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
+import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
+import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import rx.Subscriber;

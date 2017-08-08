@@ -4,9 +4,9 @@ import com.tokopedia.seller.product.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.edit.di.scope.CategoryPickerScope;
-import com.tokopedia.seller.product.domain.CategoryRepository;
-import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
-import com.tokopedia.seller.product.domain.model.CategoryLevelDomainModel;
+import com.tokopedia.seller.product.edit.domain.CategoryRepository;
+import com.tokopedia.seller.product.edit.domain.model.CategoryDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.CategoryLevelDomainModel;
 
 import java.util.List;
 

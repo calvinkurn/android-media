@@ -4,9 +4,9 @@ import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.ProductPhotoListServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.ProductPhotoServiceModel;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

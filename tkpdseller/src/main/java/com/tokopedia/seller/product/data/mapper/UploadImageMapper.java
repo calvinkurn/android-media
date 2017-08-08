@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.data.mapper;
 
 import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
-import com.tokopedia.seller.product.domain.model.ImageProcessDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ImageProcessDomainModel;
 
 import rx.functions.Func1;
 

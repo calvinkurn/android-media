@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.mapper;
 
 import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureResult;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
-import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.AddProductPictureDomainModel;
 
 import rx.functions.Func1;
 

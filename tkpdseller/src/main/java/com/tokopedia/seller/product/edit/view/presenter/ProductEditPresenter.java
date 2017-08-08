@@ -1,14 +1,14 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
-import com.tokopedia.seller.product.domain.interactor.FetchEditProductFormUseCase;
-import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
-import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.FetchEditProductFormUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 

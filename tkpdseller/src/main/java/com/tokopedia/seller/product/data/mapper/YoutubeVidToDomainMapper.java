@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.mapper;
 
 import com.tokopedia.seller.product.data.source.cloud.model.youtube.Item;
 import com.tokopedia.seller.product.data.source.cloud.model.youtube.YoutubeResponse;
-import com.tokopedia.seller.product.domain.model.YoutubeVideoModel;
+import com.tokopedia.seller.product.edit.domain.model.YoutubeVideoModel;
 
 import java.util.List;
 

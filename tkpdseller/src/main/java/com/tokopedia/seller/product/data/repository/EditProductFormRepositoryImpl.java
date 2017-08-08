@@ -3,8 +3,8 @@ package com.tokopedia.seller.product.data.repository;
 import com.tokopedia.seller.product.data.mapper.EditProductFormMapper;
 import com.tokopedia.seller.product.data.source.EditProductFormDataSource;
 import com.tokopedia.seller.product.data.source.FetchVideoEditProductDataSource;
-import com.tokopedia.seller.product.domain.EditProductFormRepository;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.EditProductFormRepository;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 

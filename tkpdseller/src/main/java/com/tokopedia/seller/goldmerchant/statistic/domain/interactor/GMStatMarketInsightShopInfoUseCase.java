@@ -5,8 +5,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 
 import javax.inject.Inject;
 

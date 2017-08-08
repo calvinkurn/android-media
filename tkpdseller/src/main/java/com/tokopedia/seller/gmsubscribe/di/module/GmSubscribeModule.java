@@ -19,7 +19,7 @@ import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductReposit
 import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

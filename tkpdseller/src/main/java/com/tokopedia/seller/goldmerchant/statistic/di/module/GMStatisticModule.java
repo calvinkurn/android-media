@@ -21,7 +21,6 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTr
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightShopInfoUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
@@ -38,9 +37,9 @@ import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.domain.CategoryRepository;
-import com.tokopedia.seller.product.domain.ShopInfoRepository;
-import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.edit.domain.CategoryRepository;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
 

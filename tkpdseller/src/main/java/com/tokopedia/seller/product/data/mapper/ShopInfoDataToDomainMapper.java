@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.mapper;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 
 import rx.functions.Func1;
 

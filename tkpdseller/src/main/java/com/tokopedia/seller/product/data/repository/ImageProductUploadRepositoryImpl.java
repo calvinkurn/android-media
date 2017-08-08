@@ -6,10 +6,10 @@ import com.tokopedia.seller.product.data.mapper.UploadImageMapper;
 import com.tokopedia.seller.product.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.data.source.ImageProductUploadDataSource;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
-import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
-import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
-import com.tokopedia.seller.product.domain.model.ImageProcessDomainModel;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
+import com.tokopedia.seller.product.edit.domain.model.AddProductPictureDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ImageProcessDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 

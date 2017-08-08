@@ -15,12 +15,12 @@ import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
-import com.tokopedia.seller.product.domain.GenerateHostRepository;
-import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
+import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
+import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.domain.UploadProductRepository;
+import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.seller.product.domain.interactor.uploadproduct.UploadProductUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 

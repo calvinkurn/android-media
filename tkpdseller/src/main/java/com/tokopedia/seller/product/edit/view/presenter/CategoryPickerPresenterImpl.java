@@ -1,10 +1,10 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryFromSelectedUseCase;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryWithParentChildUseCase;
-import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
-import com.tokopedia.seller.product.domain.model.CategoryLevelDomainModel;
+import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.FetchCategoryFromSelectedUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.FetchCategoryWithParentChildUseCase;
+import com.tokopedia.seller.product.edit.domain.model.CategoryDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.CategoryLevelDomainModel;
 import com.tokopedia.seller.product.edit.view.mapper.CategoryViewMapper;
 import com.tokopedia.seller.product.edit.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;

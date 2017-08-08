@@ -3,7 +3,6 @@ package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
@@ -15,8 +14,8 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTr
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightShopInfoUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 
 import java.util.Calendar;
 import java.util.List;

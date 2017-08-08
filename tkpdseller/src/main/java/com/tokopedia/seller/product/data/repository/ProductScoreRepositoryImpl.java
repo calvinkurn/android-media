@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.seller.product.data.source.ProductScoreDataSource;
-import com.tokopedia.seller.product.domain.ProductScoreRepository;
+import com.tokopedia.seller.product.edit.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 

@@ -12,13 +12,13 @@ import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
-import com.tokopedia.seller.product.domain.UploadProductRepository;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
-import com.tokopedia.seller.product.domain.model.AddProductSubmitInputDomainModel;
-import com.tokopedia.seller.product.domain.model.AddProductValidationDomainModel;
-import com.tokopedia.seller.product.domain.model.EditImageProductDomainModel;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
+import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.AddProductSubmitInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.AddProductValidationDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.EditImageProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 

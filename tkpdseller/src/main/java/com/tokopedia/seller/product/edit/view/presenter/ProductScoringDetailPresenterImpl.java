@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
-import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 

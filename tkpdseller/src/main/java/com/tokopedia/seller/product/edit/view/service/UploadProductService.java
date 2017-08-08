@@ -22,7 +22,7 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.edit.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.edit.di.module.AddProductserviceModule;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;

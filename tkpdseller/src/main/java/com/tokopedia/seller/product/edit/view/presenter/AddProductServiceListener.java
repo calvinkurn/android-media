@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 /**

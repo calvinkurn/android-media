@@ -8,7 +8,7 @@ import com.tokopedia.seller.product.data.source.EditProductFormDataSource;
 import com.tokopedia.seller.product.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.EditProductFormApi;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
-import com.tokopedia.seller.product.domain.EditProductFormRepository;
+import com.tokopedia.seller.product.edit.domain.EditProductFormRepository;
 
 import dagger.Module;
 import dagger.Provides;

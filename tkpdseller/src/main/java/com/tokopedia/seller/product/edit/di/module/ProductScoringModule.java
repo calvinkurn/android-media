@@ -10,8 +10,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.data.repository.ProductScoreRepositoryImpl;
 import com.tokopedia.seller.product.data.source.ProductScoreDataSource;
 import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCache;
-import com.tokopedia.seller.product.domain.ProductScoreRepository;
-import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
+import com.tokopedia.seller.product.edit.domain.ProductScoreRepository;
+import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenterImpl;
 

@@ -8,10 +8,10 @@ import com.tokopedia.seller.product.data.source.cloud.model.editproductform.Edit
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductImage;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.WholesalePrice;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductWholesaleDomainModel;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import java.util.ArrayList;

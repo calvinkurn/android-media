@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.edit.view.mapper;
 
-import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
-import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.MyEtalaseItemDomainModel;
 import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseViewModel;
 

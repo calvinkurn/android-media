@@ -4,7 +4,7 @@ import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
 import com.tokopedia.core.product.model.goldmerchant.Video;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

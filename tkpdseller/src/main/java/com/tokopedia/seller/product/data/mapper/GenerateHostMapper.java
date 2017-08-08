@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.mapper;
 
 
 import com.tokopedia.seller.product.data.source.cloud.model.GenerateHost;
-import com.tokopedia.seller.product.domain.model.GenerateHostDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.GenerateHostDomainModel;
 
 import javax.inject.Inject;
 
