@@ -37,6 +37,7 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -382,7 +383,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent instanceIntentTokoCashActivation() {
-        return null;
+        return ActivateTokoCashActivity.newInstance(this);
     }
 
     @Override
