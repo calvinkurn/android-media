@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.di.module;
+package com.tokopedia.seller.product.edit.di.module;
 
 import android.content.Context;
 
@@ -31,7 +31,7 @@ import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.api.MerlinApi;
 import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.CatalogRepository;
 import com.tokopedia.seller.product.domain.CategoryRecommRepository;
 import com.tokopedia.seller.product.domain.CategoryRepository;

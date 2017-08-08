@@ -3,9 +3,9 @@ package com.tokopedia.seller.product.edit.view.fragment;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-//import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
-import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
-import com.tokopedia.seller.product.di.module.ProductEditModule;
+//import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent;
+import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent;
+import com.tokopedia.seller.product.edit.di.module.ProductEditModule;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
 

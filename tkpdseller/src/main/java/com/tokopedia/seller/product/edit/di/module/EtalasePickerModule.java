@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.di.module;
+package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.product.data.repository.MyEtalaseRepositoryImpl;
 import com.tokopedia.seller.product.data.source.MyEtalaseDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.MyEtalaseApi;
-import com.tokopedia.seller.product.di.scope.EtalasePickerScope;
+import com.tokopedia.seller.product.edit.di.scope.EtalasePickerScope;
 import com.tokopedia.seller.product.domain.MyEtalaseRepository;
 import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;

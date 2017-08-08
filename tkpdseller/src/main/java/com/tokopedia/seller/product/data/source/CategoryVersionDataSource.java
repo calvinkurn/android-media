@@ -5,7 +5,6 @@ import com.tokopedia.seller.product.data.source.cache.CategoryVersionCache;
 import com.tokopedia.seller.product.data.source.cloud.CategoryVersionCloud;
 import com.tokopedia.seller.product.data.source.cloud.model.CategoryVersionServiceModel;
 import com.tokopedia.seller.product.data.source.db.CategoryDataManager;
-import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 
 import javax.inject.Inject;
 

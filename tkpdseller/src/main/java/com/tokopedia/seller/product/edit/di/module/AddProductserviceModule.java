@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.di.module;
+package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.product.data.mapper.AddProductValidationInputMapper;
@@ -14,7 +14,7 @@ import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
-import com.tokopedia.seller.product.di.scope.AddProductServiceScope;
+import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;

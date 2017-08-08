@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.di.module;
+package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -7,7 +7,7 @@ import com.tokopedia.seller.product.data.repository.EditProductFormRepositoryImp
 import com.tokopedia.seller.product.data.source.EditProductFormDataSource;
 import com.tokopedia.seller.product.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.EditProductFormApi;
-import com.tokopedia.seller.product.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.EditProductFormRepository;
 
 import dagger.Module;

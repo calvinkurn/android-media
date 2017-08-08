@@ -13,9 +13,9 @@ import android.view.MenuItem;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.di.component.CatalogPickerComponent;
-import com.tokopedia.seller.product.di.component.DaggerCatalogPickerComponent;
-import com.tokopedia.seller.product.di.module.CatalogPickerModule;
+import com.tokopedia.seller.product.edit.di.component.CatalogPickerComponent;
+import com.tokopedia.seller.product.edit.di.component.DaggerCatalogPickerComponent;
+import com.tokopedia.seller.product.edit.di.module.CatalogPickerModule;
 import com.tokopedia.seller.product.edit.view.fragment.CatalogPickerFragment;
 
 /**

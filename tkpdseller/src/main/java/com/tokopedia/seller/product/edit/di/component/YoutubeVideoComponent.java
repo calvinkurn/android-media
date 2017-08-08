@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.di.component;
+package com.tokopedia.seller.product.edit.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.scope.ActivityScope;
-import com.tokopedia.seller.product.di.module.YoutubeVideoModule;
+import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.fragment.YoutubeAddVideoFragment;

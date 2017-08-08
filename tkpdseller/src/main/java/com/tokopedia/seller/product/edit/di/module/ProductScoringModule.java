@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.di.module;
+package com.tokopedia.seller.product.edit.di.module;
 
 import android.content.Context;
 

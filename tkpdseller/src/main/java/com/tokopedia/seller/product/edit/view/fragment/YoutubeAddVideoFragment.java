@@ -25,7 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
-import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
+import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
 import com.tokopedia.seller.product.edit.view.adapter.addurlvideo.AddUrlVideoAdapter;

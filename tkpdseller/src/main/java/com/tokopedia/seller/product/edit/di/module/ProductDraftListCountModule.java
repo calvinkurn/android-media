@@ -1,9 +1,8 @@
-package com.tokopedia.seller.product.di.module;
+package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.di.module.ProductAddModule;
-import com.tokopedia.seller.product.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;

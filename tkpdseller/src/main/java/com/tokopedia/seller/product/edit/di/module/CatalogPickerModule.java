@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.di.module;
+package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
