@@ -88,7 +88,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             renderErrorCartItem(holderItemCart, cartData);
             renderCartProductList(holderItemCart, cartData, adapterProduct);
-            renderDetailCartItem(holderItemCart, cartData, cartItemEditable.getCartCourierPrices());
+            renderDetailCartItem(holderItemCart, cartData, cartItemEditable);
             renderEditableMode(holderItemCart, cartItemEditable.isEditMode(), adapterProduct);
             renderPartialDeliverOption(holderItemCart, cartData);
             renderDropShipperOption(holderItemCart, cartItemEditable);
@@ -162,7 +162,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void renderDetailCartItem(ViewHolder holder,
                                       CartItem cartData,
-                                      CartCourierPrices cartCourierPrices) {
+                                      CartItemEditable cartItemEditable) {
         holder.tvShopName.setText(MethodChecker.fromHtml(cartData.getCartShop().getShopName()));
         holder.tvWeight.setText(String.format("%s Kg", cartData.getCartTotalWeight()));
         holder.tvShippingAddress.setText(String.format("%s (Ubah)",
@@ -170,16 +170,22 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentName()),
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentPackageName())));
-        if (cartCourierPrices == null) {
+        if (cartItemEditable.getCartCourierPrices() == null) {
             holder.holderDetailCartToggle.setVisibility(View.GONE);
         } else {
             holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
             holder.tvTotalPrice.setVisibility(View.VISIBLE);
-            holder.tvInsurancePrice.setText(cartCourierPrices.getInsurancePriceIdr());
-            holder.tvShippingCost.setText(cartCourierPrices.getShipmentPriceIdr());
-            holder.tvSubTotal.setText(cartCourierPrices.getCartProductPriceIdr());
-            holder.tvTotalPrice.setText(cartCourierPrices.getCartSubtotalIdr());
-            holder.tvAdditionalCost.setText(cartCourierPrices.getAdditionFeeIdr());
+            holder.tvShippingCost.setText(cartItemEditable.getCartCourierPrices()
+                    .getShipmentPriceIdr());
+            holder.tvSubTotal.setText(cartItemEditable.getCartCourierPrices()
+                    .getCartProductPriceIdr());
+            holder.tvTotalPrice.setText(cartItemEditable.getCartCourierPrices()
+                    .getCartSubtotalIdr());
+            if(cartItemEditable.isUseInsurance())
+                holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
+                        .getSumAdditionFeeInsuranceIdr());
+            else  holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
+                    .getAdditionFeeIdr());
             holder.totalPriceProgressBar.setVisibility(View.GONE);
         }
     }
@@ -743,10 +749,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView tvSubTotal;
         @BindView(R2.id.tv_shipping_cost)
         TextView tvShippingCost;
-        @BindView(R2.id.insurance_layout)
-        LinearLayout insuranceLayout;
-        @BindView(R2.id.tv_insurance_price)
-        TextView tvInsurancePrice;
         @BindView(R2.id.tv_additional_cost)
         TextView tvAdditionalCost;
         @BindView(R2.id.tv_total_price)
