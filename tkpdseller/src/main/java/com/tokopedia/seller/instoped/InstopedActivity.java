@@ -22,6 +22,7 @@ import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -133,10 +134,9 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
 
                 // if activity has no caller, continue to build product soc med
                 if (getCallingActivity() == null) {
-                    selectedModel.size();
                     //[START] move to productSocMedActivity
                     Intent intent = new Intent(InstopedActivity.this, ProductAddActivity.class);
-                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, Parcels.wrap(selectedModel)
+                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, fromSparseArray(selectedModel)
                     );
                     InstopedActivity.this.startActivity(intent);
                     InstopedActivity.this.finish();
@@ -144,15 +144,26 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
                 }
                 else { // activity has caller, just finish it and return the bundle to the caller
                     Intent socMedIntent = new Intent();
-                    socMedIntent.putExtra(
+                    socMedIntent.putParcelableArrayListExtra(
                             GalleryActivity.PRODUCT_SOC_MED_DATA,
-                            Parcels.wrap(selectedModel)
+                            fromSparseArray(selectedModel)
                     );
                     InstopedActivity.this.setResult(Activity.RESULT_OK, socMedIntent);
                     InstopedActivity.this.finish();
                 }
             }
-        };    }
+        };
+    }
+
+    private ArrayList<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data) {
+        ArrayList<InstagramMediaModel> modelList = new ArrayList<>();
+        for (int i = 0; i < data.size(); i++) {
+            InstagramMediaModel rawData = data.get(
+                    data.keyAt(i));
+            modelList.add(rawData);
+        }
+        return modelList;
+    }
 
     @Override
     public String getScreenName() {
