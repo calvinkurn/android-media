@@ -633,7 +633,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         } else if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE) {
             switch (resultCode) {
                 case RESULT_OK:
-                    List<InstagramMediaModel> images = data.getParcelableExtra(PRODUCT_SOC_MED_DATA);
+                    List<InstagramMediaModel> images = data.getParcelableArrayListExtra(PRODUCT_SOC_MED_DATA);
 
                     ArrayList<String> standardResoImageUrlList = new ArrayList<>();
                     for (int i = 0; i < images.size(); i++) {
