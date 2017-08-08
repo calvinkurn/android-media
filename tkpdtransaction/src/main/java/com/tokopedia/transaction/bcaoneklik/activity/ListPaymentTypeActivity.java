@@ -237,7 +237,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
                     @Override
                     public void onError(Throwable e) {
-
+                        progressDialog.dismiss();
                     }
 
                     @Override
