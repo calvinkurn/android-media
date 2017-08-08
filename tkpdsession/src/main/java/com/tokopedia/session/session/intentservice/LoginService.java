@@ -523,7 +523,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         params.put(Login.USER_ID, String.valueOf(accountsParameter.getInfoModel().getUserId()));
         params = MapNulRemover.removeNull(params);
         TokenModel tokenModel = accountsParameter.getTokenModel();
-        String authKey = tokenModel.getTokenType() + " " + tokenModel.getAccessToken();
+        String authKey = tokenModel.getTokenType() + " " + SessionHandler.getAccessToken();
         Bundle bundle = new Bundle();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
