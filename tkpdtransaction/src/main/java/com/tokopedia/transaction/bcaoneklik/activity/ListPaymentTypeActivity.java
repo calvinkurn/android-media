@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -26,6 +27,7 @@ import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenter;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
 import com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
 import rx.Subscriber;
 
@@ -43,6 +45,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     public static final int REGISTER_BCA_ONE_CLICK_REQUEST_CODE = 1;
     public static final int EDIT_BCA_ONE_CLICK_REQUEST_CODE = 2;
 
+    private RelativeLayout rootView;
+
     private RecyclerView bcaOneClickRecyclerView;
 
     private BcaOneClickRecyclerAdapter bcaOneClickRecyclerAdapter;
@@ -52,6 +56,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     private TextView bcaOneClickRegistrationButton;
 
     private TkpdProgressDialog progressDialog;
+
+    private TkpdProgressDialog mainProgressDialog;
 
     private PaymentListModel paymentModels;
 
@@ -77,12 +83,15 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
     @Override
     protected void initView() {
+        rootView = (RelativeLayout) findViewById(R.id.payment_list_root_view);
         bcaOneClickRecyclerView = (RecyclerView) findViewById(R.id.bca_one_click_recycler_view);
         bcaOneClickRegisterLayout = (LinearLayout) findViewById(R.id.bca_one_click_register_layout);
         bcaOneClickRegistrationButton = (TextView) findViewById(R.id.bca_one_click_register_button);
         bcaOneClickRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
+        mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
+                TkpdProgressDialog.MAIN_PROGRESS);
         presenter.onGetPaymentList(paymentListModelSubscriber());
         bcaOneClickRegistrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,8 +144,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     }
 
     @Override
-    public void showDialog() {
-        progressDialog.showDialog();
+    public void showMainDialog() {
+        mainProgressDialog.showDialog();
     }
 
     @Override
@@ -154,11 +163,17 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
             @Override
             public void onError(Throwable e) {
-                progressDialog.dismiss();
+                rootView.setVisibility(View.VISIBLE);
+                if(e instanceof ResponseRuntimeException) {
+                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                            onLoadListRetryListener());
+                }
+                mainProgressDialog.dismiss();
             }
 
             @Override
             public void onNext(PaymentListModel paymentListModel) {
+                rootView.setVisibility(View.VISIBLE);
                 progressDialog.dismiss();
                 paymentModels = paymentListModel;
                 bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
@@ -183,7 +198,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
             @Override
             public void onError(Throwable e) {
-
+                progressDialog.dismiss();
+                showErrorSnackbar(e);
             }
 
             @Override
@@ -191,6 +207,12 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                 presenter.onGetPaymentList(paymentListModelSubscriber());
             }
         };
+    }
+
+    private void showErrorSnackbar(Throwable e) {
+        if(e instanceof ResponseRuntimeException) {
+            NetworkErrorHelper.showSnackbar(ListPaymentTypeActivity.this, e.getMessage());
+        }
     }
 
     @Override
@@ -233,6 +255,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
                     @Override
                     public void onError(Throwable e) {
+                        showErrorSnackbar(e);
                         progressDialog.dismiss();
                     }
 
@@ -264,5 +287,15 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     public void onDelete(String tokenId) {
         progressDialog.showDialog();
         presenter.onDeletePaymentList(deleteUserModelSubsriber(), tokenId);
+    }
+
+    private NetworkErrorHelper.RetryClickedListener onLoadListRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                rootView.setVisibility(View.GONE);
+                presenter.onGetPaymentList(paymentListModelSubscriber());
+            }
+        };
     }
 }

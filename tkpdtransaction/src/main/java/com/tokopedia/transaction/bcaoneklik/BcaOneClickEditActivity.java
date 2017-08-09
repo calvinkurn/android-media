@@ -13,6 +13,7 @@ import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
 import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
 import com.tokopedia.transaction.bcaoneklik.presenter.BcaOneClickEditPresenter;
 import com.tokopedia.transaction.bcaoneklik.presenter.BcaOneClickEditPresenterImpl;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
 import rx.Subscriber;
 
@@ -60,7 +61,9 @@ public class BcaOneClickEditActivity extends TActivity implements BcaOneClickEdi
 
                             @Override
                             public void onError(Throwable e) {
-
+                                if(e instanceof ResponseRuntimeException) {
+                                    NetworkErrorHelper.showSnackbar(BcaOneClickEditActivity.this, e.getMessage());
+                                }
                             }
 
                             @Override
