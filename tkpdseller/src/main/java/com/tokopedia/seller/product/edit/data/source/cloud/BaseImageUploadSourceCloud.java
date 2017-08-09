@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud;
+package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import android.content.Context;
 

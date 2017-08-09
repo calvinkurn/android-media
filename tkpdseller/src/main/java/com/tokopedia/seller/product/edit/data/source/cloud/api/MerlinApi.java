@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.data.source.cloud.api;
+package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.product.data.source.cloud.api.request.CategoryRecommRequest;
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.request.CategoryRecommRequest;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud;
+package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import android.content.Context;
 
@@ -6,15 +6,15 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.DeleteProductPictureServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.UploadProductApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductSubmitInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.DeleteProductPictureServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.EditProductInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;

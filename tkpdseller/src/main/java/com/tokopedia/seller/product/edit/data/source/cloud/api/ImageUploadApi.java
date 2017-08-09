@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.data.source.cloud.api;
+package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.product.edit.constant.ProductNetworkConstant;
-import com.tokopedia.seller.product.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 
 import java.util.Map;
 

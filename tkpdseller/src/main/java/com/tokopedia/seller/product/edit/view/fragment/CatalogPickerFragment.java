@@ -16,7 +16,7 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.di.component.CatalogPickerComponent;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;

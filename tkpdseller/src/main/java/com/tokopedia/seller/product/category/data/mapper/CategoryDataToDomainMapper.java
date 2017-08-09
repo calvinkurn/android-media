@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.category.data.mapper;
 
-import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
+import com.tokopedia.seller.product.edit.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.category.domain.model.CategoryDomainModel;
 
 import java.util.ArrayList;

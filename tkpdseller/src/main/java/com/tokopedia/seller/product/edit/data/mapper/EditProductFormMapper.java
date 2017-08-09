@@ -1,13 +1,13 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
 import android.text.TextUtils;
 
 import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
-import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
-import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
-import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductImage;
-import com.tokopedia.seller.product.data.source.cloud.model.editproductform.WholesalePrice;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.DataEditProductForm;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.EditProductFormServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.ProductEditForm;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.ProductImage;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.WholesalePrice;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;

@@ -28,7 +28,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;

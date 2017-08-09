@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.data.source.cloud.api;
+package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.product.data.source.cloud.model.CategoryVersionServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.categorydata.CategoryServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.CategoryVersionServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categorydata.CategoryServiceModel;
 
 import retrofit2.Response;
 import retrofit2.http.GET;

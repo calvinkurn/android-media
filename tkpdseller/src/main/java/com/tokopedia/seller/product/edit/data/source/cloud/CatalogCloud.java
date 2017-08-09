@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.data.source.cloud;
+package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import com.tokopedia.seller.product.edit.constant.ProductNetworkConstant;
-import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.SearchApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.categorydata.Category;
-import com.tokopedia.seller.product.data.source.cloud.model.categorydata.CategoryServiceModel;
-import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categorydata.Category;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categorydata.CategoryServiceModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.CategoryDataBase;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;

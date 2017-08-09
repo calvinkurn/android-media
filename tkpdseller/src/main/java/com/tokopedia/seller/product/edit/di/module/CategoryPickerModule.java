@@ -1,11 +1,11 @@
 package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
-import com.tokopedia.seller.product.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.seller.product.data.source.CategoryDataSource;
-import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
-import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
-import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.seller.product.category.data.repository.CategoryRepositoryImpl;
+import com.tokopedia.seller.product.category.data.source.CategoryDataSource;
+import com.tokopedia.seller.product.category.data.source.CategoryVersionDataSource;
+import com.tokopedia.seller.product.category.data.source.FetchCategoryDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.edit.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.category.domain.CategoryRepository;
 import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryFromSelectedUseCase;

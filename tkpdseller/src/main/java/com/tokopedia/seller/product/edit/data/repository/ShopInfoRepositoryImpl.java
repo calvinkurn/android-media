@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.data.repository;
+package com.tokopedia.seller.product.edit.data.repository;
 
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.data.mapper.ShopInfoDataToDomainMapper;
-import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.mapper.ShopInfoDataToDomainMapper;
+import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 

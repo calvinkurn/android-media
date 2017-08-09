@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.data.repository;
+package com.tokopedia.seller.product.edit.data.repository;
 
-import com.tokopedia.seller.product.data.mapper.EditProductFormMapper;
-import com.tokopedia.seller.product.data.source.EditProductFormDataSource;
-import com.tokopedia.seller.product.data.source.FetchVideoEditProductDataSource;
+import com.tokopedia.seller.product.edit.data.mapper.EditProductFormMapper;
+import com.tokopedia.seller.product.edit.data.source.EditProductFormDataSource;
+import com.tokopedia.seller.product.edit.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.seller.product.edit.domain.EditProductFormRepository;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 

@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.data.source;
+package com.tokopedia.seller.product.category.data.source;
 
-import com.tokopedia.seller.product.data.exception.NeedCheckVersionCategoryException;
-import com.tokopedia.seller.product.data.source.cache.CategoryVersionCache;
-import com.tokopedia.seller.product.data.source.cloud.CategoryVersionCloud;
-import com.tokopedia.seller.product.data.source.cloud.model.CategoryVersionServiceModel;
-import com.tokopedia.seller.product.data.source.db.CategoryDataManager;
+import com.tokopedia.seller.product.category.data.exception.NeedCheckVersionCategoryException;
+import com.tokopedia.seller.product.edit.data.source.cache.CategoryVersionCache;
+import com.tokopedia.seller.product.edit.data.source.cloud.CategoryVersionCloud;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.CategoryVersionServiceModel;
+import com.tokopedia.seller.product.edit.data.source.db.CategoryDataManager;
 
 import javax.inject.Inject;
 

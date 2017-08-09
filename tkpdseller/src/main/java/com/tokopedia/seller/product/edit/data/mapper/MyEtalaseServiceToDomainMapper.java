@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.myetalase.EtalaseItem;
-import com.tokopedia.seller.product.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.myetalase.EtalaseItem;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.MyEtalaseDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.MyEtalaseItemDomainModel;
 

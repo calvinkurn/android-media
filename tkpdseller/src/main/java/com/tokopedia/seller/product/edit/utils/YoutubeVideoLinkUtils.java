@@ -5,8 +5,8 @@ import android.content.Context;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.data.source.cloud.model.youtube.ContentRating;
-import com.tokopedia.seller.product.data.source.cloud.model.youtube.YoutubeResponse;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.youtube.ContentRating;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.youtube.YoutubeResponse;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

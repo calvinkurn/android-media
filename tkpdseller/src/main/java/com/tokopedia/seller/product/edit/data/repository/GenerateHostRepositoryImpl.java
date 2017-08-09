@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.repository;
+package com.tokopedia.seller.product.edit.data.repository;
 
-import com.tokopedia.seller.product.data.mapper.GenerateHostMapper;
-import com.tokopedia.seller.product.data.source.GenerateHostDataSource;
+import com.tokopedia.seller.product.edit.data.mapper.GenerateHostMapper;
+import com.tokopedia.seller.product.edit.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.model.GenerateHostDomainModel;
 

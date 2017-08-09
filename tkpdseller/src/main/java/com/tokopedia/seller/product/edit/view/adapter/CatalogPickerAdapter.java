@@ -12,7 +12,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.customadapter.LoadingDataBinder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 
 import java.util.ArrayList;
 import java.util.List;

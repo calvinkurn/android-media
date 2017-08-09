@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationResult;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductvalidation.AddProductValidationResult;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.AddProductValidationDomainModel;
 
 import rx.functions.Func1;

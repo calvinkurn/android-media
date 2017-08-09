@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.data.source.cloud.api;
+package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.product.data.source.cloud.model.addetalase.AddEtalaseServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addetalase.AddEtalaseServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
 
 import java.util.Map;
 

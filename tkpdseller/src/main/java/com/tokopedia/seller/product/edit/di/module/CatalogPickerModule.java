@@ -2,9 +2,9 @@ package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
-import com.tokopedia.seller.product.data.repository.CatalogRepositoryImpl;
-import com.tokopedia.seller.product.data.source.CatalogDataSource;
-import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
+import com.tokopedia.seller.product.edit.data.repository.CatalogRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.source.CatalogDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.edit.domain.CatalogRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.CatalogPickerPresenter;

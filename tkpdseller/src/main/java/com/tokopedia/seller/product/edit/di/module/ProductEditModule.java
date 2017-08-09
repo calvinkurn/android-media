@@ -2,11 +2,11 @@ package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.seller.product.data.mapper.EditProductFormMapper;
-import com.tokopedia.seller.product.data.repository.EditProductFormRepositoryImpl;
-import com.tokopedia.seller.product.data.source.EditProductFormDataSource;
-import com.tokopedia.seller.product.data.source.FetchVideoEditProductDataSource;
-import com.tokopedia.seller.product.data.source.cloud.api.EditProductFormApi;
+import com.tokopedia.seller.product.edit.data.mapper.EditProductFormMapper;
+import com.tokopedia.seller.product.edit.data.repository.EditProductFormRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.source.EditProductFormDataSource;
+import com.tokopedia.seller.product.edit.data.source.FetchVideoEditProductDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.EditProductFormApi;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.edit.domain.EditProductFormRepository;
 

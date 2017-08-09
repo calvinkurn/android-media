@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
-import com.tokopedia.seller.product.data.source.cloud.model.addetalase.AddEtalaseServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addetalase.AddEtalaseServiceModel;
 
 import rx.functions.Func1;
 

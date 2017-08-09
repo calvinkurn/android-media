@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.data.mapper.CategoryRecommDataToDomainMapper;
+import com.tokopedia.seller.product.edit.data.mapper.CategoryRecommDataToDomainMapper;
 import com.tokopedia.seller.product.edit.domain.CategoryRecommRepository;
 import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;
 

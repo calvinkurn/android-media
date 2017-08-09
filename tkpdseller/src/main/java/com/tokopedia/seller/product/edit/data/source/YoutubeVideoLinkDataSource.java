@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.source;
+package com.tokopedia.seller.product.edit.data.source;
 
-import com.tokopedia.seller.product.data.mapper.YoutubeVidToDomainMapper;
-import com.tokopedia.seller.product.data.source.cloud.YoutubeVideoLinkCloud;
+import com.tokopedia.seller.product.edit.data.mapper.YoutubeVidToDomainMapper;
+import com.tokopedia.seller.product.edit.data.source.cloud.YoutubeVideoLinkCloud;
 import com.tokopedia.seller.product.edit.domain.model.YoutubeVideoModel;
 
 import rx.Observable;

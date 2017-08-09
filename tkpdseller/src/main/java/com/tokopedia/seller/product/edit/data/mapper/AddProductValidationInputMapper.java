@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.ProductWholesaleServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductWholesaleServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 

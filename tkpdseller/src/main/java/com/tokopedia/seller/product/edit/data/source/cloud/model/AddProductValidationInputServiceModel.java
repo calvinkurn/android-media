@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud.model;
+package com.tokopedia.seller.product.edit.data.source.cloud.model;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;

@@ -16,9 +16,9 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMercha
 import com.tokopedia.seller.gmsubscribe.di.scope.GmSubscribeScope;
 import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
-import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import dagger.Module;

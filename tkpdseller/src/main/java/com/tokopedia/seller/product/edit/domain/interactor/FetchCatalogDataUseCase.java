@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.edit.domain.CatalogRepository;
 
 import javax.inject.Inject;

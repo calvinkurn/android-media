@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.data.source.cloud;
+package com.tokopedia.seller.product.edit.data.source.cloud;
 
-import com.tokopedia.seller.product.data.source.cloud.api.MerlinApi;
-import com.tokopedia.seller.product.data.source.cloud.api.request.CategoryRecommRequest;
-import com.tokopedia.seller.product.data.source.cloud.api.request.Data;
-import com.tokopedia.seller.product.data.source.cloud.api.request.Parcel;
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.MerlinApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.request.CategoryRecommRequest;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.request.Data;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.request.Parcel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
