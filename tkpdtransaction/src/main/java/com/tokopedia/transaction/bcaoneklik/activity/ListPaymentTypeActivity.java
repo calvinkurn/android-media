@@ -204,6 +204,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
             @Override
             public void onNext(PaymentListModel paymentListModel) {
+                progressDialog.dismiss();
                 presenter.onGetPaymentList(paymentListModelSubscriber());
             }
         };
