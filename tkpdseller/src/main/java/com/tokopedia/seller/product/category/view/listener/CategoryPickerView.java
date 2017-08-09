@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.edit.view.listener;
+package com.tokopedia.seller.product.category.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.product.edit.view.model.CategoryLevelViewModel;
-import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryLevelViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
 
 import java.util.List;
 

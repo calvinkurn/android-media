@@ -24,7 +24,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 
 import java.util.ArrayList;

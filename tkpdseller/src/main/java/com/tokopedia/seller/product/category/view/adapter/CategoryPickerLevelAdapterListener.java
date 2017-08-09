@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.edit.view.adapter.category;
+package com.tokopedia.seller.product.category.view.adapter;
 
-import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
 
 import java.util.List;
 

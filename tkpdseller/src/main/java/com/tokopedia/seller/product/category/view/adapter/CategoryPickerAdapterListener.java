@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.adapter.category;
+package com.tokopedia.seller.product.category.view.adapter;
 
 /**
  * @author sebastianuskh on 4/6/17.

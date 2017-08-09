@@ -300,7 +300,7 @@
             android:label="@string/product_title_activity_product_score"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".product.edit.view.activity.CategoryPickerActivity"
+            android:name=".product.category.view.activity.CategoryPickerActivity"
             android:label="@string/title_activity_category_picker"
             android:screenOrientation="portrait" />
         <activity

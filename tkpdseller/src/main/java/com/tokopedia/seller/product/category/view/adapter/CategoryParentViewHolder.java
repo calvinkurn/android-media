@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.adapter.category;
+package com.tokopedia.seller.product.category.view.adapter;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
 
 /**
  * @author sebastianuskh on 4/4/17.

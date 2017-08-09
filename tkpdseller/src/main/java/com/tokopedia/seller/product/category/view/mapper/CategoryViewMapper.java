@@ -1,11 +1,11 @@
-package com.tokopedia.seller.product.edit.view.mapper;
+package com.tokopedia.seller.product.category.view.mapper;
 
 import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.product.edit.domain.model.CategoryDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.CategoryLevelDomainModel;
-import com.tokopedia.seller.product.edit.view.model.CategoryLevelViewModel;
-import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryLevelViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

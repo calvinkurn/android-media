@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.fragment;
+package com.tokopedia.seller.product.category.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,20 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerCategoryPickerComponent;
 import com.tokopedia.seller.product.edit.di.module.CategoryPickerModule;
-import com.tokopedia.seller.product.edit.view.adapter.category.CategoryPickerLevelAdapter;
-import com.tokopedia.seller.product.edit.view.adapter.category.CategoryPickerLevelAdapterListener;
+import com.tokopedia.seller.product.category.view.adapter.CategoryPickerLevelAdapter;
+import com.tokopedia.seller.product.category.view.adapter.CategoryPickerLevelAdapterListener;
 import com.tokopedia.seller.product.edit.view.listener.CategoryPickerFragmentListener;
-import com.tokopedia.seller.product.edit.view.listener.CategoryPickerView;
-import com.tokopedia.seller.product.edit.view.model.CategoryLevelViewModel;
-import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;
-import com.tokopedia.seller.product.edit.view.presenter.CategoryPickerPresenter;
+import com.tokopedia.seller.product.category.view.listener.CategoryPickerView;
+import com.tokopedia.seller.product.category.view.model.CategoryLevelViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.category.view.presenter.CategoryPickerPresenter;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 
 import java.util.List;

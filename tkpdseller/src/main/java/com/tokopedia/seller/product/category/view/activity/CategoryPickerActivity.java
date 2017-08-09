@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.activity;
+package com.tokopedia.seller.product.category.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,9 +9,9 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.view.fragment.CategoryPickerFragment;
+import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.edit.view.listener.CategoryPickerFragmentListener;
-import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
 
 import org.parceler.Parcels;
 
