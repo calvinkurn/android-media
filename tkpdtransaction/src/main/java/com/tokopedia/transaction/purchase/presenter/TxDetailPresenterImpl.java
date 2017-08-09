@@ -221,6 +221,11 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         showComplainDialog(context, orderData);
     }
 
+    @Override
+    public void processFinish(Context context, OrderData orderData) {
+        showFinishDialog(context, orderData);
+    }
+
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -242,6 +247,32 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         viewListener.showDialog(builder.create());
     }
 
+    private void showFinishDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_finish);
+        TextView tvFinishTitle = (TextView) dialog.findViewById(R.id.tvFinishTitle);
+        TextView tvFinishBody = (TextView) dialog.findViewById(R.id.tvFinishBody);
+        Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
+        Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
+        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle(), null, new TagHandlerUtil()));
+        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg(), null, new TagHandlerUtil()));
+        btnComplain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmPurchase(context, dialog, orderData);
+            }
+        });
+
+        dialog.show();
+    }
 
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
