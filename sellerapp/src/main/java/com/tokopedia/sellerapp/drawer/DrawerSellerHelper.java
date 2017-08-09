@@ -190,7 +190,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 0);
 
         sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.payment_and_topup),
-                TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL,
+                TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP,
                 true));
         sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.digital_transaction_list),
                 TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
@@ -360,14 +360,14 @@ public class DrawerSellerHelper extends DrawerHelper
                         ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
                     }
                     break;
-                case TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL:
+                case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalCategoryList());
                     break;
-                case TkpdState.DrawerPosition.MANAGE_PRICE_PRODUCT_DIGITAL:
+                case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST));
+                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
                     UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DRAFT_PRODUCT);
