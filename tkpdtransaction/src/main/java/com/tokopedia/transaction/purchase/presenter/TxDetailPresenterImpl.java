@@ -295,11 +295,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
             btnNotReceive.setVisibility(View.VISIBLE);
         else
             btnBack.setVisibility(View.VISIBLE);
-
-        if (orderData.getOrderDetail().getDetailFreeReturn() == FREE_RETURN) {
-            llFreeReturn.setVisibility(View.VISIBLE);
-            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
-        }
+      
+        //will be used later
+//        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
+//            llFreeReturn.setVisibility(View.VISIBLE);
+//            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+//        }
+      
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
