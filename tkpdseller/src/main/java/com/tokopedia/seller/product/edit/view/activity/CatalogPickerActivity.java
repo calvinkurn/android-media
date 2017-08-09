@@ -19,7 +19,7 @@ import com.tokopedia.seller.product.edit.view.fragment.CatalogPickerFragment;
  * @author hendry on 4/3/17.
  */
 
-public class CatalogPickerActivity extends BaseSimpleActivity implements HasComponent<CatalogPickerComponent>{
+public class CatalogPickerActivity extends BaseSimpleActivity implements HasComponent<CatalogPickerComponent> {
 
     public static final String KEYWORD = "q";
     public static final String DEP_ID = "dep_id";
@@ -27,26 +27,22 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
 
     public static final String CATALOG_NAME = "cat_nm";
 
-    private String keyword;
-    private long departmentId;
-    private long selectedCatalogId;
-
-    public static void start(Activity activity, int requestCode, String keyword, long depId, long selectedCatalogId){
+    public static void start(Activity activity, int requestCode, String keyword, long depId, long selectedCatalogId) {
         Intent intent = createIntent(activity, keyword, depId, selectedCatalogId);
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(android.app.Fragment fragment, Context context, int requestCode, String keyword, long depId, long selectedCatalogId){
+    public static void start(android.app.Fragment fragment, Context context, int requestCode, String keyword, long depId, long selectedCatalogId) {
         Intent intent = createIntent(context, keyword, depId, selectedCatalogId);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode, String keyword, long depId, long selectedCatalogId){
+    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode, String keyword, long depId, long selectedCatalogId) {
         Intent intent = createIntent(context, keyword, depId, selectedCatalogId);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private static Intent createIntent(Context context, @Nullable String keyword, long departmentId, long selectedCatalogId){
+    private static Intent createIntent(Context context, @Nullable String keyword, long departmentId, long selectedCatalogId) {
         Intent intent = new Intent(context, CatalogPickerActivity.class);
         intent.putExtra(KEYWORD, keyword);
         intent.putExtra(DEP_ID, departmentId);
@@ -55,12 +51,12 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    protected void setupLayout() {
-        super.setupLayout();
+    protected Fragment getNewFragment() {
         Bundle extras = getIntent().getExtras();
-        keyword = extras.getString(KEYWORD);
-        departmentId = extras.getLong(DEP_ID);
-        selectedCatalogId = extras.getLong(CATALOG_ID);
+        String keyword = extras.getString(KEYWORD);
+        long departmentId = extras.getLong(DEP_ID);
+        long selectedCatalogId = extras.getLong(CATALOG_ID);
+        return CatalogPickerFragment.newInstance(keyword, departmentId, selectedCatalogId);
     }
 
     @Override
@@ -70,10 +66,5 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
                 .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule()))
                 .catalogPickerModule(new CatalogPickerModule())
                 .build();
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
-        return CatalogPickerFragment.newInstance(keyword, departmentId, selectedCatalogId);
     }
 }

@@ -20,12 +20,16 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
         return R.layout.activity_base_simple;
     }
 
-    protected void setupFragment(Bundle savedinstancestate) {
-        if (savedinstancestate == null) {
+    protected void setupFragment(Bundle savedInstance) {
+        if (savedInstance == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.parent_view, getNewFragment(), getTagFragment())
                     .commit();
         }
+    }
+
+    protected Fragment getFragment() {
+        return getSupportFragmentManager().findFragmentByTag(getTagFragment());
     }
 
     protected String getTagFragment() {

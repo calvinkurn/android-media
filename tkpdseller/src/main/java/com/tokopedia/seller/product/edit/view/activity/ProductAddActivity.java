@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -21,18 +20,18 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
@@ -61,7 +60,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends BaseActivity implements HasComponent<ProductComponent>,
+public class ProductAddActivity extends BaseSimpleActivity implements HasComponent<ProductComponent>,
         TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
     public static final int PRODUCT_REQUEST_CODE = 8293;
@@ -91,191 +90,14 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<Pro
         fragment.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_add);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        setupFragment();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-        }
-        return true;
-    }
-
-    protected int getCancelMessageRes(){
-        return R.string.product_draft_dialog_cancel_message;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (hasDataAdded()){
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setMessage(getString(getCancelMessageRes()))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ProductAddActivity.super.onBackPressed();
-                        }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            // no op, just dismiss
-                        }
-                    });
-            // seller app only
-            if (GlobalConfig.isSellerApp()) {
-                alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        boolean doSave = saveProducttoDraft();
-                        if (!doSave) {
-                            UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
-                                    AppEventTracking.EventLabel.SAVE_DRAFT);
-                            ProductAddActivity.super.onBackPressed();
-                        }
-                    }
-                });
-            }
-            AlertDialog dialog = alertDialogBuilder.create();
-            dialog.show();
-
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    protected boolean hasDataAdded() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment!= null && fragment instanceof ProductAddFragment ) {
-            return ((ProductAddFragment)fragment).hasDataAdded();
-        }
-        return false;
-    }
-
-    protected boolean saveProducttoDraft() {
-        // save newly added product ToDraft
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment!= null && fragment instanceof ProductAddFragment ) {
-            ((ProductAddFragment)fragment).saveDraft(false);
-            return true;
-        }
-        return false;
-    }
-
-    protected void setupFragment() {
-        if (getSupportFragmentManager().findFragmentByTag(getFragmentTAG()) == null) {
-            checkIntentImageUrls();
-        }
-    }
-
-    private void createProductAddFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment == null) {
-            fragment = ProductAddFragment.createInstance(imageUrls);
-        } else {
-            return;
-        }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, getFragmentTAG());
-        fragmentTransaction.commit();
-    }
-
-    private void checkIntentImageUrls() {
-        if (checkExplicitImageUrls()) {
-            ProductAddActivityPermissionsDispatcher.handleImageUrlFromExternalWithCheck(this);
-        } else if (checkImplicitImageUrls()) {
-            // because it comes form implicit Uris, check if already login and has shop
-            if (validateHasLoginAndShop()) {
-                switch (getIntent().getAction()) {
-                    case Intent.ACTION_SEND:
-                        ProductAddActivityPermissionsDispatcher.handleImageUrlImplicitSingleWithCheck(this);
-                        break;
-                    case Intent.ACTION_SEND_MULTIPLE:
-                        ProductAddActivityPermissionsDispatcher.handleImageUrlImplicitMultipleWithCheck(this);
-                        break;
-                }
-            }
-        } else { // no image urls, create it directly
-            createProductAddFragment();
-        }
-    }
-
-    private boolean validateHasLoginAndShop() {
-        if (SessionHandler.isV4Login(this)) {
-            if (SessionHandler.getShopID(this).equals("0")) {
-                finish();
-                CommonUtils.UniversalToast(getBaseContext(),
-                        getString(R.string.title_no_shop));
-                return false;
-            }
-        } else {
-            Intent intentLogin = SessionRouter.getLoginActivityIntent(this);
-            intentLogin.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-            startActivity(intentLogin);
-            finish();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkExplicitImageUrls() {
-        Intent intent = getIntent();
-        ArrayList<String> imageUrlsTemp = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        return (imageUrlsTemp != null && imageUrlsTemp.size() > 0);
-    }
-
-    private boolean checkImplicitImageUrls() {
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
-
-        if (type == null) {
-            return false;
-        }
-        if (!type.startsWith(IMAGE)) {
-            return false;
-        }
-        if (Intent.ACTION_SEND.equals(action)) {
-            return (intent.getParcelableExtra(Intent.EXTRA_STREAM) != null);
-        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
-            return (intent.getParcelableExtra(Intent.EXTRA_STREAM) != null ||
-                    checkCollectionNotNull(intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)));
-        }
-        return false;
-    }
-
-    private void processMultipleImage(ArrayList<Uri> imageUris) {
-        showProgressDialog();
-        int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
-        imageUrls = new ArrayList<>();
-        for (int i = 0; i < imagescount; i++) {
-            Uri imageUri = imageUris.get(i);
-            String uriString = imageUri.toString();
-            if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
-                imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
-            } else { // get extras for import from gallery
-                imageUrls.add(FileUtils.getRealPathFromURI(this, imageUri));
-            }
-        }
-        dismissDialog();
-        createProductAddFragment();
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlFromExternal() {
         showProgressDialog();
         List<String> oriImageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        int imagescount = (oriImageUrls.size() > MAX_IMAGES) ? MAX_IMAGES : oriImageUrls.size();
+        int imagesCount = (oriImageUrls.size() > MAX_IMAGES) ? MAX_IMAGES : oriImageUrls.size();
         imageUrls = new ArrayList<>();
-        for (int i = 0; i < imagescount; i++) {
+        for (int i = 0; i < imagesCount; i++) {
             String imageUrl = oriImageUrls.get(i);
             String fileNameToMove = FileUtils.generateUniqueFileName(imageUrl);
             File photo = FileUtils.writeImageToTkpdPath(
@@ -331,8 +153,152 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<Pro
     }
 
     @Override
-    public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
+    protected void setupFragment(Bundle savedInstance) {
+        if (getFragment() != null) {
+            return;
+        }
+        if (checkExplicitImageUrls()) {
+            ProductAddActivityPermissionsDispatcher.handleImageUrlFromExternalWithCheck(this);
+        } else if (checkImplicitImageUrls()) {
+            // because it comes form implicit Uris, check if already login and has shop
+            if (validateHasLoginAndShop()) {
+                switch (getIntent().getAction()) {
+                    case Intent.ACTION_SEND:
+                        ProductAddActivityPermissionsDispatcher.handleImageUrlImplicitSingleWithCheck(this);
+                        break;
+                    case Intent.ACTION_SEND_MULTIPLE:
+                        ProductAddActivityPermissionsDispatcher.handleImageUrlImplicitMultipleWithCheck(this);
+                        break;
+                }
+            }
+        } else { // no image urls, create it directly
+            createProductAddFragment();
+        }
+    }
+
+    private boolean checkExplicitImageUrls() {
+        Intent intent = getIntent();
+        ArrayList<String> imageUrlsTemp = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
+        return (imageUrlsTemp != null && imageUrlsTemp.size() > 0);
+    }
+
+    private boolean checkImplicitImageUrls() {
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (type == null) {
+            return false;
+        }
+        if (!type.startsWith(IMAGE)) {
+            return false;
+        }
+        if (Intent.ACTION_SEND.equals(action)) {
+            return (intent.getParcelableExtra(Intent.EXTRA_STREAM) != null);
+        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
+            return (intent.getParcelableExtra(Intent.EXTRA_STREAM) != null ||
+                    checkCollectionNotNull(intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)));
+        }
+        return false;
+    }
+
+    private boolean validateHasLoginAndShop() {
+        if (SessionHandler.isV4Login(this)) {
+            if (SessionHandler.getShopID(this).equals("0")) {
+                finish();
+                CommonUtils.UniversalToast(getBaseContext(), getString(R.string.title_no_shop));
+                return false;
+            }
+        } else {
+            Intent intentLogin = SessionRouter.getLoginActivityIntent(this);
+            intentLogin.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            startActivity(intentLogin);
+            finish();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (hasDataAdded()) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                    .setMessage(getString(R.string.product_draft_dialog_cancel_message))
+                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ProductAddActivity.super.onBackPressed();
+                        }
+                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // no op, just dismiss
+                        }
+                    });
+            // seller app only
+            if (GlobalConfig.isSellerApp()) {
+                alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean doSave = saveProductToDraft();
+                        if (!doSave) {
+                            UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
+                                    AppEventTracking.EventLabel.SAVE_DRAFT);
+                            ProductAddActivity.super.onBackPressed();
+                        }
+                    }
+                });
+            }
+            AlertDialog dialog = alertDialogBuilder.create();
+            dialog.show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean hasDataAdded() {
+        Fragment fragment = getFragment();
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            return ((ProductAddFragment) fragment).hasDataAdded();
+        }
+        return false;
+    }
+
+    private boolean saveProductToDraft() {
+        // save newly added product ToDraft
+        Fragment fragment = getFragment();
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            ((ProductAddFragment) fragment).saveDraft(false);
+            return true;
+        }
+        return false;
+    }
+
+    private void createProductAddFragment() {
+        Fragment fragment = getFragment();
+        if (fragment != null) {
+            return;
+        }
+        fragment = ProductAddFragment.createInstance(imageUrls);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.parent_view, fragment, getTagFragment());
+        fragmentTransaction.commit();
+    }
+
+    private void processMultipleImage(ArrayList<Uri> imageUris) {
+        showProgressDialog();
+        int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
+        imageUrls = new ArrayList<>();
+        for (int i = 0; i < imagescount; i++) {
+            Uri imageUri = imageUris.get(i);
+            String uriString = imageUri.toString();
+            if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
+                imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
+            } else { // get extras for import from gallery
+                imageUrls.add(FileUtils.getRealPathFromURI(this, imageUri));
+            }
+        }
+        dismissDialog();
+        createProductAddFragment();
     }
 
     public void showProgressDialog() {
@@ -361,15 +327,11 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<Pro
     }
 
     public ProductAddFragment getProductAddFragment() {
-        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragmentByTag != null && fragmentByTag instanceof ProductAddFragment) {
-            return (ProductAddFragment) fragmentByTag;
+        Fragment fragment = getFragment();
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            return (ProductAddFragment) fragment;
         }
         return null;
-    }
-
-    protected String getFragmentTAG() {
-        return ProductAddFragment.class.getSimpleName();
     }
 
     @Override
@@ -418,7 +380,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<Pro
 
     @Override
     public void successSaveDraftToDBWhenBackpressed() {
-        CommonUtils.UniversalToast(this,getString(R.string.product_draft_product_has_been_saved_as_draft));
+        CommonUtils.UniversalToast(this, getString(R.string.product_draft_product_has_been_saved_as_draft));
         finish();
     }
 
@@ -433,5 +395,15 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<Pro
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_ADD_PRODUCT;
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    public ProductComponent getComponent() {
+        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
     }
 }
