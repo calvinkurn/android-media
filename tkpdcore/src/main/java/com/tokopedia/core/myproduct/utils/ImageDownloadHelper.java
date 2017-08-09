@@ -53,17 +53,12 @@ public class ImageDownloadHelper {
     public ImageDownloadHelper(Context context){
         this.contextWeakReference = new WeakReference<>(context);
     }
-
-    public void setNeedCompressTkpd(boolean needCompressTkpd) {
+    
+    public void convertHttpPathToLocalPath(List<String> urlsToDownload,
+                                           boolean needCompressTkpd,
+                                           OnImageDownloadListener onImageDownloadListener) {
         this.needCompressTkpd = needCompressTkpd;
-    }
-
-    public void setOnImageDownloadListener(OnImageDownloadListener onImageDownloadListener) {
         onImageDownloadListenerWeakReference= new WeakReference<>(onImageDownloadListener);
-    }
-
-    public void convertHttpPathToLocalPath(List<String> urlsToDownload ) {
-
         downloadImages(urlsToDownload)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

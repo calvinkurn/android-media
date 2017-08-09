@@ -641,26 +641,25 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                     }
                     showProgressDialog();
                     ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
-                    imageDownloadHelper.setNeedCompressTkpd(compressToTkpd);
-                    imageDownloadHelper.setOnImageDownloadListener(new ImageDownloadHelper.OnImageDownloadListener() {
-                        @Override
-                        public void onError(Throwable e) {
-                            hideProgressDialog();
-                            CommonUtils.UniversalToast(GalleryActivity.this,
-                                    ErrorHandler.getErrorMessage(e, GalleryActivity.this));
-                        }
+                    imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, false,
+                            new ImageDownloadHelper.OnImageDownloadListener() {
+                                @Override
+                                public void onError(Throwable e) {
+                                    hideProgressDialog();
+                                    CommonUtils.UniversalToast(GalleryActivity.this,
+                                            ErrorHandler.getErrorMessage(e, GalleryActivity.this));
+                                }
 
-                        @Override
-                        public void onSuccess(ArrayList<String> localPaths) {
-                            hideProgressDialog();
-                            Intent intent = new Intent();
-                            intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, localPaths);
-                            intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-                            setResult(GalleryActivity.RESULT_CODE, intent);
-                            finish();
-                        }
-                    });
-                    imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList);
+                                @Override
+                                public void onSuccess(ArrayList<String> localPaths) {
+                                    hideProgressDialog();
+                                    Intent intent = new Intent();
+                                    intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, localPaths);
+                                    intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
+                                    setResult(GalleryActivity.RESULT_CODE, intent);
+                                    finish();
+                                }
+                            });
                     break;
                 default:
                     // no op

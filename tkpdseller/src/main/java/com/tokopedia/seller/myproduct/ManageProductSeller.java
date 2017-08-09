@@ -12,9 +12,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
@@ -25,6 +30,9 @@ import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountVie
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.view.service.UploadProductService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
@@ -34,7 +42,10 @@ import permissions.dispatcher.RuntimePermissions;
 public class ManageProductSeller extends ManageProduct implements
         ProductDraftListCountView {
     public static final int MAX_INSTAGRAM_SELECT = 10;
+    private static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
     private BroadcastReceiver draftBroadCastReceiver;
+
+    private TkpdProgressDialog progressDialog;
 
     @Inject
     ProductDraftListCountPresenter productDraftListCountPresenter;
@@ -85,6 +96,52 @@ public class ManageProductSeller extends ManageProduct implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case RESULT_OK:
+                List<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+
+                ArrayList<String> standardResoImageUrlList = new ArrayList<>();
+                for (int i = 0; i < images.size(); i++) {
+                    standardResoImageUrlList.add(images.get(i).standardResolution);
+                }
+                showProgressDialog();
+                ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
+                imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, DEFAULT_NEED_COMPRESS_TKPD,
+                        new ImageDownloadHelper.OnImageDownloadListener() {
+                            @Override
+                            public void onError(Throwable e) {
+                                hideProgressDialog();
+                                CommonUtils.UniversalToast(ManageProductSeller.this,
+                                        ErrorHandler.getErrorMessage(e, ManageProductSeller.this));
+                            }
+
+                            @Override
+                            public void onSuccess(ArrayList<String> localPaths) {
+                                hideProgressDialog();
+                                // TODO go to draft list activity
+                            }
+                        });
+                break;
+            default:
+                // no op
+                break;
+        }
+    }
+
+    private void showProgressDialog(){
+        if (progressDialog == null) {
+            progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog.setCancelable(false);
+        }
+        if (! progressDialog.isProgress()) {
+            progressDialog.showDialog();
+        }
+    }
+
+    private void hideProgressDialog(){
+        if (progressDialog != null && progressDialog.isProgress()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
