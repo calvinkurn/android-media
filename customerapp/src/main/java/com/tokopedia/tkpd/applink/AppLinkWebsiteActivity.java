@@ -15,6 +15,7 @@ import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
@@ -156,7 +157,10 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == com.tokopedia.core.R.id.menu_home) {
-            startActivity(HomeRouter.getHomeActivity(this));
+            if (getApplication() instanceof TkpdCoreRouter) {
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+                if (intentHome != null) startActivity(intentHome);
+            }
         } else if (item.getItemId() == com.tokopedia.core.R.id.menu_help) {
             startActivity(InboxRouter.getContactUsActivityIntent(this));
         }
