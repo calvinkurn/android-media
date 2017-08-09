@@ -1,5 +1,6 @@
 package com.tokopedia.seller.myproduct;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
@@ -24,8 +27,13 @@ import com.tokopedia.seller.product.view.service.UploadProductService;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
+@RuntimePermissions
 public class ManageProductSeller extends ManageProduct implements
         ProductDraftListCountView {
+    public static final int MAX_INSTAGRAM_SELECT = 10;
     private BroadcastReceiver draftBroadCastReceiver;
 
     @Inject
@@ -56,6 +64,27 @@ public class ManageProductSeller extends ManageProduct implements
     protected void onDestroy() {
         super.onDestroy();
         productDraftListCountPresenter.detachView();
+    }
+
+    @Override
+    protected void onFabMenuItemClicked(int menuItemId) {
+        super.onFabMenuItemClicked(menuItemId);
+        if (menuItemId == R.id.action_instagram) {
+            ManageProductSellerPermissionsDispatcher.onInstagramClickedWithCheck(ManageProductSeller.this);
+        }
+    }
+
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void onInstagramClicked() {
+        if (getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(ManageProductSeller.this,
+                    GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, MAX_INSTAGRAM_SELECT);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
