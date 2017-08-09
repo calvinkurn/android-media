@@ -3,9 +3,7 @@ package com.tokopedia.seller.base.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -54,7 +52,6 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     public abstract Fragment getSearchListFragment();
 
     public abstract Fragment getCacheListFragment();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,15 +141,21 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     }
 
     @Override
-    public void addItem(ItemPickerType itemPickerType, String fromFragmentTag) {
+    public void addItemFromSearch(ItemPickerType itemPickerType) {
         itemPickerTypeList.add(itemPickerType);
-        notifyFragmentFrom(fromFragmentTag);
+        notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
     }
 
     @Override
-    public void removeItem(ItemPickerType itemPickerType, String fromFragmentTag) {
+    public void removeItemFromSearch(ItemPickerType itemPickerType) {
         itemPickerTypeList.remove(itemPickerType);
-        notifyFragmentFrom(fromFragmentTag);
+        notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
+    }
+
+    @Override
+    public void removeItemFromCache(ItemPickerType itemPickerType) {
+        itemPickerTypeList.remove(itemPickerType);
+        notifyFragmentFrom(CONTAINER_CACHE_LIST_TAG);
     }
 
     private void notifyFragmentFrom(String fromFragmentTag) {

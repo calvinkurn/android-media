@@ -23,12 +23,12 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
-import com.tokopedia.seller.product.di.module.ProductDraftListCountModule;
+import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftListCountComponent;
+import com.tokopedia.seller.product.edit.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.view.service.UploadProductService;
+import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import java.util.ArrayList;
 import java.util.List;

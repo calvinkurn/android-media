@@ -1,7 +1,6 @@
 package com.tokopedia.seller.gmsubscribe.di.module;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
 
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -20,8 +19,7 @@ import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductReposit
 import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.di.scope.ProductAddScope;
-import com.tokopedia.seller.product.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

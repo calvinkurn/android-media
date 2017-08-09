@@ -213,7 +213,7 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".product.view.activity.ProductAddActivity"
+            android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar">
@@ -243,7 +243,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".product.view.activity.ProductEditActivity"
+            android:name=".product.edit.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
@@ -274,7 +274,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".product.view.activity.ProductDraftAddActivity"
+            android:name=".product.edit.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
@@ -291,35 +291,35 @@
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".product.view.activity.ProductDraftEditActivity"
+            android:name=".product.edit.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".product.view.activity.ProductDuplicateActivity"
+            android:name=".product.edit.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".product.view.activity.ProductScoringDetailActivity"
+            android:name=".product.edit.view.activity.ProductScoringDetailActivity"
             android:label="@string/product_title_activity_product_score"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".product.view.activity.CategoryPickerActivity"
+            android:name=".product.edit.view.activity.CategoryPickerActivity"
             android:label="@string/title_activity_category_picker"
             android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".product.view.activity.EtalasePickerActivity"
+            android:name=".product.edit.view.activity.EtalasePickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
             android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".product.view.activity.CatalogPickerActivity"
+            android:name=".product.edit.view.activity.CatalogPickerActivity"
             android:exported="true"
             android:label="@string/title_activity_catalog_picker"
             android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".product.view.activity.YoutubeAddVideoActivity"
+            android:name=".product.edit.view.activity.YoutubeAddVideoActivity"
             android:label="@string/product_label_video"
             android:theme="@style/BasicThemeActionBar" />
 
@@ -411,7 +411,7 @@
             android:exported="false" />
 
         <service
-            android:name="com.tokopedia.seller.product.view.service.UploadProductService"
+            android:name=".product.edit.view.service.UploadProductService"
             android:exported="false" />
     </application>
 

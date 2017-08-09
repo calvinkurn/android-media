@@ -1,10 +1,8 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import android.app.ActivityManager;
-
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
