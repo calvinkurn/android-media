@@ -27,7 +27,7 @@ import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.edit.data.source.ProductScoreDataSource;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cache.ProductScoreDataSourceCache;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.seller.product.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.MerlinApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;

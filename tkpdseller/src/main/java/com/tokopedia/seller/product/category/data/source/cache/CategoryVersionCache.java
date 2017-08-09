@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.data.source.cache;
+package com.tokopedia.seller.product.category.data.source.cache;
 
 import android.content.Context;
 

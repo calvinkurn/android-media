@@ -35,7 +35,7 @@ import com.tokopedia.seller.product.category.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.seller.product.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.category.domain.CategoryRepository;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;

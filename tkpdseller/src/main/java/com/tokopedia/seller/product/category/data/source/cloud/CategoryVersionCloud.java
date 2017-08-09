@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.edit.data.source.cloud;
+package com.tokopedia.seller.product.category.data.source.cloud;
 
 import com.tokopedia.core.base.common.util.GetData;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.seller.product.edit.data.source.cloud.model.CategoryVersionServiceModel;
+import com.tokopedia.seller.product.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.seller.product.category.data.source.cloud.model.CategoryVersionServiceModel;
 
 import javax.inject.Inject;
 

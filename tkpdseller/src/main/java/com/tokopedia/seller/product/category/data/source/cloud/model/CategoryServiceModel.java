@@ -1,8 +1,9 @@
 
-package com.tokopedia.seller.product.edit.data.source.cloud.model.categorydata;
+package com.tokopedia.seller.product.category.data.source.cloud.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.category.data.source.cloud.model.Data;
 
 public class CategoryServiceModel {
 

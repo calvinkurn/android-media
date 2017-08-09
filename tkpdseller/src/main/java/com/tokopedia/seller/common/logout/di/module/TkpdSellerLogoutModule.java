@@ -25,7 +25,7 @@ import com.tokopedia.seller.product.category.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.seller.product.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.category.domain.CategoryRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.category.domain.interactor.ClearCategoryCacheUseCase;

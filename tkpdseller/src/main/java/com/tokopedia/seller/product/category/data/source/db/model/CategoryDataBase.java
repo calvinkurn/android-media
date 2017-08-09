@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.data.source.db.model;
+package com.tokopedia.seller.product.category.data.source.db.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;

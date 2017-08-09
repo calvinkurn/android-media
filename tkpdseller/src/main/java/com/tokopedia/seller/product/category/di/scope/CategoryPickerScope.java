@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.di.scope;
+package com.tokopedia.seller.product.category.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

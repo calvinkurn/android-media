@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.data.source.db;
+package com.tokopedia.seller.product.category.data.source.db;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
@@ -6,8 +6,8 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.seller.database.TkpdSellerDatabase;
-import com.tokopedia.seller.product.edit.data.source.db.model.CategoryDataBase;
-import com.tokopedia.seller.product.edit.data.source.db.model.CategoryDataBase_Table;
+import com.tokopedia.seller.product.category.data.source.db.model.CategoryDataBase;
+import com.tokopedia.seller.product.category.data.source.db.model.CategoryDataBase_Table;
 
 import java.util.List;
 

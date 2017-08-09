@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.category.data.repository;
 import com.tokopedia.seller.product.category.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.category.data.source.FetchCategoryDataSource;
-import com.tokopedia.seller.product.edit.di.scope.CategoryPickerScope;
+import com.tokopedia.seller.product.category.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.category.domain.CategoryRepository;
 import com.tokopedia.seller.product.category.domain.model.CategoryDomainModel;
 import com.tokopedia.seller.product.category.domain.model.CategoryLevelDomainModel;
