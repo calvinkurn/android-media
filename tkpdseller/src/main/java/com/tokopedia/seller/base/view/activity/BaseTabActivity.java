@@ -21,8 +21,8 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     protected abstract int getPageLimit();
 
     @Override
-    protected void setupLayout() {
-        super.setupLayout();
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
         viewPager.setOffscreenPageLimit(getPageLimit());

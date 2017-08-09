@@ -32,11 +32,11 @@ abstract class BaseToolbarActivity extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
         }
-        setupLayout();
+        setupLayout(savedInstanceState);
         setupFragment(savedInstanceState);
     }
 
-    protected void setupLayout() {
+    protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

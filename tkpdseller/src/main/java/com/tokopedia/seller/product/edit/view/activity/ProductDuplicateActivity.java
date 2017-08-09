@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.edit.view.fragment.ProductDraftEditFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductDuplicateFragment;
 
 /**
@@ -30,16 +31,14 @@ public class ProductDuplicateActivity extends ProductDraftAddActivity {
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
-        inflateFragment(productId);
+        if (savedInstance == null) {
+            inflateFragment();
+        }
     }
 
-    private void inflateFragment(String productId) {
-        Fragment fragment = getFragment();
-        if (fragment == null) {
-            fragment = ProductDuplicateFragment.createInstance(productId);
-        }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.parent_view, fragment, getTagFragment());
-        fragmentTransaction.commit();
+    @Override
+    protected Fragment getNewFragment() {
+        String productId = getIntent().getStringExtra(PRODUCT_ID);
+        return ProductDuplicateFragment.createInstance(productId);
     }
 }

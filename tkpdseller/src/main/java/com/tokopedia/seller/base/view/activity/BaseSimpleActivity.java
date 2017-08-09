@@ -22,10 +22,14 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     protected void setupFragment(Bundle savedInstance) {
         if (savedInstance == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.parent_view, getNewFragment(), getTagFragment())
-                    .commit();
+            inflateFragment();
         }
+    }
+
+    protected void inflateFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.parent_view, getNewFragment(), getTagFragment())
+                .commit();
     }
 
     protected Fragment getFragment() {

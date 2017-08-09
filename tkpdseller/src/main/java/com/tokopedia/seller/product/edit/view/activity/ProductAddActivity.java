@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
@@ -219,11 +218,15 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         return true;
     }
 
+    protected int getCancelMessageRes(){
+        return R.string.product_draft_dialog_cancel_message;
+    }
+
     @Override
     public void onBackPressed() {
         if (hasDataAdded()) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setMessage(getString(R.string.product_draft_dialog_cancel_message))
+                    .setMessage(getString(getCancelMessageRes()))
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -274,14 +277,15 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     private void createProductAddFragment() {
-        Fragment fragment = getFragment();
-        if (fragment != null) {
+        if (getFragment() != null) {
             return;
         }
-        fragment = ProductAddFragment.createInstance(imageUrls);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.parent_view, fragment, getTagFragment());
-        fragmentTransaction.commit();
+        inflateFragment();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return ProductAddFragment.createInstance(imageUrls);
     }
 
     private void processMultipleImage(ArrayList<Uri> imageUris) {
@@ -395,11 +399,6 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_ADD_PRODUCT;
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
-        return null;
     }
 
     @Override

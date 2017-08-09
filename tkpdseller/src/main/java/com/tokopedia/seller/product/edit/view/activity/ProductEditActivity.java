@@ -31,17 +31,9 @@ public class ProductEditActivity extends ProductDraftEditActivity {
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
-        inflateFragment(productId);
-    }
-
-    private void inflateFragment(String productId) {
-        Fragment fragment = getFragment();
-        if (fragment == null) {
-            fragment = ProductEditFragment.createInstance(productId);
+        if (savedInstance == null) {
+            inflateFragment();
         }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.parent_view, fragment, getTagFragment());
-        fragmentTransaction.commit();
     }
 
     protected int getCancelMessageRes(){
@@ -51,5 +43,11 @@ public class ProductEditActivity extends ProductDraftEditActivity {
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_EDIT_PRODUCT;
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        String productId = getIntent().getStringExtra(PRODUCT_ID);
+        return ProductEditFragment.createInstance(productId);
     }
 }
