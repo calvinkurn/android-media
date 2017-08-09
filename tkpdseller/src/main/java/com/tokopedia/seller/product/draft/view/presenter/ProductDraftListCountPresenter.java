@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.draft.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 
+import java.util.ArrayList;
+
 /**
  * Created by User on 6/20/2017.
  */
@@ -11,4 +13,5 @@ public abstract class ProductDraftListCountPresenter extends BaseDaggerPresenter
     public abstract void fetchAllDraftCountWithUpdateUploading();
     public abstract void fetchAllDraftCount();
     public abstract void clearAllDraft();
+    public abstract void saveInstagramToDraft(ArrayList<String>localPathList, ArrayList<String> instagramDescList);
 }

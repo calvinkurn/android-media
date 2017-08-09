@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
@@ -32,9 +33,11 @@ public class ProductDraftListCountModule extends ProductAddModule {
     @Provides
     ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
                                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase,
-                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
+                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
+                                                         SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
         return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase);
+                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase,
+                saveBulkDraftProductUseCase);
     }
 
     @ProductAddScope

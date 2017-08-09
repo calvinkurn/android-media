@@ -60,6 +60,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -651,10 +652,10 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 }
 
                                 @Override
-                                public void onSuccess(ArrayList<String> localPaths) {
+                                public void onSuccess(ArrayList<String> resultLocalPaths) {
                                     hideProgressDialog();
                                     Intent intent = new Intent();
-                                    intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, localPaths);
+                                    intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, resultLocalPaths);
                                     intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
                                     setResult(GalleryActivity.RESULT_CODE, intent);
                                     finish();

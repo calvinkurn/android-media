@@ -99,10 +99,15 @@ public class ManageProductSeller extends ManageProduct implements
         switch (resultCode) {
             case RESULT_OK:
                 List<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
-
-                ArrayList<String> standardResoImageUrlList = new ArrayList<>();
+                if (images == null || images.size() == 0) {
+                    return;
+                }
+                final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
+                final ArrayList<String> imageDescriptionList = new ArrayList<>();
                 for (int i = 0; i < images.size(); i++) {
-                    standardResoImageUrlList.add(images.get(i).standardResolution);
+                    InstagramMediaModel instagramMediaModel = images.get(i);
+                    standardResoImageUrlList.add(instagramMediaModel.standardResolution);
+                    imageDescriptionList.add(instagramMediaModel.captionText);
                 }
                 showProgressDialog();
                 ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
@@ -117,8 +122,13 @@ public class ManageProductSeller extends ManageProduct implements
 
                             @Override
                             public void onSuccess(ArrayList<String> localPaths) {
-                                hideProgressDialog();
-                                // TODO go to draft list activity
+                                // if the path is different with the original,
+                                // means no all draft is saved to local for some reasons
+                                if (localPaths == null || localPaths.size() == 0 ||
+                                        localPaths.size()!= standardResoImageUrlList.size()) {
+                                    throw new NullPointerException();
+                                }
+                                productDraftListCountPresenter.saveInstagramToDraft(localPaths, imageDescriptionList);
                             }
                         });
                 break;
@@ -213,6 +223,20 @@ public class ManageProductSeller extends ManageProduct implements
         // delete all draft when error loading draft
         productDraftListCountPresenter.clearAllDraft();
         tvDraftProductInfo.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSaveBulkDraftSuccess(List<Long> productIds) {
+        // TODO ondraft save success
+        hideProgressDialog();
+        // TODO GO TO Draft activity
+
+    }
+
+    @Override
+    public void onSaveBulkDraftError(Throwable throwable) {
+        // TODO save bulk draft error
+        hideProgressDialog();
     }
 
 }

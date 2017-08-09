@@ -1,17 +1,11 @@
 package com.tokopedia.core.myproduct.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.newgallery.GalleryActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -37,7 +30,7 @@ import rx.schedulers.Schedulers;
 
 public class ImageDownloadHelper {
 
-    private WeakReference<Context> contextWeakReference;
+    private Context context;
 
     private static final int WIDTH_DOWNLOAD = 2048;
     private static final int DEF_WIDTH_CMPR = 2048;
@@ -45,20 +38,20 @@ public class ImageDownloadHelper {
 
     private boolean needCompressTkpd = false;
 
-    private WeakReference<OnImageDownloadListener> onImageDownloadListenerWeakReference;
+    private OnImageDownloadListener onImageDownloadListener;
     public interface OnImageDownloadListener{
         void onError(Throwable e);
         void onSuccess(ArrayList<String> localPaths);
     }
     public ImageDownloadHelper(Context context){
-        this.contextWeakReference = new WeakReference<>(context);
+        this.context = context;
     }
-    
+
     public void convertHttpPathToLocalPath(List<String> urlsToDownload,
                                            boolean needCompressTkpd,
                                            OnImageDownloadListener onImageDownloadListener) {
         this.needCompressTkpd = needCompressTkpd;
-        onImageDownloadListenerWeakReference= new WeakReference<>(onImageDownloadListener);
+        this.onImageDownloadListener= onImageDownloadListener;
         downloadImages(urlsToDownload)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,22 +64,22 @@ public class ImageDownloadHelper {
 
                             @Override
                             public void onError(Throwable e) {
-                                if (onImageDownloadListenerWeakReference.get()!= null) {
-                                    onImageDownloadListenerWeakReference.get().onError(e);
+                                if (ImageDownloadHelper.this.onImageDownloadListener!= null) {
+                                    ImageDownloadHelper.this.onImageDownloadListener.onError(e);
                                 }
                             }
 
                             @Override
                             public void onNext(List<File> files) {
-                                ArrayList<String> localPaths = new ArrayList<>();
+                                ArrayList<String> resultLocalPaths = new ArrayList<>();
                                 if (files == null || files.size() == 0) {
                                     throw new NullPointerException();
                                 }
                                 for (int i = 0, sizei = files.size(); i < sizei; i++) {
-                                    localPaths.add(files.get(i).getAbsolutePath());
+                                    resultLocalPaths.add(files.get(i).getAbsolutePath());
                                 }
-                                if (onImageDownloadListenerWeakReference.get()!= null) {
-                                    onImageDownloadListenerWeakReference.get().onSuccess(localPaths);
+                                if (ImageDownloadHelper.this.onImageDownloadListener != null) {
+                                    ImageDownloadHelper.this.onImageDownloadListener.onSuccess(resultLocalPaths);
                                 }
                             }
                         }
@@ -94,8 +87,9 @@ public class ImageDownloadHelper {
     }
 
     private Observable<List<File>> downloadImages(final List<String> urls) {
+        // use concat map to preserve the ordering
         return Observable.from(urls)
-                .flatMap(new Func1<String, Observable<File>>() {
+                .concatMap(new Func1<String, Observable<File>>() {
                     @Override
                     public Observable<File> call(String url) {
                         return downloadObservable(url);
@@ -109,26 +103,27 @@ public class ImageDownloadHelper {
                 .map(new Func1<String, File>() {
                     @Override
                     public File call(String url) {
-                        if (contextWeakReference.get() == null ){
+                        if (context == null ){
                             return null;
                         }
-                        FutureTarget<File> future = Glide.with(contextWeakReference.get())
+                        FutureTarget<File> future = Glide.with(context)
                                 .load(url)
                                 .downloadOnly(WIDTH_DOWNLOAD, WIDTH_DOWNLOAD);
                         try {
                             File cacheFile = future.get();
                             String cacheFilePath = cacheFile.getAbsolutePath();
+                            File photo;
                             if (needCompressTkpd) {
                                 String fileNameToMove = FileUtils.generateUniqueFileName(cacheFilePath);
-                                File photo = FileUtils.writeImageToTkpdPath(
+                                photo = FileUtils.writeImageToTkpdPath(
                                         FileUtils.compressImage(
                                                 cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                                         fileNameToMove);
-                                if (photo != null) {
-                                    return photo;
-                                }
                             } else {
-                                return writeImageToTkpdPath(cacheFile);
+                                photo = writeImageToTkpdPath(cacheFile);
+                            }
+                            if (photo != null) {
+                                return photo;
                             }
                         } catch (InterruptedException | ExecutionException e) {
                             e.printStackTrace();

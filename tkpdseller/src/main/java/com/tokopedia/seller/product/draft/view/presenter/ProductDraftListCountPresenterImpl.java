@@ -1,9 +1,17 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -15,13 +23,16 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
     private FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
+    private SaveBulkDraftProductUseCase saveBulkDraftProductUseCase;
 
     public ProductDraftListCountPresenterImpl(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
                                               ClearAllDraftProductUseCase clearAllDraftProductUseCase,
-                                              UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
+                                              UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
+                                              SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
         this.fetchAllDraftProductCountUseCase = fetchAllDraftProductCountUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
+        this.saveBulkDraftProductUseCase = saveBulkDraftProductUseCase;
     }
 
     @Override
@@ -54,6 +65,44 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
                 // no op
             }
         });
+    }
+
+    @Override
+    public void saveInstagramToDraft(@NonNull ArrayList<String> localPathList,
+                                     @NonNull ArrayList<String> instagramDescList) {
+        ArrayList<UploadProductInputDomainModel> uploadProductInputDomainModelList = new ArrayList<>();
+
+        for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
+            UploadProductInputDomainModel uploadProductInputDomainModel = new UploadProductInputDomainModel();
+            uploadProductInputDomainModel.setProductDescription(instagramDescList.get(i));
+            uploadProductInputDomainModelList.add(uploadProductInputDomainModel);
+        }
+        saveBulkDraftProductUseCase.execute(
+                SaveBulkDraftProductUseCase.generateUploadProductParam(uploadProductInputDomainModelList),
+                getSaveInstagramToDraftSubscriber());
+    }
+
+    private Subscriber<List<Long>> getSaveInstagramToDraftSubscriber() {
+        return new Subscriber<List<Long>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()) {
+                    getView().onSaveBulkDraftError(e);
+                }
+            }
+
+            @Override
+            public void onNext(List<Long> productIds) {
+                if(isViewAttached()) {
+                    getView().onSaveBulkDraftSuccess(productIds);
+                }
+            }
+        };
     }
 
     private Subscriber<Long> getSubscriber(){
