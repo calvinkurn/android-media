@@ -54,7 +54,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     private final TxOrderNetInteractor netInteractor;
     private final CancelReplacementUseCase cancelReplacementUseCase;
     private final SessionHandler sessionHandler;
-
+    private static final int FREE_RETURN = 1;
     public TxListPresenterImpl(TxListViewListener viewListener,
                                CancelReplacementUseCase cancelReplacementUseCase,
                                SessionHandler sessionHandler) {
@@ -464,11 +464,13 @@ public class TxListPresenterImpl implements TxListPresenter {
             btnNotReceive.setVisibility(View.VISIBLE);
         else
             btnBack.setVisibility(View.VISIBLE);
+      
         //will be used later
 //        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
 //            llFreeReturn.setVisibility(View.VISIBLE);
 //            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
 //        }
+  
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -487,17 +489,25 @@ public class TxListPresenterImpl implements TxListPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                LocalCacheHandler cache = new LocalCacheHandler(context,
-                        ConstantOnBoarding.CACHE_FREE_RETURN);
-                if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
-                    viewListener.navigateToActivityRequest(
-                            InboxRouter.getCreateResCenterActivityIntent(
-                                    context, orderData.getOrderDetail().getDetailOrderId()
-                            ), CREATE_RESCENTER_REQUEST_CODE
-                    );
+                if (orderData.getOrderDetail().getDetailFreeReturn() == FREE_RETURN) {
+                    LocalCacheHandler cache = new LocalCacheHandler(context,
+                            ConstantOnBoarding.CACHE_FREE_RETURN);
+                    if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    } else {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    }
                 } else {
                     viewListener.navigateToActivityRequest(
-                            InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                            InboxRouter.getCreateResCenterActivityIntent(
                                     context, orderData.getOrderDetail().getDetailOrderId()
                             ), CREATE_RESCENTER_REQUEST_CODE
                     );
