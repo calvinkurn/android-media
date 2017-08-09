@@ -334,7 +334,6 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
-//        presenter.processConfirmDeliver(this, orderData);
         presenter.processFinish(this, orderData);
         UnifyTracking.eventReceivedShipping();
     }
