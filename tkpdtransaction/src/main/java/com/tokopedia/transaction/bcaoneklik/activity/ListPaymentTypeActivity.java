@@ -174,7 +174,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             @Override
             public void onNext(PaymentListModel paymentListModel) {
                 rootView.setVisibility(View.VISIBLE);
-                progressDialog.dismiss();
+                mainProgressDialog.dismiss();
                 paymentModels = paymentListModel;
                 bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
                         paymentListModel.getBcaOneClickUserModels(),
