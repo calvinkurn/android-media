@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.edit.domain.interactor.categorypicker;
+package com.tokopedia.seller.product.category.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.edit.domain.CategoryRepository;
+import com.tokopedia.seller.product.category.domain.CategoryRepository;
 
 import javax.inject.Inject;
 

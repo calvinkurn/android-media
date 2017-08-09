@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.edit.domain;
+package com.tokopedia.seller.product.category.domain;
 
-import com.tokopedia.seller.product.edit.domain.model.CategoryDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.CategoryLevelDomainModel;
+import com.tokopedia.seller.product.category.domain.model.CategoryDomainModel;
+import com.tokopedia.seller.product.category.domain.model.CategoryLevelDomainModel;
 
 import java.util.List;
 

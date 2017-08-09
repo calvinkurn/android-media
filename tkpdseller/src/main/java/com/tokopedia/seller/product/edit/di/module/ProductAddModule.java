@@ -34,7 +34,7 @@ import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.edit.domain.CatalogRepository;
 import com.tokopedia.seller.product.edit.domain.CategoryRecommRepository;
-import com.tokopedia.seller.product.edit.domain.CategoryRepository;
+import com.tokopedia.seller.product.category.domain.CategoryRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
@@ -42,7 +42,7 @@ import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUse
 import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
+import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenterImpl;

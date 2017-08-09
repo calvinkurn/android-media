@@ -7,9 +7,9 @@ import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.edit.di.scope.CategoryPickerScope;
-import com.tokopedia.seller.product.edit.domain.CategoryRepository;
-import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.FetchCategoryFromSelectedUseCase;
-import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.FetchCategoryWithParentChildUseCase;
+import com.tokopedia.seller.product.category.domain.CategoryRepository;
+import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryFromSelectedUseCase;
+import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryWithParentChildUseCase;
 import com.tokopedia.seller.product.category.view.presenter.CategoryPickerPresenter;
 import com.tokopedia.seller.product.category.view.presenter.CategoryPickerPresenterImpl;
 

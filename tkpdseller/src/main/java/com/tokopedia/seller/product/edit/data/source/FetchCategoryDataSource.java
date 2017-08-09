@@ -3,8 +3,8 @@ package com.tokopedia.seller.product.data.source;
 import com.tokopedia.seller.product.data.mapper.CategoryDataToDomainMapper;
 import com.tokopedia.seller.product.data.source.db.CategoryDataManager;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
-import com.tokopedia.seller.product.edit.domain.model.CategoryDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.CategoryLevelDomainModel;
+import com.tokopedia.seller.product.category.domain.model.CategoryDomainModel;
+import com.tokopedia.seller.product.category.domain.model.CategoryLevelDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
