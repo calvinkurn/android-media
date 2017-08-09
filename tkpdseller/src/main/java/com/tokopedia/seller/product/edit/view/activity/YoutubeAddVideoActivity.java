@@ -10,8 +10,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.edit.di.component.DaggerYoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
+import com.tokopedia.seller.product.edit.di.module.CatalogPickerModule;
 import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.edit.view.dialog.YoutubeAddUrlDialog;
@@ -28,8 +30,6 @@ import java.util.List;
 public class YoutubeAddVideoActivity extends BaseActivity
         implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, TextPickerDialogListener {
 
-    private YoutubeVideoComponent youtubeVideoComponent;
-
     /**
      * due to limitation of existing dataset videoIds throw back is from here.
      */
@@ -38,7 +38,6 @@ public class YoutubeAddVideoActivity extends BaseActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initInjection();
 
         setContentView(R.layout.activity_product_add);
         if (getSupportActionBar() != null) {
@@ -73,19 +72,14 @@ public class YoutubeAddVideoActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void initInjection() {
-        youtubeVideoComponent = DaggerYoutubeVideoComponent
+    @Override
+    public YoutubeVideoComponent getComponent() {
+        return DaggerYoutubeVideoComponent
                 .builder()
-                .appComponent(getApplicationComponent())
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule()))
                 .youtubeVideoModule(new YoutubeVideoModule())
                 .build();
     }
-
-    @Override
-    public YoutubeVideoComponent getComponent() {
-        return youtubeVideoComponent;
-    }
-
 
     @Override
     public YoutubeAddVideoFragment youtubeAddVideoFragment() {

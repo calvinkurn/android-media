@@ -13,6 +13,8 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.edit.view.listener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.product.edit.view.model.CategoryViewModel;
@@ -27,7 +29,7 @@ import java.util.List;
 
 public class CategoryPickerActivity
         extends BaseActivity
-        implements CategoryPickerFragmentListener, HasComponent<AppComponent>{
+        implements CategoryPickerFragmentListener, HasComponent<ProductComponent>{
 
     public static final String CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED";
     public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
@@ -90,8 +92,8 @@ public class CategoryPickerActivity
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public ProductComponent getComponent() {
+        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
     }
 
     @Override

@@ -22,7 +22,6 @@ import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -33,12 +32,13 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftListComponent;
-import com.tokopedia.seller.product.edit.di.module.ProductDraftListModule;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
+import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftListComponent;
+import com.tokopedia.seller.product.edit.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
@@ -126,7 +126,7 @@ public class ProductDraftListFragment extends BaseListFragment<ProductDraftListP
         DaggerProductDraftListComponent
                 .builder()
                 .productDraftListModule(new ProductDraftListModule())
-                .appComponent(getComponent(AppComponent.class))
+                .productComponent(getComponent(ProductComponent.class))
                 .build()
                 .inject(this);
         productDraftListPresenter.attachView(this);

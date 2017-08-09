@@ -15,11 +15,12 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftListCountComponent;
-import com.tokopedia.seller.product.edit.di.module.ProductDraftListCountModule;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
+import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftListCountComponent;
+import com.tokopedia.seller.product.edit.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import javax.inject.Inject;
@@ -42,11 +43,10 @@ public class ManageProductSeller extends ManageProduct implements
         super.onCreate(savedInstanceState);
         tvDraftProductInfo = (TextView) findViewById(R.id.tv_draft_product);
         tvDraftProductInfo.setVisibility(View.GONE);
-
         DaggerProductDraftListCountComponent
                 .builder()
                 .productDraftListCountModule(new ProductDraftListCountModule())
-                .appComponent(getComponent())
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule()))
                 .build()
                 .inject(this);
         productDraftListCountPresenter.attachView(this);

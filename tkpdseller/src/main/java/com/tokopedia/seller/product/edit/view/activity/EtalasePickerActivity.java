@@ -13,6 +13,8 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.edit.view.fragment.EtalasePickerFragment;
@@ -25,7 +27,7 @@ import com.tokopedia.seller.product.edit.view.listener.EtalasePickerView;
 
 public class EtalasePickerActivity
         extends BaseActivity
-        implements HasComponent<AppComponent>,
+        implements HasComponent<ProductComponent>,
         EtalasePickerFragmentListener,
         TextPickerDialogListener {
 
@@ -73,8 +75,8 @@ public class EtalasePickerActivity
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public ProductComponent getComponent() {
+        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
     }
 
     @Override

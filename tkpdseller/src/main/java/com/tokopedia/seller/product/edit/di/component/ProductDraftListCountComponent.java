@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.edit.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 
@@ -12,7 +13,7 @@ import dagger.Component;
  */
 
 @ProductAddScope
-@Component(modules = ProductDraftListCountModule.class, dependencies = AppComponent.class)
+@Component(modules = ProductDraftListCountModule.class, dependencies = ProductComponent.class)
 public interface ProductDraftListCountComponent {
     void inject(ManageProductSeller manageProduct);
 }

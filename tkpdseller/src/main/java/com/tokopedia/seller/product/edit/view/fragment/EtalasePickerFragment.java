@@ -14,12 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerEtalasePickerComponent;
 import com.tokopedia.seller.product.edit.di.module.EtalasePickerModule;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
@@ -29,7 +30,6 @@ import com.tokopedia.seller.product.edit.view.listener.EtalasePickerFragmentList
 import com.tokopedia.seller.product.edit.view.listener.EtalasePickerView;
 import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseViewModel;
 import com.tokopedia.seller.product.edit.view.presenter.EtalasePickerPresenter;
-import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 
 import javax.inject.Inject;
 
@@ -60,7 +60,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     protected void initInjector() {
         DaggerEtalasePickerComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .productComponent(getComponent(ProductComponent.class))
                 .etalasePickerModule(new EtalasePickerModule())
                 .build()
                 .inject(this);

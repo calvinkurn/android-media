@@ -39,6 +39,9 @@ import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
@@ -62,6 +65,9 @@ public class SellerRouterApplication extends MainApplication
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
+    private DaggerProductComponent.Builder daggerProductBuilder;
+    private ProductComponent productComponent;
+
     private DaggerGoldMerchantComponent.Builder daggerGoldMerchantBuilder;
     private GoldMerchantComponent goldMerchantComponent;
 
@@ -72,8 +78,16 @@ public class SellerRouterApplication extends MainApplication
     }
 
     private void initializeDagger() {
-        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder()
-                .goldMerchantModule(new GoldMerchantModule());
+        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder().goldMerchantModule(new GoldMerchantModule());
+        daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
+    }
+
+    @Override
+    public ProductComponent getProductComponent(ActivityModule activityModule) {
+        if (productComponent == null) {
+            productComponent = daggerProductBuilder.appComponent(getApplicationComponent(activityModule)).build();
+        }
+        return productComponent;
     }
 
     public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {

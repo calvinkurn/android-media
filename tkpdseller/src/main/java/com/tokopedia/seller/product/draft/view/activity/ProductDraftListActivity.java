@@ -9,13 +9,15 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 
 /**
  * Created by User on 6/19/2017.
  */
 
-public class ProductDraftListActivity extends DrawerPresenterActivity implements HasComponent<AppComponent>{
+public class ProductDraftListActivity extends DrawerPresenterActivity implements HasComponent<ProductComponent>{
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
 
     @Override
@@ -111,8 +113,8 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public ProductComponent getComponent() {
+        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
     }
 
 }

@@ -13,6 +13,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerCategoryPickerComponent;
 import com.tokopedia.seller.product.edit.di.module.CategoryPickerModule;
 import com.tokopedia.seller.product.edit.view.adapter.category.CategoryPickerLevelAdapter;
@@ -56,7 +57,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     protected void initInjector() {
         DaggerCategoryPickerComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .productComponent(getComponent(ProductComponent.class))
                 .categoryPickerModule(new CategoryPickerModule())
                 .build()
                 .inject(this);

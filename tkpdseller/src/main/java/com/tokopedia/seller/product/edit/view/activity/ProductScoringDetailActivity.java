@@ -8,9 +8,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.ProductExtraConstant;
 import com.tokopedia.seller.product.edit.view.fragment.ProductScoringDetailFragment;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -19,7 +20,7 @@ import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicato
  * Created by zulfikarrahman on 4/12/17.
  */
 
-public class ProductScoringDetailActivity extends BaseActivity implements HasComponent<AppComponent> {
+public class ProductScoringDetailActivity extends BaseActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductScoringDetailFragment.class.getSimpleName();
 
@@ -63,7 +64,7 @@ public class ProductScoringDetailActivity extends BaseActivity implements HasCom
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public ProductComponent getComponent() {
+        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
     }
 }

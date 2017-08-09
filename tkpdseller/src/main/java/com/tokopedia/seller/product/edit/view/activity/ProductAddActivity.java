@@ -32,6 +32,8 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
@@ -59,7 +61,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends BaseActivity implements HasComponent<AppComponent>,
+public class ProductAddActivity extends BaseActivity implements HasComponent<ProductComponent>,
         TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
     public static final int PRODUCT_REQUEST_CODE = 8293;
@@ -329,8 +331,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public ProductComponent getComponent() {
+        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
     }
 
     public void showProgressDialog() {
