@@ -46,7 +46,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean headerPlaced = false;
     private boolean isFeed = false;
     private boolean shouldLoadAds = true; //default load ads
-    //    private int adsPos = 0;
     private final RecyclerView.Adapter adapter;
     private RecyclerView recyclerView;
 
