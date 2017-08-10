@@ -36,10 +36,6 @@ const campaigns = (state = {
         case `${ADD_TO_WISHLIST}_${PENDING}`:
             return state
         case `${ADD_TO_WISHLIST}_${FULFILLED}`:
-            // return state
-            console.log(action.payload)
-            console.log(state)
-            console.log(state.items)
             return {
                 ...state,
                 items: state.items.map(b => {
@@ -89,8 +85,6 @@ const campaigns = (state = {
             }
 
         case `${REMOVE_FROM_WISHLIST}_${FULFILLED}`:
-            console.log(state)
-            console.log(action)
             return {
                 ...state,
                 items: state.items.map(b => {
@@ -115,8 +109,6 @@ const campaigns = (state = {
             }
 
         case REMOVE_FROM_WISHLIST:
-            console.log(state)
-            console.log(action)
             return {
                 ...state,
                 items: state.items.map(b => {
@@ -198,7 +190,8 @@ const brands = (state = {
         case `${FETCH_BRANDS}_${FULFILLED}`:
             const brandsData = action.payload.data || []
             const totalBrands = action.payload.total_brands
-            const items = [...state.items, ...brandsData]
+            const itemsRefresh = action.payload.status === 'REFRESH' ? [...state.items.slice(0, 10)] : [...state.items]
+            const items = action.payload.status === 'REFRESH' ? itemsRefresh : [...state.items, ...brandsData]
             const pagination = {
                 ...state.pagination,
                 offset: items.length
@@ -207,7 +200,7 @@ const brands = (state = {
             const getVisibleGridData = (brands, count) => {
                 const data = []
                 let howMany = state.grid.itemsToShow
-                let index = state.grid.index
+                let index = action.payload.status === 'REFRESH' ? 0 : state.grid.index
 
                 while (howMany--) {
                     data.push(brands[index])
@@ -220,6 +213,7 @@ const brands = (state = {
                 }
             }
             return {
+                status: action.payload.status,
                 items,
                 isFetching: false,
                 pagination,

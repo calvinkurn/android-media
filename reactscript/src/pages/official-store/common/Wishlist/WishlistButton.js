@@ -13,6 +13,9 @@ import {
 import { icons } from '../../../../components/icons'
 import { addToWishlist, removeFromWishlist } from '../../actions/actions'
 
+
+const icon_love = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist-red.png?alt=media&token=7cb838f9-3f3b-4705-8218-eb242a0377f1'
+const icon_notlove = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist.png?alt=media&token=f13280d1-7d29-4e3c-838e-f040fa8a50c2'
 class Wishlist extends Component {
   _onTap = (isWishlist, pId, User_ID) => {
     console.log(User_ID)
@@ -32,8 +35,8 @@ class Wishlist extends Component {
         <Touchable onPress={() => this._onTap(isWishlist, productId, User_ID)}>
            <View>
             {
-              isWishlist ? (<Image source={icons.icon_wishlist_red} style={{width:20, height:20, margin:10}} />) :
-                (<Image source={icons.icon_wishlist} style={{width:20, height:20, margin:10}} />)
+              isWishlist ? (<Image source={{ uri: icon_love }} style={{width:20, height:20, margin:10}} />) :
+                (<Image source={{ uri: icon_notlove }} style={{width:20, height:20, margin:10}} />)
             }
           </View> 
         </Touchable>

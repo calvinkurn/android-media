@@ -32,7 +32,7 @@ const BrandList = (props) => {
   }
 
   const validBrands = props.brands.filter(brand => brand && brand.microsite_url && brand.products.length && brand.logo_url)
-
+  
   return (
     <View>
       <Grid {...gridProps} />
@@ -143,6 +143,7 @@ const BrandList = (props) => {
       {
         !props.isFetching && (
           <LoadMore
+            User_ID={props.User_ID}
             onLoadMore={props.loadMore}
             offset={props.offset}
             limit={props.limit}

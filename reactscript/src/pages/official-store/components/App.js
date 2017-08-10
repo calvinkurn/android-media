@@ -32,7 +32,7 @@ class App extends Component {
     dispatch(refreshState())
     dispatch(fetchBanners())
     dispatch(fetchCampaigns(User_ID))
-    dispatch(fetchBrands(10, 0, User_ID))
+    dispatch(fetchBrands(10, 0, User_ID, 'REFRESH'))
     setTimeout(() => {
       this.setState({ refreshing: false });
     }, 5000)

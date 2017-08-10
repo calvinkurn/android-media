@@ -28,7 +28,7 @@ class BrandContainer extends Component {
     }
 
     const bannerListProps = {
-      brands: totalItemsCount === 10 ? totalItems : totalItems.slice(0, 10),
+      brands: totalItems,
       gridData: this.props.brands.grid.data,
       offset,
       limit,

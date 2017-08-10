@@ -186,13 +186,14 @@ export const fetchBanners = () => ({
 
 // ========================= Fetch Brands ========================= //
 export const FETCH_BRANDS = 'FETCH_BRANDS'
-export const fetchBrands = (limit, offset, User_ID) => ({
+export const fetchBrands = (limit, offset, User_ID, status) => ({
     type: FETCH_BRANDS,
-    payload: getBrands(limit, offset, User_ID)
+    payload: getBrands(limit, offset, User_ID, status)
 })
 
-getBrands = (limit, offset, User_ID) => {
-    return NetworkModule.getResponse(`${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${User_ID}&limit=${limit}&offset=${offset}`, "GET", "", false)
+getBrands = (limit, offset, User_ID, status) => {
+    const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${User_ID}&limit=${limit}&offset=${offset}`
+    return NetworkModule.getResponse(url, "GET", "", false)
         .then(response => {
             const jsonResponse = JSON.parse(response)
             const brands = jsonResponse.data
@@ -211,12 +212,12 @@ getBrands = (limit, offset, User_ID) => {
             let shopIds = brands.map(shop => shop.shop_id)
             shopIds = shopIds.toString()
             const shopCount = shopIds.length
-            const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
-            console.log(url)
+            const url_brands = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
+            console.log(url_brands)
 
             let ids = []
             let wishlistProd = []
-            return NetworkModule.getResponse(`${url}`, "GET", "", false)
+            return NetworkModule.getResponse(`${url_brands}`, "GET", "", false)
                 .then(brandsProducts => {
                     const jsonResponse = JSON.parse(brandsProducts)
                     const brands = jsonResponse.data.brands
@@ -250,6 +251,7 @@ getBrands = (limit, offset, User_ID) => {
                         }
                     })
 
+                    console.log(shopList)
                     return checkProductInWishlist(User_ID, ids.toString())
                         .then(res => {
                             wishlistProd = res.data.ids.map(id => +id)
@@ -267,6 +269,7 @@ getBrands = (limit, offset, User_ID) => {
                                     }
                                 }),
                                 total_brands,
+                                status: status === 'REFRESH' ? 'REFRESH' : null
                             }
                         })
 

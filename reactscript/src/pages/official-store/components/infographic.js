@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import OriginalImage from './img/icon-original.png'
 import ServiceImage from './img/icon-service.png'
 import PromotionImage from './img/icon-promotion.png'
-import QualityImage from './img/icon-free-installment.png'
+const QualityImage = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/infographic-free-installment.png?alt=media&token=8d0a9339-c2e6-49f2-81a1-e22c1d73c450'
 
 const { height, width, fontScale } = Dimensions.get('window');
 const scale = width / 375
@@ -12,22 +12,22 @@ const infoContent = [
     {
       name: 'Produk dari Brand Resmi',
       desc: 'Semua produk di Official Store Tokopedia merupakan produk langsung dari brand-brand pilihan.',
-      img: OriginalImage,
+      img: 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/infographic-original.png?alt=media&token=1bde4c36-e251-4049-aec8-f924b897a650',
     },
     {
       name: 'Pelayanan Berkualitas untuk Anda',
       desc: 'Tim Customer Care kami selalu siap untuk melayani Anda selama 24/7.',
-      img: ServiceImage,
+      img: 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/infographic-service.png?alt=media&token=7472cdc5-70d2-41b9-993c-e76f60312b5e',
     },
     {
       name: 'Penawaran Promo Ekslusif',
       desc: 'Dapatkan penawaran ekslusif mulai dari diskon, cashback, hingga buy 1 get 1 free.',
-      img: PromotionImage,
+      img: 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/infographic-promotion.png?alt=media&token=92072d69-1148-46a2-b67a-91706764dd8b',
     },
     {
       name: 'Cicilan 0% Gratis Biaya Admin',
       desc: 'Cicilan bunga 0% dan bebas biaya admin untuk tenor 3, 6, 12, 18, sampai 24 bulan.',
-      img: QualityImage
+      img: 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/infographic-free-installment.png?alt=media&token=8d0a9339-c2e6-49f2-81a1-e22c1d73c450'
     }]
 
 
@@ -38,7 +38,7 @@ class infographic extends Component {
         {infoContent.map((info, idx) => (
           <View style={styles.osInfoContent} key={idx}>
             <View style={styles.osInfoImgWrap}>
-              <Image source={info.img} style={styles.osInfoImg} />
+              <Image source={{ uri: info.img }} style={{width:70, height:70, resizeMode:'contain'}} />
             </View>
             <View style={styles.osInfoContentText}>
               <View>
