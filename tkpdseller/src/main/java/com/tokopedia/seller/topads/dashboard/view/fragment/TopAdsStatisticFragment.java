@@ -155,7 +155,11 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                     .setDotDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.oval_2_copy_6))
                     .buildChart(contentGraph);
         } catch (Exception e) {
-
+            if (e != null && e.getMessage() != null) {
+                Log.e("TopAdsStatisticFragment", e.getMessage());
+            } else {
+                Log.e("TopAdsStatisticFragment", "Null Pointer");
+            }
         }
     }
 

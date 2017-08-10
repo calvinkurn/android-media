@@ -69,12 +69,6 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    SessionHandler provideSessionHandler(@ApplicationContext Context context) {
-        return new SessionHandler(context);
-    }
-
-    @FeedPlusScope
-    @Provides
     ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
         return ApolloClient.builder()
                 .okHttpClient(okHttpClient)

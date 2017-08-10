@@ -188,9 +188,9 @@ public class WebViewLoginFragment extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if (getTargetFragment().isVisible())
+        if (getTargetFragment().isVisible()) {
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
-//        KeyboardHandler.hideSoftKeyboard(getActivity());
+        }
         super.onDismiss(dialog);
     }
 }
