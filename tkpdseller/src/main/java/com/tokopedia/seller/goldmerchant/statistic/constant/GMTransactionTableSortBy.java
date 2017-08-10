@@ -5,7 +5,7 @@ package com.tokopedia.seller.goldmerchant.statistic.constant;
  */
 
 public @interface GMTransactionTableSortBy {
-    int ORDER_SUM = 5;// total transaksi
+    // int ORDER_SUM = 5;// total transaksi
     int TRANS_SUM = 3;// transaksi sukses
     int DELIVERED_AMT = 13; // pendapatan bersih
 

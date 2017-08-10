@@ -98,8 +98,8 @@ public class GMStatDataSource {
                             switch (sortBy) {
                                 case GMTransactionTableSortBy.DELIVERED_AMT:
                                     return ascendingSign * (o1.getDeliveredAmt() - o2.getDeliveredAmt());
-                                case GMTransactionTableSortBy.ORDER_SUM:
-                                    return ascendingSign * (o1.getOrderSum() - o2.getOrderSum());
+                                /*case GMTransactionTableSortBy.ORDER_SUM:
+                                    return ascendingSign * (o1.getOrderSum() - o2.getOrderSum());*/
                                 case GMTransactionTableSortBy.TRANS_SUM:
                                     return ascendingSign * (o1.getTransSum() - o2.getTransSum());
                                 default:
