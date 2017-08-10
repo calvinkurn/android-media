@@ -19,8 +19,8 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftListCountComponent;
-import com.tokopedia.seller.product.edit.di.module.ProductDraftListCountModule;
+import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
+import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import javax.inject.Inject;

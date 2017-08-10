@@ -32,13 +32,14 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
-import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftListComponent;
-import com.tokopedia.seller.product.edit.di.module.ProductDraftListModule;
+import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
+import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
@@ -62,7 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ProductDraftListFragment extends BaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
+public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, ProductDraftViewModel>
         implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener<ProductDraftViewModel> {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
