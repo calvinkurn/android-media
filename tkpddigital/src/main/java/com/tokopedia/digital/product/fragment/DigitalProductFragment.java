@@ -786,7 +786,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 if (ussdMobileNumber != null) {
                     presenter.processToCheckBalance(ussdMobileNumber);
                 } else {
-                    showMessageAlert(getActivity().getString(R.string.error_message_ussd_operator_not_matched), getActivity().getString(R.string.error_message_ussd_title));
+                    showMessageAlert(getActivity().getString(R.string.error_message_ussd_operator_not_matched), getActivity().getString(R.string.message_ussd_title));
                 }
                 break;
         }
@@ -974,7 +974,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             pulsaBalance.setMobileNumber(presenter.getCurrentMobileNumber());
             navigateToActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(), categoryId, categoryDataState.getName()));
         } else {
-            showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.error_message_ussd_title));
+            showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
         }
     }
 
@@ -983,7 +983,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void showPulsaBalanceError(String message) {
         checkPulsaBalanceView.hideProgressbar();
         //showToastMessage(message);
-        showMessageAlert(message, getActivity().getString(R.string.error_message_ussd_title));
+        showMessageAlert(message, getActivity().getString(R.string.message_ussd_title));
     }
 
     @Override

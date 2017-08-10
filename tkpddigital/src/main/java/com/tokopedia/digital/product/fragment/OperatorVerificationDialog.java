@@ -3,12 +3,14 @@ package com.tokopedia.digital.product.fragment;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +45,7 @@ public class OperatorVerificationDialog extends DialogFragment {
     private TextView btnCancel;
     private TextView btnOk;
     private TextView tvErrorNumber;
+    private TextView tvUssdDesc;
     private String selectedOperatorName;
     private ImageView imgOperator;
     private List<Operator> operatorList;
@@ -109,6 +112,17 @@ public class OperatorVerificationDialog extends DialogFragment {
         btnCancel = (TextView) view.findViewById(R.id.btn_cancel);
         btnOk = (TextView) view.findViewById(R.id.btn_ok);
         tvErrorNumber = (TextView) view.findViewById(R.id.tv_error_number);
+        tvUssdDesc = (TextView) view.findViewById(R.id.tv_ussd_desc);
+        String operatorName = DeviceUtil.getOperatorName(getActivity());
+        Resources res = getResources();
+        // String text = String.format(res.getString(R.string.msg_ussd_sim_number),operatorName);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            tvUssdDesc.setText(Html.fromHtml(res.getString(R.string.msg_ussd_sim_number, operatorName), Html.FROM_HTML_MODE_LEGACY));
+
+        } else {
+            tvUssdDesc.setText(Html.fromHtml(res.getString(R.string.msg_ussd_sim_number, operatorName)));
+
+        }
         final TextWatcher textWatcher = getTextWatcherInput();
         autoCompleteTextView.removeTextChangedListener(textWatcher);
         autoCompleteTextView.addTextChangedListener(textWatcher);
@@ -268,12 +282,12 @@ public class OperatorVerificationDialog extends DialogFragment {
         };
     }
 
-    private void setOkButtonEnable(boolean enable){
+    private void setOkButtonEnable(boolean enable) {
         btnOk.setEnabled(enable);
-        if(enable){
-            btnOk.setTextColor(ContextCompat.getColor(getActivity() , R.color.green_btn));
-        }else{
-            btnOk.setTextColor(ContextCompat.getColor(getActivity() ,R.color.grey));
+        if (enable) {
+            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_btn));
+        } else {
+            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey));
         }
     }
 
@@ -289,6 +303,10 @@ public class OperatorVerificationDialog extends DialogFragment {
             selectedOperatorName = selectedOperatorName.split(" ")[0];
         } else {
             return false;
+        }
+
+        if ("Tri".equalsIgnoreCase(selectedOperatorName) && "3".equalsIgnoreCase(operatorName)) {
+            return true;
         }
 
         if (operatorName.equalsIgnoreCase(selectedOperatorName)) {

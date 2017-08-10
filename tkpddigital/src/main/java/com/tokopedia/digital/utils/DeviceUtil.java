@@ -3,7 +3,13 @@ package com.tokopedia.digital.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.telecom.PhoneAccountHandle;
+import android.telecom.TelecomManager;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
@@ -17,6 +23,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * @author anggaprasetiyo on 3/6/17.
@@ -97,18 +104,62 @@ public class DeviceUtil {
     public static String getMobileNumber(Activity context) {
         String phoneNumber = null;
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            phoneNumber = tMgr.getLine1Number();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+                for (int i = 0; i < subscriptionInfos.size(); i++) {
+                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(i);
+                    if (lsuSubscriptionInfo!=null&&lsuSubscriptionInfo.getSimSlotIndex() == 0) {
+                        phoneNumber = lsuSubscriptionInfo.getNumber();
+                        return phoneNumber;
+                    }
+                }
+
+            }
+            if (phoneNumber == null) {
+                TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                phoneNumber = tMgr.getLine1Number();
+            }
         }
+
         return phoneNumber;
     }
 
     public static String getOperatorName(Activity context) {
         String operatorName = null;
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            operatorName = tMgr.getSimOperatorName();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+                for (int i = 0; i < subscriptionInfos.size(); i++) {
+                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(i);
+                    if (lsuSubscriptionInfo!=null&&lsuSubscriptionInfo.getSimSlotIndex() == 0) {
+                        if (lsuSubscriptionInfo.getCarrierName() != null) {
+                            operatorName = lsuSubscriptionInfo.getCarrierName().toString();
+                            return operatorName;
+                        }
+                    }
+                }
+
+            }
+            if (operatorName == null) {
+                TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                operatorName = tMgr.getSimOperatorName();
+
+            }
         }
         return operatorName;
+    }
+
+    public static PhoneAccountHandle getPhoneHandleSim1(Activity context) {
+        PhoneAccountHandle sim1 = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                final List<PhoneAccountHandle> enabledAccounts = telecomManager.getCallCapablePhoneAccounts();
+                if (enabledAccounts != null && enabledAccounts.size() > 1) {
+                    return enabledAccounts.get(0);
+                }
+            }
+        }
+        return sim1;
     }
 }

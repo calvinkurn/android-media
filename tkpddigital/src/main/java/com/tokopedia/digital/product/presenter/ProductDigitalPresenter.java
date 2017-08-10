@@ -6,12 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -366,12 +367,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
         String ussd = getSelectedUssdOperator().getUssdCode();
 
-        Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() + "and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() + "and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
         if (ussd != null && !"".equalsIgnoreCase(ussd.trim())) {
             view.registerUssdReciever();
             dailUssdToCheckBalance(ussd);
         } else {
-            view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed) + " and number is " + getCurrentMobileNumber() + " and Operator is " + getSelectedUssdOperator().getName(), view.getActivity().getString(R.string.error_message_ussd_title));
+            view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed) + " and number is " + getCurrentMobileNumber() + " and Operator is " + getSelectedUssdOperator().getName(), view.getActivity().getString(R.string.message_ussd_title));
 
         }
 
@@ -387,10 +388,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         for (String s : simSlotName)
             intent.putExtra(s, 0); //0 or 1 according to sim.......
 
-//        //works only for API >= 21
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            intent.putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE", " here You have to get phone account handle list by using telecom manger for both sims:- using this method getCallCapablePhoneAccounts()");
-//        }
+        //works only for API >= 23
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (DeviceUtil.getPhoneHandleSim1(view.getActivity()) != null) {
+                intent.putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE", (Parcelable) DeviceUtil.getPhoneHandleSim1(view.getActivity()));
+            }
+        }
         if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
             view.getActivity().startActivity(intent);
         }
@@ -515,12 +518,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             }
         }
-//        else {
-//            ussdCode = "*111#";
-//        }
-//        if (ussdCode == null || "".equalsIgnoreCase(ussdCode)) {
-//            ussdCode = "*111#";
-//        }
         return new Operator();
     }
 

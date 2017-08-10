@@ -28,7 +28,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
         return new DigitalCheckoutPassData.Builder()
                 .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                 .categoryId(categoryId)
-                .clientNumber("0812341324")
+                .clientNumber(pulsaBalance.getMobileNumber())
                 .instantCheckout(isInstantCheckout ? "1" : "0")
                 .isPromo("0")
                 .operatorId(operator.getOperatorId())

@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_ussd_titile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
@@ -21,11 +22,12 @@
             android:paddingRight="@null"
             android:textStyle="bold"
             android:paddingStart="@dimen/padding_vvs"
-            android:text="@string/error_message_ussd_title"
+            android:text="@string/message_ussd_title"
             android:textColor="@color/digital_item_title"
             android:textSize="@dimen/font_medium" />
 
         <TextView
+            android:id="@+id/tv_ussd_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingEnd="@null"

@@ -88,8 +88,10 @@ public class USSDAccessibilityService extends AccessibilityService {
 
     private String processUSSDText(List<CharSequence> eventText) {
         for (CharSequence s : eventText) {
-            String text = String.valueOf(s);
-            return text;
+            if (s.length() >= 15) {
+                String text = String.valueOf(s);
+                return text;
+            }
 
         }
 

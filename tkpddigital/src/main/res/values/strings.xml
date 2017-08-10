@@ -55,11 +55,11 @@
     <string name="not_applicable">NA</string>
     <string name="error_message_ussd_msg_not_parsed">Mohon maaf, pengecekan sisa pulsa anda tidak dapat dilakukan</string>
     <string name="error_message_ussd_operator_not_matched">Maaf, nomor yang dimasukan tidak sesuai dengan operator SIM anda</string>
-    <string name="error_message_ussd_title">Cek Sisa Pulsa</string>
+    <string name="message_ussd_title">Cek Sisa Pulsa</string>
     <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="dialog_accessibility_service_on">Please allow App to accessibility for ussd code </string>
     <string name="msg_ussd_sim_balance">*Saldo yang tertera adalah sisa pulsa pada SIM card dalam perangkat ini</string>
-    <string name="msg_ussd_sim_number">Masukkan nomor handphone yang anda gunakan dalam perangkat ini</string>
+    <string name="msg_ussd_sim_number">Operator SIM yang terdeteksi adalah <b>%1$s</b>.Silakan masukkan nomor handphone yang Anda gunakan dalam perangkat ini</string>
     <string name="promo_category">Promo %1$s</string>
 
     <string name="benefit_tokocash_title">Kemudahan Bertransaksi \ndengan TokoCash</string>
@@ -86,4 +86,4 @@
     <string name="tokocash_toolbar_activate">Aktivasi TokoCash</string>
     <string name="tokocash_toolbar_verification">Verifikasi Nomor Handphone</string>
     <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
-</resources>
+    </resources>
