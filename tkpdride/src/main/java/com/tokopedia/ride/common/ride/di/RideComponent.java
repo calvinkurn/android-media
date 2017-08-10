@@ -3,6 +3,8 @@ package com.tokopedia.ride.common.ride.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.place.domain.PlaceRepository;
@@ -31,4 +33,8 @@ public interface RideComponent {
     GetOverviewPolylineUseCase getOverviewPolylineUseCase();
 
     GiveDriverRatingUseCase giveDriverRatingUseCase();
+
+    SessionHandler sessionHandler();
+
+    GCMHandler gcmHandler();
 }
