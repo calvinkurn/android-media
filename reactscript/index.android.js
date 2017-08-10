@@ -11,8 +11,9 @@ import {
   View
 } from 'react-native';
 import { NavigationModule, NetworkModule } from 'NativeModules';
+import { HotList_ } from './src/configs/router';
+import OfficialStore from './src/pages/official-store/setup'
 
-import { OfficialStore, HotList_ } from './src/configs/router';
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
