@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.edit.di.component;
+package com.tokopedia.seller.product.etalase.di.component;
 
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.di.module.EtalasePickerModule;
-import com.tokopedia.seller.product.edit.di.scope.EtalasePickerScope;
+import com.tokopedia.seller.product.etalase.di.module.EtalasePickerModule;
+import com.tokopedia.seller.product.etalase.di.scope.EtalasePickerScope;
 import com.tokopedia.seller.product.etalase.view.fragment.EtalasePickerFragment;
 
 import dagger.Component;
