@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.edit.data.repository;
+package com.tokopedia.seller.product.etalase.data.repository;
 
-import com.tokopedia.seller.product.edit.data.mapper.MyEtalaseServiceToDomainMapper;
-import com.tokopedia.seller.product.edit.data.source.MyEtalaseDataSource;
+import com.tokopedia.seller.product.etalase.data.mapper.MyEtalaseServiceToDomainMapper;
+import com.tokopedia.seller.product.etalase.data.source.MyEtalaseDataSource;
 import com.tokopedia.seller.product.etalase.domain.MyEtalaseRepository;
 import com.tokopedia.seller.product.etalase.domain.model.MyEtalaseDomainModel;
 

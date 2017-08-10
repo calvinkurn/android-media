@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.product.edit.data.source.cloud.model.addetalase;
+package com.tokopedia.seller.product.etalase.data.source.cloud.model;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

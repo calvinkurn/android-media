@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.edit.data.source;
+package com.tokopedia.seller.product.etalase.data.source;
 
-import com.tokopedia.seller.product.edit.data.mapper.AddEtalaseServiceToDomainMapper;
-import com.tokopedia.seller.product.edit.data.source.cloud.MyEtalaseCloud;
+import com.tokopedia.seller.product.etalase.data.mapper.AddEtalaseServiceToDomainMapper;
+import com.tokopedia.seller.product.etalase.data.source.cloud.MyEtalaseCloud;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
 
 import javax.inject.Inject;
