@@ -82,7 +82,9 @@ public class SpinnerCounterInputView extends BaseCustomView {
             spinnerTextView.setEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
         if (values != null) {
-            spinnerTextView.setValues(ConverterUtils.convertCharSequenceToString(values));
+            String[] valueArr = ConverterUtils.convertCharSequenceToString(values);
+            spinnerTextView.setValues(valueArr);
+            setSpinnerValue(valueArr[0]);
         }
         counterInputView.showCounterButton(showCounterButton);
         setMaxLength(maxLength);

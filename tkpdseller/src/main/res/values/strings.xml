@@ -115,5 +115,7 @@
     <string name="app_widget_label_today">Hari ini</string>
     <string name="app_widget_label_tomorrow">Besok</string>
     <string name="app_widget_label_left_day">%d Hari Lagi</string>
+    <string name="product_instagram_draft_error_save_unknown">Terjadi kesalahan ketika mengupload draft instagram.</string>
+    <string name="product_instagram_draft_error_save_resolution">Gambar instagram ke-%1$d memiliki resolusi di bawah 300 pixel.</string>
 
 </resources>

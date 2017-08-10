@@ -165,8 +165,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     public void setName(String name) {
-        nameEditText.setText(MethodChecker.fromHtml(name));
-        nameEditText.setSelection(nameEditText.getText().length());
+        nameEditText.setText(name==null?null:MethodChecker.fromHtml(name));
+        nameEditText.setSelection( nameEditText.getText() == null? 0 : nameEditText.getText().length());
     }
 
     public String getCatalogName() {

@@ -97,13 +97,17 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         productImageViewHolder.setProductPhotos(model.getProductPhotos(), getStatusUpload() == ProductStatus.EDIT);
 
         productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
-        productDetailViewHolder.setPriceValue(model.getProductPrice());
+        if (model.getProductPrice()>0) {
+            productDetailViewHolder.setPriceValue(model.getProductPrice());
+        }
         if (model.getProductWholesaleList().size() > 0) {
             productDetailViewHolder.expandWholesale(true);
             productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
         }
         productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
-        productDetailViewHolder.setWeightValue(model.getProductWeight());
+        if (model.getProductWeight() > 0) {
+            productDetailViewHolder.setWeightValue(model.getProductWeight());
+        }
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
         productDetailViewHolder.setStockStatus(model.getProductUploadTo());
 
@@ -117,7 +121,9 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         productDetailViewHolder.setInsurance(model.getProductMustInsurance());
         productDetailViewHolder.setFreeReturn(model.getProductReturnable());
 
-        productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+        if (!TextUtils.isEmpty(model.getProductDescription())) {
+            productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+        }
         if (model.getProductVideos() != null) {
             productAdditionalInfoViewHolder.setVideoIdList(model.getProductVideos());
         }

@@ -19,6 +19,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
@@ -129,6 +130,8 @@ public class ManageProductSeller extends ManageProduct implements
                                     throw new NullPointerException();
                                 }
                                 productDraftListCountPresenter.saveInstagramToDraft(localPaths, imageDescriptionList);
+                                // goto onSaveBulkDraftSuccess
+                                // goto onSaveBulkDraftError
                             }
                         });
                 break;
@@ -227,16 +230,19 @@ public class ManageProductSeller extends ManageProduct implements
 
     @Override
     public void onSaveBulkDraftSuccess(List<Long> productIds) {
-        // TODO ondraft save success
         hideProgressDialog();
-        // TODO GO TO Draft activity
-
+        startActivity(new Intent(ManageProductSeller.this, ProductDraftListActivity.class));
     }
 
     @Override
     public void onSaveBulkDraftError(Throwable throwable) {
-        // TODO save bulk draft error
         hideProgressDialog();
+        NetworkErrorHelper.showCloseSnackbar(this, getString(R.string.product_instagram_draft_error_save_unknown));
     }
 
+    @Override
+    public void onSaveInstagramResolutionError(int position, String localPath) {
+        CommonUtils.UniversalToast(ManageProductSeller.this,
+                getString(R.string.product_instagram_draft_error_save_resolution, position));
+    }
 }

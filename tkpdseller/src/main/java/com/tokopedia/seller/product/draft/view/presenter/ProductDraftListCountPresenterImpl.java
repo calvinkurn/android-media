@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.domain.RequestParams;
@@ -7,8 +8,12 @@ import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProduct
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,13 +77,37 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
         ArrayList<UploadProductInputDomainModel> uploadProductInputDomainModelList = new ArrayList<>();
 
         for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
+            String localPath = localPathList.get(i);
+            if (! isResolutionCorrect(localPath)) {
+                getView().onSaveInstagramResolutionError(i+1, localPath);
+                continue;
+            }
             UploadProductInputDomainModel uploadProductInputDomainModel = new UploadProductInputDomainModel();
             uploadProductInputDomainModel.setProductDescription(instagramDescList.get(i));
+            ProductPhotoListDomainModel productPhotoListDomainModel = new ProductPhotoListDomainModel();
+            productPhotoListDomainModel.setProductDefaultPicture(0);
+            ArrayList<ImageProductInputDomainModel> imageProductInputDomainModelArrayList = new ArrayList<>();
+            ImageProductInputDomainModel imageProductInputDomainModel = new ImageProductInputDomainModel();
+            imageProductInputDomainModel.setImagePath(localPathList.get(i));
+            imageProductInputDomainModelArrayList.add(imageProductInputDomainModel);
+
+            productPhotoListDomainModel.setPhotos(imageProductInputDomainModelArrayList);
+            uploadProductInputDomainModel.setProductPhotos(productPhotoListDomainModel);
             uploadProductInputDomainModelList.add(uploadProductInputDomainModel);
         }
         saveBulkDraftProductUseCase.execute(
                 SaveBulkDraftProductUseCase.generateUploadProductParam(uploadProductInputDomainModelList),
                 getSaveInstagramToDraftSubscriber());
+    }
+
+    private boolean isResolutionCorrect(String localPath){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(new File(localPath).getAbsolutePath(), options);
+        if (Math.min(options.outWidth, options.outHeight) >= ProductImageViewHolder.MIN_IMG_RESOLUTION){
+            return true;
+        }
+        return false;
     }
 
     private Subscriber<List<Long>> getSaveInstagramToDraftSubscriber() {
