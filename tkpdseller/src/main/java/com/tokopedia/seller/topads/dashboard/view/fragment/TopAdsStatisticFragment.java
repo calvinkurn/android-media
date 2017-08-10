@@ -131,6 +131,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
             TooltipWithDynamicPointer tooltip = new TooltipWithDynamicPointer(getActivity(),
                     R.layout.item_tooltip_topads, R.id.tooltip_value, R.id.tooltip_title, R.id.tooltip_pointer);
             baseWilliamChartConfig
+                    .reset()
                     .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
                     .setBasicGraphConfiguration(topAdsBaseWilliamChartConfig)
                     .setTooltip(tooltip, new TopAdsTooltipConfiguration())
