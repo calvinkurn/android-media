@@ -19,7 +19,6 @@ import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
  */
 public class ShopProductListAdapter extends RecyclerView.Adapter {
 
-
     private RetryClickedListener retryClickedListener;
 
     public interface ProductListAdapterListener {
@@ -77,6 +76,10 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
 
     public void setEtalaseAdapter(ArrayAdapter<EtalaseAdapterModel> etalaseAdapter) {
         header.setEtalaseAdapter(etalaseAdapter);
+    }
+
+    public void setFeaturedProductAdapter(FeaturedProductAdapter featuredProductAdapter) {
+        header.setFeaturedProductAdapter(featuredProductAdapter);
     }
 
     public void setSelectedEtalasePos(int pos) {
@@ -138,6 +141,10 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
 
     public boolean isLoading() {
         return EXTRA_TYPE == TYPE_LOADING;
+    }
+
+    public boolean isEmptyState() {
+        return EXTRA_TYPE == EMPTY_STATE;
     }
 
     public boolean isRetry(){ return EXTRA_TYPE == TYPE_RETRY;}
@@ -325,5 +332,4 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         EXTRA_TYPE = 0;
         notifyDataSetChanged();
     }
-
 }

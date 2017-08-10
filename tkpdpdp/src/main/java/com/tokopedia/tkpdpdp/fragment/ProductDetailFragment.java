@@ -603,12 +603,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProgressLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+  
     }
 
     @Override
     public void hideProgressLoading() {
-        progressBar.setVisibility(View.GONE);
+       
     }
 
     @Override

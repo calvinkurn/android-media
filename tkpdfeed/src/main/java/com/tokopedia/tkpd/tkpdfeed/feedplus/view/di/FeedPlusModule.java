@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -37,12 +36,13 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 
 import javax.inject.Named;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUsecase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 
@@ -69,12 +69,6 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    SessionHandler provideSessionHandler(@ApplicationContext Context context) {
-        return new SessionHandler(context);
-    }
-
-    @FeedPlusScope
-    @Provides
     ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
         return ApolloClient.builder()
                 .okHttpClient(okHttpClient)
@@ -84,18 +78,14 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    GetFeedsUseCase provideGetFeedsUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread,
-                                           FeedRepository feedRepository) {
-        return new GetFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
+    MojitoService provideRecentProductService(@MojitoQualifier Retrofit retrofit) {
+        return retrofit.create(MojitoService.class);
     }
 
     @FeedPlusScope
     @Provides
-    GetFirstPageFeedsUseCase provideGetFirstPageFeedsUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             FeedRepository feedRepository) {
-        return new GetFirstPageFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
+    RecentProductMapper provideRecentProductMapper(Gson gson) {
+        return new RecentProductMapper(gson);
     }
 
     @FeedPlusScope
@@ -113,7 +103,6 @@ public class FeedPlusModule {
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager,
-                                   RecentProductDbManager recentProductDbManager,
                                    MojitoService mojitoService,
                                    RecentProductMapper recentProductMapper) {
         return new FeedFactory(
@@ -124,7 +113,6 @@ public class FeedPlusModule {
                 feedResultMapperLocal,
                 globalCacheManager,
                 feedDetailListMapper,
-                recentProductDbManager,
                 mojitoService,
                 recentProductMapper
         );
@@ -155,23 +143,6 @@ public class FeedPlusModule {
     @Provides
     FeedDetailListMapper provideFeedDetailListMapper() {
         return new FeedDetailListMapper();
-    }
-
-
-    @FeedPlusScope
-    @Provides
-    GetFeedsDetailUseCase provideGetFeedsDetailUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       FeedRepository feedRepository) {
-        return new GetFeedsDetailUseCase(threadExecutor, postExecutionThread, feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    FavoriteShopUseCase provideDoFavoriteShopUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     FavoriteShopRepository repository) {
-        return new FavoriteShopUseCase(threadExecutor, postExecutionThread, repository);
     }
 
     @FeedPlusScope
@@ -234,6 +205,68 @@ public class FeedPlusModule {
         return new WishlistRepositoryImpl(wishlistFactory);
     }
 
+
+
+    @FeedPlusScope
+    @Provides
+    GetFeedsUseCase provideGetFeedsUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            FeedRepository feedRepository) {
+        return new GetFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetFirstPageFeedsUseCase provideGetFirstPageFeedsUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            FeedRepository feedRepository,
+            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
+        return new GetFirstPageFeedsUseCase(threadExecutor, postExecutionThread,
+                feedRepository, getFirstPageFeedsCloudUseCase);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetRecentViewUseCase provideGetRecentProductUseCase(ThreadExecutor threadExecutor,
+                                                        PostExecutionThread postExecutionThread,
+                                                        FeedRepository feedRepository) {
+        return new GetRecentViewUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetFirstPageFeedsCloudUseCase provideGetFirstPageFeedsCloudUseCase(ThreadExecutor threadExecutor,
+                                                                       PostExecutionThread postExecutionThread,
+                                                                       FeedRepository feedRepository,
+                                                                       GetRecentViewUseCase getRecentProductUsecase) {
+        return new GetFirstPageFeedsCloudUseCase(
+                threadExecutor, postExecutionThread,
+                feedRepository,
+                getRecentProductUsecase);
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    GetFeedsDetailUseCase provideGetFeedsDetailUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       FeedRepository feedRepository) {
+        return new GetFeedsDetailUseCase(threadExecutor, postExecutionThread, feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    FavoriteShopUseCase provideDoFavoriteShopUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     FavoriteShopRepository repository) {
+        return new FavoriteShopUseCase(threadExecutor, postExecutionThread, repository);
+    }
+
+
     @FeedPlusScope
     @Provides
     AddWishlistUseCase provideAddWishlistUseCase(ThreadExecutor threadExecutor,
@@ -256,37 +289,9 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    MojitoService provideRecentProductService(@MojitoQualifier Retrofit retrofit) {
-        return retrofit.create(MojitoService.class);
-    }
-
-    @FeedPlusScope
-    @Provides
-    RecentProductMapper provideRecentProductMapper(Gson gson) {
-        return new RecentProductMapper(gson);
-    }
-
-    @FeedPlusScope
-    @Provides
-    RecentProductDbManager provideDbManager() {
-        return new RecentProductDbManager();
-    }
-
-    @FeedPlusScope
-    @Provides
-    GetRecentProductUsecase provideGetRecentProductUseCase(ThreadExecutor threadExecutor,
-                                                           PostExecutionThread postExecutionThread,
-                                                           FeedRepository feedRepository) {
-        return new GetRecentProductUsecase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
     RefreshFeedUseCase provideRefreshFeedUseCase(ThreadExecutor threadExecutor,
-                                                           PostExecutionThread postExecutionThread,
-                                                           FeedRepository feedRepository) {
+                                                 PostExecutionThread postExecutionThread,
+                                                 FeedRepository feedRepository) {
         return new RefreshFeedUseCase(threadExecutor,
                 postExecutionThread,
                 feedRepository);

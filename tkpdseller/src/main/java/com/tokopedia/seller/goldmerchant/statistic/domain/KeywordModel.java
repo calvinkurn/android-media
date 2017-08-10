@@ -16,7 +16,6 @@ public class KeywordModel {
     private GetShopCategory shopCategory;
     private List<Response<GetKeyword>> responseList;
     private List<String> categoryName;
-    private boolean isGoldMerchant;
 
     public List<GetKeyword> getKeywords() {
         return keywords;
@@ -48,13 +47,5 @@ public class KeywordModel {
 
     public void setCategoryNames(List<String> categoryName) {
         this.categoryName = categoryName;
-    }
-
-    public void setIsGoldMerchant(boolean isGoldMerchant) {
-        this.isGoldMerchant = isGoldMerchant;
-    }
-
-    public boolean isGoldMerchant() {
-        return isGoldMerchant;
     }
 }

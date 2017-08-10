@@ -31,6 +31,7 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
     public static final String IS_PEOPLE_OPENED = "IS_PEOPLE_OPENED";
 
     public static final String IS_PRODUCT_OPENED = "IS_PRODUCT_OPENED";
+    public static final String IS_PRODUCT_DIGITAL_OPENED = "IS_PRODUCT_OPENED";
     public static final String IS_GM_OPENED = "IS_GM_OPENED";
 
     private DataBinder drawerHeaderDataBinder;

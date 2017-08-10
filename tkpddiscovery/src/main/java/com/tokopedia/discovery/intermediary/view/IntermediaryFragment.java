@@ -484,7 +484,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        return (int) (width / 2);
+        return width / 2;
     }
 
     @OnClick(R2.id.category_view_all)
@@ -548,7 +548,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
-        BrowseProductActivity.moveTo(
+        BrowseProductActivity.moveToFromIntermediary(
                 getActivity(),
                 child.getCategoryId(),
                 TopAdsApi.SRC_DIRECTORY,

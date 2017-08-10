@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
@@ -32,6 +33,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisti
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.GMStatRetryDataBinder;
 
 import java.util.Date;
 
@@ -44,19 +46,16 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         implements GMStatisticTransactionTableView {
 
     public static final int START_PAGE = 0;
-
-    private TextView tvSortBy;
-
     @Inject
     GMStatisticTransactionTablePresenter transactionTablePresenter;
-
     @GMTransactionTableSortBy
     int sortBy = GMTransactionTableSortBy.DELIVERED_AMT; // default to Pendapatan Bersih
     @GMTransactionTableSortType
     int sortType = GMTransactionTableSortType.DESCENDING; // this is for DESCENDING default
+    private TextView tvSortBy;
     private String[] gmStatSortBy;
     private boolean[] sortBySelections;
-    private int sortByIndexSelection = 2; // default to Pendapatan Bersih
+    private int sortByIndexSelection = 1; // default to Pendapatan Bersih
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
     private int sortTypeIndexSelection = 0; // this is for DESCENDING default
@@ -161,7 +160,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
         emptyTransactionDataBinder.setEmptyTitleText(null);
         emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
         emptyTransactionDataBinder.setEmptyContentItemText(null);
@@ -170,11 +169,16 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
-        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
         emptyTransactionDataBinder.setEmptyTitleText(null);
         emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
         emptyTransactionDataBinder.setEmptyContentItemText(null);
         return emptyTransactionDataBinder;
+    }
+
+    @Override
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new GMStatRetryDataBinder(adapter);
     }
 
     @Override

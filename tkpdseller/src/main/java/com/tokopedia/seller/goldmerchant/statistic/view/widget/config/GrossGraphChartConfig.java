@@ -90,14 +90,12 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public float xDistAxisToLabel() {
-        return 0;
-//        return Tools.fromDpToPx(12f);
+        return Tools.fromDpToPx(12f);
     }
 
     @Override
     public float yDistAxisToLabel() {
-        return 0;
-//        return Tools.fromDpToPx(6f);
+        return Tools.fromDpToPx(12f);
     }
 
     @Override

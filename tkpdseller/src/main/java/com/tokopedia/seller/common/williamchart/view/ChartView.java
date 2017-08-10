@@ -488,6 +488,13 @@ public abstract class ChartView extends RelativeLayout {
     }
 
     /**
+     * clear data to display in order to let tooltip use it's own tooltip mechanism.
+     */
+    public void clearDataDisplayDots() {
+        this.dataDisplayTooltip = null;
+    }
+
+    /**
      * Add full chart data.
      *
      * @param data An array of {@link ChartSet}
@@ -1381,7 +1388,7 @@ public abstract class ChartView extends RelativeLayout {
      * @return {@link ChartView} self-reference.
      */
     public ChartView setYAxisLabelSpacing(float spacing) {
-        xRndr.setAxisLabelsSpacing(spacing);
+        yRndr.setAxisLabelsSpacing(spacing);
         return this;
     }
 
@@ -1640,7 +1647,7 @@ public abstract class ChartView extends RelativeLayout {
                             if (mEntryListener != null)  // Trigger entry callback
                                 mEntryListener.onClick(i, j, getEntryRect(mRegions.get(i).get(j)));
                             if (mTooltip != null) {  // Toggle tooltip
-                                if (dataDisplayTooltip != null && dataDisplayTooltip.get(i) != null) {
+                                if (dataDisplayTooltip != null && dataDisplayTooltip.get(j) != null) {
                                     dataDisplayTooltip.get(j).setPosition(j);
                                     toggleTooltip(getEntryRect(mRegions.get(i).get(j)), dataDisplayTooltip.get(j));
                                 } else {

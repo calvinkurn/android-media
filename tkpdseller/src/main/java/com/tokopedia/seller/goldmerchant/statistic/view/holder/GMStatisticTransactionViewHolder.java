@@ -37,11 +37,20 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     private TextView tvTransactionCount;
     private ArrowPercentageView arrowPercentageView;
     private View seeDetailView;
+    View viewNotGM;
 
     private String[] monthNamesAbrev;
 
     public GMStatisticTransactionViewHolder(View view) {
         transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
+        viewNotGM = transactionDataCardView.findViewById(R.id.transaction_data_container_non_gold_merchant);
+        viewNotGM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
+                Router.goToGMSubscribe(transactionDataCardView.getContext());
+            }
+        });
         transactionChart = (LineChartView) transactionDataCardView.findViewById(R.id.transaction_chart);
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);
         arrowPercentageView = (ArrowPercentageView) transactionDataCardView.findViewById(R.id.view_arrow_percentage);
@@ -62,20 +71,21 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     }
 
     public void bindData(GMGraphViewWithPreviousModel totalTransactionModel, boolean isGoldMerchant) {
-        /* non gold merchant */
         if (!isGoldMerchant) {
-            setEmptyViewNoGM();
+            setViewNoGM();
             setEmptyStatePercentage();
-            // to make the content overlay
-            transactionDataCardView.getContentView().setVisibility(View.VISIBLE);
             seeDetailView.setClickable(false);
             return;
         }
+
+        viewNotGM.setVisibility(View.GONE);
 
         /* empty state */
         if (totalTransactionModel.values == null || totalTransactionModel.amount == 0) {
 
             setEmptyStatePercentage();
+
+            tvTransactionCount.setText(KMNumbers.getSummaryString(0));
 
             displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, true);
             seeDetailView.setVisibility(View.GONE);
@@ -98,17 +108,9 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    private void setEmptyViewNoGM() {
-        transactionDataCardView.setEmptyViewRes(R.layout.partial_gm_statistic_transaction_empty_state_not_gm);
-        transactionDataCardView.getEmptyView().findViewById(R.id.move_to_gmsubscribe)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
-                        Router.goToGMSubscribe(transactionDataCardView.getContext());
-                    }
-                });
-        transactionDataCardView.setViewState(LoadingStateView.VIEW_EMPTY);
+    private void setViewNoGM() {
+        transactionDataCardView.setViewState(LoadingStateView.VIEW_CONTENT);
+        viewNotGM.setVisibility(View.VISIBLE);
     }
 
     private void setEmptyStatePercentage() {

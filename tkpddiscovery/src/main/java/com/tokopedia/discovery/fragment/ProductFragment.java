@@ -625,7 +625,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
             );
         }
-        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {

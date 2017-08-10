@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -113,6 +114,10 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getProfile();
     }
 
+    protected void getProfileCompletion() {
+        drawerDataManager.getProfileCompletion();
+    }
+
     @Override
     protected void initView() {
         if (getSupportActionBar() != null) {
@@ -154,6 +159,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             if (!GlobalConfig.isSellerApp()) {
                 getDrawerTopPoints();
                 getDrawerTokoCash();
+                getProfileCompletion();
             }
         }
     }
@@ -293,6 +299,26 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
+    }
+
+    @Override
+    public void onErrorGetProfileCompletion(String errorMessage) {
+    }
+
+    @Override
+    public void onSuccessGetProfileCompletion(int completion) {
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setProfileCompletion(completion);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setProfileCompletion(completion);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 
     @Override

@@ -17,10 +17,9 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphShopInfoUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightShopInfoUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
@@ -107,14 +106,14 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    public GMDashboardPresenter provideGmFragmentPresenter(GMStatMarketInsightShopInfoUseCase marketInsightShopInfoUseCase,
+    public GMDashboardPresenter provideGmFragmentPresenter(GMStatMarketInsightUseCase marketInsightUseCase,
                                                            GMStatGetBuyerGraphUseCase buyerGraphUseCase,
                                                            GMStatGetPopularProductUseCase popularProductUseCase,
-                                                           GMStatGetTransactionGraphShopInfoUseCase getTransactionGraphShopInfoUseCase,
+                                                           GMStatGetTransactionGraphUseCase getTransactionGraphUseCase,
                                                            GMStatGetProductGraphUseCase productGraphUseCase,
                                                            AddProductShopInfoUseCase shopInfoUseCase) {
-        return new GMDashboardPresenterImpl(marketInsightShopInfoUseCase, buyerGraphUseCase, popularProductUseCase,
-                getTransactionGraphShopInfoUseCase, productGraphUseCase, shopInfoUseCase);
+        return new GMDashboardPresenterImpl(marketInsightUseCase, buyerGraphUseCase, popularProductUseCase,
+                getTransactionGraphUseCase, productGraphUseCase, shopInfoUseCase);
     }
 
     @GMStatisticScope

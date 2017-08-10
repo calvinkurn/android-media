@@ -18,11 +18,10 @@
 
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/gold_merchant_statistic_card_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med"
-            app:tcv_error_layout="@layout/partial_gm_statistic_error_card">
+            app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
+            style="@style/CardViewLayoutMatchParent">
 
             <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
                 android:id="@+id/gold_merchant_line_chart_container"
@@ -43,12 +42,11 @@
 
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/not_done_trans_statistic_card_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/item_loading_gmstat_pie_chart"
-            app:tcv_title="@string/gm_statistic_unfinished_transaction_text">
+            app:tcv_title="@string/gm_statistic_unfinished_transaction_text"
+            style="@style/CardViewLayoutMatchParent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -87,8 +85,7 @@
 
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/topads_statistic_card_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/CardViewLayoutMatchParent"
             app:tcv_empty_layout="@layout/partial_gm_statistic_transaction_top_ads_empty_state"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_title="@string/gm_statistic_top_ads_amount_title_text">
@@ -119,12 +116,13 @@
                     android:id="@+id/tv_see_topads"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rect_stroke_gray"
+                    android:background="@drawable/rect_stroke_lighter_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:padding="@dimen/gm_unfinished_margin_top"
                     android:text="@string/gm_statistic_manage_topads"
+                    android:textColor="@color/wholesale_color"
                     android:textSize="@dimen/font_button"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -132,11 +130,8 @@
         </com.tokopedia.design.card.TitleCardView>
 
         <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/product_margin_cards"
-            app:cardElevation="1dp"
-            app:cardPreventCornerOverlap="false">
+            style="@style/CardViewLayoutMatchParent">
 
             <com.tokopedia.seller.common.widget.LabelView
                 android:id="@+id/gm_statistic_label_sold_product_list_view"

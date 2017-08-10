@@ -11,4 +11,8 @@ public class GmStatisticEmptyTransactionDataBinder extends BaseEmptyDataBinder {
     public GmStatisticEmptyTransactionDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
     }
+
+    public GmStatisticEmptyTransactionDataBinder(DataBindAdapter dataBindAdapter, int errorDrawableRes) {
+        super(dataBindAdapter, errorDrawableRes);
+    }
 }
