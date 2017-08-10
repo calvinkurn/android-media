@@ -213,7 +213,8 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onInstagramClicked() {
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getActivity(),
+            ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getContext(),
+                    ProductDraftListFragment.this,
                     GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, ManageProductSeller.MAX_INSTAGRAM_SELECT);
         }
     }
@@ -458,7 +459,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onSaveBulkDraftSuccess(List<Long> productIds) {
         hideProgressDialog();
-        startActivity(new Intent(getContext(), ProductDraftListActivity.class));
+        searchForPage(0);
     }
 
     @Override

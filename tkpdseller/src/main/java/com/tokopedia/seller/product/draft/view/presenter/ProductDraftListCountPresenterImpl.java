@@ -161,7 +161,7 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
         updateUploadingDraftProductUseCase.unsubscribe();
     }
 
-    public Subscriber<Boolean> getUploadingSubscriber() {
+    private Subscriber<Boolean> getUploadingSubscriber() {
         return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {

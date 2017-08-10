@@ -92,12 +92,6 @@ public class SaveBulkDraftProductUseCase extends CompositeUseCase<List<Long>> {
         return params;
     }
 
-    public static RequestParams generateUploadProductParam(ArrayList<UploadProductInputDomainModel> domainModel){
-        RequestParams params = RequestParams.create();
-        params.putObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST, domainModel);
-        return params;
-    }
-
     private class SaveDraft implements Func1<UploadProductInputDomainModel, Observable<Long>> {
         boolean isUploading;
         long previousDraftId;
