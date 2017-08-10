@@ -128,6 +128,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
+    }
+
+    @Override
     public void removeInstopedToken() {
         InstagramMediaPresenterImpl.removeToken();
     }
