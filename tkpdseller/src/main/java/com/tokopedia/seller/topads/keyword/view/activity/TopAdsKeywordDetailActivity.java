@@ -57,7 +57,7 @@ public class TopAdsKeywordDetailActivity extends BaseSimpleActivity
 
         final TopAdsKeywordDetailFragment topAdsKeywordDetailFragment = (TopAdsKeywordDetailFragment) getSupportFragmentManager().findFragmentByTag(getTagFragment());
 
-        if (topAdsKeywordDetailFragment == null) {
+        if (topAdsKeywordDetailFragment == null || topAdsKeywordDetailFragment.getView() == null) {
             return;
         }
 
