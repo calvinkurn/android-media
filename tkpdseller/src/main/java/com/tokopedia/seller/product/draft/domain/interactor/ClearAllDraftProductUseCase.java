@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -12,7 +12,7 @@ import rx.Observable;
  * @author sebastianuskh on 5/8/17.
  */
 
-public class ClearAllDraftProductUseCase extends CompositeUseCase<Boolean> {
+public class ClearAllDraftProductUseCase extends UseCase<Boolean> {
     private final ProductDraftRepository productDraftRepository;
 
     public ClearAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ProductDraftRepository productDraftRepository) {

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.category.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -13,7 +13,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 3/8/17.
  */
 
-public abstract class BaseCategoryUseCase<T> extends CompositeUseCase<T> {
+public abstract class BaseCategoryUseCase<T> extends UseCase<T> {
     protected final CategoryRepository categoryRepository;
 
     public BaseCategoryUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
