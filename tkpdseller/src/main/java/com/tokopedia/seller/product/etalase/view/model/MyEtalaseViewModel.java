@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.model.etalase;
+package com.tokopedia.seller.product.etalase.view.model;
 
 import java.util.List;
 

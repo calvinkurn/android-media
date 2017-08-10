@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.edit.view.mapper;
+package com.tokopedia.seller.product.etalase.view.mapper;
 
 import com.tokopedia.seller.product.edit.domain.model.MyEtalaseDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.MyEtalaseItemDomainModel;
-import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseItemViewModel;
-import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseViewModel;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

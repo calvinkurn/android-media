@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.model.etalase;
+package com.tokopedia.seller.product.etalase.view.model;
 
 /**
  * @author sebastianuskh on 4/5/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.dialog;
+package com.tokopedia.seller.product.etalase.view.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
 
 /**
  * @author sebastianuskh on 4/5/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.fragment;
+package com.tokopedia.seller.product.etalase.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -24,12 +24,12 @@ import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerEtalasePickerComponent;
 import com.tokopedia.seller.product.edit.di.module.EtalasePickerModule;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
-import com.tokopedia.seller.product.edit.view.adapter.etalase.EtalasePickerAdapter;
-import com.tokopedia.seller.product.edit.view.adapter.etalase.EtalasePickerAdapterListener;
-import com.tokopedia.seller.product.edit.view.listener.EtalasePickerFragmentListener;
-import com.tokopedia.seller.product.edit.view.listener.EtalasePickerView;
-import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseViewModel;
-import com.tokopedia.seller.product.edit.view.presenter.EtalasePickerPresenter;
+import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapter;
+import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapterListener;
+import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
+import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
+import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenter;
 
 import javax.inject.Inject;
 

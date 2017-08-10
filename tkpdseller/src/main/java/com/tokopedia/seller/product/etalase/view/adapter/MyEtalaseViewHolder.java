@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.adapter.etalase;
+package com.tokopedia.seller.product.etalase.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -8,7 +8,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseItemViewModel;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 
 /**
  * @author sebastianuskh on 4/5/17.

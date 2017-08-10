@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.edit.view.listener;
+package com.tokopedia.seller.product.etalase.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseViewModel;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 
 /**
  * @author sebastianuskh on 4/5/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.activity;
+package com.tokopedia.seller.product.etalase.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,11 +9,11 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.view.dialog.AddEtalaseDialog;
+import com.tokopedia.seller.product.etalase.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
-import com.tokopedia.seller.product.edit.view.fragment.EtalasePickerFragment;
-import com.tokopedia.seller.product.edit.view.listener.EtalasePickerFragmentListener;
-import com.tokopedia.seller.product.edit.view.listener.EtalasePickerView;
+import com.tokopedia.seller.product.etalase.view.fragment.EtalasePickerFragment;
+import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
+import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
 
 /**
  * @author sebastianuskh on 4/5/17.

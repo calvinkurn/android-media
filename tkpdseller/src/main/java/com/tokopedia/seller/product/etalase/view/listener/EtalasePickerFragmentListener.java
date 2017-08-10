@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.listener;
+package com.tokopedia.seller.product.etalase.view.listener;
 
 /**
  * @author sebastianuskh on 4/5/17.

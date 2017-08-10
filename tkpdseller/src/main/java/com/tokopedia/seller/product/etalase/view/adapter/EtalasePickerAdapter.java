@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.adapter.etalase;
+package com.tokopedia.seller.product.etalase.view.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.product.edit.view.model.etalase.EtalaseViewModel;
-import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseItemViewModel;
-import com.tokopedia.seller.product.edit.view.model.etalase.MyEtalaseViewModel;
+import com.tokopedia.seller.product.etalase.view.model.EtalaseViewModel;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

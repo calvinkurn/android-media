@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.edit.view.presenter;
+package com.tokopedia.seller.product.etalase.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.product.edit.view.listener.EtalasePickerView;
+import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
 
 /**
  * @author sebastianuskh on 4/5/17.
