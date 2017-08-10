@@ -46,7 +46,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean headerPlaced = false;
     private boolean isFeed = false;
     private boolean shouldLoadAds = true; //default load ads
-    private int adsPos = 0;
+    //    private int adsPos = 0;
     private final RecyclerView.Adapter adapter;
     private RecyclerView recyclerView;
 
@@ -165,6 +165,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void loadTopAds() {
+        presenter.getTopAdsParam().setAdsPosition(ajustedPositionStart == 0 ? ajustedPositionStart : getItemCount());
         presenter.getTopAdsParam().getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
         presenter.loadTopAds();
     }
@@ -174,7 +175,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     @Override
-    public void displayAds(List<Item> list) {
+    public void displayAds(List<Item> list, int position) {
         Log.d(TAG, "displayAds list size " + list.size());
         adsItems = list;
         if (isFeed) {
@@ -185,15 +186,13 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
                 setTopAds(adsItems, itemList, 1);
                 adapter.notifyItemInserted(1);
             } else {
-                if (headerPlaced || ajustedPositionStart > 0) {
-                    adsPos = ajustedPositionStart - 1;
-                } else {
-                    adsPos = ajustedPositionStart;
+                if (headerPlaced || position > 0) {
+                    position = position - 1;
                 }
-                setTopAds(adsItems, itemList, adsPos);
-                adapter.notifyItemInserted(adsPos);
-                if (recyclerView != null && adsPos == 0) {
-                    recyclerView.scrollToPosition(adsPos);
+                setTopAds(adsItems, itemList, position);
+                adapter.notifyItemInserted(position);
+                if (recyclerView != null && position == 0) {
+                    recyclerView.scrollToPosition(position);
                 }
             }
         }

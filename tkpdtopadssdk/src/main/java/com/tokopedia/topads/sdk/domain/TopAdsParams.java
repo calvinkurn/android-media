@@ -44,6 +44,7 @@ public class TopAdsParams {
 
 
     private final TKPDMapParam<String, String> param;
+    private int adsPosition;
 
 
     public TopAdsParams() {
@@ -55,5 +56,13 @@ public class TopAdsParams {
 
     public TKPDMapParam<String, String> getParam() {
         return param;
+    }
+
+    public int getAdsPosition() {
+        return adsPosition;
+    }
+
+    public void setAdsPosition(int adsPosition) {
+        this.adsPosition = adsPosition;
     }
 }
