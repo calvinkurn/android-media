@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.ProductExtraConstant;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductScoringComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductScoringModule;
@@ -106,7 +106,7 @@ public class ProductScoringDetailFragment extends BaseDaggerFragment implements 
         DaggerProductScoringComponent
                 .builder()
                 .productScoringModule(new ProductScoringModule())
-                .appComponent(getComponent(AppComponent.class))
+                .productComponent(getComponent(ProductComponent.class))
                 .build()
                 .inject(this);
     }

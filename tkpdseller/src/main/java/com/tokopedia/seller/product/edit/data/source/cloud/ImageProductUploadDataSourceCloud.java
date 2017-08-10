@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud;
+package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import android.content.Context;
 
@@ -6,11 +6,11 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.product.edit.constant.ProductNetworkConstant;
-import com.tokopedia.seller.product.data.mapper.ImageProductUploadMapper;
-import com.tokopedia.seller.product.data.source.cloud.api.ImageUploadApi;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
+import com.tokopedia.seller.product.edit.data.mapper.ImageProductUploadMapper;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ImageUploadApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.ResultUploadImage;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.exception;
+package com.tokopedia.seller.product.edit.data.exception;
 
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 

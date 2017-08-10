@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud.model.youtube;
+package com.tokopedia.seller.product.edit.data.source.cloud.model.youtube;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

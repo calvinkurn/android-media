@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata;
+package com.tokopedia.seller.product.edit.data.source.cloud.model.categoryrecommdata;
 
 /**
  * Created by Hendry on 4/18/2017.

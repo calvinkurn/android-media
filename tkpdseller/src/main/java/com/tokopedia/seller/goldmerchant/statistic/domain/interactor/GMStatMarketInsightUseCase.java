@@ -10,7 +10,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.GetProductCategoryNameUseCase;
+import com.tokopedia.seller.product.category.domain.interactor.GetProductCategoryNameUseCase;
 
 import java.util.ArrayList;
 import java.util.List;

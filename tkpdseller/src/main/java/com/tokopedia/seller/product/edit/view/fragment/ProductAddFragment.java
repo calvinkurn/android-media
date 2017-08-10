@@ -21,22 +21,21 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
-//import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.CategoryPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
@@ -70,6 +69,8 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+//import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 
 /**
  * Created by nathan on 4/3/17.
@@ -152,7 +153,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         DaggerProductAddComponent
                 .builder()
                 .productAddModule(new ProductAddModule())
-                .appComponent(getComponent(AppComponent.class))
+                .productComponent(getComponent(ProductComponent.class))
                 .build()
                 .inject(this);
     }

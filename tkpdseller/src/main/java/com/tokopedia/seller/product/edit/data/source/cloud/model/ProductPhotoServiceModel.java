@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud.model;
+package com.tokopedia.seller.product.edit.data.source.cloud.model;
 
 /**
  * @author sebastianuskh on 4/12/17.

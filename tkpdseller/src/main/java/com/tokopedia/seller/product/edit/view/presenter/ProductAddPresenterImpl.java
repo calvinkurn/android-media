@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.seller.product.edit.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
+import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;

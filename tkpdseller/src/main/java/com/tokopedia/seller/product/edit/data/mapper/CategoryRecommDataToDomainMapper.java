@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryId;
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categoryrecommdata.ProductCategoryId;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductCategoryIdDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductCategoryPredictionDomainModel;

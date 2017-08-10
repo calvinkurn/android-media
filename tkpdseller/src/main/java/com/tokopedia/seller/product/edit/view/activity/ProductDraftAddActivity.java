@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
@@ -25,31 +26,19 @@ public class ProductDraftAddActivity extends ProductAddActivity {
     }
 
     @Override
-    protected void setupFragment() {
+    protected void setupFragment(Bundle savedInstance) {
         String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
-        inflateFragment(productId);
-    }
-
-    private void inflateFragment(String productId) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment == null) {
-            fragment = ProductDraftAddFragment.createInstance(productId);
+        if (savedInstance == null) {
+            inflateFragment();
         }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, getFragmentTAG());
-        fragmentTransaction.commit();
     }
 
     @Override
-    protected String getFragmentTAG() {
-        return ProductDraftAddFragment.class.getSimpleName();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected Fragment getNewFragment() {
+        String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
+        return ProductDraftAddFragment.createInstance(productId);
     }
 }

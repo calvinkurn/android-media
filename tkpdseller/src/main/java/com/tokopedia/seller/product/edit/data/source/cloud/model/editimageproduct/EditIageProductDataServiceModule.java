@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.product.data.source.cloud.model.editimageproduct;
+package com.tokopedia.seller.product.edit.data.source.cloud.model.editimageproduct;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

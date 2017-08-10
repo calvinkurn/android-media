@@ -60,8 +60,8 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     }
 
     @Override
-    protected void setupLayout() {
-        super.setupLayout();
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
 
         bottomSheetContainerView = findViewById(R.id.layout_bottom_sheet_container);
 

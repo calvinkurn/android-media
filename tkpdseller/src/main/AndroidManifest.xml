@@ -215,8 +215,7 @@
         <activity
             android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -245,12 +244,11 @@
         <activity
             android:name=".product.edit.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".product.variant.view.activity.ProductVariantPickerActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"
@@ -276,8 +274,7 @@
         <activity
             android:name=".product.edit.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".gmsubscribe.view.activity.GmSubscribeHomeActivity"
             android:label="@string/gm_home_title"
@@ -293,35 +290,32 @@
         <activity
             android:name=".product.edit.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".product.edit.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".product.edit.view.activity.ProductScoringDetailActivity"
             android:label="@string/product_title_activity_product_score"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".product.edit.view.activity.CategoryPickerActivity"
+            android:name=".product.category.view.activity.CategoryPickerActivity"
             android:label="@string/title_activity_category_picker"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".product.edit.view.activity.EtalasePickerActivity"
+            android:name=".product.etalase.view.activity.EtalasePickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".product.edit.view.activity.CatalogPickerActivity"
             android:exported="true"
             android:label="@string/title_activity_catalog_picker"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".product.edit.view.activity.YoutubeAddVideoActivity"
             android:label="@string/product_label_video"
-            android:theme="@style/BasicThemeActionBar" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity"

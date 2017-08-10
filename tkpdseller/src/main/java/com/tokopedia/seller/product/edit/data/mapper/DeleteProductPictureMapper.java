@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.DeleteProductPictureServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.DeleteProductPictureServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 
 import rx.functions.Func1;

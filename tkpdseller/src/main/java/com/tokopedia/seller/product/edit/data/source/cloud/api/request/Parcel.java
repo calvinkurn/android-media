@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud.api.request;
+package com.tokopedia.seller.product.edit.data.source.cloud.api.request;
 
 /**
  * Created by Hendry on 4/18/2017.

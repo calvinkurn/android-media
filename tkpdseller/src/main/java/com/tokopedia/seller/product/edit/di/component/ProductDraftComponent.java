@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.edit.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.edit.view.fragment.ProductDraftAddFragment;
@@ -12,7 +13,7 @@ import dagger.Component;
  */
 
 @ProductAddScope
-@Component(modules = ProductDraftModule.class, dependencies = AppComponent.class)
+@Component(modules = ProductDraftModule.class, dependencies = ProductComponent.class)
 public interface ProductDraftComponent extends ProductAddComponent {
     void inject(ProductDraftAddFragment fragment);
 }

@@ -1,11 +1,11 @@
-package com.tokopedia.seller.product.data.repository;
+package com.tokopedia.seller.product.edit.data.repository;
 
 
-import com.tokopedia.seller.product.data.mapper.AddProductPictureMapper;
-import com.tokopedia.seller.product.data.mapper.UploadImageMapper;
-import com.tokopedia.seller.product.data.mapper.UploadProductPictureInputMapper;
-import com.tokopedia.seller.product.data.source.ImageProductUploadDataSource;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.seller.product.edit.data.mapper.AddProductPictureMapper;
+import com.tokopedia.seller.product.edit.data.mapper.UploadImageMapper;
+import com.tokopedia.seller.product.edit.data.mapper.UploadProductPictureInputMapper;
+import com.tokopedia.seller.product.edit.data.source.ImageProductUploadDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductPictureInputServiceModel;
 import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.edit.domain.model.AddProductPictureDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProcessDomainModel;

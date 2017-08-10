@@ -1,12 +1,12 @@
-package com.tokopedia.seller.product.data.source.cloud.api;
+package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.product.data.source.cloud.model.DeleteProductPictureServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.DeleteProductPictureServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproduct.EditProductServiceModel;
 
 import retrofit2.Response;
 import retrofit2.http.FieldMap;

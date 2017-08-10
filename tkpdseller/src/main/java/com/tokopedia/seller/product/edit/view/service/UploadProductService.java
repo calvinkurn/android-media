@@ -18,6 +18,7 @@ import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.edit.di.component.DaggerAddProductServiceComponent;
@@ -63,7 +64,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         DaggerAddProductServiceComponent
                 .builder()
-                .appComponent(getApplicationComponent())
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getServiceModule()))
                 .addProductserviceModule(new AddProductserviceModule())
                 .build().inject(this);
         presenter.attachView(this);

@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.mapper;
+package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.EditProductInputServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import javax.inject.Inject;

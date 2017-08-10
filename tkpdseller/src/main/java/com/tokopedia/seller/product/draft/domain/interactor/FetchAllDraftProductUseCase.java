@@ -30,8 +30,7 @@ public class FetchAllDraftProductUseCase extends CompositeUseCase<List<UploadPro
     }
 
     public static RequestParams createRequestParams(){
-        RequestParams requestParams = RequestParams.create();
-        return requestParams;
+        return RequestParams.EMPTY;
     }
 
 }

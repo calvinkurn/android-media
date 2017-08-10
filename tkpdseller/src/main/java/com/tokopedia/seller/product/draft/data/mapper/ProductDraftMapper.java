@@ -2,10 +2,10 @@ package com.tokopedia.seller.product.draft.data.mapper;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.seller.product.data.source.db.model.ImageProductInputDraftModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.ImageProductInputDraftModel;
 import com.tokopedia.seller.product.draft.data.source.db.model.ProductDraftModel;
-import com.tokopedia.seller.product.data.source.db.model.ProductPhotoListDraftModel;
-import com.tokopedia.seller.product.data.source.db.model.ProductWholesaleDraftModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductPhotoListDraftModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductWholesaleDraftModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;

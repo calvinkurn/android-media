@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.cloud.api.request;
+package com.tokopedia.seller.product.edit.data.source.cloud.api.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.data.source;
+package com.tokopedia.seller.product.edit.data.source;
 
-import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCache;
+import com.tokopedia.seller.product.edit.data.source.cache.ProductScoreDataSourceCache;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 

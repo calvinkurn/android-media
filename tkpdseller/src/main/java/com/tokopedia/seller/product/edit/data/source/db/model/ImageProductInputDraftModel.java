@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.data.source.db.model;
+package com.tokopedia.seller.product.edit.data.source.db.model;
 
 import com.tokopedia.seller.product.edit.constant.ImageStatusTypeDef;
 

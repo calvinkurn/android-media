@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.repository;
+package com.tokopedia.seller.product.edit.data.repository;
 
 import com.tokopedia.core.base.di.scope.ActivityScope;
-import com.tokopedia.seller.product.data.source.YoutubeVideoLinkDataSource;
+import com.tokopedia.seller.product.edit.data.source.YoutubeVideoLinkDataSource;
 import com.tokopedia.seller.product.edit.domain.YoutubeVideoRepository;
 import com.tokopedia.seller.product.edit.domain.model.YoutubeVideoModel;
 

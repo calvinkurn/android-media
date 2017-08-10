@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.data.repository;
 
-import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;

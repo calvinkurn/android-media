@@ -120,9 +120,12 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                 categoryChildAdapter.addAll(rootCategory.getChildren());
                 categoryParentAdapter.notifyDataSetChanged();
                 if (!rootCategoryId.equals(categoryId)) categoryChildAdapter.toggleSelectedChildbyId(categoryId);
+                linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), DEFAULT_OFFSET);
+            } else {
+                presenter.getChildren(2,rootCategory.getId());
             }
         }
-        linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), DEFAULT_OFFSET);
+
     }
 
     @Override

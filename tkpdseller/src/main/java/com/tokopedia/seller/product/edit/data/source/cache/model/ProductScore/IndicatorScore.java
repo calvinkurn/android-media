@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.product.data.source.cache.model.ProductScore;
+package com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.data.source;
+package com.tokopedia.seller.product.edit.data.source;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.data.source.cache.ShopInfoCache;
-import com.tokopedia.seller.product.data.source.cloud.ShopInfoCloud;
+import com.tokopedia.seller.product.edit.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.product.edit.data.source.cache.ShopInfoCache;
+import com.tokopedia.seller.product.edit.data.source.cloud.ShopInfoCloud;
 
 import javax.inject.Inject;
 

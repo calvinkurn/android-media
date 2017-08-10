@@ -1,14 +1,14 @@
-package com.tokopedia.seller.product.data.source;
+package com.tokopedia.seller.product.edit.data.source;
 
-import com.tokopedia.seller.product.data.source.cloud.UploadProductCloud;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.DeleteProductPictureServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.UploadProductCloud;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductSubmitInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.DeleteProductPictureServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.EditProductInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.editproduct.EditProductServiceModel;
 
 import javax.inject.Inject;
 

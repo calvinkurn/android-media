@@ -2,14 +2,12 @@ package com.tokopedia.seller.product.edit.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.MenuItem;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.di.component.DaggerYoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
@@ -25,10 +23,8 @@ import java.util.List;
 /**
  * @author normansyahputa on 4/17/17.
  */
-public class YoutubeAddVideoActivity extends BaseActivity
+public class YoutubeAddVideoActivity extends BaseSimpleActivity
         implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, TextPickerDialogListener {
-
-    private YoutubeVideoComponent youtubeVideoComponent;
 
     /**
      * due to limitation of existing dataset videoIds throw back is from here.
@@ -36,62 +32,31 @@ public class YoutubeAddVideoActivity extends BaseActivity
     private ArrayList<String> videoIDs;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initInjection();
-
-        setContentView(R.layout.activity_product_add);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
         if (savedInstanceState == null) {
             Intent intent = getIntent();
             if (intent != null) {
-                videoIDs = intent.getStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK);
-                if (videoIDs == null)
+                videoIDs = getIntent().getStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK);
+                if (videoIDs == null) {
                     videoIDs = new ArrayList<>();
+                }
             }
         } else {
             videoIDs = savedInstanceState.getStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK);
         }
-
-        if (!CommonUtils.checkNotNull(youtubeAddVideoFragment())) {
-            getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                    .add(R.id.container, YoutubeAddVideoFragment.createInstance(), YoutubeAddVideoFragment.TAG)
-                    .commit();
-        }
-
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
+    protected Fragment getNewFragment() {
+        return YoutubeAddVideoFragment.createInstance();
     }
-
-    private void initInjection() {
-        youtubeVideoComponent = DaggerYoutubeVideoComponent
-                .builder()
-                .appComponent(getApplicationComponent())
-                .youtubeVideoModule(new YoutubeVideoModule())
-                .build();
-    }
-
-    @Override
-    public YoutubeVideoComponent getComponent() {
-        return youtubeVideoComponent;
-    }
-
 
     @Override
     public YoutubeAddVideoFragment youtubeAddVideoFragment() {
-        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(YoutubeAddVideoFragment.TAG);
-        return (fragmentByTag != null && fragmentByTag instanceof YoutubeAddVideoFragment) ?
-                (YoutubeAddVideoFragment) fragmentByTag : null;
+        Fragment fragment = getFragment();
+        return (fragment != null && fragment instanceof YoutubeAddVideoFragment) ?
+                (YoutubeAddVideoFragment) fragment : null;
     }
 
     @Override
@@ -151,5 +116,14 @@ public class YoutubeAddVideoActivity extends BaseActivity
         } else {
             return null;
         }
+    }
+
+    @Override
+    public YoutubeVideoComponent getComponent() {
+        return DaggerYoutubeVideoComponent
+                .builder()
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule()))
+                .youtubeVideoModule(new YoutubeVideoModule())
+                .build();
     }
 }

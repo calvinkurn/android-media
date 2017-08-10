@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.data.source;
+package com.tokopedia.seller.product.edit.data.source;
 
-import com.tokopedia.seller.product.data.source.cloud.ImageProductUploadDataSourceCloud;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
-import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.ImageProductUploadDataSourceCloud;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.ResultUploadImage;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 
 import javax.inject.Inject;
 

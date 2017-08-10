@@ -2,11 +2,13 @@ package com.tokopedia.seller.product.edit.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.edit.view.fragment.ProductDraftEditFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductDuplicateFragment;
 
 /**
@@ -24,26 +26,19 @@ public class ProductDuplicateActivity extends ProductDraftAddActivity {
     }
 
     @Override
-    protected void setupFragment() {
+    protected void setupFragment(Bundle savedInstance) {
         String productId = getIntent().getStringExtra(PRODUCT_ID);
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
-        inflateFragment(productId);
-    }
-
-    private void inflateFragment(String productId) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment == null) {
-            fragment = ProductDuplicateFragment.createInstance(productId);
+        if (savedInstance == null) {
+            inflateFragment();
         }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, getFragmentTAG());
-        fragmentTransaction.commit();
     }
 
     @Override
-    protected String getFragmentTAG() {
-        return ProductDuplicateFragment.class.getSimpleName();
+    protected Fragment getNewFragment() {
+        String productId = getIntent().getStringExtra(PRODUCT_ID);
+        return ProductDuplicateFragment.createInstance(productId);
     }
 }
