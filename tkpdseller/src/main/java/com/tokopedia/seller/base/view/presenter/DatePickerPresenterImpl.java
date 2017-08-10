@@ -53,7 +53,7 @@ public class DatePickerPresenterImpl<T extends DatePickerView> extends DatePicke
 
     @Override
     public void saveDateSetting(DatePickerViewModel datePickerViewModel) {
-        saveDatePickerUseCase.execute(SaveDatePickerUseCase.createRequestParams(datePickerViewModel), new Subscriber<Boolean>() {
+        saveDatePickerUseCase.executeSync(SaveDatePickerUseCase.createRequestParams(datePickerViewModel), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
