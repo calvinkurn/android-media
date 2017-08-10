@@ -33,9 +33,6 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
             case GMTransactionTableSortBy.DELIVERED_AMT:
                 itemTransactionTableRight.setText(KMNumbers.formatRupiahString(gmStatisticTransactionTableModel.getDeliveredAmount()));
                 break;
-            /*case GMTransactionTableSortBy.ORDER_SUM:
-                itemTransactionTableRight.setText(String.valueOf( gmStatisticTransactionTableModel.getOrderSum()));
-                break;*/
             case GMTransactionTableSortBy.TRANS_SUM:
                 itemTransactionTableRight.setText(String.valueOf(gmStatisticTransactionTableModel.getTransSum()));
                 break;
