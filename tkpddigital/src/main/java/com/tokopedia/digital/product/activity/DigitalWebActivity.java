@@ -13,8 +13,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.digital.R;
 
@@ -142,11 +142,14 @@ public class DigitalWebActivity extends BasePresenterActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == com.tokopedia.core.R.id.menu_home) {
-            startActivity(HomeRouter.getHomeActivity(this));
+            if (getApplication() instanceof TkpdCoreRouter) {
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+                if (intentHome != null) startActivity(intentHome);
+            }
         } else if (item.getItemId() == com.tokopedia.core.R.id.menu_help) {
             startActivity(InboxRouter.getContactUsActivityIntent(this));
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
 }
