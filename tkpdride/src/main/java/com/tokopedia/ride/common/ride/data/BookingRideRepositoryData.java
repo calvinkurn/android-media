@@ -54,12 +54,10 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final PriceEstimateEntityMapper priceEstimateEntityMapper;
     private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
 
-    public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
-                                     ProductEntityMapper productEntityMapper,
-                                     TimeEstimateEntityMapper timeEstimateEntityMapper) {
+    public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
-        mProductEntityMapper = productEntityMapper;
-        mTimeEstimateEntityMapper = timeEstimateEntityMapper;
+        mProductEntityMapper = new ProductEntityMapper();
+        mTimeEstimateEntityMapper = new TimeEstimateEntityMapper();
         estimateMapper = new FareEstimateMapper();
         rideRequestEntityMapper = new RideRequestEntityMapper();
         receiptEntityMapper = new ReceiptEntityMapper();

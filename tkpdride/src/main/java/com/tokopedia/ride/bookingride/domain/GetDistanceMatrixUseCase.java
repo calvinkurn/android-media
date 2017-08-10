@@ -22,7 +22,8 @@ public class GetDistanceMatrixUseCase extends UseCase<DistanceMatrixEntity> {
     private final PlaceRepository placeRepository;
 
     public GetDistanceMatrixUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread, PlaceRepository placeRepository) {
+                                    PostExecutionThread postExecutionThread,
+                                    PlaceRepository placeRepository) {
         super(threadExecutor, postExecutionThread);
         this.placeRepository = placeRepository;
     }

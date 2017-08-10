@@ -49,6 +49,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/include_separator_horizontal_thick"/>
+    <include layout="@layout/partial_separator_horizontal_thick"/>
 
 </LinearLayout>

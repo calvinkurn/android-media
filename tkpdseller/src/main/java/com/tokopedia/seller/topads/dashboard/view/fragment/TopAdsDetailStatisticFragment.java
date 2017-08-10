@@ -5,8 +5,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.DateLabelView;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.DateLabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailPresenter;
 

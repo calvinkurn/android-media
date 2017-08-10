@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -87,7 +88,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
-    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+    public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
         hideLoading();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
@@ -154,14 +155,10 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
-    public void onErrorLoadProduct(Throwable throwable) {
+    public void onErrorLoadDraftProduct(Throwable throwable) {
         hideLoading();
-        NetworkErrorHelper.showEmptyState(getActivity(), coordinatorLayout, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                fetchInputData();
-            }
-        });
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.product_draft_error_cannot_load_draft));
+        getActivity().finish();
     }
 
 }

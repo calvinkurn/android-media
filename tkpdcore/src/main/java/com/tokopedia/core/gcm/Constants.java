@@ -10,6 +10,7 @@ public interface Constants {
     String ARG_NOTIFICATION_TITLE = "title";
     String ARG_NOTIFICATION_DESCRIPTION = "desc";
     String ARG_NOTIFICATION_IMAGE = "url_img";
+    String ARG_NOTIFICATION_BANNER = "url_banner";
     String ARG_NOTIFICATION_ICON = "url_icon";
     String ARG_NOTIFICATION_URL = "url";
     String ARG_NOTIFICATION_UPDATE_APPS_TITLE = "title_update";
@@ -32,12 +33,15 @@ public interface Constants {
     String EXTRA_FROM_PUSH = "from_notif";
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_UNREAD = "unread";
+    String EXTRA_PUSH_PERSONALIZATION = "EXTRA_PUSH_PERSONALIZATION";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     String EXTRA_APPLINK_RESET = "applink_reset";
     String EXTRA_APPLINK_FROM_INTERNAL = "EXTRA_APPLINK_FROM_INTERNAL";
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
     int ARG_NOTIFICATION_APPLINK_PROMO = 1003;
+
+    String MOE_KEY_URL = "gcm_webUrl";
 
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
@@ -79,11 +83,23 @@ public interface Constants {
         String PROMO = "tokopedia://promo";
         String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
         String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
+        String DISCOVERY_CATEGORY = "tokopedia://category";
+        String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
+        String DISCOVERY_SEARCH = "tokopedia://search";
+        String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
+        String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
         String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
         String WISHLIST = "tokopedia://wishlist";
         String RECENT_VIEW = "tokopedia://recentlyviewed";
         String TOPPICKS = "tokopedia://toppicks";
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
+        String SELLER_APP_HOME = "sellerapp://home";
+    }
+
+    interface Schemes {
+        String HTTP = "http";
+        String HTTPS = HTTP+"s";
+        String APPLINKS = "tokopedia";
     }
 
     interface Settings {

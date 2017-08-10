@@ -59,6 +59,8 @@ public class CartPresenter implements ICartPresenter {
 
     private static final int MUST_INSURANCE_MODE = 3;
     public static final int OPTIONAL_INSURANCE_MODE = 2;
+    public static final String VOUCHER_CODE = "voucher_code";
+    public static final String IS_SUGGESTED = "is_suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
 
@@ -388,10 +390,11 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckVoucherCode() {
+    public void processCheckVoucherCode(final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("voucher_code", view.getVoucherCodeCheckoutData());
+        params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
+        params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
         cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override
@@ -401,7 +404,13 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        handleThrowableVoucherCode(e);
+                        if (e.getCause() instanceof ResponseErrorException) {
+                            view.renderErrorCheckVoucher(e.getCause().getMessage());
+                            view.renderErrorFromInstantVoucher(instantCheckVoucher);
+                            view.hideProgressLoading();
+                        } else {
+                            handleThrowableVoucherCode(e);
+                        }
                     }
 
                     @Override
@@ -412,7 +421,7 @@ public class CartPresenter implements ICartPresenter {
                         ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
-                        view.renderSuccessCheckVoucher(descVoucher);
+                        view.renderSuccessCheckVoucher(descVoucher, instantCheckVoucher);
                         view.hideProgressLoading();
                     }
                 });
@@ -725,8 +734,6 @@ public class CartPresenter implements ICartPresenter {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         } else if (e instanceof UnknownHostException) {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-        } else if (e.getCause() instanceof ResponseErrorException) {
-            view.renderErrorCheckVoucher(e.getCause().getMessage());
         } else if (e.getCause() instanceof HttpErrorException) {
             view.showToastMessage(e.getCause().getMessage());
         } else {
@@ -787,6 +794,7 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
+        view.renderInstantPromo(data.getCartPromo());
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -333,6 +334,7 @@ public class CategoryProductStyle3View extends
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventClickBeli(data.getName(), data.getName());
                 actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }
         };

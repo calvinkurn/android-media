@@ -2,16 +2,7 @@ package com.tokopedia.ride.common.configuration;
 
 import android.content.Context;
 
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
-import com.tokopedia.ride.common.ride.data.RideRequestEntityMapper;
-import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
-import com.tokopedia.ride.common.ride.domain.model.RideRequest;
-
-import java.lang.reflect.Type;
 
 /**
  * Created by alvarisi on 3/27/17.

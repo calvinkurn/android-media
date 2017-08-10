@@ -105,7 +105,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
     @Override
     public void getRotationData(Bundle argument) {
-        Log.d(STUART, SHOP_CREATE_FRAGMENT + " getRotationData(Bundle argument) ");
         shopCreateParams = Parcels.unwrap(argument.getParcelable(DATA_VIEW));
     }
 
@@ -160,7 +159,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
     @Override
     public void saveDataBeforeRotation(Bundle argument) {
         saveDescTag();
-        Log.d(STUART, SHOP_CREATE_FRAGMENT + " saveDataBeforeRotation(Bundle argument) ");
         argument.putParcelable(DATA_VIEW, Parcels.wrap(shopCreateParams));
     }
 
@@ -185,7 +183,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Subscribe Error");
+
 
                     }
 
@@ -279,7 +277,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 //                        } else {
 //                            if(tkpdResponseResponse.body().getErrorMessages() != null && tkpdResponseResponse.body().getErrorMessages().size() > 0) {
 //                                view.setShopDomainResult(tkpdResponseResponse.body().getErrorMessages().get(0), false);
-//                                Log.e("ShopCreatePresenterImpl", tkpdResponseResponse.body().getErrorMessages().get(0));
 //                            }else{
 //                                view.setShopDomainResult(CommonUtils.generateMessageError(view.getMainContext(), null), false);
 //                            }

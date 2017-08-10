@@ -12,16 +12,20 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.williamchart.model.TooltipModel;
-import com.tokopedia.seller.lib.williamchart.tooltip.TooltipWithDynamicPointer;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
+import com.tokopedia.seller.common.williamchart.model.TooltipModel;
+import com.tokopedia.seller.common.williamchart.renderer.XRenderer;
+import com.tokopedia.seller.common.williamchart.tooltip.TooltipWithDynamicPointer;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
+import com.tokopedia.seller.common.williamchart.util.TopAdsBaseWilliamChartConfig;
+import com.tokopedia.seller.common.williamchart.util.TopAdsTooltipConfiguration;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticPresenterImpl;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
-import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticViewListener;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticPresenterImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,7 +40,8 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     LineChartView contentGraph;
 
     TopAdsStatisticActivityViewListener topAdsStatisticActivityViewListener;
-    private GrossGraphChartConfig grossGraphChartConfig;
+    private TopAdsBaseWilliamChartConfig topAdsBaseWilliamChartConfig;
+    private BaseWilliamChartConfig baseWilliamChartConfig;
     private List<Cell> cells;
     private String[] mLabels;
     private ArrayList<TooltipModel> mLabelDisplay = new ArrayList<>();
@@ -110,17 +115,28 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                 indexToDisplay.add((j * 10) - 1);
             }
 
-            if (grossGraphChartConfig == null) {
-                grossGraphChartConfig = new GrossGraphChartConfig(mLabels, mValues);
+            if (topAdsBaseWilliamChartConfig == null) {
+                topAdsBaseWilliamChartConfig = new TopAdsBaseWilliamChartConfig();
             }
+
+            if (baseWilliamChartConfig == null) {
+                baseWilliamChartConfig = new BaseWilliamChartConfig();
+            }
+
+            BaseWilliamChartModel baseWilliamChartModel =
+                    new BaseWilliamChartModel(mLabels, mValues);
+
+
             contentGraph.addDataDisplayDots(mLabelDisplay);
             TooltipWithDynamicPointer tooltip = new TooltipWithDynamicPointer(getActivity(),
                     R.layout.item_tooltip_topads, R.id.tooltip_value, R.id.tooltip_title, R.id.tooltip_pointer);
-            grossGraphChartConfig
-                    .setmLabels(mLabels)
-                    .setmValues(mValues, new XRenderer.XRendererListener() {
+            baseWilliamChartConfig
+                    .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
+                    .setBasicGraphConfiguration(topAdsBaseWilliamChartConfig)
+                    .setTooltip(tooltip, new TopAdsTooltipConfiguration())
+                    .setxRendererListener(new XRenderer.XRendererListener() {
                         @Override
-                        public boolean filterX(@IntRange(from = 0L) int i) {
+                        public boolean filterX(@IntRange(from = 0) int i) {
                             if (mValues != null) {
                                 if (i == 0 || mValues.length - 1 == i)
                                     return true;
@@ -133,18 +149,12 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                             } else {
                                 return true;
                             }
-
                         }
                     })
                     .setDotDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.oval_2_copy_6))
-                    .setTooltip(tooltip)
-                    .buildChart(grossGraphChartConfig.buildLineChart(contentGraph));
+                    .buildChart(contentGraph);
         } catch (Exception e) {
-            if (e != null && e.getMessage() != null) {
-                Log.e("TopAdsStatisticFragment", e.getMessage());
-            } else {
-                Log.e("TopAdsStatisticFragment", "Null Pointer");
-            }
+
         }
     }
 

@@ -7,7 +7,6 @@ import android.view.View;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 
 /**
  * Created by normansyahputa on 2/25/17.

@@ -3,12 +3,9 @@ package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteTypeFactory;
-import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
-import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
 
 /**
  * Created by alvarisi on 5/3/17.

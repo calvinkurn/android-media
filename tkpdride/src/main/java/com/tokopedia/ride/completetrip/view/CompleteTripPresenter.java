@@ -9,6 +9,8 @@ import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -22,6 +24,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
     private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
 
+    @Inject
     public CompleteTripPresenter(GetReceiptUseCase getReceiptUseCase,
                                  GetRideRequestDetailUseCase getRideRequestDetailUseCase,
                                  GiveDriverRatingUseCase giveDriverRatingUseCase,

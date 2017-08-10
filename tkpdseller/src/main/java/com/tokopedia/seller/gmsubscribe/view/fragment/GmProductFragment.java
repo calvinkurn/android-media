@@ -68,7 +68,6 @@ public abstract class GmProductFragment
     }
 
     void confirmSelection() {
-        Log.d(TAG, "Selected data now is : " + currentSelectedProductId);
         if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
             listener.finishProductSelection(currentSelectedProductId, returnType);
         } else {
@@ -190,7 +189,6 @@ public abstract class GmProductFragment
 
     @Override
     public void renderProductList(List<GmProductViewModel> gmProductDomainModels) {
-        Log.d(TAG, "data rendered");
         if (getSelectedProductId().equals(UNDEFINED_DEFAULT_SELECTED)) {
             int selected = findBestDeal(gmProductDomainModels);
             selectedProductId(selected);

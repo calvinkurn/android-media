@@ -28,7 +28,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_add_video_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
 
     </com.tokopedia.expandable.ExpandableOptionSwitch>
 
-    <com.tokopedia.seller.lib.widget.LabelSwitch
+    <com.tokopedia.seller.common.widget.LabelSwitch
         android:id="@+id/label_switch_share"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

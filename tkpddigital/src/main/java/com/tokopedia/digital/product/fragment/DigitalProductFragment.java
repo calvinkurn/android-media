@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -47,6 +48,7 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
@@ -312,8 +314,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
+        String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
-        bannerAdapter.addBannerDataListAndTitle(bannerDataList, title);
+        bannerAdapter.addBannerDataListAndTitle(bannerDataList, formattedTitle);
     }
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
@@ -627,6 +630,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
+
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -637,6 +643,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
+
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -647,9 +656,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
+
+        UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser
+                        getActivity(), operatorListData, titleChooser,categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
@@ -657,6 +669,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
+
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -780,9 +795,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_digital_product_detail, menu);
+        if (GlobalConfig.isSellerApp()) {
+            menu.findItem( R.id.action_menu_subscription_digital).setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

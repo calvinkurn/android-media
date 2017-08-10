@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.dashboard.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
@@ -21,7 +20,7 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseListAdapter<T> {
         switch (viewType) {
             case ProductAd.TYPE:
             case GroupAd.TYPE:
-                return new TopAdsViewHolder(getLayoutView(parent, R.layout.listview_top_ads_ad));
+                return new TopAdsViewHolder(getLayoutView(parent, R.layout.item_top_ads_ad));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
