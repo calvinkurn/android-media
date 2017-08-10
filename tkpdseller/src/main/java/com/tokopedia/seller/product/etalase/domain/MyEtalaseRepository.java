@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.edit.domain;
+package com.tokopedia.seller.product.etalase.domain;
 
-import com.tokopedia.seller.product.edit.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.etalase.domain.model.MyEtalaseDomainModel;
 
 import rx.Observable;
 

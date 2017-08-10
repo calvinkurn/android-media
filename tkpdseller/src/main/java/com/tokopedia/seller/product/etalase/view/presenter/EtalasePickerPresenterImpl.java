@@ -2,9 +2,9 @@ package com.tokopedia.seller.product.etalase.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
-import com.tokopedia.seller.product.edit.domain.interactor.AddNewEtalaseUseCase;
-import com.tokopedia.seller.product.edit.domain.interactor.FetchMyEtalaseUseCase;
-import com.tokopedia.seller.product.edit.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.etalase.domain.interactor.AddNewEtalaseUseCase;
+import com.tokopedia.seller.product.etalase.domain.interactor.FetchMyEtalaseUseCase;
+import com.tokopedia.seller.product.etalase.domain.model.MyEtalaseDomainModel;
 import com.tokopedia.seller.product.etalase.view.mapper.MyEtalaseDomainToView;
 
 import rx.Subscriber;

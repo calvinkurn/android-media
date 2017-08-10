@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.domain.model;
+package com.tokopedia.seller.product.etalase.domain.model;
 
 /**
  * @author sebastianuskh on 4/5/17.

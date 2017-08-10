@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.domain.model;
+package com.tokopedia.seller.product.etalase.domain.model;
 
 import java.util.List;
 

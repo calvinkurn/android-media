@@ -5,9 +5,9 @@ import com.tokopedia.seller.product.edit.data.repository.MyEtalaseRepositoryImpl
 import com.tokopedia.seller.product.edit.data.source.MyEtalaseDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.MyEtalaseApi;
 import com.tokopedia.seller.product.edit.di.scope.EtalasePickerScope;
-import com.tokopedia.seller.product.edit.domain.MyEtalaseRepository;
-import com.tokopedia.seller.product.edit.domain.interactor.AddNewEtalaseUseCase;
-import com.tokopedia.seller.product.edit.domain.interactor.FetchMyEtalaseUseCase;
+import com.tokopedia.seller.product.etalase.domain.MyEtalaseRepository;
+import com.tokopedia.seller.product.etalase.domain.interactor.AddNewEtalaseUseCase;
+import com.tokopedia.seller.product.etalase.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenter;
 import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsEtalaseFactory;
