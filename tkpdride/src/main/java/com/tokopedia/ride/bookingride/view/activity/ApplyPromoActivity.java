@@ -85,6 +85,7 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
             intent.putExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM, confirmBookingViewModel);
             setResult(Activity.RESULT_OK, intent);
             finish();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
