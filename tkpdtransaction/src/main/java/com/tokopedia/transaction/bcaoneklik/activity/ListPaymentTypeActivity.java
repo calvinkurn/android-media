@@ -88,6 +88,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
         bcaOneClickRegisterLayout = (LinearLayout) findViewById(R.id.bca_one_click_register_layout);
         bcaOneClickRegistrationButton = (TextView) findViewById(R.id.bca_one_click_register_button);
         bcaOneClickRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        bcaOneClickRecyclerView.setNestedScrollingEnabled(false);
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
         mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
