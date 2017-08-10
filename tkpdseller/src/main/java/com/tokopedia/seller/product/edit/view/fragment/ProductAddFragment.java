@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -57,6 +58,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantMainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -254,13 +256,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             case ProductInfoViewHolder.REQUEST_CODE_CATALOG:
                 productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
-            case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
+            case ImageGallery.TOKOPEDIA_GALLERY:
                 productImageViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
             case ProductDetailViewHolder.REQUEST_CODE_ETALASE:
                 productDetailViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
-            case YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO:
+            case ProductAdditionalInfoViewHolder.REQUEST_CODE_GET_VIDEO:
                 productAdditionalInfoViewHolder.onActivityResult(requestCode, resultCode, data);
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -542,7 +544,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         if (CommonUtils.checkCollectionNotNull(videoIds)) {
             intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
         }
-        startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
+        startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_GET_VIDEO);
+    }
+
+    @Override
+    public void startProductVariantActivity() {
+        Intent intent = new Intent(getActivity(), ProductVariantMainActivity.class);
+        startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT);
     }
 
     @Override
@@ -558,7 +566,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onEtalaseViewClicked(long etalaseId) {
         Intent intent = EtalasePickerActivity.createInstance(getActivity(), etalaseId);
-        this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
+        startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 
     // Others

@@ -37,11 +37,15 @@ import java.util.List;
 
 public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
+    public static final int REQUEST_CODE_GET_VIDEO = 1;
+    public static final int REQUEST_CODE_VARIANT = 2;
+
     public static final int INACTIVE_PREORDER = -1;
 
     private TextInputLayout descriptionTextInputLayout;
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
+    private LabelView variantLabelView;
     private ExpandableOptionSwitch preOrderExpandableOptionSwitch;
     private SpinnerCounterInputView preOrderSpinnerCounterInputView;
     private LabelSwitch shareLabelSwitch;
@@ -57,6 +61,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         descriptionTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_description);
         descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
         labelAddVideoView = (LabelView) view.findViewById(R.id.label_add_video_view);
+        variantLabelView = (LabelView) view.findViewById(R.id.label_view_variant);
         preOrderExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_pre_order);
         preOrderSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_pre_order);
         shareLabelSwitch = (LabelSwitch) view.findViewById(R.id.label_switch_share);
@@ -87,6 +92,12 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                         listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
                     }
                 }
+            }
+        });
+        variantLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.startProductVariantActivity();
             }
         });
         preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
@@ -138,7 +149,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO:
+            case REQUEST_CODE_GET_VIDEO:
                 if (resultCode == Activity.RESULT_OK) {
                     processVideos(data);
                 } else {
@@ -245,8 +256,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             return;
         }
         ArrayList<String> stringArrayList = savedInstanceState.getStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK);
-        if (stringArrayList != null) setVideoIdList(stringArrayList);
-
+        if (stringArrayList != null) {
+            setVideoIdList(stringArrayList);
+        }
     }
 
     /**
@@ -260,6 +272,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     public interface Listener {
 
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
+
+        void startProductVariantActivity();
 
         void onDescriptionTextChanged(String text);
 

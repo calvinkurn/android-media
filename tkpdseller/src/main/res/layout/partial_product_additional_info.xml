@@ -39,6 +39,16 @@
         app:label_show_arrow="true"
         app:title="@string/product_label_video" />
 
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:content="@string/product_variant_choose"
+        app:content_color="@color/tkpd_main_green"
+        app:label_show_arrow="true"
+        app:title="@string/product_variant_label_title" />
+
     <com.tokopedia.expandable.ExpandableOptionSwitch
         android:id="@+id/expandable_option_switch_pre_order"
         style="@style/LabelLayout"

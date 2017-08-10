@@ -316,6 +316,10 @@
             android:name=".product.edit.view.activity.YoutubeAddVideoActivity"
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.variant.view.activity.ProductVariantMainActivity"
+            android:label="@string/product_label_video"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity"
