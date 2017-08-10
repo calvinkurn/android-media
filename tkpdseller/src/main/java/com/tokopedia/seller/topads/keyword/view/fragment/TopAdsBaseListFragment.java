@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
-import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 
 import java.util.Date;
 
@@ -41,7 +41,7 @@ public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends Base
     protected void initialPresenter() {
         super.initialPresenter();
         datePickerPresenter = getDatePickerPresenter();
-        datePickerResultListener = new DatePickerResultListener(this, ConstantView.REQUEST_CODE_DATE);
+        datePickerResultListener = new DatePickerResultListener(this, DatePickerConstant.REQUEST_CODE_DATE);
     }
 
     @Override
@@ -85,16 +85,16 @@ public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends Base
             return;
         }
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
-        startActivityForResult(intent, ConstantView.REQUEST_CODE_DATE);
+        startActivityForResult(intent, DatePickerConstant.REQUEST_CODE_DATE);
     }
 
     @Override
-    protected void searchData(int page) {
+    protected void setAndSearchForPage(int page) {
         this.page = page;
         if (startDate == null || endDate == null) {
             return;
         }
-        searchData();
+        searchForPage(page);
     }
 
     @Override

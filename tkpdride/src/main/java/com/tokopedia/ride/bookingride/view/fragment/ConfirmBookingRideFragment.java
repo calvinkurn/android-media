@@ -29,20 +29,25 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.ConfirmBookingDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
+import com.tokopedia.ride.bookingride.view.ConfirmBookingPresenter;
 import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
 import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
 import com.tokopedia.ride.ontrip.view.fragment.InterruptDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.OnClick;
 
@@ -78,7 +83,9 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     LinearLayout confirmPageContainer;
     private SnackbarRetry snackbarRetry;
 
-    ConfirmBookingContract.Presenter presenter;
+    @Inject
+    ConfirmBookingPresenter presenter;
+
     OnFragmentInteractionListener mListener;
     ConfirmBookingViewModel confirmBookingViewModel;
     ConfirmBookingPassData confirmBookingPassData;
@@ -125,8 +132,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
         confirmBookingViewModel.setSeatCount(confirmBookingPassData.getSeatCount());
         initView(view);
-
-        presenter = ConfirmBookingDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         presenter.initialize();
 
@@ -492,6 +497,16 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -500,6 +515,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void updateLocations(PlacePassViewModel source, PlacePassViewModel destination) {
         confirmBookingViewModel.setSource(source);
         confirmBookingViewModel.setDestination(destination);
+        confirmBookingPassData.setSource(source);
+        confirmBookingPassData.setDestination(destination);
         presenter.actionGetFareAndEstimate(getParam());
     }
 

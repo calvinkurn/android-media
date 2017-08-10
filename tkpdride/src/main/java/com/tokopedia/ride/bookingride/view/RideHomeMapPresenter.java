@@ -43,6 +43,8 @@ import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 import java.io.IOException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,6 +69,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private boolean mSourceIsCurrentLocation;
     private MapConfiguration mapConfiguration;
 
+    @Inject
     public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
     }
@@ -173,7 +176,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             mCurrentLocation = getFuzedLocation();
                             startLocationUpdates();
                             if (!getView().isLaunchedWithLocation()) {
@@ -216,62 +219,58 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
         mSourceIsCurrentLocation = true;
 
-        if (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-            //set source as current location
-            Observable.create(new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(Subscriber<? super String> subscriber) {
-                    try {
-                        subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                                mCurrentLocation.getLatitude(),
-                                mCurrentLocation.getLongitude()
-                        ));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+        //set source as current location
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+                            mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude()
+                    ));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
 
-                        //if address not found and destination not selected keep looking for address using current current location
-                        if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
-                            mRenderProductListBasedOnLocationUpdates = true;
-                        }
+                    //if address not found and destination not selected keep looking for address using current current location
+                    if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
+                        mRenderProductListBasedOnLocationUpdates = true;
                     }
                 }
-            }).onErrorReturn(new Func1<Throwable, String>() {
-                @Override
-                public String call(Throwable throwable) {
-                    return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
-                }
-            })
-                    .subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<String>() {
-                        @Override
-                        public void onCompleted() {
+            }
+        }).onErrorReturn(new Func1<Throwable, String>() {
+            @Override
+            public String call(Throwable throwable) {
+                return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
+            }
+        })
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-                        @Override
-                        public void onNext(String sourceAddress) {
-                            if (isViewAttached()) {
-                                PlacePassViewModel placeVm = new PlacePassViewModel();
-                                placeVm.setAddress(sourceAddress);
-                                placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
-                                placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
-                                placeVm.setTitle(sourceAddress);
-                                getView().setSourceLocation(placeVm);
-                            }
+                    @Override
+                    public void onNext(String sourceAddress) {
+                        if (isViewAttached()) {
+                            PlacePassViewModel placeVm = new PlacePassViewModel();
+                            placeVm.setAddress(sourceAddress);
+                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
+                            placeVm.setTitle(sourceAddress);
+                            getView().setSourceLocation(placeVm);
                         }
-                    });
-        } else {
-            getCurrentPlace();
-        }
+                    }
+                });
     }
 
     private Location getFuzedLocation() {

@@ -149,11 +149,6 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     }
 
     @Override
-    public Data getCategoryHeaderCache(int level) {
-        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL + level, Data.class);
-    }
-
-    @Override
     public void checkProductsInWishlist(String userId, List<ProductItem> productItemList,
                                         Subscriber<Map<String, Boolean>> subscriber) {
 
@@ -467,4 +462,5 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                 )
         );
     }
+
 }

@@ -110,15 +110,11 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.d(TAG, messageTAG + " fetchEtalase onCompleted()");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(TAG, messageTAG + " fetchEtalase " + e.getLocalizedMessage());
-//                                if(BuildConfig.DEBUG){
-//                                    e = new Throwable("fetchEtalase ["+e.getMessage()+"]");
-//                                }
                                 fetchEtalase.onFailureFetchEtalase(e);
                             }
 

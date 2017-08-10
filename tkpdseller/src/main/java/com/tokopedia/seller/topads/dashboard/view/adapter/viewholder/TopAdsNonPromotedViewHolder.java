@@ -50,7 +50,6 @@ public class TopAdsNonPromotedViewHolder extends BaseTopAdsAddProductListViewHol
         adapterPosition = getAdapterPosition();
 
         boolean b = !adapterSelectionListener.isSelected(model.productDomain);// not selected
-        Log.d("MNORMANSYAH", "bind " + b + " data " + model.productDomain + " position " + getAdapterPosition());
         if (b) {
             checkBoxNonPromoted.setChecked(false);
             itemView.setBackgroundColor(transparantColor);

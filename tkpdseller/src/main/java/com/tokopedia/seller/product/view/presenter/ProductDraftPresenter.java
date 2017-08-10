@@ -48,14 +48,14 @@ public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftV
                 if (!isViewAttached()) {
                     return;
                 }
-                getView().onErrorLoadProduct(e);
+                getView().onErrorLoadDraftProduct(e);
             }
 
             @Override
             public void onNext(UploadProductInputDomainModel uploadProductInputDomainModel) {
                 checkViewAttached();
                 UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(uploadProductInputDomainModel);
-                getView().onSuccessLoadProduct(model);
+                getView().onSuccessLoadDraftProduct(model);
             }
         };
     }

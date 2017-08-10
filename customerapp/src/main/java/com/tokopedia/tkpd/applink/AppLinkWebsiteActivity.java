@@ -4,13 +4,22 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -56,6 +65,32 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         Intent destination = AppLinkWebsiteActivity.newInstance(context, webUrl);
         taskStackBuilder.addNextIntent(destination);
         return destination;
+    }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        setTheme(R.style.WebViewActivity);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (parentView != null) {
+                    parentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+                window.setStatusBarColor(getResources().getColor(com.tokopedia.digital.R.color.white, null));
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    window.setStatusBarColor(getResources().getColor(com.tokopedia.digital.R.color.colorPrimaryDark));
+                }
+            }
+        }
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+
+        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
     }
 
     @Override
@@ -114,5 +149,25 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     public void onWebViewProgressLoad() {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == com.tokopedia.core.R.id.menu_home) {
+            if (getApplication() instanceof TkpdCoreRouter) {
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+                if (intentHome != null) startActivity(intentHome);
+            }
+        } else if (item.getItemId() == com.tokopedia.core.R.id.menu_help) {
+            startActivity(InboxRouter.getContactUsActivityIntent(this));
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

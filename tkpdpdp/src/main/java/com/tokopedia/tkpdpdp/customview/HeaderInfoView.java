@@ -52,7 +52,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     public void setListener(ProductDetailView listener) {
         this.listener = listener;
-
     }
 
     @Override

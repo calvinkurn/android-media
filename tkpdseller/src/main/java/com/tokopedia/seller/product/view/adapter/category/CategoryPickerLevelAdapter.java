@@ -32,7 +32,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
         if (viewType == LEVEL_CATEGORY_VIEW){
             View view = LayoutInflater
                     .from(parent.getContext())
-                    .inflate(R.layout.category_picker_level_view_layout, parent, false);
+                    .inflate(R.layout.item_product_category_picker_level, parent, false);
             return new CategoryLevelPickerViewHolder(view, this);
         } else {
             return super.onCreateViewHolder(parent, viewType);
