@@ -915,7 +915,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         category.unSubscribe();
-        subscription.unsubscribe();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
