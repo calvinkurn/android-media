@@ -12,8 +12,8 @@ import android.support.annotation.StringRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -38,6 +38,7 @@ import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
+import com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder;
 import com.tokopedia.digital.widget.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalCategoryListRepository;
@@ -45,6 +46,7 @@ import com.tokopedia.digital.widget.interactor.DigitalCategoryListInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemDataError;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemHeader;
 import com.tokopedia.digital.widget.presenter.DigitalCategoryListPresenter;
 import com.tokopedia.digital.widget.presenter.IDigitalCategoryListPresenter;
 
@@ -60,19 +62,29 @@ import rx.subscriptions.CompositeSubscription;
 
 public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalCategoryListPresenter>
         implements IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
-        RefreshHandler.OnRefreshHandlerListener, TokoCashReceivedListener {
+        RefreshHandler.OnRefreshHandlerListener, TokoCashReceivedListener,
+        DigitalItemHeaderHolder.ActionListener {
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
 
     @BindView(R2.id.rv_digital_category)
     RecyclerView rvDigitalCategoryList;
+    @BindView(R2.id.header_container)
+    LinearLayout headerContainer;
+
+    @BindView(R2.id.header_my_transaction)
+    DigitalItemHeaderHolder headerMyTransaction;
+    @BindView(R2.id.header_subscription)
+    DigitalItemHeaderHolder headerSubscription;
+    @BindView(R2.id.header_fav_number)
+    DigitalItemHeaderHolder headerFavNumber;
 
     private CompositeSubscription compositeSubscription;
     private DigitalCategoryListAdapter adapter;
     private RefreshHandler refreshHandler;
-    private RecyclerView.LayoutManager gridLayoutManager;
-    private RecyclerView.LayoutManager linearLayoutManager;
+    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private TokoCashData tokoCashData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
@@ -155,6 +167,39 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     protected void setViewListener() {
         rvDigitalCategoryList.setAdapter(adapter);
+
+        headerMyTransaction.setActionListener(this);
+        headerFavNumber.setActionListener(this);
+        headerSubscription.setActionListener(this);
+
+        headerMyTransaction.setData(
+                new DigitalCategoryItemHeader.Builder()
+                        .title("Transaksi Saya")
+                        .siteUrl("http://www.tokopedia.com/")
+                        .resIconId(R.drawable.ic_icon_tokocash_header)
+                        .build()
+        );
+
+        headerFavNumber.setData(
+                new DigitalCategoryItemHeader.Builder()
+                        .title("Nomor Favorit")
+                        .siteUrl("http://www.tokopedia.com/")
+                        .resIconId(R.drawable.ic_phonebook_widget)
+                        .build()
+        );
+
+        headerSubscription.setData(
+                new DigitalCategoryItemHeader.Builder()
+                        .title("Langganan")
+                        .siteUrl("http://www.tokopedia.com/")
+                        .resIconId(R.drawable.ic_icon_tokocash_header)
+                        .build()
+        );
+
+        headerMyTransaction.invalidate();
+        headerFavNumber.invalidate();
+        headerSubscription.invalidate();
+
     }
 
     @Override
@@ -382,4 +427,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         adapter.addErrorData(new DigitalCategoryItemDataError.Builder().message(message).build());
     }
 
+    @Override
+    public void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data) {
+
+    }
 }
