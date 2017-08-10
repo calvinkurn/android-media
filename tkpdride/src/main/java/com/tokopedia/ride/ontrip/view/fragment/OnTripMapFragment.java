@@ -5,6 +5,7 @@ import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
@@ -19,6 +20,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -29,8 +31,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +53,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.SessionHandler;
@@ -61,6 +62,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
+import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -110,6 +112,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
     private static final int REQUEST_CODE_CANCEL_REASON = 1007;
     private static final int REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG = 1008;
+    private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1009;
+
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
@@ -151,10 +155,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     FrameLayout bottomContainer;
     @BindView(R2.id.block_translucent_view)
     FrameLayout blockTranslucentView;
-    @BindView(R2.id.contact_panel)
-    RelativeLayout contactPanelLayout;
-    @BindView(R2.id.tv_driver_telp)
-    TextView driverTelpTextView;
     @BindView(R2.id.cancel_panel)
     RelativeLayout cancelPanelLayout;
     @BindView(R2.id.iv_my_location_button)
@@ -163,6 +163,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     TextView cancellationFeeTextView;
     @BindView(R2.id.cancellation_charges_layout)
     LinearLayout cancellationChargesLayout;
+    @BindView(R2.id.layout_destination)
+    RelativeLayout destinationLayout;
+    @BindView((R2.id.tv_destination_change))
+    TextView changeDestinationTextView;
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
@@ -262,6 +266,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             getActivity().finish();
             return;
         } else {
+            changeDestinationTextView.setVisibility(View.VISIBLE);
             presenter.initialize();
         }
     }
@@ -538,6 +543,19 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 if (resultCode == Activity.RESULT_OK) {
                     getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
                     getActivity().finish();
+                }
+                break;
+            case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
+                if (data != null) {
+                    PlacePassViewModel destinationTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
+                    } else if (destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
+                    } else {
+                        //update destination
+                        presenter.updateDestination(destinationTemp);
+                    }
                 }
                 break;
             default:
@@ -920,12 +938,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void actionContactDriver(String telp) {
-        showContactPanel();
-        driverTelpTextView.setText(telp);
-    }
-
-    @Override
     public void showShareDialog(String shareUrl) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.RIDE_TYPE)
@@ -935,40 +947,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .build();
         Intent shareIntent = ShareActivity.getCallingRideIntent(getActivity(), shareData);
         startActivity(shareIntent);
-    }
-
-    @Override
-    public void hideContactPanel() {
-        //do not hide,if layout is already hidden
-        if (contactPanelLayout.getVisibility() == View.GONE) {
-            return;
-        }
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                isBackButtonHandleByFragment = false;
-                isBlackOverlayShow = false;
-                Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
-                        R.anim.bottom_down);
-                contactPanelLayout.startAnimation(bottomDown);
-                contactPanelLayout.setVisibility(View.GONE);
-            }
-        }, 200);
-        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
-                "backgroundColor",
-                new ArgbEvaluator(),
-                0xBB000000,
-                0x00000000);
-        backgroundColorAnimator.setDuration(500);
-        backgroundColorAnimator.start();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                blockTranslucentView.setVisibility(View.GONE);
-            }
-        }, 500);
     }
 
     @Override
@@ -998,31 +976,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         cancelPanelLayout.setVisibility(View.VISIBLE);
         cancelPanelLayout.setAlpha(0.0f);
         cancelPanelLayout.animate().alpha(1.0f).setDuration(500);
-    }
-
-    @Override
-    public void showContactPanel() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                isBackButtonHandleByFragment = true;
-                isBlackOverlayShow = true;
-                Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
-                        R.anim.bottom_up);
-
-                contactPanelLayout.startAnimation(bottomUp);
-                contactPanelLayout.setVisibility(View.VISIBLE);
-            }
-        }, 500);
-
-        blockTranslucentView.setVisibility(View.VISIBLE);
-        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
-                "backgroundColor",
-                new ArgbEvaluator(),
-                0x00000000,
-                0xBB000000);
-        backgroundColorAnimator.setDuration(500);
-        backgroundColorAnimator.start();
     }
 
     @Override
@@ -1061,21 +1014,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         return confirmBookingViewModel.getSurgeConfirmationHref();
     }
 
-    @OnClick(R2.id.btn_call)
-    public void actionCallBtnClicked() {
-        presenter.actionCallDriver();
-    }
-
-    @OnClick(R2.id.btn_message)
-    public void actionMessageBtnClicked() {
-        presenter.actionMessageDriver();
-    }
-
-    @OnClick(R2.id.btn_cancel_contact)
-    public void actionCancelContactBtnClicked() {
-        hideContactPanel();
-    }
-
     @OnClick(R2.id.btn_yes)
     public void actionYesCancelBtnClicked() {
         hideCancelPanel();
@@ -1089,12 +1027,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         hideCancelPanel();
     }
 
-    @OnClick(R2.id.block_translucent_view)
-    public void actionBlockTranslucentClicked() {
-        //hideContactPanel();
-        //hideCancelPanel();
+    @OnClick({R2.id.crux_cabs_destination, R2.id.tv_destination_change})
+    public void actionDestinationButtonClicked() {
+        Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red_old);
+        intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+        intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
+        startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, destinationLayout);
     }
-
 
     @NeedsPermission({Manifest.permission.CALL_PHONE})
     public void openCallIntent(String phoneNumber) {
@@ -1115,7 +1054,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void showRequestLoadingLayout() {
+    public void showBlockTranslucentLayout() {
         blockTranslucentView.setVisibility(View.VISIBLE);
         final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
                 "backgroundColor",
@@ -1127,7 +1066,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void hideRequestLoadingLayout() {
+    public void hideBlockTranslucentLayout() {
         if (!isBlackOverlayShow) {
             final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
                     "backgroundColor",
@@ -1172,7 +1111,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             @Override
             public void onBackPressed() {
                 if (isBackButtonHandleByFragment) {
-                    hideContactPanel();
                     hideCancelPanel();
                 }
             }
@@ -1399,6 +1337,35 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void saveDefaultLocation(double latitude, double longitude) {
         if (mapConfiguration != null) {
             mapConfiguration.setDefaultLocation(latitude, longitude);
+        }
+    }
+
+    @Override
+    public void setDestination(PlacePassViewModel destination) {
+        this.destination = new Location();
+        this.destination.setLatitude(destination.getLatitude());
+        this.destination.setLongitude(destination.getLongitude());
+        tvDestination.setText(destination.getTitle());
+    }
+
+    @Override
+    public void showUpdateDestinationLoading() {
+        loaderLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideUpdateDestinationLoading() {
+        loaderLayout.setVisibility(View.GONE);
+    }
+
+    private void startActivityForResultWithClipReveal(Intent intent, int requestCode, View view) {
+        ActivityOptions options = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            options = ActivityOptions.makeClipRevealAnimation(view, 0, 0,
+                    view.getWidth(), view.getHeight());
+            startActivityForResult(intent, requestCode, options.toBundle());
+        } else {
+            startActivityForResult(intent, requestCode);
         }
     }
 

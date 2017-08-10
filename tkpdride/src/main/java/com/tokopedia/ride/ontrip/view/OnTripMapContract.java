@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 
 import java.util.List;
@@ -107,11 +108,7 @@ public interface OnTripMapContract {
 
         void showShareDialog(String shareUrl);
 
-        void hideContactPanel();
-
         void hideCancelPanel();
-
-        void showContactPanel();
 
         RequestParams getCurrentRequestParams(String requestId);
 
@@ -143,9 +140,9 @@ public interface OnTripMapContract {
 
         void checkAndExecuteCallPermission(String phoneNumber);
 
-        void showRequestLoadingLayout();
+        void showBlockTranslucentLayout();
 
-        void hideRequestLoadingLayout();
+        void hideBlockTranslucentLayout();
 
         void moveMapToLocation(double latitude, double longitude);
 
@@ -199,6 +196,12 @@ public interface OnTripMapContract {
         void openInterruptConfirmationDialog(String tosUrl, String key, String value);
 
         void saveDefaultLocation(double latitude, double longitude);
+
+        void setDestination(PlacePassViewModel destinationTemp);
+
+        void showUpdateDestinationLoading();
+
+        void hideUpdateDestinationLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -245,5 +248,7 @@ public interface OnTripMapContract {
         void actionCancelButtonClicked();
 
         String getDeviceName();
+
+        void updateDestination(PlacePassViewModel destinationTemp);
     }
 }

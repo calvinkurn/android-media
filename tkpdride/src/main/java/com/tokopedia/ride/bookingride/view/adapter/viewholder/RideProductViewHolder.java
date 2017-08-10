@@ -80,6 +80,12 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
             priceProgress.setVisibility(View.GONE);
         }
 
+        if (element.isEnabled()) {
+            priceEstimateContainerFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            priceEstimateContainerFrameLayout.setVisibility(View.GONE);
+        }
+
         Glide.with(context).load(element.getProductImage())
                 .asBitmap()
                 .fitCenter()

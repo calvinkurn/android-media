@@ -88,4 +88,8 @@ public interface RideApi {
 
     @GET(RideUrl.CANCEL_REASONS)
     Observable<CancelReasonsResponseEntity> cancelReasons(@QueryMap TKPDMapParam<String, Object> parameters);
+
+    @POST(RideUrl.UPDATE_REQUEST)
+    @FormUrlEncoded
+    Observable<String> updateRequest(@FieldMap TKPDMapParam<String, Object> parameters);
 }

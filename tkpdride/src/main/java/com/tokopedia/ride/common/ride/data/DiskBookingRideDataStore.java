@@ -127,4 +127,9 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
     public Observable<CancelReasonsResponseEntity> getCancelReasons(TKPDMapParam<String, Object> parameters) {
         return null;
     }
+
+    @Override
+    public Observable<String> updateRequest(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
 }

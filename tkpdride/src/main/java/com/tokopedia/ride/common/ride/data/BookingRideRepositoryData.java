@@ -330,4 +330,10 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     }
                 });
     }
+
+    @Override
+    public Observable<String> updateRequest(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .updateRequest(parameters);
+    }
 }

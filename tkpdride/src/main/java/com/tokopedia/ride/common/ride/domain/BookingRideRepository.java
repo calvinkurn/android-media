@@ -61,4 +61,6 @@ public interface BookingRideRepository {
     Observable<List<TimePriceEstimate>> getTimePriceEstimate(TKPDMapParam<String, Object> parameters);
 
     Observable<List<PriceEstimate>> getPriceEstimate(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> updateRequest(TKPDMapParam<String, Object> parameters);
 }

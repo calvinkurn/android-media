@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
@@ -21,6 +23,7 @@ import com.tokopedia.ride.common.ride.di.RideComponent;
 public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
     private static final String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     private RideComponent rideComponent;
+    private ConfirmBookingViewModel confirmBookingViewModel;
 
     public static Intent getCallingActivity(Activity activity,
                                             ConfirmBookingViewModel confirmBookingViewModel) {
@@ -36,7 +39,7 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply_promo);
         setupToolbar();
-        ConfirmBookingViewModel confirmBookingViewModel = getIntent().getExtras().getParcelable(EXTRA_CONFIRM_BOOKING);
+        confirmBookingViewModel = getIntent().getExtras().getParcelable(EXTRA_CONFIRM_BOOKING);
         ApplyPromoFragment fragment = ApplyPromoFragment.newInstance(confirmBookingViewModel);
         backButtonListener = fragment.getBackButtonListener();
         replaceFragment(R.id.fl_container, fragment);
@@ -61,11 +64,27 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_apply_promo, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (i == R.id.action_remove) {
+            confirmBookingViewModel.setPromoCode("");
+            confirmBookingViewModel.setPromoDescription("");
+
+            //set result back
+            Intent intent = getIntent();
+            intent.putExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM, confirmBookingViewModel);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         } else {
             return super.onOptionsItemSelected(item);
         }

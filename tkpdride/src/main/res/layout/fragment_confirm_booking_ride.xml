@@ -51,6 +51,17 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/tv_promo_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/edit"
+                android:textStyle="bold"
+                android:textColor="@color/blue_link"
+                android:textSize="14sp" />
+
             <ImageView
                 android:id="@+id/iv_promo_desc_close"
                 android:layout_width="24dp"
@@ -59,7 +70,7 @@
                 android:layout_marginRight="20dp"
                 android:src="@drawable/cabs_cross_white"
                 android:tint="@color/grey_900"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 

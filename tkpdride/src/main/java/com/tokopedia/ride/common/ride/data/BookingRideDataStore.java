@@ -58,4 +58,6 @@ public interface BookingRideDataStore {
     Observable<String> sendRating(String requestId, TKPDMapParam<String, Object> parameters);
 
     Observable<CancelReasonsResponseEntity> getCancelReasons(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> updateRequest(TKPDMapParam<String, Object> parameters);
 }

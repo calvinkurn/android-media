@@ -151,4 +151,7 @@
     <string name="error_please_try_again_later">Sorry, Please try again later</string>
     <string name="interrupt_tos_cancel">Cancel</string>
     <string name="interrupt_tos_accept">Accept</string>
+    <string name="edit">Edit</string>
+    <string name="menu_remove">Remove</string>
+    <string name="change_destination">CHANGE</string>
 </resources>
