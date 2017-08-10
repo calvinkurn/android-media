@@ -48,12 +48,22 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
     }
 
     public static void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult){
-        Intent moveToProductActivity = new Intent(activity, InstopedActivity.class);
+        Intent moveToProductActivity = createIntent(activity, maxResult);
+        activity.startActivityForResult(moveToProductActivity, resultCode);
+    }
+
+    public static void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult){
+        Intent moveToProductActivity = createIntent(context, maxResult);
+        fragment.startActivityForResult(moveToProductActivity, resultCode);
+    }
+
+    private static Intent createIntent (Context context, int maxResult){
+        Intent moveToProductActivity = new Intent(context, InstopedActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         bundle.putInt(MAX_RESULT, maxResult);
         moveToProductActivity.putExtras(bundle);
-        activity.startActivityForResult(moveToProductActivity, resultCode);
+        return moveToProductActivity;
     }
 
     @Override

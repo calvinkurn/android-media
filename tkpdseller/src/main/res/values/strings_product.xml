@@ -20,8 +20,7 @@
     <string name="product_label_price_whole_sale">Harga Produk</string>
     <string name="product_label_maximum_whole_sale">Jumlah Maximal</string>
     <string name="product_label_manage_stock">Pengaturan Stok</string>
-    <string name="product_stock_available_value">1</string>
-    <string name="product_stock_not_available_value">2</string>
+
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
@@ -53,13 +52,32 @@
 
     <string name="product_currency_value_idr">1</string>
     <string name="product_currency_value_usd">2</string>
+    <string name="product_currency_value_default">@string/product_currency_value_idr</string>
 
 
     <string name="product_weight_value_gram">1</string>
     <string name="product_weight_value_kg">2</string>
+    <string name="product_weight_value_default">@string/product_weight_value_gram</string>
+
+    <string name="product_stock_available_value">1</string>
+    <string name="product_stock_not_available_value">2</string>
+    <string name="product_stock_value_default">@string/product_stock_available_value</string>
 
     <string name="product_pre_order_value_day">1</string>
     <string name="product_pre_order_value_week">2</string>
+    <string name="product_pre_order_value_default">@string/product_pre_order_value_day</string>
+
+    <string name="product_free_return_values_active">3</string>
+    <string name="product_free_return_values_inactive">0</string>
+    <string name="product_free_return_values_default">@string/product_free_return_values_active</string>
+
+    <string name="product_condition_value_new">1</string>
+    <string name="product_condition_value_recon">2</string>
+    <string name="product_condition_value_default">@string/product_condition_value_new</string>
+
+    <string name="product_insurance_value_optional">0</string>
+    <string name="product_insurance_value_yes">1</string>
+    <string name="product_insurance_value_default">@string/product_insurance_value_optional</string>
 
     <string name="product_dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
     <string name="product_dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
@@ -70,8 +88,6 @@
     <string name="product_draft_dialog_cancel_message">Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?</string>
     <string name="product_draft_dialog_edit_cancel_message">Anda belum selesai mengubah produk. Apakah Anda yakin ingin keluar?</string>
 
-    <string name="product_free_return_values_active">3</string>
-    <string name="product_free_return_values_inactive">0</string>
     <string name="product_error_product_name_empty">Nama produk harus diisi</string>
     <string name="product_error_product_category_empty">Kategori harus diisi</string>
     <string name="product_minimum_price_rp">100</string>

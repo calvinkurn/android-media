@@ -1,16 +1,29 @@
 package com.tokopedia.seller.product.draft.view.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 /**
  * Created by User on 6/19/2017.

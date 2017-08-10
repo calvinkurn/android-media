@@ -1,13 +1,17 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
@@ -72,31 +76,26 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
     }
 
     @Override
-    public void saveInstagramToDraft(@NonNull ArrayList<String> localPathList,
+    public void saveInstagramToDraft( Context context,
+                                     @NonNull ArrayList<String> localPathList,
                                      @NonNull ArrayList<String> instagramDescList) {
-        ArrayList<UploadProductInputDomainModel> uploadProductInputDomainModelList = new ArrayList<>();
-
+        ArrayList<String> correctResolutionLocalPathList = new ArrayList<>();
+        ArrayList<String> correctResolutionInstagramDescList = new ArrayList<>();
         for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
             String localPath = localPathList.get(i);
-            if (! isResolutionCorrect(localPath)) {
-                getView().onSaveInstagramResolutionError(i+1, localPath);
+            if (!isResolutionCorrect(localPath)) {
+                getView().onSaveInstagramResolutionError(i + 1, localPath);
                 continue;
             }
-            UploadProductInputDomainModel uploadProductInputDomainModel = new UploadProductInputDomainModel();
-            uploadProductInputDomainModel.setProductDescription(instagramDescList.get(i));
-            ProductPhotoListDomainModel productPhotoListDomainModel = new ProductPhotoListDomainModel();
-            productPhotoListDomainModel.setProductDefaultPicture(0);
-            ArrayList<ImageProductInputDomainModel> imageProductInputDomainModelArrayList = new ArrayList<>();
-            ImageProductInputDomainModel imageProductInputDomainModel = new ImageProductInputDomainModel();
-            imageProductInputDomainModel.setImagePath(localPathList.get(i));
-            imageProductInputDomainModelArrayList.add(imageProductInputDomainModel);
-
-            productPhotoListDomainModel.setPhotos(imageProductInputDomainModelArrayList);
-            uploadProductInputDomainModel.setProductPhotos(productPhotoListDomainModel);
-            uploadProductInputDomainModelList.add(uploadProductInputDomainModel);
+            correctResolutionLocalPathList.add(localPath);
+            correctResolutionInstagramDescList.add(instagramDescList.get(i));
+        }
+        if (correctResolutionLocalPathList.size() == 0) {
+            return;
         }
         saveBulkDraftProductUseCase.execute(
-                SaveBulkDraftProductUseCase.generateUploadProductParam(uploadProductInputDomainModelList),
+                SaveBulkDraftProductUseCase.generateUploadProductParam(context,
+                        correctResolutionLocalPathList, correctResolutionInstagramDescList),
                 getSaveInstagramToDraftSubscriber());
     }
 

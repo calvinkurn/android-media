@@ -40,11 +40,13 @@ import javax.inject.Inject;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
+
 @RuntimePermissions
 public class ManageProductSeller extends ManageProduct implements
         ProductDraftListCountView {
     public static final int MAX_INSTAGRAM_SELECT = 10;
-    private static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
+    public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
     private BroadcastReceiver draftBroadCastReceiver;
 
     private TkpdProgressDialog progressDialog;
@@ -90,54 +92,50 @@ public class ManageProductSeller extends ManageProduct implements
     public void onInstagramClicked() {
         if (getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(ManageProductSeller.this,
-                    GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, MAX_INSTAGRAM_SELECT);
+                    INSTAGRAM_SELECT_REQUEST_CODE, MAX_INSTAGRAM_SELECT);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case RESULT_OK:
-                List<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
-                if (images == null || images.size() == 0) {
-                    return;
-                }
-                final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
-                final ArrayList<String> imageDescriptionList = new ArrayList<>();
-                for (int i = 0; i < images.size(); i++) {
-                    InstagramMediaModel instagramMediaModel = images.get(i);
-                    standardResoImageUrlList.add(instagramMediaModel.standardResolution);
-                    imageDescriptionList.add(instagramMediaModel.captionText);
-                }
-                showProgressDialog();
-                ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
-                imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, DEFAULT_NEED_COMPRESS_TKPD,
-                        new ImageDownloadHelper.OnImageDownloadListener() {
-                            @Override
-                            public void onError(Throwable e) {
-                                hideProgressDialog();
-                                CommonUtils.UniversalToast(ManageProductSeller.this,
-                                        ErrorHandler.getErrorMessage(e, ManageProductSeller.this));
-                            }
+        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == RESULT_OK && data!= null) {
+            List<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+            if (images == null || images.size() == 0) {
+                return;
+            }
+            final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
+            final ArrayList<String> imageDescriptionList = new ArrayList<>();
+            for (int i = 0; i < images.size(); i++) {
+                InstagramMediaModel instagramMediaModel = images.get(i);
+                standardResoImageUrlList.add(instagramMediaModel.standardResolution);
+                imageDescriptionList.add(instagramMediaModel.captionText);
+            }
+            showProgressDialog();
+            ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
+            imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, DEFAULT_NEED_COMPRESS_TKPD,
+                new ImageDownloadHelper.OnImageDownloadListener() {
+                    @Override
+                    public void onError(Throwable e) {
+                        hideProgressDialog();
+                        CommonUtils.UniversalToast(ManageProductSeller.this,
+                                ErrorHandler.getErrorMessage(e, ManageProductSeller.this));
+                    }
 
-                            @Override
-                            public void onSuccess(ArrayList<String> localPaths) {
-                                // if the path is different with the original,
-                                // means no all draft is saved to local for some reasons
-                                if (localPaths == null || localPaths.size() == 0 ||
-                                        localPaths.size()!= standardResoImageUrlList.size()) {
-                                    throw new NullPointerException();
-                                }
-                                productDraftListCountPresenter.saveInstagramToDraft(localPaths, imageDescriptionList);
-                                // goto onSaveBulkDraftSuccess
-                                // goto onSaveBulkDraftError
-                            }
-                        });
-                break;
-            default:
-                // no op
-                break;
+                    @Override
+                    public void onSuccess(ArrayList<String> localPaths) {
+                        // if the path is different with the original,
+                        // means no all draft is saved to local for some reasons
+                        if (localPaths == null || localPaths.size() == 0 ||
+                                localPaths.size() != standardResoImageUrlList.size()) {
+                            throw new NullPointerException();
+                        }
+                        productDraftListCountPresenter.saveInstagramToDraft(ManageProductSeller.this,
+                                localPaths, imageDescriptionList);
+                        // goto onSaveBulkDraftSuccess
+                        // goto onSaveBulkDraftError
+                    }
+                });
         }
     }
 
