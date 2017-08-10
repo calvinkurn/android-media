@@ -90,7 +90,8 @@ public class InboxReputationActivity extends DrawerPresenterActivity
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_inbox_reputation;
+        return 0
+                ;
     }
 
     @Override

@@ -256,14 +256,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.core.inboxreputation.activity.InboxReputationActivity"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.reputationproduct.ReputationProduct"
             android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait" />

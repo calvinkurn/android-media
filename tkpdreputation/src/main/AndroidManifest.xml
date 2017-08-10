@@ -1,13 +1,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-
           package="com.tokopedia.tkpd.tkpdreputation"
->
-
-    <application android:allowBackup="true"
-                 android:label="@string/app_name"
-                 android:supportsRtl="true"
     >
 
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        >
+        <activity
+            android:name="com.tokopedia.tkpd.tkpdreputation.InboxReputationActivity"
+            android:label="@string/title_activity_reputation"
+            android:screenOrientation="portrait"/>
+        <!--<activity-->
+            <!--android:name="com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity"-->
+            <!--android:label="@string/title_activity_reputation"-->
+            <!--android:screenOrientation="portrait"/>-->
     </application>
 
 </manifest>
