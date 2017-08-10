@@ -240,6 +240,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
+    }
+
+    @Override
     public void removeInstopedToken() {
         InstagramMediaPresenterImpl.removeToken();
     }
