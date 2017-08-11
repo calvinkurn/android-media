@@ -3,9 +3,13 @@ package com.tokopedia.design.text;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -20,6 +24,14 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class SearchInputView extends BaseCustomView {
 
+    public interface Listener {
+
+        void onSearchSubmitted(String text);
+
+        void onSearchTextChanged(String text);
+
+    }
+
     private ImageView searchImageView;
     private EditText searchTextView;
     private ImageButton closeImageButton;
@@ -27,6 +39,16 @@ public class SearchInputView extends BaseCustomView {
     private Drawable searchDrawable;
     private String searchText;
     private String searchHint;
+
+    private Listener listener;
+
+    public EditText getSearchTextView() {
+        return searchTextView;
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     public SearchInputView(Context context) {
         super(context);
@@ -55,6 +77,14 @@ public class SearchInputView extends BaseCustomView {
         }
     }
 
+    private void init() {
+        View view = inflate(getContext(), R.layout.widget_search_input_view, this);
+        searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
+        searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
+        closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
+    }
+
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -67,15 +97,44 @@ public class SearchInputView extends BaseCustomView {
         if (!TextUtils.isEmpty(searchHint)) {
             searchTextView.setHint(searchHint);
         }
+        searchTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
+                    listener.onSearchSubmitted(textView.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+        searchTextView.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (listener != null) {
+                    listener.onSearchTextChanged(s.toString());
+                }
+                if (TextUtils.isEmpty(searchTextView.getText().toString())) {
+                    closeImageButton.setVisibility(View.GONE);
+                } else {
+                    closeImageButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        closeImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchTextView.setText("");
+            }
+        });
         invalidate();
         requestLayout();
-    }
-
-    private void init() {
-        View view = inflate(getContext(), R.layout.widget_search_input_view, this);
-        searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
-        searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
-        closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
     }
 
     @Override

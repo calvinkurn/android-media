@@ -53,6 +53,8 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
 
     protected abstract BaseListAdapter getNewAdapter();
 
+    protected abstract void searchForPage(int page);
+
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
         return new NoResultDataBinder(adapter);
     }
@@ -163,8 +165,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         this.page = page;
         searchForPage(page);
     }
-
-    abstract protected void searchForPage(int page);
 
     @Override
     public void onSearchLoaded(@NonNull List list, int totalItem) {

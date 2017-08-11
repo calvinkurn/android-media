@@ -11,7 +11,7 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> {
+public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> implements SearchInputView.Listener {
 
     private SearchInputView searchInputView;
 
@@ -24,5 +24,16 @@ public abstract class BaseSearchListFragment<P, T extends ItemType> extends Base
     protected void initView(View view) {
         super.initView(view);
         searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
+        searchInputView.setListener(this);
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+
     }
 }
