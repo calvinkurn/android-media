@@ -21,7 +21,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -108,9 +108,11 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
 
     @Override
     public void bind(ActivityCardViewModel activityCardViewModel) {
-        setHeader(activityCardViewModel);
-        adapter.setData(activityCardViewModel);
-        setFooter(activityCardViewModel);
+        if (activityCardViewModel != null) {
+            setHeader(activityCardViewModel);
+            adapter.setData(activityCardViewModel);
+            setFooter(activityCardViewModel);
+        }
     }
 
     public void setHeader(final ActivityCardViewModel activityCardViewModel) {

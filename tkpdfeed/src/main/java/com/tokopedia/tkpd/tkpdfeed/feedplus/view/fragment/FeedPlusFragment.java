@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -31,6 +30,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -44,8 +44,6 @@ import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedTrackingEventLabel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.RecentViewActivity;
@@ -54,12 +52,15 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.product.AddFeedViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -76,9 +77,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
 
@@ -98,6 +99,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
     View newFeed;
+
     @Inject
     FeedPlusPresenter presenter;
 
@@ -108,6 +110,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private static final String TOPADS_ITEM = "4";
+    private static final String POSITION = "position";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
 
     @Override
@@ -133,8 +136,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
         initVar();
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(POSITION, TAG);
+    }
+
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, this);
         adapter = new FeedPlusAdapter(typeFactory);
 
         Config config = new Config.Builder()
@@ -158,6 +168,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 int size = adapter.getlist().size();
                 int lastIndex = size - 1;
                 if (!(adapter.getlist().get(0) instanceof EmptyModel)
+
                         && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
                         && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
                         )
@@ -195,11 +206,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -395,6 +408,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
                 .setProductId(String.valueOf(productFeedViewModel.getProductId()))
                 .setPrice(productFeedViewModel.getPrice())
+                .setImageUri(productFeedViewModel.getImageSource())
                 .build();
 
         Intent intent = TransactionAddToCartRouter
@@ -438,7 +452,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void goToAllPromo() {
-        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO);
+        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO +
+                TkpdBaseURL.FLAG_APP);
         startActivity(intent);
     }
 
@@ -448,7 +463,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         topAdsRecyclerAdapter.setEndlessScrollListener();
-
     }
 
     @Override
@@ -465,24 +479,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
+    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed, boolean canShowTopads) {
         topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
         adapter.showEmpty();
         adapter.addList(listFeed);
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onShowEmpty() {
+    public void onShowEmpty(boolean canShowTopads) {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
         adapter.showEmpty();
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
 
     }
@@ -672,9 +688,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-        if (getUserVisibleHint() && presenter != null) {
-            checkNewFeed();
-        }
+//        if (getUserVisibleHint() && presenter != null) {
+//            checkNewFeed();
+//        }
     }
 
     private void checkNewFeed() {
@@ -695,16 +711,82 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && presenter != null) {
-            checkNewFeed();
-        }
+//        if (isVisibleToUser && presenter != null) {
+//            checkNewFeed();
+//        }
     }
 
-    private boolean hasFeed() {
+    @Override
+    public boolean hasFeed() {
         return adapter.getlist() != null
                 && !adapter.getlist().isEmpty()
                 && adapter.getlist().size() > 1
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
+    }
+
+    @Override
+    public void updateFavoriteFromEmpty() {
+        onRefresh();
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
+
+    }
+
+    @Override
+    public void showTopAds(boolean isTopAdsShown) {
+        topAdsRecyclerAdapter.shouldLoadAds(isTopAdsShown);
+    }
+
+    @Override
+    public void onEmptyOfficialStoreClicked() {
+        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+    }
+
+    @Override
+    public void onBrandClicked(OfficialStoreViewModel officialStoreViewModel) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND +
+                officialStoreViewModel.getShopName());
+
+        Intent intent = ShopInfoActivity.getCallingIntent(
+                getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onSeeAllOfficialStoresFromCampaign(String redirectUrl) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SEE_ALL);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), redirectUrl);
+    }
+
+    @Override
+    public void onGoToCampaign(String redirectUrl, String title) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN + title);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), redirectUrl);
+
+    }
+
+    @Override
+    public void onSeeAllOfficialStoresFromBrands() {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND_SEE_ALL);
+        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+    }
+
+    @Override
+    public void onGoToProductDetailFromCampaign(String productId) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_PDP);
+        goToProductDetail(productId);
+
+    }
+
+    @Override
+    public void onGoToShopDetailFromCampaign(String shopUrl) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), shopUrl);
+    }
+
+    private void openWebViewBrandsURL(String url) {
+        if (!url.trim().equals("")) {
+            startActivity(BrandsWebViewActivity.newInstance(getActivity(), url));
+        }
     }
 
 

@@ -42,6 +42,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -57,17 +58,22 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
-import com.tokopedia.ride.bookingride.di.RideHomeDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.RideHomeContract;
+import com.tokopedia.ride.bookingride.view.RideHomePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
+import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
@@ -78,6 +84,8 @@ import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,11 +102,13 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeMapFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener,
-        SeatAdapter.OnItemClickListener, RideHomeContract.View {
+        SeatAdapter.OnItemClickListener, RideHomeContract.View, HasComponent<RideComponent>  {
+    private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+    private static final String PRODUCTS_FRAGMENT_TAG = "products_fragment_tag";
+    private static final String CONFIRM_FRAGMENT_TAG = "confirm_fragment_tag";
     private static final int RIDE_PHONE_VERIFY_REQUEST_CODE = 1011;
-    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final int LOGIN_REQUEST_CODE = 1005;
-    public static int REQUEST_GO_TO_ONTRIP_CODE = 1009;
+    public static final int REQUEST_GO_TO_ONTRIP_REQUEST_CODE = 1009;
     private Unbinder unbinder;
 
     @BindView(R2.id.cabs_sliding_layout)
@@ -120,8 +130,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
     private boolean isSeatPanelShowed;
-
-    RideHomeContract.Presenter mPresenter;
+    RideComponent rideComponent;
+    @Inject
+    RideHomePresenter mPresenter;
     private boolean inBackground;
 
     public static Intent getCallingIntent(Activity activity) {
@@ -184,13 +195,22 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_ride);
         unbinder = ButterKnife.bind(this);
-
-        mPresenter = RideHomeDependencyInjection.createPresenter(this);
+        initInjector();
         mPresenter.attachView(this);
         mPresenter.initialize();
 
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        BookingRideComponent component = DaggerBookingRideComponent.builder()
+                .rideComponent(rideComponent)
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -324,6 +344,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void clearActiveRequestId() {
+        RideConfiguration rideConfiguration = new RideConfiguration(getApplicationContext());
+        rideConfiguration.clearActiveRequestId();
+    }
+
+    @Override
     public void navigateToCompleteTripScreen(String requestId, DriverVehicleAddressViewModel driverAndVehicle) {
         Intent intent = CompleteTripActivity.getCallingIntent(this, requestId, driverAndVehicle);
         startActivity(intent);
@@ -348,7 +374,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     @Override
     public void actionNavigateToOnTripScreen(RideRequest rideRequest) {
         Intent intent = OnTripActivity.getCallingIntent(this, rideRequest);
-        startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
+        startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_REQUEST_CODE);
     }
 
     @Override
@@ -362,15 +388,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
         mainLayout.setLayoutParams(relativeParams);
         mToolbar.setVisibility(View.GONE);
-        addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
-        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+        replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(), MAP_FRAGMENT_TAG);
+        replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(), PRODUCTS_FRAGMENT_TAG);
     }
 
     @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void showDeniedForLocation() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
         initFragment();
     }
@@ -400,11 +426,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mToolbar.setVisibility(View.GONE);
 
         if (source != null && destination != null) {
-            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
-            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(source, destination));
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination), MAP_FRAGMENT_TAG);
+            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(source, destination), PRODUCTS_FRAGMENT_TAG);
         } else {
-            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance());
-            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(), MAP_FRAGMENT_TAG);
+            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(), PRODUCTS_FRAGMENT_TAG);
         }
     }
 
@@ -416,10 +442,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         }
     }
 
-    private void replaceFragment(int containerViewId, Fragment fragment) {
-        if (!isFinishing()) {
+    private void replaceFragment(int containerViewId, Fragment fragment, String tag) {
+        if (!isFinishing() && !fragment.isAdded()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(containerViewId, fragment);
+            Fragment prevFragment = getFragmentManager().findFragmentByTag(tag);
+            if (prevFragment != null) {
+                fragmentTransaction.remove(prevFragment);
+            }
+            fragmentTransaction.replace(containerViewId, fragment, tag);
             fragmentTransaction.commit();
         }
     }
@@ -443,7 +473,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             }
         } else {
             UberProductFragment productFragment = UberProductFragment.newInstance(source, destination);
-            replaceFragment(R.id.bottom_container, productFragment);
+            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
         }
     }
 
@@ -456,7 +486,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             if (fragment != null) {
                 fragment.handleLocationAlertResult(resultCode);
             }
-        } else if (requestCode == REQUEST_GO_TO_ONTRIP_CODE) {
+        } else if (requestCode == REQUEST_GO_TO_ONTRIP_REQUEST_CODE) {
             switch (resultCode) {
                 case OnTripActivity.APP_HOME_RESULT_CODE:
                     finish();
@@ -491,7 +521,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             if (!SessionHandler.isV4Login(this)) {
                 finish();
             } else {
-                mPresenter = RideHomeDependencyInjection.createPresenter(this);
                 mPresenter.attachView(this);
                 mPresenter.initialize();
             }
@@ -554,7 +583,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setMarkerText(timeEst);
         } else {
             fragment = RideHomeMapFragment.newInstance();
-            addFragment(R.id.top_container, fragment);
+            replaceFragment(R.id.top_container, fragment, MAP_FRAGMENT_TAG);
             fragment.setMarkerText(timeEst);
         }
     }
@@ -589,10 +618,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
-    public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
+    public void onProductClicked(ConfirmBookingPassData confirmBookingPassData) {
         onBottomContainerChangeToBookingScreen();
 
-        ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(rideProductViewModel);
+        ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(confirmBookingPassData);
         Slide slideTransition = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             slideTransition = new Slide(Gravity.RIGHT);
@@ -612,7 +641,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setAllowReturnTransitionOverlap(true);
             fragment.setSharedElementEnterTransition(changeBoundsTransition);
         }
-        replaceFragment(R.id.bottom_container, fragment);
+        replaceFragment(R.id.bottom_container, fragment, CONFIRM_FRAGMENT_TAG);
     }
 
     private void onBottomContainerChangeToBookingScreen() {
@@ -649,10 +678,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             onBottomContainerChangeToProductListScreen();
 
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
-            ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
+            ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
-            replaceFragment(R.id.bottom_container, productFragment);
+            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof UberProductFragment &&
+                mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
             super.onBackPressed();
         }
@@ -741,7 +773,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     @Override
     public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
-        startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
+        startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_REQUEST_CODE);
     }
 
     @Override
@@ -818,14 +850,17 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public void actionBackToProductList() {
         if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
             getFragmentManager().popBackStack();
-
             onBottomContainerChangeToProductListScreen();
-
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
-            ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
+            ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
-            replaceFragment(R.id.bottom_container, productFragment);
+            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
         }
+    }
+
+    @Override
+    public RideComponent getComponent() {
+        return rideComponent;
     }
 }

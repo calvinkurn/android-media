@@ -60,7 +60,7 @@ public interface ICartDataInteractor {
 
     void unSubscribeObservable();
 
-    void calculateKeroRates(String token,
+    void calculateKeroRates(String token, String ut,
                             List<CartItem> cartItemList,
                             KeroRatesListener listener);
 

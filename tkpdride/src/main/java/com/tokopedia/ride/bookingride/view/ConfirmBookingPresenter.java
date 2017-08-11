@@ -1,13 +1,20 @@
 package com.tokopedia.ride.bookingride.view;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -19,22 +26,22 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
         implements ConfirmBookingContract.Presenter {
     private GetFareEstimateUseCase getFareEstimateUseCase;
 
+    @Inject
     public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase) {
         this.getFareEstimateUseCase = getFareEstimateUseCase;
     }
 
     @Override
     public void initialize() {
-        actionGetFareAndEstimate(false);
+        actionGetFareAndEstimate(getView().getParam());
+        getView().renderInitialView();
     }
 
     @Override
-    public void actionGetFareAndEstimate(boolean showProgress) {
-        if (showProgress) {
-            getView().showProgress();
-            getView().hideConfirmLayout();
-            getView().hidePromoLayout();
-        }
+    public void actionGetFareAndEstimate(RequestParams showProgress) {
+        getView().showProgress();
+        getView().hidePromoLayout();
+        getView().disableConfirmBtn();
 
         RequestParams requestParams = getView().getParam();
         getFareEstimateUseCase.execute(requestParams, new Subscriber<FareEstimate>() {
@@ -47,14 +54,44 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    if (e instanceof UnknownHostException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_no_connection));
-                    } else if (e instanceof SocketTimeoutException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_timeout));
+                    getView().hideProgress();
+
+                    if (e instanceof InterruptConfirmationHttpException) {
+                        if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
+                            getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
+                            getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
+                        } else if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
+                            getView().showErrorTosConfirmationDialog(
+                                    e.getMessage(),
+                                    ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                    ((InterruptConfirmationHttpException) e).getKey(),
+                                    ((InterruptConfirmationHttpException) e).getId()
+                            );
+                            getView().openInterruptConfirmationDialog(
+                                    ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                    ((InterruptConfirmationHttpException) e).getKey(),
+                                    ((InterruptConfirmationHttpException) e).getId()
+                            );
+                        } else {
+                            String message = e.getMessage();
+                            getView().showToastMessage(message);
+                            getView().goToProductList();
+                        }
                     } else {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_default));
+                        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                            getView().showToastMessage(getView().getActivity().getString(R.string.error_no_connection));
+                        } else if (e instanceof SocketTimeoutException) {
+                            getView().showToastMessage(getView().getActivity().getString(R.string.error_timeout));
+                        } else if (e instanceof UnProcessableHttpException) {
+                            String message = TextUtils.isEmpty(e.getMessage()) ?
+                                    getView().getActivity().getResources().getString(R.string.error_internet_not_connected) :
+                                    e.getMessage();
+                            getView().showToastMessage(message);
+                        } else {
+                            getView().showToastMessage(getView().getActivity().getString(R.string.error_default));
+                        }
+                        getView().goToProductList();
                     }
-                    getView().goToProductList();
                 }
             }
 
@@ -62,7 +99,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             public void onNext(FareEstimate fareEstimate) {
                 if (isViewAttached()) {
                     getView().hideProgress();
-                    getView().showConfirmLayout();
+                    getView().enableConfirmButton();
                     getView().showPromoLayout();
 
                     float surgeMultiplier = 0;
@@ -76,7 +113,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                         display = fareEstimate.getFare().getDisplay();
                     }
 
-                    getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref , fareEstimate.getCode() , fareEstimate.getMessageSuccess());
+                    getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref, fareEstimate.getCode(), fareEstimate.getMessageSuccess());
                 }
 
             }

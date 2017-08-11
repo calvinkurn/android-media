@@ -2,6 +2,7 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -9,6 +10,7 @@ import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.utils.CommonUtils;
@@ -31,8 +34,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -42,15 +47,18 @@ import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
+import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.BrowsePresenter;
 import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
@@ -58,17 +66,21 @@ import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.view.BrowseProductParentView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_TITLE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 
 /**
@@ -78,7 +90,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener, ProductFragment.ProductFragmentListener {
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
-    public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".LAYOUT";
     public static final String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
     public static final int REQUEST_SORT = 121;
@@ -103,6 +114,70 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     FrameLayout container;
     @BindView(R2.id.search)
     DiscoverySearchView discoverySearchView;
+
+
+    @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
+    public static Intent getCallingIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, BrowseProductActivity.class);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, TopAdsApi.SRC_DIRECTORY);// ini yang buat ganti ganti
+        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
+        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_DIRECTORY);
+        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
+        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
+        return intent
+                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
+                .putExtras(bundle);
+    }
+
+    @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
+    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, BrowseProductActivity.class);
+        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT);
+        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
+        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_DIRECTORY);
+        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
+        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT);
+        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
+        return intent
+                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
+                .putExtras(bundle);
+    }
+
+    @DeepLink(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL)
+    public static Intent getCallingApplinkHostlistIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, BrowseProductActivity.class);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, TopAdsApi.SRC_HOTLIST);
+        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, bundle.getString("alias", ""));
+        intent.putExtra(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, bundle.getString("alias", ""));
+        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
+        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_HOTLIST);
+        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID, "0"));
+        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+        browseProductActivityModel.setAlias(bundle.getString("alias", ""));
+        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
+
+        return intent
+                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
+                .putExtras(bundle);
+    }
+
+    private static HashMap<String, String> convertBundleToMaps(Bundle bundle) {
+        HashMap<String, String> maps = new HashMap<>();
+        Set<String> keys = bundle.keySet();
+        for (String key : keys) {
+            maps.put(key, String.valueOf(bundle.get(key)));
+        }
+        return maps;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -338,7 +413,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public void changeBottomBar(String source) {
         browsePresenter.onBottomBarChanged(source);
-
     }
 
     private void setupBottomBar(List<AHBottomNavigationItem> items, final String source) {
@@ -391,6 +465,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 parentDepartment, source, departmentId);
     }
 
+    @Override
+    public void openCategoryNavigation(
+                           String departmentId) {
+        CategoryNavigationActivity.moveTo(BrowseProductActivity.this, departmentId);
+
+    }
+
     private List<AHBottomNavigationItem> getBottomItemsShop() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
@@ -403,7 +484,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
         items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
+        if (!browsePresenter.isFromCategory()) {
+            items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
+        } else {
+            items.add(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_category_black));
+        }
         return items;
     }
 
@@ -418,7 +503,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     BrowseParentFragment parentFragment = (BrowseParentFragment)
                             fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
                     setFragment(BrowseParentFragment.newInstance(browsePresenter
-                            .getBrowseProductActivityModel(), parentFragment.getActiveTab()),
+                                    .getBrowseProductActivityModel(), parentFragment.getActiveTab()),
                             BrowseParentFragment.FRAGMENT_TAG);
                     break;
                 case DiscoverySearchView.REQUEST_VOICE:
@@ -430,6 +515,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     }
                     break;
             }
+        } else if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
+            setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
+            finish();
         }
     }
 
@@ -457,6 +545,23 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    public static void moveToFromIntermediary(FragmentActivity activity, String depId, String ad_src, String source, String title) {
+        if (activity == null)
+            return;
+
+        Intent intent = new Intent(activity, BrowseProductActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, ad_src);
+        bundle.putString(EXTRA_SOURCE, source);
+        if (title != null) {
+            bundle.putString(EXTRA_TITLE, title);
+        }
+        intent.putExtras(bundle);
+        activity.startActivityForResult(intent,CategoryNavigationActivity.DESTROY_INTERMEDIARY);
     }
 
     public static void moveToWithoutAnimation(Context context, String depId, String ad_src, String source, String title) {
@@ -685,6 +790,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         getIntent().putExtra(EXTRA_TITLE, child.getName());
         renderNewCategoryLevel(child.getId(), child.getName(), false);
     }
+
 
     @Override
     public void onBackPressed() {

@@ -34,7 +34,7 @@ import com.google.maps.android.PolyUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
@@ -47,7 +47,6 @@ import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
-import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
@@ -71,6 +70,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -90,7 +91,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private static long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 4000;
 
     private CreateRideRequestUseCase createRideRequestUseCase;
-    private CancelRideRequestUseCase cancelRideRequestUseCase;
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
     private GetRideRequestDetailUseCase getRideRequestUseCase;
@@ -102,16 +102,16 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private LocationRequest locationRequest;
     private Location currentLocation;
     private CompositeSubscription subscription;
+    private boolean isZoomFitByDriverAndCustomer;
 
+    @Inject
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
-                              CancelRideRequestUseCase cancelRideRequestUseCase,
                               GetOverviewPolylineUseCase getOverviewPolylineUseCase,
                               GetRideRequestMapUseCase getRideRequestMapUseCase,
                               GetRideRequestDetailUseCase getRideRequestUseCase,
                               GetFareEstimateUseCase getFareEstimateUseCase,
                               GetRideProductUseCase getRideProductUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
-        this.cancelRideRequestUseCase = cancelRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
         this.getRideRequestUseCase = getRideRequestUseCase;
@@ -241,14 +241,19 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 if (!isViewAttached()) return;
                 getView().hideRequestLoadingLayout();
                 if (e instanceof InterruptConfirmationHttpException) {
-                    if (!(e.getCause() instanceof JsonSyntaxException)) {
+                    if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
+                        getView().openInterruptConfirmationDialog(
+                                ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                ((InterruptConfirmationHttpException) e).getKey(),
+                                ((InterruptConfirmationHttpException) e).getId()
+                        );
+                    } else if (!(e.getCause() instanceof JsonSyntaxException)) {
                         getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                     } else {
                         getView().showFailedRideRequestMessage(e.getMessage());
                         getView().failedToRequestRide(e.getMessage());
                     }
-                    ///getView().hideLoadingWaitingResponse();
-                    //getView().hideRideRequestStatus();
+
                 } else if (e instanceof UnprocessableEntityHttpException) {
                     //get fare id again
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));
@@ -278,41 +283,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 }
             }
         });
-    }
-
-    @Override
-    public void actionCancelRide() {
-        cancelRideRequestUseCase.execute(getView().getCancelParams(), new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    if (e instanceof UnknownHostException) {
-                        getView().showMessage(getView().getActivity().getString(R.string.error_no_connection));
-                    } else if (e instanceof SocketTimeoutException) {
-                        getView().showMessage(getView().getActivity().getString(R.string.error_timeout));
-                    } else {
-                        getView().showMessage(getView().getActivity().getString(R.string.error_default));
-                    }
-                }
-            }
-
-            @Override
-            public void onNext(String s) {
-                if (isViewAttached()) {
-                    getView().onSuccessCancelRideRequest();
-                    getView().clearActiveNotification();
-                    getView().clearSavedActiveRequestId();
-                    getView().clearSavedActiveProductName();
-                }
-            }
-        });
-
     }
 
     @Override
@@ -363,11 +333,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 } else {
                     getView().setTitle(R.string.title_trip_accepted);
                 }
-                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null && !isZoomFitByDriverAndCustomer) {
                     List<LatLng> latLngs = new ArrayList<>();
                     latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
                     latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
+                    isZoomFitByDriverAndCustomer = true;
                 }
                 break;
             case RideStatus.ARRIVING:
@@ -382,11 +353,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showCurrentLocationIndicator();
                 updatePolylineIfResetedByUiLifecycle(result);
 
-                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null && !isZoomFitByDriverAndCustomer) {
                     List<LatLng> latLngs = new ArrayList<>();
                     latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
                     latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
+                    isZoomFitByDriverAndCustomer = true;
                 }
 
                 break;
@@ -826,7 +798,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void detachView() {
-        cancelRideRequestUseCase.unsubscribe();
         createRideRequestUseCase.unsubscribe();
         getOverviewPolylineUseCase.unsubscribe();
         getRideRequestMapUseCase.unsubscribe();
@@ -890,11 +861,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
-                            if (getFuzedLocation() != null) {
-                                currentLocation = getFuzedLocation();
-                                startLocationUpdates();
-                            } else {
-                                checkLocationSettings();
+                            if (isViewAttached()) {
+                                if (getFuzedLocation() != null) {
+                                    currentLocation = getFuzedLocation();
+                                    startLocationUpdates();
+                                } else {
+                                    checkLocationSettings();
+                                }
                             }
                         }
 
@@ -938,7 +911,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        currentLocation = getFuzedLocation();
+                        if (isViewAttached())
+                            currentLocation = getFuzedLocation();
                         startLocationUpdates();
 
                         break;
@@ -986,6 +960,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onLocationChanged(Location location) {
                 currentLocation = location;
+
+                if (getView() != null) {
+                    getView().saveDefaultLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+                }
             }
         });
     }

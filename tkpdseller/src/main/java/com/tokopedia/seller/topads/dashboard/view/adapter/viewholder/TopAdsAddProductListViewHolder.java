@@ -60,7 +60,6 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
         adapterPosition = getAdapterPosition();
 
         boolean b = !adapterSelectionListener.isSelected(model.productDomain);// not selected
-        Log.d("MNORMANSYAH", "bind " + b + " data " + model.productDomain + " position " + getAdapterPosition());
         if (b) {
             imageHandler.loadImage(topAdsAddProductListImageView, model.imageUrl, true);
             itemView.setBackgroundColor(transparantColor);

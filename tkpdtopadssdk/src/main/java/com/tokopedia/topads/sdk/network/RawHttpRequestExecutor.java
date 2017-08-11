@@ -12,6 +12,8 @@ import java.util.Set;
 
 import android.util.Log;
 
+import com.tokopedia.topads.sdk.BuildConfig;
+
 
 /**
  * @author by errysuprayogi on 3/29/17.
@@ -19,29 +21,28 @@ import android.util.Log;
 
 public class RawHttpRequestExecutor extends HttpRequestExecutorTemplate{
 	private static final String TAG = RawHttpRequestExecutor.class.getName();
-
 	protected RawHttpRequestExecutor(HttpRequest httpRequest) {
 		super(httpRequest);
 	}
-	
+
 	public static RawHttpRequestExecutor newInstance(HttpRequest httpRequest){
 		return new RawHttpRequestExecutor(httpRequest);
 	}
 
 	@Override
-	public String executeAsGetRequest() throws MalformedURLException, UnsupportedEncodingException, IOException {
+	public String executeAsGetRequest() throws IOException {
 		String encodedUrl = this.httpRequest.getEncodedUrl();
 		URL requestUrl = new URL(encodedUrl);
-		Log.d(TAG, "Making a GET request to : " + encodedUrl);
+		if(BuildConfig.DEBUG) {
+			Log.d(TAG, "Making a GET request to : " + encodedUrl);
+		}
 		HttpURLConnection httpURLConnection = (HttpURLConnection) requestUrl.openConnection();
 		httpURLConnection.setRequestMethod(HttpMethod.GET.getDescription());
-		
 		Set<String> requestHeadersKeys = this.httpRequest.getHeaders().keySet();
-		
+
 		for(String headerKey : requestHeadersKeys){
 			httpURLConnection.addRequestProperty(headerKey, this.httpRequest.getHeaders().get(headerKey));
 		}
-		
 		BufferedReader responseReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
 		if(responseReader != null){
 			StringBuilder httpResponse = new StringBuilder();
@@ -49,35 +50,38 @@ public class RawHttpRequestExecutor extends HttpRequestExecutorTemplate{
 			while((readLine = responseReader.readLine()) != null){
 				httpResponse.append(readLine);
 			}
-			Log.d(TAG, "Response from GET request to : " + encodedUrl + " is : " + httpResponse.toString());
+			if(BuildConfig.DEBUG) {
+				Log.d(TAG, "Response from GET request to : " + encodedUrl + " is : " + httpResponse.toString());
+			}
 			return httpResponse.toString();
 		}
 		return null;
 	}
 
 	@Override
-	public String executeAsPostRequest() throws MalformedURLException, UnsupportedEncodingException,IOException{
+	public String executeAsPostRequest() throws IOException{
 		URL requestUrl = new URL(this.httpRequest.getBaseUrl());
-		Log.d(TAG, "Making a POST request to : " + this.httpRequest.getBaseUrl());
+		if(BuildConfig.DEBUG) {
+			Log.d(TAG, "Making a POST request to : " + this.httpRequest.getBaseUrl());
+		}
 		HttpURLConnection httpURLConnection = (HttpURLConnection) requestUrl.openConnection();
 		httpURLConnection.setRequestMethod(HttpMethod.POST.getDescription());
-		
-		
 		Set<String> requestHeaders = this.httpRequest.getHeaders().keySet();
-		
+
 		for(String headerKey : requestHeaders){
 			httpURLConnection.addRequestProperty(headerKey, this.httpRequest.getHeaders().get(headerKey));
 		}
-		
+
 		String requestParameters = this.httpRequest.getEncodedParameters();
-		Log.d(TAG, "Request parameters : " + requestParameters);
-		
+		if(BuildConfig.DEBUG) {
+			Log.d(TAG, "Request parameters : " + requestParameters);
+		}
 		httpURLConnection.setDoOutput(true);
 		DataOutputStream writer = new DataOutputStream(httpURLConnection.getOutputStream());
 		writer.writeBytes(requestParameters);
 		writer.flush();
 		writer.close();
-		
+
 		BufferedReader responseReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
 		if(responseReader != null){
 			StringBuilder httpResponse = new StringBuilder();
@@ -85,7 +89,9 @@ public class RawHttpRequestExecutor extends HttpRequestExecutorTemplate{
 			while((readLine = responseReader.readLine()) != null){
 				httpResponse.append(readLine);
 			}
-			Log.d(TAG, "Response from POST request to : " + this.httpRequest.getEncodedUrl() + " is : " + httpResponse.toString());
+			if(BuildConfig.DEBUG) {
+				Log.d(TAG, "Response from POST request to : " + this.httpRequest.getEncodedUrl() + " is : " + httpResponse.toString());
+			}
 			return httpResponse.toString();
 		}
 		return null;

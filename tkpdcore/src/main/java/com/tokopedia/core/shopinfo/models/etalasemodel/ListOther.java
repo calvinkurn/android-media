@@ -14,5 +14,8 @@ public class ListOther {
     @SerializedName("etalase_name")
     @Expose
     public String etalaseName;
+    @SerializedName("use_ace")
+    @Expose
+    public int useAce;
 
 }

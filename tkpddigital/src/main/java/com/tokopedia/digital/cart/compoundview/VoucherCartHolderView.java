@@ -168,6 +168,15 @@ public class VoucherCartHolderView extends RelativeLayout {
         holderVoucher.setVisibility(GONE);
     }
 
+    public void renderVoucherAutoCode(String voucherAutoCode) {
+        if (!TextUtils.isEmpty(voucherAutoCode)) {
+            checkBoxVoucher.setChecked(true);
+            editTextVoucher.setText(voucherAutoCode);
+            voucherCode = voucherAutoCode;
+            actionListener.onVoucherCheckButtonClicked();
+        }
+    }
+
     public interface ActionListener {
         void onVoucherCheckButtonClicked();
 

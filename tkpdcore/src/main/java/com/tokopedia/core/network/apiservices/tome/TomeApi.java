@@ -1,8 +1,13 @@
 package com.tokopedia.core.network.apiservices.tome;
 
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+
+import java.util.Map;
+
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -19,4 +24,8 @@ public interface TomeApi {
             @Query(USER_ID) String userId,
             @Query(SHOP_ID) String shopIds
     );
+
+
+    @GET("v1/web-service/shop/get_shop_product")
+    Observable<Response<TkpdResponse>> getShopProduct(@QueryMap Map<String, String> params);
 }

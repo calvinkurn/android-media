@@ -675,6 +675,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                UnifyTracking.eventClickYesGoldMerchantAddProduct();
                 if(hasDataAdded()){
                     saveDraft(false);
                 }

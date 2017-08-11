@@ -26,6 +26,7 @@ import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
@@ -34,6 +35,7 @@ import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
 import java.util.List;
 
@@ -63,8 +65,10 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
+    private LocationUtils locationUtils;
 
     private DaggerAppComponent.Builder daggerBuilder;
+    private AppComponent appComponent;
 
     public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
@@ -101,8 +105,16 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
+        locationUtils = new LocationUtils(this);
+        locationUtils.initLocationBackground();
+        TooLargeTool.startLogging(this);
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        locationUtils.deInitLocationBackground();
+    }
 
     public static boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
@@ -292,7 +304,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         HUDIntent.unbindService(context, hudConnection);
     }
 
-    private void initializeAnalytics() {
+    protected void initializeAnalytics() {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
@@ -309,7 +321,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
             watchDog.setANRListener(new ANRWatchDog.ANRListener() {
                 @Override
                 public void onAppNotResponding(ANRError error) {
-                    Crashlytics.logException(error);
+                    //Crashlytics.logException(error);
                 }
             });
             watchDog.start();
@@ -343,8 +355,16 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 	}
 
     public AppComponent getApplicationComponent(ActivityModule activityModule) {
-        return daggerBuilder.activityModule(activityModule)
+        return appComponent = daggerBuilder.activityModule(activityModule)
                 .build();
+    }
+
+    public AppComponent getAppComponent(){
+        return appComponent;
+    }
+
+    public void setAppComponent(AppComponent appComponent){
+        this.appComponent = appComponent;
     }
 
     public void initStetho() {

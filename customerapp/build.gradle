@@ -72,8 +72,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 2080104;
-        defaultVersionName = "2.8.1";
+        defaultVersionCode = 212001301;
+        defaultVersionName = "2.12";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -166,6 +166,12 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
+        }
     }
 
 
@@ -261,6 +267,7 @@ dependencies {
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.playServicesDependencies.firebase
+    compile rootProject.ext.playServicesDependencies.remoteConfig
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

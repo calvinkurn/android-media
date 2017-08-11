@@ -29,4 +29,9 @@
         <item name="android:indeterminateDrawable">@drawable/material_rating_bar</item>
         <item name="android:progressDrawable">@drawable/material_rating_bar</item>
     </style>
+
+
+    <style name="searchTextPrimaryHiglight">
+        <item name="android:textColor">@color/label_text_color</item>
+    </style>
 </resources>

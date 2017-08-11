@@ -61,7 +61,7 @@ public class ReplyResolutionSubmitMapper implements Func1<Response<TkpdResponse>
         data.setCreateTimeWib(conversationLast.getCreateTimeStr());
         data.setRemark(conversationLast.getMessage());
         data.setRemarkStr(conversationLast.getMessage());
-        data.setReplyAttachmentDomainData(mappingAttachments(conversationLast.getAttachments()));
+        data.setReplyAttachmentDomainData(conversationLast.getAttachments() != null ? mappingAttachments(conversationLast.getAttachments()) : null);
         return data;
     }
 

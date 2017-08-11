@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,10 +23,12 @@ import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.topads.sdk.view.adapter.PromotedShopAdapter;
 import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.List;
 
@@ -38,6 +41,8 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_shop_feed_plus;
     private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
+    private static final int MARGIN_15DP_PIXEL = 40;
+    private static final int PADDING_12DP_PIXEL = 30;
 
 
     private LocalAdsClickListener itemClickListener;
@@ -47,6 +52,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     private TextView favTxt;
     private LinearLayout favBtn;
     private LinearLayout container;
+    private LinearLayout shopCard;
     private View header;
     private Data data;
     private Context context;
@@ -61,6 +67,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         context = itemView.getContext();
+        shopCard = (LinearLayout) itemView.findViewById(R.id.shop_topads_card);
         shopImage = (ImageView) itemView.findViewById(R.id.shop_image);
         shopTitle = (TextView) itemView.findViewById(R.id.shop_title);
         shopSubtitle = (TextView) itemView.findViewById(R.id.shop_subtitle);
@@ -102,10 +109,10 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     }
 
     public void onClick(int id) {
-        if(itemClickListener!=null) {
+        if (itemClickListener != null) {
             if (id == R.id.fav_btn) {
                 itemClickListener.onAddFavorite(adapterPosition, data);
-            } else if (id == R.id.container || id == R.id.header){
+            } else if (id == R.id.container || id == R.id.header) {
                 itemClickListener.onShopItemClicked(adapterPosition, data);
             }
         }
@@ -115,10 +122,19 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     public void bind(ShopFeedViewModel element) {
         data = element.getData();
         Shop shop = data.getShop();
-        if(shop!=null){
+
+        if (element.getDisplayMode() == DisplayMode.FEED_EMPTY) {
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 0, 0, MARGIN_15DP_PIXEL);
+            shopCard.setLayoutParams(lp);
+            header.setPadding(0, PADDING_12DP_PIXEL, 0, 0);
+        }
+
+        if (shop != null) {
             imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
                     shopImage);
-            if(shop.getImageProduct()!=null){
+            if (shop.getImageProduct() != null) {
                 generateThumbnailImages(shop.getImageProduct());
             }
 
@@ -131,9 +147,9 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
                 shopSubtitle.setText(Html.fromHtml(shop.getTagline()));
             }
 
-            if(shop.isGoldShopBadge()){
+            if (shop.isGoldShopBadge()) {
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_gold));
-            } else if(shop.isShop_is_official()) {
+            } else if (shop.isShop_is_official()) {
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_official));
             } else {
                 shopTitle.setText(title);
@@ -148,11 +164,11 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         adapter.setList(imageProducts);
     }
 
-    private void setFavorite(boolean isFavorite){
+    private void setFavorite(boolean isFavorite) {
         String text;
         if (isFavorite) {
             favBtn.setSelected(true);
-            text = context.getString(R.string.favorited);
+            text = context.getString(R.string.favorit);
             favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite, 0, 0, 0);
             favTxt.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
@@ -165,8 +181,8 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         favTxt.setText(text);
     }
 
-    private Spanned spannedBadgeString(Spanned text, int drawable){
-        SpannableString spannableString = new SpannableString("  "+text);
+    private Spanned spannedBadgeString(Spanned text, int drawable) {
+        SpannableString spannableString = new SpannableString("  " + text);
         Drawable image;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image = context.getResources().getDrawable(drawable, null);

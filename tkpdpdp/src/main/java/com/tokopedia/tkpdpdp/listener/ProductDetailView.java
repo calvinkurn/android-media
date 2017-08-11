@@ -276,4 +276,10 @@ public interface ProductDetailView extends ViewListener {
     void showSuccessWishlistSnackBar();
 
     void showProductCampaign(ProductCampaign productCampaign);
+
+    void actionSuccessAddToWishlist(Integer productId);
+
+    void actionSuccessRemoveFromWishlist(Integer productId);
+
+    void actionSuccessAddFavoriteShop(String shopId);
 }

@@ -6,7 +6,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddressPaging;
+import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
@@ -50,7 +50,7 @@ public interface PlaceAutoCompleteContract {
 
         void onPlaceSelectedFound(PlacePassViewModel placePassViewModel);
 
-        void setPagingConfiguration(PeopleAddressPaging paging);
+        void setPagingConfiguration(Paging paging);
 
         void setActiveMarketplaceSource();
 
@@ -79,8 +79,6 @@ public interface PlaceAutoCompleteContract {
         void initialize();
 
         void actionGetUserAddressesFromCache();
-
-        void actionGetPeopleAddresses(boolean isLoadMore);
 
         void actionGetUserAddresses(boolean isLoadMore);
 

@@ -10,7 +10,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryTypeFactory;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ public class RideHistoryAdapter extends RecyclerView.Adapter<AbstractViewHolder>
 
     public RideHistoryAdapter(RideHistoryTypeFactory rideHistoryAdapterTypeFactory) {
         this.typeFactory = rideHistoryAdapterTypeFactory;
-        mVisitables = Collections.emptyList();
+        mVisitables = new ArrayList<>();
     }
 
     @Override
@@ -55,6 +55,16 @@ public class RideHistoryAdapter extends RecyclerView.Adapter<AbstractViewHolder>
         notifyDataSetChanged();
     }
 
+    public void addElement(Visitable visitable) {
+        mVisitables.add(visitable);
+        notifyDataSetChanged();
+    }
+
+    public void addElements(List<Visitable> data) {
+        mVisitables.addAll(data);
+        notifyDataSetChanged();
+    }
+
     public List<Visitable> getElements() {
         return mVisitables;
     }
@@ -67,8 +77,8 @@ public class RideHistoryAdapter extends RecyclerView.Adapter<AbstractViewHolder>
         }
     }
 
-    public void removeItem(Visitable visitable) {
-        mVisitables.remove(visitable);
+    public void removeItem(int position) {
+        mVisitables.remove(position);
         notifyDataSetChanged();
     }
 

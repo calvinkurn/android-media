@@ -5,11 +5,13 @@ import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
@@ -38,6 +40,11 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<List<ProductEntity>> getProducts(TKPDMapParam<String, Object> params) {
+        return null;
+    }
+
+    @Override
+    public Observable<List<PriceEntity>> getPrices(TKPDMapParam<String, Object> params) {
         return null;
     }
 
@@ -83,6 +90,11 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<List<RideHistoryEntity>> getHistories(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<RideHistoryResponse> getHistoriesWithPagination(TKPDMapParam<String, Object> parameters) {
         return null;
     }
 

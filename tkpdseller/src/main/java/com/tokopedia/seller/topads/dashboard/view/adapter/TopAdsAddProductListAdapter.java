@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.dashboard.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,18 +66,18 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
                 from(parent.getContext());
         switch (viewType) {
             case PromotedTopAdsAddProductModel.TYPE:
-                View view = from.inflate(R.layout.row_top_ads_add_product_list_promoted,
+                View view = from.inflate(R.layout.item_top_ads_add_product_list_promoted,
                         parent, false);
                 return new TopAdsPromotedViewHolder(view);
             case NonPromotedTopAdsAddProductModel.TYPE:
-                view = from.inflate(R.layout.row_top_ads_add_product_list_non_promoted,
+                view = from.inflate(R.layout.item_top_ads_add_product_list_non_promoted,
                         parent, false);
                 return new TopAdsNonPromotedViewHolder(view, this);
             case TopAdsAddProductModel.TYPE:
-                view = from.inflate(R.layout.row_top_ads_add_product_list, parent, false);
+                view = from.inflate(R.layout.item_top_ads_add_product_list, parent, false);
                 return new TopAdsAddProductListViewHolder(view, imageHandler, this);
             case EmptyTypeBasedModel.TYPE:
-                view = from.inflate(R.layout.row_top_ads_empty_list, parent, false);
+                view = from.inflate(R.layout.item_top_ads_empty_list, parent, false);
                 return new TopAdsEmptyRowViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -169,7 +168,6 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         List<TopAdsProductViewModel> topAdsProductViewModels = convertTo();
 
         int position = topAdsProductViewModels.indexOf(topAdsProductViewModel);
-        Log.d("MNORMANSYAH", " search this " + topAdsProductViewModel + " position " + position);
 
         if (position >= 0) {
             removedItem(position);
@@ -198,8 +196,6 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         ItemType itemType = datas.get(position);
         if (itemType != null && itemType instanceof TopAdsAddProductModel) {
             TopAdsAddProductModel topAdsAddProductModel = (TopAdsAddProductModel) itemType;
-            Log.d("MNORMANSYAH", "#4 before after selections : " + topAdsAddProductModel.isSelected()
-                    + " position " + position);
             topAdsAddProductModel.setSelected(false);
 
             datas.set(position, topAdsAddProductModel);

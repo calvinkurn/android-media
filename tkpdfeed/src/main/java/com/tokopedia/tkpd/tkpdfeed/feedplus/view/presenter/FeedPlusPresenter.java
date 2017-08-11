@@ -7,8 +7,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
@@ -33,7 +34,7 @@ public class FeedPlusPresenter
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
-    private RefreshFeedUseCase refreshFeedUseCase;
+    private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -43,12 +44,12 @@ public class FeedPlusPresenter
                       GetFeedsUseCase getFeedsUseCase,
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
                       FavoriteShopUseCase favoriteShopUseCase,
-                      RefreshFeedUseCase refreshFeedUseCase) {
+                      GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
         this.sessionHandler = sessionHandler;
         this.getFeedsUseCase = getFeedsUseCase;
-        this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
+        this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
         this.doFavoriteShopUseCase = favoriteShopUseCase;
-        this.refreshFeedUseCase = refreshFeedUseCase;
+        this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.pagingHandler = new PagingHandler();
     }
 
@@ -64,7 +65,7 @@ public class FeedPlusPresenter
         getFeedsUseCase.unsubscribe();
         getFirstPageFeedsUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
-        refreshFeedUseCase.unsubscribe();
+        getFirstPageFeedsCloudUseCase.unsubscribe();
     }
 
 
@@ -74,10 +75,7 @@ public class FeedPlusPresenter
         viewListener.showRefresh();
         currentCursor = "";
         getFirstPageFeedsUseCase.execute(
-                getFirstPageFeedsUseCase.getFeedPlusParam(
-                        pagingHandler.getPage(),
-                        sessionHandler,
-                        currentCursor),
+                getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
                 new GetFirstPageFeedsSubscriber(viewListener));
     }
 
@@ -130,7 +128,11 @@ public class FeedPlusPresenter
                     stringBuilder.append(viewListener.getString(R.string.msg_network_error));
                 }
                 viewListener.showSnackbar(stringBuilder.toString());
-                viewListener.updateFavorite(adapterPosition);
+
+                if (viewListener.hasFeed())
+                    viewListener.updateFavorite(adapterPosition);
+                else
+                    viewListener.updateFavoriteFromEmpty();
             }
         });
     }
@@ -144,21 +146,15 @@ public class FeedPlusPresenter
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
-        refreshFeedUseCase.execute(
-                refreshFeedUseCase.getFeedPlusParam(
-                        pagingHandler.getPage(),
-                        sessionHandler,
-                        currentCursor),
+        getFirstPageFeedsCloudUseCase.execute(
+                getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
                 new GetFirstPageFeedsSubscriber(viewListener));
     }
 
     @Override
     public void checkNewFeed(String firstCursor) {
-        refreshFeedUseCase.execute(
-                refreshFeedUseCase.getFeedPlusParam(
-                        1,
-                        sessionHandler,
-                        ""),
+        getFirstPageFeedsCloudUseCase.execute(
+                getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
                 new CheckNewFeedSubscriber(firstCursor, viewListener));
     }
 

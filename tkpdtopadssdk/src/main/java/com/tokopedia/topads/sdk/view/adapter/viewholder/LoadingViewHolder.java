@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.LoadingViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.LoadingViewModel;
 
 /**
  * @author by errysuprayogi on 4/18/17.

@@ -18,6 +18,7 @@
     <string name="msg_fav_shop_failed">Gagal memfavoritkan toko silahkan coba lagi</string>
     <string name="empty_wishlist">Wishlist Anda masih kosong</string>
     <string name="find_product">Mulai cari produk</string>
+    <string name="lihat_semua_product">Lihat Semua Produk</string>
     <string name="textview_redirect_seller_app">Fitur ini hanya tersedia pada aplikasi TopSeller. Nikmati berbagai kemudahan berjualan online dalam genggaman Anda.</string>
     <string name="drawer_title_wishlist">Wishlist</string>
     <string name="drawer_title_buyer">Pembelian</string>

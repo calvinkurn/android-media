@@ -7,6 +7,8 @@ import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -16,6 +18,7 @@ import rx.Subscriber;
 public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View> implements RideHomeContract.Presenter {
     private GetCurrentRideRequestUseCase getCurrentRideRequestUseCase;
 
+    @Inject
     public RideHomePresenter(GetCurrentRideRequestUseCase getCurrentRideRequestUseCase) {
         this.getCurrentRideRequestUseCase = getCurrentRideRequestUseCase;
     }
@@ -84,6 +87,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                 } else {
                                     getView().inflateMapAndProductFragment();
                                 }
+                                getView().clearActiveRequestId();
                                 break;
                             case RideStatus.COMPLETED:
                                 // if user didnt see last trip thanks page
@@ -101,12 +105,14 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                     driverAndVehicle.setAddress(rideRequestAddress);
                                     getView().navigateToCompleteTripScreen(rideRequest.getRequestId(), driverAndVehicle);
                                 } else {
+                                    getView().clearActiveRequestId();
                                     getView().showMainLayout();
                                     getView().hideCheckPendingRequestLoading();
                                     getView().inflateMapAndProductFragment();
                                 }
                                 break;
                             default:
+                                getView().clearActiveRequestId();
                                 getView().showMainLayout();
                                 getView().inflateMapAndProductFragment();
                         }
@@ -123,6 +129,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
 
     @Override
     public void onDestroy() {
+        detachView();
         getCurrentRideRequestUseCase.unsubscribe();
     }
 

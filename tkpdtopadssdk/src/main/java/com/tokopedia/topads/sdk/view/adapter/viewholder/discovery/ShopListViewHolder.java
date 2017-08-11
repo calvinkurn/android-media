@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
 
 /**
  * @author by errysuprayogi on 3/30/17.

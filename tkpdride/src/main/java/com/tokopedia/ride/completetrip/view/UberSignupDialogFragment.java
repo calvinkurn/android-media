@@ -33,6 +33,7 @@ public class UberSignupDialogFragment extends DialogFragment {
     private static final String TAG = "UberSignupDialog";
 
     public static final String EXTRA_URL = "EXTRA_URL";
+    private static final String REDIRECT_ACTION_BACK = "action_back";
 
     private ProgressBar progressBar;
     private TkpdWebView webview;
@@ -85,6 +86,9 @@ public class UberSignupDialogFragment extends DialogFragment {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
             Log.d(TAG, "shouldOverrideUrlLoading: " + urlString);
+            if (urlString.endsWith(REDIRECT_ACTION_BACK)) {
+                dismiss();
+            }
             return false;
         }
 

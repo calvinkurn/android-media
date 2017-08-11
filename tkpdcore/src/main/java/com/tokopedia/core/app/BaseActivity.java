@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -42,12 +43,17 @@ import com.tokopedia.core.service.HadesBroadcastReceiver;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -70,22 +76,30 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private boolean isDialogNotConnectionShown = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    private SessionHandler sessionHandler;
+
+    @Inject
+    protected SessionHandler sessionHandler;
+
+    @Inject
+    protected GCMHandler gcmHandler;
+
     private CategoryDatabaseManager categoryDatabaseManager;
-    private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getApplicationComponent().inject(this);
+
 
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-        sessionHandler = new SessionHandler(getBaseContext());
+
         categoryDatabaseManager = new CategoryDatabaseManager();
-        gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
@@ -93,7 +107,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
 
         /* clear cache if not login */
-        if (!SessionHandler.isV4Login(this)) {
+        if (!sessionHandler.isV4Login()) {
             globalCacheManager.deleteAll();
         }
 
@@ -136,7 +150,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         initGTM();
         sendScreenAnalytics();
-        verifyFetchDepartment();
+        verifyFetchDepartment();// this code couldn't be mocked.
 
 
         registerForceLogoutReceiver();
@@ -231,6 +245,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            AppWidgetUtil.sendBroadcastToAppWidget(this);
         }
     }
 

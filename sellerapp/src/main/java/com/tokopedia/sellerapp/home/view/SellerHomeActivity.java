@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.home.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -42,6 +43,9 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
@@ -91,7 +95,6 @@ import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;
@@ -730,6 +733,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
+        AppWidgetUtil.sendBroadcastToAppWidget(this);
     }
 
     @Override
@@ -918,6 +922,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private void updateDrawerData() {
         drawerDataManager.getDeposit();
         drawerDataManager.getProfile();
+//        drawerDataManager.getProfileCompletion();
     }
 
     @Override
@@ -1106,6 +1111,27 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
+    public void onErrorGetProfileCompletion(String errorMessage) {
+
+    }
+
+    @Override
+    public void onSuccessGetProfileCompletion(int completion) {
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setProfileCompletion(completion);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setProfileCompletion(completion);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
     public static class SellerHomeNewOrderView {

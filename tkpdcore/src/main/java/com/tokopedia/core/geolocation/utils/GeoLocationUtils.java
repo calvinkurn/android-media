@@ -27,6 +27,13 @@ public class GeoLocationUtils {
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
             List<Address> listAddress = geocoder.getFromLocation(latitude, longitude, 1);
 
+            // to handle bug of android support library
+            // getMaxAddressLineIndex return 0, but getAddressLine have value
+            if (listAddress.get(0).getMaxAddressLineIndex() == 0 &&
+                    listAddress.get(0).getAddressLine(0) != null) {
+                reseponseAddress = listAddress.get(0).getAddressLine(0);
+            }
+
             for(int j = 0 ; j < listAddress.get(0).getMaxAddressLineIndex(); j++) {
                 if (j == 0) {
                     Address address = listAddress.get(0);

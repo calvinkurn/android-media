@@ -322,14 +322,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void requestFaveShop(@NonNull Context context, @NonNull String shopId) {
+    public void requestFaveShop(@NonNull Context context, @NonNull final String shopId) {
         if (SessionHandler.isV4Login(context)) {
             retrofitInteractor.favoriteShop(context,
                     NetworkParam.paramFaveShop(shopId),
                     new RetrofitInteractor.FaveListener() {
                         @Override
                         public void onSuccess(boolean status) {
-                            if (status) viewListener.onShopFavoriteUpdated(1);
+                            if (status) {
+                                viewListener.onShopFavoriteUpdated(1);
+                                viewListener.actionSuccessAddFavoriteShop(shopId);
+                            }
                         }
 
                         @Override
@@ -537,8 +540,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     }
                 }
-                report.setVisible(true);
-                report.setEnabled(true);
+
+                if (productData.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
+                    report.setVisible(false);
+                    report.setEnabled(false);
+                } else {
+                    report.setVisible(true);
+                    report.setEnabled(true);
+                }
+
                 warehouse.setVisible(false);
                 warehouse.setEnabled(false);
                 etalase.setVisible(false);
@@ -730,6 +740,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.finishLoadingWishList();
                         viewListener.showSuccessWishlistSnackBar();
                         viewListener.updateWishListStatus(1);
+                        viewListener.actionSuccessAddToWishlist(productId);
                         cacheInteractor.deleteProductDetail(productId);
                     }
 
@@ -751,6 +762,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.showToastMessage(context
                                 .getString(R.string.msg_remove_wishlist));
                         viewListener.updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
+                        viewListener.actionSuccessRemoveFromWishlist(productId);
                         cacheInteractor.deleteProductDetail(productId);
                     }
 

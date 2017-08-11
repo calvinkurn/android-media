@@ -250,12 +250,14 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void showProgressLoading() {
-        progressDialog.showDialog();
+        if (progressDialog != null)
+            progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-        progressDialog.dismiss();
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -524,6 +526,16 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
+    public void actionComplain(OrderData orderData) {
+        presenter.processComplain(getActivity(), orderData);
+    }
+
+    @Override
+    public void actionComplainConfirmDeliver(OrderData orderData) {
+        presenter.processComplainConfirmDeliver(getActivity(), orderData);
+    }
+
+    @Override
     public void onRefresh(View view) {
         if (!isLoading) {
             pagingHandler.resetPage();
@@ -612,8 +624,12 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void onSuccessCancelReplacement() {
-        hideProgressLoading();
-        onRefresh(getView());
+        if (getView() != null) {
+            Snackbar.make(getView(), getString(R.string.success_cancel_replacement), Snackbar
+                    .LENGTH_SHORT).show();
+            hideProgressLoading();
+            onRefresh(getView());
+        }
     }
 }
 

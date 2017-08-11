@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -43,25 +42,26 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.completetrip.di.CompleteTripComponent;
+import com.tokopedia.ride.completetrip.di.DaggerCompleteTripComponent;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
+import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
+import com.tokopedia.ride.ontrip.di.OnTripComponent;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -143,7 +143,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @BindView(R2.id.btn_topup_tokocash)
     TextView topupButtonTextView;
 
-    CompleteTripContract.Presenter presenter;
+    @Inject
+    CompleteTripPresenter presenter;
     private String requestId;
     private DriverVehicleAddressViewModel driverVehicleAddressViewModel;
     private Receipt receipt;
@@ -188,8 +189,17 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         setInitialVariable();
     }
 
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        CompleteTripComponent completeTripComponent = DaggerCompleteTripComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        completeTripComponent.inject(this);
+    }
+
     private void setInitialVariable() {
-        presenter = CompleteTripDependencyInjection.createPresenter(getActivity());
         requestId = getArguments().getString(EXTRA_REQUEST_ID);
         driverVehicleAddressViewModel = getArguments().getParcelable(EXTRA_DRIVER_VEHICLE_VIEW_MODEL);
     }
@@ -308,8 +318,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void renderReceipt(Receipt receipt) {
+    public void renderReceipt(Receipt receipt, boolean isPendingPaymentExists) {
         this.receipt = receipt;
         totalChargedTextView.setText(receipt.getTotalCharged());
         totalChargedTopTextView.setText(receipt.getTotalFare());
@@ -350,7 +359,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             discountLabelTextView.setVisibility(View.GONE);
         }
 
-        if (receipt.getPendingPayment() != null) {
+        if (isPendingPaymentExists) {
             passData = new DigitalCheckoutPassData();
             passData.setCategoryId(receipt.getPendingPayment().getCategoryId());
             passData.setOperatorId(receipt.getPendingPayment().getOperatorId());
@@ -368,9 +377,17 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             if (maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT) != null)
                 passData.setInstantCheckout(maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
 
-            pendingFareLayout.setVisibility(View.VISIBLE);
-            totalPendingTextView.setText(CurrencyFormatHelper.ConvertToRupiah(receipt.getPendingPayment().getPendingAmount()));
 
+            if (receipt.getPendingPayment().getTopUpOptions() != null && receipt.getPendingPayment().getTopUpOptions().size() > 0) {
+                TokoCashProduct product = receipt.getPendingPayment().getTopUpOptions().get(0);
+                tokocashSelectedProductTextView.setText(product.getTitle());
+                passData.setProductId(product.getId());
+            }
+
+            totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
+            pendingFareLayout.setVisibility(View.VISIBLE);
+        } else {
+            ratingLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -554,7 +571,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.layout_tokocash_option)
     public void actionFareLayout() {
-        List<TokoCashProduct> products = transformProductsFromJson(receipt.getPendingPayment().getTopUpOptions(), receipt.getCurrency());
+        List<TokoCashProduct> products = receipt.getPendingPayment().getTopUpOptions();
         startActivityForResult(PendingFareChooserActivity.getCallingIntent(getActivity(), products), TOKOCASH_PRODUCT_REQUEST_CODE);
     }
 
@@ -575,28 +592,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
         return String.format("%s_%s", requestId, token.isEmpty() ? timeMillis : token);
-    }
-
-    private List<TokoCashProduct> transformProductsFromJson(String jsonStr, String prefixCurrency) {
-        List<TokoCashProduct> products = new ArrayList<>();
-        if (!TextUtils.isEmpty(jsonStr)) {
-            try {
-                JSONObject jsonObject = new JSONObject(receipt.getPendingPayment().getTopUpOptions());
-                Iterator<?> keys = jsonObject.keys();
-                while (keys.hasNext()) {
-                    TokoCashProduct product = new TokoCashProduct();
-                    String key = (String) keys.next();
-                    product.setValue(key);
-                    JSONObject itemJsonObject = new JSONObject(jsonObject.getString(key));
-                    product.setId(itemJsonObject.getString("product_id"));
-                    product.setTitle(String.format("%s %s", prefixCurrency, itemJsonObject.getString("display_price")));
-                    products.add(product);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return products;
     }
 
     private Map<String, String> splitQuery(Uri url) {

@@ -2,7 +2,7 @@ package com.tokopedia.seller.reputation.util;
 
 import java.util.Locale;
 
-import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getPreviousDate;
+import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getPreviousDate;
 
 /**
  * @author normansyahputa on 3/17/17.

@@ -6,6 +6,7 @@ package com.tokopedia.transaction.cart.model.cartdata;
 
 public class CartRatesData {
 
+    public static final String REQ_TARIFF_KEY = "req_tariff-";
     private int ratesIndex;
 
     private String ratesResponse;
@@ -61,7 +62,7 @@ public class CartRatesData {
     }
 
     public String getKeroRatesKey() {
-        return keroRatesKey;
+        return REQ_TARIFF_KEY + keroRatesKey;
     }
 
     public void setKeroRatesKey(String keroRatesKey) {

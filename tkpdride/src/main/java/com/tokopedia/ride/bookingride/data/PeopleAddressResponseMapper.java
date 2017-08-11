@@ -3,8 +3,8 @@ package com.tokopedia.ride.bookingride.data;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressEntity;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressPagingEntity;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
+import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddressPaging;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ public class PeopleAddressResponseMapper implements Func1<PeopleAddressResponse,
         return wrapper;
     }
 
-    private PeopleAddressPaging transformPaging(PeopleAddressPagingEntity entity) {
-        PeopleAddressPaging paging = null;
+    private Paging transformPaging(PeopleAddressPagingEntity entity) {
+        Paging paging = null;
         if (entity != null){
-            paging = new PeopleAddressPaging();
+            paging = new Paging();
             paging.setNextUrl(entity.getUriNext());
         }
         return paging;

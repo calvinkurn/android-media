@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_date"
-            android:textColor="#868686"
+            android:textColor="@color/label_text_color"
             android:textSize="@dimen/fontvs" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_customer"
-            android:textColor="#868686"
+            android:textColor="@color/label_text_color"
             android:textSize="@dimen/fontvs" />
 
         <TextView
@@ -72,7 +72,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_shop"
-            android:textColor="#868686"
+            android:textColor="@color/label_text_color"
             android:textSize="@dimen/fontvs" />
 
         <TextView
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_awb_selling"
-            android:textColor="#868686"
+            android:textColor="@color/label_text_color"
             android:textSize="@dimen/fontvs" />
 
         <TextView
@@ -125,7 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_invoice_selling"
-            android:textColor="#868686"
+            android:textColor="@color/label_text_color"
             android:textSize="@dimen/fontvs" />
 
         <TextView

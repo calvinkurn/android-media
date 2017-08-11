@@ -85,8 +85,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
                 @Override
                 public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                     float v = slideOffset;
-                    Log.d(TAG, "nextButtonRealHeight " + nextButtonRealHeight + " "
-                            + (nextButtonRealHeight * v + " slideOffset " + slideOffset));
                     footerButtonView.animate().translationY((nextButtonRealHeight * v)).setDuration(0).start();
 
                     numberOfChooseFooterHelper.rotate(v * 180);
@@ -244,8 +242,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
                     selections.add(topAdsProductViewModel);
                 }
             }
-
-            Log.d("MNORMANSYAH", "selection after fetching " + selections.toString());
 
             numberOfChooseFooterHelper.setSelectionNumber(selections.size());
 

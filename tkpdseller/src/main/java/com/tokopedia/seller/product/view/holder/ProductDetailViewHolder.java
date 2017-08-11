@@ -24,24 +24,25 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.text.CounterInputView;
+import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.adapter.WholesaleAdapter;
 import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
-import com.tokopedia.design.text.CounterInputView;
-import com.tokopedia.design.text.SpinnerCounterInputView;
-import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
-import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -143,7 +144,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 if (spinnerValue.equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
                     priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_IDR;
-                } else  {
+                } else {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
@@ -165,9 +166,10 @@ public class ProductDetailViewHolder extends ProductViewHolder
             private void onItemClicked(int position) {
                 if (!goldMerchant && priceSpinnerCounterInputView.getSpinnerValue(position).equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
                     priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
-                    if(GlobalConfig.isSellerApp()) {
+                    if (GlobalConfig.isSellerApp()) {
+                        UnifyTracking.eventSwitchRpToDollarAddProduct();
                         listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_dollar);
-                    }else {
+                    } else {
                         Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
                                 .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
                                 .show();
@@ -424,7 +426,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getFreeReturns() {
-        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE) {
+        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE || freeReturnsSpinnerTextView.getSpinnerValue() != null) {
             return Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_inactive));
         } else {
             return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());

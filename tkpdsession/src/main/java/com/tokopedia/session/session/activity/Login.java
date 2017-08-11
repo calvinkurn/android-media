@@ -1,6 +1,8 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -28,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
@@ -38,6 +41,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.CustomerRouter;
@@ -55,6 +59,7 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -129,6 +134,16 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     ResetPasswordResultReceiver resetPasswordReceiver;
     OTPResultReceiver otpReceiver;
     ErrorNetworkReceiver mReceiverLogout;
+
+    @DeepLink({Constants.Applinks.LOGIN})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle){
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        Intent intent = new Intent(context, Login.class);
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                TkpdState.DrawerPosition.LOGIN);
+        return intent
+                .setData(uri.build());
+    }
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
@@ -362,6 +377,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
+                    AppWidgetUtil.sendBroadcastToAppWidget(this);
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
@@ -372,10 +388,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     Intent intent = null;
                     if (SessionHandler.isUserSeller(this)) {
                         intent = SellerAppRouter.getSellerHomeActivity(this);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
+                                .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     } else {
                         intent = moveToCreateShop(this);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                             HomeRouter.INIT_STATE_FRAGMENT_FEED);
                     startActivity(intent);

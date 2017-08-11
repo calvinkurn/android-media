@@ -8,6 +8,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.net.UnknownHostException;
 
@@ -54,13 +55,15 @@ public class ProfileSubscriber extends Subscriber<ProfileModel> {
             if (profileData.getShopInfo().getShopCover() != null)
                 drawerProfile.setShopCover(profileData.getShopInfo().getShopCover());
             if (profileData.getShopInfo().getShopName() != null)
-                drawerProfile.setShopName(profileData.getShopInfo().getShopName());
+                drawerProfile.setShopName(String.valueOf(MethodChecker.fromHtml(
+                        profileData.getShopInfo().getShopName())));
         }
         if (profileData.getUserInfo() != null) {
             if (profileData.getUserInfo().getUserImage() != null)
                 drawerProfile.setUserAvatar(profileData.getUserInfo().getUserImage());
             if (profileData.getUserInfo().getUserName() != null)
-                drawerProfile.setUserName(profileData.getUserInfo().getUserName());
+                drawerProfile.setUserName(String.valueOf(MethodChecker.fromHtml(
+                        profileData.getUserInfo().getUserName())));
         }
         return drawerProfile;
     }

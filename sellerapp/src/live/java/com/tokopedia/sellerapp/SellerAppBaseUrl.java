@@ -5,7 +5,7 @@ package com.tokopedia.sellerapp;
  */
 
 public class SellerAppBaseUrl {
-
+    public static final String BASE_TOKOPEDIA_WEBSITE = "https://www.tokopedia.com/";
     public static final String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace.tokopedia.com/";
     public static final String BASE_CLOVER_DOMAIN = "https://points.tokopedia.com/";
@@ -23,4 +23,5 @@ public class SellerAppBaseUrl {
     public static final String BASE_WEB_DOMAIN = "https://www.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static final String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart/";
+    public static final String BASE_PAYMENT_URL_DOMAIN = "https://pay.tokopedia.com";
 }
