@@ -176,7 +176,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 new DigitalCategoryItemHeader.Builder()
                         .title("Transaksi Saya")
                         .siteUrl("http://www.tokopedia.com/")
-                        .resIconId(R.drawable.ic_icon_tokocash_header)
+                        .resIconId(R.drawable.ic_header_digital_category_my_transaction)
                         .build()
         );
 
@@ -184,7 +184,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 new DigitalCategoryItemHeader.Builder()
                         .title("Nomor Favorit")
                         .siteUrl("http://www.tokopedia.com/")
-                        .resIconId(R.drawable.ic_phonebook_widget)
+                        .resIconId(R.drawable.ic_header_digital_category_favorit_number)
                         .build()
         );
 
@@ -192,7 +192,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 new DigitalCategoryItemHeader.Builder()
                         .title("Langganan")
                         .siteUrl("http://www.tokopedia.com/")
-                        .resIconId(R.drawable.ic_icon_tokocash_header)
+                        .resIconId(R.drawable.ic_header_digital_category_subscription)
                         .build()
         );
 
