@@ -176,17 +176,27 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             @Override
             public void onNext(PaymentListModel paymentListModel) {
                 rootView.setVisibility(View.VISIBLE);
-                mainProgressDialog.dismiss();
-                paymentModels = paymentListModel;
-                bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
-                        paymentListModel.getBcaOneClickUserModels(),
-                        actionListener()
-                );
-                bcaOneClickRecyclerView.setAdapter(bcaOneClickRecyclerAdapter);
-                bcaOneClickRecyclerAdapter.notifyDataSetChanged();
-                if(paymentListModel.getBcaOneClickUserModels().size() < 3) {
-                    bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
-                } else bcaOneClickRegisterLayout.setVisibility(View.GONE);
+                if(paymentListModel.getBcaOneClickUserModels() == null) {
+                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                            "Data Tidak Ditemukan", new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+
+                                }
+                            });
+                } else {
+                    mainProgressDialog.dismiss();
+                    paymentModels = paymentListModel;
+                    bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
+                            paymentListModel.getBcaOneClickUserModels(),
+                            actionListener()
+                    );
+                    bcaOneClickRecyclerView.setAdapter(bcaOneClickRecyclerAdapter);
+                    bcaOneClickRecyclerAdapter.notifyDataSetChanged();
+                    if(paymentListModel.getBcaOneClickUserModels().size() < 3) {
+                        bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
+                    } else bcaOneClickRegisterLayout.setVisibility(View.GONE);
+                }
             }
         };
     }

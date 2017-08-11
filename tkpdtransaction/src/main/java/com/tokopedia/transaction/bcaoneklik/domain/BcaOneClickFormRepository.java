@@ -2,6 +2,7 @@ package com.tokopedia.transaction.bcaoneklik.domain;
 
 import com.tokopedia.core.network.apiservices.payment.BcaOneClickService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
@@ -58,6 +59,8 @@ public class BcaOneClickFormRepository implements IBcaOneClickFormRepository {
         } else if(response.body().isError()) {
             throw new ResponseRuntimeException(response.body()
                     .getErrorMessageJoined());
+        } else if(response.body().getStatus().equals("INVALID_REQUEST")) {
+            throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
         }
     }
 
