@@ -179,9 +179,10 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                 mainProgressDialog.dismiss();
                 if(paymentListModel.getBcaOneClickUserModels() == null) {
                     NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
-                            "Layanan Belum Tersedia", "",
+                            "Layanan Belum Tersedia",
+                            "Sebentar lagi Anda akan dapat kelola pengaturan pembayaran di sini",
                             "OK",
-                            0,
+                            R.drawable.emptystate_cactus,
                             new NetworkErrorHelper.RetryClickedListener() {
                                 @Override
                                 public void onRetryClicked() {
