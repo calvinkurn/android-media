@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fafafa">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+
+        <FrameLayout
+            android:id="@+id/ff_product_problem"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            android:background="@drawable/bg_layout_enable"
+            android:elevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/margin_sm">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_product_problem_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. Barang dan Masalah"/>j
+
+                    <TextView
+                        android:id="@+id/tv_product_problem"
+                        android:layout_marginTop="@dimen/margin_vvs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="#b3000000"
+                        android:text="Pilih barang dan masalah"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_product_problem"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_med"
+                    android:src="@drawable/chevron_thin_right"/>
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/ff_solution"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            android:background="@drawable/bg_layout_disable"
+            android:elevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/margin_sm">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_solution_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#61000000"
+                        android:text="2. Solusi"/>
+
+                    <TextView
+                        android:id="@+id/tv_solution"
+                        android:layout_marginTop="@dimen/margin_vvs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="#61000000"
+                        android:text="Pilih Solusi"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_solution"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_med"
+                    android:src="@drawable/chevron_thin_right"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/ff_prove"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            android:background="@drawable/bg_layout_disable"
+            android:elevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/margin_sm">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_prove_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#61000000"
+                        android:text="3. Bukti dan Keterangan"/>
+
+                    <TextView
+                        android:id="@+id/tv_prove"
+                        android:layout_marginTop="@dimen/margin_vvs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="#61000000"
+                        android:text="Upload Bukti dan Keterangan"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_prove"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_med"
+                    android:src="@drawable/chevron_thin_right"/>
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:elevation="5dp">
+
+        <Button
+            android:id="@+id/btn_create_resolution"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_ms"
+            android:text="Buat Komplain"
+            android:textAllCaps="false"
+            android:textColor="#61000000"
+            android:background="@drawable/bg_button_disable"/>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>

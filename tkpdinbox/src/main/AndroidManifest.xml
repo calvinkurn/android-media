@@ -10,7 +10,6 @@
         <!-- ======================================================= -->
         <!-- ACTIVITIES REGISTRY -->
         <!-- ======================================================= -->
-
         <activity
             android:name="com.tokopedia.inbox.contactus.activity.ContactUsActivity"
             android:screenOrientation="portrait"
@@ -37,7 +36,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity"
-            android:label="@string/title_activity_create_resolution"
+            android:label="@string/title_activity_create_reso_center"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity"
