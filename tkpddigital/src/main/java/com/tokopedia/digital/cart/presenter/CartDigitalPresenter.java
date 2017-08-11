@@ -9,6 +9,7 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -444,6 +445,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setUserId(Integer.parseInt(view.getUserId()));
         attributes.setProductId(view.getProductId());
         attributes.setFields(fieldList);
+        if (GlobalConfig.isSellerApp()) {
+            attributes.setReseller(true);
+        }
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);

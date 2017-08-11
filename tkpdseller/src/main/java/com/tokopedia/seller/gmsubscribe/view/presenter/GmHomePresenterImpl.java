@@ -36,7 +36,6 @@ public class GmHomePresenterImpl extends BaseDaggerPresenter<GmHomeView> impleme
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "Error occured, but because it's mean the cache is broken, then it will ok");
             getView().dismissProgressDialog();
         }
 

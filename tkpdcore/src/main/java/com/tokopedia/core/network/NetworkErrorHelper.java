@@ -75,6 +75,17 @@ public class NetworkErrorHelper {
                 Snackbar.LENGTH_INDEFINITE), listener);
     }
 
+    public static void showCloseSnackbar(Activity activity, String message) {
+        SnackbarManager.make(activity, message,Snackbar.LENGTH_LONG).setAction(
+                activity.getString(R.string.close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // no operation
+                    }
+                }
+        ).show();
+    }
+
     public static void showSnackbar(Activity activity) {
         SnackbarManager.make(activity,
                 activity.getResources().getString(R.string.msg_network_error),

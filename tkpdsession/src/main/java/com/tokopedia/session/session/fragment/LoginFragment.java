@@ -735,6 +735,7 @@ LoginFragment extends Fragment implements LoginView {
                 break;
         }
         mPasswordView.setText("");
+        setWrapperError(wrapperPassword, null);
     }
 
     private boolean checkEmailHasBeenActive(String text) {

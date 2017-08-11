@@ -354,19 +354,6 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/ask_seller"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:background="@drawable/btn_shop"
-            android:gravity="center"
-            android:text="@string/title_ask_seller"
-            android:textColor="@color/label_color"
-            android:textStyle="bold"/>
-
-        <TextView
             android:id="@+id/btn_request_cancel_order"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
@@ -376,6 +363,32 @@
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_request_cancel_order"
+            android:textColor="@color/label_color"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/receive_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/button_buy_from_cart"
+            android:gravity="center"
+            android:text="@string/string_finish"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/btn_do_complain"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/btn_shop"
+            android:gravity="center"
+            android:text="@string/title_complain_button"
             android:textColor="@color/label_color"
             android:textStyle="bold"/>
 
@@ -393,16 +406,16 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/receive_btn"
+            android:id="@+id/ask_seller"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:background="@drawable/button_buy_from_cart"
+            android:background="@drawable/btn_shop"
             android:gravity="center"
-            android:text="@string/title_receive_confirmation"
-            android:textColor="@color/white"
+            android:text="@string/title_ask_seller"
+            android:textColor="@color/label_color"
             android:textStyle="bold"/>
 
         <TextView

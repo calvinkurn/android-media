@@ -33,11 +33,15 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
-import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
+import com.tokopedia.ride.history.di.DaggerRideHistoryComponent;
+import com.tokopedia.ride.history.di.RideHistoryComponent;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -84,7 +88,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @BindView(R2.id.tv_cashback)
     TextView cashbackValueTextView;
     @BindView(R2.id.tv_total_charged)
-    TextView totalChargedTexView;
+    TextView tokocashChargedTexView;
     @BindView(R2.id.rl_payment_details)
     RelativeLayout paymentDetailsLayout;
     @BindView(R2.id.layout_rate)
@@ -104,7 +108,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     ProgressDialog mProgressDialog;
 
-    RideHistoryDetailContract.Presenter mPresenter;
+    @Inject
+    RideHistoryDetailPresenter mPresenter;
 
     public RideHistoryDetailFragment() {
         // Required empty public constructor
@@ -141,6 +146,15 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        RideHistoryComponent rideHistoryComponent = DaggerRideHistoryComponent.builder()
+                .rideComponent(component)
+                .build();
+        rideHistoryComponent.inject(this);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_ride_history_detail;
     }
@@ -148,7 +162,6 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = RideHistoryDetailDependencyInjection.createPresenter(getActivity());
         mProgressDialog = new ProgressDialog(getActivity());
         mPresenter.attachView(this);
         mPresenter.initialize();
@@ -224,8 +237,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
             driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
         }
 
-        totalChargedTexView.setText(rideHistory.getFare());
-        rideFareTextView.setText(rideHistory.getFare());
+        tokocashChargedTexView.setText(rideHistory.getTokoCashCharged());
+        rideFareTextView.setText(rideHistory.getTotalFare());
         totalFareValueTextView.setText(rideHistory.getTotalFare());
 
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {

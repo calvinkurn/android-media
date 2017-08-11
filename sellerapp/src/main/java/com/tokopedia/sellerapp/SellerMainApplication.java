@@ -10,7 +10,6 @@ import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.sellerapp.daggerModules.AppModule;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -19,7 +18,6 @@ import com.tokopedia.sellerapp.daggerModules.AppModule;
 public class SellerMainApplication extends SellerRouterApplication {
 
     public static final int SELLER_APPLICATION = 2;
-    private BaseComponent component;
 
     public static SellerMainApplication get(Context context) {
         return (SellerMainApplication) context.getApplicationContext();
@@ -46,9 +44,6 @@ public class SellerMainApplication extends SellerRouterApplication {
         }
         generateSellerAppBaseUrl();
         super.onCreate();
-        //inject components
-        setComponent();
-        component.inject(this);
     }
 
     private void generateSellerAppBaseUrl() {
@@ -71,20 +66,6 @@ public class SellerMainApplication extends SellerRouterApplication {
         TkpdBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = SellerAppBaseUrl.BASE_MOBILE_DOMAIN;
         TkpdBaseURL.BASE_CONTACT_US = SellerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
-    }
-
-    public void setComponent() {
-        component = DaggerApplicationComponent.builder()
-                .appModule(new AppModule(this))
-                .build();
-    }
-
-    public BaseComponent getComponent() {
-        return component;
-    }
-
-    public void setComponent(BaseComponent component) {
-        this.component = component;
     }
 
     public void initializeDatabase() {

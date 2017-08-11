@@ -6,22 +6,25 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.gms.location.places.Place;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.fragment.SelectLocationOnMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 
 
-public class GooglePlacePickerActivity extends BaseActivity
-        implements PlaceAutocompleteFragment.OnFragmentInteractionListener, SelectLocationOnMapFragment.OnFragmentInteractionListener {
+public class GooglePlacePickerActivity extends BaseActivity implements PlaceAutocompleteFragment.OnFragmentInteractionListener,
+        SelectLocationOnMapFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
     public static String EXTRA_REQUEST_CODE = "EXTRA_REQUEST_CODE";
     public static String EXTRA_SELECTED_PLACE = "EXTRA_SELECTED_PLACE";
     public static String EXTRA_SOURCE = "EXTRA_SOURCE";
     public static String EXTRA_MARKER_ID = "EXTRA_MARKER_ID";
+    private RideComponent rideComponent;
 
     public static Intent getCallingIntent(Activity activity, int markerId) {
         Intent intent = new Intent(activity, GooglePlacePickerActivity.class);
@@ -117,5 +120,18 @@ public class GooglePlacePickerActivity extends BaseActivity
                 fragment.handleLocationAlertResult(resultCode);
             }
         }
+    }
+
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null)
+            initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
     }
 }

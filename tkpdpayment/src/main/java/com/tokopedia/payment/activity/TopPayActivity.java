@@ -342,8 +342,6 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request,
                                     WebResourceError error) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                showError(view, error.getErrorCode());
             super.onReceivedError(view, request, error);
         }
 

@@ -89,7 +89,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
             LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.etalase_picker_fragment_layout, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_etalase_picker, container, false);
 
         setupRecyclerView(view);
         long etalaseId = getArguments().getLong(SELECTED_ETALASE_ID, UNSELECTED_ETALASE_ID);

@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+
 
 /**
  * @author sebastianuskh on 4/3/17.
@@ -39,6 +41,18 @@ public class CategoryDataManager {
 
     public List<CategoryDataBase> fetchFromDatabase() {
         return new Select().from(CategoryDataBase.class).queryList();
+    }
+
+    public Observable<String> getCategoryName(long categoryId){
+        CategoryDataBase categoryDataBase =
+                new Select().from(CategoryDataBase.class)
+                .where(CategoryDataBase_Table.id.is(categoryId))
+                .querySingle();
+        if (categoryDataBase != null) {
+            return Observable.just(categoryDataBase.getName());
+        } else {
+            return null;
+        }
     }
 
     public void storeData(List<CategoryDataBase> categoryDataBases) {

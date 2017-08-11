@@ -5,6 +5,9 @@
     <string name="button_gm_subscribe">Buka Browser</string>
     <string name="extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="payment_and_topup">Pembayaran dan Top Up</string>
+    <string name="digital_product">Produk Digital</string>
+    <string name="digital_transaction_list">Daftar Transaksi Digital</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 

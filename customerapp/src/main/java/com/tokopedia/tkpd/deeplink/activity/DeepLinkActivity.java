@@ -40,6 +40,12 @@ import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
  *         modified Alvarisi
@@ -69,7 +75,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initDeepLink();
+        startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
     }
 
@@ -262,6 +268,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        CommonUtils.dumper("FCM onNewIntent "+intent.getData());
+        if(intent.getData()!=null)
+        {
+            uriData = intent.getData();
+        }
         sendNotifLocalyticsCallback(intent);
     }
 
@@ -315,5 +326,36 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
+    }
+
+    private Observable<Void> startAnalytics() {
+        return Observable.just(true).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, Void>() {
+                    @Override
+                    public Void call(Boolean aBoolean) {
+                        TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
+                        return null;
+                    }
+                });
+    }
+
+    private Observer<Void> getObserver() {
+        return new Observer<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                initDeepLink();
+            }
+        };
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -328,8 +329,12 @@ public class FavoritePresenter
         }
 
         @Override
-        public void onCompleted() {
+        public void onStart() {
+            view.setEnabled(false);
+        }
 
+        @Override
+        public void onCompleted() {
         }
 
         @Override

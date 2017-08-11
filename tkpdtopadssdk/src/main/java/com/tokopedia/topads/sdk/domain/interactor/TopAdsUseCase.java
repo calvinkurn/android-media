@@ -61,7 +61,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
 
             @Override
             protected TopAdsModel doInBackground(TopAdsParams... params) {
-                return dataSource.getTopAds(params[0].getParam());
+                return dataSource.getTopAds(params[0].getParam(), params[0].getAdsPosition());
             }
 
             @Override
@@ -91,7 +91,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                             }
                         }
                     }
-                    view.displayAds(visitables);
+                    view.displayAds(visitables, topAdsModel.getAdsPosition());
                 } else if (topAdsModel.getError() != null) {
                     view.notifyAdsErrorLoaded(topAdsModel.getError().getCode(),
                             topAdsModel.getError().getTitle());
