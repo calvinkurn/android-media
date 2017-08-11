@@ -153,7 +153,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void updateDrawerData() {
         if (sessionHandler.isV4Login()) {
             getDrawerProfile();
-            getProfileCompletion();
             getDrawerDeposit();
             getDrawerNotification();
 

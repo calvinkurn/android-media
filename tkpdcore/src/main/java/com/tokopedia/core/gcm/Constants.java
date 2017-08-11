@@ -33,6 +33,7 @@ public interface Constants {
     String EXTRA_FROM_PUSH = "from_notif";
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_UNREAD = "unread";
+    String EXTRA_PUSH_PERSONALIZATION = "EXTRA_PUSH_PERSONALIZATION";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     String EXTRA_APPLINK_RESET = "applink_reset";
     String EXTRA_APPLINK_FROM_INTERNAL = "EXTRA_APPLINK_FROM_INTERNAL";
@@ -82,6 +83,11 @@ public interface Constants {
         String PROMO = "tokopedia://promo";
         String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
         String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
+        String DISCOVERY_CATEGORY = "tokopedia://category";
+        String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
+        String DISCOVERY_SEARCH = "tokopedia://search";
+        String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
+        String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
         String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
         String WISHLIST = "tokopedia://wishlist";
         String RECENT_VIEW = "tokopedia://recentlyviewed";

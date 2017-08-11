@@ -32,7 +32,6 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -404,6 +403,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 isChecked ? getResources().getString(R.string.title_button_pay)
                         : getResources().getString(R.string.title_buy)
         );
+
+        UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(),
+                selectedOperator == null ? "" : selectedOperator.name, isChecked);
     }
 
     @Override
@@ -460,6 +462,16 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 );
                 spnNominal.setAdapter(adapter);
                 spnNominal.setOnItemSelectedListener(this);
+                spnNominal.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if(motionEvent.getAction()== MotionEvent.ACTION_UP)
+                        {
+                            UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(), selectedProduct.getAttributes().getPrice());
+                        }
+                        return false;
+                    }
+                });
                 setSpnNominalSelectionBasedStatus(productList);
 
                 setSpnNominalSelectionBasedLastOrder(productList);
@@ -493,6 +505,17 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     operators
             );
             spnOperator.setAdapter(adapterOperator);
+            spnOperator.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(motionEvent.getAction()== MotionEvent.ACTION_UP)
+                    {
+                        UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                                selectedOperator == null ? "" : selectedOperator.name);
+                    }
+                    return false;
+                }
+            });
             spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -1099,6 +1122,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
+            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                    selectedOperator == null ? "" : selectedOperator.name);
             setParentToScroolToTop();
         }
     }
@@ -1134,8 +1159,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void sendGTMClickBeli() {
-        CommonUtils.dumper("GAv4 category clicked " + category.getId());
-        CommonUtils.dumper("GAv4 clicked beli Pulsa");
         String labelBeli;
         switch (category.getId()) {
             case 1:

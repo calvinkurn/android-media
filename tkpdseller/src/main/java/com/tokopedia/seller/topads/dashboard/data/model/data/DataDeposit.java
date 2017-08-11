@@ -15,6 +15,9 @@ public class DataDeposit {
     @SerializedName("amount_fmt")
     @Expose
     private String amountFmt;
+    @SerializedName("ad_usage")
+    @Expose
+    private boolean adUsage;
 
     /**
      *
@@ -50,5 +53,13 @@ public class DataDeposit {
      */
     public void setAmountFmt(String amountFmt) {
         this.amountFmt = amountFmt;
+    }
+
+    public boolean isAdUsage() {
+        return adUsage;
+    }
+
+    public void setAdUsage(boolean adUsage) {
+        this.adUsage = adUsage;
     }
 }

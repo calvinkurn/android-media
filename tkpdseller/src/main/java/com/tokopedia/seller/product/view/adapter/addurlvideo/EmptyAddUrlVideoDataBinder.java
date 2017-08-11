@@ -28,7 +28,7 @@ public class EmptyAddUrlVideoDataBinder extends NoResultDataBinder {
 
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_add_product_video_empty, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_video_empty, null);
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {

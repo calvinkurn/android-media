@@ -120,13 +120,6 @@ public class PhoneVerifModule {
 
     @PhoneVerifScope
     @Provides
-    SessionHandler provideSessionHandler(@ActivityContext Context context) {
-
-        return new SessionHandler(context);
-    }
-
-    @PhoneVerifScope
-    @Provides
     Bundle provideAccountsBundle(@ActivityContext Context context,
                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();

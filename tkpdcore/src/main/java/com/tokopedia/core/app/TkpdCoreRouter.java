@@ -43,7 +43,7 @@ public interface TkpdCoreRouter {
 
     void goToMerchantRedirect(Context context);
 
-    void actionAppLink(Activity activity, String linkUrl);
+    void actionAppLink(Context context, String linkUrl);
 
     Intent getHomeIntent(Context context);
 

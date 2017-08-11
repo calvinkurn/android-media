@@ -1,6 +1,5 @@
 package com.tokopedia.ride.common.ride.data;
 
-import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.cloud.CloudBookingRideDataStore;
 

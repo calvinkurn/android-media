@@ -19,7 +19,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerTabListener;
+import com.tokopedia.seller.common.datepicker.view.listener.DatePickerTabListener;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
@@ -246,7 +246,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     private void displayShowCase() {
         final TopAdsKeywordListFragment topAdsKeywordListFragment = getCurrentFragment();
-        if (topAdsKeywordListFragment == null) {
+        if (topAdsKeywordListFragment == null || topAdsKeywordListFragment.getView() == null) {
             return;
         }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -283,6 +283,9 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
             recyclerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if (topAdsKeywordListFragment.getView() == null) {
+                        return;
+                    }
                     View dateView = topAdsKeywordListFragment.getDateView();
                     if (dateView != null) {
                         dateView.setVisibility(View.VISIBLE);

@@ -12,7 +12,7 @@
         android:background="@android:color/white"
         app:elevation="0dp">
 
-        <com.tokopedia.seller.lib.widget.DateLabelView
+        <com.tokopedia.seller.common.widget.DateLabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.BorderBottom"
             android:visibility="gone"

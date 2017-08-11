@@ -1,6 +1,5 @@
 package com.tokopedia.ride.ontrip.view.fragment;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;

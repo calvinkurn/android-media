@@ -330,7 +330,7 @@ public class FavoritePresenter
 
         @Override
         public void onStart() {
-            ((ImageView) view).setEnabled(false);
+            view.setEnabled(false);
         }
 
         @Override

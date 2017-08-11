@@ -61,7 +61,6 @@ public class ManageShopNotesRetrofitInteractorImpl implements ManageShopNotesRet
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
@@ -136,7 +135,6 @@ public class ManageShopNotesRetrofitInteractorImpl implements ManageShopNotesRet
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
@@ -215,7 +213,6 @@ public class ManageShopNotesRetrofitInteractorImpl implements ManageShopNotesRet
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
@@ -290,7 +287,6 @@ public class ManageShopNotesRetrofitInteractorImpl implements ManageShopNotesRet
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
@@ -365,7 +361,6 @@ public class ManageShopNotesRetrofitInteractorImpl implements ManageShopNotesRet
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {

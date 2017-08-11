@@ -32,7 +32,7 @@ public class TopAdsKeywordDetailNegativeActivity extends BaseSimpleActivity impl
     }
 
     @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordDetailNegativeActivity.class.getSimpleName();
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

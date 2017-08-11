@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -17,6 +18,7 @@ import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
+import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,6 +227,11 @@ public class CategoryProductStyle1View extends
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(cbInstantCheckout.isChecked())
+                    UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
+                else
+                    UnifyTracking.eventClickBeli(data.getName(), data.getName());
+
                 actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }
         };
@@ -303,10 +310,11 @@ public class CategoryProductStyle1View extends
 
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
+                String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
                 outerLoop:
                 for (Operator operator : data.getOperatorList()) {
                     for (String prefix : operator.getPrefixList()) {
-                        if (tempClientNumber.startsWith(prefix)) {
+                        if (validClientNumber.startsWith(prefix)) {
                             operatorSelected = operator;
                             clientNumberInputView.enableImageOperator(operator.getImage());
                             if (operatorSelected.getRule().getProductViewStyle() == 99) {

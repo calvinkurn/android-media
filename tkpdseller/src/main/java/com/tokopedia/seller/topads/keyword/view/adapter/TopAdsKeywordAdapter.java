@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
@@ -21,7 +20,7 @@ public class TopAdsKeywordAdapter extends BaseListAdapter<KeywordAd> {
         switch (viewType) {
             case KeywordAd.TYPE:
             case NegativeKeywordAd.TYPE:
-                return new TopAdsKeywordViewHolder(getLayoutView(parent, R.layout.listview_top_ads_keyword_main));
+                return new TopAdsKeywordViewHolder(getLayoutView(parent, R.layout.item_top_ads_keyword_main));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

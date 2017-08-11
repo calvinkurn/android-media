@@ -48,6 +48,12 @@
             android:name=".wallet.WalletActivity"
             android:label="@string/toko_cash_info"/>
 
+        <activity android:name=".bcaoneklik.BcaOneClickActivity" />
+
+        <activity android:name=".bcaoneklik.BcaOneClickEditActivity" />
+
+        <activity android:name=".bcaoneklik.activity.ListPaymentTypeActivity"/>
+
         <service
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
             android:exported="false"/>

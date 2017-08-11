@@ -603,12 +603,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProgressLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+  
     }
 
     @Override
     public void hideProgressLoading() {
-        progressBar.setVisibility(View.GONE);
+       
     }
 
     @Override
@@ -897,7 +897,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 } else {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    fabWishlist.show();
+                    if (fabWishlist.getVisibility()==View.VISIBLE) {
+                        fabWishlist.show();
+                    }
                 }
             }
         };

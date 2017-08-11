@@ -38,6 +38,7 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.helper.IndicatorViewHelper;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -957,6 +958,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         ImageView rating;
         @BindView(R2.id.review_count)
         TextView reviewCount;
+        @BindView(R2.id.rating_review_container)
+        LinearLayout ratingReviewContainer;
 
         private Context context;
         private String source = "";
@@ -999,31 +1002,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 shopName.setText(MethodChecker.fromHtml(data.shop));
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
-            viewHolder.badgesContainer.removeAllViews();
-            if (data.getBadges() != null) {
-                for (Badge badges : data.getBadges()) {
-                    LuckyShopImage.loadImage(context, badges.getImageUrl(), badgesContainer);
-                }
-            }
-            viewHolder.labelContainer.removeAllViews();
-            if (data.getLabels() != null) {
-                for (Label label : data.getLabels()) {
-                    View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
-                    TextView labelText = (TextView) view.findViewById(R.id.label);
-                    labelText.setText(label.getTitle());
-                    if (!label.getColor().toLowerCase().equals("#ffffff")) {
-                        labelText.setBackgroundResource(R.drawable.bg_label);
-                        labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
-                        ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            labelText.setBackgroundTintList(tint);
-                        } else {
-                            ViewCompat.setBackgroundTintList(labelText, tint);
-                        }
-                    }
-                    labelContainer.addView(view);
-                }
-            }
+
+            IndicatorViewHelper.renderBadgesView(context, viewHolder.badgesContainer, data.getBadges());
+            IndicatorViewHelper.renderLabelsView(context, viewHolder.labelContainer, data.getLabels());
+
             if (data.getIsTopAds()) {
                 wishlistButtonContainer.setVisibility(View.GONE);
             } else {
@@ -1048,12 +1030,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             });
 
             if (TextUtils.isEmpty(data.getRating()) || ("0").equals(data.getReviewCount())) {
-                rating.setVisibility(View.GONE);
-                reviewCount.setVisibility(View.GONE);
+                ratingReviewContainer.setVisibility(View.GONE);
             } else {
                 float rateAmount = Float.parseFloat(data.getRating());
-                rating.setVisibility(View.VISIBLE);
-                reviewCount.setVisibility(View.VISIBLE);
+                ratingReviewContainer.setVisibility(View.VISIBLE);
                 rating.setImageResource(
                         RatingView.getRatingDrawable(getStarCount(rateAmount))
                 );

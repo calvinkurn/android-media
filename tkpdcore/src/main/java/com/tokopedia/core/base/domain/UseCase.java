@@ -14,8 +14,8 @@ import rx.subscriptions.Subscriptions;
  */
 
 public abstract class UseCase<T> implements Interactor<T> {
-    private ThreadExecutor threadExecutor;
-    private PostExecutionThread postExecutionThread;
+    protected ThreadExecutor threadExecutor;
+    protected PostExecutionThread postExecutionThread;
     protected Subscription subscription = Subscriptions.empty();
 
     public UseCase(ThreadExecutor threadExecutor,
@@ -24,13 +24,25 @@ public abstract class UseCase<T> implements Interactor<T> {
         this.postExecutionThread = postExecutionThread;
     }
 
+    public UseCase(){
+        this(null,null);
+    }
+
     public abstract Observable<T> createObservable(RequestParams requestParams);
+
+    public final Observable<T> createObservableSync(RequestParams requestParams) {
+        return Observable.just(createObservable(requestParams).toBlocking().first());
+    }
 
     public void execute(RequestParams requestParams, Subscriber<T> subscriber) {
         this.subscription = createObservable(requestParams)
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.getScheduler())
                 .subscribe(subscriber);
+    }
+
+    public final Observable<T> execute(RequestParams requestParams){
+        return createObservableSync(requestParams);
     }
 
     public void unsubscribe() {

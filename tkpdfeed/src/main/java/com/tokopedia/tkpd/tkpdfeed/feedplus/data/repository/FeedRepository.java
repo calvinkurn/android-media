@@ -24,4 +24,5 @@ public interface FeedRepository {
     Observable<List<DataFeedDetailDomain>> getFeedsDetail(RequestParams requestParams);
 
     Observable<List<RecentViewProductDomain>> getRecentViewProduct(RequestParams requestParams);
+
 }

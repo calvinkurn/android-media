@@ -78,6 +78,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
         TkpdBaseURL.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        TkpdBaseURL.SCROOGE_DOMAIN = ConsumerAppBaseUrl.SCROOGE_DOMAIN;
     }
 
     public void initializeDatabase() {

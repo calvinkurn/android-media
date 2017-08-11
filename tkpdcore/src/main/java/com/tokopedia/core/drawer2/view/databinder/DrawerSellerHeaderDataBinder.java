@@ -126,24 +126,24 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
         holder.name.setVisibility(View.VISIBLE);
         holder.avatar.setVisibility(View.VISIBLE);
-        holder.percentText.setVisibility(View.VISIBLE);
+//        holder.percentText.setVisibility(View.VISIBLE);
 
         if (data.getDrawerProfile().getUserAvatar() != null
                 && !data.getDrawerProfile().getUserAvatar().equals(""))
             ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
 
         holder.name.setText(data.getDrawerProfile().getUserName());
-        holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
-        if(data.getProfileCompletion() == 100) {
-            holder.layoutProgress.setVisibility(View.GONE);
-            holder.verifiedIcon.setVisibility(View.VISIBLE);
-            holder.verifiedText.setVisibility(View.VISIBLE);
-        }else {
-            holder.progressBar.setProgress(data.getProfileCompletion());
-            holder.layoutProgress.setVisibility(View.VISIBLE);
-            holder.verifiedIcon.setVisibility(View.GONE);
-            holder.verifiedText.setVisibility(View.GONE);
-        }
+//        holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
+//        if(data.getProfileCompletion() == 100) {
+//            holder.layoutProgress.setVisibility(View.GONE);
+//            holder.verifiedIcon.setVisibility(View.VISIBLE);
+//            holder.verifiedText.setVisibility(View.VISIBLE);
+//        }else {
+//            holder.progressBar.setProgress(data.getProfileCompletion());
+//            holder.layoutProgress.setVisibility(View.VISIBLE);
+//            holder.verifiedIcon.setVisibility(View.GONE);
+//            holder.verifiedText.setVisibility(View.GONE);
+//        }
         setDeposit(holder);
         setListener(holder);
     }

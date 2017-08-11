@@ -16,6 +16,8 @@ import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModelMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -27,6 +29,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
     private GetRideHistoriesUseCase getRideHistoriesUseCase;
     private GetHistoriesWithPaginationUseCase getHistoriesWithPaginationUseCase;
 
+    @Inject
     public RideHistoryPresenter(GetRideHistoriesUseCase getRideHistoriesUseCase,
                                 GetHistoriesWithPaginationUseCase getHistoriesWithPaginationUseCase) {
         this.getRideHistoriesUseCase = getRideHistoriesUseCase;
