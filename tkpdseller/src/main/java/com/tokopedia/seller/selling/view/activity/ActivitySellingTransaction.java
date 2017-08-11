@@ -39,6 +39,7 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -52,6 +53,7 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
+import com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,14 +129,13 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void checkLogin() {
         if(getApplication() instanceof TkpdCoreRouter) {
-            Intent intent;
             if (!SessionHandler.isV4Login(this)) {
-                intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
+                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+                AppWidgetUtil.sendBroadcastToAppWidget(this);
             } else {
-                intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+                AppWidgetUtil.sendBroadcastToAppWidget(this);
             }
-            startActivity(intent);
-            finish();
         }
     }
 
