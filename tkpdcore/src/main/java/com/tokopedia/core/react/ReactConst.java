@@ -18,4 +18,11 @@ public interface ReactConst {
         String OFFICIAL_STORE = "official-store";
     }
 
+    interface EventEmitter{
+        String WISHLIST_ADD = "WishlistAdd";
+        String WISHLIST_REMOVE = "WishlistRemove";
+        String FAVORITE_ADD = "FavoriteAdd";
+        String FAVORITE_REMOVE = "FavoriteRemove";
+    }
+
 }
