@@ -131,12 +131,12 @@ public class ActivitySellingTransaction extends TkpdActivity
         if(getApplication() instanceof TkpdCoreRouter) {
             if (!SessionHandler.isV4Login(this)) {
                 startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
-                finish();
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
+                finish();
             } else {
                 startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
-                finish();
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
+                finish();
             }
         }
     }
