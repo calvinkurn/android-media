@@ -94,11 +94,12 @@ public interface Constants {
         String TOPPICKS = "tokopedia://toppicks";
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
         String SELLER_APP_HOME = "sellerapp://home";
+        String LOGIN = "tokopedia://login";
     }
 
     interface Schemes {
         String HTTP = "http";
-        String HTTPS = HTTP+"s";
+        String HTTPS = HTTP + "s";
         String APPLINKS = "tokopedia";
     }
 
