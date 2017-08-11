@@ -2,18 +2,17 @@ package com.tokopedia.design.text;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.utils.ConverterUtils;
 
 /**
  * Created by nathan on 04/05/17.
@@ -21,20 +20,13 @@ import com.tokopedia.design.utils.ConverterUtils;
 
 public class SearchInputView extends BaseCustomView {
 
-    private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
+    private ImageView searchImageView;
+    private EditText searchTextView;
+    private ImageButton closeImageButton;
 
-    private CounterInputView counterInputView;
-    private SpinnerTextView spinnerTextView;
-
-    private String spinnerHintText;
-    private String hintText;
-    private CharSequence[] entries;
-    private CharSequence[] values;
-    private int selectionIndex;
-    private boolean showCounterButton;
-    private boolean enabled;
-    private int spinnerWidth;
-    private int maxLength;
+    private Drawable searchDrawable;
+    private String searchText;
+    private String searchHint;
 
     public SearchInputView(Context context) {
         super(context);
@@ -55,15 +47,9 @@ public class SearchInputView extends BaseCustomView {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
         try {
-            maxLength = styledAttributes.getInt(R.styleable.CounterInputView_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
-            spinnerHintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_hint);
-            hintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_hint);
-            selectionIndex = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection_index, 0);
-            entries = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_entries);
-            values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
-            showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
-            enabled = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_enabled, true);
-            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.spinner_decimal_spinner_width));
+            searchDrawable = styledAttributes.getDrawable(R.styleable.SearchInputView_siv_search_icon);
+            searchText = styledAttributes.getString(R.styleable.SearchInputView_siv_search_text);
+            searchHint = styledAttributes.getString(R.styleable.SearchInputView_siv_search_hint);
         } finally {
             styledAttributes.recycle();
         }
@@ -72,122 +58,29 @@ public class SearchInputView extends BaseCustomView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (!TextUtils.isEmpty(spinnerHintText)) {
-            spinnerTextView.setHint(spinnerHintText);
+        if (searchDrawable != null) {
+            searchImageView.setImageDrawable(searchDrawable);
         }
-        if (!TextUtils.isEmpty(hintText)) {
-            counterInputView.setHint(hintText);
+        if (!TextUtils.isEmpty(searchText)) {
+            searchTextView.setText(searchText);
         }
-        if (entries != null) {
-            spinnerTextView.setEntries(ConverterUtils.convertCharSequenceToString(entries));
+        if (!TextUtils.isEmpty(searchHint)) {
+            searchTextView.setHint(searchHint);
         }
-        if (values != null) {
-            spinnerTextView.setValues(ConverterUtils.convertCharSequenceToString(values));
-        }
-        counterInputView.showCounterButton(showCounterButton);
-        setMaxLength(maxLength);
-        setEnabled(enabled);
-
-        updateSpinnerWidth();
-
         invalidate();
         requestLayout();
-    }
-
-    private void updateSpinnerWidth() {
-        ViewGroup.LayoutParams params = spinnerTextView.getLayoutParams();
-        params.width = spinnerWidth;
-        spinnerTextView.setLayoutParams(params);
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_search_input_view, this);
-        spinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view);
-        counterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view);
+        searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
+        searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
+        closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        spinnerTextView.setEnabled(enabled);
-        counterInputView.setEnabled(enabled);
-    }
-
-    public void setSpinnerHint(String hintText) {
-        spinnerTextView.setHint(hintText);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setHint(String hintText) {
-        counterInputView.setHint(hintText);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
-        spinnerTextView.setOnItemClickListener(onItemClickListener);
-    }
-
-    public void setOnItemChangeListener(SpinnerTextView.OnItemChangeListener onItemChangeListener) {
-        spinnerTextView.setOnItemChangeListener(onItemChangeListener);
-    }
-
-    public double getCounterValue() {
-        return counterInputView.getDoubleValue();
-    }
-
-    public void setCounterValue(double value) {
-        counterInputView.setValue(value);
-    }
-
-    public String getSpinnerValue() {
-        return spinnerTextView.getSpinnerValue();
-    }
-
-    public String getSpinnerValue(int position) {
-        return spinnerTextView.getSpinnerValue(position);
-    }
-
-    public void setSpinnerValue(String value) {
-        spinnerTextView.setSpinnerValue(value);
-    }
-
-    public void setUnitError(String error) {
-        spinnerTextView.setError(error);
-    }
-
-    public void setCounterError(String error) {
-        counterInputView.setError(error);
-    }
-
-    public void addTextChangedListener(TextWatcher watcher) {
-        counterInputView.addTextChangedListener(watcher);
-    }
-
-    public void removeTextChangedListener(TextWatcher watcher) {
-        counterInputView.removeTextChangedListener(watcher);
-    }
-
-    public int getSpinnerPosition(){
-        return spinnerTextView.getSpinnerPosition();
-    }
-
-    public void setSpinnerPosition(int position) {
-        spinnerTextView.setSpinnerPosition(position);
-    }
-
-    public EditText getCounterEditText() {
-        return counterInputView.getEditText();
-    }
-
-    public void setMaxLength(int maxLength) {
-        if(maxLength > DEFAULT_INPUT_VALUE_LENGTH) {
-            counterInputView.setMaxLength(maxLength);
-        }
-    }
-
-    @Override
-    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-        return counterInputView.requestFocus(direction, previouslyFocusedRect);
+        searchTextView.setEnabled(enabled);
+        closeImageButton.setEnabled(enabled);
     }
 }

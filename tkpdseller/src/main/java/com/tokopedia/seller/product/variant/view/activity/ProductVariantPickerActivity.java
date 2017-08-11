@@ -8,6 +8,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAddCreditFragment;
 
@@ -21,7 +22,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     public Fragment getSearchListFragment() {
-        return new TopAdsAddCreditFragment();
+        return new ProductVariantPickerSearchFragment();
     }
 
     @Override
