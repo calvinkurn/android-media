@@ -6,12 +6,14 @@
               android:orientation="horizontal">
 
     <TextView
+        android:id="@+id/see_all"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:text="@string/see_all"
+        android:gravity="center_vertical"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
+        android:text="@string/see_all"
         android:textColor="@color/green_500"
         android:textSize="@dimen/text_size_medium"/>
 

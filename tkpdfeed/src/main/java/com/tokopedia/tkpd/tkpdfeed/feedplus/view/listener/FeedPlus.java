@@ -20,6 +20,13 @@ import java.util.List;
 public interface FeedPlus{
 
     interface View extends CustomerView {
+
+        interface Toppicks {
+            void onToppicksClicked(String url);
+
+            void onSeeAllToppicks();
+        }
+
         void onShareButtonClicked( String shareUrl,
                                    String title,
                                    String imgUrl,

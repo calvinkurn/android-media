@@ -31,6 +31,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -191,8 +193,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
-        if (listFeedDomain != null)
+        addToppicks(listFeedView);
 
+        if (listFeedDomain != null)
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
                     case TYPE_OS_CAMPAIGN:
@@ -228,8 +231,26 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             }
     }
 
+    private void addToppicks(ArrayList<Visitable> listFeedView) {
+        ArrayList<ToppicksItemViewModel> list = new ArrayList<>();
+        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
+                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
+                "-f2a48d2f766b_350_350.jpg", ""));
+        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
+                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
+                "-f2a48d2f766b_350_350.jpg", ""));
+        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
+                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
+                "-f2a48d2f766b_350_350.jpg", ""));
+        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
+                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
+                "-f2a48d2f766b_350_350.jpg", ""));
+        listFeedView.add(new ToppicksViewModel(list));
+    }
+
     private OfficialStoreCampaignViewModel convertToOfficialStoreCampaign(DataFeedDomain domain) {
         return new OfficialStoreCampaignViewModel(
+
                 domain.getContent().getOfficialStores().get(0).getMobile_img_url(),
                 domain.getContent().getOfficialStores().get(0).getRedirect_url_app(),
                 domain.getContent().getOfficialStores().get(0).getFeed_hexa_color(),

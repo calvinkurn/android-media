@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BrandsWebViewActivity;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -41,6 +43,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -90,7 +93,7 @@ import javax.inject.Inject;
  */
 
 public class FeedPlusFragment extends BaseDaggerFragment
-        implements FeedPlus.View,
+        implements FeedPlus.View, FeedPlus.View.Toppicks,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
 
@@ -144,7 +147,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, this);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
 
         Config config = new Config.Builder()
@@ -789,5 +792,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+
+    @Override
+    public void onToppicksClicked(String url) {
+        switch ((DeepLinkChecker.getDeepLinkType(url))) {
+            case DeepLinkChecker.BROWSE:
+                DeepLinkChecker.openBrowse(url, getActivity());
+                break;
+            case DeepLinkChecker.HOT:
+                DeepLinkChecker.openHot(url, getActivity());
+                break;
+            case DeepLinkChecker.CATALOG:
+                DeepLinkChecker.openCatalog(url, getActivity());
+                break;
+            default:
+                if (TextUtils.isEmpty(url)) {
+                    startActivity(TopPicksWebView.newInstance(getActivity(), url));
+                }
+        }
+    }
+
+    @Override
+    public void onSeeAllToppicks() {
+        startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
+    }
 
 }
