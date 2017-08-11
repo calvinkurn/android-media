@@ -45,9 +45,9 @@ public interface TkpdCoreRouter {
 
     void actionAppLink(Context context, String linkUrl);
 
-    void actionAppLink(Context context, String linkUrl);
+    void actionApplink(Activity activity, String linkUrl);
 
-    void delegateAppLink(Activity activity, String linkUrl);
+    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
     Intent getHomeIntent(Context context);
 

@@ -21,6 +21,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -331,17 +332,16 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void actionAppLink(Context context, String linkUrl) {
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    public void actionApplink(Activity activity, String linkUrl) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
         intent.setData(Uri.parse(linkUrl));
-        context.startActivity(intent);
+        deepLinkDelegate.dispatchFrom(activity, intent);
     }
 
     @Override
-    public void delegateAppLink(Activity activity, String linkUrl) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        deepLinkDelegate.dispatchFrom(activity);
+    public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
+        activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
     }
 
     @Override
