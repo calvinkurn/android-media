@@ -459,7 +459,15 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onSaveBulkDraftSuccess(List<Long> productIds) {
         hideProgressDialog();
-        searchForPage(0);
+        if (productIds.size() == 1) {
+            ProductDraftAddActivity.start(getContext(),
+                    ProductDraftListFragment.this,
+                    productIds.get(0).toString());
+        } else {
+            searchForPage(0);
+            CommonUtils.UniversalToast(getActivity(),
+                    getString(R.string.product_draft_instagram_save_success, productIds.size()));
+        }
     }
 
     @Override
