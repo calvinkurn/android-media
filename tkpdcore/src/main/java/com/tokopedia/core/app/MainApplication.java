@@ -29,11 +29,15 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -65,6 +69,7 @@ public class MainApplication extends TkpdMultiDexApplication {
 
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+    private CacheHelper cacheHelper;
 
     public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
@@ -104,6 +109,21 @@ public class MainApplication extends TkpdMultiDexApplication {
         locationUtils = new LocationUtils(this);
         locationUtils.initLocationBackground();
         TooLargeTool.startLogging(this);
+
+        cacheHelper = new CacheHelper();
+        addToWhiteList();
+    }
+
+    private void addToWhiteList() {
+        for (CacheApiWhitelist cacheApiWhitelist : getWhiteList()) {
+            cacheApiWhitelist.save();
+        }
+    }
+
+    protected List<CacheApiWhitelist> getWhiteList(){
+        List<CacheApiWhitelist> cacheApiWhitelists = new ArrayList<>();
+        cacheApiWhitelists.add(cacheHelper.from(TkpdBaseURL.BASE_DOMAIN.replace("https://","").replace(".com/",".com"), "/v4/deposit/"+TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 10));
+        return cacheApiWhitelists;
     }
 
     @Override

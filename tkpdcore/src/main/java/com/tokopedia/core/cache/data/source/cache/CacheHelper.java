@@ -1,6 +1,9 @@
 package com.tokopedia.core.cache.data.source.cache;
 
+import android.util.Log;
+
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiData_Table;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
@@ -13,6 +16,7 @@ import rx.Observable;
  */
 
 public class CacheHelper {
+    private static final String TAG = "CacheHelper";
 
 
     public CacheHelper() {
@@ -55,11 +59,13 @@ public class CacheHelper {
     }
 
     public CacheApiData queryDataFrom(String host, String path, String param) {
-        return new Select()
+        Where<CacheApiData> and = new Select()
                 .from(CacheApiData.class)
                 .where(CacheApiData_Table.host.like("%" + host + "%"))
                 .and(CacheApiData_Table.path.like("%" + path + "%"))
-                .and(CacheApiData_Table.requestParam.like("%" + param + "%"))
-                .querySingle();
+                .and(CacheApiData_Table.requestParam.like("%" + param + "%"));
+        Log.d(TAG, "queryDataFrom : "+and
+                .toString());
+        return and.querySingle();
     }
 }
