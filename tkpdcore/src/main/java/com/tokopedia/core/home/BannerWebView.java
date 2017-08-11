@@ -1,5 +1,6 @@
 package com.tokopedia.core.home;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -46,6 +47,12 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
         return new Intent(context, BannerWebView.class)
                 .setData(uri.build())
                 .putExtra(BannerWebView.EXTRA_URL, result);
+    }
+
+    public static Intent getCallingIntent(Activity activity, String url){
+        Intent intent = new Intent(activity, BannerWebView.class);
+        intent.putExtra(EXTRA_URL, url);
+        return intent;
     }
 
     @Override
