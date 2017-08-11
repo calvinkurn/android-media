@@ -168,6 +168,10 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                 rootView.setVisibility(View.VISIBLE);
                 if(e instanceof ResponseRuntimeException) {
                     NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                            e.getMessage(),
+                            onLoadListRetryListener());
+                } else {
+                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
                             onLoadListRetryListener());
                 }
                 mainProgressDialog.dismiss();
