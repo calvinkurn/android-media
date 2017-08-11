@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.core;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
@@ -87,6 +88,16 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientDefaultCacheAuth(){
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new ApiCacheInterceptor())
+                .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

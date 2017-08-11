@@ -3,12 +3,15 @@ package com.tokopedia.core.cache.interceptor;
 import android.net.Uri;
 import android.util.Log;
 
+import com.tokopedia.core.cache.UrlEncodedQueryString;
 import com.tokopedia.core.cache.data.source.cache.CacheHelper;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
@@ -97,23 +100,23 @@ public class ApiCacheInterceptor implements Interceptor {
                 builder.body(ResponseBody.create(MediaType.parse("application/json"), tempData.responseBody));
                 return builder.build();
             }
+        }else{
+            Log.d(LOG_TAG, "just hit another network !!");
+            Response response;
+            try {
+                response = chain.proceed(request);
+            } catch (Exception e) {
+                throw e;
+            }
+
+            cacheApiData.responseDate = System.currentTimeMillis() / 1000L;
+
+            putResponseBody(cacheApiData, response);
+
+            cacheApiData.save();
+
+            return response;
         }
-
-
-        Response response;
-        try {
-            response = chain.proceed(request);
-        } catch (Exception e) {
-            throw e;
-        }
-
-        cacheApiData.responseDate = System.currentTimeMillis() / 1000L;
-
-        putResponseBody(cacheApiData, response);
-
-        cacheApiData.save();
-
-        return response;
     }
 
     private void putResponseBody(CacheApiData cacheApiData, Response response) throws IOException {
@@ -210,7 +213,20 @@ public class ApiCacheInterceptor implements Interceptor {
         Uri uri = Uri.parse(url);
         cacheApiData.host = uri.getHost();
         cacheApiData.path = uri.getPath();
-        cacheApiData.requestParam = ((uri.getQuery() != null) ? "?" + uri.getQuery() : "");
+        cacheApiData.requestParam = ((uri.getQuery() != null) ? "?" + uri.getQuery().trim() : "");
+
+        URI uri2 = null;
+        try {
+            uri2 = new URI(url);
+            UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri2);
+            queryString.remove("hash");
+            queryString.remove("device_time");
+            Log.d(LOG_TAG, "sample : "+queryString);
+            cacheApiData.requestParam = ((queryString != null) ? "?" + queryString.toString().trim() : "");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
         return cacheApiData;
     }
 }
