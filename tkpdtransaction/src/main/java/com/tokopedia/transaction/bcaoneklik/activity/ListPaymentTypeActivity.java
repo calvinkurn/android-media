@@ -186,6 +186,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                             new NetworkErrorHelper.RetryClickedListener() {
                                 @Override
                                 public void onRetryClicked() {
+                                    rootView.setVisibility(View.GONE);
                                     finish();
                                 }
                             });
