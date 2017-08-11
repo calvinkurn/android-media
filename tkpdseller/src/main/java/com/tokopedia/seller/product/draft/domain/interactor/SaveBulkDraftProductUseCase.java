@@ -3,8 +3,8 @@ package com.tokopedia.seller.product.draft.domain.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.R;
@@ -27,7 +27,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class SaveBulkDraftProductUseCase extends CompositeUseCase<List<Long>> {
+public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
     private static final String UPLOAD_PRODUCT_INPUT_MODEL_LIST = "UPLOAD_PRODUCT_INPUT_MODEL_LIST";
     private final ProductDraftRepository productDraftRepository;
 
