@@ -176,16 +176,19 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             @Override
             public void onNext(PaymentListModel paymentListModel) {
                 rootView.setVisibility(View.VISIBLE);
+                mainProgressDialog.dismiss();
                 if(paymentListModel.getBcaOneClickUserModels() == null) {
                     NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
-                            "Data Tidak Ditemukan", new NetworkErrorHelper.RetryClickedListener() {
+                            "Layanan Belum Tersedia", "",
+                            "OK",
+                            0,
+                            new NetworkErrorHelper.RetryClickedListener() {
                                 @Override
                                 public void onRetryClicked() {
-
+                                    finish();
                                 }
                             });
                 } else {
-                    mainProgressDialog.dismiss();
                     paymentModels = paymentListModel;
                     bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
                             paymentListModel.getBcaOneClickUserModels(),
