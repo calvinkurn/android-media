@@ -20,6 +20,7 @@ import WishlistBtn from '../common/Wishlist/WishlistButton'
 
 const BrandList = (props) => {
   const gridProps = {
+    User_ID: props.User_ID,
     rows: 3,
     columns: 3,
     data: props.gridData,

@@ -192,7 +192,10 @@ export const fetchBrands = (limit, offset, User_ID, status) => ({
 })
 
 getBrands = (limit, offset, User_ID, status) => {
+    console.log(status)
+        // const offsetForLoadAndReplace = status === 'LOADANDREPLACE' ? 0 : offset
     const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${User_ID}&limit=${limit}&offset=${offset}`
+    console.log(url)
     return NetworkModule.getResponse(url, "GET", "", false)
         .then(response => {
             const jsonResponse = JSON.parse(response)
@@ -269,7 +272,7 @@ getBrands = (limit, offset, User_ID, status) => {
                                     }
                                 }),
                                 total_brands,
-                                status: status === 'REFRESH' ? 'REFRESH' : null
+                                status: !status ? null : status
                             }
                         })
 

@@ -24,7 +24,7 @@ class App extends Component {
     super(props);
     this.state = { showBtn: false, refreshing: false, }
   }
-  
+
   _onRefresh() {
     this.setState({ refreshing: true });
     const { dispatch } = this.props

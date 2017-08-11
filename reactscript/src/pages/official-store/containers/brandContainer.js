@@ -20,7 +20,8 @@ class BrandContainer extends Component {
     const { offset, limit } = this.props.brands.pagination
     const totalBrands = this.props.brands.totalBrands
     const totalItemsCount = this.props.brands.items.length
-    const totalItems = this.props.brands.items
+    // const totalItems = this.props.brands.items
+    const totalItems = this.props.brands.status === 'LOADANDREPLACE' ? this.props.brands.grid.data : this.props.brands.items
     const isFetching = this.props.brands.isFetching
     let canFetch = true
     if ((totalBrands != 0) && (totalBrands == totalItemsCount)) {

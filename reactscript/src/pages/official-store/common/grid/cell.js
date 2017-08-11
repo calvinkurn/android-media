@@ -4,11 +4,12 @@ import { NetworkModule, NavigationModule } from 'NativeModules';
 import PropTypes from 'prop-types'
 import LoadMoreButton from './loadBtn'
 
-const Cell = ({ isLastRowCell, isLastCell, data, loadMore, limit, offset, onSlideMore, canFetch, isFetching }) => {
+const Cell = ({ User_ID, isLastRowCell, isLastCell, data, loadMore, limit, offset, onSlideMore, canFetch, isFetching }) => {
 
   const cellContent = isLastRowCell && isLastCell ? (
     <View style={{ flex: 1 / 3 }}>
       <LoadMoreButton
+        User_ID={User_ID}
         onLoadMore={loadMore}
         onSlideMore={onSlideMore}
         limit={limit}

@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import Row from './row'
 
-const Grid = ({ columns, data, onLoadMore, rows, limit, offset, onSlideMore, isFetching, canFetch }) => {
+const Grid = ({ User_ID, columns, data, onLoadMore, rows, limit, offset, onSlideMore, isFetching, canFetch }) => {
   if (data.length === 0) {
     return null
   }
@@ -17,6 +17,7 @@ const Grid = ({ columns, data, onLoadMore, rows, limit, offset, onSlideMore, isF
     }
     rowData = data.slice(i * columns, columns * i + columns)
     rowsArray.push(<Row
+      User_ID={User_ID}
       cells={columns}
       key={i}
       lastRow={lastRow}

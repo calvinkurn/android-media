@@ -246,7 +246,6 @@ const brands = (state = {
                 ...state,
                 grid: getVisibleGridData1(state.items, state.totalBrands)
             }
-
         case `${ADD_TO_WISHLIST}_${PENDING}`:
             return state
         case `${ADD_TO_WISHLIST}_${FULFILLED}`:

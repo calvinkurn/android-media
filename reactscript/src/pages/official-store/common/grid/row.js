@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import Cell from './cell'
 
-const Row = ({ cells, lastRow, rowData, onLoadMore, limit, offset, onSlideMore, canFetch, isFetching }) => {
+const Row = ({ User_ID, cells, lastRow, rowData, onLoadMore, limit, offset, onSlideMore, canFetch, isFetching }) => {
   let isLastCell = false
   const cellArray = []
 
@@ -13,6 +13,7 @@ const Row = ({ cells, lastRow, rowData, onLoadMore, limit, offset, onSlideMore, 
     }
 
     cellArray.push(<Cell
+      User_ID={User_ID}
       key={i}
       isLastRowCell={lastRow}
       isLastCell={isLastCell}
