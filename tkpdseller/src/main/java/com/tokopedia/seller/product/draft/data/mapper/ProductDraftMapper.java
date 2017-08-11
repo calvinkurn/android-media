@@ -149,6 +149,9 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
     }
 
     private static List<ProductWholesaleDraftModel> mapWholesaleDomainToDraft(List<ProductWholesaleDomainModel> productWholesaleList) {
+        if (productWholesaleList == null) {
+            return new ArrayList<>();
+        }
         List<ProductWholesaleDraftModel> draftModels = new ArrayList<>();
         for (ProductWholesaleDomainModel domainModel : productWholesaleList){
             ProductWholesaleDraftModel draftModel = new ProductWholesaleDraftModel();
@@ -162,9 +165,10 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
 
     private static ProductPhotoListDraftModel mapProductPhoto(ProductPhotoListDomainModel productPhotos) {
         ProductPhotoListDraftModel draftModel = new ProductPhotoListDraftModel();
-        draftModel.setProductDefaultPicture(productPhotos.getProductDefaultPicture());
-        draftModel.setOriProductDefaultPicture(productPhotos.getOriginalProductDefaultPicture());
-        draftModel.setPhotos(mapPhotosDomainToDraft(productPhotos.getPhotos()));
+        draftModel.setProductDefaultPicture(productPhotos == null? 0: productPhotos.getProductDefaultPicture());
+        draftModel.setOriProductDefaultPicture(productPhotos == null? 0:productPhotos.getOriginalProductDefaultPicture());
+        draftModel.setPhotos(productPhotos == null?  new ArrayList<ImageProductInputDraftModel>():
+                (mapPhotosDomainToDraft(productPhotos.getPhotos())));
         return draftModel;
     }
 

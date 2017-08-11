@@ -293,12 +293,7 @@ public class ManageProduct extends TkpdActivity implements
                 lvadapter.clearCheckdData();
                 lvListProd.clearChoices();
                 lvListProd.setItemChecked(-1, false);
-                if (id == R.id.action_gallery) {
-                    ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
-
-                } else if (id == R.id.action_camera) {
-                    ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
-                }
+                onFabMenuItemClicked(id);
                 return false;
             }
         });
@@ -353,6 +348,14 @@ public class ManageProduct extends TkpdActivity implements
         networkInteractorImpl = new NetworkInteractorImpl();
         gson = new GsonBuilder().create();
 
+    }
+
+    protected void onFabMenuItemClicked(int menuItemId){
+        if (menuItemId == R.id.action_gallery) {
+            ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
+        } else if (menuItemId == R.id.action_camera) {
+            ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
+        }
     }
 
     @Override

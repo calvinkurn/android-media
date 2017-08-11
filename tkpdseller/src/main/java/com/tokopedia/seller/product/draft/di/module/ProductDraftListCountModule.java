@@ -6,6 +6,7 @@ import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepository
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
@@ -40,9 +41,11 @@ public class ProductDraftListCountModule extends ProductAddModule {
     @Provides
     ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
                                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase,
-                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
+                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
+                                                         SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
         return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase);
+                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase,
+                saveBulkDraftProductUseCase);
     }
 
     @ProductAddScope
