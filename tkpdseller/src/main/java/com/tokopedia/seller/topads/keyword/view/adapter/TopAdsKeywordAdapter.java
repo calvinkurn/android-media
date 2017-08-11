@@ -13,7 +13,7 @@ import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
  * @author normansyahputa on 5/19/17.
  */
 
-public class TopAdsKeywordAdapter extends BaseListAdapter<KeywordAd> {
+public class TopAdsKeywordAdapter<T extends KeywordAd> extends BaseListAdapter<T> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

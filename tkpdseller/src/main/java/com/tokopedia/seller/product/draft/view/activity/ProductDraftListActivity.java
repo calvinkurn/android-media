@@ -38,8 +38,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ProductDraftListFragment.newInstance(),
-                            ProductDraftListFragment.TAG)
+                    .replace(R.id.container, ProductDraftListFragment.newInstance(), TAG)
                     .commit();
         }
     }

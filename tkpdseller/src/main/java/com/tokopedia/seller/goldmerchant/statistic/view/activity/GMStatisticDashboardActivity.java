@@ -25,13 +25,15 @@ import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment
 public class GMStatisticDashboardActivity extends DrawerPresenterActivity
         implements SessionHandler.onLogoutListener, HasComponent<GoldMerchantComponent> {
 
+    public static final String TAG = GMStatisticDashboardActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new GMStatisticDashboardFragment(), ProductDraftListFragment.TAG).commit();
+                    .replace(R.id.container, new GMStatisticDashboardFragment(), TAG).commit();
         }
     }
 
