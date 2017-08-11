@@ -82,7 +82,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             return;
         }
         saveBulkDraftProductUseCase.execute(
-                SaveBulkDraftProductUseCase.generateUploadProductParam(context,
+                SaveBulkDraftProductUseCase.generateUploadProductParam(
                         correctResolutionLocalPathList, correctResolutionInstagramDescList),
                 getSaveInstagramToDraftSubscriber());
     }

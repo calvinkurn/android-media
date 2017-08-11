@@ -52,12 +52,9 @@
 
     <string name="product_currency_value_idr">1</string>
     <string name="product_currency_value_usd">2</string>
-    <string name="product_currency_value_default">@string/product_currency_value_idr</string>
-
 
     <string name="product_weight_value_gram">1</string>
     <string name="product_weight_value_kg">2</string>
-    <string name="product_weight_value_default">@string/product_weight_value_gram</string>
 
     <string name="product_stock_available_value">1</string>
     <string name="product_stock_not_available_value">2</string>
@@ -69,15 +66,12 @@
 
     <string name="product_free_return_values_active">3</string>
     <string name="product_free_return_values_inactive">0</string>
-    <string name="product_free_return_values_default">@string/product_free_return_values_active</string>
 
     <string name="product_condition_value_new">1</string>
     <string name="product_condition_value_recon">2</string>
-    <string name="product_condition_value_default">@string/product_condition_value_new</string>
 
     <string name="product_insurance_value_optional">0</string>
     <string name="product_insurance_value_yes">1</string>
-    <string name="product_insurance_value_default">@string/product_insurance_value_optional</string>
 
     <string name="product_dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
     <string name="product_dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>

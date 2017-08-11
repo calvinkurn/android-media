@@ -94,7 +94,7 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
             return;
         }
         saveBulkDraftProductUseCase.execute(
-                SaveBulkDraftProductUseCase.generateUploadProductParam(context,
+                SaveBulkDraftProductUseCase.generateUploadProductParam(
                         correctResolutionLocalPathList, correctResolutionInstagramDescList),
                 getSaveInstagramToDraftSubscriber());
     }
