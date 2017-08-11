@@ -1,16 +1,19 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
 import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.ProductConditionTypeDef;
+import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
 import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.constant.WeightUnitTypeDef;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
@@ -46,8 +49,7 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
                 .toList();
     }
 
-    public static RequestParams generateUploadProductParam(Context context,
-                                                           @NonNull ArrayList<String> localPathList,
+    public static RequestParams generateUploadProductParam(@NonNull ArrayList<String> localPathList,
                                                            @NonNull ArrayList<String> instagramDescList){
 
         ArrayList<UploadProductInputDomainModel> uploadProductInputDomainModelList = new ArrayList<>();
@@ -68,23 +70,17 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
             productPhotoListDomainModel.setPhotos(imageProductInputDomainModelArrayList);
             uploadProductInputDomainModel.setProductPhotos(productPhotoListDomainModel);
 
-            uploadProductInputDomainModel.setProductPriceCurrency(
-                    Integer.parseInt(context.getString(R.string.product_currency_value_default)));
-            uploadProductInputDomainModel.setProductWeightUnit(
-                    Integer.parseInt(context.getString(R.string.product_weight_value_default))
-            );
+            uploadProductInputDomainModel.setProductPriceCurrency( CurrencyTypeDef.TYPE_IDR);
+            uploadProductInputDomainModel.setProductWeightUnit(WeightUnitTypeDef.TYPE_GRAM);
+
             uploadProductInputDomainModel.setProductUploadTo(UploadToTypeDef.TYPE_NOT_ACTIVE);
-            uploadProductInputDomainModel.setProductReturnable(
-                    Integer.parseInt(context.getString(R.string.product_free_return_values_default))
-            );
+            uploadProductInputDomainModel.setProductReturnable(FreeReturnTypeDef.TYPE_ACTIVE);
+
             uploadProductInputDomainModel.setProductInvenageSwitch(
                     InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
-            uploadProductInputDomainModel.setProductCondition(
-                    Integer.parseInt(context.getString(R.string.product_condition_value_default))
-            );
-            uploadProductInputDomainModel.setProductMustInsurance(
-                    Integer.parseInt(context.getString(R.string.product_insurance_value_default))
-            );
+            uploadProductInputDomainModel.setProductCondition(ProductConditionTypeDef.TYPE_NEW);
+
+            uploadProductInputDomainModel.setProductMustInsurance(ProductInsuranceValueTypeDef.TYPE_OPTIONAL);
             uploadProductInputDomainModelList.add(uploadProductInputDomainModel);
         }
         RequestParams params = RequestParams.create();
