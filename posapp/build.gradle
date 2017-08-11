@@ -49,7 +49,9 @@ dependencies {
     compile project(':tkpdcore')
     compile project(':tkpdsession')
     compile project(':tkpddiscovery')
+    compile project(':tkpdpdp')
     compile project(':tkpdseller')
+    compile project(':tkpddesign')
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

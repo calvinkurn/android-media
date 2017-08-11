@@ -18,10 +18,7 @@ import rx.functions.Func1;
 
 public class GetOutletMapper implements Func1<Response<TkpdResponse>, OutletDomain> {
 
-    private final Gson gson;
-
-    public GetOutletMapper(Gson gson) {
-        this.gson = gson;
+    public GetOutletMapper() {
     }
 
     @Override
@@ -31,9 +28,7 @@ public class GetOutletMapper implements Func1<Response<TkpdResponse>, OutletDoma
 
     private OutletDomain mapResponse(Response<TkpdResponse> response) {
         if(response.body() != null && response.isSuccessful()) {
-            OutletResponse outletResponse = gson.fromJson(
-                    response.body().getStringData(), OutletResponse.class
-            );
+            OutletResponse outletResponse = response.body().convertDataObj(OutletResponse.class);
 
             if(outletResponse != null && outletResponse.getList() != null) {
                 OutletDomain outletDomain = getOutletFromResponse(outletResponse);

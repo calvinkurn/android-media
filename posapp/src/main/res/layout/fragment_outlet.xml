@@ -1,38 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/text_shop_name"
+    <LinearLayout
+        android:id="@+id/container_shop_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_l_medium"
-        android:textStyle="bold"
-        android:padding="@dimen/padding_vvs"
-        tools:text="Shop Name" />
-
-    <EditText
-        android:id="@+id/edit_search_outlet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/outlet_search_hint"
-        android:background="@drawable/outlet_searchbox_all"
-        android:drawableLeft="@drawable/icon_magnifier"
-        android:drawableStart="@drawable/icon_magnifier"
-        android:drawablePadding="8dp"
-        android:textSize="@dimen/text_size_l_medium"
-        android:padding="@dimen/padding_vvs"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_margin="@dimen/margin_vs"
-        android:imeOptions="actionSearch"
-        android:inputType="textNoSuggestions"/>
+        android:weightSum="5">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_l_medium"
+                android:text="Toko : "/>
+            <TextView
+                android:id="@+id/text_shop_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_l_medium"
+                android:textStyle="bold"
+                android:padding="@dimen/padding_vvs"
+                tools:text="Shop Name" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/edit_search_outlet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/outlet_search_hint"
+            android:background="@drawable/outlet_searchbox_all"
+            android:drawableLeft="@drawable/icon_magnifier"
+            android:drawableStart="@drawable/icon_magnifier"
+            android:drawablePadding="8dp"
+            android:textSize="@dimen/text_size_l_medium"
+            android:padding="@dimen/padding_vvs"
+            android:layout_margin="@dimen/margin_vs"
+            android:imeOptions="actionSearch"
+            android:layout_weight="2"
+            android:inputType="textNoSuggestions"/>
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_outlet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/container_shop_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/button_pdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go To pdp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

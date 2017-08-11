@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,14 +10,17 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.Outlet;
 import com.tokopedia.posapp.view.Shop;
+import com.tokopedia.posapp.view.activity.ProductDetailActivity;
 import com.tokopedia.posapp.view.adapter.OutletAdapter;
 import com.tokopedia.posapp.di.component.DaggerOutletComponent;
 import com.tokopedia.posapp.view.presenter.OutletPresenter;
@@ -26,15 +30,20 @@ import com.tokopedia.posapp.view.viewmodel.shop.ShopViewModel;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.posapp.view.fragment.ProductDetailFragment.PRODUCT_PASS;
+
 /**
  * Created by okasurya on 7/31/17.
  */
 
 public class OutletFragment extends BaseDaggerFragment implements Outlet.View, Shop.View {
-    RecyclerView recyclerOutlet;
-    TextView textShopName;
-    EditText editSearchOutlet;
-    OutletAdapter adapter;
+    private RecyclerView recyclerOutlet;
+    private TextView textShopName;
+    private EditText editSearchOutlet;
+    private OutletAdapter adapter;
+
+    // TODO: 8/8/17 temporary
+    Button buttonPdp;
 
     @Inject
     OutletPresenter outletPresenter;
@@ -138,7 +147,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
         editSearchOutlet = parentView.findViewById(R.id.edit_search_outlet);
 
         adapter = new OutletAdapter(getContext(), this);
-        recyclerOutlet.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerOutlet.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerOutlet.setAdapter(adapter);
 
         editSearchOutlet.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -146,6 +155,19 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 submitQuery(editSearchOutlet.getText());
                 return true;
+            }
+        });
+
+        buttonPdp = parentView.findViewById(R.id.button_pdp);
+        buttonPdp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+                ProductPass productPass = ProductPass.Builder.aProductPass()
+                        .setProductId(193761668)
+                        .build();
+                intent.putExtra(PRODUCT_PASS, productPass);
+                startActivity(intent);
             }
         });
     }

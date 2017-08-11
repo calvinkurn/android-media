@@ -30,8 +30,8 @@ public class OutletModule {
 
     @OutletScope
     @Provides
-    GetOutletMapper provideOutletMapper(Gson gson) {
-        return new GetOutletMapper(gson);
+    GetOutletMapper provideOutletMapper() {
+        return new GetOutletMapper();
     }
 
     @OutletScope

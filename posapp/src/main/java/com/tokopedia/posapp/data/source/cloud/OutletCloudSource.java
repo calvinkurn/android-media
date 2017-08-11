@@ -20,7 +20,7 @@ public class OutletCloudSource {
         this.getOutletMapper = getOutletMapper;
     }
 
-    public Observable<OutletDomain> getOutlet(RequestParams requestParams) {
-        return outletApi.getAddress(requestParams.getParamsAllValueInString()).map(getOutletMapper);
+    public Observable<OutletDomain> getOutlet(RequestParams params) {
+        return outletApi.getAddress(params.getParamsAllValueInString()).map(getOutletMapper);
     }
 }

@@ -29,8 +29,8 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    GetShopMapper provideGetShopMapper(Gson gson) {
-        return new GetShopMapper(gson);
+    GetShopMapper provideGetShopMapper() {
+        return new GetShopMapper();
     }
 
     @ShopScope

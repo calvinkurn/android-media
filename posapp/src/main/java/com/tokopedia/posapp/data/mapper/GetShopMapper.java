@@ -14,10 +14,9 @@ import rx.functions.Func1;
  */
 
 public class GetShopMapper implements Func1<Response<TkpdResponse>, ShopDomain> {
-    Gson gson;
 
-    public GetShopMapper(Gson gson) {
-        this.gson = gson;
+    public GetShopMapper() {
+
     }
 
     @Override
@@ -27,9 +26,7 @@ public class GetShopMapper implements Func1<Response<TkpdResponse>, ShopDomain> 
 
     private ShopDomain mapResponse(Response<TkpdResponse> response) {
         if(response.body() != null && response.isSuccessful()) {
-            ShopModel shopModel = gson.fromJson(
-                    response.body().getStringData(), ShopModel.class
-            );
+            ShopModel shopModel = response.body().convertDataObj(ShopModel.class);
 
             if(shopModel != null) {
                 ShopDomain shopDomain = getShopFromResponse(shopModel);

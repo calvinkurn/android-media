@@ -13,14 +13,14 @@ import rx.Observable;
 
 public class ShopCloudSource {
     ShopApi shopApi;
-    GetShopMapper mapper;
+    GetShopMapper getShopMapper;
 
     public ShopCloudSource(ShopApi shopApi, GetShopMapper getShopMapper) {
         this.shopApi = shopApi;
-        this.mapper = getShopMapper;
+        this.getShopMapper = getShopMapper;
     }
 
     public Observable<ShopDomain> getShop(RequestParams params) {
-        return shopApi.getInfo(params.getParamsAllValueInString()).map(mapper);
+        return shopApi.getInfo(params.getParamsAllValueInString()).map(getShopMapper);
     }
 }
