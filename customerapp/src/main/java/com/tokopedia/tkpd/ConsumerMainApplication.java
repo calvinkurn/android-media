@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.moengage.inapp.InAppManager;
@@ -115,8 +114,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
-
-        CommonUtils.dumper("GAv4 handle null "+screenName+" "+extras+" "+deepLinkUri);
 
         if(deepLinkUri!=null){
 
