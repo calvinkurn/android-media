@@ -48,7 +48,7 @@
     <string name="your_trips_toolbar_title">Your Trips</string>
     <string name="btn_request">Request</string>
     <string name="apply_promocode">Do you have a promocode?</string>
-    <string name="apply">Apply</string>
+    <string name="apply">APPLY</string>
     <string name="btn_apply">APPLY</string>
     <string name="hint_enter_promo_code">Enter Promo Code</string>
     <string name="apply_promo_toolbar_title">Apply Promo Code</string>
@@ -151,7 +151,7 @@
     <string name="error_please_try_again_later">Sorry, Please try again later</string>
     <string name="interrupt_tos_cancel">Cancel</string>
     <string name="interrupt_tos_accept">Accept</string>
-    <string name="edit">Edit</string>
+    <string name="edit">EDIT</string>
     <string name="menu_remove">Remove</string>
     <string name="change_destination">CHANGE</string>
 </resources>
