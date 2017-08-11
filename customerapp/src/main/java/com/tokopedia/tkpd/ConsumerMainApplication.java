@@ -115,7 +115,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
 
-        if(!TextUtils.isEmpty(deepLinkUri.toString())){
+        CommonUtils.dumper("GAv4 handle null "+screenName+" "+extras+" "+deepLinkUri);
+
+        if(deepLinkUri!=null){
 
             if(deepLinkUri.getScheme().equals(Constants.Schemes.HTTP)||deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS))
             {
