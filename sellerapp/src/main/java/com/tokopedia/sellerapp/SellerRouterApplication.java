@@ -200,10 +200,15 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
+        Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            return new Intent(context, SellerHomeActivity.class);
+            if(SessionHandler.isUserSeller(context)){
+                return new Intent(context, SellerHomeActivity.class);
+            }else{
+                return intent;
+            }
         } else {
-            return new Intent(context, WelcomeActivity.class);
+            return intent;
         }
     }
 
