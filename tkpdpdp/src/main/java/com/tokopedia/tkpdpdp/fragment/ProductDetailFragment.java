@@ -42,6 +42,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -358,7 +359,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, CourierActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
@@ -366,7 +367,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, WholesaleActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
@@ -374,7 +375,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
@@ -382,7 +383,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
@@ -495,7 +496,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void updateWishListStatus(int status) {
         this.productData.getInfo().setProductAlreadyWishlist(status);
-        if (productData.getShopInfo().getShopIsOwner() == 1 || productData.getShopInfo().getShopIsAllowManage()==1) {
+        if (productData.getShopInfo().getShopIsOwner() == 1 || productData.getShopInfo().getShopIsAllowManage() == 1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.icon_wishlist_plain));
             fabWishlist.setOnClickListener(new EditClick(productData));
         } else if (status == 1) {
@@ -543,7 +544,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showWishListRetry(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(),errorMessage);
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -603,18 +604,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProgressLoading() {
-  
+
     }
 
     @Override
     public void hideProgressLoading() {
-       
+
     }
 
     @Override
     public void showToastMessage(String message) {
         Snackbar snackbar = Snackbar.make(coordinatorLayout,
-                message.replace("\n"," "),
+                message.replace("\n", " "),
                 Snackbar.LENGTH_LONG);
         View snackbarView = snackbar.getView();
         TextView tv = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
@@ -842,8 +843,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void moveToEditFragment(boolean isEdit, String productId) {
-        if(getActivity().getApplication() instanceof TkpdCoreRouter){
-            Intent intent = ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
     }
@@ -865,7 +866,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         closeView();
                     }
                 })
-                .setActionTextColor(getResources().getColor(R.color.tkpd_main_green ))
+                .setActionTextColor(getResources().getColor(R.color.tkpd_main_green))
                 .show();
     }
 
@@ -873,6 +874,21 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void showProductCampaign(ProductCampaign productCampaign) {
         this.productCampaign = productCampaign;
         headerInfoView.renderProductCampaign(this.productCampaign);
+    }
+
+    @Override
+    public void actionSuccessAddToWishlist(Integer productId) {
+        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+    }
+
+    @Override
+    public void actionSuccessRemoveFromWishlist(Integer productId) {
+        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+    }
+
+    @Override
+    public void actionSuccessAddFavoriteShop(String shopId) {
+        ReactUtils.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
     }
 
     private void destroyVideoLayout() {
