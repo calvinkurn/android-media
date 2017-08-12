@@ -45,18 +45,7 @@ public abstract class BaseCacheListFragment extends BaseListFragment<BlankPresen
 
     @Override
     public void notifyChange() {
-        List<ItemPickerType> itemPickerTypeList = getItemList();
-        onSearchLoaded(itemPickerTypeList, itemPickerTypeList.size());
-    }
-
-    private List<ItemPickerType> getItemList() {
-        List<ItemPickerType> itemPickerTypeList = new ArrayList<>();
-        if (pickerMultipleItem != null) {
-            for (ItemPickerType itemPickerType: pickerMultipleItem.getItemPickerTypeSet()) {
-                itemPickerTypeList.add(itemPickerType);
-            }
-        }
-        return itemPickerTypeList;
+        onSearchLoaded(pickerMultipleItem.getItemPickerTypeList(), pickerMultipleItem.getItemPickerTypeList().size());
     }
 
     @Override

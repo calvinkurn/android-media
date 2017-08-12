@@ -23,18 +23,21 @@ import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by nathan on 8/2/17.
  */
 
-public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity implements BasePickerMultipleItem {
+public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> extends BaseToolbarActivity implements BasePickerMultipleItem<T> {
 
     private static final int ARROW_DEGREE = 180;
 
     public static final String CONTAINER_SEARCH_LIST_TAG = "CONTAINER_SEARCH_LIST_TAG";
     public static final String CONTAINER_CACHE_LIST_TAG = "CONTAINER_CACHE_LIST_TAG";
+
+    public static final String EXTRA_INTENT_PICKER_ITEM_LIST = "EXTRA_INTENT_PICKER_ITEM_LIST";
+    public static final String EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST = "EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST";
 
     private View bottomSheetContainerView;
     private View shadowView;
@@ -45,18 +48,21 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     private View footerView;
     private Button submitButton;
 
-    protected HashSet<ItemPickerType> itemPickerTypeList;
+    private List<T> itemPickerTypeList;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
-    public abstract Fragment getSearchListFragment();
+    protected abstract Fragment getSearchListFragment();
 
-    public abstract Fragment getCacheListFragment();
+    protected abstract Fragment getCacheListFragment();
+
+    protected abstract void initialExtra(List<T> itemPickerTypeList);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        itemPickerTypeList = new HashSet<>();
+        itemPickerTypeList = new ArrayList<>();
+        initialExtra(itemPickerTypeList);
     }
 
     @Override
@@ -141,19 +147,19 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     }
 
     @Override
-    public void addItemFromSearch(ItemPickerType itemPickerType) {
+    public void addItemFromSearch(T itemPickerType) {
         itemPickerTypeList.add(itemPickerType);
         notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
     }
 
     @Override
-    public void removeItemFromSearch(ItemPickerType itemPickerType) {
+    public void removeItemFromSearch(T itemPickerType) {
         itemPickerTypeList.remove(itemPickerType);
         notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
     }
 
     @Override
-    public void removeItemFromCache(ItemPickerType itemPickerType) {
+    public void removeItemFromCache(T itemPickerType) {
         itemPickerTypeList.remove(itemPickerType);
         notifyFragmentFrom(CONTAINER_CACHE_LIST_TAG);
     }
@@ -172,7 +178,7 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     }
 
     @Override
-    public HashSet<ItemPickerType> getItemPickerTypeSet() {
+    public List<T> getItemPickerTypeList() {
         return itemPickerTypeList;
     }
 

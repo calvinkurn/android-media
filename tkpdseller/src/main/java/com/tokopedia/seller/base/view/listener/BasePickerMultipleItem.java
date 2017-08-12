@@ -2,19 +2,19 @@ package com.tokopedia.seller.base.view.listener;
 
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 
-import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by nathan on 8/3/17.
  */
 
-public interface BasePickerMultipleItem {
+public interface BasePickerMultipleItem<T extends ItemPickerType> {
 
-    HashSet<ItemPickerType> getItemPickerTypeSet();
+    List<T> getItemPickerTypeList();
 
-    void addItemFromSearch(ItemPickerType itemPickerType);
+    void addItemFromSearch(T itemPickerType);
 
-    void removeItemFromSearch(ItemPickerType itemPickerType);
+    void removeItemFromSearch(T itemPickerType);
 
-    void removeItemFromCache(ItemPickerType itemPickerType);
+    void removeItemFromCache(T itemPickerType);
 }

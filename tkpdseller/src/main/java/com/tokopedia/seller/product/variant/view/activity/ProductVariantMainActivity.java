@@ -16,7 +16,7 @@ public class ProductVariantMainActivity extends BaseSimpleActivity implements Ha
 
     @Override
     protected Fragment getNewFragment() {
-        return new ProductVariantMainFragment();
+        return ProductVariantMainFragment.newInstance();
     }
 
     @Override

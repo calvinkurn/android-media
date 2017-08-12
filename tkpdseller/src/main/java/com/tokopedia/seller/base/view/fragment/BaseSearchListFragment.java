@@ -26,14 +26,4 @@ public abstract class BaseSearchListFragment<P, T extends ItemType> extends Base
         searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
         searchInputView.setListener(this);
     }
-
-    @Override
-    public void onSearchSubmitted(String text) {
-
-    }
-
-    @Override
-    public void onSearchTextChanged(String text) {
-
-    }
 }

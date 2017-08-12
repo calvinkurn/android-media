@@ -1,0 +1,41 @@
+package com.tokopedia.seller.product.variant.view.adapter.viewholder;
+
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
+import com.tokopedia.seller.base.view.adapter.ItemPickerType;
+import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
+
+/**
+ * @author normansyahputa on 5/26/17.
+ */
+
+public class ProductVariantItemPickerSearchViewHolder extends BaseViewHolder<ItemPickerType> {
+
+    private ImageView imageView;
+    private TextView titleTextView;
+
+    public ProductVariantItemPickerSearchViewHolder(View itemView) {
+        super(itemView);
+        imageView = (ImageView) itemView.findViewById(R.id.image_view);
+        titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
+    }
+
+    @Override
+    public void bindObject(final ItemPickerType itemPickerType) {
+        if (!TextUtils.isEmpty(itemPickerType.getImageUrl())) {
+            imageView.setVisibility(View.VISIBLE);
+            Glide.with(imageView.getContext()).load(itemPickerType.getImageUrl())
+                    .transform(new CircleTransform(imageView.getContext())).into(imageView);
+        } else {
+            imageView.setVisibility(View.GONE);
+        }
+        titleTextView.setText(itemPickerType.getTitle());
+    }
+}
