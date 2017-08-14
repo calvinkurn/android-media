@@ -9,10 +9,19 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
  * Created by nathan on 8/4/17.
  */
 
-public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<ProductVariantViewModel> {
+public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<ProductVariantViewModel> implements ProductVariantPickerCacheListAdapter.RemoveCallback<ProductVariantViewModel> {
 
     @Override
-    protected BaseListAdapter getNewAdapter() {
-        return new ProductVariantPickerCacheListAdapter();
+    protected BaseListAdapter<ProductVariantViewModel> getNewAdapter() {
+        ProductVariantPickerCacheListAdapter productVariantPickerCacheListAdapter = new ProductVariantPickerCacheListAdapter();
+        productVariantPickerCacheListAdapter.setRemoveCallback(this);
+        return productVariantPickerCacheListAdapter;
+    }
+
+    @Override
+    public void onRemove(ProductVariantViewModel productVariantViewModel) {
+        pickerMultipleItem.removeItemFromCache(productVariantViewModel);
+        itemList.remove(productVariantViewModel);
+        resetPageAndSearch();
     }
 }

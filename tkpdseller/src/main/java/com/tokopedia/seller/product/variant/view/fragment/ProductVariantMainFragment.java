@@ -73,7 +73,13 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
         ArrayList<ProductVariantViewModel> modelList = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-            productVariantViewModel.setTitle(UUID.randomUUID().toString());
+            productVariantViewModel.setId(i);
+            productVariantViewModel.setTitle(UUID.randomUUID().toString() + " - " + String.valueOf(i));
+            if (i % 2 == 0) {
+                productVariantViewModel.setHexCode("#b74747");
+            } else {
+                productVariantViewModel.setImageUrl("https://image.flaticon.com/teams/slug/freepik.jpg");
+            }
             modelList.add(productVariantViewModel);
         }
         intent.putExtra(ProductVariantPickerActivity.EXTRA_INTENT_PICKER_ITEM_LIST, modelList);
