@@ -133,7 +133,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
-            } else {
+            } else if(!SessionHandler.isUserSeller(this)){
                 startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
