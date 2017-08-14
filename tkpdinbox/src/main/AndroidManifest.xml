@@ -39,6 +39,10 @@
             android:label="@string/title_activity_create_reso_center"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".rescenter.createreso.view.activity.ProductProblemActivity"
+            android:label="@string/title_activity_product_problem"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity"
             android:label="@string/title_activity_edit_resolution"
             android:screenOrientation="portrait" />

@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.createreso.view.model;
+package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem;
 
 /**
  * Created by yoasfs on 11/08/17.

@@ -2,8 +2,8 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.inbox.rescenter.createreso.view.activity.CreateResolutionCenterView;
-import com.tokopedia.inbox.rescenter.createreso.view.model.ButtonState;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.CreateResolutionCenterView;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 
 /**
  * Created by yoasfs on 11/08/17.

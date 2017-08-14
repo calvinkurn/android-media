@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -12,8 +11,7 @@ import android.widget.Toast;
 
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.activity.CreateResolutionCenterView;
-import com.tokopedia.inbox.rescenter.createreso.view.model.ButtonState;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 
@@ -43,6 +41,15 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    public static CreateResolutionCenterFragment newInstance() {
+        CreateResolutionCenterFragment fragment = new CreateResolutionCenterFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+
 
     @Override
     protected String getScreenName() {

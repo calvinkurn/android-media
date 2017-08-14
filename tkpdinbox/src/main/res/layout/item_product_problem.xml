@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="85dp"
+    android:layout_margin="@dimen/margin_med">
+
+    <LinearLayout
+        android:id="@+id/ll_item_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:id="@+id/iv_product_image"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_product_name"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_title_section"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:textSize="@dimen/font_large"/>
+</FrameLayout>
