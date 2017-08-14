@@ -455,7 +455,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                 fragmentTransaction.remove(prevFragment);
             }
             fragmentTransaction.replace(containerViewId, fragment, tag);
-            fragmentTransaction.commit();
             fragmentTransaction.commitAllowingStateLoss();
         }
     }
