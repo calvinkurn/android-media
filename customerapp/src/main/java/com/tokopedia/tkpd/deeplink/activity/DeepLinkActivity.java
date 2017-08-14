@@ -8,7 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -67,6 +68,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
     private Bundle mExtras;
+    private boolean isNeedToUseToolbarWithOptions;
 
 
     @Override
@@ -134,14 +136,21 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void actionChangeToolbarWithBackToNative() {
+        isNeedToUseToolbarWithOptions = true;
         getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
-
         toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
-
         setSupportActionBar(toolbar);
-        toolbar.inflateMenu(R.menu.menu_web_view);
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isNeedToUseToolbarWithOptions){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -200,7 +209,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             onBackPressed();
             return true;
         } else if (id == com.tokopedia.core.R.id.menu_home) {
-            finish();
+            onBackPressed();
             return true;
         } else if (id == com.tokopedia.core.R.id.menu_help) {
             Intent intent = InboxRouter.getContactUsActivityIntent(this);
@@ -211,6 +220,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void catchToWebView(String url) {
+        actionChangeToolbarWithBackToNative();
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_view, FragmentGeneralWebView.createInstance(url))
                 .commit();
