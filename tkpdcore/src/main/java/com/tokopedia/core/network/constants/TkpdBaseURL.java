@@ -114,6 +114,8 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
+
+        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {

@@ -28,11 +28,13 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
+import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
@@ -794,6 +796,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
                         setGoldMerchantFeatures(context, data);
                         getProductCampaign(context, data.getInfo().getProductId().toString());
+                        getMostHelpfulReview(context,data.getInfo().getProductId().toString());
                     }
 
                     @Override
@@ -885,6 +888,22 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onError(String error) {
+                    }
+                }
+        );
+    }
+
+    public void getMostHelpfulReview(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getMostHelpfulReview(context, id,
+                new MostHelpfulListener() {
+                    @Override
+                    public void onSucccess(List<Review> reviews) {
+                        if (reviews!=null && reviews.size()>0) viewListener.showMostHelpfulReview(reviews);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
                     }
                 }
         );
