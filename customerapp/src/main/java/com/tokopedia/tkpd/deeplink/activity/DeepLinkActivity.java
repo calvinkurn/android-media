@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -27,6 +28,7 @@ import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -131,6 +133,18 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void actionChangeToolbarWithBackToNative() {
+        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
+
+        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+
+        setSupportActionBar(toolbar);
+        toolbar.inflateMenu(R.menu.menu_web_view);
+        invalidateOptionsMenu();
+    }
+
+    @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData productData) {
 
     }
@@ -185,6 +199,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (id == com.tokopedia.core.R.id.menu_home) {
+            finish();
+            return true;
+        } else if (id == com.tokopedia.core.R.id.menu_help) {
+            Intent intent = InboxRouter.getContactUsActivityIntent(this);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -268,9 +288,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        CommonUtils.dumper("FCM onNewIntent "+intent.getData());
-        if(intent.getData()!=null)
-        {
+        CommonUtils.dumper("FCM onNewIntent " + intent.getData());
+        if (intent.getData() != null) {
             uriData = intent.getData();
         }
         sendNotifLocalyticsCallback(intent);
