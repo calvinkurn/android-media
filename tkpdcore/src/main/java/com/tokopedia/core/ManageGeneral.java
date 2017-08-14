@@ -71,9 +71,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
                     getString(R.string.title_activity_manage_shop),
                     getString(R.string.title_activity_manage_general_desc),
                     getString(R.string.title_activity_manage_general_about)};
-            if(GlobalConfig.isSellerApp()) {
-                adapter.addFragment(FragmentSettingPeople.newInstance());
-            } else adapter.addFragment(FragmentSettingPeople.newInstance());
+            adapter.addFragment(FragmentSettingPeople.newInstance());
             Fragment fragmentShopSettings = SellerRouter.getFragmentShopSettings(this);
             adapter.addFragment(fragmentShopSettings);
             adapter.addFragment(SettingsFragment.newInstance());
