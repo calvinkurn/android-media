@@ -76,12 +76,6 @@
         <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
 
         <activity
-            android:name="com.tokopedia.sellerapp.gmstat.activities.GMStatActivity"
-            android:label="@string/title_activity_gmstat"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-
-        <activity
             android:name=".truecaller.TruecallerActivity"
             android:screenOrientation="portrait" />
 

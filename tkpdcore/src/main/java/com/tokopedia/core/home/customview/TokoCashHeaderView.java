@@ -66,9 +66,7 @@ public class TokoCashHeaderView extends RelativeLayout {
             normalLayout.setVisibility(VISIBLE);
         } else {
             actionListener.onRequestPendingCashBack();
-            tokoCashButton.setOnClickListener(onActivationClickedListener(
-                    tokoCashActionRedirectUrl
-            ));
+            tokoCashButton.setOnClickListener(onActivationClickedListener());
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_activation));
             activationRedirectUrl = tokoCashRedirectUrl;
         }
@@ -87,7 +85,7 @@ public class TokoCashHeaderView extends RelativeLayout {
     }
 
     public void activateTokoCashFromBottomSheet() {
-        onActivationClickedListener(activationRedirectUrl);
+        onActivationClickedListener();
     }
 
     @NonNull
@@ -106,14 +104,11 @@ public class TokoCashHeaderView extends RelativeLayout {
         else return drawerTokoCashAction.getRedirectUrl();
     }
 
-    private OnClickListener onActivationClickedListener(final String redirectUrl) {
+    private OnClickListener onActivationClickedListener() {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String seamlessUrl;
-                seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(redirectUrl)),
-                        getContext());
-                openTokoCashWebView(seamlessUrl);
+                actionListener.onActivationTokoCashClicked();
             }
         };
     }

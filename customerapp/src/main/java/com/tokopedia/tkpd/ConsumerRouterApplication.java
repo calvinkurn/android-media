@@ -14,6 +14,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -37,6 +38,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -46,6 +48,7 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
@@ -81,6 +84,11 @@ public class ConsumerRouterApplication extends MainApplication implements
         OtpRouter, IPaymentModuleRouter, TransactionRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
+
+
+    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
+        throw new RuntimeException("method used in sellerapp only");
+    }
 
     @Override
     public void goToHome(Context context) {
@@ -170,6 +178,11 @@ public class ConsumerRouterApplication extends MainApplication implements
         intent.putExtras(bundle);
         intent.setData(Uri.parse(applinks));
         deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
+    public Intent instanceIntentTokoCashActivation() {
+        return ActivateTokoCashActivity.newInstance(this);
     }
 
     @Override

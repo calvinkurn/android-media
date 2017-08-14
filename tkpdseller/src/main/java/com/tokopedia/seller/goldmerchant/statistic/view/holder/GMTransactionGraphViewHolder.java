@@ -42,7 +42,7 @@ import java.util.List;
 public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     public static final int WIDTH_TOOLTIP_COMPARE = 30;
-    public static final int HEIGHT_TOOLTIP_COMPARE = 19;
+    public static final int HEIGHT_TOOLTIP_COMPARE = 13;
     private final String[] gmStatTransactionEntries;
     private final boolean[] selections;
     private TitleCardView gmTitleCardView;
@@ -254,7 +254,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
      */
     private void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
         BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
-
+        gmStatisticIncomeGraph.clearDataDisplayDots();
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModel);
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
