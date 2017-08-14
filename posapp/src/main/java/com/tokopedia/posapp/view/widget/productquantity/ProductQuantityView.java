@@ -43,6 +43,21 @@ public class ProductQuantityView extends BaseView<ProductQuantity,ProductQuantit
         tilQuantity = findViewById(R.id.til_quantity);
         etQuantity = findViewById(R.id.et_quantity);
         buttonIncrease = findViewById(R.id.increase_button);
+
+        buttonDecrease.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionDecreaseQuantity();
+            }
+        });
+
+        buttonIncrease.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionIncreaseQuantity();
+            }
+        });
+        etQuantity.setText("1");
     }
 
     @Override
@@ -70,7 +85,7 @@ public class ProductQuantityView extends BaseView<ProductQuantity,ProductQuantit
         setVisibility(VISIBLE);
     }
 
-    void actionIncreaseQuantity() {
+    private void actionIncreaseQuantity() {
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 0) {
             etQuantity.setText(String
@@ -78,11 +93,15 @@ public class ProductQuantityView extends BaseView<ProductQuantity,ProductQuantit
         } else etQuantity.setText("1");
     }
 
-    void actionDecreaseQuantity() {
+    private void actionDecreaseQuantity() {
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 1) {
             etQuantity.setText(String
                     .valueOf(Integer.parseInt(etQuantity.getText().toString()) - 1));
         } else etQuantity.setText("1");
+    }
+
+    public int getProductQuantity() {
+        return Integer.parseInt(etQuantity.getText().toString());
     }
 }

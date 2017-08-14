@@ -2,4 +2,12 @@
     <string name="app_name">posapp</string>
     <string name="outlet_search_hint">Cari outlet</string>
     <string name="title_product_detail">Detail Produk</string>
+
+    <string name="simulation_bank_title">Bank</string>
+    <string name="simulation_3_months">3\nbulan</string>
+    <string name="simulation_6_months">6\nbulan</string>
+    <string name="simulation_12_months">12\nbulan</string>
+    <string name="simulation_18_months">18\nbulan</string>
+    <string name="simulation_24_months">24\nbulan</string>
+    <string name="credit_simulation_page_title">Detail Cicilan</string>
 </resources>

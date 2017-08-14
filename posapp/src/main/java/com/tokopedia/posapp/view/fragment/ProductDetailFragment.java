@@ -24,6 +24,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.view.Product;
+import com.tokopedia.posapp.view.activity.CreditSimulationActivity;
 import com.tokopedia.posapp.view.presenter.ProductPresenter;
 import com.tokopedia.posapp.view.viewmodel.product.ProductViewModel;
 import com.tokopedia.posapp.view.widget.HeaderInfoView;
@@ -272,7 +273,7 @@ public class ProductDetailFragment extends BaseDaggerFragment implements Product
 
     @Override
     public void onInstallmentClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, InstallmentActivity.class);
+        Intent intent = new Intent(context, CreditSimulationActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(0,0);

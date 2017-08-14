@@ -19,6 +19,14 @@ public class Terms implements Parcelable {
     @Expose
     private InstallmentRule rule12Months;
 
+    @SerializedName("18")
+    @Expose
+    private InstallmentRule rule18Months;
+
+    @SerializedName("24")
+    @Expose
+    private InstallmentRule rule24Months;
+
     public InstallmentRule getRule6Months() {
         return rule6Months;
     }
@@ -43,10 +51,20 @@ public class Terms implements Parcelable {
         this.rule12Months = rule12Months;
     }
 
-    protected Terms(Parcel in) {
-        rule6Months = (InstallmentRule) in.readValue(InstallmentRule.class.getClassLoader());
-        rule3Months = (InstallmentRule) in.readValue(InstallmentRule.class.getClassLoader());
-        rule12Months = (InstallmentRule) in.readValue(InstallmentRule.class.getClassLoader());
+    public InstallmentRule getRule18Months() {
+        return rule18Months;
+    }
+
+    public void setRule18Months(InstallmentRule rule18Months) {
+        this.rule18Months = rule18Months;
+    }
+
+    public InstallmentRule getRule24Months() {
+        return rule24Months;
+    }
+
+    public void setRule24Months(InstallmentRule rule24Months) {
+        this.rule24Months = rule24Months;
     }
 
     @Override
@@ -56,16 +74,28 @@ public class Terms implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(rule6Months);
-        dest.writeValue(rule3Months);
-        dest.writeValue(rule12Months);
+        dest.writeParcelable(this.rule6Months, flags);
+        dest.writeParcelable(this.rule3Months, flags);
+        dest.writeParcelable(this.rule12Months, flags);
+        dest.writeParcelable(this.rule18Months, flags);
+        dest.writeParcelable(this.rule24Months, flags);
     }
 
-    @SuppressWarnings("unused")
+    public Terms() {
+    }
+
+    protected Terms(Parcel in) {
+        this.rule6Months = in.readParcelable(InstallmentRule.class.getClassLoader());
+        this.rule3Months = in.readParcelable(InstallmentRule.class.getClassLoader());
+        this.rule12Months = in.readParcelable(InstallmentRule.class.getClassLoader());
+        this.rule18Months = in.readParcelable(InstallmentRule.class.getClassLoader());
+        this.rule24Months = in.readParcelable(InstallmentRule.class.getClassLoader());
+    }
+
     public static final Creator<Terms> CREATOR = new Creator<Terms>() {
         @Override
-        public Terms createFromParcel(Parcel in) {
-            return new Terms(in);
+        public Terms createFromParcel(Parcel source) {
+            return new Terms(source);
         }
 
         @Override

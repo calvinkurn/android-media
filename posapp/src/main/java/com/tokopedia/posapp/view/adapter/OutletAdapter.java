@@ -22,10 +22,10 @@ import java.util.List;
 
 public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder {
-        public CardView cardOutlet;
-        public TextView textName;
-        public TextView textAddress;
-        public TextView textPhone;
+        CardView cardOutlet;
+        TextView textName;
+        TextView textAddress;
+        TextView textPhone;
 
         public ViewHolder(View itemView) {
             super(itemView);

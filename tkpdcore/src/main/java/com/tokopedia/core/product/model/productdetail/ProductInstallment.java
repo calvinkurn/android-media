@@ -54,6 +54,8 @@ public class ProductInstallment implements Parcelable {
         this.id = id;
     }
 
+    public ProductInstallment(){}
+
     protected ProductInstallment(Parcel in) {
         icon = in.readString();
         terms = (Terms) in.readValue(Terms.class.getClassLoader());
