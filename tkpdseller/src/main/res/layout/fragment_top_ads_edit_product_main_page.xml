@@ -22,7 +22,7 @@
                 app:content_color="@color/tkpd_main_green"
                 app:title="@string/label_manage_group" />
 
-            <include layout="@layout/include_separator_horizontal"/>
+            <include layout="@layout/partial_separator_horizontal"/>
 
             <include layout="@layout/include_top_ads_edit_main_page" />
         </LinearLayout>

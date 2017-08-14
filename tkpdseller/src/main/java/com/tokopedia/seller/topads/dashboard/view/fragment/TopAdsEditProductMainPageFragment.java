@@ -1,25 +1,23 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostProductActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleProductActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordDetailNegativeFragment;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -85,6 +83,28 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
 
             }
         });
+    }
+
+    @Override
+    protected void onScheduleClicked() {
+        Intent intent;
+        if(ad!= null) {
+            intent = TopAdsEditScheduleProductActivity.createIntent(getActivity(), ad.getId());
+        }else{
+            intent = TopAdsEditScheduleProductActivity.createIntent(getActivity(), adId);
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onCostClicked() {
+        Intent intent;
+        if(ad!= null) {
+            intent = TopAdsEditCostProductActivity.createIntent(getActivity(), ad.getId());
+        }else{
+            intent = TopAdsEditCostProductActivity.createIntent(getActivity(), adId);
+        }
+        startActivity(intent);
     }
 
     private boolean isHasGroupAd() {

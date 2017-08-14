@@ -1,12 +1,12 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
@@ -14,6 +14,9 @@ import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSo
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostShopActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
 
@@ -50,5 +53,27 @@ public class TopAdsEditShopMainPageFragment extends TopAdsDetailEditMainPageFrag
         } else {
             presenter.refreshAd(startDate, endDate, adId);
         }
+    }
+
+    @Override
+    protected void onScheduleClicked() {
+        Intent intent;
+        if(ad!= null) {
+            intent = TopAdsEditScheduleShopActivity.createIntent(getActivity(), String.valueOf(ad.getId()));
+        }else{
+            intent = TopAdsEditScheduleShopActivity.createIntent(getActivity(), adId);
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onCostClicked() {
+        Intent intent;
+        if(ad!= null) {
+            intent = TopAdsEditCostShopActivity.createIntent(getActivity(), String.valueOf(ad.getId()));
+        }else{
+            intent = TopAdsEditCostShopActivity.createIntent(getActivity(), adId);
+        }
+        startActivity(intent);
     }
 }

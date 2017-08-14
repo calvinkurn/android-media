@@ -18,7 +18,7 @@ import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditProductMain
 public class TopAdsEditProductMainPageActivity extends BaseSimpleActivity {
 
     public static Intent createIntent(Context context, ProductAd productAd, String adId){
-        Intent intent = new Intent(context, TopAdsEditGroupMainPageActivity.class);
+        Intent intent = new Intent(context, TopAdsEditProductMainPageActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, productAd);
         return intent;

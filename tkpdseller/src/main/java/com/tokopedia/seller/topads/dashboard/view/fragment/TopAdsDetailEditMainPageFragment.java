@@ -4,7 +4,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
@@ -29,24 +29,27 @@ public abstract class TopAdsDetailEditMainPageFragment<V extends Ad> extends Top
     @Override
     protected void setViewListener() {
         super.setViewListener();
-
         cost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId())));
+                onCostClicked();
             }
         });
         schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TopAdsEditScheduleExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId())));
+                onScheduleClicked();
             }
         });
     }
 
+    protected abstract void onScheduleClicked();
+
+    protected abstract void onCostClicked();
+
     @Override
     protected void updateMainView(V ad) {
-        cost.setTitle(ad.getPriceBidFmt());
+        cost.setContent(ad.getPriceBidFmt());
         if (TextUtils.isEmpty(ad.getEndTime())) {
             schedule.setContent(ad.getEndDate());
         } else {

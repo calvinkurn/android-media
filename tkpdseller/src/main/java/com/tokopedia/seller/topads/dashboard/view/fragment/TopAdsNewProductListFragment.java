@@ -59,6 +59,11 @@ public abstract class TopAdsNewProductListFragment extends BaseListFragment<TopA
     }
 
     @Override
+    protected void searchForPage(int page) {
+        populateView(adapter.getData());
+    }
+
+    @Override
     protected void setViewListener() {
         super.setViewListener();
         addProduct.setOnClickListener(new View.OnClickListener() {
@@ -86,11 +91,6 @@ public abstract class TopAdsNewProductListFragment extends BaseListFragment<TopA
 
     protected void hideLoading() {
         progressDialog.dismiss();
-    }
-
-    @Override
-    protected void searchData() {
-        populateView(adapter.getData());
     }
 
     @Override

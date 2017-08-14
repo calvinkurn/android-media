@@ -1,16 +1,20 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleProductActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailPresenterImpl;
@@ -66,6 +70,28 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
                 startActivity(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId())));
             }
         });
+    }
+
+    @Override
+    protected void onScheduleClicked() {
+        Intent intent;
+        if(ad!= null) {
+            intent = TopAdsEditScheduleExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()));
+        }else{
+            intent = TopAdsEditScheduleExistingGroupActivity.createIntent(getActivity(), adId);
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onCostClicked() {
+        Intent intent;
+        if(ad!= null) {
+            intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()));
+        }else{
+            intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), adId);
+        }
+        startActivity(intent);
     }
 
     @Override

@@ -22,7 +22,7 @@
                 app:content_color="@color/tkpd_main_green"
                 app:content="@string/top_ads_keyword_add" />
 
-            <include layout="@layout/include_separator_horizontal"/>
+            <include layout="@layout/partial_separator_horizontal"/>
 
             <com.tokopedia.seller.lib.widget.LabelView
                 android:id="@+id/name"
@@ -33,7 +33,7 @@
                 app:content_color="@color/tkpd_main_green"
                 app:title="@string/label_top_ads_group_name" />
 
-            <include layout="@layout/include_separator_horizontal"/>
+            <include layout="@layout/partial_separator_horizontal"/>
 
             <include layout="@layout/include_top_ads_edit_main_page" />
         </LinearLayout>
