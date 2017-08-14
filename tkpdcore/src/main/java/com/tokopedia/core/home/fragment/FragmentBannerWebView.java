@@ -121,14 +121,15 @@ public class FragmentBannerWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            if (((IDigitalModuleRouter) getActivity().getApplication())
-                    .isSupportedDelegateDeepLink(url)) {
-                ((IDigitalModuleRouter) getActivity().getApplication())
-                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-                return true;
+        if (getActivity() != null && getActivity().getApplication() != null)
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                if (((IDigitalModuleRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(url)) {
+                    ((IDigitalModuleRouter) getActivity().getApplication())
+                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                    return true;
+                }
             }
-        }
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
 
