@@ -34,6 +34,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.gcm.IFCMInstanceIDService;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -756,6 +757,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 presenter.processResultTalk(resultCode, data);
                 break;
             case REQUEST_CODE_LOGIN:
+                if (SessionHandler.isV4Login(getActivity())){
+                    ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(getActivity()));
+                }
                 videoDescriptionLayout.refreshVideo();
                 presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;
@@ -888,7 +892,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void actionSuccessAddFavoriteShop(String shopId) {
-        ReactUtils.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+        if (productData.getShopInfo().getShopAlreadyFavorited() == 1) {
+            productData.getShopInfo().setShopAlreadyFavorited(0);
+            ReactUtils.sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+        } else {
+            productData.getShopInfo().setShopAlreadyFavorited(1);
+            ReactUtils.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+        }
     }
 
     private void destroyVideoLayout() {
