@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.edit.data.source;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.edit.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.edit.data.source.cache.ShopInfoCache;
 import com.tokopedia.seller.product.edit.data.source.cloud.ShopInfoCloud;
 

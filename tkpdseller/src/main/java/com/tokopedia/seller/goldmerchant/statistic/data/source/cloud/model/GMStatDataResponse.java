@@ -9,7 +9,7 @@ import java.util.List;
  * Created by normansyahputa on 7/20/17.
  */
 
-public class DataResponse<T> {
+public class GMStatDataResponse<T> {
     @SerializedName("cells")
     @Expose
     private List<T> cells = null;

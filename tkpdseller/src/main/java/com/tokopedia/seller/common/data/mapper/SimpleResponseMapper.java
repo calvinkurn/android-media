@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.data.mapper;
+package com.tokopedia.seller.common.data.mapper;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -7,7 +7,7 @@ import rx.functions.Func1;
  * Created by Hendry on 4/21/2017.
  */
 
-public class SimpleDataResponseMapper<T> implements Func1<Response<T>, T> {
+public class SimpleResponseMapper<T> implements Func1<Response<T>, T> {
     @Override
     public T call(Response<T> dataResponseResponse) {
         return mappingResponse(dataResponseResponse);

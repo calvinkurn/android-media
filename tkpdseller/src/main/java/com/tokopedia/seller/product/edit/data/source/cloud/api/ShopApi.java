@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 
 import java.util.Map;
 

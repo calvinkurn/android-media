@@ -21,7 +21,10 @@ import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
+import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantUseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +38,7 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 
 public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAddPresenter<T> {
-    public static final int TIME_DELAY = 500;
+    private static final int TIME_DELAY = 500;
 
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
@@ -47,19 +50,22 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     private Subscription subscriptionDebounceCategoryRecomm;
     private CatalogQueryListener getCatalogListener;
     private Subscription subscriptionDebounceCatalog;
+    private final FetchProductVariantUseCase fetchProductVariantUseCase;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
                                    ProductScoringUseCase productScoringUseCase,
                                    AddProductShopInfoUseCase addProductShopInfoUseCase,
-                                   FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase) {
+                                   FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase,
+                                   FetchProductVariantUseCase fetchProductVariantUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.fetchCatalogDataUseCase = fetchCatalogDataUseCase;
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
         this.addProductShopInfoUseCase = addProductShopInfoUseCase;
         this.fetchCategoryDisplayUseCase = fetchCategoryDisplayUseCase;
+        this.fetchProductVariantUseCase = fetchProductVariantUseCase;
     }
 
     @Override
@@ -70,7 +76,30 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     @Override
     public void fetchProductVariant(long categoryId) {
-        //TODO hendry
+        RequestParams requestParam = FetchProductVariantUseCase.generateParam(categoryId);
+        fetchProductVariantUseCase.execute(requestParam, getProductVariantSubscriber());
+    }
+
+    private Subscriber<List<ProductVariantModel>> getProductVariantSubscriber() {
+        return new Subscriber<List<ProductVariantModel>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().onErrorGetProductVariant(e);
+            }
+
+            @Override
+            public void onNext(List<ProductVariantModel> s) {
+                getView().onSuccessGetProductVariant(s);
+            }
+        };
     }
 
     private class FetchCategoryDisplaySubscriber extends Subscriber<List<String>> {
@@ -105,7 +134,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         return SaveDraftProductUseCase.generateUploadProductParam(domainModel, getProductDraftId(), isUploading);
     }
 
-    protected long getProductDraftId(){
+    private long getProductDraftId(){
         return getView().getProductDraftId();
     }
 
@@ -292,7 +321,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         productScoringUseCase.execute(requestParams, getSubscriberProductScoring());
     }
 
-    public Subscriber<DataScoringProductView> getSubscriberProductScoring() {
+    private Subscriber<DataScoringProductView> getSubscriberProductScoring() {
         return new Subscriber<DataScoringProductView>() {
             @Override
             public void onCompleted() {
@@ -325,13 +354,13 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         void getQuery(CatalogQuery catalogQuery);
     }
 
-    public static class CatalogQuery {
+    private static class CatalogQuery {
         String keyword;
         long categoryId;
         int start;
         int row;
 
-        public CatalogQuery(String keyword, long categoryId, int start, int row) {
+        private CatalogQuery(String keyword, long categoryId, int start, int row) {
             this.keyword = keyword;
             this.categoryId = categoryId;
             this.start = start;
@@ -342,7 +371,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             return categoryId;
         }
 
-        public int getRow() {
+        private int getRow() {
             return row;
         }
 
@@ -393,6 +422,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         addProductShopInfoUseCase.unsubscribe();
         fetchCategoryDisplayUseCase.unsubscribe();
         productScoringUseCase.unsubscribe();
+        fetchProductVariantUseCase.unsubscribe();
 
         if (subscriptionDebounceCategoryRecomm != null) {
             subscriptionDebounceCategoryRecomm.unsubscribe();

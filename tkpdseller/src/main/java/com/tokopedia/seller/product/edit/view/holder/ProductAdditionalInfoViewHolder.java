@@ -27,6 +27,7 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public static final int INACTIVE_PREORDER = -1;
 
+    public static final String SAVED_VARIANT = "svd_var";
+
     private TextInputLayout descriptionTextInputLayout;
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
@@ -51,6 +54,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private LabelSwitch shareLabelSwitch;
     private Listener listener;
     private boolean goldMerchant;
+
+    private ArrayList<ProductVariantModel> productVariantModelList;
+
     /**
      * this prevent duplication at videoIdList;
      */
@@ -200,6 +206,15 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
+    public void onSuccessGetProductVariant(List<ProductVariantModel> productVariantModelList){
+        if (productVariantModelList == null || productVariantModelList.size() == 0) {
+            variantLabelView.setVisibility(View.GONE);
+        } else {
+            variantLabelView.setVisibility(View.VISIBLE);
+        }
+        this.productVariantModelList = (ArrayList<ProductVariantModel>) productVariantModelList;
+    }
+
     public int getPreOrderValue() {
         if (preOrderExpandableOptionSwitch.isExpanded()) {
             return (int) preOrderSpinnerCounterInputView.getCounterValue();
@@ -248,6 +263,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<String>(videoIdList));
+        savedInstanceState.putParcelableArrayList(SAVED_VARIANT, productVariantModelList);
     }
 
     @Override
@@ -258,6 +274,12 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         ArrayList<String> stringArrayList = savedInstanceState.getStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK);
         if (stringArrayList != null) {
             setVideoIdList(stringArrayList);
+        }
+        this.productVariantModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT);
+        if (productVariantModelList!= null && productVariantModelList.size() > 0) {
+            variantLabelView.setVisibility(View.VISIBLE);
+        } else {
+            variantLabelView.setVisibility(View.GONE);
         }
     }
 

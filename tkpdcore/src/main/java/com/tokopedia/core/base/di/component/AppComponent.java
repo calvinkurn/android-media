@@ -18,6 +18,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
@@ -61,6 +62,9 @@ public interface AppComponent {
 
     @MerlinQualifier
     Retrofit merlinRetrofit();
+
+    @TomeQualifier
+    Retrofit tomeRetrofit();
 
     @MojitoQualifier
     Retrofit mojitoRetrofit();

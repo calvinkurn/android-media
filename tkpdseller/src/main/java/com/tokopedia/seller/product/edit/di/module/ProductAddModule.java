@@ -9,9 +9,10 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.edit.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.edit.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.repository.CategoryRecommRepositoryImpl;
 import com.tokopedia.seller.product.category.data.repository.CategoryRepositoryImpl;
@@ -46,6 +47,11 @@ import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryDisp
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenterImpl;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
+import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantUseCase;
+import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
+import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -65,10 +71,11 @@ public class ProductAddModule {
                                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
                                                    ProductScoringUseCase productScoringUseCase,
                                                    AddProductShopInfoUseCase addProductShopInfoUseCase,
-                                                   FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase){
+                                                   FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase,
+                                                   FetchProductVariantUseCase fetchProductVariantUseCase){
         return new ProductAddPresenterImpl(saveDraftProductUseCase,
                 fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase,
-                addProductShopInfoUseCase, fetchCategoryDisplayUseCase);
+                addProductShopInfoUseCase, fetchCategoryDisplayUseCase, fetchProductVariantUseCase );
     }
 
     @ProductAddScope
@@ -161,6 +168,18 @@ public class ProductAddModule {
     @Provides
     SimpleDataResponseMapper<ShopModel> provideShopModelMapper(){
         return new SimpleDataResponseMapper<>();
+    }
+
+    @ProductAddScope
+    @Provides
+    ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
+        return new ProductVariantRepositoryImpl(productVariantDataSource);
+    }
+
+    @ProductAddScope
+    @Provides
+    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeApi.class);
     }
 
 }

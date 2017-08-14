@@ -6,7 +6,7 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.edit.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
