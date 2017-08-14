@@ -13,7 +13,7 @@ public class GetProductTable {
 
     @SerializedName("cells")
     @Expose
-    private List<Cell> cells = null;
+    private List<Cell> cells;
     @SerializedName("total_cell_count")
     @Expose
     private long totalCellCount;

@@ -1,22 +1,20 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.model.empty.GMEmptyModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 
 import java.util.Calendar;
 import java.util.List;
@@ -34,74 +32,33 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
     private GMStatMarketInsightUseCase marketInsightUseCase;
     private GMStatGetBuyerGraphUseCase buyerGraphUseCase;
     private GMStatGetPopularProductUseCase popularProductUseCase;
-    private GMStatGetTransactionGraphUseCase transactionGraphUseCase;
+    private GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase;
     private GMStatGetProductGraphUseCase productGraphUseCase;
-    private GMStatEmptyUseCase gmStatEmptyUseCase;
+    private AddProductShopInfoUseCase shopInfoUseCase;
+
+    private boolean isGoldMerchant;
+    private boolean hasSuccessGetGoldMerchant;
 
     public GMDashboardPresenterImpl(
-            GMStatMarketInsightUseCase marketInsightUseCase,
+            GMStatMarketInsightUseCase marketInsightUseCase ,
             GMStatGetBuyerGraphUseCase buyerGraphUseCase,
             GMStatGetPopularProductUseCase popularProductUseCase,
-            GMStatGetTransactionGraphUseCase transactionGraphUseCase,
+            GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
             GMStatGetProductGraphUseCase productGraphUseCase,
-            GMStatEmptyUseCase gmStatEmptyUseCase) {
+            AddProductShopInfoUseCase shopInfoUseCase) {
         this.marketInsightUseCase = marketInsightUseCase;
         this.buyerGraphUseCase = buyerGraphUseCase;
         this.popularProductUseCase = popularProductUseCase;
-        this.transactionGraphUseCase = transactionGraphUseCase;
+        this.gmStatGetTransactionGraphUseCase = gmStatGetTransactionGraphUseCase;
         this.productGraphUseCase = productGraphUseCase;
-        this.gmStatEmptyUseCase = gmStatEmptyUseCase;
+        this.shopInfoUseCase = shopInfoUseCase;
     }
 
-    public void getPopularProduct() {
-        Calendar dayOne = Calendar.getInstance();
-        dayOne.add(Calendar.DATE, -30);
-        Calendar yesterday = Calendar.getInstance();
-        yesterday.add(Calendar.DATE, -1);
-        RequestParams popularParam = GMStatGetPopularProductUseCase.createRequestParam(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
-        popularProductUseCase.execute(popularParam, new Subscriber<GetPopularProduct>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showMessageError(e);
-            }
-
-            @Override
-            public void onNext(GetPopularProduct getPopularProduct) {
-                getView().onSuccessPopularProduct(getPopularProduct);
-            }
-        });
-    }
-
-    public void getProductGraph(long startDate, long endDate) {
-        RequestParams productParam = GMStatGetProductGraphUseCase.createRequestParam(startDate, endDate);
-        productGraphUseCase.execute(productParam, new Subscriber<GetProductGraph>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showMessageError(e);
-            }
-
-            @Override
-            public void onNext(GetProductGraph getProductGraph) {
-                getView().onSuccessProductnGraph(getProductGraph);
-            }
-        });
-    }
-
-    @Override
-    public void fetchData(long starDate, long endDate) {
+    private void fetchContentData(long starDate, long endDate) {
         getProductGraph(starDate, endDate);
+
         RequestParams transactionParam = GMStatGetTransactionGraphUseCase.createRequestParam(starDate, endDate);
-        transactionGraphUseCase.execute(transactionParam, new Subscriber<GMTransactionGraphMergeModel>() {
+        gmStatGetTransactionGraphUseCase.execute(transactionParam, new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
             public void onCompleted() {
 
@@ -109,16 +66,16 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-                showMessageError(e);
+                if (isViewAttached()) {
+                    getView().onErrorLoadTransactionGraph(e);
+                }
             }
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                getView().onSuccessTransactionGraph(mergeModel);
+                getView().onSuccessLoadTransactionGraph(mergeModel, isGoldMerchant);
             }
         });
-
-        getPopularProduct();
 
         RequestParams buyerParam = GMStatGetBuyerGraphUseCase.createRequestParam(starDate, endDate);
         buyerGraphUseCase.execute(buyerParam, new Subscriber<GetBuyerGraph>() {
@@ -129,16 +86,86 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-                showMessageError(e);
+                if (isViewAttached()) {
+                    getView().onErrorLoadBuyerGraph(e);
+                }
             }
 
             @Override
             public void onNext(GetBuyerGraph getBuyerGraph) {
-                getView().onSuccessBuyerGraph(getBuyerGraph);
+                getView().onSuccessLoadBuyerGraph(getBuyerGraph);
             }
         });
 
-        marketInsightUseCase.execute(RequestParams.EMPTY, new Subscriber<KeywordModel>() {
+        if (isGoldMerchant) {
+            marketInsightUseCase.execute(RequestParams.EMPTY, new Subscriber<KeywordModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (isViewAttached()) {
+                        getView().onErrorLoadMarketInsight(e);
+                    }
+                }
+
+                @Override
+                public void onNext(KeywordModel keywordModel) {
+                    GetShopCategory getShopCategory = keywordModel.getShopCategory();
+                    if (getShopCategory == null
+                            || getShopCategory.getCategoryIdList() == null
+                            || getShopCategory.getCategoryIdList().isEmpty()) {
+                        getView().onGetShopCategoryEmpty(isGoldMerchant);
+                    } else {
+                        getView().onSuccessGetKeyword(keywordModel.getKeywords(), isGoldMerchant);
+                    }
+                    onSuccessGetCategory(keywordModel.getCategoryName());
+                }
+            });
+        } else {
+            getView().onGetShopCategoryEmpty(isGoldMerchant);
+        }
+
+        getPopularProduct();
+    }
+
+    @Override
+    public void fetchData(final long startDate, final long endDate) {
+        if (hasSuccessGetGoldMerchant) {
+            fetchContentData(startDate, endDate);
+        } else {
+            shopInfoUseCase.execute(null, new Subscriber<AddProductShopInfoDomainModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    getView().onErrorLoadBuyerGraph(e);
+                    getView().onErrorLoadMarketInsight(e);
+                    getView().onErrorLoadPopularProduct(e);
+                    getView().onErrorLoadTransactionGraph(e);
+                    getView().onErrorLoadPopularProduct(e);
+                    getView().onErrorLoadShopInfo(e);
+                }
+
+                @Override
+                public void onNext(AddProductShopInfoDomainModel addProductShopInfoDomainModel) {
+                    hasSuccessGetGoldMerchant = true;
+                    isGoldMerchant = addProductShopInfoDomainModel.isGoldMerchant();
+                    getView().onSuccessLoadShopInfo(isGoldMerchant);
+                    fetchContentData(startDate, endDate);
+                }
+            });
+        }
+    }
+
+    private void getProductGraph(long startDate, long endDate) {
+        RequestParams productParam = GMStatGetProductGraphUseCase.createRequestParam(startDate, endDate);
+        productGraphUseCase.execute(productParam, new Subscriber<GetProductGraph>() {
             @Override
             public void onCompleted() {
 
@@ -146,28 +173,42 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-                showMessageError(e);
+                if (isViewAttached()) {
+                    getView().onErrorLoadProductGraph(e);
+                }
             }
 
             @Override
-            public void onNext(KeywordModel keywordModel) {
-                onSuccessGetShopCategory(keywordModel.getShopCategory());
-                onSuccessGetKeyword(keywordModel.getKeywords());
-                onSuccessGetCategory(keywordModel.getCategoryName());
+            public void onNext(GetProductGraph getProductGraph) {
+                getView().onSuccessLoadProductGraph(getProductGraph);
             }
         });
     }
 
-    private void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-        if (getShopCategory == null
-                || getShopCategory.getShopCategory() == null
-                || getShopCategory.getShopCategory().isEmpty()) {
-            getView().onGetShopCategoryEmpty();
-        }
-    }
+    private void getPopularProduct() {
+        Calendar dayOne = Calendar.getInstance();
+        dayOne.add(Calendar.DATE, -GMStatConstant.POPULAR_PRODUCT_DATE_RANGE);
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DATE, GMStatConstant.MAX_DAY_FROM_CURRENT_DATE);
+        RequestParams popularParam = GMStatGetPopularProductUseCase.createRequestParam(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
+        popularProductUseCase.execute(popularParam, new Subscriber<GetPopularProduct>() {
+            @Override
+            public void onCompleted() {
 
-    private void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-        getView().onSuccessGetKeyword(getKeywords);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorLoadPopularProduct(e);
+                }
+            }
+
+            @Override
+            public void onNext(GetPopularProduct getPopularProduct) {
+                getView().onSuccessLoadPopularProduct(getPopularProduct);
+            }
+        });
     }
 
     private void onSuccessGetCategory(List<String> categoryNameList) {
@@ -178,46 +219,14 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         getView().onSuccessGetCategory(categoryName);
     }
 
-    private void showMessageError(Throwable e) {
-        gmStatEmptyUseCase.execute(RequestParams.EMPTY, new Subscriber<GMEmptyModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GMEmptyModel gmEmptyModel) {
-                if (isViewAttached()) {
-                    getView().onSuccessProductnGraph(gmEmptyModel.productGraph);
-                    getView().onSuccessTransactionGraph(gmEmptyModel.transactionGraph);
-                    getView().onSuccessBuyerGraph(gmEmptyModel.buyerGraph);
-                    getView().onSuccessPopularProduct(gmEmptyModel.popularProduct);
-
-                    if (gmEmptyModel.keywordModel.getShopCategory() == null
-                            || gmEmptyModel.keywordModel.getShopCategory().getShopCategory() == null
-                            || gmEmptyModel.keywordModel.getShopCategory().getShopCategory().isEmpty()) {
-                        onSuccessGetShopCategory(gmEmptyModel.keywordModel.getShopCategory());
-                        onSuccessGetKeyword(gmEmptyModel.keywordModel.getKeywords());
-                    }
-
-                    getView().showSnackbarRetry();
-                }
-            }
-        });
-    }
-
     @Override
     public void detachView() {
         super.detachView();
         buyerGraphUseCase.unsubscribe();
-        transactionGraphUseCase.unsubscribe();
+        gmStatGetTransactionGraphUseCase.unsubscribe();
         productGraphUseCase.unsubscribe();
         popularProductUseCase.unsubscribe();
         marketInsightUseCase.unsubscribe();
+        shopInfoUseCase.unsubscribe();
     }
 }

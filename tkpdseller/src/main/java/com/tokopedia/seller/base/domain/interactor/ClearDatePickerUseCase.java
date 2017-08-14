@@ -33,8 +33,7 @@ public class ClearDatePickerUseCase extends CompositeUseCase<Boolean> {
     }
 
     public static RequestParams createRequestParams(){
-        RequestParams requestParams = RequestParams.create();
-        return requestParams;
+        return RequestParams.EMPTY;
     }
 
 }

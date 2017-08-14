@@ -14,13 +14,13 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.lib.williamchart.model.TooltipModel;
-import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.lib.williamchart.tooltip.TooltipWithDynamicPointer;
+import com.tokopedia.seller.common.williamchart.model.TooltipModel;
+import com.tokopedia.seller.common.williamchart.renderer.XRenderer;
+import com.tokopedia.seller.common.williamchart.tooltip.TooltipWithDynamicPointer;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
-import com.tokopedia.seller.lib.williamchart.util.TopAdsBaseWilliamChartConfig;
-import com.tokopedia.seller.lib.williamchart.util.TopAdsTooltipConfiguration;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+import com.tokopedia.seller.common.williamchart.util.TopAdsBaseWilliamChartConfig;
+import com.tokopedia.seller.common.williamchart.util.TopAdsTooltipConfiguration;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticViewListener;
@@ -154,11 +154,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                     .setDotDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.oval_2_copy_6))
                     .buildChart(contentGraph);
         } catch (Exception e) {
-            if (e.getMessage() != null) {
-                Log.e("TopAdsStatisticFragment", e.getMessage());
-            } else {
-                Log.e("TopAdsStatisticFragment", "Null Pointer");
-            }
+
         }
     }
 

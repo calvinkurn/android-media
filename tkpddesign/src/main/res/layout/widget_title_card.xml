@@ -14,29 +14,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
+
         <LinearLayout
             android:id="@+id/vg_title_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_height="?attr/actionBarSize"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginRight="@dimen/margin_sm"
-            android:layout_marginTop="@dimen/margin_small" android:orientation="horizontal">
+            android:orientation="horizontal">
+
             <ImageView
-                android:id="@+id/iv_icon" android:layout_width="24dp" android:layout_height="24dp"
-                android:layout_marginRight="8dp" android:visibility="gone"
-                tools:src="@drawable/ic_empty_state" tools:visibility="visible" />
+                android:id="@+id/iv_icon"
+                android:layout_width="@dimen/image_width_m"
+                android:layout_height="@dimen/image_width_m"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/margin_ms"
+                android:layout_marginRight="@dimen/margin_ms"
+                android:visibility="gone"
+                tools:src="@drawable/ic_empty_state"
+                tools:visibility="visible" />
+
             <TextView
                 android:id="@+id/tv_title"
                 style="@style/TextView.Subheading"
-                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                tools:text="Title"/>
+                android:maxLines="1"
+                tools:text="Title" />
+
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/iv_arrow_down"
-                android:layout_width="15dp"
-                android:layout_height="8dp"
+                android:layout_width="@dimen/image_width_s"
+                android:layout_height="@dimen/image_width_xs"
                 android:layout_gravity="center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"

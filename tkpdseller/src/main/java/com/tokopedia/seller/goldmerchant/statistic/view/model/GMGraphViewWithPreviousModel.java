@@ -7,7 +7,6 @@ import java.util.List;
  */
 
 public class GMGraphViewWithPreviousModel extends GMGraphViewModel {
-    public boolean isCompare;
     public List<Integer> pValues;
     public List<Integer> pDates;
     public GMDateRangeDateViewModel pDateRangeModel;

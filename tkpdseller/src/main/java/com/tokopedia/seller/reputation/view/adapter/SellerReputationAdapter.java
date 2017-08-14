@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +68,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case ReputationReviewModel.VIEW_DEPOSIT:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_seller_reputation, viewGroup, false);
+                        .inflate(R.layout.item_seller_reputation, viewGroup, false);
                 return new ViewHolder(itemLayoutView);
             case SetDateHeaderModel.TYPE:
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
@@ -119,7 +118,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             if (list.get(position) != null && list.get(position) instanceof ReputationReviewModel) {
                 ReputationReviewModel reputationReviewModel =
                         (ReputationReviewModel) list.get(position);
-                Log.d(TAG, String.format("bindDeposit %d %s", position, reputationReviewModel.getData().toString()));
                 ReputationReviewModel.Data data = reputationReviewModel.getData();
                 holder.date.setText(data.getDate());
                 String information = data.getInformation();

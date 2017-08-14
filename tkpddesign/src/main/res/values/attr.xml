@@ -72,17 +72,27 @@
     </declare-styleable>
 
     <declare-styleable name="TitleCardView">
-        <attr name="title_card_view_title" format="string" />
-        <attr name="title_size" format="dimension" />
-        <attr name="icon" format="reference" />
-        <attr name="loading_layout" format="reference" />
-        <attr name="empty_layout" format="reference" />
-        <attr name="use_gradient_title_loading" format="boolean" />
+        <attr name="tcv_title" format="string" />
+        <attr name="tcv_title_text_size" format="dimension" />
+        <attr name="tcv_icon" format="reference" />
+        <attr name="tcv_loading_layout" format="reference" />
+        <attr name="tcv_empty_layout" format="reference" />
+        <attr name="tcv_error_layout" format="reference" />
+        <attr name="tcv_use_gradient_title" format="boolean" />
+        <attr name="tcv_title_height" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="LoadingStateView">
         <attr name="lsv_loading_layout" format="reference" />
         <attr name="lsv_empty_layout" format="reference" />
+        <attr name="lsv_error_layout" format="reference" />
         <attr name="lsv_state" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="EmptyCardContentView">
+        <attr name="eccv_icon" format="reference" />
+        <attr name="eccv_title_text" format="string" />
+        <attr name="eccv_content_text" format="string" />
+        <attr name="eccv_action_text" format="string" />
     </declare-styleable>
 </resources>

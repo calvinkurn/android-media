@@ -110,12 +110,9 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     protected void onFirstTimeLaunched() {
-        Log.d(TAG, "onFirstTimeLaunched");
         if (productData != null) {
-            Log.d(TAG, "productData != null");
             onProductDetailLoaded(productData);
         } else {
-            Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
         }

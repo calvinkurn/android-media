@@ -1,23 +1,22 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.adapter;
 
 import android.support.v7.widget.AppCompatImageView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItem;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItem;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 
 import java.util.List;
 
 /**
  * @author normansyahputa on 7/17/17.
  */
-public class BottomSheetItemAdapter extends com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemAdapter {
+public class BottomSheetItemAdapter extends com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemAdapter {
     public static final int TYPE_CHECKED_ITEM = 3;
 
     public BottomSheetItemAdapter(List<BottomSheetItem> items, int mode, BottomSheetItemClickListener listener) {

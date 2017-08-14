@@ -3,32 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
     android:minHeight="50dp"
+    android:orientation="horizontal"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true">
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <TextView
         android:id="@+id/item_transaction_table_left"
+        style="@style/TextView.Body1.BlackSecondary"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textColor="@color/black_54"
-        android:textSize="14sp"
-        android:textStyle="normal"
         tools:text="test" />
 
     <TextView
         android:id="@+id/item_transaction_table_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        style="@style/TextView.Body1"
         android:lineSpacingExtra="-2sp"
-        android:textColor="@color/black_70"
-        android:textSize="14sp"
-        android:textStyle="normal"
         tools:text="test 123" />
 </LinearLayout>

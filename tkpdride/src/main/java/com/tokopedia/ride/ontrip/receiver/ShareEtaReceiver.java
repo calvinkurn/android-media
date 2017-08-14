@@ -3,12 +3,8 @@ package com.tokopedia.ride.ontrip.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.ride.common.configuration.RideStatus;
-import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 
 /**

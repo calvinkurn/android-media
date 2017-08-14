@@ -8,10 +8,19 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 
 public class GMStatisticTransactionTableModel implements ItemType {
     public static final int TYPE = 199349;
-
+    public String productName;
     private int deliveredAmount;
-    private int deliveredSum;
+    private int transSum;
     private int orderSum;
+    private int productId;
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
     public int getDeliveredAmount() {
         return deliveredAmount;
@@ -21,12 +30,12 @@ public class GMStatisticTransactionTableModel implements ItemType {
         this.deliveredAmount = deliveredAmount;
     }
 
-    public int getDeliveredSum() {
-        return deliveredSum;
+    public int getTransSum() {
+        return transSum;
     }
 
-    public void setDeliveredSum(int deliveredSum) {
-        this.deliveredSum = deliveredSum;
+    public void setTransSum(int transSum) {
+        this.transSum = transSum;
     }
 
     public int getOrderSum() {
@@ -36,8 +45,6 @@ public class GMStatisticTransactionTableModel implements ItemType {
     public void setOrderSum(int orderSum) {
         this.orderSum = orderSum;
     }
-
-    public String productName;
 
     @Override
     public int getType() {

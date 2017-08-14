@@ -13,20 +13,20 @@ public class GetShopCategory {
 
     @SerializedName("shop_category")
     @Expose
-    private List<Integer> shopCategory = new ArrayList<>();
+    private List<Integer> categoryIdList = new ArrayList<>();
 
     /**
-     * @return The shopCategory
+     * @return The categoryIdList
      */
-    public List<Integer> getShopCategory() {
-        return shopCategory;
+    public List<Integer> getCategoryIdList() {
+        return categoryIdList;
     }
 
     /**
-     * @param shopCategory The ShopCategory
+     * @param categoryIdList The ShopCategory
      */
-    public void setShopCategory(List<Integer> shopCategory) {
-        this.shopCategory = shopCategory;
+    public void setCategoryIdList(List<Integer> categoryIdList) {
+        this.categoryIdList = categoryIdList;
     }
 
 }

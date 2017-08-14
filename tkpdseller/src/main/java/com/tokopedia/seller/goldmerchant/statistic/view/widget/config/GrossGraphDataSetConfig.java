@@ -2,7 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
 
 import android.graphics.Color;
 
-import com.tokopedia.seller.lib.williamchart.util.DataSetConfiguration;
+import com.tokopedia.seller.common.williamchart.util.DataSetConfiguration;
 
 /**
  * Created by normansyahputa on 7/7/17.

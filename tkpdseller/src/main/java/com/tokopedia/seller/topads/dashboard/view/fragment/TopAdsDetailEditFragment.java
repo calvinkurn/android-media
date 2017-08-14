@@ -442,7 +442,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     protected void showSnackBarError(String errorMessage) {
         if (!TextUtils.isEmpty(errorMessage)) {
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
         }

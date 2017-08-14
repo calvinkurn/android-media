@@ -68,12 +68,14 @@ import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
-import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
+import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
+import com.tokopedia.ride.ontrip.di.OnTripComponent;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
@@ -81,11 +83,14 @@ import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
+import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 import com.tokopedia.ride.ontrip.view.SendCancelReasonActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -116,13 +121,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";
 
+    @Inject
+    OnTripMapPresenter presenter;
 
-    OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
     private Marker mDriverMarker;
     private String requestId;
     private RideRequest rideRequest;
+    private boolean isOpenInterruptWebviewDialog;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -247,8 +254,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         // Gets an instance of the NotificationManager service
         mNotifyMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-
-        presenter = OnTripDependencyInjection.createOnTripMapPresenter(getActivity());
         presenter.attachView(this);
 
         //finish activity if fragment is recreated
@@ -463,15 +468,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void openInterruptConfirmationWebView(String tosUrl) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+            isOpenInterruptWebviewDialog = true;
         }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
     }
 
     @Override
@@ -488,6 +496,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_INTERRUPT_DIALOG:
+                isOpenInterruptWebviewDialog = false;
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
                     String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
@@ -502,6 +511,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 }
                 break;
             case REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG:
+                isOpenInterruptWebviewDialog = false;
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(InterruptDialogFragment.EXTRA_VALUE);
                     String key = data.getStringExtra(InterruptDialogFragment.EXTRA_KEY);
@@ -1327,11 +1337,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     private boolean checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        return false;
+        return ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -1374,15 +1381,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void openInterruptConfirmationDialog(String tosUrl, String key, String value) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            isOpenInterruptWebviewDialog = true;
         }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
     }
 
     @Override
@@ -1391,4 +1401,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             mapConfiguration.setDefaultLocation(latitude, longitude);
         }
     }
+
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        OnTripComponent onTripComponent = DaggerOnTripComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        onTripComponent.inject(this);
+    }
+
 }

@@ -49,9 +49,6 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel2(dateGraph);
         GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel2(getTransactionGraph.getPDateGraph());
 
-        GoldMerchantDateUtils.dumpDate(gmDateRangeDateViewModel.getStartDate(), true);
-        GoldMerchantDateUtils.dumpDate(previousGmDateRangeDateViewModel.getStartDate(), true);
-
         GMTransactionGraphViewModel gmTransactionGraphViewModel
                 = new GMTransactionGraphViewModel();
 
@@ -187,10 +184,9 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         gmTopAdsAmountViewModel.amount = getTransactionGraph.getCpcProduct() + getTransactionGraph.getCpcShop();
         long previousAmount = getTransactionGraph.getpCpcProduct() + getTransactionGraph.getpCpcShop();
         try {
-            gmTopAdsAmountViewModel.percentage = gmTopAdsAmountViewModel.amount - previousAmount / gmTopAdsAmountViewModel.amount;
+            gmTopAdsAmountViewModel.percentage = ( gmTopAdsAmountViewModel.amount - previousAmount) / previousAmount;
         } catch (Exception e) {
-            Log.e(TAG, String.format("amount %s previous amount %s", Integer.toString(gmTopAdsAmountViewModel.amount), Long.toString(previousAmount)));
-            gmTopAdsAmountViewModel.percentage = -GMStatConstant.NO_DATA_AVAILABLE;
+            gmTopAdsAmountViewModel.percentage = GMStatConstant.NO_DATA_AVAILABLE;
         }
 
         return gmTopAdsAmountViewModel;

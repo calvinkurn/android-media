@@ -88,12 +88,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
         super.onActivityResult(requestCode, resultCode, intent);
         if (intent != null && requestCode == REQUEST_CODE_AD_EDIT &&
                 intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false)) {
-            if (startDate == null || endDate == null) {
-                return;
-            }
             setResultAdDetailChanged();
             if (intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)) {
                 adId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+            }
+            if (startDate == null || endDate == null) {
+                return;
             }
             refreshAd();
         }

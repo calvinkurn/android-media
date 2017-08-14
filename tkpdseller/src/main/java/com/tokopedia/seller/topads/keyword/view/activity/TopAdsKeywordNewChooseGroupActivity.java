@@ -49,6 +49,6 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
 
     @Override
     public AppComponent getComponent() {
-        return getComponent();
+        return getApplicationComponent();
     }
 }

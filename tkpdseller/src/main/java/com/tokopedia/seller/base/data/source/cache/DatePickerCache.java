@@ -63,10 +63,10 @@ public class DatePickerCache {
     }
 
     private void saveToCache(String key, String stringData) {
-        cacheManager.setKey(key);
-        cacheManager.setValue(stringData);
-        cacheManager.setCacheDuration(CACHE_TIMEOUT);
-        cacheManager.store();
+        cacheManager.setKey(key)
+                    .setValue(stringData)
+                    .setCacheDuration(CACHE_TIMEOUT)
+                    .store();
     }
 
     public Observable<Boolean> clearCache() {

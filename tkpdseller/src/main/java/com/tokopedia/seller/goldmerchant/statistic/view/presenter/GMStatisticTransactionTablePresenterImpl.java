@@ -1,7 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
@@ -21,9 +19,8 @@ import rx.Subscriber;
  */
 public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransactionTablePresenter {
     private static final String TAG = "GMStatisticTransactionT";
-    private GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase;
-
     private static final int DEFAULT_PAGE_SIZE = 20;
+    private GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase;
 
     public GMStatisticTransactionTablePresenterImpl(GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase) {
         this.gmStatGetTransactionTableUseCase = gmStatGetTransactionTableUseCase;
@@ -46,12 +43,13 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.getLocalizedMessage());
+                if (isViewAttached()) {
+                    getView().onLoadSearchError(e);
+                }
             }
 
             @Override
             public void onNext(GetTransactionTableModel getTransactionTable) {
-                Log.d(TAG, getTransactionTable.toString());
                 revealData(getTransactionTable, sortBy);
             }
         });
@@ -74,8 +72,9 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
                     = new GMStatisticTransactionTableModel();
             gmStatisticTransactionTableModel.productName = data.getProductProductName();
             gmStatisticTransactionTableModel.setDeliveredAmount(data.getDeliveredAmt());
-            gmStatisticTransactionTableModel.setDeliveredSum(data.getDeliveredSum());
+            gmStatisticTransactionTableModel.setTransSum(data.getTransSum());
             gmStatisticTransactionTableModel.setOrderSum(data.getOrderSum());
+            gmStatisticTransactionTableModel.setProductId(data.getProductProductId());
             gmStatisticTransactionTableModels.add(gmStatisticTransactionTableModel);
         }
         return gmStatisticTransactionTableModels;

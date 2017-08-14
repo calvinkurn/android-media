@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetAdapterBuilder;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemAdapter;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetMenuItem;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetAdapterBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemAdapter;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;

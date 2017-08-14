@@ -358,33 +358,32 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             return;
         }
 
-        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Map<String, Boolean>>() {
-                    @Override
-                    public void onCompleted() {
+        Subscriber<Map<String, Boolean>> subscriber = new Subscriber<Map<String, Boolean>>() {
+            @Override
+            public void onCompleted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onQueryComplete();
-                    }
+            @Override
+            public void onError(Throwable e) {
+                callback.onQueryComplete();
+            }
 
-                    @Override
-                    public void onNext(Map<String, Boolean> checkResultMap) {
-                        Log.d(TAG, "getProduct2 finishMojito");
-                        for (ProductItem item : productItems) {
-                            if (checkResultMap.get(item.getId()) != null) {
-                                item.setProductAlreadyWishlist(true);
-                            } else {
-                                item.setProductAlreadyWishlist(false);
-                            }
-                        }
-                        callback.onQueryComplete();
+            @Override
+            public void onNext(Map<String, Boolean> checkResultMap) {
+                Log.d(TAG, "getProduct2 finishMojito");
+                for (ProductItem item : productItems) {
+                    if (checkResultMap.get(item.getId()) != null) {
+                        item.setProductAlreadyWishlist(true);
+                    } else {
+                        item.setProductAlreadyWishlist(false);
                     }
-                });
+                }
+                callback.onQueryComplete();
+            }
+        };
+
+        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems, subscriber);
     }
 
     @Override

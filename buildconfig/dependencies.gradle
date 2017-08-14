@@ -7,7 +7,7 @@ ext {
     okHttpVersion = '3.8.0'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
-    deeplinkDispatchVersion = '3.0.0-rc1'
+    deeplinkDispatchVersion = '3.1.0'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -19,8 +19,10 @@ ext {
     tkpdPaymentVersion = '1.+'
     tkpdPdpVersion = '1.+'
     tkpdDesignVersion = '1.+'
+    tkpdFeedVersion = '1.+'
+    tkpdRideVersion = '1.+'
     compileSdkVersion = 24
-    minSdkVersion = 15
+    minSdkVersion = 16
     targetSdkVersion = 24
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
@@ -54,17 +56,18 @@ ext {
     ]
 
     playServicesDependencies = [
-            plus       : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base       : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing: "com.google.android.gms:play-services-appindexing:${playServiceVersion}",
-            analytics  : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            gcm        : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
-            firebase   : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location   : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps       : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth       : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places     : "com.google.android.gms:play-services-places:${playServiceVersion}",
-            mapsUtils  : "com.google.maps.android:android-maps-utils:0.4"
+            plus            : "com.google.android.gms:play-services-plus:${playServiceVersion}",
+            base            : "com.google.android.gms:play-services-base:${playServiceVersion}",
+            appIndexing     : "com.google.android.gms:play-services-appindexing:${playServiceVersion}",
+            analytics       : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            gcm             : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
+            firebase        : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            location        : "com.google.android.gms:play-services-location:${playServiceVersion}",
+            maps            : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth            : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places          : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils       : "com.google.maps.android:android-maps-utils:0.4",
+            remoteConfig    : "com.google.firebase:firebase-config:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [
@@ -92,7 +95,7 @@ ext {
     analyticsDependencies = [
             localytics : "com.localytics.android:library:4.2.1",
             appsflyer  : "com.appsflyer:af-android-sdk:4.6.1@aar",
-            moengage   : "com.moengage:moe-android-sdk:7.7.02",
+            moengage   : "com.moengage:moe-android-sdk:7.7.10",
             moengageFCM: "com.moengage:moe-push-firebase:1.1.01",
             moengageMSG: "com.moengage:addon-messaging:1.1.01"
     ]
@@ -127,6 +130,7 @@ ext {
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
             smoothAppBarLayout    : "me.henrytao:smooth-app-bar-layout:24.1.1.0",
             trueCaller            : "true.caller.sdk:truecaller:0.5",
+            bcaOneClick           : "com.bca.widget:oneclick:1.0@aar",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
@@ -170,7 +174,9 @@ ext {
             topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
             payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
-            design     : "com.tokopedia.design:design:${tkpdDesignVersion}"
+            design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
+            feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
+            ride     : "com.tokopedia.ride:ride:${tkpdRideVersion}"
     ]
 
     tkpdLibDependencies = [

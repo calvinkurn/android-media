@@ -2,12 +2,15 @@ package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
 
 import android.graphics.Color;
 
+import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.common.williamchart.renderer.AxisRenderer;
+import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
+import com.tokopedia.seller.common.williamchart.util.AnimationGraphConfiguration;
+import com.tokopedia.seller.common.williamchart.util.TopAdsYAxisRenderer;
+import com.tokopedia.seller.common.williamchart.view.ChartView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
-import com.tokopedia.seller.lib.williamchart.Tools;
-import com.tokopedia.seller.lib.williamchart.renderer.AxisRenderer;
-import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.lib.williamchart.util.AnimationGraphConfiguration;
-import com.tokopedia.seller.lib.williamchart.view.ChartView;
+
+import static com.tokopedia.seller.common.williamchart.util.TopAdsBaseWilliamChartConfig.WIDTH_TIP;
 
 /**
  * Created by normansyahputa on 7/7/17.
@@ -62,17 +65,17 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public boolean xDataGrid() {
-        return false;
+        return true;
     }
 
     @Override
     public StringFormatRenderer yStringFormatRenderer() {
-        return new YAxisRenderer();
+        return new TopAdsYAxisRenderer();
     }
 
     @Override
     public int topMargin() {
-        return BaseWilliamChartConfig.DEFAULT;
+        return (int) Tools.fromDpToPx(WIDTH_TIP);
     }
 
     @Override
@@ -92,7 +95,7 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public float yDistAxisToLabel() {
-        return Tools.fromDpToPx(6f);
+        return Tools.fromDpToPx(12f);
     }
 
     @Override

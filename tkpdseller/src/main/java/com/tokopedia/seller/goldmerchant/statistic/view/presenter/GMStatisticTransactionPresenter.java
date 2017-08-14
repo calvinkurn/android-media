@@ -8,9 +8,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTran
  */
 
 public abstract class GMStatisticTransactionPresenter extends BaseDaggerPresenter<GMStatisticTransactionView> {
+
     public abstract void loadDataWithDate(long startDate, long endDate);
 
-    public abstract void loadDataWithoutDate();
-
-    public abstract void startTransactionProductList();
 }

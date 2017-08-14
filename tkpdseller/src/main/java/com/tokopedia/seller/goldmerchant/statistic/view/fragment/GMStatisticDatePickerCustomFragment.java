@@ -13,7 +13,7 @@ import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerCustomFragment;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatatisticDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 
 /**
  * Created by nathan on 7/12/17.
@@ -61,7 +61,7 @@ public class GMStatisticDatePickerCustomFragment extends DatePickerCustomFragmen
     protected void updateDateView() {
         super.updateDateView();
         if (datePeriodView != null) {
-            PeriodRangeModel periodRangeModel = GMStatatisticDateUtils.getComparedDate(startDate, endDate);
+            PeriodRangeModel periodRangeModel = GMStatisticDateUtils.getComparedDate(startDate, endDate);
             datePeriodView.setDate(periodRangeModel.getStartDate(), periodRangeModel.getEndDate());
         }
     }

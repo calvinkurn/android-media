@@ -1,14 +1,15 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.model.DbRecentProduct;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.local.LocalFeedDataSource;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUsecase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 
 import java.util.List;
 
@@ -22,41 +23,44 @@ import rx.functions.Action1;
 
 public class CloudRecentProductDataSource {
 
-    private Context context;
-    private RecentProductDbManager recentProductDbManager;
+    private final GlobalCacheManager globalCacheManager;
     private final MojitoService mojitoService;
     private RecentProductMapper recentProductMapper;
 
-    public CloudRecentProductDataSource(Context context,
-                                        RecentProductDbManager recentProductDbManager,
+    public CloudRecentProductDataSource(GlobalCacheManager globalCacheManager,
                                         MojitoService mojitoService,
                                         RecentProductMapper recentProductMapper) {
-
-        this.context = context;
-        this.recentProductDbManager = recentProductDbManager;
         this.mojitoService = mojitoService;
         this.recentProductMapper = recentProductMapper;
+        this.globalCacheManager = globalCacheManager;
     }
 
     public Observable<List<RecentViewProductDomain>> getRecentProduct(RequestParams requestParams) {
 
         return mojitoService.getRecentProduct(
-                requestParams.getString(GetRecentProductUsecase.PARAM_USER_ID, ""))
+                String.valueOf(requestParams.getParameters()
+                        .get(GetRecentViewUseCase.PARAM_USER_ID)))
                 .doOnNext(validateError())
-                .doOnNext(saveToCache())
-                .map(recentProductMapper);
+                .map(recentProductMapper)
+                .doOnNext(saveToCache());
     }
 
-    private Action1<Response<String>> saveToCache() {
-        return new Action1<Response<String>>() {
+    private Action1<List<RecentViewProductDomain>> saveToCache() {
+        return new Action1<List<RecentViewProductDomain>>() {
             @Override
-            public void call(Response<String> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    DbRecentProduct recentProductDb = new DbRecentProduct();
-                    recentProductDb.setId(1);
-                    recentProductDb.setLastUpdated(System.currentTimeMillis());
-                    recentProductDb.setContentRecentProduct(response.body());
-                    recentProductDbManager.store(recentProductDb);
+            public void call(final List<RecentViewProductDomain> listRecentView) {
+                FeedDomain feedDomain = globalCacheManager.getConvertObjData(
+                        LocalFeedDataSource.KEY_FEED_PLUS, FeedDomain.class);
+
+                if (feedDomain != null) {
+                    feedDomain.setRecentProduct(listRecentView);
+
+                    globalCacheManager.setKey(LocalFeedDataSource.KEY_FEED_PLUS);
+                    globalCacheManager.setValue(
+                            CacheUtil.convertModelToString(feedDomain,
+                                    new TypeToken<FeedDomain>() {
+                                    }.getType()));
+                    globalCacheManager.store();
                 }
             }
         };

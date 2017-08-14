@@ -33,7 +33,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
@@ -64,7 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductDraftListFragment extends BaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
-        implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener {
+        implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener<ProductDraftViewModel> {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
     private FabSpeedDial fabAdd;
@@ -101,7 +100,7 @@ public class ProductDraftListFragment extends BaseListFragment<ProductDraftListP
                                 totalItem--;
                                 if (totalItem == 0) {
                                     // go to empty state if all data has been deleted
-                                    searchData();
+                                    searchForPage(0);
                                 }
                                 UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
@@ -284,7 +283,7 @@ public class ProductDraftListFragment extends BaseListFragment<ProductDraftListP
     @Override
     public void onResume() {
         super.onResume();
-        searchData();
+        searchForPage(0);
         registerDraftReceiver();
     }
 
@@ -300,7 +299,7 @@ public class ProductDraftListFragment extends BaseListFragment<ProductDraftListP
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED)) {
-                        searchData();
+                        searchForPage(0);
                     }
                 }
             };
@@ -324,8 +323,8 @@ public class ProductDraftListFragment extends BaseListFragment<ProductDraftListP
     }
 
     @Override
-    protected void searchData() {
-        super.searchData();
+    protected void searchForPage(int page) {
+        // page is always 0 for draft
         if (isMyServiceRunning(UploadProductService.class)) {
             productDraftListPresenter.fetchAllDraftData();
         } else {

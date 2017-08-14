@@ -34,6 +34,8 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentDigitalCategoryList();
 
+    Intent instanceIntentDigitalWeb(String url);
+
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getIntentDeepLinkHandlerActivity();

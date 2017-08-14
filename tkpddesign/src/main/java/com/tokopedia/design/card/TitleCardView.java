@@ -23,6 +23,8 @@ import com.tokopedia.design.loading.LoadingStateView;
  */
 
 public class TitleCardView extends CardView {
+    public static final int VIEW_NOT_AVAILABLE = -1;
+
     @LayoutRes
     public static final int DEFAULT_LOADING_TITLE_LAYOUT_RES = R.layout.widget_title_card_loading;
 
@@ -30,13 +32,18 @@ public class TitleCardView extends CardView {
     private OnArrowDownClickListener onArrowDownClickListener;
     private TextView tvTitle;
     private float titleTextSize;
+    private float titleHeight;
     private ImageView ivArrowDown;
     private ViewGroup vgTitle;
 
     private View loadingTitleView;
 
     private CharSequence titleString;
+    @LayoutRes
     private int loadingLayoutRes;
+    @LayoutRes
+    private int errorLayoutRes;
+    @LayoutRes
     private int emptyLayoutRes;
     private Drawable iconDrawable;
     private boolean useGradientTitleLoading;
@@ -63,12 +70,14 @@ public class TitleCardView extends CardView {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TitleCardView);
-        titleString = a.getString(R.styleable.TitleCardView_title_card_view_title);
-        titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_title_size, 0);
-        loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_loading_layout, 0);
-        emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_empty_layout, 0);
-        iconDrawable = a.getDrawable(R.styleable.TitleCardView_icon);
-        useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_use_gradient_title_loading, true);
+        titleString = a.getString(R.styleable.TitleCardView_tcv_title);
+        titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_text_size, 0);
+        loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_loading_layout, VIEW_NOT_AVAILABLE);
+        errorLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_error_layout, VIEW_NOT_AVAILABLE);
+        emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_empty_layout, VIEW_NOT_AVAILABLE);
+        iconDrawable = a.getDrawable(R.styleable.TitleCardView_tcv_icon);
+        useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_tcv_use_gradient_title, true);
+        titleHeight = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_height, 0);
         a.recycle();
     }
 
@@ -77,6 +86,10 @@ public class TitleCardView extends CardView {
         vgTitle = (ViewGroup) view.findViewById(R.id.vg_title);
         vgTitleContent = (ViewGroup) vgTitle.findViewById(R.id.vg_title_content);
         tvTitle = (TextView) vgTitleContent.findViewById(R.id.tv_title);
+        if (titleHeight!= 0) {
+            ViewGroup.LayoutParams layoutParams = vgTitleContent.getLayoutParams();
+            layoutParams.height = (int) titleHeight;
+        }
         if (titleTextSize != 0) {
             tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         }
@@ -90,11 +103,14 @@ public class TitleCardView extends CardView {
         ivArrowDown = (ImageView) vgTitleContent.findViewById(R.id.iv_arrow_down);
 
         loadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view);
-        if (emptyLayoutRes != 0) {
-            loadingStateView.setEmptyViewRes(emptyLayoutRes);
-        }
-        if (loadingLayoutRes != 0) {
+        if (loadingLayoutRes != VIEW_NOT_AVAILABLE) {
             loadingStateView.setLoadingViewRes(loadingLayoutRes);
+        }
+        if (errorLayoutRes != VIEW_NOT_AVAILABLE) {
+            loadingStateView.setErrorViewRes(errorLayoutRes);
+        }
+        if (emptyLayoutRes != VIEW_NOT_AVAILABLE) {
+            loadingStateView.setEmptyViewRes(emptyLayoutRes);
         }
 
         setTitle(titleString);
@@ -180,17 +196,6 @@ public class TitleCardView extends CardView {
         loadingStateView.setEmptyView(emptyView);
     }
 
-    // showing that the content to loading state
-    private void setLoadingState(boolean isLoading) {
-        if (isLoading && loadingStateView.getLoadingView() != null) {
-            if (useGradientTitleLoading) {
-                setLoadingTitleState(true);
-            }
-        } else {
-            setLoadingTitleState(false);
-        }
-    }
-
     // will animate the title to gradient, showing that the title is loading
     private void setLoadingTitleState(boolean isLoading) {
         if (loadingTitleView == null) {
@@ -212,14 +217,16 @@ public class TitleCardView extends CardView {
     }
 
     public void setViewState(int state) {
-        if (state == LoadingStateView.VIEW_LOADING) {
-            setLoadingState(true);
-        } else if (state == LoadingStateView.VIEW_EMPTY) {
-            setLoadingState(false);
-        } else {
-            setLoadingState(false);
-        }
         loadingStateView.setViewState(state);
+        switch (state) {
+            case LoadingStateView.VIEW_LOADING:
+                if (useGradientTitleLoading) {
+                    setLoadingTitleState(true);
+                }
+                break;
+            default:
+                setLoadingTitleState(false);
+        }
     }
 
     public void setDefaultLoadingTitleView() {

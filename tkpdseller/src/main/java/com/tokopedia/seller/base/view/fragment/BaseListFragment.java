@@ -32,7 +32,7 @@ import java.util.List;
  */
 
 public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
-        BaseListViewListener, BaseListAdapter.Callback<T> {
+        BaseListViewListener<T>, BaseListAdapter.Callback<T> {
 
     protected static final int START_PAGE = 1;
 
@@ -91,7 +91,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem &&
                         totalItem != Integer.MAX_VALUE) {
-                    searchData(page + 1);
+                    setAndSearchForPage(page + 1);
                     adapter.showRetryFull(false);
                     adapter.showLoading(true);
                 }
@@ -109,7 +109,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
                 @Override
                 public void onRefresh(View view) {
-                    searchData(getStartPage());
+                    setAndSearchForPage(getStartPage());
                 }
             });
         }
@@ -135,7 +135,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
                 hideLoading();
                 adapter.showRetryFull(false);
                 adapter.showLoadingFull(true);
-                searchData(getStartPage());
+                setAndSearchForPage(getStartPage());
             }
         });
         adapter.setRetryView(topAdsRetryDataBinder);
@@ -152,17 +152,15 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         adapter.clearData();
         adapter.showRetryFull(false);
         adapter.showLoadingFull(true);
-        searchData();
+        searchForPage(page);
     }
 
-    protected void searchData(int page) {
+    protected void setAndSearchForPage(int page) {
         this.page = page;
-        searchData();
+        searchForPage(page);
     }
 
-    protected void searchData() {
-
-    }
+    abstract protected void searchForPage(int page);
 
     @Override
     public void onSearchLoaded(@NonNull List list, int totalItem) {
@@ -210,7 +208,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
-                    searchData();
+                    searchForPage(page);
                 }
             });
         } else {

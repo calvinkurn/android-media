@@ -14,6 +14,8 @@ import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModelMapper;
 
 import java.net.UnknownHostException;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -24,6 +26,7 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
     private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
 
+    @Inject
     public RideHistoryDetailPresenter(GetSingleRideHistoryUseCase getSingleRideHistoryUseCase,
                                       GiveDriverRatingUseCase giveDriverRatingUseCase) {
         this.getSingleRideHistoryUseCase = getSingleRideHistoryUseCase;

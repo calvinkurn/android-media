@@ -183,8 +183,6 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(eDate);
             DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
             endDate = dateFormat.format(cal.getTime());
-            int end = Integer.parseInt(endDate);
-            Log.d("MNORMANSYAH", "endDate " + endDate + " int " + Integer.parseInt(endDate) + " end " + end);
             endDate = getDateWithYear(endDate, monthNamesAbrev);
         }
 

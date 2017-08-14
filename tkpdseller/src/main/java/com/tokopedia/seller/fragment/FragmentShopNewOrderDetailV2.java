@@ -654,7 +654,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void onProceedFailed(String messageError) {
-        Log.e(TAG, "onProceedFailed " + messageError);
         if (messageError.toLowerCase().contains("pesanan tidak valid")) {
             holder.AcceptButton.setEnabled(false);
             holder.AcceptButton.setBackgroundResource(R.drawable.btn_shop);
@@ -675,7 +674,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(getClass().getSimpleName(), "onActivityResult requestCode " + requestCode + " resultcode " + resultCode);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQ_REJECT_ORDER:

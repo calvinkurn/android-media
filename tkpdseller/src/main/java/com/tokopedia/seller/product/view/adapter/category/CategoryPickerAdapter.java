@@ -41,14 +41,14 @@ public class CategoryPickerAdapter
     private RecyclerView.ViewHolder getItemViewHolder(ViewGroup parent) {
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.category_item_view_holder, parent, false);
+                .inflate(R.layout.item_product_category, parent, false);
         return new CategoryItemViewHolder(view, this);
     }
 
     private RecyclerView.ViewHolder getParentViewHolder(ViewGroup parent) {
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.category_parent_view_holder, parent, false);
+                .inflate(R.layout.item_product_category_parent, parent, false);
         return new CategoryParentViewHolder(view, this);
     }
 

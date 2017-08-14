@@ -1,6 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -9,74 +8,63 @@ import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgress;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgressLayout;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.CircleTextView;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgress;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgressLayout;
 
 /**
  * Created by normansyahputa on 7/13/17.
  */
 
-public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinishedTransactionViewModel> {
+public class UnFinishedTransactionViewHolder implements GMStatisticViewHolder {
 
-    private TitleCardView notDoneTransStatisticCardView;
-    private DonutProgress gmStatisticTransDonutProgress;
-    private DonutProgressLayout gmStatisticTransDonutProgressLayout;
-    private CircleTextView ctvOnHoldCount;
-    private CircleTextView ctvOnHoldAmount;
-    private CircleTextView ctvResCenterCount;
+    private TitleCardView titleCardView;
+    private DonutProgress donutProgress;
+    private DonutProgressLayout donutProgressLayout;
+    private CircleTextView onHoldCountCircleTextView;
+    private CircleTextView onHoldAmountCircleTextView;
+    private CircleTextView resCenterCountCircleTextView;
     private String rupiahFormatText;
 
 
-    public UnFinishedTransactionViewHolder(@Nullable Context context) {
-        super(context);
-        rupiahFormatText = context.getString(R.string.rupiah_format_text);
+    public UnFinishedTransactionViewHolder(View view) {
+        titleCardView = (TitleCardView) view.findViewById(R.id.not_done_trans_statistic_card_view);
+        donutProgress = (DonutProgress) view.findViewById(R.id.gm_statistic_trans_donut_progress);
+        donutProgressLayout = (DonutProgressLayout) view.findViewById(R.id.gm_statistic_trans_donut_progress_layout);
+
+        onHoldCountCircleTextView = (CircleTextView) view.findViewById(R.id.ctv_onhold_count);
+        onHoldAmountCircleTextView = (CircleTextView) view.findViewById(R.id.ctv_onhold_amount);
+        resCenterCountCircleTextView = (CircleTextView) view.findViewById(R.id.ctv_res_center_count);
+
+        rupiahFormatText = view.getContext().getString(R.string.gm_statistic_rupiah_format_text);
     }
 
-    @Override
-    public void initView(@Nullable View itemView) {
-        notDoneTransStatisticCardView = (TitleCardView) itemView.findViewById(R.id.not_done_trans_statistic_card_view);
-        gmStatisticTransDonutProgress = (DonutProgress) itemView.findViewById(R.id.gm_statistic_trans_donut_progress);
-        gmStatisticTransDonutProgressLayout = (DonutProgressLayout) itemView.findViewById(R.id.gm_statistic_trans_donut_progress_layout);
-
-        ctvOnHoldCount = (CircleTextView) itemView.findViewById(R.id.ctv_onhold_count);
-        ctvOnHoldAmount = (CircleTextView) itemView.findViewById(R.id.ctv_onhold_amount);
-        ctvResCenterCount = (CircleTextView) itemView.findViewById(R.id.ctv_res_center_count);
-
-        setLoadingState(LoadingStateView.VIEW_LOADING);
+    private void processView(UnFinishedTransactionViewModel unFinishedTransactionViewModel) {
+        unFinishedTransactionViewModel.setFormatAmount(rupiahFormatText);
+        unFinishedTransactionViewModel.formatText();
+        onHoldCountCircleTextView.setValue(Long.toString(unFinishedTransactionViewModel.getOnHoldCount()));
+        onHoldAmountCircleTextView.setValue(unFinishedTransactionViewModel.getOnHoldAmountText());
+        resCenterCountCircleTextView.setValue(Long.toString(unFinishedTransactionViewModel.getResoCount()));
     }
 
-    private void processView(UnFinishedTransactionViewModel data) {
-        data.setFormatAmount(rupiahFormatText);
-        data.formatText();
-
-        ctvOnHoldCount.setValue(Long.toString(data.getOnHoldCount()));
-        ctvOnHoldAmount.setValue(data.getOnHoldAmountText());
-        ctvResCenterCount.setValue(Long.toString(data.getResoCount()));
-    }
-
-    @Override
-    public void bind(@Nullable UnFinishedTransactionViewModel data) {
-        setLoadingState(LoadingStateView.VIEW_CONTENT);
-        processView(data);
-
-        if (data == null || data.getTotalTransactionCount() == 0) {
-            gmStatisticTransDonutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(context, R.color.black_12));
-            gmStatisticTransDonutProgress.setProgress(0);
-            gmStatisticTransDonutProgressLayout.setAmount(String.valueOf(0));
+    public void bind(@Nullable UnFinishedTransactionViewModel unFinishedTransactionViewModel) {
+        setViewState(LoadingStateView.VIEW_CONTENT);
+        processView(unFinishedTransactionViewModel);
+        if (unFinishedTransactionViewModel == null || unFinishedTransactionViewModel.getTotalTransactionCount() == 0) {
+            donutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(titleCardView.getContext(), R.color.black_12));
+            donutProgress.setProgress(0);
+            donutProgressLayout.setAmount(String.valueOf(0));
         } else {
-            gmStatisticTransDonutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(context, R.color.tkpd_dark_red));
-            double diffHoldCount = Math.floor((data.getOnHoldCount() / data.getTotalTransactionCount() * 100) + 0.5);
-
-            gmStatisticTransDonutProgress.setProgress((float) diffHoldCount);
-            gmStatisticTransDonutProgressLayout.setAmount(
-                    KMNumbers.formatDecimalString(data.getTotalTransactionCount()));
+            donutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(titleCardView.getContext(), R.color.tkpd_dark_red));
+            double diffHoldCount = Math.floor((unFinishedTransactionViewModel.getOnHoldCount() / unFinishedTransactionViewModel.getTotalTransactionCount() * 100) + 0.5);
+            donutProgress.setProgress((float) diffHoldCount);
+            donutProgressLayout.setAmount(KMNumbers.formatDecimalString(unFinishedTransactionViewModel.getTotalTransactionCount()));
         }
     }
 
-    public void setLoadingState(int state) {
-        notDoneTransStatisticCardView.setViewState(state);
+    @Override
+    public void setViewState(int state) {
+        titleCardView.setViewState(state);
     }
 }

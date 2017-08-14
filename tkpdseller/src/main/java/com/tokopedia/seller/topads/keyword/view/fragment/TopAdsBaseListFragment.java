@@ -89,12 +89,12 @@ public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends Base
     }
 
     @Override
-    protected void searchData(int page) {
+    protected void setAndSearchForPage(int page) {
         this.page = page;
         if (startDate == null || endDate == null) {
             return;
         }
-        searchData();
+        searchForPage(page);
     }
 
     @Override

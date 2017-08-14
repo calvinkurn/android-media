@@ -157,7 +157,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public void onErrorLoadDraftProduct(Throwable throwable) {
         hideLoading();
-        CommonUtils.UniversalToast(getActivity(), throwable.getMessage());
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.product_draft_error_cannot_load_draft));
         getActivity().finish();
     }
 

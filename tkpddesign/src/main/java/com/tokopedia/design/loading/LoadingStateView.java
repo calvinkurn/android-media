@@ -18,20 +18,28 @@ import com.tokopedia.design.R;
 
 public class LoadingStateView extends FrameLayout {
 
+    public static final int VIEW_NOT_AVAILABLE = -1;
+
     public static final int VIEW_LOADING = 0;
-    public static final int VIEW_EMPTY = 1;
-    public static final int VIEW_CONTENT = 2;
+    public static final int VIEW_ERROR = 1;
+    public static final int VIEW_EMPTY = 2;
+    public static final int VIEW_CONTENT = 3;
 
     @LayoutRes
     public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
 
-    FrameLayout frameLayout;
+    private FrameLayout frameLayout;
 
-    private View emptyView;
     private View loadingView;
+    private View errorView;
+    private View emptyView;
     private View contentView;
 
+    @LayoutRes
     private int loadingLayoutRes;
+    @LayoutRes
+    private int errorLayoutRes;
+    @LayoutRes
     private int emptyLayoutRes;
 
     public LoadingStateView(Context context) {
@@ -56,14 +64,14 @@ public class LoadingStateView extends FrameLayout {
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LoadingStateView);
         loadingLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_loading_layout, DEFAULT_LOADING_LAYOUT_RES);
-        emptyLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_empty_layout, 0);
+        errorLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_error_layout, VIEW_NOT_AVAILABLE);
+        emptyLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_empty_layout, VIEW_NOT_AVAILABLE);
         a.recycle();
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_loading_state_view, this);
         frameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
-
         setFocusableInTouchMode(true);
     }
 
@@ -87,7 +95,7 @@ public class LoadingStateView extends FrameLayout {
             }
 
             // check if it is content, add to the first index, so loading and empty will be on front of content view
-            if (contentView == null && child != loadingView && child != emptyView) {
+            if (contentView == null && child != loadingView && child != emptyView && child != errorView) {
                 contentView = child;
                 frameLayout.addView(child, 0, params);
             } else {
@@ -96,116 +104,106 @@ public class LoadingStateView extends FrameLayout {
         }
     }
 
-    public void setLoadingViewRes(int loadingViewRes) {
-        View emptyView = LayoutInflater.from(getContext()).inflate(loadingViewRes, frameLayout, false);
-        setLoadingView(emptyView);
-    }
 
     public View getLoadingView() {
         return loadingView;
     }
 
-    public View getContentView() {
-        return contentView;
+    public void setLoadingViewRes(int loadingViewRes) {
+        View emptyView = LayoutInflater.from(getContext()).inflate(loadingViewRes, frameLayout, false);
+        setLoadingView(emptyView);
     }
 
-    public void setLoadingView(View loadingView) {
-        if (this.loadingView != null) {
-            frameLayout.removeView(this.loadingView);
+    public void setLoadingView(View view) {
+        if (loadingView != null) {
+            frameLayout.removeView(loadingView);
         }
-        this.loadingView = loadingView;
-        loadingView.setVisibility(View.GONE);
-        addView(loadingView);
+        loadingView = view;
+        view.setVisibility(View.GONE);
+        addView(view);
     }
 
-    public void setEmptyViewRes(int emptyViewRes) {
-        View emptyView = LayoutInflater.from(getContext()).inflate(emptyViewRes, frameLayout, false);
-        setEmptyView(emptyView);
+    public void setErrorViewRes(@LayoutRes int layoutRes) {
+        View view = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
+        setErrorView(view);
+    }
+
+    public void setErrorView(View view) {
+        if (errorView != null) {
+            frameLayout.removeView(errorView);
+        }
+        errorView = view;
+        view.setVisibility(View.GONE);
+        addView(view);
     }
 
     public View getEmptyView() {
         return emptyView;
     }
 
-    public void setEmptyView(View emptyView) {
-        if (this.emptyView != null) {
-            frameLayout.removeView(this.emptyView);
-        }
-        this.emptyView = emptyView;
-        emptyView.setVisibility(View.GONE);
-        addView(emptyView);
+    public void setEmptyViewRes(@LayoutRes int layoutRes) {
+        View emptyView = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
+        setEmptyView(emptyView);
     }
 
-    // showing that the content to loading state
-    private void setLoadingState(boolean isLoading) {
-        if (loadingView == null) {
-            setDefaultLoadingView();
-        }
-        if (isLoading && this.loadingView != null) {
-            if (contentView != null) {
-                contentView.setVisibility(View.GONE);
-            }
-            if (emptyView != null) {
-                emptyView.setVisibility(View.GONE);
-            }
-            loadingView.setVisibility(View.VISIBLE);
-        } else {
-            setContentVisible();
-        }
-    }
-
-    private void setEmptyState(boolean isEmpty) {
-        if (emptyView == null) {
-            setDefaultEmptyView();
-        }
-        if (isEmpty && emptyView != null) {
-            if (contentView != null) {
-                contentView.setVisibility(View.GONE);
-            }
-            if (this.loadingView != null) {
-                loadingView.setVisibility(View.GONE);
-            }
-            emptyView.setVisibility(View.VISIBLE);
-        } else {
-            setContentVisible();
-        }
-    }
-
-    private void setContentVisible() {
-        if (this.loadingView != null) {
-            loadingView.setVisibility(View.GONE);
-        }
+    public void setEmptyView(View view) {
         if (emptyView != null) {
-            emptyView.setVisibility(View.GONE);
+            frameLayout.removeView(emptyView);
         }
-        contentView.setVisibility(View.VISIBLE);
+        emptyView = view;
+        view.setVisibility(View.GONE);
+        addView(view);
     }
 
-    private void setDefaultLoadingView() {
-        if (loadingLayoutRes == 0) {
-            return;
-        }
-        this.loadingView = LayoutInflater.from(getContext()).inflate(loadingLayoutRes, frameLayout, false);
-        loadingView.setVisibility(View.GONE);
-        addView(loadingView);
-    }
-
-    private void setDefaultEmptyView() {
-        if (emptyLayoutRes == 0) {
-            return;
-        }
-        this.emptyView = LayoutInflater.from(getContext()).inflate(emptyLayoutRes, frameLayout, false);
-        emptyView.setVisibility(View.GONE);
-        addView(emptyView);
+    public View getContentView() {
+        return contentView;
     }
 
     public void setViewState(int state) {
-        if (state == VIEW_LOADING) {
-            setLoadingState(true);
-        } else if (state == VIEW_EMPTY) {
-            setEmptyState(true);
-        } else {
-            setContentVisible();
+        switch (state) {
+            case VIEW_LOADING:
+                loadingView = getView(loadingView, loadingLayoutRes);
+                setViewVisible(loadingView);
+                break;
+            case VIEW_ERROR:
+                errorView = getView(errorView, errorLayoutRes);
+                setViewVisible(errorView);
+                break;
+            case VIEW_EMPTY:
+                emptyView = getView(emptyView, emptyLayoutRes);
+                setViewVisible(emptyView);
+                break;
+            default:
+                setViewVisible(contentView);
         }
     }
+
+    private View getView(View view, @LayoutRes int layoutRes) {
+        if (view != null) {
+            return view;
+        }
+        if (layoutRes == VIEW_NOT_AVAILABLE) {
+            return null;
+        }
+        View viewTemp = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
+        viewTemp.setVisibility(View.GONE);
+        addView(viewTemp);
+        return viewTemp;
+    }
+
+    private void setViewVisible(View view) {
+        if (view == null) {
+            return;
+        }
+        int childSize = frameLayout.getChildCount();
+        for (int i = 0; i < childSize; i++) {
+            View childView = frameLayout.getChildAt(i);
+            if (childView == view) {
+                childView.setVisibility(View.VISIBLE);
+            } else {
+                childView.setVisibility(View.GONE);
+            }
+        }
+    }
+
 }

@@ -29,7 +29,7 @@ public class BaseRetryDataBinder extends RetryDataBinder {
 
     @Override
     public RetryDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_base_network_error, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_base_network_error, null);
         ((ImageView) view.findViewById(R.id.image_error)).setImageResource(errorDrawableRes);
         if (parent.getMeasuredHeight() < parent.getMeasuredWidth()) {
             view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredWidth()));

@@ -112,14 +112,12 @@ dependencies {
     compile getTkpdCore()
     compile getTkpdDesign()
     compile getTkpdPayment()
-    compile project(':bottomsheetbuilder')
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    compile(group: 'com.bottomsheet.builder', name: 'bottomsheet', version: '0.0.1', ext: 'aar')
 
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler

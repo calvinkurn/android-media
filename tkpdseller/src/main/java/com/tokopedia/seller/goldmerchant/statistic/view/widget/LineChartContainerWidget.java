@@ -2,7 +2,9 @@ package com.tokopedia.seller.goldmerchant.statistic.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,10 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
+import com.tokopedia.seller.common.widget.GMDateRangeView;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
-import com.tokopedia.seller.lib.widget.GMDateRangeView;
 
 /**
  * Created by hendry on 7/10/2017.
@@ -80,6 +80,10 @@ public class LineChartContainerWidget extends LinearLayout {
         setAddStatesFromChildren(true);
     }
 
+    public void setTvSubtitleTextColor(@ColorRes int colorRes) {
+        tvSubtitle.setTextColor(ContextCompat.getColor(getContext(), colorRes));
+    }
+
     @Override
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
         if (child.getId() == R.id.line_chart_container) {
@@ -128,6 +132,10 @@ public class LineChartContainerWidget extends LinearLayout {
         arrowPercentageView.setVisibility(View.VISIBLE);
     }
 
+    public void hidePercentageView(){
+        arrowPercentageView.setVisibility(View.GONE);
+    }
+
     public void setSubtitle(CharSequence subtitle) {
         this.subtitle = subtitle;
         if (TextUtils.isEmpty(subtitle)) {
@@ -145,10 +153,6 @@ public class LineChartContainerWidget extends LinearLayout {
             tvPercentageDesc.setText(percentageDesc);
             tvPercentageDesc.setVisibility(View.VISIBLE);
         }
-    }
-
-    public void setPercentageUtil(PercentageUtil percentageUtil) {
-        arrowPercentageView.setPercentageUtil(percentageUtil);
     }
 
     @Override

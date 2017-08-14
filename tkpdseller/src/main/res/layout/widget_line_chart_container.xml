@@ -4,11 +4,7 @@
     android:id="@+id/line_chart_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/gmstat_padding_item_left_right"
-    android:paddingLeft="@dimen/gmstat_padding_item_left_right"
-    android:paddingRight="@dimen/gmstat_padding_item_left_right"
-    android:paddingTop="8dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_subtitle"
@@ -50,12 +46,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.tokopedia.seller.lib.widget.GMDateRangeView
+        <com.tokopedia.seller.common.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.tokopedia.seller.lib.widget.GMDateRangeView
+        <com.tokopedia.seller.common.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_compare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

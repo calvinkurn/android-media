@@ -14,7 +14,7 @@
         app:elevation="2dp"
         app:layout_scrollFlags="scroll|snap|enterAlways">
 
-        <com.tokopedia.seller.lib.widget.DateLabelView
+        <com.tokopedia.seller.common.widget.DateLabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.BorderBottom" />
 
@@ -42,7 +42,7 @@
 
                 <TextView
                     android:id="@+id/product_name_text"
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Body1.BlackDisabled"
                     android:text="@string/gm_statistic_product_name" />
 
                 <View
@@ -62,7 +62,7 @@
                     <TextView
                         android:id="@+id/sort_by_text"
                         style="@style/TextView.Body1.Green"
-                        tools:text="@string/gm_statistic_total_transaction"/>
+                        tools:text="@string/gm_statistic_total_transaction" />
 
                     <android.support.v7.widget.AppCompatImageView
                         android:layout_width="10dp"
@@ -77,9 +77,10 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:clipToPadding="false" />
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/margin_sm" />
         </LinearLayout>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>

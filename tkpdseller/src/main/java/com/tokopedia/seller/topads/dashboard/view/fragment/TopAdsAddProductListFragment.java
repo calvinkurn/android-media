@@ -338,7 +338,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // https://fabric.io/pt-tokopedia/android/apps/com.tokopedia.sellerapp/issues/59773611be077a4dcc19529a?time=last-seven-days
         if (!isAdded())
             return;
 
@@ -406,7 +405,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     public void fetchDataWithQuery(String newText) {
-        Log.d(TAG, "fetchDataWithQuery " + newText);
         if (newText != null && newText.isEmpty()) {
             topAdsAddProductListPresenter.setQuery(null);
         } else {

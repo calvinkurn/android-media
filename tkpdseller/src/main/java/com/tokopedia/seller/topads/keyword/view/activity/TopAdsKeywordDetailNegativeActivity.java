@@ -33,6 +33,6 @@ public class TopAdsKeywordDetailNegativeActivity extends BaseSimpleActivity impl
 
     @Override
     public AppComponent getComponent() {
-        return getComponent();
+        return getApplicationComponent();
     }
 }

@@ -322,14 +322,14 @@
 
         <activity
             android:name="com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity"
-            android:label="@string/title_activity_gmstat"
+            android:label="@string/gm_statistic_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
         <activity
             android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionActivity"
             android:exported="true"
-            android:label="@string/gold_merchant_transaction_label" />
+            android:label="@string/gm_statistic_transaction_label" />
         <activity
             android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity"
             android:exported="true"
@@ -430,8 +430,9 @@
         <service
             android:name=".shop.ShopEditService"
             android:exported="false" />
+
         <service
-            android:name=".product.view.service.UploadProductService"
+            android:name="com.tokopedia.seller.product.view.service.UploadProductService"
             android:exported="false" />
     </application>
 

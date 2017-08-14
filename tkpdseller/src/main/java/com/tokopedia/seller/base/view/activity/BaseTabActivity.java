@@ -36,6 +36,6 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_date_picker;
+        return R.layout.activity_base_tab;
     }
 }

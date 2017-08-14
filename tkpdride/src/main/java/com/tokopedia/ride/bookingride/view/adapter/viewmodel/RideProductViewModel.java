@@ -156,7 +156,7 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         p.setDataPosition(0);
         RideProductViewModel copy = null;
         try {
-            copy = (RideProductViewModel) orig.getClass().getDeclaredConstructor(new Class[]{Parcel.class}).newInstance(p);
+            copy = orig.getClass().getDeclaredConstructor(new Class[]{Parcel.class}).newInstance(p);
         } catch (Exception e) {
             e.printStackTrace();
         }

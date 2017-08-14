@@ -62,7 +62,6 @@ public class KeywordListListener extends TabLayout.TabLayoutOnPageChangeListener
 
         // restore current position data
         String s = prevQuery.get(position);
-        Log.d(TAG, "status + " + prevVisible.get(position));
 
         boolean isVisible = false;
         if (prevVisible.get(position) != null) {
@@ -81,14 +80,12 @@ public class KeywordListListener extends TabLayout.TabLayoutOnPageChangeListener
     }
 
     public void add(int position) {
-        Log.d(TAG, "add + " + position);
         prevVisible.put(position, true);
     }
 
     public void remove(int position) {
         if (isProcessing)
             return;
-        Log.d(TAG, "remove + " + position);
         prevVisible.put(position, false);
     }
 

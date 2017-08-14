@@ -1,11 +1,9 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,23 +11,27 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatatisticDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
+import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GmStatisticEmptyTransactionDataBinder;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 
 import java.util.Date;
 
@@ -40,26 +42,21 @@ import javax.inject.Inject;
  */
 public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GMStatisticTransactionTableModel>
         implements GMStatisticTransactionTableView {
-    public static final String TAG = "GMStatisticTransactionT";
-    public static final int START_PAGE = 0;
 
+    public static final int START_PAGE = 0;
     @Inject
     GMStatisticTransactionTablePresenter transactionTablePresenter;
-
     @GMTransactionTableSortBy
     int sortBy = GMTransactionTableSortBy.DELIVERED_AMT; // default to Pendapatan Bersih
     @GMTransactionTableSortType
     int sortType = GMTransactionTableSortType.DESCENDING; // this is for DESCENDING default
-    private boolean showingSimpleDialog;
+    private TextView tvSortBy;
     private String[] gmStatSortBy;
     private boolean[] sortBySelections;
-    private int sortByIndexSelection = 2; // default to Pendapatan Bersih
+    private int sortByIndexSelection = 1; // default to Pendapatan Bersih
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
     private int sortTypeIndexSelection = 0; // this is for DESCENDING default
-    private TextView tvSortBy;
-    private int savedSortTypeAfterChangeKeyFigure;
-    private int savedSortByAfterChangeKeyFigure;
 
     public static Fragment createInstance() {
         GMStatisticTransactionTableFragment fragment = new GMStatisticTransactionTableFragment();
@@ -73,55 +70,13 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        transactionTablePresenter.attachView(this);
-    }
-
-    @Override
-    protected void searchData() {
-        super.searchData();
-        transactionTablePresenter.loadData(
-                new Date(datePickerViewModel.getStartDate()),
-                new Date(datePickerViewModel.getEndDate()),
-                sortType,
-                sortBy,
-                page);
-    }
-
-    @Override
-    public Intent getDatePickerIntent() {
-        return GMStatatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel);
-    }
-
-    @Override
-    public void setDefaultDateViewModel() {
-        datePickerViewModel = GMStatatisticDateUtils.getDefaultDatePickerViewModel();
-    }
-
-    @Override
     protected void initInjector() {
         DaggerGMTransactionComponent
                 .builder()
                 .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_gmstat_transaction_table, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_sort) {
-            showSortType();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        transactionTablePresenter.attachView(this);
     }
 
     @Override
@@ -155,8 +110,43 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    public void onItemClicked(GMStatisticTransactionTableModel gmStatisticTransactionTableModel) {
+    public void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page) {
+        transactionTablePresenter.loadData(
+                new Date(datePickerViewModel.getStartDate()),
+                new Date(datePickerViewModel.getEndDate()),
+                sortType,
+                sortBy,
+                page);
+    }
 
+    @Override
+    public Intent getDatePickerIntent(DatePickerViewModel datePickerViewModel) {
+        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel);
+    }
+
+    @Override
+    public DatePickerViewModel getDefaultDateViewModel() {
+        return GMStatisticDateUtils.getDefaultDatePickerViewModel();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_gmstat_transaction_table, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_sort) {
+            showSortType();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClicked(GMStatisticTransactionTableModel gmStatisticTransactionTableModel) {
+        // Do nothing
     }
 
     @Override
@@ -167,13 +157,31 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        emptyTransactionDataBinder.setEmptyTitleText(null);
+        emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
+        emptyTransactionDataBinder.setEmptyContentItemText(null);
+        return emptyTransactionDataBinder;
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
+        emptyTransactionDataBinder.setEmptyTitleText(null);
+        emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
+        emptyTransactionDataBinder.setEmptyContentItemText(null);
+        return emptyTransactionDataBinder;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         transactionTablePresenter.detachView();
     }
 
     private void showSortBy() {
-        showBottomSheetDialog(gmStatSortBy, sortBySelections, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(getString(R.string.filter), gmStatSortBy, sortBySelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 int previousSortBy = sortBy;
@@ -188,40 +196,27 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                     case 2:
                         sortBy = GMTransactionTableSortBy.DELIVERED_AMT;
                         break;
-
                 }
-                showingSimpleDialog = false;
                 if (previousSortBy == sortBy) {
                     return;
                 }
+                String itemTitle = item.getTitle().toString();
+
                 resetSelectionSortBy(sortByIndexSelection);
-                tvSortBy.setText(item.getTitle());
+                tvSortBy.setText(itemTitle);
                 GMStatisticTransactionTableAdapter gmAdapter = (GMStatisticTransactionTableAdapter)adapter;
                 gmAdapter.setSortBy(sortBy);
                 gmAdapter.notifyDataSetChanged();
 
-                // save sort type after change key figure
-                if (savedSortByAfterChangeKeyFigure == 0) {
-                    savedSortTypeAfterChangeKeyFigure = sortType;
-                    savedSortByAfterChangeKeyFigure = previousSortBy;
-                    //reset it, but retrieve it again when doing sort
-                    sortType = -1;
-                    resetSelectionSortType(sortType);
-                }
-                // no need to search data
+                loadData();
+
+                UnifyTracking.eventClickGMStatFilterTypeProductSold(itemTitle);
             }
         });
     }
 
     private void showSortType() {
-        // retrieve saved sort type
-        if (savedSortByAfterChangeKeyFigure!= 0 && savedSortByAfterChangeKeyFigure == sortBy) {
-            sortType = savedSortTypeAfterChangeKeyFigure;
-            savedSortByAfterChangeKeyFigure = 0;
-            int sortTypeSelection = (sortType == GMTransactionTableSortType.DESCENDING)? 0 : 1;
-            resetSelectionSortType(sortTypeSelection);
-        }
-        showBottomSheetDialog(gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(getString(R.string.gm_statistic_sort), gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
                 int previousSortType = sortType;
@@ -236,22 +231,21 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                         sortType = -1;
                         break;
                 }
-                Log.d("Item click", menuItem.getTitle() + " findSelection : " + sortType);
-                showingSimpleDialog = false;
                 if (previousSortType == sortType) {
                     return;
                 }
                 resetSelectionSortType(sortTypeIndexSelection);
-                searchData();
+
+                // we load data, instead search data to reset the page to 1
+                loadData();
             }
         });
     }
 
-    private void showBottomSheetDialog(final String[] text, final boolean[] selections, BottomSheetItemClickListener bottomSheetItemClickListener) {
-        showingSimpleDialog = true;
+    private void showBottomSheetDialog(String bottomDialogTitle, final String[] text, final boolean[] selections, BottomSheetItemClickListener bottomSheetItemClickListener) {
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(getString(R.string.filter));
+                .addTitleItem(bottomDialogTitle);
 
         for (int i = 0; i < text.length; i++) {
             if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {
@@ -264,12 +258,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(bottomSheetItemClickListener)
                 .createDialog();
-        bottomSheetDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                showingSimpleDialog = false;
-            }
-        });
         bottomSheetDialog.show();
     }
 

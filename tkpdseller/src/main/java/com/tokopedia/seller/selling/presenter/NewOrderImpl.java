@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
@@ -231,8 +232,10 @@ public class NewOrderImpl extends NewOrder {
         return new FacadeShopTransaction.GetNewOrderListener() {
             @Override
             public void OnSuccess(Model model, OrderShippingData Result) {
-                if (view.getPaging().getPage() == 1)
+                if (view.getPaging().getPage() == 1) {
+                    AppWidgetUtil.sendBroadcastToAppWidget(context);
                     clearData();
+                }
                 view.getPaging().setNewParameter(Result.getPaging());
                 finishConnection();
                 modelNewOrder = model;

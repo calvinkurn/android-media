@@ -14,21 +14,32 @@ import java.util.List;
  */
 
 public interface GMStatisticDashboardView extends CustomerView {
-    void onGetShopCategoryEmpty();
 
-    void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
+    void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, boolean isGoldMerchant);
 
-    void onSuccessProductnGraph(GetProductGraph getProductGraph);
+    void onErrorLoadTransactionGraph(Throwable t);
 
-    void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
+    void onSuccessLoadProductGraph(GetProductGraph getProductGraph);
 
-    void onSuccessGetKeyword(List<GetKeyword> getKeywords);
+    void onErrorLoadProductGraph(Throwable t);
+
+    void onSuccessLoadPopularProduct(GetPopularProduct getPopularProduct);
+
+    void onErrorLoadPopularProduct(Throwable t);
+
+    void onSuccessLoadBuyerGraph(GetBuyerGraph getBuyerGraph);
+
+    void onErrorLoadBuyerGraph(Throwable t);
+
+    void onGetShopCategoryEmpty(boolean goldMerchant);
 
     void onSuccessGetCategory(String categoryName);
 
-    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
+    void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant);
 
-    void onError(Throwable e);
+    void onErrorLoadMarketInsight(Throwable t);
 
-    void showSnackbarRetry();
+    void onErrorLoadShopInfo(Throwable t);
+
+    void onSuccessLoadShopInfo(boolean isGoldMerchant);
 }

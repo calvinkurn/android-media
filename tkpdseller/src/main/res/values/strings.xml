@@ -2,8 +2,13 @@
     <string name="app_name">tkpdseller</string>
 
     <string name="label_empty_value">-</string>
-
+    <string name="label_back">Kembali</string>
     <string name="title_date_setting">Atur Tanggal</string>
+
+    <string name="set_date">Atur Tanggal</string>
+    <string name="yesterday">Kemarin</string>
+    <string name="seven_days_ago">7 hari terakhir</string>
+    <string name="thirty_days_ago">30 hari terakhir</string>
 
     <string name="label_today">Hari Ini</string>
     <string name="label_this_month">Bulan Ini</string>
@@ -39,6 +44,8 @@
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
     <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
 
+    <string name="list_sold_product_text">Daftar Produk Terjual</string>
+
     <!-- reputation history -->
     <string name="your_shop_reputation">Reputasi Toko Anda</string>
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
@@ -50,6 +57,8 @@
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
     <string name="best_deal">BEST DEAL!</string>
+    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
+    <string name="try_again">COBA KEMBALI</string>
 
 
     <!-- SHOP SETTING-->
@@ -81,6 +90,8 @@
     <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
     <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
     <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
 
 
@@ -98,5 +109,11 @@
     <string name="product_draft_draft_product_empty">Draft Produk Anda kosong</string>
     <string name="product_draft_add_product">Tambah Produk</string>
     <string name="product_draft_save_as_draft">Simpan Draft</string>
+
+    <string name="app_widget_title_new_order">Order</string>
+    <string name="app_widget_new_order_wording_empty">Belum ada data</string>
+    <string name="app_widget_label_today">Hari ini</string>
+    <string name="app_widget_label_tomorrow">Besok</string>
+    <string name="app_widget_label_left_day">%d Hari Lagi</string>
 
 </resources>
