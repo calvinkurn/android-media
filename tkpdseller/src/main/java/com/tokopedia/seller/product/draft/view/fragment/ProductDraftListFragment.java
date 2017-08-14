@@ -76,7 +76,6 @@ import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQ
 @RuntimePermissions
 public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, ProductDraftViewModel>
         implements TopAdsEmptyAdDataBinder.Callback, ProductDraftListView {
-    public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
     private FabSpeedDial fabAdd;
 
@@ -113,7 +112,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                 totalItem--;
                                 if (totalItem == 0) {
                                     // go to empty state if all data has been deleted
-                                    searchForPage(0);
+                                    resetPageAndSearch();
                                 }
                                 UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
@@ -361,7 +360,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onResume() {
         super.onResume();
-        searchForPage(0);
+        resetPageAndSearch();
         registerDraftReceiver();
     }
 
@@ -377,7 +376,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED)) {
-                        searchForPage(0);
+                        resetPageAndSearch();
                     }
                 }
             };
@@ -464,7 +463,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     ProductDraftListFragment.this,
                     productIds.get(0).toString());
         } else {
-            searchForPage(0);
+            resetPageAndSearch();
             CommonUtils.UniversalToast(getActivity(),
                     getString(R.string.product_draft_instagram_save_success, productIds.size()));
         }

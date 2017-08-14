@@ -575,7 +575,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void notifyChange() {
+    public void deselectItem(Object o) {
 
     }
 }

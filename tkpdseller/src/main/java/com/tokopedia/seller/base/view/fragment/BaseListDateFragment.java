@@ -81,7 +81,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
         this.datePickerViewModel = datePickerViewModel;
-        loadDataByDateAndPage(datePickerViewModel, page);
+        loadDataByDateAndPage(datePickerViewModel, getCurrentPage());
         setDateLabelView();
     }
 
@@ -100,7 +100,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
         setDateLabelView();
-        loadDataByDateAndPage(datePickerViewModel, page);
+        loadDataByDateAndPage(datePickerViewModel, getCurrentPage());
     }
 
     @Override

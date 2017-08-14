@@ -35,7 +35,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     protected void searchForPage(int page) {
-        presenter.searchAd(startDate, endDate, keyword, status, page);
+        presenter.searchAd(startDate, endDate, keyword, status, getCurrentPage());
     }
 
     @Override
@@ -87,7 +87,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-            setAndSearchForPage(START_PAGE);
+            resetPageAndSearch();
         }
     }
 

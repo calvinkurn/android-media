@@ -213,7 +213,12 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     }
 
     @Override
-    public void notifyChange() {
+    public void addItem(Object o) {
+
+    }
+
+    @Override
+    public void removeItem(Object o) {
 
     }
 }

@@ -1,39 +1,60 @@
 package com.tokopedia.seller.product.variant.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 
 /**
  * Created by nathan on 8/4/17.
  */
 
-public class ProductVariantViewModel implements ItemPickerType {
+public class ProductVariantViewModel implements ItemPickerType, Parcelable {
 
     public final static int TYPE = 123;
 
-    private String id;
+    private long id;
+    private long unitValueId;
+    private String hexCode;
     private String title;
     private String imageUrl;
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public String getId() {
+        return String.valueOf(id);
+    }
+
+    public long getUnitValueId() {
+        return unitValueId;
+    }
+
+    public void setUnitValueId(long unitValueId) {
+        this.unitValueId = unitValueId;
+    }
+
+    public String getHexCode() {
+        return hexCode;
+    }
+
+    public void setHexCode(String hexCode) {
+        this.hexCode = hexCode;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
     @Override
     public String getTitle() {
         return title;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -45,4 +66,41 @@ public class ProductVariantViewModel implements ItemPickerType {
     public int getType() {
         return TYPE;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeLong(this.unitValueId);
+        dest.writeString(this.hexCode);
+        dest.writeString(this.title);
+        dest.writeString(this.imageUrl);
+    }
+
+    public ProductVariantViewModel() {
+    }
+
+    protected ProductVariantViewModel(Parcel in) {
+        this.id = in.readLong();
+        this.unitValueId = in.readLong();
+        this.hexCode = in.readString();
+        this.title = in.readString();
+        this.imageUrl = in.readString();
+    }
+
+    public static final Parcelable.Creator<ProductVariantViewModel> CREATOR = new Parcelable.Creator<ProductVariantViewModel>() {
+        @Override
+        public ProductVariantViewModel createFromParcel(Parcel source) {
+            return new ProductVariantViewModel(source);
+        }
+
+        @Override
+        public ProductVariantViewModel[] newArray(int size) {
+            return new ProductVariantViewModel[size];
+        }
+    };
 }

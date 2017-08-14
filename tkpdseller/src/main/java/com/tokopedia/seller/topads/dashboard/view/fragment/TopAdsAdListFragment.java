@@ -21,18 +21,18 @@ import android.view.View;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.common.widget.DateLabelView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
-import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAdListAdapter;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.common.widget.DateLabelView;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 
 import java.util.List;
 
@@ -40,10 +40,10 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 
-public abstract class TopAdsAdListFragment<T extends
-        TopAdsAdListPresenter, U extends ItemType> extends TopAdsBaseListFragment<T,U> implements
-        AdListMenuListener, BaseListViewListener<U>, SearchView.OnQueryTextListener,
-        BaseListAdapter.Callback<U> {
+public abstract class TopAdsAdListFragment<P extends
+        TopAdsAdListPresenter, T extends ItemType> extends TopAdsBaseListFragment<P, T> implements
+        AdListMenuListener, BaseListViewListener<T>, SearchView.OnQueryTextListener,
+        BaseListAdapter.Callback<T> {
 
     public interface OnAdListFragmentListener {
         void startShowCase();
@@ -83,7 +83,7 @@ public abstract class TopAdsAdListFragment<T extends
         return new BaseDatePickerPresenterImpl(getActivity());
     }
 
-    protected BaseListAdapter getNewAdapter() {
+    protected BaseListAdapter<T> getNewAdapter() {
         return new TopAdsAdListAdapter();
     }
 
@@ -163,7 +163,7 @@ public abstract class TopAdsAdListFragment<T extends
             boolean adChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
             if (adChanged || adDeleted) {
-                setAndSearchForPage(START_PAGE);
+                resetPageAndSearch();
                 setResultAdListChanged();
             }
         } else if (requestCode == REQUEST_CODE_AD_FILTER) {
@@ -263,7 +263,7 @@ public abstract class TopAdsAdListFragment<T extends
     @Override
     public void onSearch(String keyword) {
         this.keyword = keyword;
-        setAndSearchForPage(START_PAGE);
+        resetPageAndSearch();
         if (!searchMode && !TextUtils.isEmpty(keyword)) {
             searchMode = true;
         }

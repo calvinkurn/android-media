@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +22,21 @@ import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by nathan on 8/2/17.
  */
 
-public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity implements BasePickerMultipleItem {
+public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> extends BaseToolbarActivity implements BasePickerMultipleItem<T> {
 
     private static final int ARROW_DEGREE = 180;
 
     public static final String CONTAINER_SEARCH_LIST_TAG = "CONTAINER_SEARCH_LIST_TAG";
     public static final String CONTAINER_CACHE_LIST_TAG = "CONTAINER_CACHE_LIST_TAG";
+
+    public static final String EXTRA_INTENT_PICKER_ITEM_LIST = "EXTRA_INTENT_PICKER_ITEM_LIST";
+    public static final String EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST = "EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST";
 
     private View bottomSheetContainerView;
     private View shadowView;
@@ -45,19 +47,11 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     private View footerView;
     private Button submitButton;
 
-    protected HashSet<ItemPickerType> itemPickerTypeList;
-
     private BottomSheetBehavior bottomSheetBehavior;
 
-    public abstract Fragment getSearchListFragment();
+    protected abstract Fragment getSearchListFragment();
 
-    public abstract Fragment getCacheListFragment();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        itemPickerTypeList = new HashSet<>();
-    }
+    protected abstract Fragment getCacheListFragment();
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -110,10 +104,7 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<>(itemPickerTypeList));
-                setResult(Activity.RESULT_OK, intent);
-                finish();
+
             }
         });
     }
@@ -141,39 +132,21 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     }
 
     @Override
-    public void addItemFromSearch(ItemPickerType itemPickerType) {
-        itemPickerTypeList.add(itemPickerType);
-        notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
+    public void addItemFromSearch(T t) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+        ((BasePickerItemCacheList<T>) fragment).addItem(t);
     }
 
     @Override
-    public void removeItemFromSearch(ItemPickerType itemPickerType) {
-        itemPickerTypeList.remove(itemPickerType);
-        notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
+    public void removeItemFromSearch(T t) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+        ((BasePickerItemCacheList<T>) fragment).removeItem(t);
     }
 
     @Override
-    public void removeItemFromCache(ItemPickerType itemPickerType) {
-        itemPickerTypeList.remove(itemPickerType);
-        notifyFragmentFrom(CONTAINER_CACHE_LIST_TAG);
-    }
-
-    private void notifyFragmentFrom(String fromFragmentTag) {
-        if (TextUtils.isEmpty(fromFragmentTag)) {
-            return;
-        }
-        if (fromFragmentTag.equalsIgnoreCase(CONTAINER_SEARCH_LIST_TAG)) {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
-            ((BasePickerItemCacheList) fragment).notifyChange();
-        } else if (fromFragmentTag.equalsIgnoreCase(CONTAINER_CACHE_LIST_TAG)) {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
-            ((BasePickerItemSearchList) fragment).notifyChange();
-        }
-    }
-
-    @Override
-    public HashSet<ItemPickerType> getItemPickerTypeSet() {
-        return itemPickerTypeList;
+    public void removeItemFromCache(T t) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
+        ((BasePickerItemSearchList) fragment).deselectItem(t);
     }
 
     @Override
@@ -183,14 +156,5 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
