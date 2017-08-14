@@ -13,6 +13,7 @@ import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
 import com.tokopedia.transaction.bcaoneklik.presenter.BcaOneClickPresenter;
 import com.tokopedia.transaction.bcaoneklik.presenter.BcaOneClickPresenterImpl;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
 import rx.Subscriber;
 
@@ -53,7 +54,9 @@ public class BcaOneClickActivity extends TActivity implements BcaOneClickView{
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if(e instanceof ResponseRuntimeException) {
+                            NetworkErrorHelper.showSnackbar(BcaOneClickActivity.this, e.getMessage());
+                        }
                     }
 
                     @Override

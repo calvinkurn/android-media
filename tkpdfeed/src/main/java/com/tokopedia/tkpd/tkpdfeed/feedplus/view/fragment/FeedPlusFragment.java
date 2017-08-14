@@ -588,6 +588,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShowAddFeedMore() {
+        topAdsRecyclerAdapter.shouldLoadAds(false);
         int positionStart = adapter.getItemCount();
         adapter.showAddFeed();
         adapter.notifyItemRangeInserted(positionStart, 1);
