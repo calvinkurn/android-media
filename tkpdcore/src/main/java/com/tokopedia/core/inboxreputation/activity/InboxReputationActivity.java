@@ -18,14 +18,12 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
-import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationView;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -135,18 +133,18 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     @Override
     public List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
-        if (GlobalConfig.isSellerApp()) {
-            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
-            fragmentList.add(sellerReputationFragment.getTkpdFragment());
-        } else {
-            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
-            } else {
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
-            }
-        }
+//        if (GlobalConfig.isSellerApp()) {
+//            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+//            fragmentList.add(sellerReputationFragment.getTkpdFragment());
+//        } else {
+//            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
+//                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+//            } else {
+//                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+//                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+//                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
+//            }
+//        }
         return fragmentList;
     }
 

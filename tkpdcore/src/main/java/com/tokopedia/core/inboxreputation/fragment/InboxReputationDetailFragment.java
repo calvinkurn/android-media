@@ -310,12 +310,12 @@ public class
 
     @Override
     public void setActivityResult() {
-        Intent intent = new Intent();
-        intent.putExtra(InboxReputationFragment.IS_SUCCESS, 1);
-        intent.putExtra("action", InboxReputationFragment.ACTION_UPDATE_REPUTATION);
-        intent.putExtra(InboxReputationFragment.PARAM_INVOICE_NUM, adapter.getInboxReputation().getInvoiceRefNum());
-        intent.putExtra(InboxReputationFragment.PARAM_POSITION, getArguments().getInt(BUNDLE_POSITION, 0));
-        getActivity().setResult(Activity.RESULT_OK, intent);
+//        Intent intent = new Intent();
+//        intent.putExtra(InboxReputationFragment.IS_SUCCESS, 1);
+//        intent.putExtra("action", InboxReputationFragment.ACTION_UPDATE_REPUTATION);
+//        intent.putExtra(InboxReputationFragment.PARAM_INVOICE_NUM, adapter.getInboxReputation().getInvoiceRefNum());
+//        intent.putExtra(InboxReputationFragment.PARAM_POSITION, getArguments().getInt(BUNDLE_POSITION, 0));
+//        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     @Override

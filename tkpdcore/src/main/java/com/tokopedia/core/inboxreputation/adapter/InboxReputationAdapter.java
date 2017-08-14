@@ -1,4 +1,4 @@
-package com.tokopedia.core.inboxreputation.adapter;
+package com.tokopedia.tkpd.tkpdreputation.inbox.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
