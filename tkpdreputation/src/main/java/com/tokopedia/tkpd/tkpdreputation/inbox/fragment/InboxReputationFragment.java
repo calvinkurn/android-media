@@ -14,6 +14,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.InboxReputationPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.adapter.InboxReputationAdapter;
@@ -54,13 +55,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
 
-//        DaggerReputationComponent reputationComponent =
-//                (DaggerReputationComponent) DaggerReputationComponent
-//                        .builder()
-//                        .appComponent(appComponent)
-//                        .build();
-//
-//        reputationComponent.inject(this);
+        DaggerReputationComponent reputationComponent =
+                (DaggerReputationComponent) DaggerReputationComponent
+                        .builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        reputationComponent.inject(this);
     }
 
     @Override

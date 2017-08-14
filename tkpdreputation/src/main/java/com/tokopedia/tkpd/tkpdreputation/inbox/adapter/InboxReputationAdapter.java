@@ -1,19 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
-import com.tokopedia.core.inboxreputation.presenter.InboxReputationFragmentPresenter;
-import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.customview.ReputationView;
 
