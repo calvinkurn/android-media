@@ -7,6 +7,9 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailNewGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailNewProductActivity;
 
@@ -48,16 +51,13 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
-        TopAdsDetailNewGroupActivity.startNewGroup(getActivity(),
-                REQUEST_CODE_AD_STATUS,
-                groupName,
-                itemIdToAdd);
+        Intent intent = TopAdsCreatePromoNewGroupActivity.createIntent(getActivity(),groupName);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
-        Intent intent = new Intent(getActivity(), TopAdsDetailNewProductActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
+        Intent intent = TopAdsCreatePromoWithoutGroupActivity.createIntent(getActivity());
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
@@ -66,13 +66,8 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
         if (!inputChooseGroup.isEnabled()) { // has already been locked
             String groupName = inputChooseGroup.getText().toString();
             if (!TextUtils.isEmpty(groupName)) {
-                TopAdsDetailNewGroupActivity.startEditExistingGroup(
-                        getActivity(),
-                        REQUEST_CODE_AD_STATUS,
-                        choosenId,
-                        groupName,
-                        itemIdToAdd
-                );
+                startActivityForResult(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(),
+                        choosenId), REQUEST_CODE_AD_STATUS);
             }
 
         }

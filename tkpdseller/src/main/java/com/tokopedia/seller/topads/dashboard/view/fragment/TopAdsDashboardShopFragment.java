@@ -10,7 +10,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailNewShopActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
@@ -64,11 +64,10 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     }
 
     public void onCreateShop() {
-        Intent intent = new Intent(getActivity(), TopAdsDetailNewShopActivity.class);
         if (!TextUtils.isEmpty(shopAd.getName())) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, shopAd.getName());
+            Intent intent = TopAdsCreatePromoShopActivity.createIntent(getActivity(), shopAd.getName());
+            startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
         }
-        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     public void loadData() {

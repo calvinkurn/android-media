@@ -14,9 +14,9 @@ import android.widget.RadioGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
@@ -74,32 +74,12 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     protected TopAdsDetailAdViewModel detailAd;
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
 
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
     public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
 
     }
 

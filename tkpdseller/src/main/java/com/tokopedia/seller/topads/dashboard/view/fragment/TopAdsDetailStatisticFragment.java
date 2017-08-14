@@ -8,12 +8,12 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresenter> extends TopAdsDetailFragment<T> {
+public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailViewPresenter, V extends Ad> extends TopAdsDetailViewFragment<T, V> {
 
     private DateLabelView dateLabelView;
 
@@ -67,19 +67,19 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
     }
 
     @Override
-    protected void loadAdDetail(Ad ad) {
+    protected void loadAdDetail(V ad) {
         super.loadAdDetail(ad);
         updateCostView(ad);
         updateDailyBudgetView(ad);
         updateStatisticView(ad);
     }
 
-    protected void updateCostView(Ad ad) {
+    protected void updateCostView(V ad) {
         maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         avgCost.setContent(ad.getStatAvgClick());
     }
 
-    protected void updateDailyBudgetView(Ad ad) {
+    protected void updateDailyBudgetView(V ad) {
         start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
         if (TextUtils.isEmpty(ad.getEndTime())) {
             end.setContent(ad.getEndDate());
@@ -93,7 +93,7 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
         }
     }
 
-    protected void updateStatisticView(Ad ad) {
+    protected void updateStatisticView(V ad) {
         sent.setContent(ad.getStatTotalSpent());
         impr.setContent(ad.getStatTotalImpression());
         click.setContent(ad.getStatTotalClick());

@@ -375,6 +375,30 @@
             android:label="@string/title_activity_etalase_shop_editor"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoShopActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity"
+            android:label="@string/title_group_ad_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditProductMainPageActivity"
+            android:label="@string/title_group_ad_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditShopMainPageActivity"
+            android:label="@string/title_edit_shop_ad"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".shopsettings.shipping.EditShippingActivity"
             android:label="@string/shop_shipping_setting"
             android:screenOrientation="portrait">

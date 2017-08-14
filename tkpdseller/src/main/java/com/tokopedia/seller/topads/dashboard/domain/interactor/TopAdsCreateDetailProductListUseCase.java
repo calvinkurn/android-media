@@ -13,6 +13,8 @@ import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -25,6 +27,7 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
 
     private static final String PRODUCT_AD_TYPE = "1";
 
+    @Inject
     public TopAdsCreateDetailProductListUseCase(ThreadExecutor threadExecutor,
                                                 PostExecutionThread postExecutionThread,
                                                 TopAdsProductAdsRepository topAdsProductAdsRepository) {

@@ -24,7 +24,7 @@ public class TopAdsDetailEditGroupActivity extends TActivity {
             name = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_NAME);
             adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, TopAdsDetailEditGroupFragment.createInstance(name, adId), TopAdsDetailNewGroupFragment.class.getSimpleName())
                 .commit();
     }

@@ -1,12 +1,14 @@
 package com.tokopedia.seller.topads.dashboard.view.model;
 
+import android.os.Parcelable;
+
 import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * Created by Nathaniel on 12/28/2016.
  */
 
-public interface Ad extends ItemType {
+public interface Ad extends ItemType, Parcelable {
 
     String getId();
 

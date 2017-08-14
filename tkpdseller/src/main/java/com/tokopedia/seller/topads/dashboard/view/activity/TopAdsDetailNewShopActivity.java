@@ -22,7 +22,7 @@ public class TopAdsDetailNewShopActivity extends TActivity {
         if (getIntent() != null && getIntent().getExtras() != null) {
             shopName = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_NAME);
         }
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, TopAdsDetailNewShopFragment.createInstance(shopName), TopAdsDetailEditShopFragment.class.getSimpleName())
                 .commit();
     }

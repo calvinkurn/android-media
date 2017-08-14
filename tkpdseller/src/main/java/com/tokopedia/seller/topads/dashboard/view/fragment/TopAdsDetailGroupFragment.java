@@ -11,19 +11,19 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailEditGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 1/3/17.
  */
 
-public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter> {
+public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter, GroupAd> {
 
     public interface OnTopAdsDetailGroupListener {
         void startShowCase();
@@ -31,8 +31,6 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
     private LabelView items;
-
-    private GroupAd groupAd;
 
     private OnTopAdsDetailGroupListener listener;
 
@@ -49,6 +47,10 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     protected void initView(View view) {
         super.initView(view);
         items = (LabelView) view.findViewById(R.id.items);
+        initNameAndItemsView();
+    }
+
+    private void initNameAndItemsView() {
         name.setTitle(getString(R.string.label_top_ads_groups));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.font_black_secondary_54));
         items.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +64,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()));
+        presenter = new TopAdsDetailGroupViewPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()));
     }
 
     @Override
@@ -73,19 +75,19 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(groupAd.getId());
+        presenter.turnOnAds(ad.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(groupAd.getId());
+        presenter.turnOffAds(ad.getId());
     }
 
     @Override
     protected void refreshAd() {
-        if (groupAd != null) {
-            presenter.refreshAd(startDate, endDate, groupAd.getId());
+        if (ad != null) {
+            presenter.refreshAd(startDate, endDate, ad.getId());
         } else {
             presenter.refreshAd(startDate, endDate, adId);
         }
@@ -93,21 +95,18 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     protected void editAd() {
-        Intent intent = new Intent(getActivity(), TopAdsDetailEditGroupActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, ad.getName());
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
+        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), ad, ad.getId());
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        presenter.deleteAd(groupAd.getId());
+        presenter.deleteAd(ad.getId());
     }
 
     @Override
-    public void onAdLoaded(Ad ad) {
-        groupAd = (GroupAd) ad;
+    public void onAdLoaded(GroupAd ad) {
         super.onAdLoaded(ad);
         if (listener != null) {
             listener.startShowCase();
@@ -115,10 +114,10 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     }
 
     @Override
-    protected void updateMainView(Ad ad) {
+    protected void updateMainView(GroupAd ad) {
         super.updateMainView(ad);
-        items.setContent(String.valueOf(groupAd.getTotalItem()));
-        if (groupAd.getTotalItem() > 0) {
+        items.setContent(String.valueOf(ad.getTotalItem()));
+        if (ad.getTotalItem() > 0) {
             items.setVisibleArrow(true);
             items.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         }
@@ -139,9 +138,9 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     }
 
     void onProductItemClicked() {
-        if (groupAd != null) {
+        if (ad != null) {
             Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP, groupAd);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP, ad);
             startActivity(intent);
         }
     }
@@ -153,19 +152,6 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(GROUP_AD_PARCELABLE, groupAd);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedInstanceState) {
-        super.onRestoreState(savedInstanceState);
-        groupAd = savedInstanceState.getParcelable(GROUP_AD_PARCELABLE);
-        onAdLoaded(groupAd);
     }
 
     // for show case

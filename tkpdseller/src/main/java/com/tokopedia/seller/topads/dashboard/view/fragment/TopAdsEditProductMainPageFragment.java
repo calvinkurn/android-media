@@ -1,0 +1,96 @@
+package com.tokopedia.seller.topads.dashboard.view.fragment;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
+import android.view.View;
+
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenterImpl;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordDetailNegativeFragment;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+
+/**
+ * Created by zulfikarrahman on 8/8/17.
+ */
+
+public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageFragment<ProductAd> {
+
+    private LabelView manageGroup;
+
+    public static Fragment createInstance(ProductAd ad, String adId) {
+        Fragment fragment = new TopAdsEditProductMainPageFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, ad);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    protected void initialPresenter() {
+        super.initialPresenter();
+        presenter = new TopAdsDetailProductPresenterImpl<ProductAd>(getActivity(), this, new TopAdsProductAdInteractorImpl(
+                new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
+                new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())));
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_top_ads_edit_product_main_page;
+    }
+
+    @Override
+    protected void refreshAd() {
+        if (ad != null) {
+            presenter.refreshAd(startDate, endDate, ad.getId());
+        } else {
+            presenter.refreshAd(startDate, endDate, adId);
+        }
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        manageGroup = (LabelView) view.findViewById(R.id.manage_group);
+    }
+
+    @Override
+    protected void updateMainView(ProductAd ad) {
+        super.updateMainView(ad);
+        if (isHasGroupAd()) {
+            manageGroup.setContent(ad.getGroupName());
+        } else {
+            manageGroup.setContent(getString(R.string.label_top_ads_empty_group));
+        }
+    }
+
+    @Override
+    protected void setViewListener() {
+        super.setViewListener();
+        manageGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+    private boolean isHasGroupAd() {
+        if (ad == null) {
+            return false;
+        }
+        return !TextUtils.isEmpty(ad.getGroupName()) && ad.getGroupId() > 0;
+    }
+}
