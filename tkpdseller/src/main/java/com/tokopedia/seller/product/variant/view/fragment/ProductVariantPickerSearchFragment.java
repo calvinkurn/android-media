@@ -1,39 +1,39 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
+import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.adapter.ItemPickerType;
-import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
+import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListAdapter;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nathan on 8/4/17.
  */
 
-public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantViewModel> implements BasePickerItemSearchList{
+public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantViewModel>
+        implements BasePickerItemSearchList, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantViewModel> {
 
-    private BasePickerMultipleItem pickerMultipleItem;
+    private BasePickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
+
+    private List<ProductVariantViewModel> itemList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getActivity() instanceof BasePickerMultipleItem) {
-            pickerMultipleItem = (BasePickerMultipleItem) getActivity();
+            pickerMultipleItem = (BasePickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
+        itemList = getActivity().getIntent().getParcelableArrayListExtra(BasePickerMultipleItemActivity.EXTRA_INTENT_PICKER_ITEM_LIST);
     }
 
     @Override
@@ -44,7 +44,13 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        onSearchLoaded(pickerMultipleItem.getItemPickerTypeList(), pickerMultipleItem.getItemPickerTypeList().size());
+        onSearchLoaded(itemList, itemList.size());
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        ((BaseMultipleCheckListAdapter<ProductVariantViewModel>) adapter).setCheckedCallback(this);
     }
 
     @Override
@@ -58,17 +64,22 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     }
 
     @Override
-    public void notifyChange() {
+    public void onItemChecked(ProductVariantViewModel productVariantViewModel, boolean checked) {
+        if (checked) {
+            pickerMultipleItem.addItemFromSearch(productVariantViewModel);
+        } else {
+            pickerMultipleItem.removeItemFromSearch(productVariantViewModel);
+        }
+    }
+
+    @Override
+    public void deselectItem(Object o) {
 
     }
 
     @Override
     public void onSearchSubmitted(String text) {
-        ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-        productVariantViewModel.setId(1);
-        productVariantViewModel.setTitle(UUID.randomUUID().toString());
-        productVariantViewModel.setImageUrl("https://image.flaticon.com/teams/slug/freepik.jpg");
-        pickerMultipleItem.addItemFromSearch(productVariantViewModel);
+
     }
 
     @Override

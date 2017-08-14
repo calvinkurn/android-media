@@ -16,9 +16,10 @@ import java.util.List;
  * Created by nathan on 8/3/17.
  */
 
-public abstract class BaseCacheListFragment extends BaseListFragment<BlankPresenter, ItemPickerType> implements BasePickerItemCacheList {
+public abstract class BaseCacheListFragment<T extends ItemPickerType> extends BaseListFragment<BlankPresenter, T> implements BasePickerItemCacheList<T> {
 
     private BasePickerMultipleItem pickerMultipleItem;
+    private List<T> itemList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public abstract class BaseCacheListFragment extends BaseListFragment<BlankPresen
         if (getActivity() instanceof BasePickerMultipleItem) {
             pickerMultipleItem = (BasePickerMultipleItem) getActivity();
         }
+        itemList = new ArrayList<>();
     }
 
     @Override
@@ -44,8 +46,15 @@ public abstract class BaseCacheListFragment extends BaseListFragment<BlankPresen
     }
 
     @Override
-    public void notifyChange() {
-        onSearchLoaded(pickerMultipleItem.getItemPickerTypeList(), pickerMultipleItem.getItemPickerTypeList().size());
+    public void addItem(T t) {
+        itemList.add(t);
+        onSearchLoaded(itemList, itemList.size());
+    }
+
+    @Override
+    public void removeItem(T t) {
+        itemList.remove(t);
+        onSearchLoaded(itemList, itemList.size());
     }
 
     @Override

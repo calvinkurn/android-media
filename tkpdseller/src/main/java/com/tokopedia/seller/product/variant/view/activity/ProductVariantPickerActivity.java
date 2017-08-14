@@ -34,14 +34,6 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     @Override
-    protected void initialExtra(List<ProductVariantViewModel> itemPickerTypeList) {
-        ArrayList<ProductVariantViewModel> viewModelList = getIntent().getParcelableArrayListExtra(EXTRA_INTENT_PICKER_ITEM_LIST);
-        for (ProductVariantViewModel productVariantViewModel: viewModelList) {
-            itemPickerTypeList.add(productVariantViewModel);
-        }
-    }
-
-    @Override
     public ProductComponent getComponent() {
         return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
     }

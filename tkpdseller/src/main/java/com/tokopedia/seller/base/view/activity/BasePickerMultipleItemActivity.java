@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,22 +47,11 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     private View footerView;
     private Button submitButton;
 
-    private List<T> itemPickerTypeList;
-
     private BottomSheetBehavior bottomSheetBehavior;
 
     protected abstract Fragment getSearchListFragment();
 
     protected abstract Fragment getCacheListFragment();
-
-    protected abstract void initialExtra(List<T> itemPickerTypeList);
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        itemPickerTypeList = new ArrayList<>();
-        initialExtra(itemPickerTypeList);
-    }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -116,10 +104,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<>(itemPickerTypeList));
-                setResult(Activity.RESULT_OK, intent);
-                finish();
+
             }
         });
     }
@@ -147,39 +132,21 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     }
 
     @Override
-    public void addItemFromSearch(T itemPickerType) {
-        itemPickerTypeList.add(itemPickerType);
-        notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
+    public void addItemFromSearch(T t) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+        ((BasePickerItemCacheList<T>) fragment).addItem(t);
     }
 
     @Override
-    public void removeItemFromSearch(T itemPickerType) {
-        itemPickerTypeList.remove(itemPickerType);
-        notifyFragmentFrom(CONTAINER_SEARCH_LIST_TAG);
+    public void removeItemFromSearch(T t) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+        ((BasePickerItemCacheList<T>) fragment).removeItem(t);
     }
 
     @Override
-    public void removeItemFromCache(T itemPickerType) {
-        itemPickerTypeList.remove(itemPickerType);
-        notifyFragmentFrom(CONTAINER_CACHE_LIST_TAG);
-    }
-
-    private void notifyFragmentFrom(String fromFragmentTag) {
-        if (TextUtils.isEmpty(fromFragmentTag)) {
-            return;
-        }
-        if (fromFragmentTag.equalsIgnoreCase(CONTAINER_SEARCH_LIST_TAG)) {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
-            ((BasePickerItemCacheList) fragment).notifyChange();
-        } else if (fromFragmentTag.equalsIgnoreCase(CONTAINER_CACHE_LIST_TAG)) {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
-            ((BasePickerItemSearchList) fragment).notifyChange();
-        }
-    }
-
-    @Override
-    public List<T> getItemPickerTypeList() {
-        return itemPickerTypeList;
+    public void removeItemFromCache(T t) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
+        ((BasePickerItemSearchList) fragment).deselectItem(t);
     }
 
     @Override
@@ -189,14 +156,5 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
