@@ -18,13 +18,37 @@ public class CacheApiWhitelist extends BaseModel {
     @Column
     @Unique(unique = true)
     @PrimaryKey
-    public String host;
+    private String host;
 
     @Column
     @Unique(unique = true)
     @PrimaryKey
-    public String path;
+    private String path;
 
     @Column
-    public long expiredTime;
+    private long expiredTime;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public long getExpiredTime() {
+        return expiredTime;
+    }
+
+    public void setExpiredTime(long expiredTime) {
+        this.expiredTime = expiredTime;
+    }
 }

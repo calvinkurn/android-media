@@ -1,12 +1,17 @@
 package com.tokopedia.core.base.di.module;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.annotation.Nullable;
 
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.base.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.base.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.var.TkpdCache;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,5 +37,24 @@ public class UtilModule {
     @Provides
     public ImageHandler provideImageHandler(@ApplicationContext Context context){
         return new ImageHandler(context);
+    }
+
+    @ApiCacheQualifier
+    @Provides
+    public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
+        return new LocalCacheHandler(context, TkpdCache.CACHE_API);
+    }
+
+
+    @VersionNameQualifier
+    @Provides
+    public
+    @Nullable
+    String provideVersionName(@ApplicationContext Context context) {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
     }
 }

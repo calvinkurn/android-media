@@ -18,27 +18,74 @@ public class CacheApiData extends BaseModel {
     @ContainerKey("unique_id")
     @Column
     @PrimaryKey(autoincrement = true)
-    public long uniqueId;
+    long uniqueId;
 
     @Column
-    public String host;
+    private String host;
 
     @Column
-    public String path;
+    private String path;
 
     @Column
-    public String method;
+    private String method;
 
     @ContainerKey("request_param")
     @Column
-    public String requestParam;
+    private String requestParam;
 
     @ContainerKey("response_body")
     @Column
-    public String responseBody;
+    private String responseBody;
 
     @ContainerKey("response_date")
     @Column
-    public long responseDate;
+    private long responseDate;
 
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getRequestParam() {
+        return requestParam;
+    }
+
+    public void setRequestParam(String requestParam) {
+        this.requestParam = requestParam;
+    }
+
+    public String getResponseBody() {
+        return responseBody;
+    }
+
+    public void setResponseBody(String responseBody) {
+        this.responseBody = responseBody;
+    }
+
+    public long getResponseDate() {
+        return responseDate;
+    }
+
+    public void setResponseDate(long responseDate) {
+        this.responseDate = responseDate;
+    }
 }

@@ -39,9 +39,9 @@ public class CacheHelper {
 
     public CacheApiWhitelist from(String host, String path, long expiredTime) {
         CacheApiWhitelist cacheApiWhitelist = new CacheApiWhitelist();
-        cacheApiWhitelist.host = host;
-        cacheApiWhitelist.path = path;
-        cacheApiWhitelist.expiredTime = expiredTime;
+        cacheApiWhitelist.setHost(host);
+        cacheApiWhitelist.setPath(path);
+        cacheApiWhitelist.setExpiredTime(expiredTime);
 
         return cacheApiWhitelist;
     }
