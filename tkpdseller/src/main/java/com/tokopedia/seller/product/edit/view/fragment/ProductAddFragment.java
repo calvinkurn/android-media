@@ -584,6 +584,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void fetchCategory(long categoryId) {
         presenter.fetchCategory(categoryId);
+        presenter.fetchProductVariant(categoryId);
     }
 
     protected void checkIfCatalogExist(String productName, long categoryId) {

@@ -68,6 +68,10 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         fetchCategoryDisplayUseCase.execute(requestParam, new FetchCategoryDisplaySubscriber());
     }
 
+    @Override
+    public void fetchProductVariant(long categoryId) {
+        //TODO hendry
+    }
 
     private class FetchCategoryDisplaySubscriber extends Subscriber<List<String>> {
         @Override
