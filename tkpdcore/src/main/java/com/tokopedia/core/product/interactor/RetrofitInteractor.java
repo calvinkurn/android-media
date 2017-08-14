@@ -9,6 +9,7 @@ import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 
@@ -60,6 +61,9 @@ public interface RetrofitInteractor {
 
     void getProductCampaign(@NonNull Context context, @NonNull String productId,
                             @NonNull ProductCampaignListener listener);
+
+    void getMostHelpfulReview(@NonNull Context context, @NonNull String productId,
+                            @NonNull MostHelpfulListener listener);
 
     interface ProductDetailListener {
 
@@ -148,6 +152,13 @@ public interface RetrofitInteractor {
     interface ProductCampaignListener {
 
         void onSucccess(ProductCampaign productCampaign);
+
+        void onError(String error);
+    }
+
+    interface MostHelpfulListener {
+
+        void onSucccess(List<Review> reviews);
 
         void onError(String error);
     }
