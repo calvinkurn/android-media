@@ -69,7 +69,6 @@ public class BcaOneClickEditActivity extends TActivity implements BcaOneClickEdi
                             @Override
                             public void onNext(PaymentListModel paymentListModel) {
                                 setResult(ListPaymentTypeActivity.EDIT_BCA_ONE_CLICK_REQUEST_CODE);
-                                finish();
                             }
                         });
             }
