@@ -196,6 +196,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         setContentView(R.layout.activity_booking_ride);
         unbinder = ButterKnife.bind(this);
         initInjector();
+        executeInjector();
         mPresenter.attachView(this);
         mPresenter.initialize();
 
@@ -203,14 +204,18 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
     }
 
-    private void initInjector() {
-        rideComponent = DaggerRideComponent.builder()
-                .appComponent(getApplicationComponent())
-                .build();
+    private void executeInjector() {
+        if (rideComponent == null) initInjector();
         BookingRideComponent component = DaggerBookingRideComponent.builder()
                 .rideComponent(rideComponent)
                 .build();
         component.inject(this);
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
     }
 
     @Override
@@ -451,6 +456,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             }
             fragmentTransaction.replace(containerViewId, fragment, tag);
             fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
         }
     }
 
@@ -861,6 +867,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public RideComponent getComponent() {
+        if (rideComponent == null) initInjector();
         return rideComponent;
     }
 }
