@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,15 +28,6 @@ public class DigitalItemHeaderHolder extends LinearLayout {
 
     private DigitalCategoryItemHeader data;
     private ActionListener actionListener;
-
-    public DigitalItemHeaderHolder(Context context,
-                                   DigitalCategoryItemHeader data,
-                                   ActionListener actionListener) {
-        super(context);
-        initView(context);
-        this.data = data;
-        this.actionListener = actionListener;
-    }
 
     public DigitalItemHeaderHolder(Context context) {
         super(context);
@@ -72,8 +64,16 @@ public class DigitalItemHeaderHolder extends LinearLayout {
         super.invalidate();
         tvName.setText(data.getTitle());
         ivIcon.setImageResource(data.getResIconId());
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (actionListener != null) actionListener.onClickCategoryHeaderMenu(data);
+                else throw new RuntimeException("actionListener is null!!!");
+            }
+        });
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);

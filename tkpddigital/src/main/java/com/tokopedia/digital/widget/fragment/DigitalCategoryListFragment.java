@@ -24,6 +24,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -32,6 +33,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.listener.TokoCashReceivedListener;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
@@ -165,39 +167,50 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     protected void setViewListener() {
         rvDigitalCategoryList.setAdapter(adapter);
-
         headerMyTransaction.setActionListener(this);
         headerFavNumber.setActionListener(this);
         headerSubscription.setActionListener(this);
-
         headerMyTransaction.setData(
                 new DigitalCategoryItemHeader.Builder()
-                        .title("Transaksi Saya")
-                        .siteUrl("http://www.tokopedia.com/")
+                        .title(getString(
+                                R.string.title_header_menu_digital_categories_transaction_list_digital_module
+                        ))
+                        .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
                         .resIconId(R.drawable.ic_header_digital_category_my_transaction)
+                        .typeMenu(DigitalCategoryItemHeader.TypeMenu.TRANSACTION)
                         .build()
         );
 
         headerFavNumber.setData(
                 new DigitalCategoryItemHeader.Builder()
-                        .title("Nomor Favorit")
-                        .siteUrl("http://www.tokopedia.com/")
+                        .title(getString(
+                                R.string.title_header_menu_digital_categories_favorite_number_digital_module
+                        ))
+                        .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                + TkpdBaseURL.DigitalWebsite.PATH_FAVORITE_NUMBER)
                         .resIconId(R.drawable.ic_header_digital_category_favorit_number)
+                        .typeMenu(DigitalCategoryItemHeader.TypeMenu.FAVORITE_NUMBER)
                         .build()
         );
 
         headerSubscription.setData(
                 new DigitalCategoryItemHeader.Builder()
-                        .title("Langganan")
-                        .siteUrl("http://www.tokopedia.com/")
+                        .title(getString(
+                                R.string.title_header_menu_digital_categories_subscription_digital_module
+                        ))
+                        .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS)
                         .resIconId(R.drawable.ic_header_digital_category_subscription)
+                        .typeMenu(DigitalCategoryItemHeader.TypeMenu.SUBSCRIPTION)
                         .build()
         );
-
         headerMyTransaction.invalidate();
         headerFavNumber.invalidate();
         headerSubscription.invalidate();
-
+        headerMyTransaction.setActionListener(this);
+        headerSubscription.setActionListener(this);
+        headerFavNumber.setActionListener(this);
     }
 
     @Override
@@ -427,6 +440,10 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data) {
-
+        switch (data.getTypeMenu()) {
+            default:
+                startActivity(DigitalWebActivity.newInstance(getActivity(), data.getSiteUrl()));
+                break;
+        }
     }
 }
