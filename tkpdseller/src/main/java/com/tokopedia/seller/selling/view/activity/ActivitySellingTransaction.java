@@ -11,51 +11,49 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
-import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
+import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
+import com.tokopedia.seller.selling.presenter.ShippingView;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
-import com.tokopedia.seller.selling.presenter.ShippingView;
-import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +111,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
-    public static Intent createIntent(Context context, int tab){
+    public static Intent createIntent(Context context, int tab) {
         return new Intent(context, ActivitySellingTransaction.class)
                 .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, tab);
     }
@@ -121,6 +119,26 @@ public class ActivitySellingTransaction extends TkpdActivity
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkLogin();
+    }
+
+    private void checkLogin() {
+        if(getApplication() instanceof TkpdCoreRouter) {
+            if (!SessionHandler.isV4Login(this)) {
+                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+                AppWidgetUtil.sendBroadcastToAppWidget(this);
+                finish();
+            } else if(!SessionHandler.isUserSeller(this)){
+                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+                AppWidgetUtil.sendBroadcastToAppWidget(this);
+                finish();
+            }
+        }
     }
 
     @Override
@@ -143,7 +161,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void setTrackerWidget() {
         boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
-        if(fromWidget){
+        if (fromWidget) {
             UnifyTracking.eventAccessAppViewWidget();
         }
     }

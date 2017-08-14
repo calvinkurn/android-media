@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.moengage.inapp.InAppManager;
@@ -89,6 +88,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
+        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click "+deepLinkUri+" bundle "+extras);
         return handleClick(screenName,extras,deepLinkUri);
     }
 
@@ -110,34 +110,21 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(deepLinkUri);
-    }
-
-    private boolean handleClick(@Nullable Uri deepLinkUri){
-
-        Bundle bundle = new Bundle();
-
-        if(deepLinkUri!=null)
-        {
-            bundle.putString(Constants.MOE_KEY_URL, deepLinkUri.toString());
-        }
-
-        return handleClick(null, bundle, deepLinkUri);
+        return handleClick(screenName,extras,deepLinkUri);
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
 
-        if(!TextUtils.isEmpty(extras.getString(Constants.MOE_KEY_URL))){
-            Uri uri = Uri.parse(extras.getString(Constants.MOE_KEY_URL));
+        if(deepLinkUri!=null){
 
-            if(uri.getScheme().equals(Constants.Schemes.HTTP)||uri.getScheme().equals(Constants.Schemes.HTTPS))
+            if(deepLinkUri.getScheme().equals(Constants.Schemes.HTTP)||deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS))
             {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            }else if(uri.getScheme().equals(Constants.Schemes.APPLINKS)){
+            }else if(deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)){
                 Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
