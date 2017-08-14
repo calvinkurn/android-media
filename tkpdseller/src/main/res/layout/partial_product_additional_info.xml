@@ -44,6 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_margin_cards"
+        android:visibility="gone"
         app:content="@string/product_variant_choose"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
