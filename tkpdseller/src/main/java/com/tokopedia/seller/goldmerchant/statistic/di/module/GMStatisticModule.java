@@ -71,7 +71,7 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource) {
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 

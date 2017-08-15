@@ -95,13 +95,9 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
-                .build();
         DaggerPhoneVerifComponent daggerPhoneVerifComponent
                 = (DaggerPhoneVerifComponent) DaggerPhoneVerifComponent.builder()
-                .appComponent(daggerAppComponent)
+                .appComponent( ((MainApplication)getActivity().getApplication()).getAppComponent())
                 .build();
         daggerPhoneVerifComponent.inject(this);
     }

@@ -125,7 +125,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 
 }

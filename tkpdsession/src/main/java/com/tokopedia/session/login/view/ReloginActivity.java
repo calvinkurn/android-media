@@ -50,11 +50,7 @@ public class ReloginActivity extends AppCompatActivity
     @Override
     public AppComponent getComponent() {
         return ((MainApplication) getApplication())
-                .getApplicationComponent(getActivityModule());
-    }
-
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
+                .getApplicationComponent();
     }
 
     @Override

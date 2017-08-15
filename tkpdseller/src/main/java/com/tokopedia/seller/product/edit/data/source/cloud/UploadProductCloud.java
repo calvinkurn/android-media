@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
@@ -16,6 +15,8 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductvalid
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 
@@ -34,7 +35,7 @@ public class UploadProductCloud {
     private final Context context;
 
     @Inject
-    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context) {
+    public UploadProductCloud(UploadProductApi api, @ApplicationContext Context context) {
         this.api = api;
         this.context = context;
     }

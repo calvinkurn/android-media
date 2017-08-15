@@ -21,6 +21,6 @@ public class ProductVariantMainActivity extends BaseSimpleActivity implements Ha
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 }

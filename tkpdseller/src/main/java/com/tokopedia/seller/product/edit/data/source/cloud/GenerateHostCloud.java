@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.product.edit.constant.ProductNetworkConstant;
@@ -10,6 +9,8 @@ import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.GenerateHost;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.GenerateHostModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 
@@ -25,7 +26,7 @@ public class GenerateHostCloud {
     private final Context context;
 
     @Inject
-    public GenerateHostCloud(@ActivityContext Context context, GenerateHostApi generateHostApi) {
+    public GenerateHostCloud(@ApplicationContext Context context, GenerateHostApi generateHostApi) {
         this.generateHostApi = generateHostApi;
         this.context = context;
     }

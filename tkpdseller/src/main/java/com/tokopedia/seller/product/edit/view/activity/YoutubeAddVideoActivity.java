@@ -122,7 +122,7 @@ public class YoutubeAddVideoActivity extends BaseSimpleActivity
     public YoutubeVideoComponent getComponent() {
         return DaggerYoutubeVideoComponent
                 .builder()
-                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule()))
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
                 .youtubeVideoModule(new YoutubeVideoModule())
                 .build();
     }

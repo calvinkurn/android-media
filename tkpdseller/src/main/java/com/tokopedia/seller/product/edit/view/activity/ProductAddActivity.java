@@ -403,6 +403,6 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 }

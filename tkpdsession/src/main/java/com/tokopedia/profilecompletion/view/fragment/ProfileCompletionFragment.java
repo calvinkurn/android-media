@@ -23,9 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
@@ -324,13 +322,9 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
-                .build();
         DaggerProfileCompletionComponent daggerProfileCompletionComponent
                 = (DaggerProfileCompletionComponent) DaggerProfileCompletionComponent.builder()
-                .appComponent(daggerAppComponent)
+                .appComponent(((MainApplication)getActivity().getApplication()).getAppComponent())
                 .build();
         daggerProfileCompletionComponent.inject(this);
     }

@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.keyword.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -23,6 +22,8 @@ import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetai
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 /**
  * @author sebastianuskh on 5/26/17.
@@ -58,7 +59,7 @@ public class TopAdsKeywordEditDetailModule {
 
     @TopAdsKeywordScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource){
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 

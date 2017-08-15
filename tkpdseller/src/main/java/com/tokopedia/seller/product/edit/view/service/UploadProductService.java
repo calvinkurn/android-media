@@ -64,7 +64,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         DaggerAddProductServiceComponent
                 .builder()
-                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getServiceModule()))
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
                 .addProductserviceModule(new AddProductserviceModule())
                 .build().inject(this);
         presenter.attachView(this);

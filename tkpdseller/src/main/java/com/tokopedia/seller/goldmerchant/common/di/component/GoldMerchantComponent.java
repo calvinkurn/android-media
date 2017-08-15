@@ -85,9 +85,6 @@ public interface GoldMerchantComponent {
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
 
-    @ActivityContext
-    Context contextActivity();
-
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();

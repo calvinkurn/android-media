@@ -66,6 +66,6 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 }

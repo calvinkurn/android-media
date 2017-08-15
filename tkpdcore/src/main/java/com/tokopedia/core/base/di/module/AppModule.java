@@ -19,7 +19,7 @@ import dagger.Provides;
 /**
  * @author kulomady on 1/9/17.
  */
-@Module(includes = {ActivityModule.class, NetModule.class})
+@Module(includes = {NetModule.class})
 public class AppModule {
 
     private final Context context;
