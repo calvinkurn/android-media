@@ -64,7 +64,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void navigate(String appLinks, String mobileUrl, String extra) {
+    public void navigateWithMobileUrl(String appLinks, String mobileUrl, String extra) {
         if (((IDigitalModuleRouter) context.getApplicationContext()).isSupportedDelegateDeepLink(appLinks)) {
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionApplink(this.getCurrentActivity(), appLinks);

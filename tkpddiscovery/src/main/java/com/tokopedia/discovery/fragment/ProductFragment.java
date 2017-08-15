@@ -35,6 +35,7 @@ import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.Data;
+import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -56,6 +57,7 @@ import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -305,6 +307,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             if (productAdapter != null && position != -1) {
                 productAdapter.updateWishlistStatus(isWishlist, position);
             }
+        } else if (requestCode == ProductDetailFragment.REQUEST_CODE_LOGIN) {
+            if (SessionHandler.isV4Login(getActivity())){
+                ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(getActivity()));
+            }
         }
     }
 
@@ -421,14 +427,14 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         !TextUtils.isEmpty(productAdapter.getPagingHandlerModel().getUriNext())) {
                     presenter.loadMore(getActivity());
                     if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
-                            && productAdapter.getPagingHandlerModel().getUriNext() !=null
+                            && productAdapter.getPagingHandlerModel().getUriNext() != null
                             && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 } else {
                     topAdsRecyclerAdapter.hideLoading();
                     topAdsRecyclerAdapter.unsetEndlessScrollListener();
-                    if (getActivity() instanceof  BrowseProductActivity) {
+                    if (getActivity() instanceof BrowseProductActivity) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }
@@ -691,6 +697,16 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         } else {
             topAdsRecyclerAdapter.hideLoading();
         }
+    }
+
+    @Override
+    public void actionSuccessRemoveFromWishlist(Integer productId) {
+        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+    }
+
+    @Override
+    public void actionSuccessAddToWishlist(Integer productId) {
+        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
