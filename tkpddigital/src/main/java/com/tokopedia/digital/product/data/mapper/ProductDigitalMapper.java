@@ -263,4 +263,10 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 .operatorId("")
                 .build();
     }
+
+    @Override
+    public List<CategoryData> transformCategoryDataList(Object object) throws MapperDataException {
+        List<CategoryData> categoryDataList = new ArrayList<>();
+        return categoryDataList;
+    }
 }
