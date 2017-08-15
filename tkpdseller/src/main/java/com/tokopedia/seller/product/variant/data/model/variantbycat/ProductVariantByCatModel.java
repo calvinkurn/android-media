@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.variant.data.model;
+package com.tokopedia.seller.product.variant.data.model.variantbycat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by hendry on 8/14/2017.
  */
 
-public class ProductVariantModel implements Parcelable {
+public class ProductVariantByCatModel implements Parcelable {
     @SerializedName("variant_id")
     @Expose
     private int variantId;
@@ -96,10 +96,10 @@ public class ProductVariantModel implements Parcelable {
         dest.writeList(this.units);
     }
 
-    public ProductVariantModel() {
+    public ProductVariantByCatModel() {
     }
 
-    protected ProductVariantModel(Parcel in) {
+    protected ProductVariantByCatModel(Parcel in) {
         this.variantId = in.readInt();
         this.name = in.readString();
         this.identifier = in.readString();
@@ -109,15 +109,15 @@ public class ProductVariantModel implements Parcelable {
         in.readList(this.units, ProductVariantUnit.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<ProductVariantModel> CREATOR = new Parcelable.Creator<ProductVariantModel>() {
+    public static final Parcelable.Creator<ProductVariantByCatModel> CREATOR = new Parcelable.Creator<ProductVariantByCatModel>() {
         @Override
-        public ProductVariantModel createFromParcel(Parcel source) {
-            return new ProductVariantModel(source);
+        public ProductVariantByCatModel createFromParcel(Parcel source) {
+            return new ProductVariantByCatModel(source);
         }
 
         @Override
-        public ProductVariantModel[] newArray(int size) {
-            return new ProductVariantModel[size];
+        public ProductVariantByCatModel[] newArray(int size) {
+            return new ProductVariantByCatModel[size];
         }
     };
 }

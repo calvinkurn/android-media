@@ -4,7 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public interface ProductAddView extends CustomerView {
 
     long getProductDraftId();
 
-    void onSuccessGetProductVariant(List<ProductVariantModel> productVariantModelList);
+    void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList);
 
     void onErrorGetProductVariant (Throwable throwable);
 }

@@ -53,6 +53,8 @@ import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVarian
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryImpl;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
@@ -121,7 +123,7 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ActivityContext Context context, Gson gson){
+    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ApplicationContext Context context, Gson gson){
         return new ProductScoreDataSourceCache(context, gson);
     }
 
@@ -154,7 +156,7 @@ public class ProductAddModule {
     // FOR SHOP_INFO
     @ProductAddScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource){
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.variant.repository;
 
 import com.tokopedia.seller.product.category.di.scope.CategoryPickerScope;
-import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class ProductVariantRepositoryImpl implements ProductVariantRepository {
         this.productVariantDataSource = productVariantDataSource;
     }
 
-    public Observable<List<ProductVariantModel>> fetchProductVariant(long categoryId) {
+    public Observable<List<ProductVariantByCatModel>> fetchProductVariant(long categoryId) {
         return productVariantDataSource.fetchProductVariant(categoryId);
     }
 }

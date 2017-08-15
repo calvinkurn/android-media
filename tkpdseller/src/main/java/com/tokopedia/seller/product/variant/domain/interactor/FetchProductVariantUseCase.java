@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import rx.Observable;
  * @author sebastianuskh on 4/28/17.
  */
 
-public class FetchProductVariantUseCase extends UseCase<List<ProductVariantModel>> {
+public class FetchProductVariantUseCase extends UseCase<List<ProductVariantByCatModel>> {
     private static final int UNSELECTED = -2;
     private static final String CATEGORY_ID = "cat_id";
 
@@ -32,7 +32,7 @@ public class FetchProductVariantUseCase extends UseCase<List<ProductVariantModel
     }
 
     @Override
-    public final Observable<List<ProductVariantModel>> createObservable(RequestParams requestParams) {
+    public final Observable<List<ProductVariantByCatModel>> createObservable(RequestParams requestParams) {
         return productVariantRepository.fetchProductVariant(requestParams.getLong(CATEGORY_ID, UNSELECTED));
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.variant.data.model;
+package com.tokopedia.seller.product.variant.data.model.variantbycat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -24,11 +24,11 @@ public class ProductVariantValue implements Parcelable {
     @Expose
     private String icon;
 
-    public Integer getValueId() {
+    public int getValueId() {
         return valueId;
     }
 
-    public void setValueId(Integer valueId) {
+    public void setValueId(int valueId) {
         this.valueId = valueId;
     }
 
