@@ -53,9 +53,9 @@ public class BcaOneClickFormRepository implements IBcaOneClickFormRepository {
 
     private void handlerError(Response<TkpdResponse> response) {
         if (response.body() == null)
-            throw new ResponseRuntimeException("Data Tidak Ditemukan");
+            throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
         else if(response.body().isNullData()) {
-            throw new ResponseRuntimeException("Data Tidak Ditemukan");
+            throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
         } else if(response.body().isError()) {
             throw new ResponseRuntimeException(response.body()
                     .getErrorMessageJoined());

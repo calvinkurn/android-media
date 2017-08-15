@@ -386,6 +386,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             });
 
+            if (promoList.size() == 1) {
+                holder.bannerIndicator.setVisibility(View.GONE);
+            }
+
             PagerSnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(holder.bannerPager);
 
