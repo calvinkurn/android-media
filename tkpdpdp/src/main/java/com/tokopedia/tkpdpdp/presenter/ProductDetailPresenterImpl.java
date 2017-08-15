@@ -268,7 +268,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         UnifyTracking.eventPDPDetail(pdt);
         TrackingUtils.sendMoEngageOpenProductEvent(successResult);
 
-        if(successResult.getShopInfo().getShopIsOfficial()==1){
+        if (successResult.getShopInfo().getShopIsOfficial() == 1) {
             ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), AppScreen.SCREEN_OFFICIAL_STORE);
         }
 
@@ -322,7 +322,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void requestFaveShop(@NonNull Context context, @NonNull final String shopId) {
+    public void requestFaveShop(@NonNull Context context, @NonNull final String shopId, final Integer productId) {
         if (SessionHandler.isV4Login(context)) {
             retrofitInteractor.favoriteShop(context,
                     NetworkParam.paramFaveShop(shopId),
@@ -332,6 +332,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             if (status) {
                                 viewListener.onShopFavoriteUpdated(1);
                                 viewListener.actionSuccessAddFavoriteShop(shopId);
+                                cacheInteractor.deleteProductDetail(productId);
                             }
                         }
 
@@ -460,9 +461,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             String msg = context.getResources()
                     .getString(R.string.toast_promo_error1)
                     + " "
-                    + MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME,""))
+                    + MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME, ""))
                     + "\n"
-                    + cacheHandler.getString(DATE_EXPIRE,"")
+                    + cacheHandler.getString(DATE_EXPIRE, "")
                     + "\n"
                     + context.getResources().getString(R.string.toast_promo_error2);
             viewListener.showToastMessage(msg);
@@ -535,7 +536,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     if (SessionHandler.isV4Login(context)) {
                         LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
                         int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
-                        if (CartCache > 0 && menuCart!=null) {
+                        if (CartCache > 0 && menuCart != null) {
                             menuCart.setIcon(R.drawable.cart_active_white);
                         }
                     }
@@ -637,7 +638,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void saveStateProductCampaign(Bundle outState, String key, ProductCampaign value) {
-        if(value != null) outState.putParcelable(key, value);
+        if (value != null) outState.putParcelable(key, value);
     }
 
     @Override
@@ -657,7 +658,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             }
         }
 
-        if(productCampaign != null) {
+        if (productCampaign != null) {
             viewListener.showProductCampaign(productCampaign);
         }
     }
@@ -883,7 +884,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     }
 
                     @Override
-                    public void onError(String error) { }
+                    public void onError(String error) {
+                    }
                 }
         );
     }
