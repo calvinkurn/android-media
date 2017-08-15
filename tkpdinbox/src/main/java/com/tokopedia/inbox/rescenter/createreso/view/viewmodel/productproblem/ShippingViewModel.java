@@ -5,9 +5,13 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem;
  */
 
 public class ShippingViewModel {
-    public int id;
-    public String name;
-    public ShippingDetailViewModel detail;
+    private int id;
+    private String name;
+    private ShippingDetailViewModel detail;
+
+    public ShippingViewModel() {
+
+    }
 
     public ShippingViewModel(int id, String name, ShippingDetailViewModel detail) {
         this.id = id;

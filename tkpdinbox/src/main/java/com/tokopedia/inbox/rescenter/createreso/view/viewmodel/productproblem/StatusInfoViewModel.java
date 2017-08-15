@@ -5,8 +5,12 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem;
  */
 
 public class StatusInfoViewModel {
-    public boolean show;
-    public String date;
+    private boolean show;
+    private String date;
+
+    public StatusInfoViewModel() {
+
+    }
 
     public StatusInfoViewModel(boolean show, String date) {
         this.show = show;

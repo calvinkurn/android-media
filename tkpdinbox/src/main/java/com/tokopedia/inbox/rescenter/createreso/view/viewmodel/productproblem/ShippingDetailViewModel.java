@@ -8,6 +8,10 @@ public class ShippingDetailViewModel {
     private int id;
     private String name;
 
+    public ShippingDetailViewModel() {
+
+    }
+
     public ShippingDetailViewModel(int id, String name) {
         this.id = id;
         this.name = name;

@@ -6,10 +6,14 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem;
 
 public class OrderViewModel {
     private OrderDetailViewModel detail;
-    private ProductViewModel product;
+    private OrderProductViewModel product;
     private ShippingViewModel shipping;
 
-    public OrderViewModel(OrderDetailViewModel detail, ProductViewModel product, ShippingViewModel shipping) {
+    public OrderViewModel() {
+
+    }
+
+    public OrderViewModel(OrderDetailViewModel detail, OrderProductViewModel product, ShippingViewModel shipping) {
         this.detail = detail;
         this.product = product;
         this.shipping = shipping;
@@ -23,11 +27,11 @@ public class OrderViewModel {
         this.detail = detail;
     }
 
-    public ProductViewModel getProduct() {
+    public OrderProductViewModel getProduct() {
         return product;
     }
 
-    public void setProduct(ProductViewModel product) {
+    public void setProduct(OrderProductViewModel product) {
         this.product = product;
     }
 

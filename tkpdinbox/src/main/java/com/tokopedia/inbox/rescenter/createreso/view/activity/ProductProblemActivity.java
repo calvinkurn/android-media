@@ -5,13 +5,17 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemActivityPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemActivityPresenterImpl;
+import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
 
 /**
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductProblemActivity extends BasePresenterActivity implements ProductProblemView {
+public class ProductProblemActivity extends BasePresenterActivity<ProductProblemActivityPresenter> implements ProductProblemView, HasComponent {
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -25,7 +29,7 @@ public class ProductProblemActivity extends BasePresenterActivity implements Pro
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ProductProblemActivityPresenterImpl(this, this);
     }
 
     @Override
@@ -35,6 +39,7 @@ public class ProductProblemActivity extends BasePresenterActivity implements Pro
 
     @Override
     protected void initView() {
+        presenter.initFragment();
 
     }
 
@@ -60,5 +65,10 @@ public class ProductProblemActivity extends BasePresenterActivity implements Pro
                     .add(R.id.container, fragment, TAG)
                     .commit();
         }
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
     }
 }

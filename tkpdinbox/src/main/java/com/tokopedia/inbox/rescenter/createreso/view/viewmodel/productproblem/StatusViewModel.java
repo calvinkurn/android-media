@@ -7,11 +7,14 @@ import java.util.List;
  */
 
 public class StatusViewModel {
-    public boolean delivered;
-    public String name;
-    public List<StatusTroubleViewModel> trouble;
-    public StatusInfoViewModel info;
+    private boolean delivered;
+    private String name;
+    private List<StatusTroubleViewModel> trouble;
+    private StatusInfoViewModel info;
 
+    public StatusViewModel() {
+
+    }
 
     public StatusViewModel(boolean delivered, String name, List<StatusTroubleViewModel> trouble, StatusInfoViewModel info) {
         this.delivered = delivered;

@@ -8,6 +8,9 @@ public class ProblemViewModel {
     private int type;
     private String name;
 
+    public ProblemViewModel() {
+
+    }
     public ProblemViewModel(int type, String name) {
         this.type = type;
         this.name = name;

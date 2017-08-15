@@ -10,6 +10,7 @@ import android.os.Handler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseProductTroubleFragment;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseSolutionFragment;
 import com.tokopedia.inbox.rescenter.create.listener.CreateResCenterListener;
@@ -20,7 +21,7 @@ import com.tokopedia.inbox.rescenter.create.service.CreateResCenterReceiver;
 import com.tokopedia.inbox.rescenter.create.service.CreateResCenterService;
 
 public class CreateResCenterActivity extends BasePresenterActivity<CreateResCenterPresenter>
-        implements CreateResCenterListener, CreateResCenterReceiver.Receiver {
+        implements CreateResCenterListener, CreateResCenterReceiver.Receiver, HasComponent {
 
     public static final String KEY_PARAM_ORDER_ID = "ORDER_ID";
     public static final String KEY_PARAM_FLAG_RECEIVED = "FLAG_RECEIVED";
@@ -155,5 +156,10 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
                         .onGetResultCreateResCenter(resultCode, resultData);
             }
         }
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
     }
 }

@@ -8,6 +8,10 @@ public class OrderDetailViewModel {
     private int id;
     private int returnable;
 
+    public OrderDetailViewModel() {
+
+    }
+
     public OrderDetailViewModel(int id, int returnable) {
         this.id = id;
         this.returnable = returnable;

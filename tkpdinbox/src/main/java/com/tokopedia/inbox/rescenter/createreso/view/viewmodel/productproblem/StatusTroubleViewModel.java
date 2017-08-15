@@ -5,8 +5,12 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem;
  */
 
 public class StatusTroubleViewModel {
-    public int id;
-    public String name;
+    private int id;
+    private String name;
+
+    public StatusTroubleViewModel() {
+
+    }
 
     public StatusTroubleViewModel(int id, String name) {
         this.id = id;

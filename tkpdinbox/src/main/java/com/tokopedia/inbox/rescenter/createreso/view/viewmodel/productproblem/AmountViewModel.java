@@ -8,6 +8,10 @@ public class AmountViewModel {
     private String idr;
     private int integer;
 
+    public AmountViewModel() {
+
+    }
+
     public AmountViewModel(String idr, int integer) {
         this.idr = idr;
         this.integer = integer;

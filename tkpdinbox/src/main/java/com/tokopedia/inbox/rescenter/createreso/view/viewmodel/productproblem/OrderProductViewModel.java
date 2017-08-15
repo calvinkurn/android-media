@@ -4,14 +4,18 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem;
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductViewModel {
+public class OrderProductViewModel {
     private String name;
     private String thumb;
     private String variant;
     private int quantity;
     private AmountViewModel amount;
 
-    public ProductViewModel(String name, String thumb, String variant, int quantity, AmountViewModel amount) {
+    public OrderProductViewModel() {
+
+    }
+
+    public OrderProductViewModel(String name, String thumb, String variant, int quantity, AmountViewModel amount) {
         this.name = name;
         this.thumb = thumb;
         this.variant = variant;

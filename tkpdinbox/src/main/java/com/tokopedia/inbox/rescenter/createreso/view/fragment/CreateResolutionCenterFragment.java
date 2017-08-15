@@ -1,18 +1,25 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 
 import javax.inject.Inject;
@@ -21,7 +28,7 @@ import javax.inject.Inject;
  * Created by yoasfs on 11/08/17.
  */
 
-public class CreateResolutionCenterFragment extends BaseDaggerFragment implements CreateResolutionCenterView {
+public class CreateResolutionCenterFragment extends BaseDaggerFragment implements CreateResolutionCenter.View {
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
 
@@ -49,7 +56,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         return fragment;
     }
 
-
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        presenter.attachView(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
     @Override
     protected String getScreenName() {
@@ -58,7 +69,13 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        DaggerCreateResoComponent daggerCreateResoComponent =
+                (DaggerCreateResoComponent) DaggerCreateResoComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
 
+        daggerCreateResoComponent.inject(this);
     }
 
     @Override
@@ -197,6 +214,12 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         } else {
             btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
         }
+    }
+
+    @Override
+    public void transitionToChooseProductAndProblemPage() {
+        Intent intent = new Intent(getActivity(), ProductProblemActivity.class);
+        startActivity(intent);
     }
 
     @Override

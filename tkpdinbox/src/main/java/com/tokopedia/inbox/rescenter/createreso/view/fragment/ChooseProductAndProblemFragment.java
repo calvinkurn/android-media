@@ -1,12 +1,21 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.adapter.ProductProblemAdapter;
+import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblem;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
+import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.List;
@@ -17,8 +26,9 @@ import javax.inject.Inject;
  * Created by yoasfs on 14/08/17.
  */
 
-public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ChooseProductAndProblemView {
+public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ProductProblem.View, ProductProblemItemListener {
     RecyclerView rvProductProblem;
+    ProductProblemAdapter adapter;
 
     public static ChooseProductAndProblemFragment newInstance() {
         ChooseProductAndProblemFragment fragment = new ChooseProductAndProblemFragment();
@@ -28,7 +38,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     }
 
     @Inject
-    ProductProblemPresenter presenter;
+    ProductProblemFragmentPresenter presenter;
 
     @Override
     protected String getScreenName() {
@@ -37,7 +47,19 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
 
     @Override
     protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        DaggerCreateResoComponent daggerCreateResoComponent =
+                (DaggerCreateResoComponent) DaggerCreateResoComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
 
+        daggerCreateResoComponent.inject(this);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        presenter.attachView(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -73,7 +95,10 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     @Override
     protected void initView(View view) {
         rvProductProblem = (RecyclerView) view.findViewById(R.id.rv_product_problem);
-
+        rvProductProblem.setLayoutManager(new LinearLayoutManager(context));
+        adapter = new ProductProblemAdapter(context, this);
+        rvProductProblem.setAdapter(adapter);
+        presenter.populateProductProblem();
     }
 
     @Override
@@ -82,7 +107,12 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     }
 
     @Override
-    public void populateProblemAndProoduct(List<ProductProblemViewModel> productProblemViewModelList) {
+    public void populateProblemAndProduct(List<ProductProblemViewModel> productProblemViewModelList) {
+        adapter.updateAdapter(productProblemViewModelList);
+    }
 
+    @Override
+    public void onItemClicked(ProductProblemViewModel productProblemViewModel) {
+        Toast.makeText(context, productProblemViewModel.getOrder().getProduct().getName(), Toast.LENGTH_SHORT).show();
     }
 }

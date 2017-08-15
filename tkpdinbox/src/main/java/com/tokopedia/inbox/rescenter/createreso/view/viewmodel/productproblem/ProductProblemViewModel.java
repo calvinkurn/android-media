@@ -12,17 +12,21 @@ public class ProductProblemViewModel {
     private OrderViewModel order;
     private List<StatusViewModel> statusList = new ArrayList<>();
 
+    public ProductProblemViewModel() {
+    }
+
     public ProductProblemViewModel(ProblemViewModel problem, OrderViewModel order, List<StatusViewModel> statusList) {
         this.problem = problem;
         this.order = order;
         this.statusList = statusList;
     }
 
+
     public ProblemViewModel getProblem() {
         return problem;
     }
 
-    public void setProblem(ProblemViewModel product) {
+    public void setProblem(ProblemViewModel problem) {
         this.problem = problem;
     }
 

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.ArrayList;
@@ -25,17 +26,25 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     private Context context;
     private List<ProductProblemViewModel> productProblemList = new ArrayList<>();
     private List<Object> itemList = new ArrayList<>();
+    private ProductProblemItemListener listener;
 
 
-
-    public ProductProblemAdapter(Context context, List<ProductProblemViewModel> productProblemList) {
+    public ProductProblemAdapter(Context context, ProductProblemItemListener listener) {
         this.context = context;
-        this.productProblemList = productProblemList;
+        this.listener = listener;
     }
 
     public void updateAdapter(List<ProductProblemViewModel> productProblemList) {
         this.productProblemList = productProblemList;
         itemList = new ArrayList<>();
+        int type = 0;
+        for (ProductProblemViewModel productProblem : productProblemList) {
+            if (type != productProblem.getProblem().getType()) {
+                type = productProblem.getProblem().getType();
+                itemList.add(productProblem.getProblem().getName());
+            }
+            itemList.add(productProblem);
+        }
         notifyDataSetChanged();
     }
 
@@ -47,15 +56,33 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     @Override
     public void onBindViewHolder(ItemHolder holder, int position) {
         if (itemList.get(position) instanceof ProductProblemViewModel) {
-            ProductProblemViewModel productProblem = (ProductProblemViewModel) itemList.get(position);
+            final ProductProblemViewModel productProblem = (ProductProblemViewModel) itemList.get(position);
             holder.tvTitleSection.setVisibility(View.GONE);
-            if (productProblem.getOrder() != null) {
-                Glide.with(context).load(productProblem.getOrder().getProduct().getThumb()).into(holder.ivProduct);
-                holder.tvProductName.setText(productProblem.getOrder().getProduct().getName());
+            holder.llItem.setVisibility(View.VISIBLE);
+            if (productProblem.getProblem().getType() == 1) {
+                holder.tvProductName.setText(productProblem.getProblem().getName());
+            } else {
+                if (productProblem.getOrder() != null) {
+                    if (productProblem.getOrder().getProduct() != null) {
+                        if (productProblem.getOrder().getProduct().getThumb() != null) {
+                            Glide.with(context).load(productProblem.getOrder().getProduct().getThumb()).into(holder.ivProduct);
+                        }
+                        holder.tvProductName.setText(productProblem.getOrder().getProduct().getName());
+                    }
+                }
             }
-        } else {
+            holder.llItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (productProblem.getProblem().getType() == 2) {
+                        listener.onItemClicked(productProblem);
+                    }
+                }
+            });
+        } else if(itemList.get(position) instanceof String) {
             String title = (String) itemList.get(position);
             holder.llItem.setVisibility(View.GONE);
+            holder.tvTitleSection.setVisibility(View.VISIBLE);
             holder.tvTitleSection.setText(title);
         }
     }
