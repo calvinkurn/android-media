@@ -18,8 +18,8 @@ import java.util.List;
 
 public abstract class BaseCacheListFragment<T extends ItemPickerType> extends BaseListFragment<BlankPresenter, T> implements BasePickerItemCacheList<T> {
 
-    private BasePickerMultipleItem pickerMultipleItem;
-    private List<T> itemList;
+    protected BasePickerMultipleItem pickerMultipleItem;
+    protected List<T> itemList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,18 +43,19 @@ public abstract class BaseCacheListFragment<T extends ItemPickerType> extends Ba
     @Override
     protected void searchForPage(int page) {
         // Never used
+        onSearchLoaded(itemList, itemList.size());
     }
 
     @Override
     public void addItem(T t) {
         itemList.add(t);
-        onSearchLoaded(itemList, itemList.size());
+        resetPageAndSearch();
     }
 
     @Override
     public void removeItem(T t) {
         itemList.remove(t);
-        onSearchLoaded(itemList, itemList.size());
+        resetPageAndSearch();
     }
 
     @Override

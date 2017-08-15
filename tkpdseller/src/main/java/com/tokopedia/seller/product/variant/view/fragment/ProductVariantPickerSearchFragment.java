@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantViewModel>
-        implements BasePickerItemSearchList, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantViewModel> {
+        implements BasePickerItemSearchList<ProductVariantViewModel>, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantViewModel> {
 
     private BasePickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
 
@@ -37,14 +37,14 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     }
 
     @Override
-    protected BaseListAdapter<ProductVariantViewModel> getNewAdapter() {
+    protected BaseMultipleCheckListAdapter<ProductVariantViewModel> getNewAdapter() {
         return new ProductVariantPickerSearchListAdapter();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        onSearchLoaded(itemList, itemList.size());
+        resetPageAndSearch();
     }
 
     @Override
@@ -55,12 +55,12 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     protected void searchForPage(int page) {
-
+        onSearchLoaded(itemList, itemList.size());
     }
 
     @Override
     public void onItemClicked(ProductVariantViewModel productVariantViewModel) {
-
+        // Already handled onItemChecked
     }
 
     @Override
@@ -73,8 +73,9 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     }
 
     @Override
-    public void deselectItem(Object o) {
-
+    public void deselectItem(ProductVariantViewModel productVariantViewModel) {
+        ((BaseMultipleCheckListAdapter<ProductVariantViewModel>) adapter).setChecked(productVariantViewModel.getId(), false);
+        resetPageAndSearch();
     }
 
     @Override

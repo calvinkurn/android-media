@@ -3,13 +3,13 @@ package com.tokopedia.seller.product.variant.view.adapter.viewholder;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
@@ -17,41 +17,17 @@ import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckViewHolder<ProductVariantViewModel> {
+public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCacheViewHolder<ProductVariantViewModel> {
 
     private ImageView imageView;
     private TextView titleTextView;
-    private CheckBox checkBox;
+    private ImageButton closeImageButton;
 
-    public ProductVariantItemPickerSearchViewHolder(View itemView) {
+    public ProductVariantItemPickerCacheViewHolder(View itemView) {
         super(itemView);
         imageView = (ImageView) itemView.findViewById(R.id.image_view);
         titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
-        checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
-    }
-
-    @Override
-    public void bindObject(final ProductVariantViewModel productVariantViewModel, boolean checked) {
-        bindObject(productVariantViewModel);
-        setChecked(checked);
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkedCallback != null) {
-                    checkedCallback.onItemChecked(productVariantViewModel, checkBox.isChecked());
-                }
-            }
-        });
-    }
-
-    @Override
-    public boolean isChecked() {
-        return checkBox.isChecked();
-    }
-
-    @Override
-    public void setChecked(boolean checked) {
-        checkBox.setChecked(checked);
+        closeImageButton = (ImageButton) itemView.findViewById(R.id.image_button_close);
     }
 
     @Override
@@ -69,5 +45,13 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
             imageView.setVisibility(View.GONE);
         }
         titleTextView.setText(productVariantViewModel.getTitle());
+        closeImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (removeCallback != null) {
+                    removeCallback.onRemove(productVariantViewModel);
+                }
+            }
+        });
     }
 }
