@@ -1,13 +1,18 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
@@ -22,18 +27,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 8/7/17.
  */
 
-public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductListFragment implements TopAdsDetailEditView {
-    @Inject
-    TopAdsDetailNewGroupPresenter topAdsDetailNewGroupPresenter;
-
-    private StepperListener stepperListener;
-    private TopAdsCreatePromoExistingGroupModel stepperModel;
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        super.setupArguments(arguments);
-        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-    }
+public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductListFragment<TopAdsCreatePromoExistingGroupModel, TopAdsDetailNewGroupPresenter> implements TopAdsDetailNewGroupView {
 
     @Override
     protected void initInjector() {
@@ -43,30 +37,23 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);
-        topAdsDetailNewGroupPresenter.attachView(this);
+        daggerPresenter.attachView(this);
     }
 
     @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if (context instanceof StepperListener) {
-            this.stepperListener = (StepperListener) context;
-        }
+    protected void initiateStepperModel() {
+        stepperModel = new TopAdsCreatePromoExistingGroupModel();
     }
 
     @Override
-    protected void onNextClicked() {
-        super.onNextClicked();
-        if (stepperModel == null) {
-            stepperModel = new TopAdsCreatePromoExistingGroupModel();
-        }
-        stepperModel.setTopAdsProductViewModels(adapter.getData());
-        topAdsDetailNewGroupPresenter.saveAdExisting(stepperModel.getGroupId(), stepperModel.getTopAdsProductViewModels());
+    protected void goToNextPage() {
+        daggerPresenter.saveAdExisting(stepperModel.getGroupId(), stepperModel.getTopAdsProductViewModels());
     }
+
 
     @Override
     public void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
-        //do nothing
+        // do nothing
     }
 
     @Override
@@ -76,19 +63,29 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
 
     @Override
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        hideLoading();
         if (stepperListener != null) {
-            hideLoading();
-            stepperListener.goToNextPage(stepperModel);
+            stepperListener.finishPage();
         }
     }
 
     @Override
     public void onSaveAdError(String errorMessage) {
         hideLoading();
+        showSnackBarError(errorMessage);
     }
 
     @Override
-    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
-        // do nothing
+    public void goToGroupDetail(String groupId) {
+        Intent intent = TopAdsDetailGroupActivity.createIntent(getActivity(), groupId);
+        startActivity(intent);
+    }
+
+    protected void showSnackBarError(String errorMessage) {
+        if (!TextUtils.isEmpty(errorMessage)) {
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
+        }
     }
 }

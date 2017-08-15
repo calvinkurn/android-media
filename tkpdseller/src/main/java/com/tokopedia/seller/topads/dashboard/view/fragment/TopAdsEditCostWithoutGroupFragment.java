@@ -3,7 +3,11 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditProductPresenter;
 
 import javax.inject.Inject;
@@ -12,14 +16,30 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsEditCostWithoutGroupFragment extends TopAdsNewCostFragment {
+public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<TopAdsDetailEditProductPresenter, TopAdsDetailProductViewModel> {
 
-    @Inject
-    TopAdsDetailEditProductPresenter topAdsDetailEditProductPresenter;
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        DaggerTopAdsCreatePromoComponent.builder()
+                .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
+        daggerPresenter.attachView(this);
+    }
 
     @Override
     protected void onClickedNext() {
-//        topAdsDetailEditProductPresenter.saveAd();
+        super.onClickedNext();
+        if(detailAd != null){
+            daggerPresenter.saveAd(detailAd);
+        }
+    }
+
+    @Override
+    protected TopAdsDetailProductViewModel initiateDetailAd() {
+        return new TopAdsDetailProductViewModel();
     }
 
     public static Fragment createInstance(String adId) {

@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tokopedia.seller.lib.widget.LabelView
+            <com.tokopedia.seller.common.widget.LabelView
                 android:id="@+id/manage_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

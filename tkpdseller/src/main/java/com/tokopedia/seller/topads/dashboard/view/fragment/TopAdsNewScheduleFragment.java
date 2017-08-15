@@ -1,26 +1,31 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.dashboard.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,11 +33,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 /**
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public abstract class TopAdsNewScheduleFragment extends BasePresenterFragment{
+public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extends TopAdsDetailAdViewModel, P extends TopAdsDetailEditPresenter>
+        extends BasePresenterFragment implements TopAdsDetailEditView {
+
+    @Inject
+    P daggerPresenter;
+    protected T stepperModel;
+    protected StepperListener stepperListener;
 
     private RadioGroup showTimeRadioGroup;
     private RadioButton showTimeAutomaticRadioButton;
@@ -47,12 +60,28 @@ public abstract class TopAdsNewScheduleFragment extends BasePresenterFragment{
 
     private Date startDate;
     private Date endDate;
-    protected TopAdsDetailAdViewModel detailAd;
+    protected V detailAd;
+    protected String adId;
 
-    protected void onNextClicked(){
+    protected abstract V initiateDetailAd();
+
+    protected void onNextClicked() {
         showLoading();
         populateDataFromFields();
-    };
+    }
+
+    @Override
+    protected void setActionVar() {
+        super.setActionVar();
+        loadAdDetail();
+    }
+
+    private void loadAdDetail() {
+        if (!TextUtils.isEmpty(adId)) {
+            showLoading();
+            daggerPresenter.getDetailAd(adId);
+        }
+    }
 
     @Override
     protected void initView(View view) {
@@ -170,6 +199,7 @@ public abstract class TopAdsNewScheduleFragment extends BasePresenterFragment{
     @Override
     protected void initialVar() {
         super.initialVar();
+        detailAd = initiateDetailAd();
         Calendar startCalendar = Calendar.getInstance();
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DAY_OF_YEAR, 7);
@@ -189,6 +219,10 @@ public abstract class TopAdsNewScheduleFragment extends BasePresenterFragment{
         return new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(date);
     }
 
+    private Date getDate(String dateText, String dateFormat) throws ParseException {
+        return new SimpleDateFormat(dateFormat, Locale.ENGLISH).parse(dateText);
+    }
+
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_new_schedule;
@@ -204,5 +238,109 @@ public abstract class TopAdsNewScheduleFragment extends BasePresenterFragment{
         detailAd.setStartTime(showTimeStartTimeDatePicker.getValue());
         detailAd.setEndDate(showTimeEndDateDatePicker.getValue());
         detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
+    }
+
+    protected void loadAd(V detailAd) {
+        if(detailAd != null) {
+            this.detailAd = detailAd;
+
+            convertDate(detailAd);
+            if (!TextUtils.isEmpty(detailAd.getEndDate())) {
+                showTimeConfigurationTime(true);
+            } else {
+                showTimeConfigurationTime(false);
+            }
+            updateDisplayDateView();
+        }
+    }
+
+    private void convertDate(TopAdsDetailAdViewModel detailAd) {
+        String parseFormat = TopAdsConstant.EDIT_PROMO_DISPLAY_DATE + ", " + TopAdsConstant.EDIT_PROMO_DISPLAY_TIME;
+        try {
+            String date = detailAd.getStartDate() + ", " + detailAd.getStartTime();
+            startDate = getDate(date, parseFormat);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            String date = detailAd.getEndDate() + ", " + detailAd.getEndTime();
+            endDate = getDate(date, parseFormat);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        super.setupArguments(arguments);
+        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+        adId = arguments.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+    }
+
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if(context instanceof StepperListener){
+            this.stepperListener = (StepperListener)context;
+        }
+    }
+
+
+    @Override
+    public void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        hideLoading();
+        loadAd((V) topAdsDetailAdViewModel);
+    }
+
+    @Override
+    public void onLoadDetailAdError(String errorMessage) {
+        hideLoading();
+        showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadAdDetail();
+            }
+        });
+    }
+
+    @Override
+    public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        hideLoading();
+        setResultAdSaved();
+    }
+
+    @Override
+    public void onSaveAdError(String errorMessage) {
+        hideLoading();
+        showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
+        //do nothing
+    }
+
+    protected void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
+    }
+
+    private void setResultAdSaved() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    protected void showSnackBarError(String errorMessage) {
+        if (!TextUtils.isEmpty(errorMessage)) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        daggerPresenter.detachView();
     }
 }

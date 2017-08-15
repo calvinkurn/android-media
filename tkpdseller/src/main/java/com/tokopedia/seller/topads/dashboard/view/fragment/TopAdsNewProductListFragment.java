@@ -1,9 +1,11 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -11,35 +13,62 @@ import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
+import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsNewProductListAdapter;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyProductListDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsNewProductListViewHolder;
+import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
+import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsGetProductDetailView;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductListStepperModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenter;
+import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditGroupPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
  */
 
-public abstract class TopAdsNewProductListFragment extends BaseListFragment<TopAdsDetailEditPresenter, TopAdsProductViewModel> {
+public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListStepperModel, V extends TopAdsGetProductDetailPresenter>
+        extends BasePresenterFragment implements TopAdsNewProductListViewHolder.DeleteListener, TopAdsGetProductDetailView {
 
     public static final int ADD_PRODUCT_REQUEST_CODE = 1;
+
+    @Inject
+    V daggerPresenter;
+
+    private TopAdsNewProductListAdapter adapter;
+    protected T stepperModel;
+    protected StepperListener stepperListener;
 
     private TextView counterProduct;
     private TextView addProduct;
     private Button buttonNext;
+    private RecyclerView recyclerView;
     protected ProgressDialog progressDialog;
 
-    protected void onNextClicked(){
+    protected void onNextClicked() {
         showLoading();
-    };
+        if (stepperModel == null) {
+            initiateStepperModel();
+        }
+        stepperModel.setTopAdsProductViewModels(adapter.getData());
+        goToNextPage();
+    }
+
+    protected abstract void initiateStepperModel();
+
+    protected abstract void goToNextPage();
 
     @Override
     protected void initView(View view) {
@@ -53,14 +82,31 @@ public abstract class TopAdsNewProductListFragment extends BaseListFragment<TopA
     }
 
     @Override
-    protected void initialVar() {
-        super.initialVar();
-        updateSelectedProductCount();
+    protected void setActionVar() {
+        super.setActionVar();
+        if (isShouldLoadItemIdToAdd()) {
+            showLoading();
+            daggerPresenter.getProductDetail(stepperModel.getIdToAdd());
+        }
+    }
+
+    private boolean isShouldLoadItemIdToAdd() {
+        return stepperModel != null &&
+                stepperModel.getIdToAdd() != null &&
+                !stepperModel.getIdToAdd().equals("") &&
+                stepperModel.getTopAdsProductViewModels() != null;
     }
 
     @Override
-    protected void searchForPage(int page) {
-        populateView(adapter.getData());
+    protected void initialVar() {
+        super.initialVar();
+        adapter = new TopAdsNewProductListAdapter(this);
+        adapter.setEmptyView(getEmptyViewDefaultBinder());
+        updateEmptyView();
+        if (stepperModel != null) {
+            populateView(stepperModel.getTopAdsProductViewModels());
+        }
+        updateSelectedProductCount();
     }
 
     @Override
@@ -83,46 +129,9 @@ public abstract class TopAdsNewProductListFragment extends BaseListFragment<TopA
                 onNextClicked();
             }
         });
-    }
-
-    protected void showLoading() {
-        progressDialog.show();
-    }
-
-    protected void hideLoading() {
-        progressDialog.dismiss();
-    }
-
-    @Override
-    protected BaseListAdapter getNewAdapter() {
-        return new TopAdsNewProductListAdapter(getDeleteListener());
-    }
-
-    @Override
-    protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyProductListDataBinder topAdsEmptyProductListDataBinder = new TopAdsEmptyProductListDataBinder(adapter);
-        topAdsEmptyProductListDataBinder.setDrawableAsset(R.drawable.ic_empty_product_list);
-        topAdsEmptyProductListDataBinder.setEmptyTitleText(getString(R.string.top_ads_label_choose_product));
-        topAdsEmptyProductListDataBinder.setEmptyContentText(getString(R.string.top_ads_label_choose_product_desc_empty));
-        return topAdsEmptyProductListDataBinder;
-    }
-
-    @NonNull
-    protected TopAdsNewProductListViewHolder.DeleteListener getDeleteListener() {
-        return new TopAdsNewProductListViewHolder.DeleteListener() {
-            @Override
-            public void onDelete(int position) {
-                removeProduct(position);
-            }
-        };
-    }
-
-    protected void removeProduct(int position) {
-        if(adapter.getData().size() > position){
-            adapter.getData().remove(position);
-            adapter.notifyItemRemoved(position);
-        }
-        updateSelectedProductCount();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     }
 
     @Override
@@ -130,11 +139,6 @@ public abstract class TopAdsNewProductListFragment extends BaseListFragment<TopA
         return R.layout.fragment_top_ads_new_product_list;
     }
 
-
-    @Override
-    public void onItemClicked(TopAdsProductViewModel topAdsProductViewModel) {
-        //do nothing
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -155,11 +159,74 @@ public abstract class TopAdsNewProductListFragment extends BaseListFragment<TopA
             addProduct.setText(R.string.label_top_ads_add_product);
             buttonNext.setEnabled(false);
         }
+        updateEmptyView();
     }
 
-    protected void populateView(List topAdsProductViewModels){
-        if(topAdsProductViewModels != null) {
-            onSearchLoaded(topAdsProductViewModels, topAdsProductViewModels.size());
+    protected void populateView(List topAdsProductViewModels) {
+        adapter.clearData();
+        adapter.addData(topAdsProductViewModels);
+        updateEmptyView();
+    }
+
+    private void updateEmptyView() {
+        if(adapter.getData().size() >0 ){
+            adapter.showEmptyFull(false);
+        }else{
+            adapter.showEmptyFull(true);
         }
+    }
+
+    @Override
+    public void onDelete(int position) {
+        removeProduct(position);
+    }
+
+    protected void removeProduct(int position) {
+        if (adapter.getData().size() > position) {
+            adapter.getData().remove(position);
+            adapter.notifyItemRemoved(position);
+        }
+        updateSelectedProductCount();
+    }
+
+    protected void showLoading() {
+        progressDialog.show();
+    }
+
+    protected void hideLoading() {
+        progressDialog.dismiss();
+    }
+
+
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        TopAdsEmptyProductListDataBinder topAdsEmptyProductListDataBinder = new TopAdsEmptyProductListDataBinder(adapter);
+        topAdsEmptyProductListDataBinder.setDrawableAsset(R.drawable.ic_empty_product_list);
+        topAdsEmptyProductListDataBinder.setEmptyTitleText(getString(R.string.top_ads_label_choose_product));
+        topAdsEmptyProductListDataBinder.setEmptyContentText(getString(R.string.top_ads_label_choose_product_desc_empty));
+        return topAdsEmptyProductListDataBinder;
+    }
+
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        super.setupArguments(arguments);
+        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+    }
+
+
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if (context instanceof StepperListener) {
+            this.stepperListener = (StepperListener) context;
+        }
+    }
+
+    @Override
+    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
+        hideLoading();
+        List<TopAdsProductViewModel> topAdsProductViewModels = new ArrayList<>();
+        topAdsProductViewModels.add(topAdsProductViewModel);
+        populateView(topAdsProductViewModels);
     }
 }

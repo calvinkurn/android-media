@@ -11,9 +11,8 @@ import java.util.List;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsCreatePromoExistingGroupModel implements StepperModel {
+public class TopAdsCreatePromoExistingGroupModel extends TopAdsProductListStepperModel {
     String groupId;
-    List<TopAdsProductViewModel> topAdsProductViewModels;
 
     public String getGroupId() {
         return groupId;
@@ -21,14 +20,6 @@ public class TopAdsCreatePromoExistingGroupModel implements StepperModel {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
-    }
-
-    public List<TopAdsProductViewModel> getTopAdsProductViewModels() {
-        return topAdsProductViewModels;
-    }
-
-    public void setTopAdsProductViewModels(List<TopAdsProductViewModel> topAdsProductViewModels) {
-        this.topAdsProductViewModels = topAdsProductViewModels;
     }
 
     public static Creator<TopAdsCreatePromoExistingGroupModel> getCREATOR() {
@@ -45,13 +36,13 @@ public class TopAdsCreatePromoExistingGroupModel implements StepperModel {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeString(this.groupId);
-        dest.writeTypedList(this.topAdsProductViewModels);
     }
 
     protected TopAdsCreatePromoExistingGroupModel(Parcel in) {
+        super(in);
         this.groupId = in.readString();
-        this.topAdsProductViewModels = in.createTypedArrayList(TopAdsProductViewModel.CREATOR);
     }
 
     public static final Creator<TopAdsCreatePromoExistingGroupModel> CREATOR = new Creator<TopAdsCreatePromoExistingGroupModel>() {

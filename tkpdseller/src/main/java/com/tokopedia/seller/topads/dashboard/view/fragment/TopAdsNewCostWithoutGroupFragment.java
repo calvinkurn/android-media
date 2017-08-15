@@ -1,20 +1,16 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailProductViewModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
@@ -26,19 +22,10 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment implements TopAdsDetailEditView {
+public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<TopAdsCreatePromoWithoutGroupModel, TopAdsDetailGroupViewModel> implements TopAdsDetailEditView {
 
     @Inject
     TopAdsDetailNewProductPresenter topAdsDetailNewProductPresenter;
-
-    private StepperListener stepperListener;
-    private TopAdsCreatePromoWithoutGroupModel stepperModel;
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        super.setupArguments(arguments);
-        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-    }
 
     @Override
     protected void initInjector() {
@@ -52,26 +39,17 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment imp
     }
 
     @Override
-    protected void initialVar() {
-        super.initialVar();
-        detailAd = new TopAdsDetailProductViewModel();
-    }
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if (context instanceof StepperListener) {
-            this.stepperListener = (StepperListener) context;
-        }
-    }
-
-    @Override
     protected void onClickedNext() {
         if (stepperModel == null) {
             stepperModel = new TopAdsCreatePromoWithoutGroupModel();
         }
-        stepperModel.setDetailProductViewModel((TopAdsDetailProductViewModel) detailAd);
-        topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getProductViewModels()));
+        stepperModel.setDetailGroupCostViewModel(detailAd);
+        topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()));
+    }
+
+    @Override
+    protected TopAdsDetailGroupViewModel initiateDetailAd() {
+        return new TopAdsDetailGroupViewModel();
     }
 
     @Override

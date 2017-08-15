@@ -1,22 +1,24 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
+import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
 import com.tokopedia.seller.topads.dashboard.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
@@ -24,7 +26,10 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
  * Created by zulfikarrahman on 8/7/17.
  */
 
-public abstract class TopAdsNewCostFragment extends BasePresenterFragment {
+public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends TopAdsDetailAdViewModel> extends BasePresenterFragment {
+
+    protected T stepperModel;
+    protected StepperListener stepperListener;
 
     private TextInputLayout maxPriceInputLayout;
     private PrefixEditText maxPriceEditText;
@@ -37,12 +42,14 @@ public abstract class TopAdsNewCostFragment extends BasePresenterFragment {
     protected Button submitButton;
     protected ProgressDialog progressDialog;
 
-    protected TopAdsDetailAdViewModel detailAd;
+    protected V detailAd;
 
     protected void onClickedNext(){
         showLoading();
         populateDataFromFields();
     };
+
+    protected abstract V initiateDetailAd();
 
     @Override
     protected void initView(View view) {
@@ -60,6 +67,12 @@ public abstract class TopAdsNewCostFragment extends BasePresenterFragment {
         budgetPerDayEditText.setText(budgetPerDayEditText.getText());
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        detailAd = initiateDetailAd();
     }
 
     @Override
@@ -163,8 +176,35 @@ public abstract class TopAdsNewCostFragment extends BasePresenterFragment {
         }
     }
 
+    protected void loadAd(V detailAd) {
+        if(detailAd != null) {
+            this.detailAd = detailAd;
+            maxPriceEditText.setText(String.valueOf(detailAd.getPriceBid()));
+            if (detailAd.getPriceDaily() > 0) {
+                showBudgetPerDay(true);
+                budgetPerDayEditText.setText(String.valueOf(detailAd.getPriceDaily()));
+            } else {
+                showBudgetPerDay(false);
+            }
+        }
+    }
+
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_new_cost;
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        super.setupArguments(arguments);
+        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+    }
+
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if(context instanceof StepperListener){
+            this.stepperListener = (StepperListener)context;
+        }
     }
 }

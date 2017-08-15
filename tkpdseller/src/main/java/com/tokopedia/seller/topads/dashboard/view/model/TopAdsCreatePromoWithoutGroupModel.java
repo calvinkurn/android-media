@@ -2,32 +2,18 @@ package com.tokopedia.seller.topads.dashboard.view.model;
 
 import android.os.Parcel;
 
-import com.tokopedia.seller.base.view.model.StepperModel;
-
-import java.util.List;
-
 /**
  * Created by zulfikarrahman on 8/9/17.
  */
 
-public class TopAdsCreatePromoWithoutGroupModel implements StepperModel {
+public class TopAdsCreatePromoWithoutGroupModel extends TopAdsProductListStepperModel {
     TopAdsDetailProductViewModel detailProductViewModel;
-    List<TopAdsProductViewModel> productViewModels;
 
     public TopAdsDetailProductViewModel getDetailProductViewModel() {
         return detailProductViewModel;
     }
 
-    public void setDetailProductViewModel(TopAdsDetailProductViewModel detailProductViewModel) {
-        this.detailProductViewModel = detailProductViewModel;
-    }
-
-    public List<TopAdsProductViewModel> getProductViewModels() {
-        return productViewModels;
-    }
-
-    public void setProductViewModels(List<TopAdsProductViewModel> productViewModels) {
-        this.productViewModels = productViewModels;
+    public TopAdsCreatePromoWithoutGroupModel() {
     }
 
     @Override
@@ -37,16 +23,13 @@ public class TopAdsCreatePromoWithoutGroupModel implements StepperModel {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeParcelable(this.detailProductViewModel, flags);
-        dest.writeTypedList(this.productViewModels);
-    }
-
-    public TopAdsCreatePromoWithoutGroupModel() {
     }
 
     protected TopAdsCreatePromoWithoutGroupModel(Parcel in) {
+        super(in);
         this.detailProductViewModel = in.readParcelable(TopAdsDetailProductViewModel.class.getClassLoader());
-        this.productViewModels = in.createTypedArrayList(TopAdsProductViewModel.CREATOR);
     }
 
     public static final Creator<TopAdsCreatePromoWithoutGroupModel> CREATOR = new Creator<TopAdsCreatePromoWithoutGroupModel>() {
@@ -60,4 +43,14 @@ public class TopAdsCreatePromoWithoutGroupModel implements StepperModel {
             return new TopAdsCreatePromoWithoutGroupModel[size];
         }
     };
+
+    public void setDetailGroupCostViewModel(TopAdsDetailGroupViewModel detailProductCostViewModel) {
+        if(detailProductViewModel == null) {
+            this.detailProductViewModel = detailProductCostViewModel;
+        }else if(detailProductCostViewModel != null){
+            detailProductViewModel.setPriceBid(detailProductCostViewModel.getPriceBid());
+            detailProductViewModel.setPriceDaily(detailProductCostViewModel.getPriceDaily());
+            detailProductViewModel.setBudget(detailProductCostViewModel.isBudget());
+        }
+    }
 }

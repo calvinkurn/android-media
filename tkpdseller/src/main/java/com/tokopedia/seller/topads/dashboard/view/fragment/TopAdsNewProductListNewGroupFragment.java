@@ -4,49 +4,41 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductListStepperModel;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenter;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
  */
 
-public class TopAdsNewProductListNewGroupFragment extends TopAdsNewProductListFragment {
-
-    private StepperListener stepperListener;
-    private TopAdsCreatePromoNewGroupModel stepperModel;
+public class TopAdsNewProductListNewGroupFragment extends TopAdsNewProductListFragment<TopAdsProductListStepperModel, TopAdsGetProductDetailPresenter>{
 
     @Override
-    protected void setupArguments(Bundle arguments) {
-        super.setupArguments(arguments);
-        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+    protected void initInjector() {
+        super.initInjector();
+        DaggerTopAdsCreatePromoComponent.builder()
+                .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
+        daggerPresenter.attachView(this);
     }
 
     @Override
-    protected void initialVar() {
-        super.initialVar();
-        if(stepperModel != null ){
-            populateView(stepperModel.getTopAdsProductViewModels());
-        }
+    protected void initiateStepperModel() {
+        stepperModel = new TopAdsProductListStepperModel();
     }
 
     @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if(context instanceof StepperListener){
-            this.stepperListener = (StepperListener)context;
-        }
-    }
-
-    @Override
-    protected void onNextClicked() {
-        if(stepperListener != null) {
-            if(stepperModel == null){
-                stepperModel = new TopAdsCreatePromoNewGroupModel();
-            }
-            stepperModel.setTopAdsProductViewModels(adapter.getData());
-            stepperListener.goToNextPage(stepperModel);
-        }
+    protected void goToNextPage() {
+        hideLoading();
+        stepperListener.goToNextPage(stepperModel);
     }
 }

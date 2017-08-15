@@ -61,7 +61,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     @Override
     protected void loadAdDetail() {
         // no need to load detail for group, and for existing group
-        // presenter.getDetailAd(adId);
+        // presenter.initiateDetailAd(adId);
     }
 
     @Override

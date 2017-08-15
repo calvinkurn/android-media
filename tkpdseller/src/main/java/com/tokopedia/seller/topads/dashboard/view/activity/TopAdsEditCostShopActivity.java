@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditCostShopFragment;
@@ -13,7 +15,7 @@ import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditScheduleExi
  * Created by zulfikarrahman on 8/9/17.
  */
 
-public class TopAdsEditCostShopActivity extends BaseSimpleActivity {
+public class TopAdsEditCostShopActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
     public static Intent createIntent(Context context, String shopId){
         Intent intent = new Intent(context, TopAdsEditCostShopActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, shopId);
@@ -33,5 +35,10 @@ public class TopAdsEditCostShopActivity extends BaseSimpleActivity {
             fragment = TopAdsEditCostShopFragment.createInstance(shopId);
             return fragment;
         }
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

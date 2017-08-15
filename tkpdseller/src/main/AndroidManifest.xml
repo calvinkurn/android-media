@@ -399,6 +399,34 @@
             android:label="@string/title_edit_shop_ad"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditGroupNameActivity"
+            android:label="@string/label_top_ads_group_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditCostProductActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditScheduleProductActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditCostShopActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditScheduleShopActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".shopsettings.shipping.EditShippingActivity"
             android:label="@string/shop_shipping_setting"
             android:screenOrientation="portrait">

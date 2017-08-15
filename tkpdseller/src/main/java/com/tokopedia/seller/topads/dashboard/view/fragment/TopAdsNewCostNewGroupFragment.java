@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
@@ -12,28 +13,13 @@ import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGrou
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment {
-
-    private StepperListener stepperListener;
-    private TopAdsCreatePromoNewGroupModel stepperModel;
+public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsCreatePromoNewGroupModel, TopAdsDetailGroupViewModel> {
 
     @Override
-    protected void initialVar() {
-        super.initialVar();
-        detailAd = new TopAdsDetailGroupViewModel();
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        super.setupArguments(arguments);
-        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-    }
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if(context instanceof StepperListener){
-            this.stepperListener = (StepperListener)context;
+    protected void initView(View view) {
+        super.initView(view);
+        if(stepperModel != null){
+            loadAd(stepperModel.getDetailAd());
         }
     }
 
@@ -44,9 +30,14 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment {
             if(stepperModel == null){
                 stepperModel = new TopAdsCreatePromoNewGroupModel();
             }
-            stepperModel.setDetailAd((TopAdsDetailGroupViewModel)detailAd);
+            stepperModel.setDetailGroupCostViewModel(detailAd);
             stepperListener.goToNextPage(stepperModel);
             hideLoading();
         }
+    }
+
+    @Override
+    protected TopAdsDetailGroupViewModel initiateDetailAd() {
+        return new TopAdsDetailGroupViewModel();
     }
 }

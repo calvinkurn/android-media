@@ -5,8 +5,6 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailPresenter;
 

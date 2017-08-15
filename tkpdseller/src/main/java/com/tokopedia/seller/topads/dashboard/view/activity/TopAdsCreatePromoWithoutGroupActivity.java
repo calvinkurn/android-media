@@ -2,7 +2,9 @@ package com.tokopedia.seller.topads.dashboard.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
@@ -10,6 +12,8 @@ import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewCostWithoutGroupFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewProductListWithoutGroupFragment;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +38,20 @@ public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity {
         }
     }
 
-    public static Intent createIntent(Context context){
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        String itemIdToAdd = null;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            itemIdToAdd = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
+        }
+        stepperModel = new TopAdsCreatePromoWithoutGroupModel();
+        ((TopAdsCreatePromoWithoutGroupModel)stepperModel).setIdToAdd(itemIdToAdd);
+        super.onCreate(savedInstanceState);
+    }
+
+    public static Intent createIntent(Context context, String itemIdToAdd){
         Intent intent = new Intent(context, TopAdsCreatePromoWithoutGroupActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         return intent;
     }
 }

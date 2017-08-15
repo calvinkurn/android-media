@@ -2,9 +2,13 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoShopModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
@@ -18,33 +22,32 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment implements TopAdsDetailEditView {
-
-    @Inject
-    TopAdsDetailNewShopPresenter topAdsDetailShopPresenter;
-
-    private StepperListener stepperListener;
-    private TopAdsCreatePromoShopModel stepperModel;
+public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<TopAdsCreatePromoShopModel,
+        TopAdsDetailShopViewModel, TopAdsDetailNewShopPresenter>{
 
     @Override
-    protected void setupArguments(Bundle arguments) {
-        super.setupArguments(arguments);
-        detailAd = new TopAdsDetailShopViewModel();
-        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+    protected void initialVar() {
+        super.initialVar();
+        if(stepperModel != null){
+            loadAd(stepperModel.getTopAdsDetailShopViewModel());
+        }
     }
+
 
     @Override
     protected void initInjector() {
         super.initInjector();
-        topAdsDetailShopPresenter.attachView(this);
+        DaggerTopAdsCreatePromoComponent.builder()
+                .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
+        daggerPresenter.attachView(this);
     }
 
     @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if (context instanceof StepperListener) {
-            this.stepperListener = (StepperListener) context;
-        }
+    protected TopAdsDetailShopViewModel initiateDetailAd() {
+        return new TopAdsDetailShopViewModel();
     }
 
     @Override
@@ -53,34 +56,15 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment imp
         if (stepperModel == null) {
             stepperModel = new TopAdsCreatePromoShopModel();
         }
-        stepperModel.setTopAdsDetailShopViewModel((TopAdsDetailShopViewModel) detailAd);
-        topAdsDetailShopPresenter.saveAd(stepperModel.getTopAdsDetailShopViewModel());
-    }
-
-    @Override
-    public void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
-
-    }
-
-    @Override
-    public void onLoadDetailAdError(String errorMessage) {
-
+        stepperModel.setDetailShopScheduleViewModel(detailAd);
+        daggerPresenter.saveAd(stepperModel.getTopAdsDetailShopViewModel());
     }
 
     @Override
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
-        if (stepperListener != null) {
-            stepperListener.goToNextPage(stepperModel);
+        super.onSaveAdSuccess(topAdsDetailAdViewModel);
+        if(stepperListener != null) {
+            stepperListener.finishPage();
         }
-    }
-
-    @Override
-    public void onSaveAdError(String errorMessage) {
-
-    }
-
-    @Override
-    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
-
     }
 }

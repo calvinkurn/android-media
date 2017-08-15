@@ -51,13 +51,13 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
-        Intent intent = TopAdsCreatePromoNewGroupActivity.createIntent(getActivity(),groupName);
+        Intent intent = TopAdsCreatePromoNewGroupActivity.createIntent(getActivity(),groupName, itemIdToAdd);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
-        Intent intent = TopAdsCreatePromoWithoutGroupActivity.createIntent(getActivity());
+        Intent intent = TopAdsCreatePromoWithoutGroupActivity.createIntent(getActivity(), itemIdToAdd);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
@@ -67,7 +67,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
             String groupName = inputChooseGroup.getText().toString();
             if (!TextUtils.isEmpty(groupName)) {
                 startActivityForResult(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(),
-                        choosenId), REQUEST_CODE_AD_STATUS);
+                        choosenId, itemIdToAdd), REQUEST_CODE_AD_STATUS);
             }
 
         }

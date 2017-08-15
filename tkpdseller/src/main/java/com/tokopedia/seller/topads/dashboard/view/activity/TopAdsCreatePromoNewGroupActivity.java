@@ -42,17 +42,21 @@ public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         String name = null;
+        String itemIdToAdd = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
             name = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_NAME);
+            itemIdToAdd = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
         }
         stepperModel = new TopAdsCreatePromoNewGroupModel();
         ((TopAdsCreatePromoNewGroupModel)stepperModel).setGroupName(name);
+        ((TopAdsCreatePromoNewGroupModel)stepperModel).setIdToAdd(itemIdToAdd);
         super.onCreate(savedInstanceState);
     }
 
-    public static Intent createIntent(Context context, String name){
+    public static Intent createIntent(Context context, String name, String itemIdToAdd){
         Intent intent = new Intent(context, TopAdsCreatePromoNewGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, name);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         return intent;
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
@@ -14,27 +15,12 @@ import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailShopViewMode
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment {
-    private StepperListener stepperListener;
-    private TopAdsCreatePromoShopModel stepperModel;
-
+public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreatePromoShopModel, TopAdsDetailShopViewModel> {
     @Override
-    protected void initialVar() {
-        super.initialVar();
-        detailAd = new TopAdsDetailShopViewModel();
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        super.setupArguments(arguments);
-        stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-    }
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if(context instanceof StepperListener){
-            this.stepperListener = (StepperListener)context;
+    protected void initView(View view) {
+        super.initView(view);
+        if(stepperModel != null){
+            loadAd(stepperModel.getTopAdsDetailShopViewModel());
         }
     }
 
@@ -45,8 +31,14 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment {
             if(stepperModel == null){
                 stepperModel = new TopAdsCreatePromoShopModel();
             }
-            stepperModel.setTopAdsDetailShopViewModel((TopAdsDetailShopViewModel) detailAd);
+            stepperModel.setDetailShopCostViewModel(detailAd);
             stepperListener.goToNextPage(stepperModel);
+            hideLoading();
         }
+    }
+
+    @Override
+    protected TopAdsDetailShopViewModel initiateDetailAd() {
+        return new TopAdsDetailShopViewModel();
     }
 }

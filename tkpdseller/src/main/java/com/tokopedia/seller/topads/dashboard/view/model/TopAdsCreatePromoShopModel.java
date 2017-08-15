@@ -15,8 +15,24 @@ public class TopAdsCreatePromoShopModel implements StepperModel {
         return topAdsDetailShopViewModel;
     }
 
-    public void setTopAdsDetailShopViewModel(TopAdsDetailShopViewModel topAdsDetailShopViewModel) {
-        this.topAdsDetailShopViewModel = topAdsDetailShopViewModel;
+    public void setDetailShopScheduleViewModel(TopAdsDetailShopViewModel topAdsDetailShopViewModel){
+        if(this.topAdsDetailShopViewModel == null) {
+            this.topAdsDetailShopViewModel = topAdsDetailShopViewModel;
+        }else if(topAdsDetailShopViewModel != null){
+            this.topAdsDetailShopViewModel.setScheduled(topAdsDetailShopViewModel.isScheduled());
+            this.topAdsDetailShopViewModel.setStartDate(topAdsDetailShopViewModel.getStartDate());
+            this.topAdsDetailShopViewModel.setStartTime(topAdsDetailShopViewModel.getStartTime());
+        }
+    }
+
+    public void setDetailShopCostViewModel(TopAdsDetailShopViewModel topAdsDetailShopViewModel) {
+        if(this.topAdsDetailShopViewModel == null) {
+            this.topAdsDetailShopViewModel = topAdsDetailShopViewModel;
+        }else if(topAdsDetailShopViewModel != null){
+            this.topAdsDetailShopViewModel.setPriceBid(topAdsDetailShopViewModel.getPriceBid());
+            this.topAdsDetailShopViewModel.setPriceDaily(topAdsDetailShopViewModel.getPriceDaily());
+            this.topAdsDetailShopViewModel.setBudget(topAdsDetailShopViewModel.isBudget());
+        }
     }
 
     @Override

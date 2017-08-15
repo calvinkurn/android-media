@@ -11,10 +11,9 @@ import java.util.List;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsCreatePromoNewGroupModel implements StepperModel {
+public class TopAdsCreatePromoNewGroupModel extends TopAdsProductListStepperModel {
     String groupName;
     TopAdsDetailGroupViewModel detailAd;
-    List<TopAdsProductViewModel> topAdsProductViewModels;
 
     public String getGroupName() {
         return groupName;
@@ -32,12 +31,29 @@ public class TopAdsCreatePromoNewGroupModel implements StepperModel {
         this.detailAd = detailAd;
     }
 
-    public List<TopAdsProductViewModel> getTopAdsProductViewModels() {
-        return topAdsProductViewModels;
+    public void setDetailGroupScheduleViewModel(TopAdsDetailGroupViewModel detailGroupViewModel){
+        if(detailAd == null) {
+            detailAd = detailGroupViewModel;
+        }else if(detailGroupViewModel != null){
+            detailAd.setScheduled(detailGroupViewModel.isScheduled());
+            detailAd.setStartDate(detailGroupViewModel.getStartDate());
+            detailAd.setStartTime(detailGroupViewModel.getStartTime());
+            detailAd.setEndDate(detailGroupViewModel.getEndDate());
+            detailAd.setEndTime(detailGroupViewModel.getEndTime());
+        }
     }
 
-    public void setTopAdsProductViewModels(List<TopAdsProductViewModel> topAdsProductViewModels) {
-        this.topAdsProductViewModels = topAdsProductViewModels;
+    public void setDetailGroupCostViewModel(TopAdsDetailGroupViewModel detailGroupViewModel) {
+        if(detailAd == null) {
+            detailAd = detailGroupViewModel;
+        }else if(detailGroupViewModel != null){
+            detailAd.setPriceBid(detailGroupViewModel.getPriceBid());
+            detailAd.setPriceDaily(detailGroupViewModel.getPriceDaily());
+            detailAd.setBudget(detailGroupViewModel.isBudget());
+        }
+    }
+
+    public TopAdsCreatePromoNewGroupModel() {
     }
 
     @Override
@@ -47,21 +63,18 @@ public class TopAdsCreatePromoNewGroupModel implements StepperModel {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeString(this.groupName);
         dest.writeParcelable(this.detailAd, flags);
-        dest.writeTypedList(this.topAdsProductViewModels);
-    }
-
-    public TopAdsCreatePromoNewGroupModel() {
     }
 
     protected TopAdsCreatePromoNewGroupModel(Parcel in) {
+        super(in);
         this.groupName = in.readString();
         this.detailAd = in.readParcelable(TopAdsDetailGroupViewModel.class.getClassLoader());
-        this.topAdsProductViewModels = in.createTypedArrayList(TopAdsProductViewModel.CREATOR);
     }
 
-    public static final Parcelable.Creator<TopAdsCreatePromoNewGroupModel> CREATOR = new Parcelable.Creator<TopAdsCreatePromoNewGroupModel>() {
+    public static final Creator<TopAdsCreatePromoNewGroupModel> CREATOR = new Creator<TopAdsCreatePromoNewGroupModel>() {
         @Override
         public TopAdsCreatePromoNewGroupModel createFromParcel(Parcel source) {
             return new TopAdsCreatePromoNewGroupModel(source);
