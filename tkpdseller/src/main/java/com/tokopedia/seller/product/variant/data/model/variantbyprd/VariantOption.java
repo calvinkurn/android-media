@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 /**
- * {"variant_option":[{"pv_id":656228,"name":"Warna","identifier":"colour","unit_name":"","v_id":1,"vu_id":0,"status":2,"position":1,"option":[{"pvo_id":2184932,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom merah","status":1,"hex":"","picture":null},{"pvo_id":2184931,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom biru","status":1,"hex":"","picture":null}]},{"pv_id":656229,"name":"Ukuran Pakaian","identifier":"size","unit_name":"UK","v_id":6,"vu_id":9,"status":1,"position":2,"option":[{"pvo_id":2184933,"v_id":6,"vu_id":0,"vuv_id":0,"value":"custom 15","status":1,"hex":"","picture":null},{"pvo_id":2184383,"v_id":6,"vu_id":0,"vuv_id":37,"value":"6","status":1,"hex":"","picture":null}]}]}
+ * {"variant_option":[{"pv_id":656228,"name":"Warna","identifier":"colour","unit_name":"","v_id":1,"vu_id":0,"status":2,"position":1,"optionList":[{"pvo_id":2184932,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom merah","status":1,"hex":"","picture":null},{"pvo_id":2184931,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom biru","status":1,"hex":"","picture":null}]},{"pv_id":656229,"name":"Ukuran Pakaian","identifier":"size","unit_name":"UK","v_id":6,"vu_id":9,"status":1,"position":2,"optionList":[{"pvo_id":2184933,"v_id":6,"vu_id":0,"vuv_id":0,"value":"custom 15","status":1,"hex":"","picture":null},{"pvo_id":2184383,"v_id":6,"vu_id":0,"vuv_id":37,"value":"6","status":1,"hex":"","picture":null}]}]}
  */
 public class VariantOption implements Parcelable {
 
@@ -43,78 +43,42 @@ public class VariantOption implements Parcelable {
     private int position;
     @SerializedName("option")
     @Expose
-    private List<Option> option = null;
+    private List<Option> optionList = null;
 
     public Integer getPvId() {
         return pvId;
-    }
-
-    public void setPvId(int pvId) {
-        this.pvId = pvId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIdentifier() {
         return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
     public String getUnitName() {
         return unitName;
     }
 
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
     public int getVId() {
         return vId;
-    }
-
-    public void setVId(int vId) {
-        this.vId = vId;
     }
 
     public int getVuId() {
         return vuId;
     }
 
-    public void setVuId(int vuId) {
-        this.vuId = vuId;
-    }
-
     public int getStatus() {
         return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public int getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public List<Option> getOption() {
-        return option;
-    }
-
-    public void setOption(List<Option> option) {
-        this.option = option;
+    public List<Option> getOptionList() {
+        return optionList;
     }
 
     @Override
@@ -132,7 +96,7 @@ public class VariantOption implements Parcelable {
         dest.writeInt(this.vuId);
         dest.writeInt(this.status);
         dest.writeInt(this.position);
-        dest.writeTypedList(this.option);
+        dest.writeTypedList(this.optionList);
     }
 
     public VariantOption() {
@@ -147,7 +111,7 @@ public class VariantOption implements Parcelable {
         this.vuId = in.readInt();
         this.status = in.readInt();
         this.position = in.readInt();
-        this.option = in.createTypedArrayList(Option.CREATOR);
+        this.optionList = in.createTypedArrayList(Option.CREATOR);
     }
 
     public static final Parcelable.Creator<VariantOption> CREATOR = new Parcelable.Creator<VariantOption>() {

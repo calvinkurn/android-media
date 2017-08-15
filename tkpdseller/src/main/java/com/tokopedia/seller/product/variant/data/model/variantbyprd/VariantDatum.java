@@ -26,11 +26,26 @@ public class VariantDatum implements Parcelable {
     @Expose
     private int stock;
 
-    // combinastion of variant code
+    // combination of variant code
     @SerializedName("v_code")
     @Expose
     private String vCode;
 
+    public int getPvdId() {
+        return pvdId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public String getvCode() {
+        return vCode;
+    }
 
     @Override
     public int describeContents() {

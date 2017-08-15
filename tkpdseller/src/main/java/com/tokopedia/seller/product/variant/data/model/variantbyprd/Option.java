@@ -46,7 +46,7 @@ public class Option implements Parcelable {
         this.pvoId = pvoId;
     }
 
-    public Integer getVId() {
+    public int getVId() {
         return vId;
     }
 
@@ -78,7 +78,7 @@ public class Option implements Parcelable {
         this.value = value;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 

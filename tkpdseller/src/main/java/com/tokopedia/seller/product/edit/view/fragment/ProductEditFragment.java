@@ -19,12 +19,10 @@ import javax.inject.Inject;
 public class ProductEditFragment extends ProductDraftEditFragment implements ProductEditView {
 
     public static final String EDIT_PRODUCT_ID = "EDIT_PRODUCT_ID";
-    public static final String SAVED_PRD_VARIANT_EDIT = "svd_var_edt";
 
     @Inject
     public ProductEditPresenter presenter;
     private String productId;
-    private ProductVariantByPrdModel productVariantByPrdModel;
 
     public static ProductEditFragment createInstance(String productId) {
         ProductEditFragment fragment = new ProductEditFragment();
@@ -38,10 +36,6 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productId = getArguments().getString(EDIT_PRODUCT_ID);
-
-        if (savedInstanceState != null) {
-            productVariantByPrdModel = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_EDIT);
-        }
     }
 
     @Override
@@ -99,9 +93,4 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
         this.productVariantByPrdModel = productVariantByPrdModel;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(SAVED_PRD_VARIANT_EDIT, productVariantByPrdModel);
-    }
 }

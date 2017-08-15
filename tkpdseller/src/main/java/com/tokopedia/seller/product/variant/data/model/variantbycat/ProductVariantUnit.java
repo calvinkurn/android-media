@@ -16,7 +16,7 @@ import java.util.List;
 public class ProductVariantUnit implements Parcelable {
     @SerializedName("unit_id")
     @Expose
-    private Integer unitId;
+    private int unitId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -25,38 +25,22 @@ public class ProductVariantUnit implements Parcelable {
     private String shortName;
     @SerializedName("values")
     @Expose
-    private List<ProductVariantValue> values = null;
+    private List<ProductVariantValue> productVariantValueList = null;
 
-    public Integer getUnitId() {
+    public int getUnitId() {
         return unitId;
-    }
-
-    public void setUnitId(Integer unitId) {
-        this.unitId = unitId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getShortName() {
         return shortName;
     }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public List<ProductVariantValue> getValues() {
-        return values;
-    }
-
-    public void setValues(List<ProductVariantValue> values) {
-        this.values = values;
+    public List<ProductVariantValue> getProductVariantValueList() {
+        return productVariantValueList;
     }
 
     @Override
@@ -69,7 +53,7 @@ public class ProductVariantUnit implements Parcelable {
         dest.writeValue(this.unitId);
         dest.writeString(this.name);
         dest.writeString(this.shortName);
-        dest.writeList(this.values);
+        dest.writeList(this.productVariantValueList);
     }
 
     public ProductVariantUnit() {
@@ -79,8 +63,8 @@ public class ProductVariantUnit implements Parcelable {
         this.unitId = (Integer) in.readValue(Integer.class.getClassLoader());
         this.name = in.readString();
         this.shortName = in.readString();
-        this.values = new ArrayList<ProductVariantValue>();
-        in.readList(this.values, ProductVariantValue.class.getClassLoader());
+        this.productVariantValueList = new ArrayList<ProductVariantValue>();
+        in.readList(this.productVariantValueList, ProductVariantValue.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<ProductVariantUnit> CREATOR = new Parcelable.Creator<ProductVariantUnit>() {
