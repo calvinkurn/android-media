@@ -39,6 +39,9 @@ public abstract class UseCase<T> implements Interactor<T> {
     }
 
     public final void execute(RequestParams requestParams, Subscriber<T> subscriber) {
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
         subscription = createObservable(requestParams)
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.getScheduler())
