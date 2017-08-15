@@ -810,7 +810,7 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!SessionHandler.isV4Login(ShopInfoActivity.this)){
+                if (SessionHandler.isV4Login(ShopInfoActivity.this)){
                     holder.favorite.startAnimation(animateFav);
                     facadeAction.actionToggleFav();
                 } else {
