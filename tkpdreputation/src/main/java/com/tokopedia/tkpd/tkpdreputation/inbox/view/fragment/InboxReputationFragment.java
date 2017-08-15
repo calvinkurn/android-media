@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.fragment;
+package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,15 +13,15 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
-import com.tokopedia.tkpd.tkpdreputation.inbox.InboxReputation;
-import com.tokopedia.tkpd.tkpdreputation.inbox.InboxReputationPresenter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.adapter.InboxReputationAdapter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.core.inboxreputation.InboxReputationConstant.PARAM_NAV;
 
 /**
  * @author by nisie on 8/11/17.
@@ -29,6 +29,8 @@ import static com.tokopedia.core.inboxreputation.InboxReputationConstant.PARAM_N
 
 public class InboxReputationFragment extends BaseDaggerFragment
         implements InboxReputation.View {
+
+    private final static String PARAM_TAB = "tab";
 
     private RecyclerView mainList;
     private SwipeToRefresh swipeToRefresh;
@@ -38,10 +40,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Inject
     InboxReputationPresenter presenter;
 
-    public static Fragment createInstance(String navigation) {
+    public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_NAV, navigation);
+        bundle.putInt(PARAM_TAB, tab);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -97,6 +99,34 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.getFirstTimeInboxReputation(getTab());
+    }
 
+
+    public int getTab() {
+        return getArguments().getInt(PARAM_TAB, 1);
+    }
+
+    @Override
+    public void showLoadingFull() {
+        adapter.showLoadingFull(true);
+    }
+
+    @Override
+    public void onErrorGetFirstTimeInboxReputation(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
+                NetworkErrorHelper
+                        .RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getFirstTimeInboxReputation(getTab());
+                    }
+                });
+    }
+
+    @Override
+    public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
+        adapter.showLoadingFull(false);
+        adapter.setList(inboxReputationViewModel.getList());
     }
 }

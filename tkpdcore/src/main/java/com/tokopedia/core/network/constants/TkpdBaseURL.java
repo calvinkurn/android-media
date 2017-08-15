@@ -809,4 +809,10 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
     }
+
+    public static class Reputation {
+        public static final String URL_REPUTATION = WEB_DOMAIN + "reputationapp/";
+
+        public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/v1/inbox";
+    }
 }

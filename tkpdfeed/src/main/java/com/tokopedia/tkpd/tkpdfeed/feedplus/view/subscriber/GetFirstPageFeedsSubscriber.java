@@ -133,6 +133,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && feedDomain.getListFeed().get(0) != null
                 && feedDomain.getListFeed().get(0).getContent() != null
                 && feedDomain.getListFeed().get(0).getContent().getType() != null
+
                 && feedDomain.getListFeed().get(0).getContent().getType().equals(TYPE_NEW_PRODUCT);
     }
 

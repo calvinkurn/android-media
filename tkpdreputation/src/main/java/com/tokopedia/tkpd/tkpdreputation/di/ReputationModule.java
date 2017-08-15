@@ -1,6 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.di;
 
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepositoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.GetFirstTimeInboxReputationUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,5 +24,43 @@ public class ReputationModule {
     @Provides
     GlobalCacheManager provideGlobalCacheManager() {
         return new GlobalCacheManager();
+    }
+
+    @ReputationScope
+    @Provides
+    GetFirstTimeInboxReputationUseCase
+    provideGetFirstTimeInboxReputationUseCase(ThreadExecutor threadExecutor,
+                                              PostExecutionThread postExecutionThread,
+                                              ReputationRepository reputationRepository) {
+        return new GetFirstTimeInboxReputationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    ReputationRepository provideReputationRepository(ReputationFactory reputationFactory) {
+        return new ReputationRepositoryImpl(reputationFactory);
+    }
+
+    @ReputationScope
+    @Provides
+    ReputationFactory provideReputationFactory(ReputationService reputationService,
+                                               InboxReputationMapper inboxReputationMapper,
+                                               GlobalCacheManager globalCacheManager) {
+        return new ReputationFactory(reputationService, inboxReputationMapper, globalCacheManager);
+    }
+
+    @ReputationScope
+    @Provides
+    InboxReputationMapper provideInboxReputationMapper() {
+        return new InboxReputationMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    ReputationService provideReputationService() {
+        return new ReputationService();
     }
 }

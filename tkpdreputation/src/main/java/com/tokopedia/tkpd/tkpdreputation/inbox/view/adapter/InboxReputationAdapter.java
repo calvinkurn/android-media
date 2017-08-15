@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.adapter;
+package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.customview.ReputationView;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
         }
     }
 
-    private List<InboxReputationItem> list;
+    private List<InboxReputationItemViewModel> list;
 
     public InboxReputationAdapter() {
         super();
@@ -72,7 +73,6 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
-
     }
 
     @Override
@@ -89,16 +89,25 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindReputation(ViewHolder holder, int position) {
-//        holder.name.setText(list.get(position).getRevieweeName());
-//        holder.date.setText(list.get(position).getCreateTime());
-//        setDeadline(holder, position);
-//        ImageHandler.LoadImage(holder.avatar, list.get(position).getRevieweeImageUrl());
+        holder.name.setText(list.get(position).getRevieweeName());
+        holder.date.setText(list.get(position).getCreateTime());
+        holder.invoice.setText(list.get(position).getInvoice());
+        ImageHandler.LoadImage(holder.avatar, list.get(position).getRevieweePicture());
+        setDeadline(holder, position);
 //        setReputation(holder, position);
-//        if (list.get(position).isShowBookmark()) {
-//            holder.notification.setVisibility(View.VISIBLE);
-//        } else {
-//            holder.notification.setVisibility(View.GONE);
-//        }
+        setNotification(list.get(position).showBookmark(), holder);
+        setAction(list.get(position));
+    }
+
+    private void setAction(InboxReputationItemViewModel inboxReputationItemViewModel) {
+
+    }
+
+    private void setNotification(boolean showBookmark, ViewHolder holder) {
+        if (showBookmark)
+            holder.notification.setVisibility(View.VISIBLE);
+        else
+            holder.notification.setVisibility(View.GONE);
     }
 
     private void setReputation(ViewHolder holder, int position) {
@@ -106,17 +115,22 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void setDeadline(ViewHolder holder, int position) {
-        if (list.get(position).getCanShowReputationDay()) {
+        if (list.get(position).showLockingDeadline()) {
             holder.deadline.setVisibility(View.VISIBLE);
-            holder.textDeadline.setText(list.get(position).getReputationDaysLeft());
+            holder.textDeadline.setText(getTextDeadline(position));
         } else {
             holder.deadline.setVisibility(View.GONE);
         }
     }
 
+    public String getTextDeadline(int position) {
+        return "Reputasi akan dikunci dalam" + list.get(position).getReputationDaysLeft() + " " +
+                "hari lagi";
+    }
+
     @Override
     public int getItemCount() {
-        return 5 + super.getItemCount();
+        return list.size() + super.getItemCount();
     }
 
     @Override
@@ -132,5 +146,10 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
         return position == list.size();
     }
 
+    public void setList(List<InboxReputationItemViewModel> list) {
+        this.list.clear();
+        this.list.addAll(list);
+        notifyDataSetChanged();
+    }
 
 }

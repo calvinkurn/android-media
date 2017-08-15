@@ -8,7 +8,7 @@
         android:supportsRtl="true"
         >
         <activity
-            android:name="com.tokopedia.tkpd.tkpdreputation.InboxReputationActivity"
+            android:name=".inbox.view.activity.InboxReputationActivity"
             android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait"/>
         <!--<activity-->

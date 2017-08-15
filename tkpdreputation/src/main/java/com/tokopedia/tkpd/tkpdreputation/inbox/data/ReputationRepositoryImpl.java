@@ -1,0 +1,30 @@
+package com.tokopedia.tkpd.tkpdreputation.inbox.data;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+
+import rx.Observable;
+
+/**
+ * @author by nisie on 8/14/17.
+ */
+
+public class ReputationRepositoryImpl implements ReputationRepository {
+
+    ReputationFactory reputationFactory;
+
+    public ReputationRepositoryImpl(ReputationFactory reputationFactory) {
+        this.reputationFactory = reputationFactory;
+    }
+
+    @Override
+    public Observable<InboxReputationDomain> getInboxReputationFromCloud(RequestParams requestParams) {
+        return reputationFactory.createCloudInboxReputationDataSource().getInboxReputation(requestParams);
+    }
+
+    @Override
+    public Observable<InboxReputationDomain> getInboxReputationFromLocal() {
+        return null;
+    }
+}

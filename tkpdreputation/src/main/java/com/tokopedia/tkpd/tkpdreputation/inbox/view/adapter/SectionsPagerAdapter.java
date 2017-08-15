@@ -1,8 +1,10 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.adapter;
+package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.TextUtils;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
@@ -10,15 +12,17 @@ import com.tokopedia.core.app.MainApplication;
 import java.util.List;
 
 /**
- * Created by Nisie on 20/01/16.
+ * @author by Nisie on 20/01/16.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private final TabLayout indicator;
     private List<Fragment> fragmentList;
 
 
-    public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+    public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragmentList, TabLayout indicator) {
         super(fm);
         this.fragmentList = fragmentList;
+        this.indicator = indicator;
     }
 
     @Override
@@ -33,15 +37,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return MainApplication.getAppContext().getString(R.string.title_menu_all);
-            case 1:
-                return MainApplication.getAppContext().getString(R.string.title_my_product);
-            case 2:
-                return MainApplication.getAppContext().getString(R.string.title_my_review);
-            default:
-                return MainApplication.getAppContext().getString(R.string.title_menu_all);
-        }
+        if (indicator != null
+                && indicator.getTabAt(position) != null
+                && !TextUtils.isEmpty(indicator.getTabAt(position).getText()))
+            return indicator.getTabAt(position).getText();
+        else
+            return "";
     }
 }
