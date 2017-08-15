@@ -52,6 +52,10 @@ public class MainApplication extends TkpdMultiDexApplication {
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
+    public static HUDIntent hudIntent;
+    public static ServiceConnection hudConnection;
+    public static String PACKAGE_NAME;
+    public static MainApplication instance;
     private static Context context;
 	private static Activity activity;
 	private static Boolean isResetNotification = false;
@@ -61,75 +65,14 @@ public class MainApplication extends TkpdMultiDexApplication {
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-    public static HUDIntent hudIntent;
-    public static ServiceConnection hudConnection;
-    public static String PACKAGE_NAME;
-    public static MainApplication instance;
     private LocationUtils locationUtils;
 
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
     private CacheHelper cacheHelper;
 
-    public int getApplicationType(){
-        return DEFAULT_APPLICATION_TYPE;
-    }
-
     public static MainApplication getInstance() {
         return instance;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        instance = this;
-        MainApplication.context = getApplicationContext();
-        //Track.setDebugMode(true);
-        //Feature.enableDebug(true);
-        init();
-//		initImageLoader();
-        initFacebook();
-        initCrashlytics();
-        initializeAnalytics();
-        initANRWatchDogs();
-        initStetho();
-        PACKAGE_NAME = getPackageName();
-        isResetTickerState=true;
-
-        //[START] this is for dev process
-		initDB();
-
-		initDbFlow();
-
-        Localytics.autoIntegrate(this);
-
-        daggerBuilder = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .netModule(new NetModule());
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
-        TooLargeTool.startLogging(this);
-
-        cacheHelper = new CacheHelper();
-        addToWhiteList();
-    }
-
-    private void addToWhiteList() {
-        for (CacheApiWhitelist cacheApiWhitelist : getWhiteList()) {
-            cacheApiWhitelist.save();
-        }
-    }
-
-    protected List<CacheApiWhitelist> getWhiteList(){
-        List<CacheApiWhitelist> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(cacheHelper.from(TkpdBaseURL.BASE_DOMAIN.replace("https://","").replace(".com/",".com"), "/v4/deposit/"+TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 10));
-        return cacheApiWhitelists;
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        locationUtils.deInitLocationBackground();
     }
 
     public static boolean isAppIsInBackground(Context context) {
@@ -157,22 +100,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         return isInBackground;
     }
 
-
-    /**
-     * Intialize the request manager and the image cache
-     */
-    private void init() {
-    }
-
-    /**
-     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
-     */
-
-    private void initFacebook() {
-
-    }
-
-
     public synchronized static Context getAppContext() {
         return MainApplication.context;
     }
@@ -188,7 +115,6 @@ public class MainApplication extends TkpdMultiDexApplication {
             CommonUtils.dumper(activity.getClass().getName());
         }
     }
-
 
     /**
      * please use Broadcast Manager not store activity within MainApplication.
@@ -232,12 +158,12 @@ public class MainApplication extends TkpdMultiDexApplication {
         return isResetCart;
     }
 
-    public static void setActivityState(int param) {
-        currActivityState = param;
-    }
-
     public static int getActivityState() {
         return currActivityState;
+    }
+
+    public static void setActivityState(int param) {
+        currActivityState = param;
     }
 
     public static void setActivityname(String param) {
@@ -256,17 +182,6 @@ public class MainApplication extends TkpdMultiDexApplication {
 		            >= Configuration.SCREENLAYOUT_SIZE_LARGE;*/
         return false;
     }
-
-//	private void initImageLoader() {
-//		File cacheDir = StorageUtils.getCacheDirectory(context);
-//		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-//				.discCache(new UnlimitedDiscCache(cacheDir)) // default
-//				.memoryCache(new UsingFreqLimitedMemoryCache(20000))
-//				.threadPoolSize(5)
-//				.denyCacheImageMultipleSizesInMemory()
-//				.build();// default
-//		ImageLoader.getInstance().init(config);
-//	}
 
     public static int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
@@ -315,9 +230,100 @@ public class MainApplication extends TkpdMultiDexApplication {
         });
     }
 
+//	private void initImageLoader() {
+//		File cacheDir = StorageUtils.getCacheDirectory(context);
+//		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+//				.discCache(new UnlimitedDiscCache(cacheDir)) // default
+//				.memoryCache(new UsingFreqLimitedMemoryCache(20000))
+//				.threadPoolSize(5)
+//				.denyCacheImageMultipleSizesInMemory()
+//				.build();// default
+//		ImageLoader.getInstance().init(config);
+//	}
+
     public static void unbindHudService() {
         hudIntent.printMessage("Unbinded from MainApplication");
         HUDIntent.unbindService(context, hudConnection);
+    }
+
+    public static IntentService getRunningService() {
+        return RunningService;
+    }
+
+    public static void setRunningService(IntentService service) {
+        RunningService = service;
+    }
+
+    public int getApplicationType() {
+        return DEFAULT_APPLICATION_TYPE;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+        MainApplication.context = getApplicationContext();
+        //Track.setDebugMode(true);
+        //Feature.enableDebug(true);
+        init();
+//		initImageLoader();
+        initFacebook();
+        initCrashlytics();
+        initializeAnalytics();
+        initANRWatchDogs();
+        initStetho();
+        PACKAGE_NAME = getPackageName();
+        isResetTickerState = true;
+
+        //[START] this is for dev process
+        initDB();
+
+        initDbFlow();
+
+        Localytics.autoIntegrate(this);
+
+        daggerBuilder = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .netModule(new NetModule());
+        locationUtils = new LocationUtils(this);
+        locationUtils.initLocationBackground();
+        TooLargeTool.startLogging(this);
+
+        cacheHelper = new CacheHelper();
+        addToWhiteList();
+    }
+
+    private void addToWhiteList() {
+        for (CacheApiWhitelist cacheApiWhitelist : getWhiteList()) {
+            cacheApiWhitelist.save();
+        }
+    }
+
+    protected List<CacheApiWhitelist> getWhiteList() {
+        List<CacheApiWhitelist> cacheApiWhitelists = new ArrayList<>();
+        cacheApiWhitelists.add(cacheHelper.from(TkpdBaseURL.BASE_DOMAIN.replace("https://", "").replace(".com/", ".com"), "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 10));
+        cacheApiWhitelists.add(cacheHelper.from(TkpdBaseURL.MOJITO_DOMAIN.replace("https://", "").replace(".com/", ".com"), TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 10));
+        return cacheApiWhitelists;
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        locationUtils.deInitLocationBackground();
+    }
+
+    /**
+     * Intialize the request manager and the image cache
+     */
+    private void init() {
+    }
+
+    /**
+     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
+     */
+
+    private void initFacebook() {
+
     }
 
     protected void initializeAnalytics() {
@@ -328,7 +334,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(isDebug());
     }
-
 
     public void initANRWatchDogs() {
         if (!BuildConfig.DEBUG) {
@@ -347,14 +352,6 @@ public class MainApplication extends TkpdMultiDexApplication {
     public void initCrashlytics() {
         Fabric.with(this, new Crashlytics());
         Crashlytics.setUserIdentifier("");
-    }
-
-    public static void setRunningService(IntentService service) {
-        RunningService = service;
-    }
-
-    public static IntentService getRunningService() {
-        return RunningService;
     }
 
     public void initDB() {

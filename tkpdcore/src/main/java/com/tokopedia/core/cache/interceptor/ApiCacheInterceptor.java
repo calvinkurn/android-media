@@ -43,14 +43,14 @@ public class ApiCacheInterceptor implements Interceptor {
         Request request = chain.request();
 
         CacheApiData cacheApiData = new CacheApiData();
-        cacheApiData.method = request.method();
+        cacheApiData.setMethod(request.method());
         cacheApiData = setUrl(cacheApiData, request.url().toString());
-        CacheApiWhitelist whiteList_ = cacheHelper.queryFromRaw(cacheApiData.host, cacheApiData.path);
+        CacheApiWhitelist whiteList_ = cacheHelper.queryFromRaw(cacheApiData.getHost(), cacheApiData.getPath());
         boolean isInWhiteList = (boolean) (whiteList_ != null);
 //        Log.d(LOG_TAG, "is in path !!"+isInWhiteList);
 
         if (isInWhiteList && whiteList_ != null) {
-            CacheApiData tempData = cacheHelper.queryDataFrom(cacheApiData.host, cacheApiData.path, cacheApiData.requestParam);
+            CacheApiData tempData = cacheHelper.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
 
             if (tempData == null) {
                 Log.d(LOG_TAG, "null is here !!");
@@ -61,7 +61,7 @@ public class ApiCacheInterceptor implements Interceptor {
                     throw e;
                 }
 
-                cacheApiData.responseDate = System.currentTimeMillis() / 1000L;
+                cacheApiData.setResponseDate(System.currentTimeMillis() / 1000L);
 
                 putResponseBody(cacheApiData, response);
 
@@ -70,7 +70,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 return response;
             }
 
-            if ((System.currentTimeMillis() / 1000L) - tempData.responseDate > whiteList_.expiredTime) {
+            if ((System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList_.getExpiredTime()) {
                 // delete row
                 Log.d(LOG_TAG, "expired time !!");
                 tempData.delete();
@@ -83,7 +83,7 @@ public class ApiCacheInterceptor implements Interceptor {
                     throw e;
                 }
 
-                cacheApiData.responseDate = System.currentTimeMillis() / 1000L;
+                cacheApiData.setResponseDate(System.currentTimeMillis() / 1000L);
 
                 putResponseBody(cacheApiData, response);
 
@@ -97,7 +97,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);
                 builder.code(200);
-                builder.body(ResponseBody.create(MediaType.parse("application/json"), tempData.responseBody));
+                builder.body(ResponseBody.create(MediaType.parse("application/json"), tempData.getResponseBody()));
                 return builder.build();
             }
         }else{
@@ -109,7 +109,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 throw e;
             }
 
-            cacheApiData.responseDate = System.currentTimeMillis() / 1000L;
+            cacheApiData.setResponseDate(System.currentTimeMillis() / 1000L);
 
             putResponseBody(cacheApiData, response);
 
@@ -135,7 +135,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 }
             }
             if (isPlaintext(buffer)) {
-                cacheApiData.responseBody = readFromBuffer(buffer.clone(), charset);
+                cacheApiData.setResponseBody(readFromBuffer(buffer.clone(), charset));
             }
 //            else {
 //                transaction.setResponseBodyIsPlainText(false);
@@ -211,9 +211,9 @@ public class ApiCacheInterceptor implements Interceptor {
 
     private CacheApiData setUrl(CacheApiData cacheApiData, String url) {
         Uri uri = Uri.parse(url);
-        cacheApiData.host = uri.getHost();
-        cacheApiData.path = uri.getPath();
-        cacheApiData.requestParam = ((uri.getQuery() != null) ? "?" + uri.getQuery().trim() : "");
+        cacheApiData.setHost(uri.getHost());
+        cacheApiData.setPath(uri.getPath());
+        cacheApiData.setRequestParam(((uri.getQuery() != null) ? "?" + uri.getQuery().trim() : ""));
 
         URI uri2 = null;
         try {
@@ -222,7 +222,7 @@ public class ApiCacheInterceptor implements Interceptor {
             queryString.remove("hash");
             queryString.remove("device_time");
             Log.d(LOG_TAG, "sample : "+queryString);
-            cacheApiData.requestParam = ((queryString != null) ? "?" + queryString.toString().trim() : "");
+            cacheApiData.setRequestParam(((queryString != null) ? "?" + queryString.toString().trim() : ""));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
