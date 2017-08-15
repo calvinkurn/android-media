@@ -40,7 +40,10 @@ const Grid = ({ User_ID, columns, data, onLoadMore, rows, limit, offset, onSlide
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff'
+    backgroundColor: '#FFF',
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: '#E0E0E0',
   }
 })
 

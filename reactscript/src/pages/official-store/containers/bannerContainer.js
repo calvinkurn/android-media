@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Linking } from 'react-native'
+import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
 import { fetchBanners } from '../actions/actions'
 import BannerList from '../components/bannerList'
@@ -12,12 +13,13 @@ class BannerContainer extends Component {
 
   onBannerPress = (e, banner) => {
     //TODO: Add GTM Event.
-    Linking.openURL(banner.redirect_url)
+    console.log('[bannerContainer] Banner di-klik: ' + banner.redirect_url + ' ' + banner.redirect_url_app)
+    NavigationModule.navigateWithMobileUrl(banner.redirect_url_app, banner.redirect_url, "")
   }
 
-  onViewAllPress = () => {
+  onViewAllPress = (e, banner) => {
     //TODO: Add GTM Event.
-    Linking.openURL('https://www.tokopedia.com/promo/category/official-store')
+    NavigationModule.navigateWithMobileUrl('', 'https://www.tokopedia.com/promo/category/official-store', "")
   }
 
   render() {

@@ -33,7 +33,7 @@ const LoadMore = ({ User_ID, onLoadMore, onSlideMore, offset, limit, canFetch, i
     <View style={{flex: 1 / 3}}>
       <Touchable onPress={_onClick}>
         <View style={styles.container}>
-          <Image source={{ uri: icon_arrowUp }} style={{ flex:1, width:40, height:10, marginTop:30, marginBottom:5 }} />
+          <Image source={{ uri: icon_arrowUp }} style={{ flex:1, width:35, height:10, marginTop:30, marginBottom:5 }} />
           <Text style={styles.text}>Brand Lainnya</Text>
         </View>
       </Touchable>

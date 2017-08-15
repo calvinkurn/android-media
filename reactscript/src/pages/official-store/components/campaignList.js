@@ -185,8 +185,8 @@ this.renderCampaign = (c) => {
         ) :
           (
             <TouchableWithoutFeedback onPress={() => {
-              console.log('banner: ', item.redirect_url_app)
-              NavigationModule.navigate(item.redirect_url_app, item.redirect_url_mobile, "")}}>
+              console.log('[banner] ' + item.redirect_url_app )
+              NavigationModule.navigateWithMobileUrl(item.redirect_url_app, item.redirect_url_mobile, "")}}>
               <Image source={{ uri: item.mobile_url }} style={{ height: 110 }} />
             </TouchableWithoutFeedback>
           )

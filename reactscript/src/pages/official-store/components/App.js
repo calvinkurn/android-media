@@ -7,7 +7,8 @@ import {
   StyleSheet,
   TouchableHighlight,
   Dimensions,
-  RefreshControl } from 'react-native'
+  RefreshControl 
+} from 'react-native'
 import { connect } from 'react-redux'
 import BannerContainer from '../containers/bannerContainer'
 import CampaignContainer from '../containers/campaignContainer'
@@ -36,8 +37,8 @@ class App extends Component {
     setTimeout(() => {
       this.setState({ refreshing: false });
     }, 5000)
- }
-
+  }
+ 
   onBackToTopTap = (event) => {
     var currentOffset = event.nativeEvent
     this.refs.scrollView.scrollTo({ x: 0, y: 0, animatd: true });
