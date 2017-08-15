@@ -157,7 +157,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
             // create model for previous Data
             final BaseWilliamChartModel previousbaseWilliamChartModel
-                    = GMStatisticUtil.joinDateAndGraph3(data.pDates, data.pValues, monthNamesAbrev);
+                    = GMStatisticUtil.joinDateAndGraph3(data.dates, data.pValues, monthNamesAbrev);
 
             ArrayList<BaseWilliamChartModel> baseWilliamChartModels = new ArrayList<>();
             baseWilliamChartModels.add(previousbaseWilliamChartModel);
@@ -195,11 +195,11 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     }
 
     private void showTransactionGraph(List<BaseWilliamChartModel> baseWilliamChartModels) {
-        tooltipModels = joinTooltipData(baseWilliamChartModels.get(0).getValues(), baseWilliamChartModels.get(1).getValues());
+        tooltipModels = joinTooltipData(baseWilliamChartModels.get(1).getValues(), baseWilliamChartModels.get(0).getValues());
         gmStatisticIncomeGraph.addDataDisplayDots(tooltipModels);
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1),
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(0),
                 new EmptyDataTransactionDataSetConfig(), getTooltip(gmStatisticIncomeGraph.getContext(), getTooltipResLayout()), getTooltipConfiguration());
-        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig());
+        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new GrossGraphDataSetConfig());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }

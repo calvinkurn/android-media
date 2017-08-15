@@ -24,6 +24,9 @@ public abstract class CompositeUseCase<T> extends UseCase<T> {
 
     @Override
     public void execute(RequestParams requestParams, Subscriber<T> subscriber) {
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription =  new CompositeSubscription();
+        }
         this.subscription = createObservable(requestParams)
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.getScheduler())
