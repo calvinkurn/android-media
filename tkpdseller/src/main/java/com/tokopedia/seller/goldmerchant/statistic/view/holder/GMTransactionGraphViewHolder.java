@@ -197,9 +197,9 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     private void showTransactionGraph(List<BaseWilliamChartModel> baseWilliamChartModels) {
         tooltipModels = joinTooltipData(baseWilliamChartModels.get(0).getValues(), baseWilliamChartModels.get(1).getValues());
         gmStatisticIncomeGraph.addDataDisplayDots(tooltipModels);
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1),
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(0),
                 new EmptyDataTransactionDataSetConfig(), getTooltip(gmStatisticIncomeGraph.getContext(), getTooltipResLayout()), getTooltipConfiguration());
-        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig());
+        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new GrossGraphDataSetConfig());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
