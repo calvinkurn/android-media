@@ -1,11 +1,9 @@
 package com.tokopedia.seller.base.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.View;
 
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.request.Parcel;
 
 import java.util.HashSet;
 

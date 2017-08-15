@@ -62,12 +62,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_view_bottom_sheet_content"
+                    android:id="@+id/text_view_bottom_sheet_title"
                     style="@style/TextView.Body1"
                     tools:text="@string/app_id" />
 
                 <TextView
-                    android:id="@+id/text_view_bottom_sheet_title"
+                    android:id="@+id/text_view_bottom_sheet_content"
                     style="@style/TextView.Caption.BlackDisabled"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:textStyle="italic"
@@ -77,8 +77,8 @@
 
             <ImageView
                 android:id="@+id/image_view_arrow"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xxs"
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:scaleType="fitCenter"

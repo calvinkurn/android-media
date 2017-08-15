@@ -1,13 +1,10 @@
 package com.tokopedia.seller.base.view.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,10 +16,6 @@ import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by nathan on 8/2/17.
@@ -38,13 +31,15 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     public static final String EXTRA_INTENT_PICKER_ITEM_LIST = "EXTRA_INTENT_PICKER_ITEM_LIST";
     public static final String EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST = "EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST";
 
+    protected View bottomSheetHeaderView;
+    protected TextView bottomSheetTitleTextView;
+    protected TextView bottomSheetContentTextView;
+
     private View bottomSheetContainerView;
     private View shadowView;
-    private View bottomSheetHeaderView;
-    private TextView bottomSheetTitleTextView;
-    private TextView bottomSheetContentTextView;
     private ImageView arrowImageView;
     private View footerView;
+    private View containerListView;
     private Button submitButton;
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -80,6 +75,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         });
         footerView = findViewById(R.id.layout_footer);
         shadowView = findViewById(R.id.view_shadow_gray);
+        containerListView = findViewById(R.id.layout_container_list);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainerView);
         final float footerHeight = getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height);
         final float shadowHeight = getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_shadow_height);
@@ -156,5 +152,19 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         } else {
             super.onBackPressed();
         }
+    }
+
+    protected void showBottomSheetInfo(boolean show) {
+        int peekHeight = (int) (getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_height));
+        int containerBottomMargin = (int) getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height);
+        if (show) {
+            peekHeight += getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height);
+            containerBottomMargin += getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_height) -
+                    getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_shadow_height);
+        }
+        bottomSheetBehavior.setPeekHeight(peekHeight);
+        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
+        p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
+        containerListView.requestLayout();
     }
 }

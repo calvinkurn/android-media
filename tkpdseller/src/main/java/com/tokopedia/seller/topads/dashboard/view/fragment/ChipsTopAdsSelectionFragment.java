@@ -221,4 +221,9 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     public void removeItem(Object o) {
 
     }
+
+    @Override
+    public List getItemList() {
+        return null;
+    }
 }

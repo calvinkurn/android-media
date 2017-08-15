@@ -36,11 +36,6 @@ public abstract class BaseCacheListFragment<T extends ItemPickerType> extends Ba
     }
 
     @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
-
-    @Override
     protected void searchForPage(int page) {
         // Never used
         onSearchLoaded(itemList, itemList.size());
@@ -56,6 +51,11 @@ public abstract class BaseCacheListFragment<T extends ItemPickerType> extends Ba
     public void removeItem(T t) {
         itemList.remove(t);
         resetPageAndSearch();
+    }
+
+    @Override
+    public List<T> getItemList() {
+        return itemList;
     }
 
     @Override
