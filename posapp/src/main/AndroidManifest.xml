@@ -34,10 +34,13 @@
         <activity android:name=".view.activity.ProductDetailActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".view.activity.CreditSimulationActivity"
+        <activity android:name=".view.activity.InstallmentSimulationActivity"
             android:screenOrientation="portrait" />
 
         <activity android:name=".view.activity.PaymentActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".view.activity.CardDetailActivity"
             android:screenOrientation="portrait" />
     </application>
 

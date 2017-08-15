@@ -7,9 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.product.model.etalase.MonthsInstallmentItem;
 import com.tokopedia.core.product.model.productdetail.ProductInstallment;
-import com.tokopedia.core.product.model.productdetail.Terms;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.adapter.CreditSimulationAdapter;
 
@@ -19,7 +17,7 @@ import java.util.ArrayList;
  * Created by okasurya on 8/11/17.
  */
 
-public class CreditSimulationActivity extends TActivity {
+public class InstallmentSimulationActivity extends TActivity {
     public static final String KEY_INSTALLMENT_DATA = "WHOLESALE_DATA";
 
     private TextView topBarTitle;
@@ -32,7 +30,7 @@ public class CreditSimulationActivity extends TActivity {
         setContentView(R.layout.activity_credit_simulation);
         initView();
         setupData();
-        setupTopbar();
+        setToolbar();
     }
 
     private void initView() {
@@ -52,8 +50,8 @@ public class CreditSimulationActivity extends TActivity {
         }
     }
 
-    private void setupTopbar() {
-        topBarTitle.setText(getString(R.string.credit_simulation_page_title));
+    private void setToolbar() {
+        topBarTitle.setText(getString(R.string.simulation_page_title));
         findViewById(R.id.simple_top_bar_close_button)
             .setOnClickListener(new View.OnClickListener() {
                 @Override

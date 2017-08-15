@@ -12,7 +12,6 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.Terms;
 import com.tokopedia.posapp.R;
-import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public class CreditSimulationView extends BaseView<ProductDetailData, ProductDet
     public void renderData(@NonNull final ProductDetailData data) {
         textInstallmentPercentage.setText(
                 String.format(
-                        getResources().getString(R.string.simulation_installment_percentage),
+                        getResources().getString(R.string.installment_percentage_label),
                         data.getInfo().getInstallmentMinPercentage()
                 )
         );
