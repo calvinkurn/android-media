@@ -9,6 +9,7 @@
         android:id="@+id/label_view_variant_level_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:label_show_arrow="true"
         app:title="@string/product_label_video" />
 
@@ -16,6 +17,7 @@
         android:id="@+id/label_view_variant_level_two"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:label_show_arrow="true"
         app:title="@string/product_label_video" />
 

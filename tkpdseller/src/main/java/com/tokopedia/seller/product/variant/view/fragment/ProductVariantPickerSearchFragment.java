@@ -10,6 +10,8 @@ import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.product.variant.constant.ExtraConstant;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
@@ -26,6 +28,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     private BasePickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
 
     private List<ProductVariantViewModel> itemList;
+    private List<ProductVariantUnit> productVariantUnitList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             pickerMultipleItem = (BasePickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
         itemList = getActivity().getIntent().getParcelableArrayListExtra(BasePickerMultipleItemActivity.EXTRA_INTENT_PICKER_ITEM_LIST);
+        productVariantUnitList = getActivity().getIntent().getParcelableArrayListExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_LIST);
     }
 
     @Override

@@ -103,7 +103,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         variantLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.startProductVariantActivity();
+                listener.startProductVariantActivity(productVariantByCatModelList);
             }
         });
         preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
@@ -262,7 +262,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<String>(videoIdList));
+        savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<>(videoIdList));
         savedInstanceState.putParcelableArrayList(SAVED_VARIANT, productVariantByCatModelList);
     }
 
@@ -295,7 +295,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
 
-        void startProductVariantActivity();
+        void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList);
 
         void onDescriptionTextChanged(String text);
 

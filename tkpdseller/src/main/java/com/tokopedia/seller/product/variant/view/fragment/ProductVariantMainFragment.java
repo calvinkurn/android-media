@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.variant.constant.ExtraConstant;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
@@ -30,6 +33,8 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
 
+    private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
+
     public static ProductVariantMainFragment newInstance() {
         Bundle args = new Bundle();
         ProductVariantMainFragment fragment = new ProductVariantMainFragment();
@@ -40,6 +45,7 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        productVariantByCatModelList = getActivity().getIntent().getParcelableArrayListExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
     }
 
     @Nullable
@@ -48,19 +54,36 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
         View view = inflater.inflate(R.layout.fragment_product_variant_main, container, false);
         variantLevelOneLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_one);
         variantLevelTwoLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_two);
-        variantLevelOneLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickVariantLevelOne();
-            }
-        });
-        variantLevelTwoLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        initVariantLabel();
         return view;
+    }
+
+    private void initVariantLabel() {
+        if (productVariantByCatModelList == null) {
+            return;
+        }
+        if (productVariantByCatModelList.size() >= 1) {
+            ProductVariantByCatModel productVariantByCatModelLevelOne = productVariantByCatModelList.get(0);
+            variantLevelOneLabelView.setVisibility(View.VISIBLE);
+            variantLevelOneLabelView.setTitle(productVariantByCatModelLevelOne.getName());
+            variantLevelOneLabelView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pickVariantLevelOne();
+                }
+            });
+        }
+        if (productVariantByCatModelList.size() >= 2) {
+            ProductVariantByCatModel productVariantByCatModelLevelTwo = productVariantByCatModelList.get(1);
+            variantLevelTwoLabelView.setVisibility(View.VISIBLE);
+            variantLevelTwoLabelView.setTitle(productVariantByCatModelLevelTwo.getName());
+            variantLevelTwoLabelView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
     }
 
     @Override
@@ -71,10 +94,12 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     private void pickVariantLevelOne() {
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
         ArrayList<ProductVariantViewModel> modelList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        List<ProductVariantUnit> unitList = productVariantByCatModelList.get(0).getUnits();
+
+        for(ProductVariantByCatModel productVariantByCatModel: ) {
             ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-            productVariantViewModel.setId(i);
-            productVariantViewModel.setTitle(UUID.randomUUID().toString() + " - " + String.valueOf(i));
+            productVariantViewModel.setId(productVariantByCatModel.getVariantId());
+            productVariantViewModel.setTitle(productVariantByCatModel.getName());
             if (i % 2 == 0) {
                 productVariantViewModel.setHexCode("#b74747");
             } else {

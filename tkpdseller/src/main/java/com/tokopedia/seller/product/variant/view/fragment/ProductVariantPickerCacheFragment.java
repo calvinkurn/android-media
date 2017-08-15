@@ -20,8 +20,8 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
 
     @Override
     public void onRemove(ProductVariantViewModel productVariantViewModel) {
-        pickerMultipleItem.removeItemFromCache(productVariantViewModel);
         itemList.remove(productVariantViewModel);
+        pickerMultipleItem.removeItemFromCache(productVariantViewModel);
         resetPageAndSearch();
     }
 }
