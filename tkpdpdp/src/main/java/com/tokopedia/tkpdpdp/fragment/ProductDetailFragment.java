@@ -66,6 +66,7 @@ import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
+import com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
@@ -125,6 +126,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
+    private MostHelpfulReviewView mostHelpfulReviewView;
     private OtherProductsView otherProductsView;
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
@@ -201,14 +203,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     protected void initView(View view) {
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
         tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
-        videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
         headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
-        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
         pictureView = (PictureView) view.findViewById(R.id.view_picture);
+        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
+        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
+        newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
+        videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
+        mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
-        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
-        newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
@@ -243,6 +246,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         newShopView.setListener(this);
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
+        mostHelpfulReviewView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
         fabWishlist.setOnClickListener(new View.OnClickListener() {
@@ -873,6 +877,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void showMostHelpfulReview(List<Review> reviews) {
         Log.d("alifanuraniputri", "alifanuraniputri: ");
+        this.mostHelpfulReviewView.renderData(reviews);
+        this.mostHelpfulReviewView.setVisibility(View.VISIBLE);
     }
 
     private void destroyVideoLayout() {

@@ -153,6 +153,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_small"/>
 
+                    <com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView
+                        android:id="@+id/view_most_helpful"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginBottom="@dimen/margin_small" />
+
                     <com.tokopedia.tkpdpdp.customview.OtherProductsView
                         android:id="@+id/view_other_products"
                         android:layout_width="match_parent"
