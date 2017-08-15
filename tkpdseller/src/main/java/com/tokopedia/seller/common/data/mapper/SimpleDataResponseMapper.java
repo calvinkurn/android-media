@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.edit.data.mapper;
+package com.tokopedia.seller.common.data.mapper;
 
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 
 import javax.inject.Inject;
 

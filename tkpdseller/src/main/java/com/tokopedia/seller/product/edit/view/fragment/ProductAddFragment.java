@@ -58,6 +58,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
+import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantMainActivity;
 
 import java.util.ArrayList;
@@ -440,6 +441,16 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public void onErrorGetProductVariant(Throwable throwable) {
+        onSuccessGetProductVariant(null);
+    }
+
+    @Override
+    public void onSuccessGetProductVariant(List<ProductVariantModel> productVariantModelList) {
+        productAdditionalInfoViewHolder.onSuccessGetProductVariant(productVariantModelList);
+    }
+
+    @Override
     public void onErrorLoadShopInfo(String errorMessage) {
 
     }
@@ -584,6 +595,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void fetchCategory(long categoryId) {
         presenter.fetchCategory(categoryId);
+        presenter.fetchProductVariant(categoryId);
     }
 
     protected void checkIfCatalogExist(String productName, long categoryId) {
