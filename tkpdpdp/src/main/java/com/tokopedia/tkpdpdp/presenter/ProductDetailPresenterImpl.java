@@ -331,6 +331,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         public void onSuccess(boolean status) {
                             if (status) {
                                 viewListener.onShopFavoriteUpdated(1);
+                                viewListener.actionSuccessAddFavoriteShop(shopId);
                             }
                         }
 

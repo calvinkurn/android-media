@@ -34,10 +34,10 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
             if (requestCode == LOGIN_REQUEST_CODE) {
                 if (mPickerPromise != null) {
-                    if (resultCode == Activity.RESULT_CANCELED) {
-                        mPickerPromise.reject("");
-                    } else if (resultCode == Activity.RESULT_OK) {
+                    if (SessionHandler.isV4Login(context)) {
                         mPickerPromise.resolve(SessionHandler.getLoginID(context));
+                    } else {
+                        mPickerPromise.reject("");
                     }
                     mPickerPromise = null;
                 }
@@ -79,7 +79,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
         Activity currentActivity = getCurrentActivity();
 
         if (currentActivity == null) {
-            promise.reject("Activity doesn't exist");
+            promise.reject("");
             return;
         }
 
@@ -90,7 +90,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
             intent.setData(Uri.parse(Constants.Applinks.LOGIN));
             currentActivity.startActivityForResult(intent, LOGIN_REQUEST_CODE);
         } else {
-            promise.reject("Activity doesn't exist");
+            promise.reject("");
         }
     }
 }
