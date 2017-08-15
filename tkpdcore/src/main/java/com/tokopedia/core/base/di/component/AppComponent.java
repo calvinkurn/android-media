@@ -100,9 +100,6 @@ public interface AppComponent {
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
 
-    @ActivityContext
-    Context contextActivity();
-
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();

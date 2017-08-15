@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.category.data.source.cache;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 
@@ -17,7 +17,7 @@ public class CategoryVersionCache {
     private final Context context;
 
     @Inject
-    public CategoryVersionCache(@ActivityContext Context context) {
+    public CategoryVersionCache(@ApplicationContext Context context) {
         this.context = context;
     }
 

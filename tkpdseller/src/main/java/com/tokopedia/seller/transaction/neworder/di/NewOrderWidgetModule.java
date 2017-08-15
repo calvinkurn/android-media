@@ -23,6 +23,8 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+
 /**
  * Created by zulfikarrahman on 7/12/17.
  */
@@ -51,7 +53,7 @@ public class NewOrderWidgetModule {
 
     @NewOrderWidgetScope
     @Provides
-    LocalCacheHandler provideLocalCacheHandler(@ActivityContext Context context){
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context){
         return new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
     }
 

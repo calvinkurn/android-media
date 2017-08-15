@@ -70,7 +70,7 @@ public class ManageProductSeller extends ManageProduct implements
         DaggerProductDraftListCountComponent
                 .builder()
                 .productDraftListCountModule(new ProductDraftListCountModule())
-                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule()))
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
                 .build()
                 .inject(this);
         productDraftListCountPresenter.attachView(this);

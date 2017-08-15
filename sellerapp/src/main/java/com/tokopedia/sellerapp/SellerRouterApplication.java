@@ -14,7 +14,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -103,16 +102,16 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public ProductComponent getProductComponent(ActivityModule activityModule) {
+    public ProductComponent getProductComponent() {
         if (productComponent == null) {
-            productComponent = daggerProductBuilder.appComponent(getApplicationComponent(activityModule)).build();
+            productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
     }
 
-    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
+    public GoldMerchantComponent getGoldMerchantComponent() {
         if (goldMerchantComponent == null) {
-            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent(activityModule)).build();
+            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent()).build();
         }
         return goldMerchantComponent;
     }

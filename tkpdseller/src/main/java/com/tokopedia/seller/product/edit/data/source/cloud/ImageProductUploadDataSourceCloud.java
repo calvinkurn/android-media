@@ -13,6 +13,8 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.ResultUploadIma
 import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+
 import javax.inject.Inject;
 
 import okhttp3.OkHttpClient;
@@ -30,7 +32,7 @@ public class ImageProductUploadDataSourceCloud extends BaseImageUploadSourceClou
     private final Retrofit.Builder retrofitBuilder;
 
     @Inject
-    public ImageProductUploadDataSourceCloud(@ActivityContext Context context,
+    public ImageProductUploadDataSourceCloud(@ApplicationContext Context context,
                                              @DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
                                              ImageProductUploadMapper imageProductUploadMapper,
                                              Retrofit.Builder retrofitBuilder) {

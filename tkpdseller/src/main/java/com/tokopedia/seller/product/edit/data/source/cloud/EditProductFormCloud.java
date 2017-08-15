@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 /**
  * @author sebastianuskh on 4/21/17.
  */
@@ -25,7 +26,7 @@ public class EditProductFormCloud {
     private final EditProductFormApi api;
 
     @Inject
-    public EditProductFormCloud(@ActivityContext Context context, EditProductFormApi api) {
+    public EditProductFormCloud(@ApplicationContext Context context, EditProductFormApi api) {
         this.context = context;
         this.api = api;
     }

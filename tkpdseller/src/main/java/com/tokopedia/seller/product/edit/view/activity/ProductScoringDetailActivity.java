@@ -32,6 +32,6 @@ public class ProductScoringDetailActivity extends BaseSimpleActivity implements 
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 }

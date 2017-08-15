@@ -12,9 +12,9 @@ import com.tokopedia.seller.product.common.di.component.ProductComponent;
 
 public interface SellerModuleRouter {
 
-    GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule);
+    GoldMerchantComponent getGoldMerchantComponent();
 
-    ProductComponent getProductComponent(ActivityModule activityModule);
+    ProductComponent getProductComponent();
 
     void goToHome(Context context);
     void goToProductDetail(Context context, String productUrl);

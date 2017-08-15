@@ -14,7 +14,7 @@ public abstract class BaseService extends Service{
 
     protected AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication())
-                .getApplicationComponent(getServiceModule());
+                .getApplicationComponent();
     }
 
     protected ActivityModule getServiceModule() {

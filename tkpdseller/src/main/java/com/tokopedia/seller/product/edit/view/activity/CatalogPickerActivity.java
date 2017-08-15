@@ -63,7 +63,7 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
     public CatalogPickerComponent getComponent() {
         return DaggerCatalogPickerComponent
                 .builder()
-                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule()))
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
                 .catalogPickerModule(new CatalogPickerModule())
                 .build();
     }

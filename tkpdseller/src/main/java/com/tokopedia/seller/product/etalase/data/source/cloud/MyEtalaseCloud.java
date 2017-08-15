@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.etalase.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
@@ -10,6 +9,8 @@ import com.tokopedia.seller.product.etalase.data.source.cloud.api.MyEtalaseApi;
 import com.tokopedia.seller.product.etalase.data.source.cloud.model.AddEtalaseServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 
@@ -27,7 +28,7 @@ public class MyEtalaseCloud {
     private final Context context;
 
     @Inject
-    public MyEtalaseCloud(MyEtalaseApi api, @ActivityContext Context context) {
+    public MyEtalaseCloud(MyEtalaseApi api, @ApplicationContext Context context) {
         this.api = api;
         this.context = context;
     }

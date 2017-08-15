@@ -27,7 +27,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
@@ -350,12 +349,14 @@ public class MainApplication extends TkpdMultiDexApplication {
         //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 
-    public AppComponent getApplicationComponent(ActivityModule activityModule) {
-        return appComponent = daggerBuilder.activityModule(activityModule)
-                .build();
+    public AppComponent getApplicationComponent() {
+        return getAppComponent();
     }
 
     public AppComponent getAppComponent(){
+        if (appComponent == null) {
+            appComponent = daggerBuilder.build();
+        }
         return appComponent;
     }
 

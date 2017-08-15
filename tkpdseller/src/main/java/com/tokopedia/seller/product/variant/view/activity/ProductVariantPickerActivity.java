@@ -35,6 +35,6 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 }

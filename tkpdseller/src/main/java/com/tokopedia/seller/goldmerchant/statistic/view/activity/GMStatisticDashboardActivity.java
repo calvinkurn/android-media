@@ -124,6 +124,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
 
     @Override
     public GoldMerchantComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent();
     }
 }
