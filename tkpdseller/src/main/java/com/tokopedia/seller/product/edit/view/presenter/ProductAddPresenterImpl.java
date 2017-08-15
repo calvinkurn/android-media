@@ -21,10 +21,9 @@ import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
-import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantUseCase;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -80,8 +79,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         fetchProductVariantUseCase.execute(requestParam, getProductVariantSubscriber());
     }
 
-    private Subscriber<List<ProductVariantModel>> getProductVariantSubscriber() {
-        return new Subscriber<List<ProductVariantModel>>() {
+    private Subscriber<List<ProductVariantByCatModel>> getProductVariantSubscriber() {
+        return new Subscriber<List<ProductVariantByCatModel>>() {
             @Override
             public void onCompleted() {
 
@@ -96,7 +95,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             }
 
             @Override
-            public void onNext(List<ProductVariantModel> s) {
+            public void onNext(List<ProductVariantByCatModel> s) {
                 getView().onSuccessGetProductVariant(s);
             }
         };

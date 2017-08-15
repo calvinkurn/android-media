@@ -15,6 +15,8 @@ import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase
 import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenterImpl;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -53,7 +55,7 @@ public class ProductScoringModule {
 
     @ActivityScope
     @Provides
-    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ActivityContext Context context, Gson gson){
+    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ApplicationContext Context context, Gson gson){
         return new ProductScoreDataSourceCache(context, gson);
     }
 

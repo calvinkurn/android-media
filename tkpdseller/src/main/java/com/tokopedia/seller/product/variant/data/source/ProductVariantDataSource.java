@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.variant.data.source;
 
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.variant.data.cloud.ProductVariantCloud;
-import com.tokopedia.seller.product.variant.data.model.ProductVariantModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 
 import java.util.List;
 
@@ -23,8 +23,8 @@ public class ProductVariantDataSource {
         this.productVariantCloud = productVariantCloud;
     }
 
-    public Observable<List<ProductVariantModel>> fetchProductVariant(long categoryId) {
+    public Observable<List<ProductVariantByCatModel>> fetchProductVariant(long categoryId) {
         return productVariantCloud.fetchProductVariant(categoryId)
-                .map(new SimpleDataResponseMapper<List<ProductVariantModel>>());
+                .map(new SimpleDataResponseMapper<List<ProductVariantByCatModel>>());
     }
 }
