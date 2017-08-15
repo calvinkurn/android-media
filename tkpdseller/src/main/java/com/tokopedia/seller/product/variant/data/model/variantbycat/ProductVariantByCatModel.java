@@ -31,54 +31,30 @@ public class ProductVariantByCatModel implements Parcelable {
     private int hasUnit;
     @SerializedName("units")
     @Expose
-    private List<ProductVariantUnit> units = null;
+    private List<ProductVariantUnit> unitList = null;
 
-    public Integer getVariantId() {
+    public int getVariantId() {
         return variantId;
-    }
-
-    public void setVariantId(int variantId) {
-        this.variantId = variantId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIdentifier() {
         return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public int getHasUnit() {
         return hasUnit;
     }
 
-    public void setHasUnit(int hasUnit) {
-        this.hasUnit = hasUnit;
-    }
-
-    public List<ProductVariantUnit> getUnits() {
-        return units;
-    }
-
-    public void setUnits(List<ProductVariantUnit> units) {
-        this.units = units;
+    public List<ProductVariantUnit> getUnitList() {
+        return unitList;
     }
 
     @Override
@@ -93,7 +69,7 @@ public class ProductVariantByCatModel implements Parcelable {
         dest.writeString(this.identifier);
         dest.writeInt(this.status);
         dest.writeInt(this.hasUnit);
-        dest.writeList(this.units);
+        dest.writeList(this.unitList);
     }
 
     public ProductVariantByCatModel() {
@@ -105,8 +81,8 @@ public class ProductVariantByCatModel implements Parcelable {
         this.identifier = in.readString();
         this.status = in.readInt();
         this.hasUnit = in.readInt();
-        this.units = new ArrayList<ProductVariantUnit>();
-        in.readList(this.units, ProductVariantUnit.class.getClassLoader());
+        this.unitList = new ArrayList<ProductVariantUnit>();
+        in.readList(this.unitList, ProductVariantUnit.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<ProductVariantByCatModel> CREATOR = new Parcelable.Creator<ProductVariantByCatModel>() {

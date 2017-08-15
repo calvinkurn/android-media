@@ -21,33 +21,21 @@ public class ProductVariantByPrdModel implements Parcelable {
     private long productId;
     @SerializedName("variant_option")
     @Expose
-    private List<VariantOption> variantOption = null;
+    private List<VariantOption> variantOptionList = null;
     @SerializedName("variant_data")
     @Expose
-    private List<VariantDatum> variantData = null;
+    private List<VariantDatum> variantDataList = null;
 
     public long getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
-        this.productId = productId;
+    public List<VariantOption> getVariantOptionList() {
+        return variantOptionList;
     }
 
-    public List<VariantOption> getVariantOption() {
-        return variantOption;
-    }
-
-    public void setVariantOption(List<VariantOption> variantOption) {
-        this.variantOption = variantOption;
-    }
-
-    public List<VariantDatum> getVariantData() {
-        return variantData;
-    }
-
-    public void setVariantData(List<VariantDatum> variantData) {
-        this.variantData = variantData;
+    public List<VariantDatum> getVariantDataList() {
+        return variantDataList;
     }
 
     @Override
@@ -58,8 +46,8 @@ public class ProductVariantByPrdModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.productId);
-        dest.writeList(this.variantOption);
-        dest.writeTypedList(this.variantData);
+        dest.writeList(this.variantOptionList);
+        dest.writeTypedList(this.variantDataList);
     }
 
     public ProductVariantByPrdModel() {
@@ -67,9 +55,9 @@ public class ProductVariantByPrdModel implements Parcelable {
 
     protected ProductVariantByPrdModel(Parcel in) {
         this.productId = in.readLong();
-        this.variantOption = new ArrayList<VariantOption>();
-        in.readList(this.variantOption, VariantOption.class.getClassLoader());
-        this.variantData = in.createTypedArrayList(VariantDatum.CREATOR);
+        this.variantOptionList = new ArrayList<VariantOption>();
+        in.readList(this.variantOptionList, VariantOption.class.getClassLoader());
+        this.variantDataList = in.createTypedArrayList(VariantDatum.CREATOR);
     }
 
     public static final Parcelable.Creator<ProductVariantByPrdModel> CREATOR = new Parcelable.Creator<ProductVariantByPrdModel>() {

@@ -13,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
 public class ProductVariantValue implements Parcelable {
     @SerializedName("value_id")
     @Expose
-    private Integer valueId;
+    private int valueId;
     @SerializedName("value")
     @Expose
     private String value;
@@ -28,32 +28,16 @@ public class ProductVariantValue implements Parcelable {
         return valueId;
     }
 
-    public void setValueId(int valueId) {
-        this.valueId = valueId;
-    }
-
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getHexCode() {
         return hexCode;
     }
 
-    public void setHexCode(String hexCode) {
-        this.hexCode = hexCode;
-    }
-
     public String getIcon() {
         return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     @Override
