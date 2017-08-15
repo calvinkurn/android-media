@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.variant.repository;
 
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 
 import java.util.List;
 
@@ -11,5 +12,6 @@ import rx.Observable;
  */
 
 public interface ProductVariantRepository {
-    Observable<List<ProductVariantByCatModel>> fetchProductVariant(long categoryId);
+    Observable<List<ProductVariantByCatModel>> fetchProductVariantByCat(long categoryId);
+    Observable<ProductVariantByPrdModel> fetchProductVariantByPrd(long productId);
 }

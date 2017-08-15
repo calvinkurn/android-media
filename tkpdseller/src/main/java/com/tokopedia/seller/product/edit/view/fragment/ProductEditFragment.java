@@ -2,15 +2,15 @@ package com.tokopedia.seller.product.edit.view.fragment;
 
 import android.os.Bundle;
 
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductEditModule;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 
 import javax.inject.Inject;
-
-//import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent;
 
 /**
  * @author sebastianuskh on 4/21/17.
@@ -19,9 +19,12 @@ import javax.inject.Inject;
 public class ProductEditFragment extends ProductDraftEditFragment implements ProductEditView {
 
     public static final String EDIT_PRODUCT_ID = "EDIT_PRODUCT_ID";
+    public static final String SAVED_PRD_VARIANT_EDIT = "svd_var_edt";
 
     @Inject
     public ProductEditPresenter presenter;
+    private String productId;
+    private ProductVariantByPrdModel productVariantByPrdModel;
 
     public static ProductEditFragment createInstance(String productId) {
         ProductEditFragment fragment = new ProductEditFragment();
@@ -29,6 +32,16 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
         args.putString(EDIT_PRODUCT_ID, productId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        productId = getArguments().getString(EDIT_PRODUCT_ID);
+
+        if (savedInstanceState != null) {
+            productVariantByPrdModel = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_EDIT);
+        }
     }
 
     @Override
@@ -45,8 +58,50 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
     protected void fetchInputData() {
         showLoading();
         presenter.attachView(this);
-        String productId = getArguments().getString(EDIT_PRODUCT_ID);
+        fetchProductInfoData(productId);
+        if (productVariantByPrdModel == null) {
+            fetchProductVariantData(productId);
+        }
+    }
+
+    private void fetchProductInfoData(String productId){
         presenter.fetchEditProductData(productId);
     }
 
+    private void fetchProductVariantData(String productId){
+        presenter.fetchProductVariantByPrd(productId);
+    }
+
+    @Override
+    public void onErrorFetchEditProduct(Throwable throwable) {
+        hideLoading();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                showLoading();
+                fetchInputData();
+            }
+        });
+    }
+
+    @Override
+    public void onErrorFetchProductVariantByPrd(Throwable throwable) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                fetchProductVariantData(productId);
+            }
+        });
+    }
+
+    @Override
+    public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
+        this.productVariantByPrdModel = productVariantByPrdModel;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_PRD_VARIANT_EDIT, productVariantByPrdModel);
+    }
 }

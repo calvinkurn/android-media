@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.variant.data.cloud.api;
 
 import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 
 import java.util.List;
 
@@ -24,5 +25,5 @@ public interface TomeApi {
     Observable<Response<DataResponse<List<ProductVariantByCatModel>>>> getProductVariantByCat(@Query(CAT_ID) long categoryId);
 
     @GET(GET_VARIANT_BY_PRD_PATH)
-    Observable<Response<DataResponse<String>>> getProductVariantByPrd(@Query(PRD_ID) long productId);
+    Observable<Response<DataResponse<ProductVariantByPrdModel>>> getProductVariantByPrd(@Query(PRD_ID) long productId);
 }

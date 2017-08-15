@@ -442,7 +442,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onErrorGetProductVariant(Throwable throwable) {
+    public void onErrorGetProductVariantByCat(Throwable throwable) {
         onSuccessGetProductVariant(null);
     }
 
@@ -592,12 +592,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onCategoryChanged(long categoryId) {
         // when category change, check if catalog exists
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
+        presenter.fetchProductVariant(categoryId);
     }
 
     @Override
     public void fetchCategory(long categoryId) {
         presenter.fetchCategory(categoryId);
-        presenter.fetchProductVariant(categoryId);
     }
 
     protected void checkIfCatalogExist(String productName, long categoryId) {

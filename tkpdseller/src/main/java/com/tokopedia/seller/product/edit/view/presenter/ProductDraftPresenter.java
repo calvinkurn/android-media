@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseC
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
-import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantUseCase;
+import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 
 import javax.inject.Inject;
 
@@ -29,9 +29,9 @@ public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftV
                                  GetCategoryRecommUseCase getCategoryRecommUseCase, ProductScoringUseCase productScoringUseCase,
                                  AddProductShopInfoUseCase addProductShopInfoUseCase, FetchDraftProductUseCase fetchDraftProductUseCase,
                                  FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase,
-                                 FetchProductVariantUseCase fetchProductVariantUseCase) {
+                                 FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
         super(saveDraftProductUseCase, fetchCatalogDataUseCase, getCategoryRecommUseCase,
-                productScoringUseCase, addProductShopInfoUseCase, fetchCategoryDisplayUseCase, fetchProductVariantUseCase);
+                productScoringUseCase, addProductShopInfoUseCase, fetchCategoryDisplayUseCase, fetchProductVariantByCatUseCase);
         this.fetchDraftProductUseCase = fetchDraftProductUseCase;
     }
 
