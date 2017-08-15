@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.edit.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
@@ -49,7 +48,7 @@ import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenterImpl;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
-import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantUseCase;
+import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryImpl;
 
@@ -74,10 +73,10 @@ public class ProductAddModule {
                                                    ProductScoringUseCase productScoringUseCase,
                                                    AddProductShopInfoUseCase addProductShopInfoUseCase,
                                                    FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase,
-                                                   FetchProductVariantUseCase fetchProductVariantUseCase){
+                                                   FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
         return new ProductAddPresenterImpl(saveDraftProductUseCase,
                 fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase,
-                addProductShopInfoUseCase, fetchCategoryDisplayUseCase, fetchProductVariantUseCase );
+                addProductShopInfoUseCase, fetchCategoryDisplayUseCase, fetchProductVariantByCatUseCase);
     }
 
     @ProductAddScope

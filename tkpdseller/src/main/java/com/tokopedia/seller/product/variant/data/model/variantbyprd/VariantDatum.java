@@ -1,18 +1,21 @@
 package com.tokopedia.seller.product.variant.data.model.variantbyprd;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by hendry on 8/15/2017.
+ * {"variant_data":[{"pvd_id":3016392,"status":1,"stock":0,"PvoListString":"{2184381,2184932}","v_code":"2184932:2184381"},{"pvd_id":3016391,"status":1,"stock":0,"PvoListString":"{2184382,2184932}","v_code":"2184932:2184382"}]}
  */
 
-public class VariantDatum {
+public class VariantDatum implements Parcelable {
 
-    // currently not used
-    /*@SerializedName("pvd_id")
+    @SerializedName("pvd_id")
     @Expose
-    private int pvdId;*/
+    private int pvdId;
 
     // 0: not active, 1: active
     @SerializedName("status")
@@ -28,36 +31,39 @@ public class VariantDatum {
     @Expose
     private String vCode;
 
-    /*public int getPvdId() {
-        return pvdId;
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setPvdId(int pvdId) {
-        this.pvdId = pvdId;
-    }*/
-
-    public int getStatus() {
-        return status;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.pvdId);
+        dest.writeInt(this.status);
+        dest.writeInt(this.stock);
+        dest.writeString(this.vCode);
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public VariantDatum() {
     }
 
-    public int getStock() {
-        return stock;
+    protected VariantDatum(Parcel in) {
+        this.pvdId = in.readInt();
+        this.status = in.readInt();
+        this.stock = in.readInt();
+        this.vCode = in.readString();
     }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
+    public static final Parcelable.Creator<VariantDatum> CREATOR = new Parcelable.Creator<VariantDatum>() {
+        @Override
+        public VariantDatum createFromParcel(Parcel source) {
+            return new VariantDatum(source);
+        }
 
-    public String getVCode() {
-        return vCode;
-    }
-
-    public void setVCode(String vCode) {
-        this.vCode = vCode;
-    }
-
+        @Override
+        public VariantDatum[] newArray(int size) {
+            return new VariantDatum[size];
+        }
+    };
 }
