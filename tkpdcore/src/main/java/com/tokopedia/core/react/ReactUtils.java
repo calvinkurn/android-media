@@ -58,6 +58,16 @@ public class ReactUtils {
         );
     }
 
+    public static void sendLoginEmitter(String userId) {
+        WritableMap params = Arguments.createMap();
+        params.putString("user_id", userId);
+        sendEmittEvent(
+                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                ReactConst.EventEmitter.LOGIN,
+                params
+        );
+    }
+
     private static void sendEmittEvent(ReactContext reactContext,
                                        String eventName,
                                        @Nullable WritableMap params) {

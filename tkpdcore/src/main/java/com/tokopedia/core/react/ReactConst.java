@@ -23,6 +23,7 @@ public interface ReactConst {
         String WISHLIST_REMOVE = "WishlistRemove";
         String FAVORITE_ADD = "FavoriteAdd";
         String FAVORITE_REMOVE = "FavoriteRemove";
+        String LOGIN = "Login";
     }
 
 }
