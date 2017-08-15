@@ -29,6 +29,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
+    cardioVersion = '5.5.1'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -132,7 +133,8 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
-            lottie                : "com.airbnb.android:lottie:$lottieVersion"
+            lottie                : "com.airbnb.android:lottie:$lottieVersion",
+            cardio                : "io.card:android-sdk:$cardioVersion"
     ]
 
     testDependencies = [

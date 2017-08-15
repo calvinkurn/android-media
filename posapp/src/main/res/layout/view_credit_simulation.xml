@@ -1,28 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:background="@color/white"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_small"
     android:id="@+id/container">
 
+    <TextView
+        android:id="@+id/text_installment_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        tools:text="Cicilan 0%"/>
+
     <TableLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_grey"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                android:textStyle="bold"
+                android:text="@string/installment_tenure_label" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_grey"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:text="@string/installment_3m_label" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_grey"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:text="@string/installment_6m_label" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_grey"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:text="@string/installment_12m_label" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_grey"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:text="@string/installment_18m_label" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_grey"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:text="@string/installment_24m_label" />
+        </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                android:text="@string/installment_monthly_label" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/month3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                tools:text="3.000.000" />
+
+            <TextView
+                android:id="@+id/month6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                tools:text="1.000.000" />
+
+            <TextView
+                android:id="@+id/month12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                tools:text="500.000" />
+
+            <TextView
+                android:id="@+id/month18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                tools:text="300.000" />
+
+            <TextView
+                android:id="@+id/month24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvvs"
+                tools:text="250.000" />
+        </TableRow>
     </TableLayout>
 </LinearLayout>

@@ -29,6 +29,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
                 appNotificationReceiver.init(getApplication());
                 appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
             }
+        } else if(GlobalConfig.isPosApp()) {
         } else {
             appNotificationReceiver = HomeRouter.getAppNotificationReceiver();
             if (appNotificationReceiver != null) {

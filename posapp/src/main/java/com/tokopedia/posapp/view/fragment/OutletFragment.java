@@ -164,7 +164,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), ProductDetailActivity.class);
                 ProductPass productPass = ProductPass.Builder.aProductPass()
-                        .setProductId(193761668)
+                        .setProductId(163209073)
                         .build();
                 intent.putExtra(PRODUCT_PASS, productPass);
                 startActivity(intent);

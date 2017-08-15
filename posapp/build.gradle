@@ -56,7 +56,7 @@ dependencies {
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile rootProject.ext.miscDependencies.cardio
 
     testCompile rootProject.ext.testDependencies.junit
 }
