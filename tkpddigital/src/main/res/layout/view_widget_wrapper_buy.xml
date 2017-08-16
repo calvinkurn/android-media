@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/buy_wrapper_linearlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:weightSum="1">
+    <CheckBox
+        android:id="@+id/buy_with_credit_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/instant_payment"
+        android:layout_weight="0.60"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:textSize="@dimen/fontvs"
+        android:textColor="@color/checkbox_text"/>
+    <Button
+        android:id="@+id/btn_buy"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_weight="0.40"
+        android:minHeight="0dp"
+        android:background="@drawable/btn_buy"
+        android:text="@string/title_buy"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_gravity="right"
+        android:textColor="@color/white" />
+</LinearLayout>
