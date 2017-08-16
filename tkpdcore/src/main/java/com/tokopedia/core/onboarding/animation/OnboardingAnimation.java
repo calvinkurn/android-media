@@ -17,7 +17,7 @@ import com.tokopedia.core.util.MethodChecker;
 
 public class OnboardingAnimation {
 
-    public static final long DEFAULT_ANIMATION_DURATION = 1000L;
+    public static final long DEFAULT_ANIMATION_DURATION = 1250L;
     public static final int UP_DIRECTION = -1;
     public static final int DOWN_DIRECTION = 1;
 
@@ -34,7 +34,7 @@ public class OnboardingAnimation {
                     v.requestLayout();
                 }
             });
-//            anim.reverse();
+            v.setVisibility(View.VISIBLE);
             return anim;
         }
         return null;
@@ -47,13 +47,21 @@ public class OnboardingAnimation {
                     new ArgbEvaluator(),
                     MethodChecker.getColor(context, colorFrom),
                     MethodChecker.getColor(context, colorTo));
-            //anim.reverse();
+            v.setVisibility(View.VISIBLE);
             return anim;
         }
         return null;
     }
 
-    public static ObjectAnimator slideToY(final View view, int direction, View footer) {
+    public static ObjectAnimator appearText(final TextView v) {
+        if (v != null) {
+            ObjectAnimator anim = ObjectAnimator.ofFloat(v, "alpha", 0, 1);
+            return anim;
+        }
+        return null;
+    }
+
+    public static ObjectAnimator slideToY(final View view, int direction) {
         if (view != null) {
             final int height;
             if(view.getHeight() == 0){
@@ -70,13 +78,28 @@ public class OnboardingAnimation {
         return null;
     }
 
-    public static ValueAnimator slideToX(final View view, int direction, int delta) {
+    public static ValueAnimator slideToX(final View view, int direction, int from, int delta) {
         if (view != null) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationX",
-                    0, (direction * delta) + view.getWidth()/2);
-//            anim.reverse();
+                    from, (direction * delta) + view.getWidth()/2);
             anim.setRepeatMode(ValueAnimator.REVERSE);
             return anim;
+        }
+        return null;
+    }
+
+    public static ValueAnimator slideReverseX(final View view) {
+        if (view != null) {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(-(int)(view.getWidth()*1.5), 0);
+
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float val = (Integer) valueAnimator.getAnimatedValue();
+                    view.setTranslationX(val);
+                }
+            });
+            return valueAnimator;
         }
         return null;
     }
@@ -84,7 +107,6 @@ public class OnboardingAnimation {
     public static ObjectAnimator setVisibilityGone(final View view) {
         if (view != null) {
             ObjectAnimator anim = ObjectAnimator.ofInt(view, "visibility", View.VISIBLE, View.GONE);
-//            anim.reverse();
             return anim;
         }
         return null;

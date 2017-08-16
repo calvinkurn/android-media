@@ -6,13 +6,17 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,6 +56,10 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     @Override
     public void init(Bundle savedInstanceState) {
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+
         initView();
         addSlides();
         setStepper();
@@ -79,23 +87,23 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     private void addSlides() {
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_1_title),
-                getString(R.string.nonb_1_desc), R.drawable.onboarding_toped_animation,
+                getString(R.string.nonb_1_desc), "onboarding.json",
                 ContextCompat.getColor(getApplicationContext(), R.color.medium_green),
                 OnBoardingFragment.VIEW_DEFAULT, 0));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_2_title),
-                getString(R.string.nonb_2_desc), R.drawable.ic_yang_jual_banyak,
+                getString(R.string.nonb_2_desc), "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), R.color.light_blue_300),
                 OnBoardingFragment.VIEW_DEFAULT, 1));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_3_title),
-                getString(R.string.nonb_3_desc), R.drawable.ic_belanja_lebih_mudah,
+                getString(R.string.nonb_3_desc), "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), R.color.orange_300),
                 OnBoardingFragment.VIEW_DEFAULT, 2));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_4_title),
-                getString(R.string.nonb_4_desc), R.drawable.ic_yuk_belanja,
+                getString(R.string.nonb_4_desc), "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), R.color.medium_green),
                 OnBoardingFragment.VIEW_DEFAULT, 3));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
-                getString(R.string.nonb_5_desc), R.drawable.ic_yuk_belanja,
+                getString(R.string.nonb_5_desc), "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), R.color.orange_300),
                 OnBoardingFragment.VIEW_ENDING, 4));
     }
@@ -143,7 +151,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
         stepper.setId(R.id.stepper);
         stepper.setLayoutParams(params1);
-        main.addView(stepper);
+//        main.addView(stepper);
 
     }
 
@@ -178,7 +186,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
                 , MethodChecker.getColor(this, R.color.medium_green)
                 , MethodChecker.getColor(this, R.color.orange_nob)};
 
-        pager.setPageTransformer(false, new ColorTransformer(list));
+        pager.setPageTransformer(false, new CustomAnimationPageTransformer());
     }
 
     @Override
@@ -188,9 +196,6 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     @Override
     public void onNextPressed() {
-//        if (pager.getCurrentItem() == 5) {
-//            this.setProgressButtonEnabled(false);
-//        }
     }
 
     @Override
@@ -203,25 +208,21 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     @Override
     public void onSlideChanged() {
-        if (listId != null) {
-            for (int i = 0; i < fragments.size(); i++) {
-                if(i != pager.getCurrentItem()){
-                    Log.i("onSlideChanged: ", pager.getCurrentItem() + " " +i);
-                    findViewById(listId[i]).clearAnimation();
-                    findViewById(listId[i]).setAlpha(0.65f);
-                }
-            }
+//        if (listId != null) {
+//            for (int i = 0; i < fragments.size(); i++) {
+//                if(i != pager.getCurrentItem()){
+//                    Log.i("onSlideChanged: ", pager.getCurrentItem() + " " +i);
+//                    findViewById(listId[i]).clearAnimation();
+//                    findViewById(listId[i]).setAlpha(0.65f);
+//                }
+//            }
+//
+//            bounceAnimator.setTarget(findViewById(listId[pager.getCurrentItem()]));
+//            bounceAnimator.start();
+//
+//            Log.i("onSlideChanged: ", pager.getCurrentItem() + " animator");
+//        }
 
-            bounceAnimator.setTarget(findViewById(listId[pager.getCurrentItem()]));
-            bounceAnimator.start();
-
-            Log.i("onSlideChanged: ", pager.getCurrentItem() + " animator");
-        }
-
-        if (fragments != null && fragments.size() > 0 && pager != null && pager.getCurrentItem() == fragments.size()-1) {
-            ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).clearAnimation();
-            ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).playAnimation();
-        }
         if (pager.getCurrentItem() == fragments.size() - 1) {
             setButtonVisibility(bottom, GONE);
             setButtonVisibility(skipButton, GONE);
@@ -254,5 +255,49 @@ public class NewOnboardingActivity extends OnboardingActivity {
         FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
         float d = getResources().getDisplayMetrics().density;
         params1.rightMargin = (int) (20*d);
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(@NonNull View v) {
+                if (isVibrateOn) {
+                    mVibrator.vibrate(vibrateIntensity);
+                }
+
+                boolean requestPermission = false;
+                int position = 0;
+
+                for (int i = 0; i < permissionsArray.size(); i++) {
+                    requestPermission = pager.getCurrentItem() + 1 == permissionsArray.get(i).getPosition();
+                    position = i;
+                    break;
+                }
+
+                if (requestPermission) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(permissionsArray.get(position).getPermission(), 1);
+                        permissionsArray.remove(position);
+                    } else {
+                        ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+//                        pager.setCurrentItem(pager.getCurrentItem() + 1);
+                        pager.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pager.setCurrentItem(pager.getCurrentItem() + 1, true);
+                            }
+                        },1250);
+                        onNextPressed();
+                    }
+                } else {
+                    ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+                    pager.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            pager.setCurrentItem(pager.getCurrentItem() + 1, true);
+                        }
+                    },1250);
+                    onNextPressed();
+                }
+            }
+        });
     }
 }
