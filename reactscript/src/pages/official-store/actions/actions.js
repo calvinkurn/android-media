@@ -397,3 +397,18 @@ export const REFRESH_STATE = 'REFRESH_STATE'
 export const refreshState = () => ({
     type: REFRESH_STATE
 })
+
+// ========================= Add to Favorite from PDP ========================= //
+export const ADD_TO_FAVOURITE_PDP = 'ADD_TO_FAVOURITE_PDP'
+export const addToFavouritePdp = shopId => ({
+    type: ADD_TO_FAVOURITE_PDP,
+    payload: shopId
+})
+
+// ========================= Remove Favorite from PDP ========================= //
+export const REMOVE_FROM_FAVOURITE_PDP = 'REMOVE_FROM_FAVOURITE_PDP'
+export const removeFavoritePdp = shopId => ({
+    type: REMOVE_FROM_FAVOURITE_PDP,
+    payload: shopId
+})
+

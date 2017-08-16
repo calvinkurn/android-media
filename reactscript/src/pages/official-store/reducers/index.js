@@ -9,6 +9,8 @@ import {
     ADD_TO_FAVOURITE,
     REMOVE_FROM_FAVOURITE,
     REMOVE_FROM_WISHLIST,
+    ADD_TO_FAVOURITE_PDP,
+    REMOVE_FROM_FAVOURITE_PDP
 } from '../actions/actions'
 
 
@@ -363,6 +365,36 @@ const brands = (state = {
                     }
                 })
             }
+        // ========================= PDP ========================= //
+        case ADD_TO_FAVOURITE_PDP:
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    if (parseInt(action.payload) === b.id) {
+                        console.log(b)
+                        return Object.assign({}, b, {
+                            isFav: true
+                        })
+                    } else {
+                        return b
+                    }
+                })
+            }
+        case REMOVE_FROM_FAVOURITE_PDP:
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    if (parseInt(action.payload) === b.id){
+                        console.log(b)
+                        return Object.assign({}, b, {
+                            isFav: false
+                        })
+                    } else {
+                        return b
+                    }
+                })
+            }
+
         default:
             return state
     }

@@ -1,20 +1,52 @@
 import React, { Component } from 'react'
+import { DeviceEventEmitter } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import LoadMore from '../components/LoadMore'
 import {
   fetchBrands,
   slideBrands,
-  addToFavourite
+  addToFavourite,
+  addToFavouritePdp,
+  removeFavoritePdp
 } from '../actions/actions'
 import BrandList from '../components/brandList'
 
 
 class BrandContainer extends Component {
-  componentDidMount() {
+  componentWillMount() {
     const { offset, limit } = this.props.brands.pagination
-    this.props.loadMore(limit, offset, this.props.screenProps.User_ID)
+    const { User_ID } = this.props.screenProps
+    this.props.loadMore(limit, offset, User_ID)
+
+    // this.addToWishlist = DeviceEventEmitter.addListener('WishlistAdd', (res) => {
+    //   console.log(res)
+    //   this.props.loadMore(10, 0, User_ID, 'REFRESH')
+    //   // fetchBrands(10, 0, User_ID, 'REFRESH')
+    // })
+    // this.removeWishlist = DeviceEventEmitter.addListener('WishlistRemove', (res) => {
+    //   console.log(res)
+    //   this.props.loadMore
+    // })
+    this.addToFavoritePDP = DeviceEventEmitter.addListener('FavoriteAdd', (res) => {
+      console.log(res)
+      this.props.addFavouriteFromPDP(res.shop_id)
+    })
+    this.removeFavoritePDP = DeviceEventEmitter.addListener('FavoriteRemove', (res) => {
+      console.log(res)
+      this.props.removeFavoriteFromPdp(res.shop_id)
+    })
   }
+
+
+  componentWillUnmount(){
+    this.addToWishlist.remove()
+    this.removeWishlist.remove()
+    this.addToFavoritePDP.remove()
+    this.removeFavoritePDP.remove()
+  }
+
+
 
   render() {
     const { offset, limit } = this.props.brands.pagination
@@ -40,6 +72,8 @@ class BrandContainer extends Component {
       User_ID: this.props.screenProps.User_ID
     }
 
+    console.log(bannerListProps)
+
     return (
       <BrandList {...bannerListProps} />
     )
@@ -58,6 +92,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadMore: bindActionCreators(fetchBrands, dispatch),
     slideMore: bindActionCreators(slideBrands, dispatch),
     addShopToFav: bindActionCreators(addToFavourite, dispatch),
+    addFavouriteFromPDP: bindActionCreators(addToFavouritePdp, dispatch),
+    removeFavoriteFromPdp: bindActionCreators(removeFavoritePdp, dispatch)
   }
 }
 
