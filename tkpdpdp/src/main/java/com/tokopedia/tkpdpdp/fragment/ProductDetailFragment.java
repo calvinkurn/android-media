@@ -897,7 +897,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 } else {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    fabWishlist.show();
+                    if (fabWishlist.getVisibility()==View.VISIBLE) {
+                        fabWishlist.show();
+                    }
                 }
             }
         };

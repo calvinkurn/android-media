@@ -36,7 +36,8 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
     @Override
     public void fetchHomeCategoryMenuFromNetwork(String userId,
                                                  Subscriber<Response<String>> networksubscriber) {
-        subscription.add(mojitoService.getApi().getHomeCategoryMenu(userId).subscribeOn(Schedulers.io())
+        subscription.add(mojitoService.getApi().getHomeCategoryMenu(userId,
+                GlobalConfig.getPackageApplicationName()).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(

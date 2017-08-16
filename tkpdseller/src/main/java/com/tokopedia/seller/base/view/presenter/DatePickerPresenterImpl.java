@@ -96,4 +96,12 @@ public class DatePickerPresenterImpl<T extends DatePickerView> extends DatePicke
             }
         });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        fetchDatePickerUseCase.unsubscribe();
+        clearDatePickerUseCase.unsubscribe();
+        saveDatePickerUseCase.unsubscribe();
+    }
 }

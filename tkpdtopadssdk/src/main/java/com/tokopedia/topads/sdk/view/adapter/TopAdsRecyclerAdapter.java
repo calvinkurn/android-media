@@ -54,7 +54,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void onLoadMore(int page, int totalItemsCount) {
             if (loadMore)
                 return;
-            if (loadListener != null && !unsetListener && placer.getItems().size() > itemTreshold) {
+            if (loadListener != null && !unsetListener && placer.getItemList().size() > itemTreshold) {
+                placer.increasePage();
                 showLoading();
                 loadListener.onLoad(placer.getPage(), totalItemsCount);
             }
@@ -81,7 +82,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             @NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
         mOriginalAdapter = originalAdapter;
         mContext = context;
-        typeFactory = new TopAdsAdapterTypeFactory(context);
+        typeFactory = new TopAdsAdapterTypeFactory();
         placer = new TopAdsPlacer(this, context, typeFactory, dataObserver);
         mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
 
@@ -106,7 +107,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 positionStart = placer.getPositionStart(positionStart);
                 for (int i = positionStart; i < (positionStart + itemCount); i++) {
-                    placer.getItems().remove(i);
+                    placer.getItemList().remove(i);
                 }
                 notifyItemRangeRemoved(positionStart, itemCount);
             }
@@ -283,7 +284,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public boolean isLoading(int position) {
-        return position == placer.getItems().indexOf(loadingViewModel);
+        return position == placer.getItemList().indexOf(loadingViewModel);
     }
 
     public void reset() {
@@ -295,8 +296,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void showLoading() {
-        if (!placer.getItems().contains(loadingViewModel)) {
-            placer.getItems().add(loadingViewModel);
+        if (!placer.getItemList().contains(loadingViewModel)) {
+            placer.getItemList().add(loadingViewModel);
             recyclerView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -308,8 +309,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void hideLoading() {
-        if (placer.getItems().contains(loadingViewModel)) {
-            placer.getItems().remove(loadingViewModel);
+        if (placer.getItemList().contains(loadingViewModel)) {
+            placer.getItemList().remove(loadingViewModel);
             notifyItemRemoved(placer.getItemCount());
         }
         loadMore = false;

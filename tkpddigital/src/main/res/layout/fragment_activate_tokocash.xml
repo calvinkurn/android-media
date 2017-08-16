@@ -18,14 +18,15 @@
             android:background="@color/white"
             android:orientation="vertical"
             android:layout_marginBottom="@dimen/margin_sm"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/padding_detail">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                android:textSize="@dimen/fontvs"
+                android:textSize="@dimen/font_small"
                 android:textColor="@color/digital_voucher"
+                android:lineSpacingExtra="5sp"
                 android:text="@string/tokocash_desc_activation" />
 
             <TextView
@@ -41,9 +42,9 @@
                 android:id="@+id/wallet_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/fonts"
+                android:textSize="@dimen/font_medium"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginBottom="@dimen/margin_vs"/>
+                android:layout_marginBottom="@dimen/margin_vs" />
 
             <View
                 android:layout_width="match_parent"

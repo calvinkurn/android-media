@@ -41,7 +41,7 @@ public class AuthUtil {
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     private static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
-    private static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
+    public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
     private static final String HEADER_PATH = "x-tkpd-path";
