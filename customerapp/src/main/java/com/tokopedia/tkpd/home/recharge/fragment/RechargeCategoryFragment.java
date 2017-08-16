@@ -21,9 +21,13 @@ import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
@@ -51,6 +55,7 @@ public class RechargeCategoryFragment extends
 
     private TkpdProgressDialog mainprogress;
     private Bundle extraData;
+    private RechargeCategoryPresenterImpl rechargeCategoryPresenter;
 
     public RechargeCategoryFragment() {
     }
@@ -89,7 +94,11 @@ public class RechargeCategoryFragment extends
     }
 
     private void fetchDataForFirstTime() {
-        RechargeCategoryPresenterImpl rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
+        rechargeCategoryPresenter =
+                new RechargeCategoryPresenterImpl(getActivity(), this,
+                        new RechargeNetworkInteractorImpl(
+                                new DigitalWidgetRepository(
+                                        new RechargeService(), new DigitalEndpointService())));
 
         showFetchDataLoading();
         rechargeCategoryPresenter.fecthDataRechargeCategory();
@@ -241,4 +250,11 @@ public class RechargeCategoryFragment extends
         mainprogress.dismiss();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (rechargeCategoryPresenter != null) {
+            rechargeCategoryPresenter.onDestroy();
+        }
+    }
 }

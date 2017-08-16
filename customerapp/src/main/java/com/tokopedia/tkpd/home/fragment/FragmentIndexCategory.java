@@ -45,6 +45,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.RechargeEditText;
 import com.tokopedia.core.customView.WrapContentViewPager;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
@@ -57,6 +58,8 @@ import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -392,7 +395,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category = new CategoryImpl(getActivity(), this);
         holder = new ViewHolder();
         tickerAdapter = TickerAdapter.createInstance(getActivity(), this);
-        rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
+        rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this,
+                new RechargeNetworkInteractorImpl(
+                        new DigitalWidgetRepository(
+                                new RechargeService(), new DigitalEndpointService())));
+
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
         tokoCashPresenter = new TokoCashPresenterImpl(this);
@@ -888,7 +895,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
         tokoCashPresenter.onDestroy();
-
+        rechargeCategoryPresenter.onDestroy();
         getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
