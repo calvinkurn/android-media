@@ -310,6 +310,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+        if(layoutManager != null)
+            layoutManager = null;
     }
 
     @Override
