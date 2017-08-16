@@ -15,31 +15,25 @@ import com.tokopedia.core.database.DbFlowDatabase;
 @Table(database = DbFlowDatabase.class,
         uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.REPLACE)})
 public class CacheApiData extends BaseModel {
+    @ContainerKey("request_param")
+    @Column
+    public String requestParam;
+    @ContainerKey("response_body")
+    @Column
+    public String responseBody;
+    @ContainerKey("response_date")
+    @Column
+    public long responseDate;
     @ContainerKey("unique_id")
     @Column
     @PrimaryKey(autoincrement = true)
     long uniqueId;
-
     @Column
     private String host;
-
     @Column
     private String path;
-
     @Column
     private String method;
-
-    @ContainerKey("request_param")
-    @Column
-    private String requestParam;
-
-    @ContainerKey("response_body")
-    @Column
-    private String responseBody;
-
-    @ContainerKey("response_date")
-    @Column
-    private long responseDate;
 
     public String getHost() {
         return host;
