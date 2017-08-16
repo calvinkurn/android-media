@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/TextView.Body1.Bold"
-        tools:text="Cicilan 0%"/>
+        android:text="@string/installment_percentage_label" />
 
     <TableLayout
         android:layout_width="wrap_content"

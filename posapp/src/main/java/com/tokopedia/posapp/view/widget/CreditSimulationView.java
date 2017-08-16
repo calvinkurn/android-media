@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.Terms;
@@ -26,7 +27,6 @@ public class CreditSimulationView extends BaseView<ProductDetailData, ProductDet
     private ProductDetailView listener;
 
     LinearLayout container;
-    private TextView textInstallmentPercentage;
     private TextView month3;
     private TextView month6;
     private TextView month12;
@@ -45,7 +45,6 @@ public class CreditSimulationView extends BaseView<ProductDetailData, ProductDet
     protected void initView(Context context) {
         super.initView(context);
         container = findViewById(R.id.container);
-        textInstallmentPercentage = findViewById(R.id.text_installment_percentage);
         month3 = findViewById(R.id.month3);
         month6 = findViewById(R.id.month6);
         month12 = findViewById(R.id.month12);
@@ -70,23 +69,16 @@ public class CreditSimulationView extends BaseView<ProductDetailData, ProductDet
 
     @Override
     protected void setViewListener() {
-        setVisibility(INVISIBLE);
+        setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        textInstallmentPercentage.setText(
-                String.format(
-                        getResources().getString(R.string.installment_percentage_label),
-                        data.getInfo().getInstallmentMinPercentage()
-                )
-        );
-
         if (data.getInfo() != null
                 && data.getInfo().getProductInstallments() != null
                 && data.getInfo().getProductInstallments().get(0) != null
                 && data.getInfo().getProductInstallments().get(0).getTerms() != null) {
-            setInstallmentDetails(data.getInfo().getProductInstallments().get(0).getTerms());
+            setInstallment(data.getInfo().getProductPrice());
         }
 
         container.setOnClickListener(new OnClickListener() {
@@ -99,15 +91,21 @@ public class CreditSimulationView extends BaseView<ProductDetailData, ProductDet
             }
         });
 
-        setVisibility(VISIBLE);
-
     }
 
-    public void setInstallmentDetails(Terms terms) {
-        if(terms.getRule3Months() != null) month3.setText(terms.getRule3Months().getPrice());
-        if(terms.getRule6Months() != null) month6.setText(terms.getRule6Months().getPrice());
-        if(terms.getRule12Months() != null) month12.setText(terms.getRule12Months().getPrice());
-        if(terms.getRule18Months() != null) month18.setText(terms.getRule18Months().getPrice());
-        if(terms.getRule24Months() != null) month24.setText(terms.getRule24Months().getPrice());
+
+    public void setInstallment(String formattedPrice) {
+        try {
+            int price = CurrencyFormatHelper.convertRupiahToInt(formattedPrice);
+            month3.setText(CurrencyFormatHelper.toRupiah(price/3));
+            month6.setText(CurrencyFormatHelper.toRupiah(price/6));
+            month12.setText(CurrencyFormatHelper.toRupiah(price/12));
+            month18.setText(CurrencyFormatHelper.toRupiah(price/18));
+            month24.setText(CurrencyFormatHelper.toRupiah(price/24));
+
+            setVisibility(VISIBLE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
