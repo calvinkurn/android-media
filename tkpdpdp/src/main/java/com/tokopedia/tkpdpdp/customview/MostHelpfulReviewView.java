@@ -27,6 +27,7 @@ public class MostHelpfulReviewView extends BaseView<List<Review>,ProductDetailVi
 
     private ViewPager vpImage;
     private CirclePageIndicator circlePageIndicator;
+    private TextView textAllReview;
 
     public MostHelpfulReviewView(Context context) {
         super(context);
@@ -61,6 +62,7 @@ public class MostHelpfulReviewView extends BaseView<List<Review>,ProductDetailVi
     protected void initView(Context context) {
         super.initView(context);
         vpImage = (ViewPager) findViewById(R.id.view_pager_review);
+        textAllReview = (TextView) findViewById(R.id.text_all_reviews);
         circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator_picture);
 
     }
@@ -73,6 +75,9 @@ public class MostHelpfulReviewView extends BaseView<List<Review>,ProductDetailVi
         circlePageIndicator.setViewPager(vpImage);
         reviewPagerAdapter.notifyDataSetChanged();
         circlePageIndicator.notifyDataSetChanged();
+    }
 
+    public void updateTotalReviews(String value) {
+        textAllReview.setText(getResources().getString(R.string.title_all_reviews)+" ("+value+")");
     }
 }

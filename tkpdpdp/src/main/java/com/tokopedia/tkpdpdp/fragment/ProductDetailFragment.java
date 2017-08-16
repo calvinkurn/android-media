@@ -879,6 +879,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void showMostHelpfulReview(List<Review> reviews) {
         Log.d("alifanuraniputri", "alifanuraniputri: ");
         this.mostHelpfulReviewView.renderData(reviews);
+        this.mostHelpfulReviewView.updateTotalReviews(productData.getStatistic().getProductReviewCount());
         this.mostHelpfulReviewView.setVisibility(View.VISIBLE);
     }
 
