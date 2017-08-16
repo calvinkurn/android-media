@@ -17,6 +17,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/header_text"
                 style="@style/TextView.Title.BlackSecondary"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:text="@string/top_ads_label_schedule" />

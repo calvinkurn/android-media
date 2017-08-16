@@ -195,31 +195,13 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
-        if (manageGroupMenuItem != null) {
-            manageGroupMenuItem.setVisible(!isHasGroupAd());
-        }
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_manage_group) {
-            manageGroup();
-            return true;
-        } else if (item.getItemId() == R.id.menu_delete) {
+        if (itemId == R.id.menu_delete) {
             showDeleteConfirmation(getString(R.string.title_delete_promo), getString(R.string.top_ads_delete_product_alert));
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void manageGroup() {
-        Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(ad.getId()),
-                TopAdsGroupManagePromoFragment.NOT_IN_GROUP, ad.getGroupName(), String.valueOf(ad.getGroupId()));
-        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     // for show case

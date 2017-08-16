@@ -63,7 +63,7 @@ public class TopAdsEditShopMainPageFragment extends TopAdsDetailEditMainPageFrag
         }else{
             intent = TopAdsEditScheduleShopActivity.createIntent(getActivity(), adId);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override
@@ -74,6 +74,6 @@ public class TopAdsEditShopMainPageFragment extends TopAdsDetailEditMainPageFrag
         }else{
             intent = TopAdsEditCostShopActivity.createIntent(getActivity(), adId);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 }

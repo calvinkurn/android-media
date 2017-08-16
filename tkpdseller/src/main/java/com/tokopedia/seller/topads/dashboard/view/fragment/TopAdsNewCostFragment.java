@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -41,6 +42,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     private PrefixEditText budgetPerDayEditText;
     protected Button submitButton;
     protected ProgressDialog progressDialog;
+    protected TextView headerText;
 
     protected V detailAd;
 
@@ -63,6 +65,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         containerBudgetPerDay = (View) view.findViewById(R.id.container_budget_per_day);
         budgetPerDayEditText = (PrefixEditText) view.findViewById(R.id.edit_text_budget_per_day);
         submitButton = (Button) view.findViewById(R.id.button_submit);
+        headerText = (TextView) view.findViewById(R.id.header_text);
         // trigger the watcher first time
         budgetPerDayEditText.setText(budgetPerDayEditText.getText());
         progressDialog = new ProgressDialog(getActivity());

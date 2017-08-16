@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -32,6 +33,12 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
     protected void setupArguments(Bundle arguments) {
         super.setupArguments(arguments);
         adId = arguments.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        headerText.setVisibility(View.GONE);
     }
 
     @Override

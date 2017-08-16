@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -47,6 +48,7 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
     protected T stepperModel;
     protected StepperListener stepperListener;
 
+    protected TextView headerText;
     private RadioGroup showTimeRadioGroup;
     private RadioButton showTimeAutomaticRadioButton;
     private RadioButton showTimeConfiguredRadioButton;
@@ -86,6 +88,7 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
     @Override
     protected void initView(View view) {
         super.initView(view);
+        headerText = (TextView) view.findViewById(R.id.header_text);
         showTimeRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_show_time);
         showTimeAutomaticRadioButton = (RadioButton) view.findViewById(R.id.radio_button_show_time_automatic);
         showTimeConfiguredRadioButton = (RadioButton) view.findViewById(R.id.radio_button_show_time_configured);

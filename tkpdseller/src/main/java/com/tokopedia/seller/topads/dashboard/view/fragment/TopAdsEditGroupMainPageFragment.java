@@ -58,13 +58,13 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TopAdsEditGroupNameActivity.createIntent(getActivity(), ad.getName(), String.valueOf(ad.getId())));
+                startActivityForResult(TopAdsEditGroupNameActivity.createIntent(getActivity(), ad.getName(), String.valueOf(ad.getId())), REQUEST_CODE_AD_EDIT);
             }
         });
         productAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null));
+                startActivityForResult(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
             }
         });
     }
@@ -77,7 +77,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         }else{
             intent = TopAdsEditScheduleExistingGroupActivity.createIntent(getActivity(), adId);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         }else{
             intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), adId);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override

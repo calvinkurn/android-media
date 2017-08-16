@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.dashboard.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,5 +55,18 @@ public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity 
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         return intent;
+    }
+
+    @Override
+    public void finishPage() {
+        super.finishPage();
+        setResultAdSaved();
+    }
+
+
+    private void setResultAdSaved() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        setResult(Activity.RESULT_OK, intent);
     }
 }

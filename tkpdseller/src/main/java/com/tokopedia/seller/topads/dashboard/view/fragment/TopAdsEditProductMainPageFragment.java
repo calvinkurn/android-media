@@ -17,6 +17,8 @@ import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourc
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostProductActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleProductActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenterImpl;
 
 /**
@@ -80,9 +82,21 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
         manageGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                onManageGroupClicked();
             }
         });
+    }
+
+    private void onManageGroupClicked() {
+        Intent intent;
+        if(ad!= null) {
+            intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(ad.getId()),
+                    TopAdsGroupManagePromoFragment.NOT_IN_GROUP, ad.getGroupName(), String.valueOf(ad.getGroupId()));
+        }else{
+            intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), adId,
+                    TopAdsGroupManagePromoFragment.NOT_IN_GROUP, "", "");
+        }
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override
@@ -93,7 +107,7 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
         }else{
             intent = TopAdsEditScheduleProductActivity.createIntent(getActivity(), adId);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override
@@ -104,7 +118,7 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
         }else{
             intent = TopAdsEditCostProductActivity.createIntent(getActivity(), adId);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     private boolean isHasGroupAd() {

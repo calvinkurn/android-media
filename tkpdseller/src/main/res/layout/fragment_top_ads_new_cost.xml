@@ -17,6 +17,7 @@
 
             <TextView
                 style="@style/TextView.Title.BlackSecondary"
+                android:id="@+id/header_text"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:text="@string/top_ads_label_cost" />
 

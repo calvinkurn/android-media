@@ -41,6 +41,7 @@ public class TopAdsNewProductListWithoutGroupFragment extends TopAdsNewProductLi
     protected void goToNextPage() {
         if(stepperListener != null){
             stepperListener.goToNextPage(stepperModel);
+            hideLoading();
         }
     }
 }

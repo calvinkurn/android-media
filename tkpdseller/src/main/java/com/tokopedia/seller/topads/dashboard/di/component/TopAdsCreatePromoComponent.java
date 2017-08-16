@@ -6,6 +6,7 @@ import com.tokopedia.seller.topads.dashboard.di.scope.TopAdsDashboardScope;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditCostExistingGroupFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditCostShopFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditCostWithoutGroupFragment;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditGroupNameFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditScheduleExistingGroupFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditScheduleShopFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditScheduleWithoutGroupFragment;
@@ -38,4 +39,5 @@ public interface TopAdsCreatePromoComponent {
     void inject(TopAdsEditScheduleExistingGroupFragment topAdsEditScheduleExistingGroupFragment);
     void inject(TopAdsEditScheduleShopFragment topAdsEditScheduleShopFragment);
     void inject(TopAdsEditScheduleWithoutGroupFragment topAdsEditScheduleWithoutGroupFragment);
+    void inject(TopAdsEditGroupNameFragment topAdsEditGroupNameFragment);
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.dashboard.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -40,5 +41,17 @@ public class TopAdsCreatePromoShopActivity extends BaseStepperActivity {
         Intent intent = new Intent(context, TopAdsCreatePromoShopActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, name);
         return intent;
+    }
+
+    @Override
+    public void finishPage() {
+        super.finishPage();
+        setResultAdSaved();
+    }
+
+    private void setResultAdSaved() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        setResult(Activity.RESULT_OK, intent);
     }
 }

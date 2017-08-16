@@ -1,5 +1,7 @@
 package com.tokopedia.seller.base.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -21,6 +23,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 
 import java.util.List;
 

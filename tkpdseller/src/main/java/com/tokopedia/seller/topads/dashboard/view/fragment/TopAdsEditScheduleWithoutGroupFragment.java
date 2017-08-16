@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.base.view.model.StepperModel;
@@ -31,6 +32,12 @@ public class TopAdsEditScheduleWithoutGroupFragment extends TopAdsNewScheduleFra
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        headerText.setVisibility(View.GONE);
     }
 
     @Override
