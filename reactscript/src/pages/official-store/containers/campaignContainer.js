@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, ActivityIndicator, DeviceEventEmitter } from 'react-native'
 import { connect } from 'react-redux'
-import { fetchCampaigns, addToWishlist, addToWishlistPDP } from '../actions/actions'
+import { fetchCampaigns, addToWishlist, addToWishlistPDP, addWishlistFromPdp } from '../actions/actions'
 import CampaignList from '../components/campaignList'
 
 
@@ -13,7 +13,7 @@ class CampaignContainer extends Component {
         dispatch(fetchCampaigns(User_ID))
         
         this.addToWishlist = DeviceEventEmitter.addListener("WishlistAdd", (res) => {
-            dispatch(fetchCampaigns(User_ID))
+            dispatch(addWishlistFromPdp(res))
         });
         this.removeWishlist = DeviceEventEmitter.addListener("WishlistRemove", (res) => {
             dispatch(fetchCampaigns(User_ID))
@@ -39,9 +39,6 @@ class CampaignContainer extends Component {
     
     render() {
         const campaigns = this.props.campaigns.items
-        // console.log(campaigns.length)
-        // console.log(campaigns)
-        // console.log(campaigns[0])
         if (campaigns.length == 1){
             return this.renderCampaign(campaigns[0])
         } else {

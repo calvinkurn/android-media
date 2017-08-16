@@ -340,7 +340,6 @@ export const addToWishlist = (productId, User_ID) => {
 }
 
 
-
 // ========================= Remove from Wishlist ========================= //
 export const REMOVE_FROM_WISHLIST = 'REMOVE_FROM_WISHLIST'
 export const removeFromWishlist = (productId, User_ID) => {
@@ -398,17 +397,42 @@ export const refreshState = () => ({
     type: REFRESH_STATE
 })
 
-// ========================= Add to Favorite from PDP ========================= //
+
+
+
+
+// ========================= Add Wishlist from PDP | Campaign ========================= //
+export const ADD_TO_WISHLIST_PDP_CAMPAIGN = 'ADD_TO_WISHLIST_PDP_CAMPAIGN'
+export const addWishlistFromPdp = res => ({
+    type: ADD_TO_WISHLIST_PDP_CAMPAIGN,
+    payload: res
+})
+
+
+
+// ========================= Favorite from PDP | Brands ============================ //
 export const ADD_TO_FAVOURITE_PDP = 'ADD_TO_FAVOURITE_PDP'
 export const addToFavouritePdp = shopId => ({
     type: ADD_TO_FAVOURITE_PDP,
     payload: shopId
 })
 
-// ========================= Remove Favorite from PDP ========================= //
 export const REMOVE_FROM_FAVOURITE_PDP = 'REMOVE_FROM_FAVOURITE_PDP'
 export const removeFavoritePdp = shopId => ({
     type: REMOVE_FROM_FAVOURITE_PDP,
     payload: shopId
 })
 
+
+// ========================= Wishlist from PDP | Brands ============================ //
+export const ADD_TO_WISHLIST_BRAND_PDP = 'ADD_TO_WISHLIST_BRAND_PDP'
+export const addWishlistFromPdpBrands = res => ({
+    type: ADD_TO_WISHLIST_BRAND_PDP,
+    payload: res
+})
+
+export const REMOVE_WISHLIST_BRAND_PDP = 'REMOVE_WISHLIST_BRAND_PDP'
+export const removeWishlistPdpBrands = res => ({
+    type: REMOVE_WISHLIST_BRAND_PDP,
+    payload: res
+})

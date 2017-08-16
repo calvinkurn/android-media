@@ -10,7 +10,10 @@ import {
     REMOVE_FROM_FAVOURITE,
     REMOVE_FROM_WISHLIST,
     ADD_TO_FAVOURITE_PDP,
-    REMOVE_FROM_FAVOURITE_PDP
+    REMOVE_FROM_FAVOURITE_PDP,
+    ADD_TO_WISHLIST_PDP_CAMPAIGN,
+    ADD_TO_WISHLIST_BRAND_PDP,
+    REMOVE_WISHLIST_BRAND_PDP
 } from '../actions/actions'
 
 
@@ -123,6 +126,31 @@ const campaigns = (state = {
                                     data: {
                                         ...p.data,
                                         is_wishlist: false
+                                    }
+                                }
+                            } else {
+                                return p
+                            }
+                        })
+                    }
+
+                })
+            }
+        
+        case `${ADD_TO_WISHLIST_PDP_CAMPAIGN}`:
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    return {
+                        ...b,
+                        Products: b.Products.map(p => {
+                            if (parseInt(action.payload.product_id) === p.data.id) {
+                                console.log(p.data)
+                                return {
+                                    ...p,
+                                    data: {
+                                        ...p.data,
+                                        is_wishlist: true
                                     }
                                 }
                             } else {
@@ -394,6 +422,47 @@ const brands = (state = {
                     }
                 })
             }
+        case `${ADD_TO_WISHLIST_BRAND_PDP}`:
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    return {
+                        ...b,
+                        products: b.products.map(p => {
+                            if (parseInt(action.payload.product_id) === p.id) {
+                                return {
+                                    ...p,
+                                    is_wishlist: true
+                                }
+                            } else {
+                                return p
+                            }
+                        })
+                    }
+
+                })
+            }
+        case `${REMOVE_WISHLIST_BRAND_PDP}`:
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    return {
+                        ...b,
+                        products: b.products.map(p => {
+                            if (parseInt(action.payload.product_id) === p.id) {
+                                return {
+                                    ...p,
+                                    is_wishlist: false
+                                }
+                            } else {
+                                return p
+                            }
+                        })
+                    }
+
+                })
+            }
+
 
         default:
             return state

@@ -8,7 +8,9 @@ import {
   slideBrands,
   addToFavourite,
   addToFavouritePdp,
-  removeFavoritePdp
+  removeFavoritePdp,
+  addWishlistFromPdpBrands,
+  removeWishlistPdpBrands
 } from '../actions/actions'
 import BrandList from '../components/brandList'
 
@@ -19,21 +21,16 @@ class BrandContainer extends Component {
     const { User_ID } = this.props.screenProps
     this.props.loadMore(limit, offset, User_ID)
 
-    // this.addToWishlist = DeviceEventEmitter.addListener('WishlistAdd', (res) => {
-    //   console.log(res)
-    //   this.props.loadMore(10, 0, User_ID, 'REFRESH')
-    //   // fetchBrands(10, 0, User_ID, 'REFRESH')
-    // })
-    // this.removeWishlist = DeviceEventEmitter.addListener('WishlistRemove', (res) => {
-    //   console.log(res)
-    //   this.props.loadMore
-    // })
+    this.addToWishlist = DeviceEventEmitter.addListener('WishlistAdd', (res) => {
+      this.props.brandAddWishlistPdp(res)
+    })
+    this.removeWishlist = DeviceEventEmitter.addListener('WishlistRemove', (res) => {
+      this.props.brandRemoveWishlistPdp(res)
+    })
     this.addToFavoritePDP = DeviceEventEmitter.addListener('FavoriteAdd', (res) => {
-      console.log(res)
       this.props.addFavouriteFromPDP(res.shop_id)
     })
     this.removeFavoritePDP = DeviceEventEmitter.addListener('FavoriteRemove', (res) => {
-      console.log(res)
       this.props.removeFavoriteFromPdp(res.shop_id)
     })
   }
@@ -72,8 +69,6 @@ class BrandContainer extends Component {
       User_ID: this.props.screenProps.User_ID
     }
 
-    console.log(bannerListProps)
-
     return (
       <BrandList {...bannerListProps} />
     )
@@ -93,7 +88,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     slideMore: bindActionCreators(slideBrands, dispatch),
     addShopToFav: bindActionCreators(addToFavourite, dispatch),
     addFavouriteFromPDP: bindActionCreators(addToFavouritePdp, dispatch),
-    removeFavoriteFromPdp: bindActionCreators(removeFavoritePdp, dispatch)
+    removeFavoriteFromPdp: bindActionCreators(removeFavoritePdp, dispatch),
+    brandAddWishlistPdp: bindActionCreators(addWishlistFromPdpBrands, dispatch),
+    brandRemoveWishlistPdp: bindActionCreators(removeWishlistPdpBrands, dispatch)
   }
 }
 
