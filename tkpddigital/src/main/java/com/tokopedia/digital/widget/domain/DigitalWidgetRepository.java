@@ -65,12 +65,16 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
 
     private Observable<CategoryData> getObservableCategoryDataDB() {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        List<Category> categoryFromDb = CacheUtil.convertStringToListModel(
-                globalCacheManager.getValueString(KEY_CATEGORY),
-                new TypeToken<List<Category>>() {
-                }.getType());
-        return Observable.just(categoryFromDb)
+        return Observable.just(new GlobalCacheManager())
+                .map(new Func1<GlobalCacheManager, List<Category>>() {
+                    @Override
+                    public List<Category> call(GlobalCacheManager globalCacheManager) {
+                        return CacheUtil.convertStringToListModel(
+                                globalCacheManager.getValueString(KEY_CATEGORY),
+                                new TypeToken<List<Category>>() {
+                                }.getType());
+                    }
+                })
                 .onErrorReturn(new Func1<Throwable, List<Category>>() {
                     @Override
                     public List<Category> call(Throwable throwable) {
@@ -100,6 +104,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                                     CacheUtil.convertListModelToString(categoryData.getData(),
                                             new TypeToken<List<Category>>() {
                                             }.getType()));
+                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
@@ -125,12 +130,16 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     private Observable<List<Product>> getObservableProductsDB() {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        List<Product> productsFromDb = CacheUtil.convertStringToListModel(
-                globalCacheManager.getValueString(KEY_PRODUCT),
-                new TypeToken<List<Product>>() {
-                }.getType());
-        return Observable.just(productsFromDb)
+        return Observable.just(new GlobalCacheManager())
+                .map(new Func1<GlobalCacheManager, List<Product>>() {
+                    @Override
+                    public List<Product> call(GlobalCacheManager globalCacheManager) {
+                        return CacheUtil.convertStringToListModel(
+                                globalCacheManager.getValueString(KEY_PRODUCT),
+                                new TypeToken<List<Product>>() {
+                                }.getType());
+                    }
+                })
                 .onErrorReturn(new Func1<Throwable, List<Product>>() {
                     @Override
                     public List<Product> call(Throwable throwable) {
@@ -151,6 +160,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                             globalCacheManager.setValue(CacheUtil.convertListModelToString(productData.getData(),
                                     new TypeToken<List<Product>>() {
                                     }.getType()));
+                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
@@ -175,12 +185,16 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     private Observable<List<Operator>> getObservableOperatorsDB() {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        List<Operator> operatorsFromDb = CacheUtil.convertStringToListModel(
-                globalCacheManager.getValueString(KEY_OPERATOR),
-                new TypeToken<List<Operator>>() {
-                }.getType());
-        return Observable.just(operatorsFromDb)
+        return Observable.just(new GlobalCacheManager())
+                .map(new Func1<GlobalCacheManager, List<Operator>>() {
+                    @Override
+                    public List<Operator> call(GlobalCacheManager globalCacheManager) {
+                        return CacheUtil.convertStringToListModel(
+                                globalCacheManager.getValueString(KEY_OPERATOR),
+                                new TypeToken<List<Operator>>() {
+                                }.getType());
+                    }
+                })
                 .onErrorReturn(new Func1<Throwable, List<Operator>>() {
                     @Override
                     public List<Operator> call(Throwable throwable) {
@@ -201,6 +215,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                             globalCacheManager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
                                     new TypeToken<List<Operator>>() {
                                     }.getType()));
+                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
