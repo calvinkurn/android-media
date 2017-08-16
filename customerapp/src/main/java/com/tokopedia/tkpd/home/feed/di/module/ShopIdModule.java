@@ -30,7 +30,7 @@ public class ShopIdModule {
 
     @DataFeedScope
     @Provides
-    HomeDataSourceFactory provideHomeDataStoreFactory(@ActivityContext Context context,
+    HomeDataSourceFactory provideHomeDataStoreFactory(@ApplicationContext Context context,
                                                       ServiceV4 serviceV4,
                                                       GetShopIdMapper shopIdMapper) {
 

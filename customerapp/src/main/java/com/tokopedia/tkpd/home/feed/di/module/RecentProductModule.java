@@ -43,7 +43,7 @@ public class RecentProductModule {
 
     @DataFeedScope
     @Provides
-    RecentProductSourceFactory provideDataSourceFactory(@ActivityContext Context context,
+    RecentProductSourceFactory provideDataSourceFactory(@ApplicationContext Context context,
                                                         MojitoService mojitoService,
                                                         RecentProductDbManager recentDbManager,
                                                         RecentProductMapper mapperResult) {

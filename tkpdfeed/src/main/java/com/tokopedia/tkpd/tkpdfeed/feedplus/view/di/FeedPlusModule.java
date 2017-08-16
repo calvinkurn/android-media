@@ -96,7 +96,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FeedFactory provideFeedFactory(@ActivityContext Context context,
+    FeedFactory provideFeedFactory(@ApplicationContext Context context,
                                    ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
@@ -159,7 +159,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FavoriteShopFactory provideFavoriteShopFactory(@ActivityContext Context context,
+    FavoriteShopFactory provideFavoriteShopFactory(@ApplicationContext Context context,
                                                    FavoriteShopMapper mapper,
                                                    ActionService service) {
         return new FavoriteShopFactory(context, mapper, service);

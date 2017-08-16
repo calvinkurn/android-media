@@ -43,7 +43,7 @@ public class FeedModule {
 
     @DataFeedScope
     @Provides
-    FeedDataSourceFactory provideFeedDataStoreFactory(@ActivityContext Context context,
+    FeedDataSourceFactory provideFeedDataStoreFactory(@ApplicationContext Context context,
                                                       AceService aceService,
                                                       FeedMapper feedMapper,
                                                       FeedDbManager feedDbManager) {
