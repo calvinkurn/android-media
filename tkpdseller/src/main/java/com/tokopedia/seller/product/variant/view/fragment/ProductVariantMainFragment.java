@@ -94,12 +94,10 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     private void pickVariantLevelOne() {
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
         ArrayList<ProductVariantViewModel> modelList = new ArrayList<>();
-        List<ProductVariantUnit> unitList = productVariantByCatModelList.get(0).getUnits();
-
-        for(ProductVariantByCatModel productVariantByCatModel: ) {
+        for (int i = 0; i < 100; i++) {
             ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-            productVariantViewModel.setId(productVariantByCatModel.getVariantId());
-            productVariantViewModel.setTitle(productVariantByCatModel.getName());
+            productVariantViewModel.setId(i);
+            productVariantViewModel.setTitle(UUID.randomUUID().toString() + " - " + String.valueOf(i));
             if (i % 2 == 0) {
                 productVariantViewModel.setHexCode("#b74747");
             } else {
