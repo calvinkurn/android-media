@@ -17,5 +17,9 @@
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
+    <string name="home_seller_manage_product">Atur Produk</string>
+    <string name="home_seller_add_product">Tambah Produk</string>
+    <string name="home_seller_etalase">Etalase</string>
+    <string name="home_seller_setting">Pengaturan</string>
 
 </resources>
