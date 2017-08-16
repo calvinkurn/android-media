@@ -1,12 +1,14 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by yoasfs on 11/08/17.
@@ -14,15 +16,40 @@ import javax.inject.Inject;
 
 public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateResolutionCenter.View> implements CreateResolutionCenter.Presenter {
     private CreateResolutionCenter.View mainView;
+    private GetProductProblemUseCase getProductProblemUseCase;
 
     @Inject
-    public CreateResolutionCenterPresenter() {
+    public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase) {
+        this.getProductProblemUseCase = getProductProblemUseCase;
     }
 
     @Override
     public void attachView(CreateResolutionCenter.View view) {
         this.mainView = view;
         super.attachView(view);
+    }
+
+    @Override
+    public void loadProductProblem(int orderId) {
+        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId), new Subscriber<ProductProblemResponseDomain>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                mainView.showErrorToast(e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onNext(ProductProblemResponseDomain productProblemResponseDomain) {
+                if (productProblemResponseDomain != null) {
+                    mainView.showSuccessToast();
+                }
+            }
+        });
     }
 
     @Override

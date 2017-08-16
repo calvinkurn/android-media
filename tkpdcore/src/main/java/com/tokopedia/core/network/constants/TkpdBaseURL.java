@@ -415,6 +415,18 @@ public class TkpdBaseURL {
         public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/generate_token_host.pl";
     }
 
+    public static class ResCenterV5 {
+        public static final String URL_RES_CENTER_ACTION = WEB_DOMAIN + "resolution/v2/";
+
+        public static final String URL_RES_CENTER_ACTION_CREATE = URL_RES_CENTER_ACTION + "create/";
+        public static final String PATH_STEP_1 = "step1";
+        public static final String PATH_STEP_2_3 = "step2_3";
+
+
+        public static final String URL_RES_CENTER_ACTION_GET_CONVERSATION = URL_RES_CENTER_ACTION + "detail/";
+        public static final String PATH_GET_CONVERSATION = URL_RES_CENTER_ACTION + "conversation";
+    }
+
     public static class Search {
         public static final String URL_CATALOG_SELLER = "search/v1/catalog/product";
 

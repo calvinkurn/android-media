@@ -10,5 +10,4 @@ import dagger.Module;
 @Module(includes = {CreateResoModule.class})
 public class CreateResoDataModule {
 
-
 }

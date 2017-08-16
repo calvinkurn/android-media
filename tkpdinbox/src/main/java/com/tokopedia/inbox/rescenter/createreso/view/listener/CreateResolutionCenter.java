@@ -21,6 +21,10 @@ public interface CreateResolutionCenter {
         void showCreateResoResponse(boolean isSuccess, String message);
 
         void transitionToChooseProductAndProblemPage();
+
+        void showSuccessToast();
+
+        void showErrorToast(String error);
     }
 
 
@@ -34,5 +38,7 @@ public interface CreateResolutionCenter {
         void uploadProveClicked(ButtonState buttonState);
 
         void createResoClicked(ButtonState buttonState);
+
+        void loadProductProblem(int orderId);
     }
 }

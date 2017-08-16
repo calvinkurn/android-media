@@ -1,0 +1,173 @@
+package com.tokopedia.inbox.rescenter.createreso.data.mapper;
+
+import com.google.gson.Gson;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderDetailResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderProductResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ProblemResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ProductProblemListResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ProductProblemResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ShippingDetailResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ShippingResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.StatusInfoResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.StatusResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.StatusTroubleResponse;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderProductDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProblemDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ShippingDetailDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ShippingDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusInfoDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Response;
+import rx.functions.Func1;
+
+/**
+ * Created by yoasfs on 16/08/17.
+ */
+
+public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, ProductProblemResponseDomain> {
+    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
+    private static final String ERROR_MESSAGE = "message_error";
+
+
+    private final Gson gson;
+
+    public GetProductProblemMapper(Gson gson) {
+        this.gson = gson;
+    }
+    @Override
+    public ProductProblemResponseDomain call(Response<TkpdResponse> response) {
+        return mappingResponse(response);
+    }
+
+    private ProductProblemResponseDomain mappingResponse(Response<TkpdResponse> response) {
+        ProductProblemListResponse productProblemListResponse = gson.fromJson(response.body().getJsonData().toString(), ProductProblemListResponse.class);
+        ProductProblemResponseDomain model = new ProductProblemResponseDomain(mappingProductProblemListDomain(productProblemListResponse));
+        if (response.isSuccessful()) {
+            if (response.code() == ResponseStatus.SC_NO_CONTENT) {
+                model.setSuccess(true);
+            } else {
+                try {
+                    String msgError = "";
+                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        msgError += jsonArray.get(i).toString() + " ";
+                    }
+                    throw new ErrorMessageException(msgError);
+                } catch (Exception e) {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
+                }
+            }
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
+        }
+        return model;
+    }
+
+    private List<ProductProblemDomain> mappingProductProblemListDomain(ProductProblemListResponse response) {
+        List<ProductProblemDomain> domainList = new ArrayList<>();
+        for (ProductProblemResponse productProblemResponse : response.getProductProblemResponseList()) {
+            ProductProblemDomain domain = new ProductProblemDomain(mappingProblemDomain(productProblemResponse.getProblem()),
+                    mappingOrderDomain(productProblemResponse.getOrder()),
+                    mappingStatusDomain(productProblemResponse.getStatusList()));
+            domainList.add(domain);
+        }
+        return domainList;
+    }
+
+    private ProblemDomain mappingProblemDomain(ProblemResponse problemResponse) {
+        ProblemDomain domain = new ProblemDomain(problemResponse.getType(),
+                problemResponse.getName());
+        return domain;
+    }
+
+    private OrderDomain mappingOrderDomain(OrderResponse orderResponse) {
+        OrderDomain orderDomain = new OrderDomain(mappingOrderDetailDomain(orderResponse.getDetail()),
+                mappingOrderProductDomain(orderResponse.getProduct()),
+                mappingShippingDomain(orderResponse.getShipping()));
+        return orderDomain;
+    }
+
+    private OrderDetailDomain mappingOrderDetailDomain(OrderDetailResponse orderDetailResponse) {
+        OrderDetailDomain domain = new OrderDetailDomain(orderDetailResponse.getId(),
+                orderDetailResponse.getReturnable());
+        return domain;
+    }
+
+    private OrderProductDomain mappingOrderProductDomain(OrderProductResponse orderProductResponse) {
+        OrderProductDomain domain = new OrderProductDomain(orderProductResponse.getName(),
+                orderProductResponse.getThumb(),
+                orderProductResponse.getVariant(),
+                orderProductResponse.getQuantity(),
+                mappingAmountDomain(orderProductResponse.getAmount()));
+        return domain;
+    }
+    private AmountDomain mappingAmountDomain(AmountResponse amountResponse) {
+        AmountDomain domain = new AmountDomain(amountResponse.getIdr(),
+                amountResponse.getInteger());
+        return domain;
+    }
+
+    private ShippingDomain mappingShippingDomain(ShippingResponse shippingResponse) {
+        ShippingDomain domain = new ShippingDomain(shippingResponse.getId(),
+                shippingResponse.getName(),
+                mappingShippingDetailDomain(shippingResponse.getDetail()));
+
+        return domain;
+    }
+
+    private ShippingDetailDomain mappingShippingDetailDomain(ShippingDetailResponse shippingDetailResponse) {
+        ShippingDetailDomain domain = new ShippingDetailDomain(shippingDetailResponse.getId(),
+                shippingDetailResponse.getName());
+        return domain;
+    }
+
+
+
+    private List<StatusDomain> mappingStatusDomain(List<StatusResponse> statusResponseList) {
+        List<StatusDomain> statusDomainList = new ArrayList<>();
+
+        for (StatusResponse statusResponse : statusResponseList) {
+            StatusDomain domain = new StatusDomain(statusResponse.isDelivered(),
+                    statusResponse.getName(),
+                    mappingStatusTrouble(statusResponse.getTrouble()),
+                    mappingStatusInfoDomain(statusResponse.getInfo()));
+            statusDomainList.add(domain);
+        }
+        return statusDomainList;
+    }
+
+    private List<StatusTroubleDomain> mappingStatusTrouble(List<StatusTroubleResponse> statusTroubleResponseList) {
+        List<StatusTroubleDomain> domainList = new ArrayList<>();
+        for (StatusTroubleResponse statusTroubleResponse : statusTroubleResponseList) {
+            StatusTroubleDomain domain = new StatusTroubleDomain(statusTroubleResponse.getId(),
+                    statusTroubleResponse.getName());
+            domainList.add(domain);
+        }
+        return domainList;
+    }
+
+    private StatusInfoDomain mappingStatusInfoDomain(StatusInfoResponse statusInfoResponse) {
+        StatusInfoDomain domain = new StatusInfoDomain(statusInfoResponse.isShow(),
+                statusInfoResponse.getDate());
+        return domain;
+    }
+}
