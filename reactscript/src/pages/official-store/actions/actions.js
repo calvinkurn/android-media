@@ -408,6 +408,11 @@ export const addWishlistFromPdp = res => ({
     payload: res
 })
 
+export const REMOVE_WISHLIST_PDP_CAMPAIGN = 'REMOVE_WISHLIST_PDP_CAMPAIGN'
+export const removeWishlistFromPdp = res => ({
+    type: REMOVE_WISHLIST_PDP_CAMPAIGN,
+    payload: res
+})
 
 
 // ========================= Favorite from PDP | Brands ============================ //

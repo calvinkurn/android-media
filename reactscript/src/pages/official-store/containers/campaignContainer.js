@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, ActivityIndicator, DeviceEventEmitter } from 'react-native'
 import { connect } from 'react-redux'
-import { fetchCampaigns, addToWishlist, addToWishlistPDP, addWishlistFromPdp } from '../actions/actions'
+import { fetchCampaigns, addWishlistFromPdp, removeWishlistFromPdp } from '../actions/actions'
 import CampaignList from '../components/campaignList'
 
 
@@ -16,7 +16,7 @@ class CampaignContainer extends Component {
             dispatch(addWishlistFromPdp(res))
         });
         this.removeWishlist = DeviceEventEmitter.addListener("WishlistRemove", (res) => {
-            dispatch(fetchCampaigns(User_ID))
+            dispatch(removeWishlistFromPdp(res))
         });
     }
 
