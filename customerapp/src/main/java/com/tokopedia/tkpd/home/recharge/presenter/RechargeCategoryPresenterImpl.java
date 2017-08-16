@@ -73,9 +73,80 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
+
+            }
+            @Override
+            public void onError(Throwable e) {
                 e.printStackTrace();
             }
 
+            @Override
+            public void onNext(Status status) {
+                if (status != null) {
+                    view.hideRechargeWidget();
+                    if (SessionHandler.isV4Login(activity)) {
+                        fetchRecentNumberList();
+                    }
+                    if (status.getData().getAttributes().getIsMaintenance()) {
+                        view.failedRenderDataRechargeCategory();
+                    } else if (!isVersionMatch(status)) {
+                        view.failedRenderDataRechargeCategory();
+                    } else {
+                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
+                    }
+                }
+            }
+        };
+    }
+
+    private Subscriber<CategoryData> getCategoryDataSubscriber() {
+        return new Subscriber<CategoryData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(CategoryData data) {
+                categoryData = data;
+                finishPrepareRechargeModule();
+            }
+        };
+    }
+
+    private Subscriber<LastOrder> getLastOrderSubscriber() {
+        return new Subscriber<LastOrder>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                onNetworkError();
+            }
+
+            @Override
+            public void onNext(LastOrder lastOrder) {
+                if (lastOrder != null) {
+                    cacheHandler.putString(TkpdCache.Key.DIGITAL_LAST_ORDER,
+                            CacheUtil.convertModelToString(lastOrder, LastOrder.class));
+                    cacheHandler.applyEditor();
+                } else {
+                    onNetworkError();
+                }
+            }
+        };
+    }
+
+    public void onNetworkError() {
+        view.renderErrorNetwork();
             @Override
             public void onNext(Status status) {
                 if (status != null) {
