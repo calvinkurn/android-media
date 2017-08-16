@@ -38,6 +38,4 @@ public interface ApiCacheRepository {
      * @return
      */
     Observable<Boolean> bulkDelete(@Nullable Collection<CacheApiWhiteListDomain> cacheApiWhiteListDomains);
-
-
 }

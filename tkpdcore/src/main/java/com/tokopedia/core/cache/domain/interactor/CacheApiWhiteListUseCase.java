@@ -1,0 +1,58 @@
+package com.tokopedia.core.cache.domain.interactor;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.cache.domain.ApiCacheRepository;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
+
+import java.util.Collection;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Func1;
+
+/**
+ * Created by normansyahputa on 8/16/17.
+ */
+
+public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
+
+    public static final String DELETE_WHITELIST_COLLECTIONS = "DELETE_WHITELIST_COLLECTIONS";
+    public static final String ADD_WHITELIST_COLLECTIONS = "ADD_WHITELIST_COLLECTIONS";
+
+    private ApiCacheRepository apiCacheRepository;
+
+    @Inject
+    public CacheApiWhiteListUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ApiCacheRepository apiCacheRepository) {
+        super(threadExecutor, postExecutionThread);
+        this.apiCacheRepository = apiCacheRepository;
+    }
+
+    @Override
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
+        Object object = requestParams.getObject(ADD_WHITELIST_COLLECTIONS);
+        final Object object1 = requestParams.getObject(DELETE_WHITELIST_COLLECTIONS);
+        return apiCacheRepository.bulkInsert((Collection<CacheApiWhiteListDomain>) object).flatMap(
+                new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        return apiCacheRepository.bulkDelete((Collection<CacheApiWhiteListDomain>) object1);
+                    }
+                }
+        ).map(new Func1<Boolean, Boolean>() {
+            @Override
+            public Boolean call(Boolean aBoolean) {
+                if(!aBoolean){ // if need updated version
+                    // set this to cersion
+                }
+                return null;
+            }
+        });
+    }
+}

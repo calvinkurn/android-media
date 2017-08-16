@@ -8,6 +8,7 @@ import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiData_Table;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist_Table;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 
 import rx.Observable;
 
@@ -42,6 +43,15 @@ public class CacheHelper {
         cacheApiWhitelist.setHost(host);
         cacheApiWhitelist.setPath(path);
         cacheApiWhitelist.setExpiredTime(expiredTime);
+
+        return cacheApiWhitelist;
+    }
+
+    public CacheApiWhiteListDomain from2(String host, String path, long expiredTime){
+        CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
+        cacheApiWhitelist.setHost(host);
+        cacheApiWhitelist.setPath(path);
+        cacheApiWhitelist.setExpireTime(expiredTime);
 
         return cacheApiWhitelist;
     }

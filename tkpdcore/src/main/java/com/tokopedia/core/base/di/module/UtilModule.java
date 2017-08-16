@@ -38,23 +38,4 @@ public class UtilModule {
     public ImageHandler provideImageHandler(@ApplicationContext Context context){
         return new ImageHandler(context);
     }
-
-    @ApiCacheQualifier
-    @Provides
-    public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, TkpdCache.CACHE_API);
-    }
-
-
-    @VersionNameQualifier
-    @Provides
-    public
-    @Nullable
-    String provideVersionName(@ApplicationContext Context context) {
-        try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
-        }
-    }
 }
