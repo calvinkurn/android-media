@@ -12,7 +12,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 8/16/17.
@@ -38,13 +37,8 @@ public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         Object object = requestParams.getObject(ADD_WHITELIST_COLLECTIONS);
         final Object object1 = requestParams.getObject(DELETE_WHITELIST_COLLECTIONS);
-        return apiCacheRepository.bulkInsert((Collection<CacheApiWhiteListDomain>) object).flatMap(
-                new Func1<Boolean, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Boolean aBoolean) {
-                        return apiCacheRepository.bulkDelete((Collection<CacheApiWhiteListDomain>) object1);
-                    }
-                }
-        );
+        return Observable.concat(
+                apiCacheRepository.bulkInsert((Collection<CacheApiWhiteListDomain>) object),
+                apiCacheRepository.bulkDelete((Collection<CacheApiWhiteListDomain>) object1));
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.core.cache.di.module;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.annotation.Nullable;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApiCacheQualifier;
@@ -45,8 +44,9 @@ public class CacheModule {
 
     @Provides
     ApiCacheRepository provideApiCacheRepository(@ApiCacheQualifier LocalCacheHandler localCacheHandler,
-                                                 @VersionNameQualifier String versionName){
-        return new ApiCacheRepositoryImpl(localCacheHandler, versionName);
+                                                 @VersionNameQualifier String versionName,
+                                                 CacheHelper cacheHelper) {
+        return new ApiCacheRepositoryImpl(localCacheHandler, versionName, cacheHelper);
     }
 
     @Provides

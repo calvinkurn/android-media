@@ -10,6 +10,8 @@ import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist_Table;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -77,5 +79,15 @@ public class CacheHelper {
         Log.d(TAG, "queryDataFrom : "+and
                 .toString());
         return and.querySingle();
+    }
+
+    public List<CacheApiData> queryDataFrom(String host, String path) {
+        Where<CacheApiData> and = new Select()
+                .from(CacheApiData.class)
+                .where(CacheApiData_Table.host.like("%" + host + "%"))
+                .and(CacheApiData_Table.path.like("%" + path + "%"));
+        Log.d(TAG, "queryDataFrom : " + and
+                .toString());
+        return and.queryList();
     }
 }
