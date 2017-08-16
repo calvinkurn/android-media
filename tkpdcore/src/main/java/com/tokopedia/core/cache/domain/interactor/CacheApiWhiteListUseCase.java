@@ -45,14 +45,6 @@ public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
                         return apiCacheRepository.bulkDelete((Collection<CacheApiWhiteListDomain>) object1);
                     }
                 }
-        ).map(new Func1<Boolean, Boolean>() {
-            @Override
-            public Boolean call(Boolean aBoolean) {
-                if(!aBoolean){ // if need updated version
-                    // set this to cersion
-                }
-                return null;
-            }
-        });
+        );
     }
 }
