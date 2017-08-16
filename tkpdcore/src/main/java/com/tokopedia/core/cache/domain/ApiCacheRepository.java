@@ -38,4 +38,15 @@ public interface ApiCacheRepository {
      * @return
      */
     Observable<Boolean> bulkDelete(@Nullable Collection<CacheApiWhiteListDomain> cacheApiWhiteListDomains);
+
+    /**
+     * bulk delete
+     * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
+     *
+     * @param cacheApiWhiteListDomain
+     * @return
+     */
+    Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain);
+
+    void deleteAllCache();
 }

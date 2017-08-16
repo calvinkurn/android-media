@@ -2,6 +2,7 @@ package com.tokopedia.core.cache.data.repository;
 
 import android.support.annotation.Nullable;
 
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.base.di.qualifier.VersionNameQualifier;
@@ -27,6 +28,7 @@ import rx.functions.Func1;
 
 public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
+    private static final String TAG = "ApiCacheRepositoryImpl";
     private LocalCacheHandler localCacheHandler;
     private String versionName;
     private CacheHelper cacheHelper;
@@ -36,6 +38,11 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
         this.localCacheHandler = localCacheHandler;
         this.versionName = versionName;
         this.cacheHelper = cacheHelper;
+    }
+
+    public static void DeleteAllCache() {
+        SQLite.delete(CacheApiData.class).execute();
+        SQLite.delete(CacheApiWhitelist.class);
     }
 
     @Override
@@ -96,6 +103,29 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
                 return Observable.just(aBoolean);
             }
         });
+    }
+
+    @Override
+    public Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain) {
+        return Observable.just(cacheApiWhiteListDomain).map(new Func1<CacheApiWhiteListDomain, Object>() {
+            @Override
+            public Object call(CacheApiWhiteListDomain cacheApiWhiteListDomain) {
+                CacheApiWhitelist cacheApiWhitelist = cacheHelper.queryFromRaw(cacheApiWhiteListDomain.getHost(), cacheApiWhiteListDomain.getPath());
+                cacheApiWhitelist.delete();
+                return null;
+            }
+        }).map(new Func1<Object, Boolean>() {
+            @Override
+            public Boolean call(Object o) {
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void deleteAllCache() {
+        SQLite.delete(CacheApiData.class).execute();
+        SQLite.delete(CacheApiWhitelist.class);
     }
 
 }
