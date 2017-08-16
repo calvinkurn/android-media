@@ -10,11 +10,11 @@
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
         android:scaleType="fitCenter"
         android:src="@drawable/facebook_square"
         android:visibility="visible"
@@ -22,12 +22,11 @@
 
     <TextView
         android:id="@+id/tv_category_name"
+        style="@style/TextSubTitleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
-        android:textColor="@color/digital_item_sub_title"
-        android:textSize="@dimen/fontvs"
         android:visibility="visible"
         tools:text="Tokocash"/>
 

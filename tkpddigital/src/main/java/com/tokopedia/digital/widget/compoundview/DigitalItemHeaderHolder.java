@@ -78,7 +78,7 @@ public class DigitalItemHeaderHolder extends LinearLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = width * 74 / 106;
+        int height = width * 52 / 106;
         setMeasuredDimension(width, height);
     }
 
