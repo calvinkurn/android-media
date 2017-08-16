@@ -36,7 +36,7 @@ public class FingerprintInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder newRequest = chain.request().newBuilder();
-        newRequest = addFingerPrint(newRequest);
+//        newRequest = addFingerPrint(newRequest);
 
         return chain.proceed(newRequest.build());
     }
@@ -62,6 +62,7 @@ public class FingerprintInterceptor implements Interceptor {
                                 e.printStackTrace();
                                 return "UnsupportedEncoding";
                             }
+
                         }
                     }).doOnError(new Action1<Throwable>() {
                         @Override
