@@ -24,14 +24,16 @@ public class CacheApiData extends BaseModel {
     @ContainerKey("response_date")
     @Column
     public long responseDate;
-    @ContainerKey("unique_id")
-    @Column
-    @PrimaryKey(autoincrement = true)
-    long uniqueId;
+
+    @PrimaryKey
     @Column
     private String host;
+
+    @PrimaryKey
     @Column
     private String path;
+
+    @PrimaryKey
     @Column
     private String method;
 
