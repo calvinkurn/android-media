@@ -31,9 +31,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -45,7 +42,6 @@ import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivi
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.profilecompletion.di.DaggerPhoneVerifComponent;
-import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
@@ -97,7 +93,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     protected void initInjector() {
         DaggerPhoneVerifComponent daggerPhoneVerifComponent
                 = (DaggerPhoneVerifComponent) DaggerPhoneVerifComponent.builder()
-                .appComponent( ((MainApplication)getActivity().getApplication()).getAppComponent())
+                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
                 .build();
         daggerPhoneVerifComponent.inject(this);
     }
@@ -180,35 +176,35 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     @RequiresApi(api = Build.VERSION_CODES.M)
     @TargetApi(Build.VERSION_CODES.M)
     private void showCheckSMSPermission() {
-            if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
-                    && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-                new android.support.v7.app.AlertDialog.Builder(getActivity())
-                        .setMessage(
-                                RequestPermissionUtil
-                                        .getNeedPermissionMessage(Manifest.permission.READ_SMS)
-                        )
-                        .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
-                                        .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setMessage(
+                            RequestPermissionUtil
+                                    .getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                    )
+                    .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
 
-                            }
-                        })
-                        .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                RequestPermissionUtil.onPermissionDenied(MainApplication.getAppContext(),
-                                        Manifest.permission.READ_SMS);
-                            }
-                        })
-                        .show();
-            } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-                ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
-                        .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
-            }
+                        }
+                    })
+                    .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            RequestPermissionUtil.onPermissionDenied(MainApplication.getAppContext(),
+                                    Manifest.permission.READ_SMS);
+                        }
+                    })
+                    .show();
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+        }
     }
 
     @Override

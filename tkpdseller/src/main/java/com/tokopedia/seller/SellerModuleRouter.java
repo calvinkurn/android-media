@@ -2,7 +2,6 @@ package com.tokopedia.seller;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 

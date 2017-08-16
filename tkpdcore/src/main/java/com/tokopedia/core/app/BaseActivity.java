@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,7 +24,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
@@ -49,8 +47,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -391,11 +387,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     public AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication()).getAppComponent();
-    }
-
-
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
     }
 
     protected void setGoldMerchant(ShopModel shopModel) {
