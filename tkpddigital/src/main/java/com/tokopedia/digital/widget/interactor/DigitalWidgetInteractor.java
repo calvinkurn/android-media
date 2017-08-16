@@ -1,10 +1,8 @@
 package com.tokopedia.digital.widget.interactor;
 
-import com.tokopedia.core.database.manager.RechargeRecentDataManager;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.operator.Operator;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 
 import java.util.ArrayList;
@@ -233,25 +231,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     }
 
     @Override
-    public void storeRecentData(RecentData recentData) {
-        compositeSubscription.add(
-                Observable.just(recentData)
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map(new Func1<RecentData, Boolean>() {
-                            @Override
-                            public Boolean call(RecentData recentData) {
-                                RechargeRecentDataManager dbManager = new RechargeRecentDataManager();
-                                if (recentData != null && recentData.getData() != null)
-                                    dbManager.bulkInsert(recentData.getData());
-                                return true;
-                            }
-                        })
-                        .subscribe());
-    }
-
-    @Override
     public void getRecentData(Subscriber<List<String>> subscriber, final int categoryId) {
         compositeSubscription.add(
                 digitalWidgetRepository.getObservableRecentData(categoryId)
@@ -329,6 +308,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     @Override
     public void onDestroy() {
-        compositeSubscription.unsubscribe();
+        if (compositeSubscription != null)
+            compositeSubscription.unsubscribe();
     }
 }

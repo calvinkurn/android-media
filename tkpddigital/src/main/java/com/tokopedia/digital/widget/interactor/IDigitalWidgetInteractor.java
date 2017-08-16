@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.interactor;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 
 import java.util.List;
 
@@ -23,8 +22,6 @@ public interface IDigitalWidgetInteractor {
     void getOperatorById(Subscriber<RechargeOperatorModel> subscriber, String operatorId);
 
     void getProductById(Subscriber<Product> subscriber, String categoryId, String operatorId, String productId);
-
-    void storeRecentData(RecentData recentData);
 
     void getRecentData(Subscriber<List<String>> subscriber, int categoryId);
 
