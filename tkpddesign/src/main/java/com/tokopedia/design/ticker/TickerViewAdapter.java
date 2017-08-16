@@ -1,11 +1,11 @@
 package com.tokopedia.design.ticker;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.LayoutInflater;
@@ -21,20 +21,18 @@ import java.util.ArrayList;
  * Created by hangnadi on 8/16/17.
  */
 
+@SuppressWarnings("WeakerAccess")
 class TickerViewAdapter extends PagerAdapter {
 
-    private final ArrayList<String> listMessage;
-    private final ArrayList<Integer> listBackGroundColor;
-    private final ArrayList<Integer> listTextColor;
-    private final Context context;
-    private final TickerView.OnPartialTextClickListener listener;
+    private ArrayList<String> listMessage;
+    private ArrayList<Integer> listBackGroundColor;
+    private ArrayList<Integer> listTextColor;
+    private TickerView.OnPartialTextClickListener listener;
 
-    public TickerViewAdapter(Context context,
-                             ArrayList<Integer> listTextColor,
+    public TickerViewAdapter(ArrayList<Integer> listTextColor,
                              ArrayList<Integer> listBackGroundColor,
                              ArrayList<String> listMessage,
                              TickerView.OnPartialTextClickListener listener) {
-        this.context = context;
         this.listTextColor = listTextColor;
         this.listBackGroundColor = listBackGroundColor;
         this.listMessage = listMessage;
@@ -48,18 +46,13 @@ class TickerViewAdapter extends PagerAdapter {
         View tickerBackground = view.findViewById(R.id.ticker_background);
         TextView tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
 
-        tickerMessage.setText(listMessage.get(position));
-        tickerBackground.setBackgroundColor(
-                ContextCompat.getColor(context, listBackGroundColor.get(position))
-        );
-        tickerMessage.setTextColor(
-                ContextCompat.getColor(context, listTextColor.get(position))
-        );
+        tickerBackground.setBackgroundColor(listBackGroundColor.get(position));
+        tickerMessage.setTextColor(listTextColor.get(position));
 
         tickerMessage.setMovementMethod(new SelectableSpannedMovementMethod());
-        Spannable sp = (Spannable) tickerMessage.getText();
-        URLSpan[] urls=sp.getSpans(0, tickerMessage.getText().length(), URLSpan.class);
-        SpannableStringBuilder style = new SpannableStringBuilder(tickerMessage.getText());
+        Spannable sp = (Spannable) fromHtml(listMessage.get(position));
+        URLSpan[] urls = sp.getSpans(0, listMessage.get(position).length(), URLSpan.class);
+        SpannableStringBuilder style = new SpannableStringBuilder(listMessage.get(position));
         style.clearSpans();
 
         for(URLSpan url : urls){
@@ -94,4 +87,30 @@ class TickerViewAdapter extends PagerAdapter {
         return view.equals(object);
     }
 
+    public void setListMessage(ArrayList<String> listMessage) {
+        this.listMessage = listMessage;
+    }
+
+    public void setListBackGroundColor(ArrayList<Integer> listBackGroundColor) {
+        this.listBackGroundColor = listBackGroundColor;
+    }
+
+    public void setListTextColor(ArrayList<Integer> listTextColor) {
+        this.listTextColor = listTextColor;
+    }
+
+    public void setListener(TickerView.OnPartialTextClickListener listener) {
+        this.listener = listener;
+    }
+
+    @SuppressWarnings("deprecation")
+    private Spanned fromHtml(String text) {
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(text);
+        }
+        return result;
+    }
 }

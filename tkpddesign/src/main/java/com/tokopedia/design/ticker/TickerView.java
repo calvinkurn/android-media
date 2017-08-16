@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -24,6 +23,7 @@ import java.util.ArrayList;
  * Created by hangnadi on 8/15/17.
  */
 
+@SuppressWarnings("unused")
 public class TickerView extends BaseCustomView {
 
     @ColorRes
@@ -137,7 +137,6 @@ public class TickerView extends BaseCustomView {
         listBackGroundColor = new ArrayList<>();
         listMessage = new ArrayList<>();
         tickerAdapter = new TickerViewAdapter(
-                getContext(),
                 listTextColor,
                 listBackGroundColor,
                 listMessage,
@@ -239,6 +238,10 @@ public class TickerView extends BaseCustomView {
             }
         }
 
+        tickerAdapter.setListMessage(listMessage);
+        tickerAdapter.setListTextColor(listTextColor);
+        tickerAdapter.setListBackGroundColor(listBackGroundColor);
+        tickerAdapter.setListener(onPartialTextClickListener);
         tickerAdapter.notifyDataSetChanged();
         invalidate();
         requestLayout();
