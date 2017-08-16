@@ -37,7 +37,6 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
@@ -970,7 +969,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void renderPulsaBalance(PulsaBalance pulsaBalance) {
         checkPulsaBalanceView.hideProgressbar();
-        if (pulsaBalance.isSuccess()) {
+        if (pulsaBalance!=null && pulsaBalance.isSuccess()) {
             pulsaBalance.setMobileNumber(presenter.getCurrentMobileNumber());
             navigateToActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(), categoryId, categoryDataState.getName()));
         } else {

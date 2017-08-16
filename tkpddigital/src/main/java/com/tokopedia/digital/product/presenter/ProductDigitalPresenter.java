@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.Settings;
@@ -80,6 +81,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             "slotId",
             "slotIdx"
     };
+    private Handler ussdHandler;
+    private int ussdTimeOutTime = 30 * 1000;
+    private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
 
@@ -93,7 +97,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processGetCategoryAndBannerData() {
         String categoryId = view.getCategoryId();
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+        if (GlobalConfig.isSellerApp()) {
+            paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+        }
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
         view.showInitialProgressLoading();
@@ -367,7 +373,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
         String ussd = getSelectedUssdOperator().getUssdCode();
 
-       // Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() + "and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() + "and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
         if (ussd != null && !"".equalsIgnoreCase(ussd.trim())) {
             view.registerUssdReciever();
             dailUssdToCheckBalance(ussd);
@@ -397,12 +403,18 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
             view.getActivity().startActivity(intent);
         }
+        ussdTimeOut = false;
+        startUssdCheckBalanceTimer();
     }
 
     @Override
     public void processPulsaBalanceUssdResponse(String message) {
-
-        productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(message), getSubscriberCheckPulsaBalance());
+        if (ussdTimeOut) {
+            ussdTimeOut = false;
+        } else {
+            productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(message), getSubscriberCheckPulsaBalance());
+            ussdHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     @NonNull
@@ -551,6 +563,19 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             }
         }
         return result;
+
+    }
+
+    private void startUssdCheckBalanceTimer() {
+        ussdHandler = new Handler();
+        ussdHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ussdTimeOut = true;
+               // view.renderPulsaBalance(null);
+                view.showPulsaBalanceError(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+            }
+        }, ussdTimeOutTime);
 
     }
 }

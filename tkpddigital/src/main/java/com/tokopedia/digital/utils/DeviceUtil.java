@@ -106,7 +106,7 @@ public class DeviceUtil {
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-                for (int i = 0; i < subscriptionInfos.size(); i++) {
+                for (int i = 0; subscriptionInfos!=null && i < subscriptionInfos.size(); i++) {
                     SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(i);
                     if (lsuSubscriptionInfo!=null&&lsuSubscriptionInfo.getSimSlotIndex() == 0) {
                         phoneNumber = lsuSubscriptionInfo.getNumber();
@@ -129,9 +129,9 @@ public class DeviceUtil {
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-                for (int i = 0; i < subscriptionInfos.size(); i++) {
+                for (int i = 0; subscriptionInfos!=null && i < subscriptionInfos.size(); i++) {
                     SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(i);
-                    if (lsuSubscriptionInfo!=null&&lsuSubscriptionInfo.getSimSlotIndex() == 0) {
+                    if (lsuSubscriptionInfo.getSimSlotIndex() == 0) {
                         if (lsuSubscriptionInfo.getCarrierName() != null) {
                             operatorName = lsuSubscriptionInfo.getCarrierName().toString();
                             return operatorName;
