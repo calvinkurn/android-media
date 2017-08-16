@@ -10,7 +10,7 @@ import java.util.List;
  * Created by hendry on 8/15/2017.
  */
 
-public class ProductVariant {
+public class VarianStatus {
 
     @SerializedName("st")
     @Expose

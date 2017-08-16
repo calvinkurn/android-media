@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by hendry on 8/15/2017.
  * {"variant_data":[{"pvd_id":3016392,"status":1,"stock":0,"PvoListString":"{2184381,2184932}","v_code":"2184932:2184381"},{"pvd_id":3016391,"status":1,"stock":0,"PvoListString":"{2184382,2184932}","v_code":"2184932:2184382"}]}
@@ -31,6 +33,23 @@ public class VariantDatum implements Parcelable {
     @Expose
     private String vCode;
 
+    /**
+     * same as vcode but with name instead of id
+     */
+    private List<String> vCodeName;
+
+    public List<String> getvCodeName() {
+        return vCodeName;
+    }
+
+    /**
+     * same as vcode but with name instead of id
+     * example: List of "warna:maroon" "ukuran:38"
+     */
+    public void setvCodeName(List<String> vCodeName) {
+        this.vCodeName = vCodeName;
+    }
+
     public int getPvdId() {
         return pvdId;
     }
@@ -47,6 +66,9 @@ public class VariantDatum implements Parcelable {
         return vCode;
     }
 
+    public VariantDatum() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -58,9 +80,7 @@ public class VariantDatum implements Parcelable {
         dest.writeInt(this.status);
         dest.writeInt(this.stock);
         dest.writeString(this.vCode);
-    }
-
-    public VariantDatum() {
+        dest.writeStringList(this.vCodeName);
     }
 
     protected VariantDatum(Parcel in) {
@@ -68,6 +88,7 @@ public class VariantDatum implements Parcelable {
         this.status = in.readInt();
         this.stock = in.readInt();
         this.vCode = in.readString();
+        this.vCodeName = in.createStringArrayList();
     }
 
     public static final Parcelable.Creator<VariantDatum> CREATOR = new Parcelable.Creator<VariantDatum>() {

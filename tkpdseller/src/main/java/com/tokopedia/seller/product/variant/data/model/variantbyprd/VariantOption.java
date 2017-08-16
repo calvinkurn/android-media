@@ -35,9 +35,6 @@ public class VariantOption implements Parcelable {
     @SerializedName("vu_id")
     @Expose
     private int vuId;
-    @SerializedName("status")
-    @Expose
-    private int status;
     @SerializedName("position")
     @Expose
     private int position;
@@ -53,28 +50,8 @@ public class VariantOption implements Parcelable {
         return name;
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
     public String getUnitName() {
         return unitName;
-    }
-
-    public int getVId() {
-        return vId;
-    }
-
-    public int getVuId() {
-        return vuId;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public int getPosition() {
-        return position;
     }
 
     public List<Option> getOptionList() {
@@ -94,7 +71,6 @@ public class VariantOption implements Parcelable {
         dest.writeString(this.unitName);
         dest.writeInt(this.vId);
         dest.writeInt(this.vuId);
-        dest.writeInt(this.status);
         dest.writeInt(this.position);
         dest.writeTypedList(this.optionList);
     }
@@ -109,7 +85,6 @@ public class VariantOption implements Parcelable {
         this.unitName = in.readString();
         this.vId = in.readInt();
         this.vuId = in.readInt();
-        this.status = in.readInt();
         this.position = in.readInt();
         this.optionList = in.createTypedArrayList(Option.CREATOR);
     }

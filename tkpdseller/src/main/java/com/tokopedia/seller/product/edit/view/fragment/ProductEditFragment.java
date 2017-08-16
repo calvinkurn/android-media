@@ -92,5 +92,4 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
     public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
         this.productVariantByPrdModel = productVariantByPrdModel;
     }
-
 }

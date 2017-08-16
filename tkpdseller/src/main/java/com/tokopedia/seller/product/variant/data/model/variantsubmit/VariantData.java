@@ -13,41 +13,41 @@ public class VariantData {
 
     @SerializedName("variant")
     @Expose
-    private List<Variant> variant = null;
+    private List<VariantUnitSubmit> variantUnitSubmitList = null;
     @SerializedName("product_variant")
     @Expose
-    private List<ProductVariant> productVariant = null;
+    private List<VarianStatus> varianStatusList = null;
 
     /**
      * Summary of the selected variant list. for example. Color and size.
      * @return variant List of the selected colors (ex:"white", red") and sizes ("43", "44")
      */
-    public List<Variant> getVariant() {
-        return variant;
+    public List<VariantUnitSubmit> getVariant() {
+        return variantUnitSubmitList;
     }
 
     /**
      * Summary of the selected variant list. for example. Color and size.
-     * @param variant List of the selected colors (ex:"white", red") and sizes ("43", "44")
+     * @param variantUnitSubmitList List of the selected colors (ex:"white", red") and sizes ("43", "44")
      */
-    public void setVariant(List<Variant> variant) {
-        this.variant = variant;
+    public void setVariantUnitSubmitList(List<VariantUnitSubmit> variantUnitSubmitList) {
+        this.variantUnitSubmitList = variantUnitSubmitList;
     }
 
     /**
      * Detail of the combination for variant level 1+ variant level 2 + so on
-     * @return  productVariant list of the metrics of selected variants
+     * @return  varianStatusList list of the metrics of selected variants
      */
-    public List<ProductVariant> getProductVariant() {
-        return productVariant;
+    public List<VarianStatus> getVarianStatusList() {
+        return varianStatusList;
     }
 
     /**
      * Detail of the combination for variant level 1+ variant level 2 + so on
-     * @param productVariant list of the metrics of selected variants
+     * @param varianStatus list of the metrics of selected variants
      */
-    public void setProductVariant(List<ProductVariant> productVariant) {
-        this.productVariant = productVariant;
+    public void setVarianStatusList(List<VarianStatus> varianStatus) {
+        this.varianStatusList = varianStatus;
     }
 
 }
