@@ -37,10 +37,6 @@ import java.util.Locale;
 
 public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresenter> extends BasePresenterFragment<T> implements TopAdsDetailEditView {
 
-    private static final int STICKER_SPEAKER = 3;
-    private static final int STICKER_THUMBS_UP = 2;
-    private static final int STICKER_FIRE = 1;
-
     protected TextInputLayout nameInputLayout;
     protected EditText nameEditText;
     private TextInputLayout maxPriceInputLayout;

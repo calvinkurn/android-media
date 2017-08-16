@@ -4,13 +4,16 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
@@ -36,6 +39,13 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
                 .build()
                 .inject(this);
         topAdsDetailNewProductPresenter.attachView(this);
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        detailAd.setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
+        detailAd.setType(TopAdsNetworkConstant.TYPE_PRODUCT_STAT);
     }
 
     @Override
