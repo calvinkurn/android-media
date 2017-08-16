@@ -238,7 +238,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 try {
-                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE
+                            && layoutManager != null
+                            && topAdsRecyclerAdapter != null
+                            && topAdsRecyclerAdapter.getPlacer() != null) {
                         Item item = null;
                         if (itemIsFullScreen()) {
                             item = topAdsRecyclerAdapter.getPlacer()
