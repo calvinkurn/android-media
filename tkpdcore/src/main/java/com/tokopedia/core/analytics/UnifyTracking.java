@@ -1912,4 +1912,13 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventDrawerSellerHome(){
         eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
     }
+
+    public static void eventUssd(String action, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USSD_CEK_SALDO,
+                AppEventTracking.Category.USSD_CEK_SALDO,
+                action,
+                eventLabel
+        ).getEvent());
+    }
 }

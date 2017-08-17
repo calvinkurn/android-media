@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -193,6 +195,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
             @Override
             public void onClick(View v) {
                 presenter.processAddToCartProduct(presenter.generateCheckoutPassData(selectedOperator, pulsaBalance, mCategoryId, mCategoryName, productSelected.getProductId(), cbInstantCheckout.isChecked()));
+                UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_BUY_PULSA,selectedOperator.getName()+","+pulsaBalance.getMobileNumber());
             }
         };
     }

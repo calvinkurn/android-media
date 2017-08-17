@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -872,6 +873,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     public void checkBalanceByUSSD() {
         presenter.processToCheckBalance(null);
+       UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO,DeviceUtil.getOperatorName(getActivity())+","+DeviceUtil.getMobileNumber(getActivity()));
     }
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
