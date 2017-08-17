@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantItemPickerSearchViewHolder;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
@@ -12,12 +13,12 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantPickerSearchListAdapter extends BaseMultipleCheckListAdapter<ProductVariantViewModel> {
+public class ProductVariantPickerSearchListAdapter extends BaseMultipleCheckListAdapter<ProductVariantValue> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case ProductVariantViewModel.TYPE:
+            case ProductVariantValue.TYPE:
                 return new ProductVariantItemPickerSearchViewHolder(
                         getLayoutView(parent, R.layout.item_product_variant_picker_search));
             default:

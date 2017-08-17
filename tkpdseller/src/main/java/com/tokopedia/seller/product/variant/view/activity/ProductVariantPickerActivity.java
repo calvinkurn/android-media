@@ -22,6 +22,8 @@ import java.util.List;
 
 public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel> implements HasComponent<ProductComponent> {
 
+    public static final String EXTRA_INTENT_SEARCH_ITEM_LIST = "EXTRA_INTENT_SEARCH_ITEM_LIST";
+
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
@@ -64,9 +66,9 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     private void updateBottomSheetInfo() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
         List<ProductVariantViewModel> selectedItemList = ((BasePickerItemCacheList<ProductVariantViewModel>) fragment).getItemList();
+        bottomSheetTitleTextView.setText(getString(R.string.product_variant_item_picker_selected_title, String.valueOf(selectedItemList.size()), "Warna"));
         if (selectedItemList.size() > 0) {
             showBottomSheetInfo(true);
-            bottomSheetTitleTextView.setText(getString(R.string.product_variant_item_picker_selected_title, String.valueOf(selectedItemList.size()), "Warna"));
         } else {
             showBottomSheetInfo(false);
         }

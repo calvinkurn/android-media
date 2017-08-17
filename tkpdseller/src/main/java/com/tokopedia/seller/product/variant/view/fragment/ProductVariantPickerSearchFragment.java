@@ -3,8 +3,8 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
@@ -12,23 +12,27 @@ import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by nathan on 8/4/17.
  */
 
-public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantViewModel>
-        implements BasePickerItemSearchList<ProductVariantViewModel>, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantViewModel> {
+public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantValue>
+        implements BasePickerItemSearchList<ProductVariantViewModel>, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue> {
+
+
+    private static final int MINIMUM_SHOW_UNIT_SIZE = 2;
 
     private BasePickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
 
-    private List<ProductVariantViewModel> itemList;
     private List<ProductVariantUnit> productVariantUnitList;
+    private List<ProductVariantValue> productVariantValueList;
+    private SpinnerTextView unitSpinnerTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,39 +40,63 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (getActivity() instanceof BasePickerMultipleItem) {
             pickerMultipleItem = (BasePickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
-        itemList = getActivity().getIntent().getParcelableArrayListExtra(BasePickerMultipleItemActivity.EXTRA_INTENT_PICKER_ITEM_LIST);
         productVariantUnitList = getActivity().getIntent().getParcelableArrayListExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_LIST);
+        productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
     }
 
     @Override
-    protected BaseMultipleCheckListAdapter<ProductVariantViewModel> getNewAdapter() {
+    protected int getFragmentLayout() {
+        return R.layout.fragment_product_variant_picker_search_list;
+    }
+
+    @Override
+    protected BaseMultipleCheckListAdapter<ProductVariantValue> getNewAdapter() {
         return new ProductVariantPickerSearchListAdapter();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        unitSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_variant_unit);
+        if (productVariantUnitList.size() >= MINIMUM_SHOW_UNIT_SIZE) {
+            String[] variantUnitTextArray = new String[productVariantUnitList.size()];
+            String[] variantUnitValueArray = new String[productVariantUnitList.size()];
+            int i = 0;
+            for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
+                variantUnitTextArray[i] = productVariantUnit.getName();
+                variantUnitValueArray[i] = String.valueOf(productVariantUnit.getUnitId());
+                i++;
+            }
+            unitSpinnerTextView.setEntries(variantUnitTextArray);
+            unitSpinnerTextView.setValues(variantUnitValueArray);
+            unitSpinnerTextView.setVisibility(View.VISIBLE);
+        }
         resetPageAndSearch();
     }
 
     @Override
     protected void initialVar() {
         super.initialVar();
-        ((BaseMultipleCheckListAdapter<ProductVariantViewModel>) adapter).setCheckedCallback(this);
+        ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).setCheckedCallback(this);
     }
 
     @Override
     protected void searchForPage(int page) {
-        onSearchLoaded(itemList, itemList.size());
+        onSearchLoaded(productVariantValueList, productVariantValueList.size());
     }
 
     @Override
-    public void onItemClicked(ProductVariantViewModel productVariantViewModel) {
+    public void onItemClicked(ProductVariantValue productVariantValue) {
         // Already handled onItemChecked
     }
 
     @Override
-    public void onItemChecked(ProductVariantViewModel productVariantViewModel, boolean checked) {
+    public void onItemChecked(ProductVariantValue productVariantValue, boolean checked) {
+        ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
+        productVariantViewModel.setId(Long.parseLong(productVariantValue.getId()));
+        productVariantViewModel.setHexCode(productVariantValue.getHexCode());
+        productVariantViewModel.setTitle(productVariantValue.getValue());
+        productVariantViewModel.setImageUrl(productVariantValue.getIcon());
         if (checked) {
             pickerMultipleItem.addItemFromSearch(productVariantViewModel);
         } else {
@@ -78,7 +106,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     public void deselectItem(ProductVariantViewModel productVariantViewModel) {
-        ((BaseMultipleCheckListAdapter<ProductVariantViewModel>) adapter).setChecked(productVariantViewModel.getId(), false);
+        ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).setChecked(productVariantViewModel.getId(), false);
         resetPageAndSearch();
     }
 

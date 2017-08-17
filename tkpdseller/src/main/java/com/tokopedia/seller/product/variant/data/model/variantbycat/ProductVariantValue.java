@@ -5,12 +5,17 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.base.view.adapter.ItemIdType;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * Created by hendry on 8/14/2017.
  */
 
-public class ProductVariantValue implements Parcelable {
+public class ProductVariantValue implements Parcelable, ItemIdType {
+
+    public static final int TYPE = 199349;
+
     @SerializedName("value_id")
     @Expose
     private int valueId;
@@ -24,8 +29,8 @@ public class ProductVariantValue implements Parcelable {
     @Expose
     private String icon;
 
-    public int getValueId() {
-        return valueId;
+    public String getId() {
+        return String.valueOf(valueId);
     }
 
     public String getValue() {
@@ -74,4 +79,9 @@ public class ProductVariantValue implements Parcelable {
             return new ProductVariantValue[size];
         }
     };
+
+    @Override
+    public int getType() {
+        return TYPE;
+    }
 }

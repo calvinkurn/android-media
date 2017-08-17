@@ -15,11 +15,8 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by hendry on 4/3/17.
@@ -69,7 +66,7 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
             variantLevelOneLabelView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pickVariantLevelOne();
+                    pickVariant(1);
                 }
             });
         }
@@ -80,7 +77,7 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
             variantLevelTwoLabelView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    pickVariant(2);
                 }
             });
         }
@@ -91,21 +88,11 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
 
     }
 
-    private void pickVariantLevelOne() {
+    private void pickVariant(int level) {
+        int index = level - 1;
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
-        ArrayList<ProductVariantViewModel> modelList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-            productVariantViewModel.setId(i);
-            productVariantViewModel.setTitle(UUID.randomUUID().toString() + " - " + String.valueOf(i));
-            if (i % 2 == 0) {
-                productVariantViewModel.setHexCode("#b74747");
-            } else {
-                productVariantViewModel.setImageUrl("https://image.flaticon.com/teams/slug/freepik.jpg");
-            }
-            modelList.add(productVariantViewModel);
-        }
-        intent.putExtra(ProductVariantPickerActivity.EXTRA_INTENT_PICKER_ITEM_LIST, modelList);
+        ArrayList<ProductVariantUnit> variantUnitArrayList = (ArrayList<ProductVariantUnit>) productVariantByCatModelList.get(index).getUnitList();
+        intent.putParcelableArrayListExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_LIST, variantUnitArrayList);
         getActivity().startActivityForResult(intent, REQUEST_CODE_VARIANT_LEVEL_ONE);
     }
 

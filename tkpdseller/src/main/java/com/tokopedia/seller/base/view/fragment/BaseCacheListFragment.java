@@ -31,6 +31,11 @@ public abstract class BaseCacheListFragment<T extends ItemPickerType> extends Ba
     }
 
     @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
+    }
+
+    @Override
     public void onItemClicked(ItemPickerType itemPickerType) {
         // No action
     }

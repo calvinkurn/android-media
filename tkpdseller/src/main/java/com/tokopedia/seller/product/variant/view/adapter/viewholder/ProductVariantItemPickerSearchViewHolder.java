@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
@@ -17,7 +18,7 @@ import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckViewHolder<ProductVariantViewModel> {
+public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckViewHolder<ProductVariantValue> {
 
     private ImageView imageView;
     private TextView titleTextView;
@@ -31,14 +32,14 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
     }
 
     @Override
-    public void bindObject(final ProductVariantViewModel productVariantViewModel, boolean checked) {
-        bindObject(productVariantViewModel);
+    public void bindObject(final ProductVariantValue productVariantValue, boolean checked) {
+        bindObject(productVariantValue);
         setChecked(checked);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkedCallback != null) {
-                    checkedCallback.onItemChecked(productVariantViewModel, checkBox.isChecked());
+                    checkedCallback.onItemChecked(productVariantValue, checkBox.isChecked());
                 }
             }
         });
@@ -55,19 +56,19 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
     }
 
     @Override
-    public void bindObject(final ProductVariantViewModel productVariantViewModel) {
-        if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
+    public void bindObject(final ProductVariantValue productVariantValue) {
+        if (!TextUtils.isEmpty(productVariantValue.getHexCode())) {
             imageView.setVisibility(View.VISIBLE);
-            imageView.setBackgroundColor(Color.parseColor(productVariantViewModel.getHexCode()));
+            imageView.setBackgroundColor(Color.parseColor(productVariantValue.getHexCode()));
             imageView.setImageDrawable(null);
-        } else if (!TextUtils.isEmpty(productVariantViewModel.getImageUrl())) {
+        } else if (!TextUtils.isEmpty(productVariantValue.getIcon())) {
             imageView.setVisibility(View.VISIBLE);
             imageView.setBackgroundColor(Color.TRANSPARENT);
-            Glide.with(imageView.getContext()).load(productVariantViewModel.getImageUrl())
+            Glide.with(imageView.getContext()).load(productVariantValue.getIcon())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else {
             imageView.setVisibility(View.GONE);
         }
-        titleTextView.setText(productVariantViewModel.getTitle());
+        titleTextView.setText(productVariantValue.getValue());
     }
 }
