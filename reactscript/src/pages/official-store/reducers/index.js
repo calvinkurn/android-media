@@ -243,10 +243,14 @@ const brands = (state = {
                 isFetching: true,
             }
         case `${FETCH_BRANDS}_${FULFILLED}`:
+            // console.log(action.payload)
             const brandsData = action.payload.data || []
             const totalBrands = action.payload.total_brands
             const itemsRefresh = action.payload.status === 'REFRESH' ? [...state.items.slice(0, 10)] : [...state.items]
             const items = action.payload.status === 'REFRESH' ? itemsRefresh : [...state.items, ...brandsData]
+            // console.log(itemsRefresh)
+            // console.log(state.items)
+            // console.log(brandsData)
             const pagination = {
                 ...state.pagination,
                 offset: items.length
@@ -256,6 +260,9 @@ const brands = (state = {
                 const data = []
                 let howMany = state.grid.itemsToShow
                 let index = action.payload.status === 'REFRESH' ? 0 : state.grid.index
+                // console.log(brands)
+                // console.log(howMany)
+                // console.log(index)
 
                 while (howMany--) {
                     data.push(brands[index])
