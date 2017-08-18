@@ -69,6 +69,13 @@ class TickerViewAdapter extends PagerAdapter {
         }
         tickerMessage.setText(style);
 
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        view.setLayoutParams(layoutParams);
+        view.invalidate();
+        view.requestLayout();
+
         container.addView(view);
         return view;
     }
