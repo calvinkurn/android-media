@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,10 +24,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.data.source.cache.CacheHelper;
-import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
@@ -75,31 +72,26 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
-    private static final String TAG = "BaseActivity";
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
+    @Inject
+    protected SessionHandler sessionHandler;
+    @Inject
+    protected GCMHandler gcmHandler;
+    @Inject
+    CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
+    @Inject
+    CacheHelper cacheHelper;
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-
-    @Inject
-    protected SessionHandler sessionHandler;
-
-    @Inject
-    protected GCMHandler gcmHandler;
-
     private CategoryDatabaseManager categoryDatabaseManager;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
-
-    @Inject
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
-
-    @Inject
-    CacheHelper cacheHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -444,12 +436,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     public AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication())
-                .getApplicationComponent(getActivityModule());
-    }
-
-
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
+                .getApplicationComponent();
     }
 
     protected void setGoldMerchant(ShopModel shopModel) {

@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.product.constant.ProductNetworkConstant;
@@ -25,7 +25,7 @@ public class GenerateHostCloud {
     private final Context context;
 
     @Inject
-    public GenerateHostCloud(@ActivityContext Context context, GenerateHostApi generateHostApi) {
+    public GenerateHostCloud(@ApplicationContext Context context, GenerateHostApi generateHostApi) {
         this.generateHostApi = generateHostApi;
         this.context = context;
     }

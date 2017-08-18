@@ -10,7 +10,6 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.di.module.UtilModule;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
@@ -102,9 +101,6 @@ public interface AppComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
-
-    @ActivityContext
-    Context contextActivity();
 
     ThreadExecutor threadExecutor();
 

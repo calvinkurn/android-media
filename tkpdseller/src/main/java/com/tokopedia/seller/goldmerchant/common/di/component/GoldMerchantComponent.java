@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -87,9 +86,6 @@ public interface GoldMerchantComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
-
-    @ActivityContext
-    Context contextActivity();
 
     ThreadExecutor threadExecutor();
 
