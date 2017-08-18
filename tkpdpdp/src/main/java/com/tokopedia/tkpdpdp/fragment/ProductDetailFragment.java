@@ -40,6 +40,7 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
@@ -65,6 +66,7 @@ import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
+import com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
@@ -104,16 +106,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int REQUEST_CODE_LOGIN = 561;
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
-
+    public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
+    public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
+    public static final String STATE_VIDEO = "STATE_VIDEO";
+    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
-    public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
-    public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
-    public static final String STATE_VIDEO = "STATE_VIDEO";
-    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -125,17 +126,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
+    private MostHelpfulReviewView mostHelpfulReviewView;
     private OtherProductsView otherProductsView;
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
     private ProgressBar progressBar;
 
-    Toolbar toolbar;
-    AppBarLayout appBarLayout;
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    FloatingActionButton fabWishlist;
-
+    private Toolbar toolbar;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private FloatingActionButton fabWishlist;
     private TextView tvTickerGTM;
 
     private ProductPass productPass;
@@ -150,9 +151,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private DeepLinkWebViewHandleListener webViewHandleListener;
     private Menu menu;
 
-    ReportProductDialogFragment fragment;
-
-    Bundle recentBundle;
+    private ReportProductDialogFragment fragment;
+    private Bundle recentBundle;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -203,21 +203,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     protected void initView(View view) {
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
         tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
-        videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
         headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
-        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
         pictureView = (PictureView) view.findViewById(R.id.view_picture);
+        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
+        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
+        newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
+        videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
+        mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
-        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
-        newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
-
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
-
         collapsingToolbarLayout
                 = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         transactionDetailView
@@ -225,7 +224,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         priceSimulationView
                 = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
-
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -248,6 +246,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         newShopView.setListener(this);
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
+        mostHelpfulReviewView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
         fabWishlist.setOnClickListener(new View.OnClickListener() {
@@ -874,6 +873,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void showProductCampaign(ProductCampaign productCampaign) {
         this.productCampaign = productCampaign;
         headerInfoView.renderProductCampaign(this.productCampaign);
+    }
+
+    @Override
+    public void showMostHelpfulReview(List<Review> reviews) {
+        Log.d("alifanuraniputri", "alifanuraniputri: ");
+        this.mostHelpfulReviewView.renderData(reviews);
+        this.mostHelpfulReviewView.updateTotalReviews(productData.getStatistic().getProductReviewCount());
+        this.mostHelpfulReviewView.setVisibility(View.VISIBLE);
     }
 
     private void destroyVideoLayout() {
