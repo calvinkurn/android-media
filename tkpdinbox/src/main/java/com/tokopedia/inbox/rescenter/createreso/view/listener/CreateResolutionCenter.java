@@ -39,6 +39,6 @@ public interface CreateResolutionCenter {
 
         void createResoClicked(ButtonState buttonState);
 
-        void loadProductProblem(int orderId);
+        void loadProductProblem(String orderId);
     }
 }

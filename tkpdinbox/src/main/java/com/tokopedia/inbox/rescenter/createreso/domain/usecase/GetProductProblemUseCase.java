@@ -30,9 +30,9 @@ public class GetProductProblemUseCase extends UseCase<ProductProblemResponseDoma
         return productProblemRepository.getProductProblemFromCloud(requestParams);
     }
 
-    public RequestParams getProductProblemUseCaseParam(int orderId) {
+    public RequestParams getProductProblemUseCaseParam(String orderId) {
         RequestParams params = RequestParams.create();
-        params.putInt(ORDER_ID, orderId);
+        params.putString(ORDER_ID, orderId);
         return params;
     }
 

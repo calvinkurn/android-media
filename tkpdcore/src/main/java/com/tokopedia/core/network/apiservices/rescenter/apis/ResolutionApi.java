@@ -22,6 +22,13 @@ import rx.Observable;
 
 public interface ResolutionApi {
 
+    //Version 2
+    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_STEP_1)
+    Observable<Response<TkpdResponse>> getProductProblemList(@Path("order_id") String orderId,
+                                                             @QueryMap TKPDMapParam<String, Object> params);
+
+
+    //Version 1
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL)
     Observable<Response<TkpdResponse>> getResCenterDetail(@Path("resolution_id") String resolutionID,
                                                           @QueryMap TKPDMapParam<String, Object> params);
@@ -64,5 +71,8 @@ public interface ResolutionApi {
     @POST(TkpdBaseURL.ResCenterV2.ACTION_REPLY_RESOLUTION)
     Observable<Response<TkpdResponse>> replyResolutionSubmit(@Path("resolution_id") String resolutionID,
                                                              @FieldMap TKPDMapParam<String, Object> params);
+
+
+
 
 }

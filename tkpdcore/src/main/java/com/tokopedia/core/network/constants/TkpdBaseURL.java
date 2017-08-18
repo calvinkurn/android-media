@@ -415,18 +415,6 @@ public class TkpdBaseURL {
         public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/generate_token_host.pl";
     }
 
-    public static class ResCenterV5 {
-        public static final String URL_RES_CENTER_ACTION = WEB_DOMAIN + "resolution/v2/";
-
-        public static final String URL_RES_CENTER_ACTION_CREATE = URL_RES_CENTER_ACTION + "create/";
-        public static final String PATH_STEP_1 = "step1";
-        public static final String PATH_STEP_2_3 = "step2_3";
-
-
-        public static final String URL_RES_CENTER_ACTION_GET_CONVERSATION = URL_RES_CENTER_ACTION + "detail/";
-        public static final String PATH_GET_CONVERSATION = URL_RES_CENTER_ACTION + "conversation";
-    }
-
     public static class Search {
         public static final String URL_CATALOG_SELLER = "search/v1/catalog/product";
 
@@ -788,9 +776,11 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/v1/";
-        public static final String BASE_INBOX_RESOLUTION = "inbox";
-        public static final String BASE_DETAIL_RESOLUTION = "detail/{resolution_id}";
+        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/";
+        public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
+        public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
+        public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";
+        public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
 
         public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
         public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
@@ -802,6 +792,12 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
         public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
         public static final String ACTION_REPLY_RESOLUTION = BASE_DETAIL_RESOLUTION + "/reply";
+
+
+        public static final String BASE_RESOLUTION_CREATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
+        public static final String GET_RESOLUTION_STEP_1 = BASE_RESOLUTION_CREATE + "/step1";
+        public static final String POST_RESOLUTION_STEP_2_3 = BASE_RESOLUTION_CREATE + "/step2_3";
+
     }
 
     public static class Replacement {

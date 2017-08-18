@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
@@ -39,8 +38,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     Button btnCreateResolution;
     ButtonState buttonState;
 
+    String orderId = "";
 
-    int orderId;
     @Inject
     CreateResolutionCenterPresenter presenter;
 
@@ -104,7 +103,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     protected void setupArguments(Bundle arguments) {
         ActionParameterPassData actionParameterPassData = (ActionParameterPassData)arguments.get(KEY_PARAM_PASS_DATA);
-        orderId = Integer.parseInt(actionParameterPassData.getOrderID());
+        orderId = actionParameterPassData.getOrderID();
     }
 
     @Override
