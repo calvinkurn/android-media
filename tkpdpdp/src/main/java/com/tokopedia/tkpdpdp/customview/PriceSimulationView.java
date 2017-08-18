@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 
 public class PriceSimulationView extends BaseView<ProductDetailData, ProductDetailView> {
 
+    private LinearLayout variantLayout;
+    private TextView tvVariant;
     private LinearLayout wholesaleLayout;
     private TextView tvWholesale;
     private LinearLayout installmentLayout;
@@ -61,6 +64,8 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
     @Override
     protected void initView(Context context) {
         super.initView(context);
+        variantLayout = (LinearLayout) findViewById(R.id.variant);
+        tvVariant = (TextView) findViewById(R.id.variant_title);
         wholesaleLayout = (LinearLayout) findViewById(R.id.wholesale);
         tvWholesale = (TextView) findViewById(R.id.tv_wholesale);
         installmentLayout = (LinearLayout) findViewById(R.id.installmet);
@@ -109,5 +114,18 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         if (isWholesale && isInstallment) separator.setVisibility(VISIBLE);
 
         setVisibility(VISIBLE);
+    }
+
+    public void addProductVariant(ProductVariant productVariant) {
+        tvVariant.setText(getContext().getString(R.string.choose_variant));
+        variantLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                //TODO parse product variant to bundle
+                listener.onVariantClicked(bundle);
+            }
+        });
+        variantLayout.setVisibility(VISIBLE);
     }
 }

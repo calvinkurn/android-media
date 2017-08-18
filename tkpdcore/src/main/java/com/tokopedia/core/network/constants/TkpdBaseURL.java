@@ -551,7 +551,7 @@ public class TkpdBaseURL {
     public static class Tome {
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
-        public static final String PATH_PRODUCT_VARIANT = "v2/web-service/product/get_variant?p_id={product_id}";
+        public static final String PATH_PRODUCT_VARIANT = "v2/web-service/product/get_variant";
     }
 
     public static class Ace {
