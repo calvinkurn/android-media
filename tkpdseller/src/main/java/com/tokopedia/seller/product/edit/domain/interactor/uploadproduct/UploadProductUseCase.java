@@ -11,6 +11,7 @@ import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private final ImageProductUploadRepository imageProductUploadRepository;
     private final GenerateHostRepository generateHostRepository;
     private final UploadProductRepository uploadProductRepository;
+    private final ProductVariantRepository productVariantRepository;
 
     private AddProductNotificationListener listener;
 
@@ -41,12 +43,14 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
             ProductDraftRepository productDraftRepository,
             GenerateHostRepository generateHostRepository,
             ImageProductUploadRepository imageProductUploadRepository,
-            UploadProductRepository uploadProductRepository) {
+            UploadProductRepository uploadProductRepository,
+            ProductVariantRepository productVariantRepository) {
         super(threadExecutor, postExecutionThread);
         this.productDraftRepository = productDraftRepository;
         this.generateHostRepository = generateHostRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
         this.uploadProductRepository = uploadProductRepository;
+        this.productVariantRepository = productVariantRepository;
     }
 
     public void setListener(AddProductNotificationListener listener) {
@@ -69,7 +73,8 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                 .flatMap(new GetProductModelObservable())
                 .flatMap(new UploadProduct(productId, listener, generateHostRepository,
                         uploadProductRepository, imageProductUploadRepository,
-                        new ProductDraftUpdate(productDraftRepository, productId)))
+                        new ProductDraftUpdate(productDraftRepository, productId),
+                        productVariantRepository))
                 .doOnNext(new DeleteProductDraft(productId, productDraftRepository));
     }
 

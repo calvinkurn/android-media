@@ -3,6 +3,9 @@ package com.tokopedia.seller.product.edit.data.mapper;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValidationInputServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.EditProductInputServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,8 +19,9 @@ public class EditProductInputMapper extends AddProductValidationInputMapper{
     public EditProductInputMapper() {
     }
 
-    public void map(EditProductInputServiceModel serviceModel, UploadProductInputDomainModel domainModel){
-        map((AddProductValidationInputServiceModel) serviceModel, domainModel);
+    public void map(EditProductInputServiceModel serviceModel, UploadProductInputDomainModel domainModel,
+                    List<ProductVariantByCatModel> productVariantByCatModelList){
+        map((AddProductValidationInputServiceModel) serviceModel, domainModel, productVariantByCatModelList);
         serviceModel.setProductChangeCatalog(domainModel.getProductChangeCatalog());
         serviceModel.setProductChangePhoto(domainModel.getProductChangePhoto());
         serviceModel.setProductChangeWholesale(domainModel.getProductChangeWholesale());

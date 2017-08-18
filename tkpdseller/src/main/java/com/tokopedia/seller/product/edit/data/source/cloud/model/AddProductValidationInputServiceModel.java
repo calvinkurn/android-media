@@ -1,7 +1,12 @@
 package com.tokopedia.seller.product.edit.data.source.cloud.model;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.seller.product.draft.data.source.db.model.ProductDraftModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +39,8 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     public static final String PRD_PRC_ = "prd_prc_";
     public static final String QTY_MAX_ = "qty_max_";
     public static final String QTY_MIN_ = "qty_min_";
+    public static final String SWITCH_VARIANT = "switch_variant";
+    public static final String VARIANT_DATA = "variant_data";
 
     private List<ProductWholesaleServiceModel> productWholesale;
     private List<String> productVideo;
@@ -55,12 +62,15 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     private int productWeightUnit;
     private int poProcessType;
     private int poProcessValue;
+    private int switchVariant;
+    private ProductVariantSubmit productVariantSubmit;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = super.generateMapParam();
         if (StringUtils.isNotBlank(getProductName())) {
             params.put(PRODUCT_NAME, getProductName());
         }
+
         if (StringUtils.isNotBlank(getProductDescription())) {
             params.put(PRODUCT_DESCRIPTION, getProductDescription());
         }
@@ -83,7 +93,29 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         params.put(SERVER_ID, String.valueOf(getServerId()));
         params.putAll(getWholesaleParams());
         params.putAll(getVideosParams());
+        params.put(SWITCH_VARIANT, String.valueOf(getSwitchVariant()));
+        if (switchVariant > 0) {
+            params.put(VARIANT_DATA,
+                    CacheUtil.convertModelToString(productVariantSubmit, new TypeToken<ProductVariantSubmit>() {
+                    }.getType()));
+        }
         return params;
+    }
+
+    public int getSwitchVariant() {
+        return switchVariant;
+    }
+
+    public void setSwitchVariant(int switchVariant) {
+        this.switchVariant = switchVariant;
+    }
+
+    public ProductVariantSubmit getProductVariantSubmit() {
+        return productVariantSubmit;
+    }
+
+    public void setProductVariantSubmit(ProductVariantSubmit productVariantSubmit) {
+        this.productVariantSubmit = productVariantSubmit;
     }
 
     public TKPDMapParam<String, String> getWholesaleParams() {

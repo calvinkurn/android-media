@@ -48,6 +48,8 @@ public class UploadProductMapper {
         domainModel.setProductStatus(viewModel.getProductStatus());
         domainModel.setProductId(viewModel.getProductId());
         domainModel.setNameEditable(viewModel.getProductNameEditable());
+        domainModel.setSwitchVariant(viewModel.getSwitchVariant());
+        domainModel.setProductVariantByPrdModel(viewModel.getProductVariantByPrdModel());
         return domainModel;
     }
 
@@ -119,6 +121,8 @@ public class UploadProductMapper {
         viewModel.setPoProcessValue(domainModel.getPoProcessValue());
         viewModel.setServerId(domainModel.getServerId());
         viewModel.setProductId(domainModel.getProductId());
+        viewModel.setSwitchVariant(domainModel.getSwitchVariant());
+        viewModel.setProductVariantByPrdModel(domainModel.getProductVariantByPrdModel());
         return viewModel;
     }
 

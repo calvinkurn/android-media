@@ -193,6 +193,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         return videoIdList;
     }
 
+    public ProductVariantByPrdModel getProductVariantByPrdModel() {
+        return productVariantByPrdModel;
+    }
+
     public void setVideoIdList(List<String> videoIdList) {
         this.videoIdList.addAll(videoIdList);
         setLabelViewText(videoIdList);

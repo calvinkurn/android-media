@@ -52,9 +52,7 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
         showLoading();
         presenter.attachView(this);
         fetchProductInfoData(productId);
-        if (productVariantByPrdModel == null) {
-            fetchProductVariantData(productId);
-        }
+        fetchProductVariantData(productId);
     }
 
     private void fetchProductInfoData(String productId){

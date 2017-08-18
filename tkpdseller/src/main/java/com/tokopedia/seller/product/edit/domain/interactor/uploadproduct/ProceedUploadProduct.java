@@ -7,6 +7,8 @@ import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -19,12 +21,17 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
     private final NotificationManager notificationManager;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
+    private final ProductVariantRepository productVariantRepository;
     private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
-    public ProceedUploadProduct(NotificationManager notificationManager, UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
+    public ProceedUploadProduct(NotificationManager notificationManager, UploadProductRepository uploadProductRepository,
+                                ImageProductUploadRepository imageProductUploadRepository,
+                                UploadProductUseCase.ProductDraftUpdate draftUpdate,
+                                ProductVariantRepository productVariantRepository) {
         this.notificationManager = notificationManager;
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
         this.draftUpdate = draftUpdate;
+        this.productVariantRepository = productVariantRepository;
     }
 
     @Override
@@ -34,7 +41,7 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
                     .flatMap(new AddProductImage(imageProductUploadRepository))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareAddProductValidation(domainModel))
-                    .flatMap(new AddProductValidation(uploadProductRepository))
+                    .flatMap(new AddProductValidation(uploadProductRepository, productVariantRepository))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .flatMap(new ProcessAddProductValidation(domainModel, imageProductUploadRepository, uploadProductRepository))
                     .doOnNext(notificationManager.getUpdateNotification());
@@ -46,7 +53,7 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
                     .flatMap(new UploadImageEditProduct(uploadProductRepository, imageProductUploadRepository, draftUpdate))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareEditProduct(domainModel))
-                    .flatMap(new EditProduct(uploadProductRepository))
+                    .flatMap(new EditProduct(uploadProductRepository, productVariantRepository))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new ToUploadProductModel(domainModel));
         } else {
