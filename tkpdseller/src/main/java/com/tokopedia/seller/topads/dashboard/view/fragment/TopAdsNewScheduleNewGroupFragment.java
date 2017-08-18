@@ -33,6 +33,11 @@ import javax.inject.Inject;
 public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment<TopAdsCreatePromoNewGroupModel,
         TopAdsDetailGroupViewModel, TopAdsDetailNewGroupPresenter> implements TopAdsDetailNewGroupView{
 
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        submitButton.setText(getString(R.string.label_top_ads_save));
+    }
 
     @Override
     protected void initialVar() {

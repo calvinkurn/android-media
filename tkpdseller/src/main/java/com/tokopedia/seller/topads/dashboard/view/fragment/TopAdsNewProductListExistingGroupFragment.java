@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -38,6 +39,12 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        buttonNext.setText(getString(R.string.label_top_ads_save));
     }
 
     @Override

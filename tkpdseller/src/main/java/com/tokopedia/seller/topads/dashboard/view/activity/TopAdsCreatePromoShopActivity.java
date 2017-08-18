@@ -45,8 +45,8 @@ public class TopAdsCreatePromoShopActivity extends BaseStepperActivity {
 
     @Override
     public void finishPage() {
-        super.finishPage();
         setResultAdSaved();
+        super.finishPage();
     }
 
     private void setResultAdSaved() {

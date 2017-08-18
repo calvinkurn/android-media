@@ -15,7 +15,7 @@
         <TextView
             style="@style/TextView.Title.BlackSecondary"
             android:layout_marginBottom="@dimen/margin_large"
-            android:text="@string/title_add_product" />
+            android:text="@string/title_add_product_lowercase" />
 
         <RelativeLayout
             android:layout_width="match_parent"

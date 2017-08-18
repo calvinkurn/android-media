@@ -14,6 +14,6 @@
         android:id="@+id/button_submit"
         style="@style/Button.Submit.Green"
         android:layout_alignParentBottom="true"
-        android:text="@string/label_top_ads_next" />
+        android:text="@string/label_top_ads_save" />
 
 </RelativeLayout>

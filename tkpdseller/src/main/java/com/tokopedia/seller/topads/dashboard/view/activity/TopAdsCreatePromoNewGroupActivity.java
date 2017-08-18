@@ -63,8 +63,8 @@ public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity {
 
     @Override
     public void finishPage() {
-        super.finishPage();
         setResultAdSaved();
+        super.finishPage();
     }
 
 

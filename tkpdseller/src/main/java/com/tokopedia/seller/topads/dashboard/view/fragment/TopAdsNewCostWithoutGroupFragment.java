@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.text.TextUtils;
+import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -39,6 +40,12 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
                 .build()
                 .inject(this);
         topAdsDetailNewProductPresenter.attachView(this);
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        submitButton.setText(getString(R.string.label_top_ads_save));
     }
 
     @Override

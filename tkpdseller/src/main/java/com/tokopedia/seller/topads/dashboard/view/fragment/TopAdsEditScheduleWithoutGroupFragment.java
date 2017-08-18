@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
@@ -38,6 +39,7 @@ public class TopAdsEditScheduleWithoutGroupFragment extends TopAdsNewScheduleFra
     protected void initView(View view) {
         super.initView(view);
         headerText.setVisibility(View.GONE);
+        submitButton.setText(getString(R.string.label_top_ads_save));
     }
 
     @Override

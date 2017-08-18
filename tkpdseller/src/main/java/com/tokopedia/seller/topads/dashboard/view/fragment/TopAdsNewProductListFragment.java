@@ -53,7 +53,7 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
 
     private TextView counterProduct;
     private TextView addProduct;
-    private Button buttonNext;
+    protected Button buttonNext;
     private RecyclerView recyclerView;
     protected ProgressDialog progressDialog;
 
