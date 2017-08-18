@@ -13,6 +13,7 @@
     <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_variant_unit"
         style="@style/LabelLayout"
+        android:layout_height="110dp"
         android:layout_marginBottom="@dimen/margin_med"
         android:visibility="gone" />
 
@@ -25,6 +26,6 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </LinearLayout>

@@ -7,5 +7,5 @@ package com.tokopedia.seller.product.variant.constant;
 public class ExtraConstant {
 
     public static final String EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST";
-    public static final String EXTRA_PRODUCT_VARIANT_UNIT_LIST = "EXTRA_PRODUCT_VARIANT_UNIT_LIST";
+    public static final String EXTRA_PRODUCT_VARIANT_CATEGORY = "EXTRA_PRODUCT_VARIANT_CATEGORY";
 }

@@ -11,6 +11,7 @@ import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
@@ -40,8 +41,11 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (getActivity() instanceof BasePickerMultipleItem) {
             pickerMultipleItem = (BasePickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
-        productVariantUnitList = getActivity().getIntent().getParcelableArrayListExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_LIST);
-        productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
+        ProductVariantByCatModel productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        if (productVariantByCatModel != null) {
+            productVariantUnitList = productVariantByCatModel.getUnitList();
+            productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
+        }
     }
 
     @Override
@@ -58,7 +62,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unitSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_variant_unit);
-        if (productVariantUnitList.size() >= MINIMUM_SHOW_UNIT_SIZE) {
+        if (productVariantUnitList != null && productVariantUnitList.size() >= MINIMUM_SHOW_UNIT_SIZE) {
             String[] variantUnitTextArray = new String[productVariantUnitList.size()];
             String[] variantUnitValueArray = new String[productVariantUnitList.size()];
             int i = 0;
@@ -82,7 +86,9 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     protected void searchForPage(int page) {
-        onSearchLoaded(productVariantValueList, productVariantValueList.size());
+        if (productVariantUnitList != null) {
+            onSearchLoaded(productVariantValueList, productVariantValueList.size());
+        }
     }
 
     @Override

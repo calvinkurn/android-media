@@ -1,8 +1,9 @@
 package com.tokopedia.seller.product.variant.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.View;
+import android.text.TextUtils;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -10,11 +11,11 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.variant.constant.ExtraConstant;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
-
-import java.util.List;
 
 /**
  * Created by nathan on 8/2/17.
@@ -22,12 +23,13 @@ import java.util.List;
 
 public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel> implements HasComponent<ProductComponent> {
 
-    public static final String EXTRA_INTENT_SEARCH_ITEM_LIST = "EXTRA_INTENT_SEARCH_ITEM_LIST";
+    private ProductVariantByCatModel productVariantByCatModel;
 
     @Override
-    protected void setupLayout(Bundle savedInstanceState) {
-        super.setupLayout(savedInstanceState);
-        showBottomSheetInfo(false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        productVariantByCatModel = getIntent().getParcelableExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        updateBottomSheetInfo();
     }
 
     @Override
@@ -65,9 +67,17 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     private void updateBottomSheetInfo() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
-        List<ProductVariantViewModel> selectedItemList = ((BasePickerItemCacheList<ProductVariantViewModel>) fragment).getItemList();
-        bottomSheetTitleTextView.setText(getString(R.string.product_variant_item_picker_selected_title, String.valueOf(selectedItemList.size()), "Warna"));
-        if (selectedItemList.size() > 0) {
+        int selectedItemSize = 0;
+        if ((fragment) != null) {
+            selectedItemSize = ((BasePickerItemCacheList<ProductVariantViewModel>) fragment).getItemList().size();
+        }
+        String variantCategoryName = "";
+        if (productVariantByCatModel != null && !TextUtils.isEmpty(productVariantByCatModel.getName())) {
+            variantCategoryName = productVariantByCatModel.getName();
+        }
+        bottomSheetTitleTextView.setText(getString(R.string.product_variant_item_picker_selected_title,
+                String.valueOf(selectedItemSize), variantCategoryName));
+        if (selectedItemSize > 0) {
             showBottomSheetInfo(true);
         } else {
             showBottomSheetInfo(false);

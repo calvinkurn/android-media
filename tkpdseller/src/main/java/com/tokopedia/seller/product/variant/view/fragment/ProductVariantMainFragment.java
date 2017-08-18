@@ -91,9 +91,8 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     private void pickVariant(int level) {
         int index = level - 1;
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
-        ArrayList<ProductVariantUnit> variantUnitArrayList = (ArrayList<ProductVariantUnit>) productVariantByCatModelList.get(index).getUnitList();
-        intent.putParcelableArrayListExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_LIST, variantUnitArrayList);
-        getActivity().startActivityForResult(intent, REQUEST_CODE_VARIANT_LEVEL_ONE);
+        intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY, productVariantByCatModelList.get(index));
+        startActivityForResult(intent, REQUEST_CODE_VARIANT_LEVEL_ONE);
     }
 
     @Override
