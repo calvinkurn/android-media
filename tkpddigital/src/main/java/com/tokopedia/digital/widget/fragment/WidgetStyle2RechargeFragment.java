@@ -144,16 +144,13 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                         if (selectedOperator.showProduct) {
                             presenter.validateOperatorWithProducts(category.getId(),
                                     selectedOperatorId);
+                        } else {
+                            clearHolder(holderWidgetWrapperBuy);
+                            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
                         }
                     } else {
                         selectedOperatorId = category.getAttributes().getDefaultOperatorId();
                     }
-                }
-
-                if (s.length() == 0) {
-                    widgetClientNumberView.setImgOperatorInvisible();
-                    clearHolder(holderWidgetSpinnerProduct);
-                    clearHolder(widgetWrapperBuyView);
                 }
             }
 
@@ -299,9 +296,11 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderDataProducts(List<Product> products) {
         clearHolder(holderWidgetSpinnerProduct);
+        clearHolder(holderWidgetWrapperBuy);
         widgetProductChoserView.setListener(getProductChoserListener());
         widgetProductChoserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
         holderWidgetSpinnerProduct.addView(widgetProductChoserView);
+        holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
     }
 
     @Override
@@ -335,11 +334,9 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderOperators(List<RechargeOperatorModel> operatorModels) {
         clearHolder(holderWidgetSpinnerOperator);
-        clearHolder(holderWidgetWrapperBuy);
         widgetRadioChoserView.setListener(getRadioChoserListener());
         widgetRadioChoserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetRadioChoserView);
-        holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
     }
 
     private WidgetRadioChoserView.RadioChoserListener getRadioChoserListener() {
@@ -347,7 +344,9 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void onCheckChange(RechargeOperatorModel rechargeOperatorModel) {
+                clearHolder(holderWidgetWrapperBuy);
                 clearHolder(holderWidgetSpinnerProduct);
+                widgetClientNumberView.setEmptyString();
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.operatorId);
                 widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(),

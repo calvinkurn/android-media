@@ -133,15 +133,11 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 String temp = s.toString();
                 temp = validateTextPrefix(temp);
 
-                if (temp.length() <= 4) {
-                    if (before == 1 && count == 0) {
-                        widgetClientNumberView.setImgOperatorInvisible();
-                        clearHolder(holderWidgetSpinnerProduct);
-                        clearHolder(widgetWrapperBuyView);
-                    }
-                }
-
-                if (s.length() >= minLengthDefaultOperator) {
+                if (temp.isEmpty()) {
+                    widgetClientNumberView.setImgOperatorInvisible();
+                    clearHolder(holderWidgetSpinnerProduct);
+                    clearHolder(holderWidgetWrapperBuy);
+                } else if (s.length() >= minLengthDefaultOperator) {
                     if (selectedOperator != null) {
                         clearHolder(holderWidgetWrapperBuy);
                         widgetClientNumberView.setImgOperator(selectedOperator.image);
@@ -155,12 +151,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                     } else {
                         selectedOperatorId = category.getAttributes().getDefaultOperatorId();
                     }
-                }
-
-                if (s.length() == 0) {
-                    widgetClientNumberView.setImgOperatorInvisible();
-                    clearHolder(holderWidgetSpinnerProduct);
-                    clearHolder(widgetWrapperBuyView);
                 }
             }
 
@@ -329,6 +319,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
         return new WidgetOperatorChoserView.OperatorChoserListener() {
             @Override
             public void initDataView(RechargeOperatorModel rechargeOperatorModel) {
+                widgetClientNumberView.setEmptyString();
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.operatorId);
                 widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(),

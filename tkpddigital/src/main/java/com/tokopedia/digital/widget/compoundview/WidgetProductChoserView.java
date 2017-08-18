@@ -74,6 +74,9 @@ public class WidgetProductChoserView extends LinearLayout {
         if (!isShowProduct) {
             nominalTextview.setVisibility(GONE);
             spinnerNominal.setVisibility(GONE);
+        } else {
+            nominalTextview.setVisibility(VISIBLE);
+            spinnerNominal.setVisibility(VISIBLE);
         }
     }
 

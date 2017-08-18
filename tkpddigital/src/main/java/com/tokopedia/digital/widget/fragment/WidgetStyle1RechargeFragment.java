@@ -135,50 +135,48 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 String temp = s.toString();
                 temp = validateTextPrefix(temp);
 
-                if (temp.length() <= 4) {
-                    if (before == 1 && count == 0) {
-                        widgetClientNumberView.setImgOperatorInvisible();
-                        clearHolder(holderWidgetSpinnerProduct);
-                        clearHolder(widgetWrapperBuyView);
-                    }
-                }
-
-                if (category.getAttributes().isValidatePrefix()) {
-                    if (temp.length() >= 3) {
-                        if (s.length() >= 3) {
-                            presenter.validatePhonePrefix(temp, category.getId(),
-                                    category.getAttributes().isValidatePrefix());
-                        }
-                    }
+                if (temp.isEmpty()) {
+                    widgetClientNumberView.setImgOperatorInvisible();
+                    clearHolder(holderWidgetSpinnerProduct);
+                    clearHolder(holderWidgetWrapperBuy);
                 } else {
-                    if (s.length() >= minLengthDefaultOperator) {
-                        if (selectedOperator != null && selectedOperator.showProduct) {
-                            presenter.validateOperatorWithProducts(category.getId(),
-                                    selectedOperatorId);
+                    if (category.getAttributes().isValidatePrefix()) {
+                        if (temp.length() >= 3) {
+                            if (s.length() >= 3) {
+                                presenter.validatePhonePrefix(temp, category.getId(),
+                                        category.getAttributes().isValidatePrefix());
+                            }
                         } else {
-                            if (selectedOperatorId == null) {
-                                selectedOperatorId = category.getAttributes().getDefaultOperatorId();
-                            } else {
-                                presenter.validateOperatorWithoutProducts(category.getId(),
+                            widgetClientNumberView.setImgOperatorInvisible();
+                            clearHolder(holderWidgetSpinnerProduct);
+                            clearHolder(holderWidgetWrapperBuy);
+                        }
+                    } else {
+                        if (s.length() >= minLengthDefaultOperator) {
+                            if (selectedOperator != null && selectedOperator.showProduct) {
+                                presenter.validateOperatorWithProducts(category.getId(),
                                         selectedOperatorId);
+                            } else {
+                                if (selectedOperatorId == null) {
+                                    selectedOperatorId = category.getAttributes().getDefaultOperatorId();
+                                } else {
+                                    presenter.validateOperatorWithoutProducts(category.getId(),
+                                            selectedOperatorId);
+                                }
                             }
                         }
                     }
-                }
-
-                if (s.length() == 0) {
-                    widgetClientNumberView.setImgOperatorInvisible();
-                    clearHolder(holderWidgetSpinnerProduct);
-                    clearHolder(widgetWrapperBuyView);
                 }
             }
 
             @Override
             public void onRechargeTextClear() {
                 clearHolder(holderWidgetSpinnerProduct);
-                clearHolder(widgetWrapperBuyView);
+                clearHolder(holderWidgetWrapperBuy);
             }
-        };
+        }
+
+                ;
     }
 
     private WidgetClientNumberView.OnButtonPickerListener getButtonPickerListener() {
