@@ -40,37 +40,63 @@
                     android:layout_centerHorizontal="true"
                     tools:src="@drawable/icon_home" />
 
-                <TextView
+                <EditText
                     android:id="@+id/text_card_no"
                     style="@style/TextView.Title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/card_logo"
-                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_marginRight="@dimen/margin_sm"
                     android:layout_marginTop="@dimen/margin_med"
-                    android:textStyle="bold"
-                    tools:text="XXXX XXXX XXXX 2421" />
+                    android:digits="1234567890 "
+                    android:inputType="phone|number"
+                    android:maxLength="19"
+                    android:textAlignment="center"
+                    tools:text="1234567891234567" />
 
                 <TextView
                     android:id="@+id/label_valid_thru"
                     style="@style/TextView.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/text_card_no"
-                    android:layout_alignStart="@id/text_card_no"
                     android:layout_below="@id/text_card_no"
+                    android:layout_centerInParent="true"
                     android:layout_marginTop="@dimen/margin_med"
                     android:text="@string/cardscan_valid_label" />
 
-                <TextView
-                    android:id="@+id/text_valid_thru"
-                    style="@style/TextView.Body1"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/label_valid_thru"
-                    android:layout_alignStart="@id/label_valid_thru"
                     android:layout_below="@id/label_valid_thru"
-                    tools:text="12/19" />
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/input_valid_thru_month"
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:maxLength="2" />
+
+                    <TextView
+                        android:id="@+id/valid_thru_separator"
+                        style="@style/TextView.Body1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/" />
+
+                    <EditText
+                        android:id="@+id/input_valid_thru_year"
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:maxLength="2" />
+                </LinearLayout>
+
             </RelativeLayout>
 
             <TextView

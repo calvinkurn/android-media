@@ -26,7 +26,7 @@ import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.view.Product;
 import com.tokopedia.posapp.view.activity.InstallmentSimulationActivity;
 import com.tokopedia.posapp.view.presenter.ProductPresenter;
-import com.tokopedia.posapp.view.widget.CreditSimulationView;
+import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
 import com.tokopedia.posapp.view.widget.HeaderInfoView;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -47,7 +47,7 @@ public class ProductDetailFragment extends BaseDaggerFragment implements Product
 
     private PictureView pictureView;
     private HeaderInfoView headerInfoView;
-    private CreditSimulationView priceSimulationView;
+    private InstallmentSimulationView priceSimulationView;
     private VideoDescriptionLayout videoDescriptionLayout;
     private Button buttonBuy;
     private Button buttonAddToCart;

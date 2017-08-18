@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.Terms;
 import com.tokopedia.posapp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -21,7 +20,7 @@ import java.util.ArrayList;
  * Created by okasurya on 8/11/17.
  */
 
-public class CreditSimulationView extends BaseView<ProductDetailData, ProductDetailView> {
+public class InstallmentSimulationView extends BaseView<ProductDetailData, ProductDetailView> {
     public static final String KEY_INSTALLMENT_DATA = "WHOLESALE_DATA";
 
     private ProductDetailView listener;
@@ -33,11 +32,11 @@ public class CreditSimulationView extends BaseView<ProductDetailData, ProductDet
     private TextView month18;
     private TextView month24;
 
-    public CreditSimulationView(Context context) {
+    public InstallmentSimulationView(Context context) {
         super(context);
     }
 
-    public CreditSimulationView(Context context, AttributeSet attrs) {
+    public InstallmentSimulationView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -59,7 +58,7 @@ public class CreditSimulationView extends BaseView<ProductDetailData, ProductDet
 
     @Override
     protected int getLayoutView() {
-        return R.layout.view_credit_simulation;
+        return R.layout.view_installment_simulation;
     }
 
     @Override

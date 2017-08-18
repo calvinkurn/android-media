@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">O2O POS</string>
+
     <string name="outlet_search_hint">Cari outlet</string>
+    <string name="outlet_chooser_dialog_title">Konfirmasi Pilih Outlet</string>
+    <string name="outlet_chooser_dialog_message">Apakah anda yakin untuk mengganti Outlet</string>
+
     <string name="title_product_detail">Detail Produk</string>
 
     <string name="simulation_page_title">Detail Cicilan</string>
@@ -25,7 +29,7 @@
 
     <string name="cardscan_title">Detail Kartu Kredit</string>
     <string name="cardscan_success_label">Success Card Scanned</string>
-    <string name="cardscan_valid_label">VALID/THRU</string>
+    <string name="cardscan_valid_label">Masa Berlaku</string>
     <string name="cardscan_cvv_message">Silahkan masukkan nomor CVV anda</string>
     <string name="cardscan_pay_label">Bayar</string>
 </resources>

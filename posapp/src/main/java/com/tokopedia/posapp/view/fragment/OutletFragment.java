@@ -1,8 +1,10 @@
 package com.tokopedia.posapp.view.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -95,7 +97,23 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
 
     @Override
     public void onOutletClicked(String outletId) {
-
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.outlet_chooser_dialog_title)
+                .setMessage(R.string.outlet_chooser_dialog_message)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // TODO: 8/18/17 navigate to product list screen
+                    }
+                })
+                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setCancelable(true)
+                .show();
     }
 
     @Override
