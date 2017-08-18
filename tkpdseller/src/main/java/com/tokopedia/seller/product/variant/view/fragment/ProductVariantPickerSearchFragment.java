@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.design.text.SpinnerTextView;
@@ -18,6 +19,7 @@ import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSea
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,13 +29,13 @@ import java.util.List;
 public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantValue>
         implements BasePickerItemSearchList<ProductVariantViewModel>, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue> {
 
-
     private static final int MINIMUM_SHOW_UNIT_SIZE = 2;
 
     private ProductVariantPickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
 
     private List<ProductVariantUnit> productVariantUnitList;
     private List<ProductVariantValue> productVariantValueList;
+    private List<ProductVariantValue> filteredProductVariantValueList;
     private SpinnerTextView unitSpinnerTextView;
 
     private long currentVariantUnitId;
@@ -47,8 +49,9 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         ProductVariantByCatModel productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
             productVariantUnitList = productVariantByCatModel.getUnitList();
-            productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
             currentVariantUnitId = productVariantUnitList.get(0).getUnitId();
+            productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
+            filteredProductVariantValueList = productVariantValueList;
         }
     }
 
@@ -107,8 +110,8 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     protected void searchForPage(int page) {
-        if (productVariantUnitList != null) {
-            onSearchLoaded(productVariantValueList, productVariantValueList.size());
+        if (filteredProductVariantValueList != null) {
+            onSearchLoaded(filteredProductVariantValueList, filteredProductVariantValueList.size());
         }
     }
 
@@ -139,11 +142,27 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     public void onSearchSubmitted(String text) {
-
+        filterSearch(text);
+        resetPageAndSearch();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+        filterSearch(text);
+        resetPageAndSearch();
+    }
 
+    private void filterSearch(String text) {
+        if (TextUtils.isEmpty(text)) {
+            filteredProductVariantValueList = productVariantValueList;
+            return;
+        }
+        List<ProductVariantValue> productVariantValueListTemp = new ArrayList<>();
+        for (ProductVariantValue productVariantUnit : productVariantValueList) {
+            if (productVariantUnit.getValue().toLowerCase().contains(text.toLowerCase())) {
+                productVariantValueListTemp.add(productVariantUnit);
+            }
+        }
+        filteredProductVariantValueList = productVariantValueListTemp;
     }
 }
