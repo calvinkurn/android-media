@@ -72,7 +72,6 @@ const BrandList = (props) => {
                   b.products.map(p => (
                     <View style={styles.thumb} key={p.id}>
                       <TouchableWithoutFeedback onPress={() => {
-                        console.log("[brandList] Product: ", p)
                         NavigationModule.navigate(p.url_app, '')}}>
                         <View>
                           <Image style={styles.productImage} source={{ uri: p.image_url }} />

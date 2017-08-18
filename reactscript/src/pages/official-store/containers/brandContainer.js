@@ -33,6 +33,12 @@ class BrandContainer extends Component {
     this.removeFavoritePDP = DeviceEventEmitter.addListener('FavoriteRemove', (res) => {
       this.props.removeFavoriteFromPdp(res.shop_id)
     })
+
+    this.checkLogin = DeviceEventEmitter.addListener('Login', (res) => {
+      console.log(res)
+    })
+
+    // console.log('Mount BrandContainer.js')
   }
 
 
@@ -41,23 +47,27 @@ class BrandContainer extends Component {
     this.removeWishlist.remove()
     this.addToFavoritePDP.remove()
     this.removeFavoritePDP.remove()
+    this.checkLogin.remove()
+    // console.log('WillUnmount')
+    this.props.loadMore(10, 0, User_ID, 'REFRESH')
   }
 
 
 
   render() {
+    // console.log('render BrandContainer.js')
     const { offset, limit } = this.props.brands.pagination
+    const { status, isFetching } = this.props.brands
     const totalBrands = this.props.brands.totalBrands
     const totalItemsCount = this.props.brands.items.length
-    // const totalItems = this.props.brands.items
     const totalItems = this.props.brands.status === 'LOADANDREPLACE' ? this.props.brands.grid.data : this.props.brands.items
-    const isFetching = this.props.brands.isFetching
     let canFetch = true
     if ((totalBrands != 0) && (totalBrands == totalItemsCount)) {
       canFetch = false
     }
 
     const bannerListProps = {
+      status: this.props.brands.status,
       brands: totalItems,
       gridData: this.props.brands.grid.data,
       offset,

@@ -78,7 +78,6 @@ this.renderCampaign = (c) => {
         productRow.push(
           <View style={productCell} key={dataProducts.id}>
             <TouchableWithoutFeedback onPress={() => {
-                console.log("di klik: ", dataProducts.url_app);
                 NavigationModule.navigate(dataProducts.url_app, "")
               }}>
               <View>
@@ -141,7 +140,6 @@ this.renderCampaign = (c) => {
               }
             </View>
             <TouchableWithoutFeedback onPress={() => {
-              console.log("Shop: ", dataProducts.shop.url_app)
               NavigationModule.navigate(dataProducts.shop.url_app, "")}}>
               <View style={shopSection}>
                 <View style={shopImageWrapper}>
@@ -178,14 +176,12 @@ this.renderCampaign = (c) => {
       {
         item.html_id === 6 ? (
           <TouchableWithoutFeedback onPress={() => {
-            console.log('banner: ', item.redirect_url_app)
             NavigationModule.navigate(item.redirect_url_desktop, item.redirect_url_mobile, "")}}>
             <Image source={{ uri: item.image_url }} style={{ height: 80 }} />
           </TouchableWithoutFeedback>
         ) :
           (
             <TouchableWithoutFeedback onPress={() => {
-              console.log('[banner] ' + item.redirect_url_app )
               NavigationModule.navigateWithMobileUrl(item.redirect_url_app, item.redirect_url_mobile, "")}}>
               <Image source={{ uri: item.mobile_url }} style={{ height: 110 }} />
             </TouchableWithoutFeedback>
@@ -197,7 +193,6 @@ this.renderCampaign = (c) => {
           <Text
             style={viewAllText}
             onPress={() => {
-              console.log('Lihat semua: ', item.redirect_url_app)
               NavigationModule.navigate(item.redirect_url_app, '')}}>Lihat Semua &gt;
           </Text>
         </View>)

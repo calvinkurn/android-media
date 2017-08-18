@@ -52,6 +52,16 @@ class App extends Component {
     }
   }
 
+  componentWillMount(){
+    console.log('Mount App.js')
+    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
+  }
+
+  componentWillUnmount(){
+    console.log('WillUnmount App.js')
+    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
+  }
+
   render() {
     return (
       <View>
