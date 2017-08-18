@@ -347,33 +347,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/insurance_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_vs"
-                        android:layout_weight="1"
-                        android:text="@string/title_insurance_cost"
-                        android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small" />
-
-                    <TextView
-                        android:id="@+id/tv_insurance_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_vs"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/font_small"
-                        tools:text="Rp 20.000,-" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">

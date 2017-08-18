@@ -386,6 +386,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             });
 
+            if (promoList.size() == 1) {
+                holder.bannerIndicator.setVisibility(View.GONE);
+            }
+
             PagerSnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(holder.bannerPager);
 
@@ -915,7 +919,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         category.unSubscribe();
-        subscription.unsubscribe();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();

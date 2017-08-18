@@ -322,6 +322,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openWebView(Uri encodedUri, boolean allowingOverriding) {
         Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString()), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
+        viewListener.actionChangeToolbarWithBackToNative();
     }
 
     private String getUrl(String data) {
