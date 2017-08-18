@@ -34,6 +34,10 @@ class BrandContainer extends Component {
       this.props.removeFavoriteFromPdp(res.shop_id)
     })
 
+    this.checkLogin = DeviceEventEmitter.addListener('Login', (res) => {
+      console.log(res)
+    })
+
     // console.log('Mount BrandContainer.js')
   }
 
@@ -43,6 +47,7 @@ class BrandContainer extends Component {
     this.removeWishlist.remove()
     this.addToFavoritePDP.remove()
     this.removeFavoritePDP.remove()
+    this.checkLogin.remove()
     // console.log('WillUnmount')
     this.props.loadMore(10, 0, User_ID, 'REFRESH')
   }

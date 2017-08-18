@@ -10,8 +10,8 @@ import {
   View
 } from 'react-native';
 import { NavigationModule, NetworkModule } from 'NativeModules';
-import { HotList_ } from './src/configs/router';
-import OfficialStore from './src/pages/official-store/setup'
+import { HotList_, OfficialStore } from './src/configs/router';
+// import OfficialStore from './src/pages/official-store/setup'
 
 
 // let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
