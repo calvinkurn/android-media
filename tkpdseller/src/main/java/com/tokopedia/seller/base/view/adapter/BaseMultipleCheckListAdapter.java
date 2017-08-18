@@ -41,6 +41,10 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         }
     }
 
+    public void clearCheck() {
+        hashSet = new HashSet<>();
+    }
+
     protected void bindData(final int position, final RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof BaseMultipleCheckViewHolder) {
             final T t = data.get(position);

@@ -15,13 +15,15 @@ import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
+import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
+import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 /**
  * Created by nathan on 8/2/17.
  */
 
-public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel> implements HasComponent<ProductComponent> {
+public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel> implements HasComponent<ProductComponent>, ProductVariantPickerMultipleItem<ProductVariantViewModel> {
 
     private ProductVariantByCatModel productVariantByCatModel;
 
@@ -50,6 +52,13 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     @Override
     public void removeItemFromSearch(ProductVariantViewModel productVariantViewModel) {
         super.removeItemFromSearch(productVariantViewModel);
+        updateBottomSheetInfo();
+    }
+
+    @Override
+    public void removeAllItemFromSearch() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+        ((ProductVariantPickerItemCacheList<ProductVariantViewModel>) fragment).removeAllItem();
         updateBottomSheetInfo();
     }
 

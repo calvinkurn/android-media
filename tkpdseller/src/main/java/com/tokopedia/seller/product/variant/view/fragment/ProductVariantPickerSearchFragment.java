@@ -15,6 +15,7 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
+import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 import java.util.List;
@@ -29,22 +30,25 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     private static final int MINIMUM_SHOW_UNIT_SIZE = 2;
 
-    private BasePickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
+    private ProductVariantPickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
 
     private List<ProductVariantUnit> productVariantUnitList;
     private List<ProductVariantValue> productVariantValueList;
     private SpinnerTextView unitSpinnerTextView;
 
+    private long currentVariantUnitId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getActivity() instanceof BasePickerMultipleItem) {
-            pickerMultipleItem = (BasePickerMultipleItem<ProductVariantViewModel>) getActivity();
+            pickerMultipleItem = (ProductVariantPickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
         ProductVariantByCatModel productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
             productVariantUnitList = productVariantByCatModel.getUnitList();
             productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
+            currentVariantUnitId = productVariantUnitList.get(0).getUnitId();
         }
     }
 
@@ -75,6 +79,23 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             unitSpinnerTextView.setValues(variantUnitValueArray);
             unitSpinnerTextView.setVisibility(View.VISIBLE);
         }
+        unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+            @Override
+            public void onItemChanged(int position, String entry, String value) {
+                if (value.equalsIgnoreCase(String.valueOf(currentVariantUnitId))) {
+                    return;
+                }
+                for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
+                    if (value.equalsIgnoreCase(String.valueOf(productVariantUnit.getUnitId()))) {
+                        productVariantValueList = productVariantUnit.getProductVariantValueList();
+                        pickerMultipleItem.removeAllItemFromSearch();
+                        ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).clearCheck();
+                        resetPageAndSearch();
+                        break;
+                    }
+                }
+            }
+        });
         resetPageAndSearch();
     }
 

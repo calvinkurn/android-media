@@ -42,7 +42,6 @@ public abstract class BaseCacheListFragment<T extends ItemPickerType> extends Ba
 
     @Override
     protected void searchForPage(int page) {
-        // Never used
         onSearchLoaded(itemList, itemList.size());
     }
 
