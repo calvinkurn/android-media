@@ -66,9 +66,7 @@
     <dimen name="text_input_margin_offset">-4dp</dimen>
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>
 
-    <dimen name="dynamic_filter_item_padding">16dp</dimen>
-    <dimen name="dynamic_filter_item_separator_height">16dp</dimen>
     <dimen name="price_seekbar_button_size">30dp</dimen>
-    <dimen name="color_item_icon_size">40dp</dimen>
     <dimen name="price_range_separator_margin">16dp</dimen>
+    <dimen name="deletable_item_button_size">30dp</dimen>
 </resources>

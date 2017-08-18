@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
+import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.item.DeletableItemView;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -23,7 +25,7 @@ import java.util.Locale;
  * Created by henrypriyono on 8/14/17.
  */
 
-public class PriceRangeInputView extends FrameLayout {
+public class PriceRangeInputView extends BaseCustomView {
 
     private static final int VALUE_STOP_COUNT = 100;
 

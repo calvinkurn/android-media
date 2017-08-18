@@ -1,0 +1,74 @@
+package com.tokopedia.design.item;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.support.annotation.AttrRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.TextView;
+
+import com.tokopedia.design.R;
+import com.tokopedia.design.base.BaseCustomView;
+
+/**
+ * Created by henrypriyono on 8/18/17.
+ */
+
+public class DeletableItemView extends BaseCustomView {
+
+    private View rootView;
+    private TextView textView;
+    private View buttonView;
+
+    private String itemName = "";
+    private OnDeleteListener onDeleteListener;
+
+    public DeletableItemView(@NonNull Context context) {
+        super(context);
+        init(context);
+    }
+
+    public DeletableItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public DeletableItemView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
+        rootView = inflate(context, R.layout.widget_deletable_item_view, this);
+        textView = (TextView) rootView.findViewById(R.id.item_name);
+        buttonView = rootView.findViewById(R.id.delete_button);
+        textView.setText(itemName);
+        buttonView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rootView.setVisibility(GONE);
+                if (onDeleteListener != null) {
+                    onDeleteListener.onDelete();
+                }
+            }
+        });
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+        if (textView != null) {
+            textView.setText(itemName);
+        }
+    }
+
+    public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
+        this.onDeleteListener = onDeleteListener;
+    }
+
+    public interface OnDeleteListener {
+        void onDelete();
+    }
+}

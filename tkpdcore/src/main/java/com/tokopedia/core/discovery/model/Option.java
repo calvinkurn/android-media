@@ -15,6 +15,10 @@ import java.util.List;
  */
 public class Option implements Serializable, Parcelable {
 
+    public static String PRICE_MIN_LABEL_KEY = "pmin";
+    public static String PRICE_MAX_LABEL_KEY = "pmax";
+    public static final String PRICE_WHOLESALE_KEY = "wholesale";
+
     @SerializedName("name")
     @Expose
     String name;

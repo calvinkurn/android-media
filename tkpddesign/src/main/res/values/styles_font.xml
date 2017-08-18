@@ -82,6 +82,9 @@
     <style name="TextView.Body1.Green.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="TextView.Body1.BlackPrimary">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
     <style name="TextView.Body1.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>

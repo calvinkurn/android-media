@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/deletable_item_background">
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Same Day Service"
+        android:padding="6dp"/>
+
+    <View
+        android:id="@+id/delete_button"
+        android:layout_width="@dimen/deletable_item_button_size"
+        android:layout_height="@dimen/deletable_item_button_size"
+        android:background="@drawable/deletable_item_button"/>
+
+
+</LinearLayout>
