@@ -15,7 +15,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +61,6 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
-import com.tokopedia.seller.product.variant.data.model.varianthelper.ProductVariantHelper;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantMainActivity;
 
 import java.util.ArrayList;
@@ -91,9 +89,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
-    public static final String SAVED_PRD_VARIANT = "svd_variant";
-    public static final String SAVED_VARIANT = "svd_var";
-
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
@@ -106,9 +101,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     // view model to be compare later when we want to save as draft
     private UploadProductInputViewModel firstTimeViewModel;
-
-    protected ProductVariantByPrdModel productVariantByPrdModel;
-    private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
 
     /**
      * Url got from gallery or camera or other paths
@@ -159,10 +151,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
             imageUrlList = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
         }
-        if (savedInstanceState != null) {
-            productVariantByPrdModel = savedInstanceState.getParcelable(SAVED_PRD_VARIANT);
-            productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT);
-        }
     }
 
     @Override
@@ -191,7 +179,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productDetailViewHolder.setListener(this);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         productAdditionalInfoViewHolder.setListener(this);
-        productAdditionalInfoViewHolder.onSuccessGetProductVariant(productVariantByCatModelList);
         productScoreViewHolder = new ProductScoreViewHolder(view);
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
@@ -462,27 +449,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList) {
-        this.productVariantByCatModelList = (ArrayList<ProductVariantByCatModel>) productVariantByCatModelList;
-        setVariantHelper();
         productAdditionalInfoViewHolder.onSuccessGetProductVariant(productVariantByCatModelList);
     }
 
     @Override
     public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
-        this.productVariantByPrdModel = productVariantByPrdModel;
         productAdditionalInfoViewHolder.onSuccessGetSelectedProductVariant(productVariantByPrdModel);
-        setVariantHelper();
-    }
-
-    private void setVariantHelper() {
-        if (productVariantByPrdModel!= null && productVariantByCatModelList!=null
-                && productVariantByPrdModel.getVariantOptionList()!= null
-                && productVariantByPrdModel.getVariantOptionList().size() > 0
-                && productVariantByCatModelList.size() > 0) {
-            ProductVariantHelper productVariantHelper = new ProductVariantHelper(productVariantByCatModelList, productVariantByPrdModel);
-            productVariantHelper.generateProductVariantSubmit();
-            Log.i("Test", "test");
-        }
     }
 
     @Override
@@ -594,7 +566,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void startProductVariantActivity() {
+    public void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
         Intent intent = new Intent(getActivity(), ProductVariantMainActivity.class);
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT);
@@ -706,8 +678,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productImageViewHolder.onSaveInstanceState(outState);
         productDetailViewHolder.onSaveInstanceState(outState);
         productAdditionalInfoViewHolder.onSaveInstanceState(outState);
-        outState.putParcelable(SAVED_PRD_VARIANT, productVariantByPrdModel);
-        outState.putParcelableArrayList(SAVED_VARIANT, productVariantByCatModelList);
     }
 
     @Override
