@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -28,8 +29,10 @@ import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.data.source.cache.CacheHelper;
-import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
+import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
@@ -39,7 +42,10 @@ import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.fabric.sdk.android.Fabric;
+import rx.Subscriber;
 
 /**
  * Example application for adding an L1 image cache to Volley.
@@ -51,6 +57,7 @@ public class MainApplication extends TkpdMultiDexApplication {
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
+    private static final String TAG = "MainApplication";
     public static HUDIntent hudIntent;
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
@@ -64,11 +71,13 @@ public class MainApplication extends TkpdMultiDexApplication {
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
+    @Inject
+    CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
+    @Inject
+    CacheHelper cacheHelper;
     private LocationUtils locationUtils;
-
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
-    private CacheHelper cacheHelper;
 
     public static MainApplication getInstance() {
         return instance;
@@ -284,6 +293,8 @@ public class MainApplication extends TkpdMultiDexApplication {
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
+        getApplicationComponent().inject(this);
+
         locationUtils = new LocationUtils(this);
         locationUtils.initLocationBackground();
         TooLargeTool.startLogging(this);
@@ -293,15 +304,40 @@ public class MainApplication extends TkpdMultiDexApplication {
     }
 
     private void addToWhiteList() {
-        for (CacheApiWhitelist cacheApiWhitelist : getWhiteList()) {
-            cacheApiWhitelist.save();
-        }
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
+        List<CacheApiWhiteListDomain> deletedWhiteLists = getRemovedWhiteList();
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
+        requestParams.putObject(CacheApiWhiteListUseCase.DELETE_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
+        cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, e.toString());
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                Log.i(TAG, aBoolean.toString());
+            }
+        });
     }
 
-    protected List<CacheApiWhitelist> getWhiteList() {
-        List<CacheApiWhitelist> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(cacheHelper.from(TkpdBaseURL.BASE_DOMAIN.replace("https://", "").replace(".com/", ".com"), "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 10));
-        cacheApiWhitelists.add(cacheHelper.from(TkpdBaseURL.MOJITO_DOMAIN.replace("https://", "").replace(".com/", ".com"), TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 10));
+    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
+        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN.replace("https://", "").replace(".com/", ".com"), "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 120));
+        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN.replace("https://", "").replace(".com/", ".com"), TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 120));
+        return cacheApiWhitelists;
+    }
+
+    protected List<CacheApiWhiteListDomain> getRemovedWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
+//        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN.replace("https://", "").replace(".com/", ".com"), "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 60));
+//        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN.replace("https://", "").replace(".com/", ".com"), TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
         return cacheApiWhitelists;
     }
 
@@ -366,8 +402,13 @@ public class MainApplication extends TkpdMultiDexApplication {
         //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 
+    /**
+     * prevent recreation of app component.
+     *
+     * @return {@link AppComponent} object.
+     */
     public AppComponent getApplicationComponent() {
-        return appComponent = daggerBuilder.build();
+        return appComponent == null ? appComponent = daggerBuilder.build() : appComponent;
     }
 
     public AppComponent getAppComponent(){

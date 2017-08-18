@@ -7,6 +7,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.di.module.UtilModule;
@@ -51,6 +52,8 @@ import retrofit2.Retrofit;
         CacheModule.class
 })
 public interface AppComponent {
+
+    void inject(MainApplication mainApplication);
 
     void inject(BaseActivity baseActivity);
 

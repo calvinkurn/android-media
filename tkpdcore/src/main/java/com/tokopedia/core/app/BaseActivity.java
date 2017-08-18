@@ -24,16 +24,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
-import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.CustomerRouter;
@@ -53,13 +48,9 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -81,10 +72,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected SessionHandler sessionHandler;
     @Inject
     protected GCMHandler gcmHandler;
-    @Inject
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
-    @Inject
-    CacheHelper cacheHelper;
+
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
@@ -117,46 +105,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
-
-        addToWhiteList();
-    }
-
-    private void addToWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
-        List<CacheApiWhiteListDomain> deletedWhiteLists = getRemovedWhiteList();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        requestParams.putObject(CacheApiWhiteListUseCase.DELETE_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                Log.i(TAG, aBoolean.toString());
-            }
-        });
-    }
-
-    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN.replace("https://", "").replace(".com/", ".com"), "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 10));
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN.replace("https://", "").replace(".com/", ".com"), TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 10));
-        return cacheApiWhitelists;
-    }
-
-    protected List<CacheApiWhiteListDomain> getRemovedWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN.replace("https://", "").replace(".com/", ".com"), "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 10));
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN.replace("https://", "").replace(".com/", ".com"), TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 10));
-        return cacheApiWhitelists;
     }
 
     @Override
