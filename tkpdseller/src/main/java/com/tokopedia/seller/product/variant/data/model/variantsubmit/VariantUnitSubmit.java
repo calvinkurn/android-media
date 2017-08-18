@@ -9,7 +9,7 @@ import java.util.List;
  * Created by User on 8/15/2017.
  */
 
-public class Variant {
+public class VariantUnitSubmit {
 
     @SerializedName("v")
     @Expose
@@ -25,7 +25,7 @@ public class Variant {
     private int pv;
     @SerializedName("optList")
     @Expose
-    private List<Opt> optList = null;
+    private List<VarianSubmitOption> varianSubmitOptionList = null;
 
     /**
      * Varian ID.
@@ -95,16 +95,16 @@ public class Variant {
      * Option list for this variant. example "merah:1" "hijau:2"
      * @return Option List
      */
-    public List<Opt> getOptList() {
-        return optList;
+    public List<VarianSubmitOption> getVarianSubmitOptionList() {
+        return varianSubmitOptionList;
     }
 
     /**
      * set Option list
-     * @param optList  example "merah:1" "hijau:2"
+     * @param varianSubmitOptionList  example "merah:1" "hijau:2"
      */
-    public void setOptList(List<Opt> optList) {
-        this.optList = optList;
+    public void setVarianSubmitOptionList(List<VarianSubmitOption> varianSubmitOptionList) {
+        this.varianSubmitOptionList = varianSubmitOptionList;
     }
 
 }

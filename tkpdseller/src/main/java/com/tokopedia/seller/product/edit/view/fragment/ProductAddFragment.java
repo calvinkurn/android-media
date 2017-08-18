@@ -89,8 +89,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
-    public static final String SAVED_PRD_VARIANT = "svd_variant";
-
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
@@ -103,8 +101,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     // view model to be compare later when we want to save as draft
     private UploadProductInputViewModel firstTimeViewModel;
-
-    protected ProductVariantByPrdModel productVariantByPrdModel;
 
     /**
      * Url got from gallery or camera or other paths
@@ -154,9 +150,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         Bundle args = getArguments();
         if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
             imageUrlList = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
-        }
-        if (savedInstanceState != null) {
-            productVariantByPrdModel = savedInstanceState.getParcelable(SAVED_PRD_VARIANT);
         }
     }
 
@@ -460,6 +453,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
+        productAdditionalInfoViewHolder.onSuccessGetSelectedProductVariant(productVariantByPrdModel);
+    }
+
+    @Override
     public void onErrorLoadShopInfo(String errorMessage) {
 
     }
@@ -601,6 +599,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         // when category change, check if catalog exists
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
         presenter.fetchProductVariant(categoryId);
+        fetchCategory(categoryId);
     }
 
     @Override
@@ -679,7 +678,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productImageViewHolder.onSaveInstanceState(outState);
         productDetailViewHolder.onSaveInstanceState(outState);
         productAdditionalInfoViewHolder.onSaveInstanceState(outState);
-        outState.putParcelable(SAVED_PRD_VARIANT, productVariantByPrdModel);
     }
 
     @Override

@@ -11,6 +11,4 @@ public interface ProductEditView extends ProductDraftView {
     void onErrorFetchEditProduct(Throwable throwable);
 
     void onErrorFetchProductVariantByPrd(Throwable throwable);
-
-    void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel);
 }

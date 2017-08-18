@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by hendry on 8/15/2017.
  */
 
-public class Opt {
+public class VarianSubmitOption {
 
     @SerializedName("pvo")
     @Expose
@@ -86,5 +86,4 @@ public class Opt {
     public void setCstm(String cstm) {
         this.cstm = cstm;
     }
-
 }

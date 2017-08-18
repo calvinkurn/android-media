@@ -88,9 +88,9 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
         hideLoading();
-        productInfoViewHolder.setName(model.getProductName());
+        productInfoViewHolder.setNameNoWatcher(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
-        fetchCategory(model.getProductDepartmentId());
+        onCategoryChanged(model.getProductDepartmentId());
         if (model.getProductCatalogId() > 0) {
             productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
         }

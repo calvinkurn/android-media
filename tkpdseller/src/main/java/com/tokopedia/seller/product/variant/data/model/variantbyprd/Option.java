@@ -28,9 +28,6 @@ public class Option implements Parcelable {
     @SerializedName("value")
     @Expose
     private String value;
-    @SerializedName("status")
-    @Expose
-    private int status;
     @SerializedName("hex")
     @Expose
     private String hex;
@@ -42,64 +39,16 @@ public class Option implements Parcelable {
         return pvoId;
     }
 
-    public void setPvoId(int pvoId) {
-        this.pvoId = pvoId;
-    }
-
-    public int getVId() {
-        return vId;
-    }
-
-    public void setVId(int vId) {
-        this.vId = vId;
-    }
-
-    public int getVuId() {
-        return vuId;
-    }
-
-    public void setVuId(int vuId) {
-        this.vuId = vuId;
-    }
-
-    public int getVuvId() {
-        return vuvId;
-    }
-
-    public void setVuvId(int vuvId) {
-        this.vuvId = vuvId;
-    }
-
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public String getHex() {
         return hex;
     }
 
-    public void setHex(String hex) {
-        this.hex = hex;
-    }
-
     public String getPicture() {
         return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
     }
 
     @Override
@@ -114,7 +63,6 @@ public class Option implements Parcelable {
         dest.writeInt(this.vuId);
         dest.writeInt(this.vuvId);
         dest.writeString(this.value);
-        dest.writeInt(this.status);
         dest.writeString(this.hex);
         dest.writeString(this.picture);
     }
@@ -128,7 +76,6 @@ public class Option implements Parcelable {
         this.vuId = in.readInt();
         this.vuvId = in.readInt();
         this.value = in.readString();
-        this.status = in.readInt();
         this.hex = in.readString();
         this.picture = in.readString();
     }

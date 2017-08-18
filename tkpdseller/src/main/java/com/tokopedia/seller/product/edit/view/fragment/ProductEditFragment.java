@@ -8,7 +8,6 @@ import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent
 import com.tokopedia.seller.product.edit.di.module.ProductEditModule;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 
 import javax.inject.Inject;
 
@@ -87,10 +86,4 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
             }
         });
     }
-
-    @Override
-    public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
-        this.productVariantByPrdModel = productVariantByPrdModel;
-    }
-
 }
