@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.View;
@@ -28,6 +29,11 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.Option;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -207,6 +213,30 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             variantLabelView.setVisibility(View.GONE);
         } else {
             variantLabelView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void onSuccessGetSelectedProductVariant(ProductVariantByPrdModel productVariantByPrdModel) {
+        if (productVariantByPrdModel == null ||
+                productVariantByPrdModel.getVariantOptionList() == null ||
+                productVariantByPrdModel.getVariantOptionList().size() == 0) {
+            variantLabelView.resetContentText();
+        } else {
+            String selectedVariantString = "";
+            List<VariantOption> variantOptionList = productVariantByPrdModel.getVariantOptionList();
+            for (int i = 0, sizei = variantOptionList.size(); i < sizei; i++) {
+                VariantOption variantOption = variantOptionList.get(i);
+                String variantName = variantOption.getName();
+                if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
+                    selectedVariantString += "\n";
+                }
+                List<Option> optionList = variantOption.getOptionList();
+                if (optionList== null || optionList.size() == 0) {
+                    continue;
+                }
+                selectedVariantString += optionList.size() + " " + variantName;
+            }
+            variantLabelView.setContent(selectedVariantString);
         }
     }
 

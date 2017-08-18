@@ -45,7 +45,7 @@ public class ProductVariantHelper {
     private SparseArray<String> productOptionIdMap;  //2194115->"1:0:custom hijau" (from server)
 
     public ProductVariantHelper(@NonNull List<ProductVariantByCatModel> productVariantByCatModel,
-                         @NonNull ProductVariantByPrdModel productVariantByPrdModel) {
+                                @NonNull ProductVariantByPrdModel productVariantByPrdModel) {
         this.productVariantByCatModel = productVariantByCatModel;
         this.productVariantByPrdModel = productVariantByPrdModel;
         traverseVariantByCat(productVariantByCatModel);
@@ -183,7 +183,7 @@ public class ProductVariantHelper {
         return productVariantSubmit;
     }
 
-    private List<VariantUnitSubmit> generateUnitSubmitList(){
+    private List<VariantUnitSubmit> generateUnitSubmitList() {
         int posUnitCounter = 1;
         int tIdCounter = 1;
         tempIdInverseMap = new HashMap<>();
@@ -233,7 +233,7 @@ public class ProductVariantHelper {
         return variantUnitSubmitList;
     }
 
-    private List<VarianStatus> getVariantStatusSubmitList(){
+    private List<VarianStatus> getVariantStatusSubmitList() {
         List<VarianStatus> varianStatusList = new ArrayList<>();
         // add the metrics status here
         List<VariantDatum> variantSourceDataList = productVariantByPrdModel.getVariantDataList();
@@ -244,7 +244,7 @@ public class ProductVariantHelper {
             varianStatus.setSt(variantSourceDatum.getStatus());
             List<Integer> optList = new ArrayList<>();
             List<String> codeNameSourceList = variantSourceDatum.getvCodeName();
-            for (int k=0, sizek=codeNameSourceList.size(); k<sizek;k++) {
+            for (int k = 0, sizek = codeNameSourceList.size(); k < sizek; k++) {
                 String codeNameSource = codeNameSourceList.get(k);
                 int optTId = tempIdInverseMap.get(codeNameSource);
                 optList.add(optTId);
@@ -254,5 +254,6 @@ public class ProductVariantHelper {
         }
         return varianStatusList;
     }
+
 
 }

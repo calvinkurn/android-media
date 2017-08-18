@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.variant.data.model.variantbyprd;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -71,4 +72,5 @@ public class ProductVariantByPrdModel implements Parcelable {
             return new ProductVariantByPrdModel[size];
         }
     };
+
 }

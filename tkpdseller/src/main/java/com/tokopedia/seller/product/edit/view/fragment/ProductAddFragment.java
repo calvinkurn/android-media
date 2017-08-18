@@ -470,6 +470,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
         this.productVariantByPrdModel = productVariantByPrdModel;
+        productAdditionalInfoViewHolder.onSuccessGetSelectedProductVariant(productVariantByPrdModel);
         setVariantHelper();
     }
 
