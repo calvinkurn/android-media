@@ -95,4 +95,10 @@
         <attr name="eccv_content_text" format="string" />
         <attr name="eccv_action_text" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="ReputationView">
+        <attr name="rep_layout" format="string" />
+        <attr name="rep_icon" format="reference" />
+        <attr name="rep_title_text" format="string" />
+    </declare-styleable>
 </resources>
