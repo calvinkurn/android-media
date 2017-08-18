@@ -24,6 +24,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
+import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
@@ -296,6 +298,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
                             getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
+                            getMostHelpfulReview(context,productDetailData.getInfo().getProductId().toString());
+                            getProductVariant(context,productDetailData.getInfo().getProductId().toString());
                         }
 
                         @Override
@@ -791,6 +795,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         setGoldMerchantFeatures(context, data);
                         getProductCampaign(context, data.getInfo().getProductId().toString());
                         getMostHelpfulReview(context,data.getInfo().getProductId().toString());
+                        getProductVariant(context,data.getInfo().getProductCatalogId().toString());
                     }
 
                     @Override
@@ -882,6 +887,24 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onError(String error) { }
+                }
+        );
+    }
+
+    public void getProductVariant(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getProductVariant(context, id,
+                new RetrofitInteractor.ProductVariantListener() {
+                    @Override
+                    public void onSucccess(ProductVariant productVariant) {
+                        if (productVariant.getVariantData()!=null && productVariant.getVariantData().size()>0) {
+                            viewListener.addProductVariant(productVariant);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
                 }
         );
     }

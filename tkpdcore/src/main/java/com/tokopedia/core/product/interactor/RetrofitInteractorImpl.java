@@ -14,7 +14,11 @@ import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
 import com.tokopedia.core.network.apiservices.product.ReputationReviewService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
+import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
+import com.tokopedia.core.network.entity.intermediary.Product;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
+import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
@@ -79,6 +83,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final GoldMerchantService goldMerchantService;
     private final MojitoService mojitoService;
     private final ReputationReviewService reputationReviewService;
+    private final TomeService tomeService;
     private final int SERVER_ERROR_CODE = 500;
     private static final String ERROR_MESSAGE = "message_error";
 
@@ -93,6 +98,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.goldMerchantService = new GoldMerchantService();
         this.mojitoService = new MojitoService();
         this.reputationReviewService = new ReputationReviewService();
+        this.tomeService = new TomeService();
     }
 
     @Override
@@ -806,6 +812,44 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(mapper)
                 .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void getProductVariant(@NonNull Context context, @NonNull String productId, final @NonNull ProductVariantListener listener) {
+        Observable<Response<ProductVariantResponse>> observable = tomeService.getApi().getProductVariant(productId);
+
+        Subscriber<ProductVariant> subscriber = new Subscriber<ProductVariant>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "onError: "+e.getMessage());
+            }
+
+            @Override
+            public void onNext(ProductVariant variant) {
+                listener.onSucccess(variant);
+            }
+        };
+
+        Func1<Response<ProductVariantResponse>, ProductVariant> mapper =
+                new Func1<Response<ProductVariantResponse>, ProductVariant>() {
+                    @Override
+                    public ProductVariant call(Response<ProductVariantResponse> productVariantResponse) {
+                        return productVariantResponse.body().getData();
+                    }
+                };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(mapper)
+                        .subscribe(subscriber)
         );
     }
 

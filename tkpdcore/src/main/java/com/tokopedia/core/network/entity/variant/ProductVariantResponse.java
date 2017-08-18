@@ -11,7 +11,7 @@ public class ProductVariantResponse {
     private String status;
     @SerializedName("data")
     @Expose
-    private Data data;
+    private ProductVariant data;
     @SerializedName("server_process_time")
     @Expose
     private String serverProcessTime;
@@ -24,11 +24,11 @@ public class ProductVariantResponse {
         this.status = status;
     }
 
-    public Data getData() {
+    public ProductVariant getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(ProductVariant data) {
         this.data = data;
     }
 

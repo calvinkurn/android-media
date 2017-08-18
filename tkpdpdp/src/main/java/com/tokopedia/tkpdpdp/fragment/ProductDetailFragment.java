@@ -35,6 +35,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -362,6 +363,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onWholesaleClicked(@NonNull Bundle bundle) {
+        Intent intent = new Intent(context, WholesaleActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
+    }
+
+    @Override
+    public void onVariantClicked(@NonNull Bundle bundle) {
         Intent intent = new Intent(context, WholesaleActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -877,10 +886,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showMostHelpfulReview(List<Review> reviews) {
-        Log.d("alifanuraniputri", "alifanuraniputri: ");
         this.mostHelpfulReviewView.renderData(reviews);
         this.mostHelpfulReviewView.updateTotalReviews(productData.getStatistic().getProductReviewCount());
         this.mostHelpfulReviewView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void addProductVariant(ProductVariant productVariant) {
+        this.priceSimulationView.addProductVariant(productVariant);
     }
 
     private void destroyVideoLayout() {

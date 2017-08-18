@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp.listener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
@@ -122,6 +123,8 @@ public interface ProductDetailView extends ViewListener {
     void onCourierClicked(@NonNull Bundle bundle);
 
     void onWholesaleClicked(@NonNull Bundle bundle);
+
+    void onVariantClicked(@NonNull Bundle bundle);
 
     void onInstallmentClicked(@NonNull Bundle bundle);
 
@@ -279,4 +282,6 @@ public interface ProductDetailView extends ViewListener {
     void showProductCampaign(ProductCampaign productCampaign);
 
     void showMostHelpfulReview(List<Review> reviews);
+
+    void addProductVariant(ProductVariant productVariant);
 }

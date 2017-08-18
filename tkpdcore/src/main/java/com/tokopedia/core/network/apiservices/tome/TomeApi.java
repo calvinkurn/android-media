@@ -7,6 +7,7 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -22,7 +23,7 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_PRODUCT
 public interface TomeApi {
     String USER_ID = "user_id";
     String SHOP_ID = "shop_id";
-    String PRODUCT_ID = "product_id";
+    String PRODUCT_ID = "p_id";
 
     @GET(PATH_IS_FAVORITE_SHOP)
     Observable<Response<FavoriteCheckResult>> checkIsShopFavorited(
@@ -35,5 +36,5 @@ public interface TomeApi {
     Observable<Response<TkpdResponse>> getShopProduct(@QueryMap Map<String, String> params);
 
     @GET(PATH_PRODUCT_VARIANT)
-    Observable<Response<ProductVariantResponse>> getProductVariant(@Query(USER_ID) String userId);
+    Observable<Response<ProductVariantResponse>> getProductVariant(@Query(PRODUCT_ID) String productId);
 }
