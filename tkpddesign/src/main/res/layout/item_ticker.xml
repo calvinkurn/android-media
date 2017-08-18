@@ -18,6 +18,8 @@
                 android:id="@+id/ticker_message"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:maxLines="3"
+                android:ellipsize="end"
                 style="@style/TextView.Body1"
                 />
         </LinearLayout>
