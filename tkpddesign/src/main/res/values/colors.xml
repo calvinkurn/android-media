@@ -16,6 +16,9 @@
     <color name="grey_title">#60000000</color>
 
     <color name="light_green">#F3FEF3</color>
+    <color name="medium_green">#42b549</color>
+
+    <color name="white">#FFFFFF</color>
 
     <color name="background_apps">@color/grey_200</color>
     <color name="background_error">#D50000</color>
