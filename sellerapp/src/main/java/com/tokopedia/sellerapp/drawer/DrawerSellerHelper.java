@@ -32,6 +32,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.seller.digital.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
@@ -92,6 +93,10 @@ public class DrawerSellerHelper extends DrawerHelper
 
         data.add(getGoldMerchantMenu());
         data.add(getPaymentAndTopupMenu());
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_mitra_toppers),
+                R.drawable.statistik_icon,
+                TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),
                 R.drawable.statistik_icon,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
@@ -381,6 +386,10 @@ public class DrawerSellerHelper extends DrawerHelper
                     intent = new Intent(context, GMStatisticDashboardActivity.class);
                     context.startActivity(intent);
                     UnifyTracking.eventClickGMStat();
+                    break;
+                case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
+                    intent = new Intent(context, MitraToppersActivity.class);
+                    context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads();

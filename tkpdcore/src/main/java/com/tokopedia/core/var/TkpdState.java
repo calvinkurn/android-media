@@ -84,6 +84,7 @@ public class TkpdState {
         public static final int SELLER_PRODUCT_DIGITAL_EXTEND = 54;
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
+        public static final int SELLER_MITRA_TOPPERS = 101;
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
         public static final int SHOP_OPPORTUNITY_LIST = 52;

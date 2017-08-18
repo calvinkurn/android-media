@@ -7,6 +7,10 @@
         android:allowBackup="true"
         android:label="@string/app_name">
         <activity
+            android:name=".digital.mitratoppers.view.activity.MitraToppersActivity"
+            android:label="@string/drawer_title_mitra_toppers"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".selling.orderReject.ConfirmRejectOrderActivity"
             android:label="@string/title_reject_confirm"
             android:screenOrientation="portrait" />
