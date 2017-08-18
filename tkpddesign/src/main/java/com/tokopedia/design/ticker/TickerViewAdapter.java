@@ -50,9 +50,10 @@ class TickerViewAdapter extends PagerAdapter {
         tickerMessage.setTextColor(listTextColor.get(position));
 
         tickerMessage.setMovementMethod(new SelectableSpannedMovementMethod());
+
         Spannable sp = (Spannable) fromHtml(listMessage.get(position));
-        URLSpan[] urls = sp.getSpans(0, listMessage.get(position).length(), URLSpan.class);
-        SpannableStringBuilder style = new SpannableStringBuilder(listMessage.get(position));
+        URLSpan[] urls = sp.getSpans(0, fromHtml(listMessage.get(position)).length(), URLSpan.class);
+        SpannableStringBuilder style = new SpannableStringBuilder(fromHtml(listMessage.get(position)));
         style.clearSpans();
 
         for(URLSpan url : urls){
