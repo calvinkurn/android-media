@@ -33,6 +33,8 @@ class BrandContainer extends Component {
     this.removeFavoritePDP = DeviceEventEmitter.addListener('FavoriteRemove', (res) => {
       this.props.removeFavoriteFromPdp(res.shop_id)
     })
+
+    // console.log('Mount BrandContainer.js')
   }
 
 
@@ -41,11 +43,14 @@ class BrandContainer extends Component {
     this.removeWishlist.remove()
     this.addToFavoritePDP.remove()
     this.removeFavoritePDP.remove()
+    // console.log('WillUnmount')
+    this.props.loadMore(10, 0, User_ID, 'REFRESH')
   }
 
 
 
   render() {
+    // console.log('render BrandContainer.js')
     const { offset, limit } = this.props.brands.pagination
     const { status, isFetching } = this.props.brands
     const totalBrands = this.props.brands.totalBrands

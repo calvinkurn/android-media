@@ -9,15 +9,20 @@ import {
   View,
 } from 'react-native'
 import { addToFavourite, removeFromFavourite } from '../../actions/actions'
+import { NavigationModule } from 'NativeModules';
 
 class FavouriteButton extends Component {
-
   _onTap = (isShopFav, shopId) => {
     const { dispatch, User_ID } = this.props
-    if (isShopFav) {
-      return dispatch(removeFromFavourite(shopId, User_ID))
+
+    if (!User_ID){
+      NavigationModule.navigateToLoginWithResult()
     } else {
-      return dispatch(addToFavourite(shopId, User_ID))
+      if (isShopFav) {
+        return dispatch(removeFromFavourite(shopId, User_ID))
+      } else {
+        return dispatch(addToFavourite(shopId, User_ID))
+      }
     }
   }
 

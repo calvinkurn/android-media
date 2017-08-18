@@ -14,14 +14,13 @@ import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
 
 
-let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+// let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
-
   componentWillMount() { 
-    console.log(this.props)
+    // console.log(this.props)
+    // console.log('masuk awal')
   }
-
   
 
   render(){

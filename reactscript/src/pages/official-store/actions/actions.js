@@ -27,17 +27,7 @@ const checkProductInWishlist = (userId, pIds) => {
         .replace(':id', userId)
         .replace(':list_id', pIds)
 
-    const headers = {
-        'X-Device': 'lite-0.0'
-    }
-
-    const config = {
-        headers: headers,
-        url: url,
-        method: 'GET'
-    }
-
-    console.log(url)
+    // console.log(url)
 
     return NetworkModule.getResponse(url, "GET", "", true)
         .then(response => {
@@ -45,10 +35,8 @@ const checkProductInWishlist = (userId, pIds) => {
             return jsonResponse
         })
         .catch(error => {
-            console.log(error)
+            // console.log(error)
         })
-
-
 }
 
 
@@ -97,7 +85,7 @@ export const fetchCampaigns = (User_ID) => {
 
                             let wishlistProd = []
                             let URL = `${MOJITO_HOSTNAME}/v1/users/` + User_ID + `/wishlist/check/` + pIds.toString();
-                            console.log(URL)
+                            // console.log(URL)
                             return NetworkModule.getResponse(URL, "GET", '', true)
                                 .then(response => {
                                     let jsonResponse = JSON.parse(response)
@@ -122,7 +110,7 @@ export const fetchCampaigns = (User_ID) => {
                                     }
                                 })
                                 .catch(error => {
-                                    console.log('Check wishlist: ', error)
+                                    // console.log('Check wishlist: ', error)
                                     return {
                                         data: campaigns.map(c => {
                                             return {
@@ -143,14 +131,14 @@ export const fetchCampaigns = (User_ID) => {
                                 })
                         })
                         .catch(err => {
-                            console.log('[Banners] Error: ', err)
+                            // console.log('[Banners] Error: ', err)
                             return {
                                 data: campaigns
                             }
                         })
                 })
                 .catch(error => {
-                    console.log('[Campaigns] Error: ', error)
+                    // console.log('[Campaigns] Error: ', error)
                     return {
                         data: []
                     }
@@ -177,7 +165,7 @@ export const fetchBanners = () => ({
             return { data: banners }
         })
         .catch(error => {
-            console.log('[FETCH BANNERS] Error: ', error)
+            // console.log('[FETCH BANNERS] Error: ', error)
             return { data: [] }
         })
 })
@@ -192,10 +180,12 @@ export const fetchBrands = (limit, offset, User_ID, status) => ({
 })
 
 getBrands = (limit, offset, User_ID, status) => {
-    console.log(status)
+    // console.log(User_ID, !User_ID)
         // const offsetForLoadAndReplace = status === 'LOADANDREPLACE' ? 0 : offset
-    const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${User_ID}&limit=${limit}&offset=${offset}`
-    console.log(url)
+    const Check_UserID = !User_ID ? 0 : User_ID
+    // console.log(Check_UserID)
+    const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${Check_UserID}&limit=${limit}&offset=${offset}`
+    // console.log(url)
     return NetworkModule.getResponse(url, "GET", "", false)
         .then(response => {
             const jsonResponse = JSON.parse(response)
@@ -216,7 +206,7 @@ getBrands = (limit, offset, User_ID, status) => {
             shopIds = shopIds.toString()
             const shopCount = shopIds.length
             const url_brands = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
-            console.log(url_brands)
+            // console.log(url_brands)
 
             let ids = []
             let wishlistProd = []
@@ -254,27 +244,48 @@ getBrands = (limit, offset, User_ID, status) => {
                         }
                     })
 
-                    console.log(shopList)
-                    return checkProductInWishlist(User_ID, ids.toString())
-                        .then(res => {
-                            wishlistProd = res.data.ids.map(id => +id)
+                    // console.log(shopList)
+                    if (Check_UserID !== 0){
+                        return checkProductInWishlist(Check_UserID, ids.toString())
+                            .then(res => {
+                                wishlistProd = res.data.ids.map(id => +id)
 
-                            return {
-                                data: shopList.map(s => {
-                                    return {
-                                        ...s,
-                                        products: s.products.map(p => {
-                                            return {
-                                                ...p,
-                                                is_wishlist: wishlistProd.indexOf(p.id) > -1 ? true : false
-                                            }
-                                        })
-                                    }
-                                }),
-                                total_brands,
-                                status: !status ? null : status
-                            }
-                        })
+                                return {
+                                    data: shopList.map(s => {
+                                        return {
+                                            ...s,
+                                            products: s.products.map(p => {
+                                                return {
+                                                    ...p,
+                                                    is_wishlist: wishlistProd.indexOf(p.id) > -1 ? true : false
+                                                }
+                                            })
+                                        }
+                                    }),
+                                    total_brands,
+                                    status: !status ? null : status
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                    } else {
+                        return {
+                            data: shopList.map(s => {
+                                return {
+                                    ...s,
+                                    products: s.products.map(p => {
+                                        return {
+                                            ...p,
+                                            is_wishlist: false
+                                        }
+                                    })
+                                }
+                            }),
+                            total_brands,
+                            status: !status ? null : status   
+                        }
+                    }
 
                 })
         })
@@ -328,7 +339,7 @@ export const addToWishlist = (productId, User_ID) => {
                 return { campaigns, productId }
             })
             .catch(error => {
-                console.log('[Campaigns] Error: ', error)
+                // console.log('[Campaigns] Error: ', error)
                 return { data: [] }
             })
     };
@@ -365,11 +376,11 @@ export const addToFavourite = (shopId, User_ID) => ({
     payload: NetworkModule.getResponse("https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl", "POST", '{ "shop_id": ' + shopId + ' }', true)
         .then(response => {
             let jsonResponse = JSON.parse(response)
-            console.log(jsonResponse)
+            // console.log(jsonResponse)
             return shopId
         })
         .catch(error => {
-            console.log(error)
+            // console.log(error)
         })
 })
 
@@ -381,12 +392,12 @@ export const removeFromFavourite = (shopId, User_ID) => ({
     payload: NetworkModule.getResponse("https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl", "POST", '{ "shop_id": ' + shopId + ' }', true)
         .then(response => {
             let jsonResponse = JSON.parse(response)
-            console.log(User_ID)
-            console.log(jsonResponse)
+            // console.log(User_ID)
+            // console.log(jsonResponse)
             return shopId
         })
         .catch(error => {
-            console.log(error)
+            // console.log(error)
         })
 })
 

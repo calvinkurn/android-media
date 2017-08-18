@@ -12,17 +12,21 @@ import {
 } from 'react-native'
 import { icons } from '../../../../components/icons'
 import { addToWishlist, removeFromWishlist } from '../../actions/actions'
-
+import { NavigationModule } from 'NativeModules';
 
 const icon_love = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist-red.png?alt=media&token=7cb838f9-3f3b-4705-8218-eb242a0377f1'
 const icon_notlove = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist.png?alt=media&token=f13280d1-7d29-4e3c-838e-f040fa8a50c2'
+
 class Wishlist extends Component {
   _onTap = (isWishlist, pId, User_ID) => {
-    console.log(User_ID)
-    if (isWishlist) {
-      this.props.dispatch(removeFromWishlist(pId, User_ID))
+    if (!User_ID){
+      NavigationModule.navigateToLoginWithResult()
     } else {
-      this.props.dispatch(addToWishlist(pId, User_ID))
+      if (isWishlist) {
+        this.props.dispatch(removeFromWishlist(pId, User_ID))
+      } else {
+        this.props.dispatch(addToWishlist(pId, User_ID))
+      }
     }
   }
 

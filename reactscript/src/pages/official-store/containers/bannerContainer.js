@@ -13,7 +13,7 @@ class BannerContainer extends Component {
 
   onBannerPress = (e, banner) => {
     //TODO: Add GTM Event.
-    console.log('[bannerContainer] Banner di-klik: ' + banner.redirect_url + ' ' + banner.redirect_url_app)
+    // console.log('[bannerContainer] Banner di-klik: ' + banner.redirect_url + ' ' + banner.redirect_url_app)
     NavigationModule.navigateWithMobileUrl(banner.redirect_url_app, banner.redirect_url, "")
   }
 

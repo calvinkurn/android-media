@@ -146,7 +146,7 @@ const campaigns = (state = {
                         ...b,
                         Products: b.Products.map(p => {
                             if (parseInt(action.payload.product_id) === p.data.id) {
-                                console.log(p.data)
+                                // console.log(p.data)
                                 return {
                                     ...p,
                                     data: {
@@ -170,7 +170,7 @@ const campaigns = (state = {
                         ...b,
                         Products: b.Products.map(p => {
                             if (parseInt(action.payload.product_id) === p.data.id) {
-                                console.log(p.data)
+                                // console.log(p.data)
                                 return {
                                     ...p,
                                     data: {
@@ -431,7 +431,7 @@ const brands = (state = {
                 ...state,
                 items: state.items.map(b => {
                     if (parseInt(action.payload) === b.id) {
-                        console.log(b)
+                        // console.log(b)
                         return Object.assign({}, b, {
                             isFav: true
                         })
@@ -445,7 +445,7 @@ const brands = (state = {
                 ...state,
                 items: state.items.map(b => {
                     if (parseInt(action.payload) === b.id){
-                        console.log(b)
+                        // console.log(b)
                         return Object.assign({}, b, {
                             isFav: false
                         })
