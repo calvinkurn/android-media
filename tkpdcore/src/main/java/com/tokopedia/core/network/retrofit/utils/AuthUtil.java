@@ -142,7 +142,6 @@ public class AuthUtil {
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-        finalHeader.put("x-tkp-srv-id", "192.168.16.192");
         return finalHeader;
     }
 

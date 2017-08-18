@@ -10,16 +10,29 @@ public class RevieweeDataDomain {
     private String revieweeUri;
     private String revieweeRole;
     private String revieweePicture;
-    private RevieweeBadgeDomain revieweeBadge;
+    private RevieweeBadgeSellerDomain revieweeBadgeSeller;
+    private RevieweeBadgeCustomerDomain revieweeBadgeCustomer;
 
     public RevieweeDataDomain(String revieweeName, String revieweeUri,
                               String revieweeRole, String revieweePicture,
-                              RevieweeBadgeDomain revieweeBadge) {
+                              RevieweeBadgeSellerDomain revieweeBadgeSeller) {
         this.revieweeName = revieweeName;
         this.revieweeUri = revieweeUri;
         this.revieweeRole = revieweeRole;
         this.revieweePicture = revieweePicture;
-        this.revieweeBadge = revieweeBadge;
+        this.revieweeBadgeSeller = revieweeBadgeSeller;
+        this.revieweeBadgeCustomer = null;
+    }
+
+    public RevieweeDataDomain(String revieweeName, String revieweeUri,
+                              String revieweeRole, String revieweePicture,
+                              RevieweeBadgeCustomerDomain revieweeBadgeCustomer) {
+        this.revieweeName = revieweeName;
+        this.revieweeUri = revieweeUri;
+        this.revieweeRole = revieweeRole;
+        this.revieweePicture = revieweePicture;
+        this.revieweeBadgeCustomer = revieweeBadgeCustomer;
+        this.revieweeBadgeSeller = null;
     }
 
     public String getRevieweeName() {
@@ -38,7 +51,11 @@ public class RevieweeDataDomain {
         return revieweePicture;
     }
 
-    public RevieweeBadgeDomain getRevieweeBadge() {
-        return revieweeBadge;
+    public RevieweeBadgeSellerDomain getRevieweeBadgeSeller() {
+        return revieweeBadgeSeller;
+    }
+
+    public RevieweeBadgeCustomerDomain getRevieweeBadgeCustomer() {
+        return revieweeBadgeCustomer;
     }
 }

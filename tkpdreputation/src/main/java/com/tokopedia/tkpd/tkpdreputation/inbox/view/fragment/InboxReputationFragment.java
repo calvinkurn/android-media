@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -94,6 +95,31 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private void prepareView() {
         mainList.setLayoutManager(layoutManager);
         mainList.setAdapter(adapter);
+
+        mainList.addOnScrollListener(onScroll());
+        swipeToRefresh.setOnRefreshListener(onRefresh());
+    }
+
+    private SwipeRefreshLayout.OnRefreshListener onRefresh() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.refreshPage(getTab());
+            }
+        };
+    }
+
+    private RecyclerView.OnScrollListener onScroll() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int lastItemPosition = layoutManager.findLastVisibleItemPosition();
+                int visibleItem = layoutManager.getItemCount() - 1;
+                if (!adapter.isLoading())
+                    presenter.getNextPage(lastItemPosition, visibleItem, "", 1, getTab());
+            }
+        };
     }
 
     @Override
@@ -104,7 +130,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
 
     public int getTab() {
-        return getArguments().getInt(PARAM_TAB, 1);
+        if (getArguments() != null)
+            return getArguments().getInt(PARAM_TAB, 1);
+        else
+            return -1;
     }
 
     @Override
@@ -114,6 +143,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFirstTimeInboxReputation(String errorMessage) {
+        adapter.showLoadingFull(false);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
                 NetworkErrorHelper
                         .RetryClickedListener() {
@@ -128,5 +158,51 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
         adapter.showLoadingFull(false);
         adapter.setList(inboxReputationViewModel.getList());
+        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+    }
+
+    @Override
+    public void onErrorGetNextPage(String errorMessage) {
+        adapter.showLoading(false);
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new
+                NetworkErrorHelper
+                        .RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getFirstTimeInboxReputation(getTab());
+                    }
+                })
+                .showRetrySnackbar();
+    }
+
+    @Override
+    public void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel) {
+        adapter.showLoading(false);
+        adapter.addList(inboxReputationViewModel.getList());
+    }
+
+    @Override
+    public void onErrorRefresh(String errorMessage) {
+        swipeToRefresh.setRefreshing(false);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
+                NetworkErrorHelper
+                        .RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.refreshPage(getTab());
+                    }
+                });
+    }
+
+    @Override
+    public void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel) {
+        swipeToRefresh.setRefreshing(false);
+        adapter.setList(inboxReputationViewModel.getList());
+        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+    }
+
+    @Override
+    public void showLoadingNext() {
+        adapter.showLoading(true);
     }
 }

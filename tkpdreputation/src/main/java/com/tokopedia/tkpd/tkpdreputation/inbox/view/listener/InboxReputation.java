@@ -15,10 +15,24 @@ public interface InboxReputation {
         void onErrorGetFirstTimeInboxReputation(String errorMessage);
 
         void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel);
+
+        void onErrorGetNextPage(String errorMessage);
+
+        void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel);
+
+        void onErrorRefresh(String errorMessage);
+
+        void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel);
+
+        void showLoadingNext();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getFirstTimeInboxReputation(int tab);
+
+        void getNextPage(int lastItemPosition, int visibleItem, String query, int timeFilter,
+              int tab);
     }
 }

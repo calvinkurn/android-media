@@ -13,4 +13,12 @@ public class PagingDomain {
         this.hasNext = hasNext;
         this.hasPrev = hasPrev;
     }
+
+    public boolean isHasNext() {
+        return hasNext;
+    }
+
+    public boolean isHasPrev() {
+        return hasPrev;
+    }
 }

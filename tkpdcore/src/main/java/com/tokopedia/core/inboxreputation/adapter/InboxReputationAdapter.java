@@ -182,7 +182,7 @@
 ////            case SELLER:
 ////                holder.textPercentage.setText(list.get(position).getUserReputation().getPositivePercentage());
 ////                setIconPercentage(holder, position);
-////                break;
+////                break;wa
 ////            case BUYER:
 ////                ReputationLevelUtils.setReputationMedals(context, holder.reputation,
 ////                        list.get(position).getShopBadgeLevel().getSet(),

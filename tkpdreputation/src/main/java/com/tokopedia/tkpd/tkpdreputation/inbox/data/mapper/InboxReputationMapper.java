@@ -5,8 +5,6 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.CreateTimeFmt;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.DebugInboxReputation;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.DebugLockingStatus;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.InboxReputationPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.Notification;
@@ -16,11 +14,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.ReputationBadge;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.ReputationData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.RevieweeBadge;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.RevieweeData;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.UpdateBy;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.Updatetime;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.CreateTimeFmtDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.DebugInboxReputationDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.DebugLockingStatusDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.NotificationDomain;
@@ -28,18 +22,15 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.OrderDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.PagingDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationDataDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeCustomerDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeSellerDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeDataDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.UpdateByDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.UpdatetimeDomain;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
 import rx.functions.Func1;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * @author by nisie on 8/14/17.
@@ -54,12 +45,12 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
                 InboxReputationPojo data = response.body().convertDataObj(InboxReputationPojo.class);
                 return mappingToDomain(data);
             } else {
-                if (response.body().getErrorMessages() == null
-                        && response.body().getErrorMessages().isEmpty()) {
+                if (response.body().getErrorMessages() != null
+                        && !response.body().getErrorMessages().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
                     throw new ErrorMessageException(MainApplication.getAppContext().getString
                             (R.string.default_request_error_unknown));
-                } else {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 }
             }
         } else {
@@ -74,6 +65,7 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
 
     private InboxReputationDomain mappingToDomain(InboxReputationPojo data) {
         return new InboxReputationDomain(
+
                 mappingToListInboxReputation(data.getInboxReputation()),
                 mappingToNotification(data.getNotification()),
                 mappingToPaging(data.getPaging())
@@ -150,22 +142,47 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
     }
 
     private RevieweeDataDomain mappingToRevieweeData(RevieweeData revieweeData) {
-        return new RevieweeDataDomain(
-                revieweeData.getRevieweeName(),
-                revieweeData.getRevieweeUri(),
-                revieweeData.getRevieweeRole(),
-                revieweeData.getRevieweePicture(),
-                mappingToRevieweeBadge(revieweeData.getRevieweeBadge())
+        if (isCustomerBadge(revieweeData.getRevieweeBadge())) {
+            return new RevieweeDataDomain(
+                    revieweeData.getRevieweeName(),
+                    revieweeData.getRevieweeUri(),
+                    revieweeData.getRevieweeRole(),
+                    revieweeData.getRevieweePicture(),
+                    mappingToRevieweeBadgeSeller(revieweeData.getRevieweeBadge())
+            );
+        } else {
+            return new RevieweeDataDomain(
+                    revieweeData.getRevieweeName(),
+                    revieweeData.getRevieweeUri(),
+                    revieweeData.getRevieweeRole(),
+                    revieweeData.getRevieweePicture(),
+                    mappingToRevieweeBadgeCustomer(revieweeData.getRevieweeBadge())
+            );
+        }
+
+    }
+
+    private RevieweeBadgeCustomerDomain mappingToRevieweeBadgeCustomer(RevieweeBadge revieweeBadge) {
+        return new RevieweeBadgeCustomerDomain(
+                revieweeBadge.getPositive(),
+                revieweeBadge.getNeutral(),
+                revieweeBadge.getNegative(),
+                revieweeBadge.getPositive_percentage(),
+                revieweeBadge.getNo_reputation()
         );
     }
 
-    private RevieweeBadgeDomain mappingToRevieweeBadge(RevieweeBadge revieweeBadge) {
-        return new RevieweeBadgeDomain(revieweeBadge.getTooltip(),
+    private RevieweeBadgeSellerDomain mappingToRevieweeBadgeSeller(RevieweeBadge revieweeBadge) {
+        return new RevieweeBadgeSellerDomain(revieweeBadge.getTooltip(),
                 revieweeBadge.getReputationScore(),
                 revieweeBadge.getScore(),
                 revieweeBadge.getMinBadgeScore(),
                 revieweeBadge.getReputationBadgeUrl(),
                 mappingToReputationBadge(revieweeBadge.getReputationBadge()));
+    }
+
+    private boolean isCustomerBadge(RevieweeBadge revieweeBadge) {
+        return revieweeBadge.getPositive_percentage() != null;
     }
 
     private ReputationBadgeDomain mappingToReputationBadge(ReputationBadge reputationBadge) {

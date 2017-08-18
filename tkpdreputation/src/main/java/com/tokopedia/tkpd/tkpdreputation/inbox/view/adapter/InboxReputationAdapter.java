@@ -152,4 +152,9 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
+    public void addList(List<InboxReputationItemViewModel> list) {
+        this.list.addAll(list);
+        notifyDataSetChanged();
+    }
+
 }

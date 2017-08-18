@@ -18,7 +18,7 @@ import rx.Subscriber;
 
 public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReputationDomain> {
 
-    private final InboxReputation.View viewListener;
+    protected final InboxReputation.View viewListener;
 
     public GetFirstTimeInboxReputationSubscriber(InboxReputation.View viewListener) {
         this.viewListener = viewListener;
@@ -40,9 +40,10 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
 
     }
 
-    private InboxReputationViewModel mappingToViewModel(InboxReputationDomain inboxReputationDomain) {
+    protected InboxReputationViewModel mappingToViewModel(InboxReputationDomain inboxReputationDomain) {
         return new InboxReputationViewModel
-                (convertToInboxReputationList(inboxReputationDomain.getInboxReputation())
+                (convertToInboxReputationList(inboxReputationDomain.getInboxReputation()),
+                        inboxReputationDomain.getPaging().isHasNext()
                 );
     }
 

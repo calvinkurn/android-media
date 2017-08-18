@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.GetFirstTimeInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.GetInboxReputationUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -33,6 +34,18 @@ public class ReputationModule {
                                               PostExecutionThread postExecutionThread,
                                               ReputationRepository reputationRepository) {
         return new GetFirstTimeInboxReputationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    GetInboxReputationUseCase
+    provideGetInboxReputationUseCase(ThreadExecutor threadExecutor,
+                                              PostExecutionThread postExecutionThread,
+                                              ReputationRepository reputationRepository) {
+        return new GetInboxReputationUseCase(
                 threadExecutor,
                 postExecutionThread,
                 reputationRepository);

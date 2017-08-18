@@ -18,22 +18,21 @@ import rx.Observable;
 
 public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationDomain> {
 
-    private static final String PARAM_PER_PAGE = "per_page";
-    private static final String PARAM_PAGE = "page";
-    private static final String PARAM_ROLE = "role";
-    private static final String PARAM_KEYWORD = "keyword";
+    protected static final String PARAM_PER_PAGE = "per_page";
+    protected static final String PARAM_PAGE = "page";
+    protected static final String PARAM_ROLE = "role";
 
-    private static final int DEFAULT_PER_PAGE = 10;
-    private static final String PARAM_TIME_FILTER = "time_filter";
-    private static final String PARAM_STATUS = "status";
+    protected static final int DEFAULT_PER_PAGE = 10;
+    protected static final String PARAM_TIME_FILTER = "time_filter";
+    protected static final String PARAM_STATUS = "status";
 
-    private static final int STATUS_UNASSESSED_REPUTATION = 1;
-    private static final int STATUS_UPDATED_REPUTATION = 2;
-    private static final int ROLE_BUYER = 1;
-    private static final int ROLE_SELLER = 2;
-    private static final int STATUS_OTHER = 3;
+    protected static final int STATUS_UNASSESSED_REPUTATION = 1;
+    protected static final int STATUS_UPDATED_REPUTATION = 2;
+    protected static final int ROLE_BUYER = 1;
+    protected static final int ROLE_SELLER = 2;
+    protected static final int STATUS_OTHER = 3;
 
-    private ReputationRepository reputationRepository;
+    protected ReputationRepository reputationRepository;
 
     public GetFirstTimeInboxReputationUseCase(ThreadExecutor threadExecutor,
                                               PostExecutionThread postExecutionThread,
@@ -57,19 +56,7 @@ public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationD
         return params;
     }
 
-    public static RequestParams getParam(int page, String keyword, int timeFilter, int tab) {
-        RequestParams params = RequestParams.create();
-        params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
-        params.putInt(PARAM_PAGE, page);
-        params.putInt(PARAM_ROLE, getRole(tab));
-        if (TextUtils.isEmpty(keyword))
-            params.putString(PARAM_KEYWORD, keyword);
-        params.putInt(PARAM_TIME_FILTER, timeFilter);
-        params.putInt(PARAM_STATUS, getStatus(tab));
-        return params;
-    }
-
-    private static int getStatus(int tab) {
+    protected static int getStatus(int tab) {
         switch (tab) {
             case InboxReputationActivity.TAB_WAITING_REVIEW:
                 return STATUS_UNASSESSED_REPUTATION;
@@ -81,7 +68,7 @@ public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationD
         }
     }
 
-    private static int getRole(int tab) {
+    protected static int getRole(int tab) {
         switch (tab) {
             case InboxReputationActivity.TAB_WAITING_REVIEW:
                 return ROLE_BUYER;

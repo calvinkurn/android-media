@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel;
 
+import com.tokopedia.core.database.model.PagingHandler;
+
 import java.util.List;
 
 /**
@@ -8,12 +10,19 @@ import java.util.List;
 
 public class InboxReputationViewModel {
     List<InboxReputationItemViewModel> list;
+    boolean hasNextPage;
 
-    public InboxReputationViewModel(List<InboxReputationItemViewModel> list) {
+
+    public InboxReputationViewModel(List<InboxReputationItemViewModel> list, boolean hasNextPage) {
         this.list = list;
+        this.hasNextPage = hasNextPage;
     }
 
     public List<InboxReputationItemViewModel> getList() {
         return list;
+    }
+
+    public boolean isHasNextPage() {
+        return hasNextPage;
     }
 }
