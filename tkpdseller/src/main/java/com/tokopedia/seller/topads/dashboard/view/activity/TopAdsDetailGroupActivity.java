@@ -69,7 +69,7 @@ public class TopAdsDetailGroupActivity extends TActivity
         final TopAdsDetailGroupFragment topAdsDetailGroupFragment =
                 (TopAdsDetailGroupFragment) getSupportFragmentManager().findFragmentByTag(TopAdsDetailGroupFragment.class.getSimpleName());
 
-        if (topAdsDetailGroupFragment == null) {
+        if (topAdsDetailGroupFragment == null || topAdsDetailGroupFragment.getView() == null) {
             return;
         }
 

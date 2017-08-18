@@ -117,6 +117,10 @@ public class CartCourierPrices {
         return getStringIdrFormat(additionFee);
     }
 
+    public String getSumAdditionFeeInsuranceIdr() {
+        return getStringIdrFormat(additionFee + insurancePrice);
+    }
+
     public void setAdditionFeeIdr(String additionFeeIdr) {
         this.additionFeeIdr = additionFeeIdr;
     }

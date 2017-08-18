@@ -30,6 +30,10 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
     Observable<Response<String>> getToken(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
+    Call<String> getTokenSynchronous(@FieldMap Map<String, String> params);
+
     @GET(TkpdBaseURL.Accounts.PATH_GET_INFO)
     Observable<Response<String>> getInfo(@QueryMap Map<String, String> params);
 
