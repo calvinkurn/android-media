@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.design.R;
@@ -132,6 +133,13 @@ public class TickerView extends BaseCustomView {
         tickerHighlightView = (RelativeLayout) view.findViewById(R.id.parent_view);
         tickerViewPager = (ViewPager) view.findViewById(R.id.view_pager_ticker);
         tickerIndicator = (CirclePageIndicator) view.findViewById(R.id.page_indicator_ticker);
+
+        int minHeight = (int) getResources().getDimension(R.dimen.height_widget_ticker);
+
+        ViewGroup.LayoutParams layoutParams = tickerHighlightView.getLayoutParams();
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.height = minHeight;
+        tickerHighlightView.setLayoutParams(layoutParams);
 
         listTextColor = new ArrayList<>();
         listBackGroundColor = new ArrayList<>();
