@@ -15,5 +15,9 @@
     <!--<string name="key_moengage">I5SFHN64ZTKF2RA7F667NT0P</string>-->
 
     <string name="key_moengage">LNCME8HVKUEJIGXE2N0698H0</string>
+
+    <!-- BUILD KEY -->
+    <!--<string name="key_moengage">I5SFHN64ZTKF2RA7F667NT0P</string>-->
+
     <string name="key_sender_id">id:673352445777</string>
 </resources>

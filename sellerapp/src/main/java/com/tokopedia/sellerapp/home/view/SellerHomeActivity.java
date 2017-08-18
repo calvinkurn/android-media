@@ -95,7 +95,6 @@ import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;

@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -101,7 +102,7 @@ public class TrackingUtils extends TrackingConfig {
                                     com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
                     )
                     .setPhoneNumber(normalizePhoneNumber(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getPhone():""))
-                    .setGoldMerchant(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopIsGold() == 1:false)
+                    .setGoldMerchant(accountsParameter.getAccountsModel() != null && accountsParameter.getAccountsModel().getShopIsGold() == 1)
                     .setShopName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():"")
                     .setShopId(String.valueOf(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopId():""))
                     .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():""))
@@ -558,6 +559,10 @@ public class TrackingUtils extends TrackingConfig {
 
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
+    }
+
+    public static void sendAppsFlyerDeeplink(Activity activity){
+        getAFEngine().sendDeeplinkData(activity);
     }
 
     public static String getClientID() {

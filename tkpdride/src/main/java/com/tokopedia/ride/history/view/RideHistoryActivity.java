@@ -9,11 +9,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.history.domain.model.RideHistory;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
-public class RideHistoryActivity extends BaseActivity implements RideHistoryFragment.OnFragmentInteractionListener {
+public class RideHistoryActivity extends BaseActivity implements RideHistoryFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
+
+    private RideComponent rideComponent;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHistoryActivity.class);
@@ -60,5 +64,17 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
     public void actionNavigateToDetail(RideHistoryViewModel rideHistory) {
         Intent intent = RideHistoryDetailActivity.getCallingIntent(this, rideHistory);
         startActivity(intent);
+    }
+
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null) initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
     }
 }

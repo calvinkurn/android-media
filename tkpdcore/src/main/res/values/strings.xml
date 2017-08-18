@@ -547,7 +547,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_balance">Saldo</string>
     <string name="title_available_amount">Saldo Tersedia</string>
     <string name="title_total_withdrawal">Total Penarikan</string>
-    <string name="title_account_number">Nomor Rekening</string>
+    <string name="title_account_number">Nomor Kartu</string>
     <string name="title_account_name">Nama Akun</string>
     <string name="dialog_delete_fav_shop">Apakah Anda ingin menghapus Toko Favorit ini ?</string>
     <string name="dialog_delete_address">Apakah Anda ingin menghapus Alamat ini?</string>
@@ -975,7 +975,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_from_account_2">- Rekening Asal -</string>
     <string name="title_dest_account">Rekening Tujuan</string>
     <string name="title_dest_account_2">- Rekening Tujuan -</string>
-    <string name="title_account_owner">Nama Pemilik Rekening</string>
+    <string name="title_account_owner">Nama</string>
     <string name="title_bank_name">Nama Bank</string>
     <string name="title_branch">Cabang</string>
     <string name="title_add_new_bank">Tambah Akun Bank Baru</string>
@@ -1959,7 +1959,7 @@ di Tokopedia Sekarang!</string>
     <string name="notification_dialog_negative_button">Batal</string>
     <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
 
-    <string name="banner_official_store_title_text">Sudah cek Official Store Tokopedia belum?</string>
+    <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
     <string name="error_data_not_found">Data tidak ditemukan.</string>
     <string name="title_opportunity_list">Peluang</string>
@@ -2018,4 +2018,25 @@ di Tokopedia Sekarang!</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>
+
+    <!-- finish dialog string-->
+    <string name="string_finish_title">Selesaikan Pemesanan</string>
+    <string name="string_finish_body">1. Pilih \"Selesai\" untuk menyelesaikan pemesanan\n\n2. Pilih \"Komplain\" apabila ada kendala pada pemesanan</string>
+    <string name="string_finish">Selesai</string>
+
+    <!--complain dialog string-->
+    <string name="title_complain_button">Komplain</string>
+    <string name="string_complain_body">Apakah pesanan dari toko %s berkendala?\n\n\n1. Pilih \"Sudah Sampai\" bila barang sudah diterima\n\n2. Pilih \"Belum Sampai\" bila barang belum diterima </string>
+    <string name="string_complain_button_receive">Sudah Sampai</string>
+    <string name="string_complain_button_not_receive">Belum Sampai</string>
+    <string name="string_complain_button_back">Kembali</string>
+
+    <!--complain not received dialog string-->
+    <string name="string_notreceived_title">Barang Belum Sampai</string>
+    <string name="string_notreceived_body">1. Pilih \"Refund\" untuk meminta uang kembali\n\n2. Pilih \"Cek Kurir\" untuk meminta penjual cek kurir </string>
+    <string name="string_notreceived_refund">Kembalikan Dana</string>
+    <string name="string_notreceived_check_courier">Tanya Kurir</string>
+    <string name="shop_product_list_header_product_title">Produk</string>
+    <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
+
 </resources>

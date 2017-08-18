@@ -14,6 +14,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
@@ -68,10 +69,17 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = intent.getData();
             presenter.processUTM(applink);
-            deepLinkDelegate.dispatchFrom(this, intent);
+            if (deepLinkDelegate.supportsUri(applink.toString())) {
+                deepLinkDelegate.dispatchFrom(this, intent);
+            } else {
+                startActivity(HomeRouter.getHomeActivity(this));
+            }
+
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
-                UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                if (bundle.getBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, false)) {
+                    UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                }
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }

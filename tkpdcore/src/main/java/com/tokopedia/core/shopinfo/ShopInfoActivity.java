@@ -413,10 +413,7 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean checkIsShowingInitialData() {
-        if (holder.shopName.getText().length() > 0)
-            return true;
-        else
-            return false;
+        return holder.shopName.getText().length() > 0;
     }
 
     private View.OnClickListener onRetryClick() {
@@ -521,13 +518,10 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean isShopValid() {
-        if (shopModel != null &&
+        return shopModel != null &&
                 shopModel.info != null &&
                 shopModel.info.shopName != null &&
-                !TextUtils.isEmpty(shopModel.info.shopName)) {
-            return true;
-        }
-        return false;
+                !TextUtils.isEmpty(shopModel.info.shopName);
     }
 
     private void initInitialData() {

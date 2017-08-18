@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
@@ -60,7 +60,6 @@ public class TopAdsKeywordListPresenterImpl extends
 
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchKeyword " + keywordDashboardDomain);
                 revealData(getKeywordAds(keywordDashboardDomain, baseKeywordParam.isPositive));
             }
         });

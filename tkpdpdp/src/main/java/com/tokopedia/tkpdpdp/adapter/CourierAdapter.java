@@ -75,7 +75,7 @@ public class CourierAdapter extends RecyclerView.Adapter<CourierAdapter.CourierV
 
         public void bindData(ShopShipment shopShipment) {
             name.setText(shopShipment.getShippingName());
-            info.setText(shopShipment.getPackageNames().toString());
+            info.setText(shopShipment.getPackageNames()!=null ? shopShipment.getPackageNames().toString() : "");
             ImageHandler.LoadImage(image, shopShipment.getLogo());
         }
     }

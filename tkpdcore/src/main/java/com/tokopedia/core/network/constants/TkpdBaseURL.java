@@ -47,6 +47,7 @@ public class TkpdBaseURL {
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
+    public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static final String URL_TOKOCASH = "https://tokocash.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
@@ -703,6 +704,7 @@ public class TkpdBaseURL {
         public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
+        public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
     }
 
     public static class FCM {
@@ -720,6 +722,8 @@ public class TkpdBaseURL {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
+        public static final String PATH_REQUEST_OTP_WALLET = "otp/request";
+        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "link";
     }
 
     public class TkpdCart {
@@ -795,5 +799,14 @@ public class TkpdBaseURL {
 
         public static final String PATH_ACCEPT_REPLACEMENT = "v4/order/replacement";
         public static final String PATH_CANCEL_REPLACEMENT = "v4/replacement/cancel";
+    }
+
+    public static class Payment {
+        public static final String URL_BCA_ONE_CLICK = SCROOGE_DOMAIN;
+        public static final String PATH_ONE_CLICK = "ws/oneclick";
+        public static final String PATH_ONE_CLICK_GET_USER_DATA = "oneclick/get";
+        public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
+        public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
+        public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
     }
 }

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.common.ride.domain.model.Rating;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 
 import java.text.DecimalFormat;
@@ -363,52 +364,5 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeString(discountDisplayFormat);
         parcel.writeString(pendingAmount);
         parcel.writeString(tokoCashCharged);
-    }
-
-    public static String formatStringToPriceString(String numberString, String currency) {
-        try {
-            if (currency.equalsIgnoreCase(IND_CURRENCY) || currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
-                return getStringIdrFormat(Integer.parseInt(numberString));
-            } else {
-                return formaNumberToPriceString(Float.parseFloat(numberString), currency);
-            }
-        } catch (Exception ex) {
-            return currency + " " + numberString;
-        }
-    }
-
-    private static String getStringIdrFormat(int value) {
-        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-        kursIndonesia.setMaximumFractionDigits(0);
-        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
-
-        formatRp.setCurrencySymbol(IND_LOCAL_CURRENCY + " ");
-        formatRp.setGroupingSeparator('.');
-        formatRp.setMonetaryDecimalSeparator('.');
-        formatRp.setDecimalSeparator('.');
-        kursIndonesia.setDecimalFormatSymbols(formatRp);
-
-        return kursIndonesia.format(value);
-    }
-
-    private static String formaNumberToPriceString(float number, String currency) {
-        try {
-            if (currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
-                currency = IND_CURRENCY;
-            }
-
-            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance(currency));
-            String result = "";
-            if (currency.equalsIgnoreCase(IND_CURRENCY) || currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
-                format.setMaximumFractionDigits(0);
-                result = format.format(number).replace(",", ".").replace(IND_CURRENCY, IND_LOCAL_CURRENCY + " ");
-            } else {
-                result = format.format(number);
-            }
-            return result;
-        } catch (Exception ex) {
-            return currency + " " + number;
-        }
     }
 }

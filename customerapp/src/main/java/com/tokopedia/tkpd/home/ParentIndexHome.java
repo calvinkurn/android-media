@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
@@ -71,6 +72,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 
@@ -104,6 +106,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private GetFingerprintUseCase getFingerprintUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -287,6 +290,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         });
         toolbar.addView(view);
         setSupportActionBar(toolbar);
+
     }
 
     private void setMoengageUserAttributes() {

@@ -25,9 +25,4 @@ public class TopAdsKeywordEditDetailNegativeActivity extends TopAdsKeywordEditDe
         KeywordAd keywordAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_AD);
         return TopAdsKeywordEditDetailNegativeFragment.createInstance(keywordAd);
     }
-
-    @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordEditDetailNegativeActivity.class.getSimpleName();
-    }
 }

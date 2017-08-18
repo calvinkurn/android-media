@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public interface FeedPlusDetail {
 
-    public interface View extends CustomerView{
+    interface View extends CustomerView{
 
         void onWishlistClicked(int adapterPosition, Integer productId, boolean wishlist);
 
@@ -53,7 +53,7 @@ public interface FeedPlusDetail {
                                           SingleFeedDetailViewModel feedDetailViewModel);
     }
 
-    public interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
         void addToWishlist(int adapterPosition, String productId);
 
         void removeFromWishlist(int adapterPosition, String productId);

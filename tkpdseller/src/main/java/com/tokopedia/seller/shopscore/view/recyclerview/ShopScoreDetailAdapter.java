@@ -31,7 +31,7 @@ public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
             case SHOP_SCORE_DETAIL:
                 View view = LayoutInflater
                         .from(parent.getContext())
-                        .inflate(R.layout.viewholder_shop_score_detail, parent, false);
+                        .inflate(R.layout.item_shop_score_detail, parent, false);
                 return new ShopScoreDetailViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);

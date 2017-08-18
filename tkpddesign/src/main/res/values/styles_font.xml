@@ -54,6 +54,10 @@
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
+    <style name="TextView.Subheading.BlackDisabled">
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+    </style>
+
     <style name="TextView.Body2">
         <item name="android:textSize">@dimen/font_body2</item>
     </style>
@@ -83,27 +87,19 @@
     <style name="TextView.Body1.BlackDisabled.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-
-    <style name="TextView.Caption2">
-        <item name="android:textSize">@dimen/font_caption2</item>
+    <style name="TextView.Body1.WhiteDisabled">
+        <item name="android:textColor">@color/font_white_disabled_38</item>
     </style>
-    <style name="TextView.Caption1">
-        <item name="android:textSize">@dimen/font_caption1</item>
+    <style name="TextView.Caption">
+        <item name="android:textSize">@dimen/font_caption</item>
     </style>
-    <style name="TextView.Caption2.BlackSecondary">
+    <style name="TextView.Caption.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
-    <style name="TextView.Caption2.BlackDisabled">
+    <style name="TextView.Caption.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
-    <style name="TextView.Caption1.WhitePrimary">
+    <style name="TextView.Caption.WhitePrimary">
         <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
-    <style name="TextView.Caption1.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
-    </style>
-    <style name="TextView.Caption1.BlackDisabled">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
-    </style>
-
 </resources>
