@@ -24,10 +24,12 @@ public interface UploadProductApi {
     @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_ADD_VALIDATION)
     Observable<Response<AddProductValidationServiceModel>> addProductValidation(@FieldMap TKPDMapParam<String, String> params);
 
+    // TODO hendry sudah ganti ke sini? https://tome.tokopedia.com/v1/product/manage_product
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_ADD_PRODUCT_SUBMIT)
     Observable<Response<AddProductSubmitServiceModel>> addProductSubmit(@FieldMap TKPDMapParam<String, String> stringStringTKPDMapParam);
 
+    // TODO hendry, sudah ganti ke sini? https://tome.tokopedia.com/v1/product/edit_product?
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_EDIT_PRODUCT)
     Observable<Response<EditProductServiceModel>> editProduct(@FieldMap TKPDMapParam<String, String> param);

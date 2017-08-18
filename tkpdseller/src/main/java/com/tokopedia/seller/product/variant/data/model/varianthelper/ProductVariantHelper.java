@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.variant.data.model.varianthelper;
 
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
@@ -39,10 +38,13 @@ public class ProductVariantHelper {
     private SparseArray<String> unitValuesIdMap; // 1->"1:0:Putih" 109->"7:10:0-3 Bulan"
     private HashMap<String, Integer> unitValuesIdInverseMap; // "1:0:Putih"->1 "7:10:0-3 Bulan"->109
 
+    // for submit
+    private HashMap<String, Integer> tempIdInverseMap; // "1:0:custom merah" -> 1
+
     // we need this to map the pvo to codename first time, will be reinverted when submit to server when edit prod
     private SparseArray<String> productOptionIdMap;  //2194115->"1:0:custom hijau" (from server)
 
-    ProductVariantHelper(@NonNull List<ProductVariantByCatModel> productVariantByCatModel,
+    public ProductVariantHelper(@NonNull List<ProductVariantByCatModel> productVariantByCatModel,
                          @NonNull ProductVariantByPrdModel productVariantByPrdModel) {
         this.productVariantByCatModel = productVariantByCatModel;
         this.productVariantByPrdModel = productVariantByPrdModel;
@@ -115,7 +117,7 @@ public class ProductVariantHelper {
         for (int i = 0, sizei = variantOptionList.size(); i < sizei; i++) {
             VariantOption variantOption = variantOptionList.get(i);
             int variantId = variantIdInverseMap.get(variantOption.getName());
-            int unitId = unitIdInverseMap.get(variantOption.getUnitName());
+            int unitId = unitIdInverseMap.get(variantId + DELIMITER + variantOption.getUnitName());
             List<Option> optionList = variantOption.getOptionList();
             for (int j = 0, sizej = optionList.size(); j < sizej; j++) {
                 Option option = optionList.get(j);
@@ -174,8 +176,18 @@ public class ProductVariantHelper {
         ProductVariantSubmit productVariantSubmit = new ProductVariantSubmit();
         VariantData variantData = new VariantData();
 
+        variantData.setVariantUnitSubmitList(generateUnitSubmitList());
+        variantData.setVarianStatusList(getVariantStatusSubmitList());
+
+        productVariantSubmit.setVariantData(variantData);
+        return productVariantSubmit;
+    }
+
+    private List<VariantUnitSubmit> generateUnitSubmitList(){
         int posUnitCounter = 1;
         int tIdCounter = 1;
+        tempIdInverseMap = new HashMap<>();
+
         // Maps the unit and unit value
         List<VariantUnitSubmit> variantUnitSubmitList = new ArrayList<>();
         List<VariantOption> variantOptionSourceList = productVariantByPrdModel.getVariantOptionList();
@@ -185,7 +197,8 @@ public class ProductVariantHelper {
             VariantUnitSubmit variantUnitSubmit = new VariantUnitSubmit();
             int variantId = variantIdInverseMap.get(varianOptionSource.getName());
             variantUnitSubmit.setV(variantId);
-            variantUnitSubmit.setVu(unitIdInverseMap.get(varianOptionSource.getUnitName()));
+            int unitId = unitIdInverseMap.get(variantId + DELIMITER + varianOptionSource.getUnitName());
+            variantUnitSubmit.setVu(unitId);
             variantUnitSubmit.setPos(posUnitCounter);
             posUnitCounter++;
             variantUnitSubmit.setPv(varianOptionSource.getPvId());
@@ -197,29 +210,49 @@ public class ProductVariantHelper {
                 Option optionSource = optionSourceList.get(k);
                 VarianSubmitOption varianSubmitOption = new VarianSubmitOption();
                 varianSubmitOption.setPvo(optionSource.getPvoId());
-                int varUnitValId = optionSource.getVuvId();
+                String optionValue = optionSource.getValue();
+                String keyForMap = variantId + DELIMITER + unitId + DELIMITER + optionValue;
+                int varUnitValId = unitValuesIdInverseMap.get(keyForMap);
                 varianSubmitOption.setVuv(varUnitValId);
                 if (varUnitValId == 0) {
-                    varianSubmitOption.setCstm(optionSource.getValue());
+                    varianSubmitOption.setCstm(optionValue);
                 } else {
                     varianSubmitOption.setCstm("");
                 }
                 varianSubmitOption.setTId(tIdCounter);
+                // add to map, to enable inverse lookup later
+                tempIdInverseMap.put(keyForMap, tIdCounter);
+
                 tIdCounter++;
-                //TODO create TID
+
+                varianSubmitOptionList.add(varianSubmitOption);
             }
-            //TODO
-//            varianSubmitOptionList
-//            variantUnitSubmit.setVarianSubmitOptionList();
+            variantUnitSubmit.setVarianSubmitOptionList(varianSubmitOptionList);
             variantUnitSubmitList.add(variantUnitSubmit);
         }
-        variantData.setVariantUnitSubmitList(variantUnitSubmitList);
-
-        //TODO map the status
-        List<VarianStatus> varianStatusList = new ArrayList<>();
-        variantData.setVarianStatusList(varianStatusList);
-
-        productVariantSubmit.setVariantData(variantData);
-        return productVariantSubmit;
+        return variantUnitSubmitList;
     }
+
+    private List<VarianStatus> getVariantStatusSubmitList(){
+        List<VarianStatus> varianStatusList = new ArrayList<>();
+        // add the metrics status here
+        List<VariantDatum> variantSourceDataList = productVariantByPrdModel.getVariantDataList();
+        for (int i = 0, sizei = variantSourceDataList.size(); i < sizei; i++) {
+            VariantDatum variantSourceDatum = variantSourceDataList.get(i);
+            VarianStatus varianStatus = new VarianStatus();
+            varianStatus.setPvd(variantSourceDatum.getPvdId());
+            varianStatus.setSt(variantSourceDatum.getStatus());
+            List<Integer> optList = new ArrayList<>();
+            List<String> codeNameSourceList = variantSourceDatum.getvCodeName();
+            for (int k=0, sizek=codeNameSourceList.size(); k<sizek;k++) {
+                String codeNameSource = codeNameSourceList.get(k);
+                int optTId = tempIdInverseMap.get(codeNameSource);
+                optList.add(optTId);
+            }
+            varianStatus.setOptList(optList);
+            varianStatusList.add(varianStatus);
+        }
+        return varianStatusList;
+    }
+
 }

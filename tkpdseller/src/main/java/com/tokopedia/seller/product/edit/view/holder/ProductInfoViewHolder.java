@@ -36,6 +36,8 @@ import java.util.List;
 
 public class ProductInfoViewHolder extends ProductViewHolder implements RadioGroup.OnCheckedChangeListener {
 
+    private final TextWatcher nameTextWatcher;
+
     public interface Listener {
         void onCategoryPickerClicked(long categoryId);
 
@@ -102,7 +104,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
                 }
             }
         });
-        nameEditText.addTextChangedListener(new TextWatcher() {
+        nameTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -123,7 +125,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
                     }
                 }
             }
-        });
+        };
+        nameEditText.addTextChangedListener(nameTextWatcher);
         radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
     }
 
@@ -167,6 +170,12 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     public void setName(String name) {
         nameEditText.setText(name==null?null:MethodChecker.fromHtml(name));
         nameEditText.setSelection( nameEditText.getText() == null? 0 : nameEditText.getText().length());
+    }
+
+    public void setNameNoWatcher(String name) {
+        nameEditText.removeTextChangedListener(nameTextWatcher);
+        setName(name);
+        nameEditText.addTextChangedListener(nameTextWatcher);
     }
 
     public String getCatalogName() {
@@ -220,7 +229,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     private void processCategoryFromActivityResult(Intent data) {
         long previousCategoryId = categoryId;
-        categoryId = data.getLongExtra(CategoryPickerActivity.CATEGORY_RESULT_ID, 0);
+        categoryId = data.getLongExtra(CategoryPickerActivity.CATEGORY_RESULT_ID, -1);
         if (previousCategoryId != categoryId) {
             if (categoryId <= 0) {
                 hideAndClearCatalog();
@@ -232,7 +241,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             // unselect if the id not exist
             selectRadioByCategoryId((int)categoryId);
         }
-        listener.fetchCategory(categoryId);
     }
 
     private void selectRadioByCategoryId(int categoryId){
