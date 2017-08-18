@@ -33,6 +33,7 @@ import com.tokopedia.seller.product.variant.data.model.variantbyprd.Option;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
 import com.tokopedia.seller.product.variant.data.model.varianthelper.ProductVariantHelper;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -312,14 +313,15 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT);
     }
 
-    private void generateProductVariantSubmit() {
+    private ProductVariantSubmit generateProductVariantSubmit() {
         if (productVariantByPrdModel!= null && productVariantByCatModelList!=null
                 && productVariantByPrdModel.getVariantOptionList()!= null
                 && productVariantByPrdModel.getVariantOptionList().size() > 0
                 && productVariantByCatModelList.size() > 0) {
             ProductVariantHelper productVariantHelper = new ProductVariantHelper(productVariantByCatModelList, productVariantByPrdModel);
-            productVariantHelper.generateProductVariantSubmit();
+            return productVariantHelper.generateProductVariantSubmit();
         }
+        return null;
     }
 
     /**
