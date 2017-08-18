@@ -545,6 +545,12 @@ public class TkpdBaseURL {
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
     }
 
+    public static class Tome {
+        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
+        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
+        public static final String PATH_PRODUCT_VARIANT = "v2/web-service/product/get_variant?p_id={product_id}";
+    }
+
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
         public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
