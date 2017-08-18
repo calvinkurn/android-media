@@ -21,6 +21,7 @@ import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -50,6 +51,7 @@ public class DialogLogoutFragment extends DialogFragment {
     CompositeSubscription compositeSubscription = new CompositeSubscription();
     Button okButton;
     TkpdProgressDialog progressDialog;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -114,6 +116,7 @@ public class DialogLogoutFragment extends DialogFragment {
                                         NotificationModHandler notif = new NotificationModHandler(activity);
                                         notif.dismissAllActivedNotifications();
 
+                                        ApiCacheRepositoryImpl.DeleteAllCache();
                                         NotificationModHandler.clearCacheAllNotification(getActivity());
                                         SessionHandler.onLogoutListener logout = (SessionHandler.onLogoutListener) activity;
                                         if (logout != null)

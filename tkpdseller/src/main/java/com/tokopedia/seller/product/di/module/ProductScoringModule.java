@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -53,7 +53,7 @@ public class ProductScoringModule {
 
     @ActivityScope
     @Provides
-    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ActivityContext Context context, Gson gson){
+    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ApplicationContext Context context, Gson gson) {
         return new ProductScoreDataSourceCache(context, gson);
     }
 

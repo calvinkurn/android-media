@@ -5,10 +5,12 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.domain.ApiCacheRepository;
+import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
@@ -85,9 +87,6 @@ public interface GoldMerchantComponent {
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
 
-    @ActivityContext
-    Context contextActivity();
-
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();
@@ -97,4 +96,10 @@ public interface GoldMerchantComponent {
     GCMHandler gcmHandler();
 
     ImageHandler imageHandler();
+
+    ApiCacheRepository apiCacheRepository();
+
+    CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
+
+    CacheHelper cacheHelper();
 }

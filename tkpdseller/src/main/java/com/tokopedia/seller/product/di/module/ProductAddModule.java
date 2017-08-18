@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
@@ -15,7 +15,6 @@ import com.tokopedia.seller.product.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CategoryRecommRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductScoreRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.data.source.CatalogDataSource;
@@ -23,7 +22,6 @@ import com.tokopedia.seller.product.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.data.source.CategoryRecommDataSource;
 import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
-import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.data.source.ProductScoreDataSource;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCache;
@@ -35,7 +33,6 @@ import com.tokopedia.seller.product.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.CatalogRepository;
 import com.tokopedia.seller.product.domain.CategoryRecommRepository;
 import com.tokopedia.seller.product.domain.CategoryRepository;
-import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
@@ -43,7 +40,10 @@ import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
+import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
+import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenterImpl;
 
@@ -114,7 +114,7 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ActivityContext Context context, Gson gson){
+    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ApplicationContext Context context, Gson gson) {
         return new ProductScoreDataSourceCache(context, gson);
     }
 
@@ -147,7 +147,7 @@ public class ProductAddModule {
     // FOR SHOP_INFO
     @ProductAddScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource){
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 
