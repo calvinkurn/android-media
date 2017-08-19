@@ -333,7 +333,7 @@ LoginFragment extends Fragment implements LoginView {
                     KeyboardHandler.DropKeyboard(mContext, mEmailView);
                     LoginViewModel model = new LoginViewModel();
                     if (mPasswordView != null && mEmailView != null) {
-                        model.setUsername(mEmailView.getText().toString());
+                        model.setUsername(mEmailView.getText().toString().replaceAll(" ",""));
                         model.setPassword(mPasswordView.getText().toString());
                         model.setIsEmailClick(true);
                         login.sendDataFromInternet(LoginModel.EmailType, model);
@@ -482,7 +482,8 @@ LoginFragment extends Fragment implements LoginView {
 
         // Store values at the time of the login attempt.
         Log.d(TAG, messageTAG + " login : " + login);
-        String email = mEmailView.getText().toString();
+
+        String email = mEmailView.getText().toString().replaceAll(" ","");
         String password = mPasswordView.getText().toString();
 
         FocusPair focusPair = new FocusPair();
@@ -845,7 +846,7 @@ LoginFragment extends Fragment implements LoginView {
         Bundle bundle = new Bundle();
         bundle.putInt(SmartLockActivity.STATE, state);
         if(state == SmartLockActivity.RC_SAVE){
-            bundle.putString(SmartLockActivity.USERNAME, mEmailView.getText().toString());
+            bundle.putString(SmartLockActivity.USERNAME, mEmailView.getText().toString().replaceAll(" ",""));
             bundle.putString(SmartLockActivity.PASSWORD, mPasswordView.getText().toString());
         }
         intent.putExtras(bundle);
