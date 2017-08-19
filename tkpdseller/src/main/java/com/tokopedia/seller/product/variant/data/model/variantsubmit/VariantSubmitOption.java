@@ -7,14 +7,14 @@ import com.google.gson.annotations.SerializedName;
  * Created by hendry on 8/15/2017.
  */
 
-public class VarianSubmitOption {
+public class VariantSubmitOption {
 
     @SerializedName("pvo")
     @Expose
-    private int productVariantOptionId;
+    private long productVariantOptionId;
     @SerializedName("vuv")
     @Expose
-    private long variantUnitValue;
+    private long variantUnitValueId;
     @SerializedName("t_id")
     @Expose
     private long temporaryId;
@@ -27,7 +27,7 @@ public class VarianSubmitOption {
      * if it is new, set the id as "0"
      * @return Product variant option id from server. 0 if new created
      */
-    public int getProductVariantOptionId() {
+    public long getProductVariantOptionId() {
         return productVariantOptionId;
     }
 
@@ -36,7 +36,7 @@ public class VarianSubmitOption {
      * if it is new, set the id as "0"
      * @param productVariantOptionId "0" if new, previous id from server if existing
      */
-    public void setProductVariantOptionId(int productVariantOptionId) {
+    public void setProductVariantOptionId(long productVariantOptionId) {
         this.productVariantOptionId = productVariantOptionId;
     }
 
@@ -44,17 +44,17 @@ public class VarianSubmitOption {
      * if custom, 0. if not custom, id of the variant unit value
      * @return variant unit value. 0 if custom. id if not custom. example: "1" for "putih"
      */
-    public long getVariantUnitValue() {
-        return variantUnitValue;
+    public long getVariantUnitValueId() {
+        return variantUnitValueId;
     }
 
     /**
      * if custom, set to 0
      * if not custom, set with the id of the variant unit value
-     * @param variantUnitValue 0 if custom, id if not custom. ex: "1" for "putih"
+     * @param variantUnitValueId 0 if custom, id if not custom. ex: "1" for "putih"
      */
-    public void setVariantUnitValue(long variantUnitValue) {
-        this.variantUnitValue = variantUnitValue;
+    public void setVariantUnitValueId(long variantUnitValueId) {
+        this.variantUnitValueId = variantUnitValueId;
     }
 
     /**

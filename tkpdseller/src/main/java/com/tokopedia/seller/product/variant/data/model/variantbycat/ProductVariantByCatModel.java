@@ -23,6 +23,9 @@ public class ProductVariantByCatModel implements Parcelable {
     @SerializedName("identifier")
     @Expose
     private String identifier;
+    @SerializedName("status")
+    @Expose
+    private int status;
     @SerializedName("has_unit")
     @Expose
     private int hasUnit;
@@ -40,6 +43,10 @@ public class ProductVariantByCatModel implements Parcelable {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     public int getHasUnit() {
@@ -60,8 +67,9 @@ public class ProductVariantByCatModel implements Parcelable {
         dest.writeInt(this.variantId);
         dest.writeString(this.name);
         dest.writeString(this.identifier);
+        dest.writeInt(this.status);
         dest.writeInt(this.hasUnit);
-        dest.writeList(this.unitList);
+        dest.writeTypedList(this.unitList);
     }
 
     public ProductVariantByCatModel() {
@@ -71,12 +79,12 @@ public class ProductVariantByCatModel implements Parcelable {
         this.variantId = in.readInt();
         this.name = in.readString();
         this.identifier = in.readString();
+        this.status = in.readInt();
         this.hasUnit = in.readInt();
-        this.unitList = new ArrayList<ProductVariantUnit>();
-        in.readList(this.unitList, ProductVariantUnit.class.getClassLoader());
+        this.unitList = in.createTypedArrayList(ProductVariantUnit.CREATOR);
     }
 
-    public static final Parcelable.Creator<ProductVariantByCatModel> CREATOR = new Parcelable.Creator<ProductVariantByCatModel>() {
+    public static final Creator<ProductVariantByCatModel> CREATOR = new Creator<ProductVariantByCatModel>() {
         @Override
         public ProductVariantByCatModel createFromParcel(Parcel source) {
             return new ProductVariantByCatModel(source);

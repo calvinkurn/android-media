@@ -25,8 +25,8 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
 
     private static final int ARROW_DEGREE = 180;
 
-    public static final String CONTAINER_SEARCH_LIST_TAG = "CONTAINER_SEARCH_LIST_TAG";
-    public static final String CONTAINER_CACHE_LIST_TAG = "CONTAINER_CACHE_LIST_TAG";
+    private static final String CONTAINER_SEARCH_LIST_TAG = "CONTAINER_SEARCH_LIST_TAG";
+    private static final String CONTAINER_CACHE_LIST_TAG = "CONTAINER_CACHE_LIST_TAG";
 
     public static final String EXTRA_INTENT_PICKER_ITEM_LIST = "EXTRA_INTENT_PICKER_ITEM_LIST";
     public static final String EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST = "EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST";
@@ -44,9 +44,17 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
 
     private BottomSheetBehavior bottomSheetBehavior;
 
-    protected abstract Fragment getSearchListFragment();
+    protected abstract Fragment getInitialSearchListFragment();
 
-    protected abstract Fragment getCacheListFragment();
+    protected abstract Fragment getInitialCacheListFragment();
+
+    protected Fragment getSearchListFragment() {
+        return getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
+    }
+
+    protected Fragment getCacheListFragment() {
+        return getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+    }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -109,9 +117,9 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     protected void setupFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            Fragment searchListFragment = getSearchListFragment();
+            Fragment searchListFragment = getInitialSearchListFragment();
             fragmentTransaction.replace(R.id.layout_container_list, searchListFragment, CONTAINER_SEARCH_LIST_TAG);
-            Fragment cacheListFragment = getCacheListFragment();
+            Fragment cacheListFragment = getInitialCacheListFragment();
             fragmentTransaction.replace(R.id.layout_container_cache, cacheListFragment, CONTAINER_CACHE_LIST_TAG);
             fragmentTransaction.commit();
         }

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.variant.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
@@ -23,7 +25,7 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
  * Created by nathan on 8/2/17.
  */
 
-public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel> implements HasComponent<ProductComponent>, ProductVariantPickerMultipleItem<ProductVariantViewModel> {
+public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel> implements ProductVariantPickerMultipleItem<ProductVariantViewModel> {
 
     private ProductVariantByCatModel productVariantByCatModel;
 
@@ -35,18 +37,13 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     @Override
-    protected Fragment getSearchListFragment() {
+    protected Fragment getInitialSearchListFragment() {
         return new ProductVariantPickerSearchFragment();
     }
 
     @Override
-    protected Fragment getCacheListFragment() {
+    protected Fragment getInitialCacheListFragment() {
         return new ProductVariantPickerCacheFragment();
-    }
-
-    @Override
-    public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 
     @Override
@@ -57,8 +54,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     public void removeAllItemFromSearch() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
-        ((ProductVariantPickerItemCacheList<ProductVariantViewModel>) fragment).removeAllItem();
+        ((ProductVariantPickerCacheFragment) getCacheListFragment()).removeAllItem();
         updateBottomSheetInfo();
     }
 
@@ -74,11 +70,23 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         updateBottomSheetInfo();
     }
 
+    @Override
+    protected Intent getDefaultIntentResult() {
+        VariantUnitSubmit variantUnitSubmit = new VariantUnitSubmit();
+        variantUnitSubmit.setVariantId(productVariantByCatModel.getVariantId());
+        variantUnitSubmit.setVariantUnitId(((ProductVariantPickerSearchFragment) getSearchListFragment()).getCurrentUnitId());
+        variantUnitSubmit.setPosition(productVariantByCatModel.getStatus());
+        variantUnitSubmit.setVariantSubmitOptionList(((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList());
+        Intent intent = new Intent();
+        intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT, variantUnitSubmit);
+        return intent;
+    }
+
     private void updateBottomSheetInfo() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+        Fragment fragment = getCacheListFragment();
         int selectedItemSize = 0;
         if ((fragment) != null) {
-            selectedItemSize = ((BasePickerItemCacheList<ProductVariantViewModel>) fragment).getItemList().size();
+            selectedItemSize = ((ProductVariantPickerCacheFragment) fragment).getItemList().size();
         }
         String variantCategoryName = "";
         if (productVariantByCatModel != null && !TextUtils.isEmpty(productVariantByCatModel.getName())) {

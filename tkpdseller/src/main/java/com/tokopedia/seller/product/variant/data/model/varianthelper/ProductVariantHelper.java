@@ -12,7 +12,7 @@ import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantDatum
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VarianStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VarianSubmitOption;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 
@@ -204,30 +204,30 @@ public class ProductVariantHelper {
             variantUnitSubmit.setProductVariant(varianOptionSource.getPvId());
 
             //set options
-            List<VarianSubmitOption> varianSubmitOptionList = new ArrayList<>();
+            List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
             List<Option> optionSourceList = varianOptionSource.getOptionList();
             for (int k = 0, sizek = optionSourceList.size(); k < sizek; k++) {
                 Option optionSource = optionSourceList.get(k);
-                VarianSubmitOption varianSubmitOption = new VarianSubmitOption();
-                varianSubmitOption.setProductVariantOptionId(optionSource.getPvoId());
+                VariantSubmitOption variantSubmitOption = new VariantSubmitOption();
+                variantSubmitOption.setProductVariantOptionId(optionSource.getPvoId());
                 String optionValue = optionSource.getValue();
                 String keyForMap = variantId + DELIMITER + unitId + DELIMITER + optionValue;
                 int varUnitValId = unitValuesIdInverseMap.get(keyForMap);
-                varianSubmitOption.setVariantUnitValue(varUnitValId);
+                variantSubmitOption.setVariantUnitValueId(varUnitValId);
                 if (varUnitValId == 0) {
-                    varianSubmitOption.setCustomText(optionValue);
+                    variantSubmitOption.setCustomText(optionValue);
                 } else {
-                    varianSubmitOption.setCustomText("");
+                    variantSubmitOption.setCustomText("");
                 }
-                varianSubmitOption.setTemporaryId(tIdCounter);
+                variantSubmitOption.setTemporaryId(tIdCounter);
                 // add to map, to enable inverse lookup later
                 tempIdInverseMap.put(keyForMap, tIdCounter);
 
                 tIdCounter++;
 
-                varianSubmitOptionList.add(varianSubmitOption);
+                variantSubmitOptionList.add(variantSubmitOption);
             }
-            variantUnitSubmit.setVariantSubmitOptionList(varianSubmitOptionList);
+            variantUnitSubmit.setVariantSubmitOptionList(variantSubmitOptionList);
             variantUnitSubmitList.add(variantUnitSubmit);
         }
         return variantUnitSubmitList;

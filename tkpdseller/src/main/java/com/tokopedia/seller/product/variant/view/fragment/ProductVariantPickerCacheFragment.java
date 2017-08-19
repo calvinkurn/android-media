@@ -5,11 +5,13 @@ import android.os.Bundle;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nathan on 8/4/17.
@@ -70,5 +72,20 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
             }
         }
         return null;
+    }
+
+    public List<VariantSubmitOption> getVariantSubmitOptionList() {
+        List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
+        for (ProductVariantViewModel productVariantViewModel: itemList) {
+            VariantSubmitOption variantSubmitOption = new VariantSubmitOption();
+            variantSubmitOption.setTemporaryId(Long.parseLong(productVariantViewModel.getId()));
+            if (productVariantViewModel.getUnitValueId() > 0) {
+                variantSubmitOption.setVariantUnitValueId(productVariantViewModel.getUnitValueId());
+            } else {
+                variantSubmitOption.setCustomText(productVariantViewModel.getTitle());
+            }
+            variantSubmitOptionList.add(variantSubmitOption);
+        }
+        return variantSubmitOptionList;
     }
 }

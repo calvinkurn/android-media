@@ -90,6 +90,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
                 }
                 for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
                     if (value.equalsIgnoreCase(String.valueOf(productVariantUnit.getUnitId()))) {
+                        currentVariantUnitId = productVariantUnit.getUnitId();
                         productVariantValueList = productVariantUnit.getProductVariantValueList();
                         pickerMultipleItem.removeAllItemFromSearch();
                         ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).clearCheck();
@@ -164,5 +165,9 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             }
         }
         filteredProductVariantValueList = productVariantValueListTemp;
+    }
+
+    public long getCurrentUnitId() {
+        return currentVariantUnitId;
     }
 }
