@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
@@ -52,6 +53,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
+    private static final String TYPE_TOPPICKS = "top_picks";
+
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener) {
         this.viewListener = viewListener;
@@ -193,8 +196,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
-        addToppicks(listFeedView);
-
         if (listFeedDomain != null)
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
@@ -217,35 +218,44 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_NEW_PRODUCT:
                         ActivityCardViewModel model = convertToActivityViewModel(domain);
-                        if (model.getListProduct() != null && model.getListProduct().size() > 0)
+                        if (model.getListProduct() != null && !model.getListProduct().isEmpty())
                             listFeedView.add(model);
                         break;
                     case TYPE_PROMOTION:
                         PromoCardViewModel promo = convertToPromoViewModel(domain);
-                        if (promo.getListPromo() != null && promo.getListPromo().size() > 0)
+                        if (promo.getListPromo() != null && !promo.getListPromo().isEmpty())
                             listFeedView.add(promo);
                         break;
+                    case TYPE_TOPPICKS:
+                        ToppicksViewModel toppicks = convertToToppicksViewModel(domain);
+                        if (toppicks.getList() != null && !toppicks.getList().isEmpty())
+                            listFeedView.add(toppicks);
                     default:
                         break;
                 }
             }
     }
 
-    private void addToppicks(ArrayList<Visitable> listFeedView) {
+    private ToppicksViewModel convertToToppicksViewModel(DataFeedDomain domain) {
+        return new ToppicksViewModel(convertToListTopPicks(domain));
+    }
+
+    private ArrayList<ToppicksItemViewModel> convertToListTopPicks(DataFeedDomain domain) {
         ArrayList<ToppicksItemViewModel> list = new ArrayList<>();
-        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
-                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
-                "-f2a48d2f766b_350_350.jpg", ""));
-        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
-                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
-                "-f2a48d2f766b_350_350.jpg", ""));
-        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
-                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
-                "-f2a48d2f766b_350_350.jpg", ""));
-        list.add(new ToppicksItemViewModel("https://imagerouter.tokopedia" +
-                ".com/img/200-square/product-1/2017/8/10/739668/739668_8cb2902b-34d4-4af7-a2ed" +
-                "-f2a48d2f766b_350_350.jpg", ""));
-        listFeedView.add(new ToppicksViewModel(list));
+        if (domain != null
+                && domain.getContent() != null
+                && domain.getContent().getTopPicksDomains() != null
+                && !domain.getContent().getTopPicksDomains().isEmpty())
+            for (TopPicksDomain topPicksDomain : domain.getContent().getTopPicksDomains()) {
+                list.add(convertToToppicksProduct(topPicksDomain));
+            }
+        return list;
+    }
+
+    private ToppicksItemViewModel convertToToppicksProduct(TopPicksDomain topPicksDomain) {
+        return new ToppicksItemViewModel(
+                topPicksDomain.getImageUrl(),
+                topPicksDomain.getUrl());
     }
 
     private OfficialStoreCampaignViewModel convertToOfficialStoreCampaign(DataFeedDomain domain) {
