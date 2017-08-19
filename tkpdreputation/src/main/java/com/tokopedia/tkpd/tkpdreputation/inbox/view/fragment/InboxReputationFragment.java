@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,7 +19,10 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
@@ -32,6 +37,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         implements InboxReputation.View {
 
     private final static String PARAM_TAB = "tab";
+    private static final int REQUEST_OPEN_DETAIL = 101;
 
     private RecyclerView mainList;
     private SwipeToRefresh swipeToRefresh;
@@ -75,7 +81,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     private void initVar() {
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        adapter = InboxReputationAdapter.createAdapter();
+        InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(this);
+        adapter = new InboxReputationAdapter(typeFactory);
     }
 
     @Nullable
@@ -138,12 +145,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingFull() {
-        adapter.showLoadingFull(true);
+        adapter.showLoadingFull();
     }
 
     @Override
     public void onErrorGetFirstTimeInboxReputation(String errorMessage) {
-        adapter.showLoadingFull(false);
+        adapter.removeLoadingFull();
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
                 NetworkErrorHelper
                         .RetryClickedListener() {
@@ -156,14 +163,14 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
-        adapter.showLoadingFull(false);
+        adapter.removeLoadingFull();
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
 
     @Override
     public void onErrorGetNextPage(String errorMessage) {
-        adapter.showLoading(false);
+        adapter.removeLoading();
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new
                 NetworkErrorHelper
                         .RetryClickedListener() {
@@ -177,7 +184,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel) {
-        adapter.showLoading(false);
+        adapter.removeLoading();
         adapter.addList(inboxReputationViewModel.getList());
     }
 
@@ -203,6 +210,27 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingNext() {
-        adapter.showLoading(true);
+        adapter.showLoading();
+    }
+
+    @Override
+    public void onGoToDetail(String reputationId, int adapterPosition) {
+        startActivityForResult(
+                InboxReputationDetailActivity.getCallingIntent(
+                        getActivity(),
+                        reputationId,
+                        adapterPosition,
+                        getTab()),
+                REQUEST_OPEN_DETAIL);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
+            presenter.refreshItem(
+                    data.getStringExtra(InboxReputationDetailActivity.ARGS_REPUTATION_ID),
+                    getTab());
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

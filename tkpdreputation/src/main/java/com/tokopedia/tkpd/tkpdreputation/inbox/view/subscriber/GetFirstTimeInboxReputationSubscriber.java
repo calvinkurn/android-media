@@ -51,6 +51,7 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
         List<InboxReputationItemViewModel> list = new ArrayList<>();
         for (InboxReputationItemDomain domain : inboxReputationDomain) {
             list.add(new InboxReputationItemViewModel(
+                    String.valueOf(domain.getReputationId()),
                     domain.getRevieweeData().getRevieweeName(),
                     domain.getOrderData().getCreateTimeFmt().getDateTimeFmt1(),
                     domain.getRevieweeData().getRevieweePicture(),

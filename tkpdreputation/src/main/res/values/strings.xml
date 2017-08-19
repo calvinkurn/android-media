@@ -3,4 +3,7 @@
     <string name="title_tab_waiting_review">MENUNGGU DIULAS</string>
     <string name="title_tab_my_review">ULASAN_SAYA</string>
     <string name="title_tab_buyer_review">ULASAN PEMBELI</string>
+    <string name="empty_inbox_reputation">Reputasi kosong</string>
+    <string name="deadline_prefix">Reputasi akan dikunci dalam</string>
+    <string name="deadline_suffix">hari lagi</string>
 </resources>

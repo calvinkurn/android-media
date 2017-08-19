@@ -26,6 +26,7 @@ public interface InboxReputation {
 
         void showLoadingNext();
 
+        void onGoToDetail(String reputationId, int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -34,5 +35,7 @@ public interface InboxReputation {
 
         void getNextPage(int lastItemPosition, int visibleItem, String query, int timeFilter,
               int tab);
+
+        void refreshItem(String id, int tab);
     }
 }

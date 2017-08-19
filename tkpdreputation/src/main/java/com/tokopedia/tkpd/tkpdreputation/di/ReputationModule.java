@@ -7,9 +7,11 @@ import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.GetFirstTimeInboxReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.GetInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -43,8 +45,8 @@ public class ReputationModule {
     @Provides
     GetInboxReputationUseCase
     provideGetInboxReputationUseCase(ThreadExecutor threadExecutor,
-                                              PostExecutionThread postExecutionThread,
-                                              ReputationRepository reputationRepository) {
+                                     PostExecutionThread postExecutionThread,
+                                     ReputationRepository reputationRepository) {
         return new GetInboxReputationUseCase(
                 threadExecutor,
                 postExecutionThread,
@@ -61,8 +63,11 @@ public class ReputationModule {
     @Provides
     ReputationFactory provideReputationFactory(ReputationService reputationService,
                                                InboxReputationMapper inboxReputationMapper,
+                                               InboxReputationDetailMapper
+                                                       inboxReputationDetailMapper,
                                                GlobalCacheManager globalCacheManager) {
-        return new ReputationFactory(reputationService, inboxReputationMapper, globalCacheManager);
+        return new ReputationFactory(reputationService, inboxReputationMapper,
+                inboxReputationDetailMapper, globalCacheManager);
     }
 
     @ReputationScope
@@ -75,5 +80,23 @@ public class ReputationModule {
     @Provides
     ReputationService provideReputationService() {
         return new ReputationService();
+    }
+
+    @ReputationScope
+    @Provides
+    InboxReputationDetailMapper provideInboxReputationDetailMapper() {
+        return new InboxReputationDetailMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    GetInboxReputationDetailUseCase
+    provideGetInboxReputationDetailUseCase(ThreadExecutor threadExecutor,
+                                           PostExecutionThread postExecutionThread,
+                                           ReputationRepository reputationRepository) {
+        return new GetInboxReputationDetailUseCase(
+                threadExecutor,
+                postExecutionThread,
+                reputationRepository);
     }
 }

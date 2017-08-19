@@ -3,8 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.GetFirstTimeInboxReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.GetInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetFirstTimeInboxReputationSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetNextPageInboxReputationSubscriber;
@@ -63,6 +63,11 @@ public class InboxReputationPresenter
                             tab),
                     new GetNextPageInboxReputationSubscriber(viewListener));
         }
+    }
+
+    @Override
+    public void refreshItem(String id, int tab) {
+
     }
 
     private boolean hasNextPage() {

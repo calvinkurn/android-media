@@ -814,5 +814,6 @@ public class TkpdBaseURL {
         public static final String URL_REPUTATION = WEB_DOMAIN + "reputationapp/";
 
         public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/v1/inbox";
+        public static final String PATH_GET_DETAIL_INBOX_REPUTATION = "review/api/v1/list";
     }
 }

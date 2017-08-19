@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 
 import dagger.Component;
@@ -13,6 +14,8 @@ import dagger.Component;
 @Component(modules = ReputationModule.class, dependencies = AppComponent.class)
 public interface ReputationComponent {
 
-    void inject(InboxReputationFragment feedPlusFragment);
+    void inject(InboxReputationFragment inboxReputationFragment);
+
+    void inject(InboxReputationDetailFragment inboxReputationDetailFragment);
 
 }

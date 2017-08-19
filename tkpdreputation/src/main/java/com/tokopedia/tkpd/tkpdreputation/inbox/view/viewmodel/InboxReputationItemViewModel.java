@@ -1,10 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel;
 
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
+
 /**
  * @author by nisie on 8/15/17.
  */
 
-public class InboxReputationItemViewModel {
+public class InboxReputationItemViewModel implements Visitable<InboxReputationTypeFactory> {
     private String revieweeName;
     private String createTime;
     private String revieweePicture;
@@ -12,11 +15,13 @@ public class InboxReputationItemViewModel {
     private String reputationDaysLeft;
     private String invoice;
     private boolean showBookmark;
+    private String reputationId;
 
-    public InboxReputationItemViewModel(String revieweeName, String createTime,
+    public InboxReputationItemViewModel(String reputationId, String revieweeName, String createTime,
                                         String revieweePicture, boolean showLockingDeadline,
                                         String reputationDaysLeft, String invoice,
                                         boolean showBookmark) {
+        this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.createTime = createTime;
         this.revieweePicture = revieweePicture;
@@ -52,5 +57,14 @@ public class InboxReputationItemViewModel {
 
     public boolean showBookmark() {
         return showBookmark;
+    }
+
+    public String getReputationId() {
+        return reputationId;
+    }
+
+    @Override
+    public int type(InboxReputationTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

@@ -18,4 +18,8 @@ public interface ReputationApi {
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_INBOX_REPUTATION)
     Observable<Response<TkpdResponse>> getInbox(@QueryMap Map<String, Object> params);
+
+    @GET(TkpdBaseURL.Reputation.PATH_GET_DETAIL_INBOX_REPUTATION)
+    Observable<Response<TkpdResponse>> getInboxDetail(@QueryMap Map<String, Object> params);
+
 }

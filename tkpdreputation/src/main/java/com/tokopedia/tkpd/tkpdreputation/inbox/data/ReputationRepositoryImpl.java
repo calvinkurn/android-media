@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
 
 import rx.Observable;
 
@@ -20,11 +21,20 @@ public class ReputationRepositoryImpl implements ReputationRepository {
 
     @Override
     public Observable<InboxReputationDomain> getInboxReputationFromCloud(RequestParams requestParams) {
-        return reputationFactory.createCloudInboxReputationDataSource().getInboxReputation(requestParams);
+        return reputationFactory
+                .createCloudInboxReputationDataSource()
+                .getInboxReputation(requestParams);
     }
 
     @Override
     public Observable<InboxReputationDomain> getInboxReputationFromLocal() {
         return null;
+    }
+
+    @Override
+    public Observable<InboxReputationDetailDomain> getInboxReputationDetailFromCloud(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudInboxReputationDetailDataSource()
+                .getInboxReputationDetail(requestParams);
     }
 }
