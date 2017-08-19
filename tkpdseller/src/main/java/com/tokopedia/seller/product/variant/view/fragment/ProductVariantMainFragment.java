@@ -21,7 +21,6 @@ import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerAc
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by hendry on 4/3/17.
@@ -129,23 +128,22 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     }
 
     private void setVariantLevel(int level, VariantUnitSubmit variantUnitSubmit) {
+        // TODO need to clarify position same as level ? Different level if fetch by category, override for temporary solution
+        variantUnitSubmit.setPosition(level);
         if (variantData == null) {
             variantData = new VariantData();
-            List<VariantUnitSubmit> variantUnitSubmitList = new ArrayList<>();
-            // TODO need to clarify position same as level ? Different level if fetch by category, override for temporary solution
-            variantUnitSubmit.setPosition(level);
-            variantUnitSubmitList.add(variantUnitSubmit);
-            variantData.setVariantUnitSubmitList(variantUnitSubmitList);
-            return;
+            variantData.setVariantUnitSubmitList(new ArrayList<VariantUnitSubmit>());
         }
         int variantUnitSubmitSize = variantData.getVariantUnitSubmitList().size();
         for (int i = 0; i < variantUnitSubmitSize; i++) {
             VariantUnitSubmit variantUnitSubmitTemp = variantData.getVariantUnitSubmitList().get(i);
             if (variantUnitSubmitTemp.getPosition() == level) {
                 variantData.getVariantUnitSubmitList().set(i, variantUnitSubmit);
-                break;
+                return;
             }
         }
+        // Variant unit not found, add it
+        variantData.getVariantUnitSubmitList().add(variantUnitSubmit);
     }
 
     private void updateVariantUnitView() {
@@ -177,7 +175,7 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
 
     private String getVariantTitle(int level) {
         VariantUnitSubmit variantUnitSubmit = getVariantUnitSubmit(level);
-        String title = ProductVariantUtils.getTitle(VARIANT_LEVEL_ONE_VALUE, variantUnitSubmit, productVariantByCatModelList);
+        String title = ProductVariantUtils.getTitle(level, variantUnitSubmit, productVariantByCatModelList);
         if (TextUtils.isEmpty(title)) {
             title = getString(R.string.product_label_choose);
         }

@@ -31,11 +31,11 @@ public class ProductVariantUtils {
                 ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
                         level, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
                 if (productVariantValue != null) {
-                    title += getAdditionalTitleText(title, productVariantValue.getValue());
+                    title = getAdditionalTitleText(title, productVariantValue.getValue());
                 }
             } else {
                 // Get custom name
-                title += getAdditionalTitleText(title, variantSubmitOption.getCustomText());
+                title = getAdditionalTitleText(title, variantSubmitOption.getCustomText());
             }
         }
         return title;
