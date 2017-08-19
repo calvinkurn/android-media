@@ -14,10 +14,10 @@ public class VarianStatus {
 
     @SerializedName("st")
     @Expose
-    private int st;
+    private int status;
     @SerializedName("opt")
     @Expose
-    private List<Integer> optList = null;
+    private List<Long> optionList;
     @SerializedName("pvd")
     @Expose
     private int pvd;
@@ -26,32 +26,32 @@ public class VarianStatus {
      * get status of this metrics
      * @return 0 if not available. 1 if available.
      */
-    public int getSt() {
-        return st;
+    public int getStatus() {
+        return status;
     }
 
     /**
      * status of the variant. 0: not available. 1: available
-     * @param st set 0 for not available (or zero stock)
+     * @param status set 0 for not available (or zero stock)
      */
-    public void setSt(int st) {
-        this.st = st;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     /**
      * get the list of combination between t_id of variant level 1 + variant level 2 + so on
-     * @return optList
+     * @return optionList
      */
-    public List<Integer> getOptList() {
-        return optList;
+    public List<Long> getOptionList() {
+        return optionList;
     }
 
     /**
      * set this list with combination between t_id of variant level 1 + variant level 2 + so on
-     * @param optList
+     * @param optionList
      */
-    public void setOptList(List<Integer> optList) {
-        this.optList = optList;
+    public void setOptionList(List<Long> optionList) {
+        this.optionList = optionList;
     }
 
     /**

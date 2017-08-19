@@ -11,79 +11,79 @@ public class VarianSubmitOption {
 
     @SerializedName("pvo")
     @Expose
-    private int pvo;
+    private int productVariantOptionId;
     @SerializedName("vuv")
     @Expose
-    private int vuv;
+    private long variantUnitValue;
     @SerializedName("t_id")
     @Expose
-    private int tId;
+    private long temporaryId;
     @SerializedName("cstm")
     @Expose
-    private String cstm;
+    private String customText;
 
     /**
      * Product variant option, set with the id got from server if there is any
      * if it is new, set the id as "0"
      * @return Product variant option id from server. 0 if new created
      */
-    public int getPvo() {
-        return pvo;
+    public int getProductVariantOptionId() {
+        return productVariantOptionId;
     }
 
     /**
      * Product variant option, set with the id got from server if there is any
      * if it is new, set the id as "0"
-     * @param pvo "0" if new, previous id from server if existing
+     * @param productVariantOptionId "0" if new, previous id from server if existing
      */
-    public void setPvo(int pvo) {
-        this.pvo = pvo;
+    public void setProductVariantOptionId(int productVariantOptionId) {
+        this.productVariantOptionId = productVariantOptionId;
     }
 
     /**
      * if custom, 0. if not custom, id of the variant unit value
      * @return variant unit value. 0 if custom. id if not custom. example: "1" for "putih"
      */
-    public int getVuv() {
-        return vuv;
+    public long getVariantUnitValue() {
+        return variantUnitValue;
     }
 
     /**
      * if custom, set to 0
      * if not custom, set with the id of the variant unit value
-     * @param vuv 0 if custom, id if not custom. ex: "1" for "putih"
+     * @param variantUnitValue 0 if custom, id if not custom. ex: "1" for "putih"
      */
-    public void setVuv(int vuv) {
-        this.vuv = vuv;
+    public void setVariantUnitValue(long variantUnitValue) {
+        this.variantUnitValue = variantUnitValue;
     }
 
     /**
      * Template id, start from 1, 2, 3, to determine the id when submit product variant
      * @return example: "1", "2", "3"
      */
-    public int getTId() {
-        return tId;
+    public long getTemporaryId() {
+        return temporaryId;
     }
 
     /**
      * Template id, start from 1, 2, 3, to determine the id when submit product variant
-     * @param tId example: "1", "2", "3"
+     * @param temporaryId example: "1", "2", "3"
      */
-    public void setTId(int tId) {
-        this.tId = tId;
+    public void setTemporaryId(long temporaryId) {
+        this.temporaryId = temporaryId;
     }
 
     /**
      * @return example: "Merah kehijauan", "Ukuran 32.5"
      */
-    public String getCstm() {
-        return cstm;
+    public String getCustomText() {
+        return customText;
     }
 
     /**
-     * @param cstm example: "Merah kehijauan", "Ukuran 32.5"
+     * @param customText example: "Merah kehijauan", "Ukuran 32.5"
      */
-    public void setCstm(String cstm) {
-        this.cstm = cstm;
+    public void setCustomText(String customText) {
+        this.customText = customText;
     }
 }

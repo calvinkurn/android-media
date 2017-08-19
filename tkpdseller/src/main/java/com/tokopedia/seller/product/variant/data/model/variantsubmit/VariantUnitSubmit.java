@@ -13,98 +13,98 @@ public class VariantUnitSubmit {
 
     @SerializedName("v")
     @Expose
-    private int v;
+    private int variantId;
     @SerializedName("vu")
     @Expose
-    private int vu;
+    private int variantUnitId;
     @SerializedName("pos")
     @Expose
-    private int pos;
+    private int position;
     @SerializedName("pv")
     @Expose
-    private int pv;
-    @SerializedName("optList")
+    private int productVariant;
+    @SerializedName("opt")
     @Expose
-    private List<VarianSubmitOption> varianSubmitOptionList = null;
+    private List<VarianSubmitOption> variantSubmitOptionList;
 
     /**
      * Varian ID.
-     * @return v example: "1" for warna". "6" for "ukuran pakaian"
+     * @return variantId example: "1" for warna". "6" for "ukuran pakaian"
      */
-    public int getV() {
-        return v;
+    public int getVariantId() {
+        return variantId;
     }
 
     /**
      * Varian ID.
-     * @param v example: "1" for warna". "6" for "ukuran pakaian"
+     * @param variantId example: "1" for warna". "6" for "ukuran pakaian"
      */
-    public void setV(int v) {
-        this.v = v;
+    public void setVariantId(int variantId) {
+        this.variantId = variantId;
     }
 
     /**
      * get variant unit chosen for this variant
      * @return for example: example: "8" for "Ukuran pakaian US"
      */
-    public int getVu() {
-        return vu;
+    public int getVariantUnitId() {
+        return variantUnitId;
     }
 
     /**
      * Variant unit id got from server. Set to 0 if there is no variant unit
-     * @param vu Variant unit. example: "8" for "Ukuran pakaian US"
+     * @param variantUnitId Variant unit. example: "8" for "Ukuran pakaian US"
      */
-    public void setVu(int vu) {
-        this.vu = vu;
+    public void setVariantUnitId(int variantUnitId) {
+        this.variantUnitId = variantUnitId;
     }
 
     /**
      * Position level of the variant
      * @return example: "1" or "2" at most
      */
-    public int getPos() {
-        return pos;
+    public int getPosition() {
+        return position;
     }
 
     /**
      * Position level of the variant
-     * @param pos position of variant. Set to 1 if the top level. 2 for the second level.
+     * @param position position of variant. Set to 1 if the top level. 2 for the second level.
      */
-    public void setPos(int pos) {
-        this.pos = pos;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     /**
      * product variant id, set with the id got from server
-     * @return pv product variant id. example: 659143 for "warna"
+     * @return productVariant product variant id. example: 659143 for "warna"
      */
-    public int getPv() {
-        return pv;
+    public int getProductVariant() {
+        return productVariant;
     }
 
     /**
      * product variant id, set with the id got from server
-     * @param pv product variant id. example: 659143 for "warna"
+     * @param productVariant product variant id. example: 659143 for "warna"
      */
-    public void setPv(int pv) {
-        this.pv = pv;
+    public void setProductVariant(int productVariant) {
+        this.productVariant = productVariant;
     }
 
     /**
      * Option list for this variant. example "merah:1" "hijau:2"
      * @return Option List
      */
-    public List<VarianSubmitOption> getVarianSubmitOptionList() {
-        return varianSubmitOptionList;
+    public List<VarianSubmitOption> getVariantSubmitOptionList() {
+        return variantSubmitOptionList;
     }
 
     /**
      * set Option list
-     * @param varianSubmitOptionList  example "merah:1" "hijau:2"
+     * @param variantSubmitOptionList  example "merah:1" "hijau:2"
      */
-    public void setVarianSubmitOptionList(List<VarianSubmitOption> varianSubmitOptionList) {
-        this.varianSubmitOptionList = varianSubmitOptionList;
+    public void setVariantSubmitOptionList(List<VarianSubmitOption> variantSubmitOptionList) {
+        this.variantSubmitOptionList = variantSubmitOptionList;
     }
 
 }
