@@ -27,6 +27,8 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     private static final int REQUEST_CODE_VARIANT_LEVEL_ONE = 1;
     private static final int REQUEST_CODE_VARIANT_LEVEL_TWO = 2;
 
+    private static final int MULTIPLY_START_TEMP_ID = 10000;
+
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
 
@@ -92,7 +94,8 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
         int index = level - 1;
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY, productVariantByCatModelList.get(index));
-        startActivityForResult(intent, REQUEST_CODE_VARIANT_LEVEL_ONE);
+        intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, level * MULTIPLY_START_TEMP_ID);
+        startActivityForResult(intent, level);
     }
 
     @Override

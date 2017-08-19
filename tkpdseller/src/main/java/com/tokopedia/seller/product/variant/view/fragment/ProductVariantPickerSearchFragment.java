@@ -123,7 +123,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     @Override
     public void onItemChecked(ProductVariantValue productVariantValue, boolean checked) {
         ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-        productVariantViewModel.setId(Long.parseLong(productVariantValue.getId()));
+        productVariantViewModel.setUnitValueId(Long.parseLong(productVariantValue.getId()));
         productVariantViewModel.setHexCode(productVariantValue.getHexCode());
         productVariantViewModel.setTitle(productVariantValue.getValue());
         productVariantViewModel.setImageUrl(productVariantValue.getIcon());
@@ -136,7 +136,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     public void deselectItem(ProductVariantViewModel productVariantViewModel) {
-        ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).setChecked(productVariantViewModel.getId(), false);
+        ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).setChecked(String.valueOf(productVariantViewModel.getUnitValueId()), false);
         resetPageAndSearch();
     }
 
