@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -167,11 +168,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private BottomSheetTokoCash bottomSheetDialogTokoCash;
 
+    private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            stopAutoScrollBanner();
+        }
+    };
     private DrawerTokoCash tokoCashData;
     private BannerPagerAdapter bannerPagerAdapter;
     private int currentPosition;
     private ArrayList<ImageView> indicatorItems = new ArrayList<>();
-    private Subscription subscription;
+    private Runnable runnableScrollBanner;
 
 
     @Override
@@ -378,9 +385,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (newState == RecyclerView.SCROLL_STATE_DRAGGING && recyclerView.isInTouchMode()) {
-                        if (subscription != null && !subscription.isUnsubscribed()) {
-                            subscription.unsubscribe();
-                        }
+                        stopAutoScrollBanner();
                     }
                 }
 
@@ -393,6 +398,18 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             PagerSnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(holder.bannerPager);
 
+            runnableScrollBanner = new Runnable() {
+                @Override
+                public void run() {
+                    if (holder.bannerPager != null) {
+                        if (currentPosition == holder.bannerPager.getAdapter().getItemCount() - 1) {
+                            currentPosition = -1;
+                        }
+                        holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
+                    }
+                }
+            };
+
             startAutoScrollBanner();
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
@@ -400,23 +417,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void startAutoScrollBanner() {
+        if (holder.bannerPager != null && runnableScrollBanner != null) {
+            holder.bannerPager.postDelayed(runnableScrollBanner, 5000L);
+        }
+    }
 
-        if (subscription == null || subscription.isUnsubscribed()) {
-            subscription = Observable.interval(5000L, TimeUnit.MILLISECONDS)
-                    .timeInterval()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<TimeInterval<Long>>() {
-                        @Override
-                        public void call(TimeInterval<Long> longTimeInterval) {
-                            if (holder.bannerPager != null) {
-                                if (currentPosition == holder.bannerPager.getAdapter().getItemCount() - 1) {
-                                    currentPosition = -1;
-                                }
-                                holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
-                            }
-                        }
-                    });
+    private void stopAutoScrollBanner() {
+        if (holder.bannerPager != null && runnableScrollBanner != null) {
+            holder.bannerPager.removeCallbacks(runnableScrollBanner);
         }
     }
 
@@ -518,6 +526,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             rechargeCategoryPresenter.fetchLastOrder();
         }
         super.onResume();
+        getActivity().registerReceiver(stopBannerReceiver, new IntentFilter(BANNER_RECEIVER_INTENT));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(stopBannerReceiver);
     }
 
     @Override
@@ -899,7 +914,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
-            startAutoScrollBanner();
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();
@@ -919,9 +933,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         category.unSubscribe();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
