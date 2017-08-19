@@ -446,7 +446,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public String getEtalaseName() {
-        return etalaseLabelView.getValue();
+        return etalaseLabelView.getContent();
     }
 
     public void setEtalaseName(String name) {
@@ -588,7 +588,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putLong(BUNDLE_ETALASE_ID, etalaseId);
-        savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getValue());
+        savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getContent());
         savedInstanceState.putBoolean(IS_ACTIVE_STOCK, stockTotalExpandableOptionSwitch.isEnabled());
         savedInstanceState.putBoolean(IS_ENABLE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
         savedInstanceState.putBoolean(IS_ON_WHOLESALE, editPriceImageButton.getVisibility() == View.VISIBLE);

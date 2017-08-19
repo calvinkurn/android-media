@@ -163,8 +163,8 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
                 variantLevelOneLabelView.setContent(getVariantTitle(VARIANT_LEVEL_ONE_VALUE));
                 break;
             case VARIANT_LEVEL_TWO_VALUE:
-                if (TextUtils.isEmpty(variantLevelOneLabelView.getValue()) ||
-                        variantLevelOneLabelView.getValue().equalsIgnoreCase(getString(R.string.product_label_choose))) {
+                if (TextUtils.isEmpty(variantLevelOneLabelView.getContent()) ||
+                        variantLevelOneLabelView.getContent().equalsIgnoreCase(getString(R.string.product_label_choose))) {
                     variantLevelTwoLabelView.setEnabled(false);
                     variantLevelTwoLabelView.setContent(getString(R.string.product_label_choose));
                 } else {

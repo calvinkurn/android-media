@@ -179,7 +179,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     public String getCatalogName() {
-        return catalogLabelView.getValue();
+        return catalogLabelView.getContent();
     }
 
     public long getCategoryId() {
@@ -352,10 +352,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putLong(BUNDLE_CATEGORY_ID, categoryId);
-        savedInstanceState.putString(BUNDLE_CATEGORY_NAME, categoryLabelView.getValue());
+        savedInstanceState.putString(BUNDLE_CATEGORY_NAME, categoryLabelView.getContent());
         savedInstanceState.putBoolean(BUNDLE_CATALOG_SHOWN, catalogLabelView.getVisibility() == View.VISIBLE);
         savedInstanceState.putLong(BUNDLE_CATALOG_ID, catalogId);
-        savedInstanceState.putString(BUNDLE_CATALOG_NAME, catalogLabelView.getValue());
+        savedInstanceState.putString(BUNDLE_CATALOG_NAME, catalogLabelView.getContent());
         savedInstanceState.putParcelableArrayList(BUNDLE_CAT_RECOMM, categoryPredictionList);
     }
 

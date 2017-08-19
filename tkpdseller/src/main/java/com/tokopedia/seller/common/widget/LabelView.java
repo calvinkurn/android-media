@@ -38,6 +38,8 @@ public class LabelView extends BaseCustomView {
     private int maxLines;
     private float textSize;
 
+    private boolean enabled;
+
     public LabelView(Context context) {
         super(context);
         init();
@@ -58,13 +60,14 @@ public class LabelView extends BaseCustomView {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.LabelView_title);
+            titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
             contentText = styledAttributes.getString(R.styleable.LabelView_content);
-            contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
+            contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_content_textStyle, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
             showArrow = styledAttributes.getBoolean(R.styleable.LabelView_label_show_arrow, false);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
-            textSize = styledAttributes.getDimension(com.tokopedia.design.R.styleable.LabelView_lv_font_size,
+            textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
                     getResources().getDimension(com.tokopedia.design.R.dimen.font_subheading));
         } finally {
             styledAttributes.recycle();
@@ -103,9 +106,36 @@ public class LabelView extends BaseCustomView {
 
     @Override
     public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        setClickable(enabled);
         if (enabled) {
+            titleTextView.setTextColor(titleColorValue);
             contentTextView.setTextColor(contentColorValue);
+        } else {
+            titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            contentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
         }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public String getTitle() {
+        return titleTextView.getText().toString();
+    }
+
+    public void setTitle(String textTitle) {
+        titleTextView.setText(textTitle);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setTitleContentTypeFace(int typeFace) {
+        titleTextView.setTypeface(null, typeFace);
+        invalidate();
+        requestLayout();
     }
 
     public void setContent(CharSequence textValue) {
@@ -114,10 +144,8 @@ public class LabelView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setTitleContentTypeFace(int typeFace){
-        titleTextView.setTypeface(null, typeFace);
-        invalidate();
-        requestLayout();
+    public String getContent() {
+        return contentTextView.getText().toString();
     }
 
     public void setContentTypeface(int typefaceType) {
@@ -133,25 +161,11 @@ public class LabelView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setVisibleArrow(boolean isVisible){
-        if(isVisible){
+    public void setVisibleArrow(boolean isVisible) {
+        if (isVisible) {
             arrow.setVisibility(VISIBLE);
-        }else{
+        } else {
             arrow.setVisibility(GONE);
         }
-    }
-
-    public String getTitle() {
-        return titleTextView.getText().toString();
-    }
-
-    public void setTitle(String textTitle) {
-        titleTextView.setText(textTitle);
-        invalidate();
-        requestLayout();
-    }
-
-    public String getValue() {
-        return contentTextView.getText().toString();
     }
 }
