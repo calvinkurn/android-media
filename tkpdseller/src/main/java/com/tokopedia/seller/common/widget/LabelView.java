@@ -25,13 +25,18 @@ public class LabelView extends BaseCustomView {
     private ImageView arrow;
 
     private String titleText;
-    private String valueText;
-    private int colorValue;
+    @ColorInt
+    private int titleColorValue;
     private int contentTextStyleValue;
+
+    private String contentText;
+    @ColorInt
+    private int contentColorValue;
     private int titleTextStyleValue;
-    private boolean contentSmall;
+
     private boolean showArrow;
     private int maxLines;
+    private float textSize;
 
     public LabelView(Context context) {
         super(context);
@@ -53,45 +58,17 @@ public class LabelView extends BaseCustomView {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.LabelView_title);
-            valueText = styledAttributes.getString(R.styleable.LabelView_content);
-            colorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
+            contentText = styledAttributes.getString(R.styleable.LabelView_content);
+            contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_content_textStyle, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
-            contentSmall = styledAttributes.getBoolean(R.styleable.LabelView_content_small, false);
             showArrow = styledAttributes.getBoolean(R.styleable.LabelView_label_show_arrow, false);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
+            textSize = styledAttributes.getDimension(com.tokopedia.design.R.styleable.LabelView_lv_font_size,
+                    getResources().getDimension(com.tokopedia.design.R.dimen.font_subheading));
         } finally {
             styledAttributes.recycle();
         }
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        titleTextView.setText(titleText);
-        setContent(valueText);
-        contentTextView.setTextColor(colorValue);
-        contentTextView.setTypeface(null, contentTextStyleValue);
-        contentTextView.setMaxLines(maxLines);
-        titleTextView.setTypeface(null, titleTextStyleValue);
-        if(contentSmall){
-            setContentSmall();
-        }
-        setVisibleArrow(showArrow);
-        invalidate();
-        requestLayout();
-    }
-
-    public void resetContentText() {
-        setContent(valueText);
-        setVisibleArrow(showArrow);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setContentSmall() {
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
     }
 
     private void init() {
@@ -99,6 +76,36 @@ public class LabelView extends BaseCustomView {
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
         arrow = (ImageView) view.findViewById(R.id.arrow_left);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        titleTextView.setText(titleText);
+        setContent(contentText);
+        contentTextView.setTextColor(contentColorValue);
+        contentTextView.setTypeface(null, contentTextStyleValue);
+        contentTextView.setMaxLines(maxLines);
+        titleTextView.setTypeface(null, titleTextStyleValue);
+        setVisibleArrow(showArrow);
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        invalidate();
+        requestLayout();
+    }
+
+    public void resetContentText() {
+        setContent(contentText);
+        setVisibleArrow(showArrow);
+        invalidate();
+        requestLayout();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        if (enabled) {
+            contentTextView.setTextColor(contentColorValue);
+        }
     }
 
     public void setContent(CharSequence textValue) {
@@ -120,6 +127,7 @@ public class LabelView extends BaseCustomView {
     }
 
     public void setContentColorValue(@ColorInt int colorValue) {
+        contentColorValue = colorValue;
         contentTextView.setTextColor(colorValue);
         invalidate();
         requestLayout();
