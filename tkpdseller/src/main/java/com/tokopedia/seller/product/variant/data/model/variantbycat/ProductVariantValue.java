@@ -18,7 +18,7 @@ public class ProductVariantValue implements Parcelable, ItemIdType {
 
     @SerializedName("value_id")
     @Expose
-    private int valueId;
+    private long valueId;
     @SerializedName("value")
     @Expose
     private String value;
@@ -31,6 +31,10 @@ public class ProductVariantValue implements Parcelable, ItemIdType {
 
     public String getId() {
         return String.valueOf(valueId);
+    }
+
+    public long getValueId() {
+        return valueId;
     }
 
     public String getValue() {
@@ -62,7 +66,7 @@ public class ProductVariantValue implements Parcelable, ItemIdType {
     }
 
     protected ProductVariantValue(Parcel in) {
-        this.valueId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.valueId = (Long) in.readValue(Integer.class.getClassLoader());
         this.value = in.readString();
         this.hexCode = in.readString();
         this.icon = in.readString();

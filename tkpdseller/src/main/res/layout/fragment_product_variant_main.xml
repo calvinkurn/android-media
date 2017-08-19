@@ -10,16 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:title="@string/product_label_video" />
+        app:title="@string/product_label_choose" />
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_view_variant_level_two"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:title="@string/product_label_video" />
+        app:title="@string/product_label_choose" />
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"

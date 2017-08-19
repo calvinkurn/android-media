@@ -150,7 +150,6 @@
 
     <!-- Variant -->
     <string name="product_variant_label_title">Varian</string>
-    <string name="product_variant_choose">Pilih</string>
     <string name="product_variant_item_picker_selected_title">%1$s %2$s terpilih</string>
 
 </resources>

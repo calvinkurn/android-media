@@ -1,5 +1,7 @@
 package com.tokopedia.seller.base.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -47,6 +49,8 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     protected abstract Fragment getInitialSearchListFragment();
 
     protected abstract Fragment getInitialCacheListFragment();
+
+    protected abstract Intent getDefaultIntentResult();
 
     protected Fragment getSearchListFragment() {
         return getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
@@ -108,7 +112,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                submitButtonClicked();
             }
         });
     }
@@ -151,6 +155,12 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     public void removeItemFromCache(T t) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
         ((BasePickerItemSearchList) fragment).deselectItem(t);
+    }
+
+    protected void submitButtonClicked() {
+        Intent intent = getDefaultIntentResult();
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override

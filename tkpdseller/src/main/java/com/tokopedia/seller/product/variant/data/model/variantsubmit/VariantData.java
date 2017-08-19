@@ -13,16 +13,16 @@ public class VariantData {
 
     @SerializedName("variant")
     @Expose
-    private List<VariantUnitSubmit> variantUnitSubmitList = null;
+    private List<VariantUnitSubmit> variantUnitSubmitList;
     @SerializedName("product_variant")
     @Expose
-    private List<VarianStatus> varianStatusList = null;
+    private List<VarianStatus> varianStatusList;
 
     /**
      * Summary of the selected variant list. for example. Color and size.
      * @return variant List of the selected colors (ex:"white", red") and sizes ("43", "44")
      */
-    public List<VariantUnitSubmit> getVariant() {
+    public List<VariantUnitSubmit> getVariantUnitSubmitList() {
         return variantUnitSubmitList;
     }
 

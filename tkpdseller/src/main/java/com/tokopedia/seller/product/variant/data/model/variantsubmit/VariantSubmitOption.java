@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.variant.data.model.variantsubmit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by hendry on 8/15/2017.
  */
 
-public class VariantSubmitOption {
+public class VariantSubmitOption implements Parcelable {
 
     @SerializedName("pvo")
     @Expose
@@ -25,6 +28,7 @@ public class VariantSubmitOption {
     /**
      * Product variant option, set with the id got from server if there is any
      * if it is new, set the id as "0"
+     *
      * @return Product variant option id from server. 0 if new created
      */
     public long getProductVariantOptionId() {
@@ -34,6 +38,7 @@ public class VariantSubmitOption {
     /**
      * Product variant option, set with the id got from server if there is any
      * if it is new, set the id as "0"
+     *
      * @param productVariantOptionId "0" if new, previous id from server if existing
      */
     public void setProductVariantOptionId(long productVariantOptionId) {
@@ -42,6 +47,7 @@ public class VariantSubmitOption {
 
     /**
      * if custom, 0. if not custom, id of the variant unit value
+     *
      * @return variant unit value. 0 if custom. id if not custom. example: "1" for "putih"
      */
     public long getVariantUnitValueId() {
@@ -51,6 +57,7 @@ public class VariantSubmitOption {
     /**
      * if custom, set to 0
      * if not custom, set with the id of the variant unit value
+     *
      * @param variantUnitValueId 0 if custom, id if not custom. ex: "1" for "putih"
      */
     public void setVariantUnitValueId(long variantUnitValueId) {
@@ -59,6 +66,7 @@ public class VariantSubmitOption {
 
     /**
      * Template id, start from 1, 2, 3, to determine the id when submit product variant
+     *
      * @return example: "1", "2", "3"
      */
     public long getTemporaryId() {
@@ -67,6 +75,7 @@ public class VariantSubmitOption {
 
     /**
      * Template id, start from 1, 2, 3, to determine the id when submit product variant
+     *
      * @param temporaryId example: "1", "2", "3"
      */
     public void setTemporaryId(long temporaryId) {
@@ -86,4 +95,39 @@ public class VariantSubmitOption {
     public void setCustomText(String customText) {
         this.customText = customText;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.productVariantOptionId);
+        dest.writeLong(this.variantUnitValueId);
+        dest.writeLong(this.temporaryId);
+        dest.writeString(this.customText);
+    }
+
+    public VariantSubmitOption() {
+    }
+
+    protected VariantSubmitOption(Parcel in) {
+        this.productVariantOptionId = in.readLong();
+        this.variantUnitValueId = in.readLong();
+        this.temporaryId = in.readLong();
+        this.customText = in.readString();
+    }
+
+    public static final Creator<VariantSubmitOption> CREATOR = new Creator<VariantSubmitOption>() {
+        @Override
+        public VariantSubmitOption createFromParcel(Parcel source) {
+            return new VariantSubmitOption(source);
+        }
+
+        @Override
+        public VariantSubmitOption[] newArray(int size) {
+            return new VariantSubmitOption[size];
+        }
+    };
 }
