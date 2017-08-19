@@ -7,6 +7,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductPhotoSer
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class UploadProductPictureInputMapper {
     public UploadProductPictureInputMapper() {
     }
 
-    public void map(AddProductPictureInputServiceModel serviceModel, UploadProductInputDomainModel domainModel) {
+    public void mapProductPhoto(AddProductPictureInputServiceModel serviceModel, UploadProductInputDomainModel domainModel) {
         serviceModel.setProductPhoto(mapPhotoModel(domainModel.getProductPhotos()));
         serviceModel.setServerId(domainModel.getServerId());
         serviceModel.setHostUrl(domainModel.getHostUrl());

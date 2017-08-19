@@ -23,10 +23,16 @@ import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraft
 import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
+import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
+import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 
 /**
  * @author sebastianuskh on 4/20/17.
@@ -55,7 +61,9 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource, AddProductValidationInputMapper addProductValidationInputMapper, EditProductInputMapper editProductInputMapper){
+    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource,
+                                                           AddProductValidationInputMapper addProductValidationInputMapper,
+                                                           EditProductInputMapper editProductInputMapper){
         return new UploadProductRepositoryImpl(uploadProductDataSource, addProductValidationInputMapper, editProductInputMapper);
     }
 
@@ -77,4 +85,15 @@ public class AddProductserviceModule {
         return retrofit.create(UploadProductApi.class);
     }
 
+    @AddProductServiceScope
+    @Provides
+    ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
+        return new ProductVariantRepositoryImpl(productVariantDataSource);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeApi.class);
+    }
 }

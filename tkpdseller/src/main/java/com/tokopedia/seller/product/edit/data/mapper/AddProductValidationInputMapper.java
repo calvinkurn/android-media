@@ -5,6 +5,8 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValid
 import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductWholesaleServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.varianthelper.ProductVariantHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +23,9 @@ public class AddProductValidationInputMapper extends UploadProductPictureInputMa
     public AddProductValidationInputMapper() {
     }
 
-    public void map(AddProductValidationInputServiceModel serviceModel, UploadProductInputDomainModel domainModel) {
-        map((AddProductPictureInputServiceModel) serviceModel, domainModel);
+    public void map(AddProductValidationInputServiceModel serviceModel, UploadProductInputDomainModel domainModel,
+                    List<ProductVariantByCatModel> productVariantByCatModelList) {
+        mapProductPhoto(serviceModel, domainModel);
         serviceModel.setProductWholesale(mapWholesale(domainModel.getProductPriceOne()));
         serviceModel.setProductCatalogId(domainModel.getProductCatalogId());
         serviceModel.setProductCondition(domainModel.getProductCondition());
@@ -43,6 +46,13 @@ public class AddProductValidationInputMapper extends UploadProductPictureInputMa
         serviceModel.setPoProcessType(domainModel.getPoProcessType());
         serviceModel.setPoProcessValue(domainModel.getPoProcessValue());
         serviceModel.setProductVideo(domainModel.getProductVideos());
+        serviceModel.setSwitchVariant(domainModel.getSwitchVariant());
+        if (domainModel.getSwitchVariant() > 0 &&
+                productVariantByCatModelList!= null && productVariantByCatModelList.size() > 0) {
+            serviceModel.setProductVariantSubmit(
+                    new ProductVariantHelper(productVariantByCatModelList,
+                            domainModel.getProductVariantByPrdModel()).generateProductVariantSubmit());
+        }
     }
 
     private static List<ProductWholesaleServiceModel> mapWholesale(List<ProductWholesaleDomainModel> wholesaleDomainModelList) {

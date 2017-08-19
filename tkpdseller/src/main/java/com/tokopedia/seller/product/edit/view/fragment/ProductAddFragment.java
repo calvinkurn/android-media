@@ -598,7 +598,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onCategoryChanged(long categoryId) {
         // when category change, check if catalog exists
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
-        presenter.fetchProductVariant(categoryId);
+        presenter.fetchProductVariantByCat(categoryId);
         fetchCategory(categoryId);
     }
 
@@ -668,6 +668,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         }
         viewModel.setProductStatus(getStatusUpload());
         viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
+        viewModel.setProductVariantByPrdModel(productAdditionalInfoViewHolder.getProductVariantByPrdModel());
         return viewModel;
     }
 

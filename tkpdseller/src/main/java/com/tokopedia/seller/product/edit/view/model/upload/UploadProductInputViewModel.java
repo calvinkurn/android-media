@@ -6,6 +6,8 @@ import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,8 @@ public class UploadProductInputViewModel {
     private int productNameEditable;
     private int productChangeWholesale;
     private int productChangeCatalog;
+    private int switchVariant;
+    private ProductVariantByPrdModel productVariantByPrdModel;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -79,6 +83,28 @@ public class UploadProductInputViewModel {
 
     public void setProductVideos(List<String> productVideos) {
         this.productVideos = productVideos;
+    }
+
+    public void setSwitchVariant(int switchVariant) {
+        this.switchVariant = switchVariant;
+    }
+
+    public int getSwitchVariant() {
+        return switchVariant;
+    }
+
+    public ProductVariantByPrdModel getProductVariantByPrdModel() {
+        return productVariantByPrdModel;
+    }
+
+    public void setProductVariantByPrdModel(ProductVariantByPrdModel productVariantByPrdModel) {
+        this.productVariantByPrdModel = productVariantByPrdModel;
+        if (productVariantByPrdModel == null || productVariantByPrdModel.getVariantOptionList() == null ||
+                productVariantByPrdModel.getVariantOptionList().size() == 0) {
+            this.switchVariant = 0;
+        } else {
+            this.switchVariant = 1;
+        }
     }
 
     public String getProductName() {
@@ -357,6 +383,10 @@ public class UploadProductInputViewModel {
             return false;
         }
         if (poProcessValue!= defaultModel.getPoProcessValue()) {
+            return false;
+        }
+        if (productVariantByPrdModel.getVariantOptionList()!= null &&
+                productVariantByPrdModel.getVariantOptionList().size() > 0){
             return false;
         }
         return true;

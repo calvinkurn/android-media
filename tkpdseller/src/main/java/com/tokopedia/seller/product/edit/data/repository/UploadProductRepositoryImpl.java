@@ -19,6 +19,10 @@ import com.tokopedia.seller.product.edit.domain.model.AddProductValidationDomain
 import com.tokopedia.seller.product.edit.domain.model.EditImageProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -31,16 +35,19 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
     private final AddProductValidationInputMapper addProductValidationInputMapper;
     private final EditProductInputMapper editProductInputMapper;
 
-    public UploadProductRepositoryImpl(UploadProductDataSource uploadProductDataSource, AddProductValidationInputMapper addProductValidationInputMapper, EditProductInputMapper editProductInputMapper) {
+    public UploadProductRepositoryImpl(UploadProductDataSource uploadProductDataSource,
+                                       AddProductValidationInputMapper addProductValidationInputMapper,
+                                       EditProductInputMapper editProductInputMapper) {
         this.uploadProductDataSource = uploadProductDataSource;
         this.addProductValidationInputMapper = addProductValidationInputMapper;
         this.editProductInputMapper = editProductInputMapper;
     }
 
     @Override
-    public Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel domainModel) {
+    public Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel domainModel,
+                                                                            List< ProductVariantByCatModel> productVariantByCatModelList) {
         AddProductValidationInputServiceModel serviceModel = new AddProductValidationInputServiceModel();
-        addProductValidationInputMapper.map(serviceModel, domainModel);
+        addProductValidationInputMapper.map(serviceModel, domainModel, productVariantByCatModelList);
         return uploadProductDataSource.addProductValidation(serviceModel)
                 .map(new AddProductValidationMapper());
     }
@@ -53,9 +60,10 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
     }
 
     @Override
-    public Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
+    public Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel,
+                                           List<ProductVariantByCatModel> productVariantByCatModelList) {
         EditProductInputServiceModel serviceModel = new EditProductInputServiceModel();
-        editProductInputMapper.map(serviceModel, uploadProductInputDomainModel);
+        editProductInputMapper.map(serviceModel, uploadProductInputDomainModel, productVariantByCatModelList);
         return uploadProductDataSource.editProduct(serviceModel)
                 .map(new EditProductMapper());
     }

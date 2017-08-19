@@ -74,7 +74,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void fetchProductVariant(long categoryId) {
+    public void fetchProductVariantByCat(long categoryId) {
         RequestParams requestParam = FetchProductVariantByCatUseCase.generateParam(categoryId);
         fetchProductVariantByCatUseCase.execute(requestParam, getProductVariantSubscriber());
     }

@@ -6,6 +6,9 @@ import com.tokopedia.seller.product.edit.domain.model.AddProductValidationDomain
 import com.tokopedia.seller.product.edit.domain.model.EditImageProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -14,11 +17,11 @@ import rx.Observable;
  */
 
 public interface UploadProductRepository {
-    Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel);
+    Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel, List<ProductVariantByCatModel> productVariantByCatModelList);
 
     Observable<AddProductDomainModel> addProductSubmit(AddProductSubmitInputDomainModel addProductPictureDomainModel);
 
-    Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel);
+    Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel, List<ProductVariantByCatModel> productVariantByCatModelList);
 
     Observable<EditImageProductDomainModel> editImageProduct(String picObj);
 
