@@ -61,7 +61,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantMainActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantManageActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -567,7 +567,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
-        Intent intent = new Intent(getActivity(), ProductVariantMainActivity.class);
+        Intent intent = new Intent(getActivity(), ProductVariantManageActivity.class);
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT);
     }

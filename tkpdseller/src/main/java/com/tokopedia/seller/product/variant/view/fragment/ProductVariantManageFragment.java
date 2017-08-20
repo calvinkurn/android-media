@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.fragment.BaseListFragment;
+import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -18,7 +21,9 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
+import com.tokopedia.seller.product.variant.view.adapter.ProductVariantManageListAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
 
 import java.util.ArrayList;
 
@@ -26,7 +31,7 @@ import java.util.ArrayList;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantMainFragment extends BaseDaggerFragment implements ProductVariantMainView {
+public class ProductVariantManageFragment extends BaseListFragment<BlankPresenter, ProductVariantManageViewModel> implements ProductVariantMainView {
 
     private static final int VARIANT_LEVEL_ONE_VALUE = 1;
     private static final int VARIANT_LEVEL_TWO_VALUE = 2;
@@ -39,9 +44,9 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
     private VariantData variantData;
 
-    public static ProductVariantMainFragment newInstance() {
+    public static ProductVariantManageFragment newInstance() {
         Bundle args = new Bundle();
-        ProductVariantMainFragment fragment = new ProductVariantMainFragment();
+        ProductVariantManageFragment fragment = new ProductVariantManageFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -97,6 +102,21 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
 
     @Override
     protected void initInjector() {
+
+    }
+
+    @Override
+    protected BaseListAdapter<ProductVariantManageViewModel> getNewAdapter() {
+        return new ProductVariantManageListAdapter();
+    }
+
+    @Override
+    protected void searchForPage(int page) {
+
+    }
+
+    @Override
+    public void onItemClicked(ProductVariantManageViewModel productVariantManageViewModel) {
 
     }
 

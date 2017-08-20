@@ -17,15 +17,8 @@
         android:layout_marginBottom="@dimen/margin_med"
         android:visibility="gone" />
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+        android:layout_height="wrap_content" />
 </LinearLayout>

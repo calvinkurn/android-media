@@ -321,7 +321,7 @@
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".product.variant.view.activity.ProductVariantMainActivity"
+            android:name=".product.variant.view.activity.ProductVariantManageActivity"
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
 

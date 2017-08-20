@@ -1,0 +1,50 @@
+package com.tokopedia.seller.product.variant.view.adapter.viewholder;
+
+import android.graphics.Color;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
+import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
+import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
+
+/**
+ * @author normansyahputa on 5/26/17.
+ */
+
+public class ProductVariantManageViewHolder extends BaseViewHolder<ProductVariantManageViewModel> {
+
+    private ImageView imageView;
+    private TextView titleTextView;
+    private TextView contentTextView;
+
+    public ProductVariantManageViewHolder(View itemView) {
+        super(itemView);
+        imageView = (ImageView) itemView.findViewById(R.id.image_view);
+        titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
+    }
+
+    @Override
+    public void bindObject(final ProductVariantManageViewModel productVariantManageViewModel) {
+        if (!TextUtils.isEmpty(productVariantManageViewModel.getHexCode())) {
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setBackgroundColor(Color.parseColor(productVariantManageViewModel.getHexCode()));
+            imageView.setImageDrawable(null);
+        } else if (!TextUtils.isEmpty(productVariantManageViewModel.getImageUrl())) {
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setBackgroundColor(Color.TRANSPARENT);
+            Glide.with(imageView.getContext()).load(productVariantManageViewModel.getImageUrl())
+                    .transform(new CircleTransform(imageView.getContext())).into(imageView);
+        } else {
+            imageView.setVisibility(View.GONE);
+        }
+        titleTextView.setText(productVariantManageViewModel.getTitle());
+    }
+}
