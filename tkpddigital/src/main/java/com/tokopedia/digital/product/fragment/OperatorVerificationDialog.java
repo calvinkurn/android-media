@@ -113,7 +113,7 @@ public class OperatorVerificationDialog extends DialogFragment {
         btnOk = (TextView) view.findViewById(R.id.btn_ok);
         tvErrorNumber = (TextView) view.findViewById(R.id.tv_error_number);
         tvUssdDesc = (TextView) view.findViewById(R.id.tv_ussd_desc);
-        String operatorName = DeviceUtil.getOperatorName(getActivity());
+        String operatorName = DeviceUtil.getOperatorName(getActivity(),0);
         Resources res = getResources();
         // String text = String.format(res.getString(R.string.msg_ussd_sim_number),operatorName);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -271,7 +271,7 @@ public class OperatorVerificationDialog extends DialogFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (verifyOperator()) {
+                if (verifyOperator(0)) {
                     sendResult(autoCompleteTextView.getText().toString());
                 } else {
                     sendResult(null);
@@ -292,8 +292,8 @@ public class OperatorVerificationDialog extends DialogFragment {
     }
 
 
-    private boolean verifyOperator() {
-        String operatorName = DeviceUtil.getOperatorName(getActivity());
+    private boolean verifyOperator(int simPosition) {
+        String operatorName = DeviceUtil.getOperatorName(getActivity(),0);
         if (operatorName != null && !"".equalsIgnoreCase(operatorName.trim())) {
             operatorName = operatorName.split(" ")[0];
         } else {

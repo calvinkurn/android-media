@@ -343,48 +343,34 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             );
         }
 
-        if (view.isUserLoggedIn() && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA))
-            view.renderCheckPulsaBalanceData(null);
+        if (view.isUserLoggedIn() && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)) {
+            renderCheckPulsaBalanceDataToView();
+        }
+    }
 
+    private void renderCheckPulsaBalanceDataToView() {
+
+        view.renderCheckPulsaBalanceData(null);
     }
 
     @Override
-    public void processToCheckBalance(String ussdMobileNumber) {
+    public void processToCheckBalance(String ussdMobileNumber,int simPosition,String ussdCode) {
         currentMobileNumber = ussdMobileNumber;
         if (checkAccessibilitySettingsOn(view.getActivity())) {
-            if (ussdMobileNumber != null) {
-                proccessUSSDCall();
-            } else {
-                String tempMobileNumber = getCurrentMobileNumber();
-                if (tempMobileNumber != null && !tempMobileNumber.trim().equalsIgnoreCase("") && !tempMobileNumber.trim().equalsIgnoreCase("0") && !tempMobileNumber.trim().equalsIgnoreCase("0UNKNOWN")) {
-                    proccessUSSDCall();
-                } else {
-                    view.showVerifyUssdOperatorDialogFragment();
-                }
-            }
+            if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
+                view.registerUssdReciever();
+                dailUssdToCheckBalance(simPosition,ussdCode);
+            }else {
+                view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed) + " and number is " + getCurrentMobileNumber(simPosition) + " and Operator is " + getSelectedUssdOperator(simPosition).getName(), view.getActivity().getString(R.string.message_ussd_title));
 
+            }
 
         } else {
             view.showAccessibilityAlertDialog();
         }
     }
 
-    private void proccessUSSDCall() {
-
-        String ussd = getSelectedUssdOperator().getUssdCode();
-
-        // Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() + "and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
-        if (ussd != null && !"".equalsIgnoreCase(ussd.trim())) {
-            view.registerUssdReciever();
-            dailUssdToCheckBalance(ussd);
-        } else {
-            view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed) + " and number is " + getCurrentMobileNumber() + " and Operator is " + getSelectedUssdOperator().getName(), view.getActivity().getString(R.string.message_ussd_title));
-
-        }
-
-    }
-
-    private void dailUssdToCheckBalance(String code) {
+    private void dailUssdToCheckBalance(int simPosition,String code) {
         String ussdCode = code.replace("#", Uri.encode("#"));
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -392,12 +378,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         intent.putExtra("Cdma_Supp", true);
         //Add all slots here, according to device.. (different device require different key so put all together)
         for (String s : simSlotName)
-            intent.putExtra(s, 0); //0 or 1 according to sim.......
+            intent.putExtra(s, simPosition); //0 or 1 according to sim.......
 
         //works only for API >= 23
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (DeviceUtil.getPhoneHandleSim1(view.getActivity()) != null) {
-                intent.putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE", (Parcelable) DeviceUtil.getPhoneHandleSim1(view.getActivity()));
+            if (DeviceUtil.getPhoneHandle(view.getActivity(),simPosition) != null) {
+                intent.putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE", (Parcelable) DeviceUtil.getPhoneHandle(view.getActivity(),simPosition));
             }
         }
         if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
@@ -408,17 +394,17 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     @Override
-    public void processPulsaBalanceUssdResponse(String message) {
+    public void processPulsaBalanceUssdResponse(String message,int selectedSim) {
         if (ussdTimeOut) {
             ussdTimeOut = false;
         } else {
-            productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(message), getSubscriberCheckPulsaBalance());
+            productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(message,selectedSim), getSubscriberCheckPulsaBalance(selectedSim));
             ussdHandler.removeCallbacksAndMessages(null);
         }
     }
 
     @NonNull
-    private Subscriber<PulsaBalance> getSubscriberCheckPulsaBalance() {
+    private Subscriber<PulsaBalance> getSubscriberCheckPulsaBalance(final int selectedSim) {
         return new Subscriber<PulsaBalance>() {
             @Override
             public void onCompleted() {
@@ -457,7 +443,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             @Override
             public void onNext(PulsaBalance pulsaBalance) {
-                view.renderPulsaBalance(pulsaBalance);
+                view.renderPulsaBalance(pulsaBalance,selectedSim);
             }
         };
     }
@@ -500,13 +486,13 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         return false;
     }
 
-    private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message) {
+    private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message,int selectedSim) {
         RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
         requestBodyPulsaBalance.setType("balance");
         Attributes attributes = new Attributes();
-        attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator().getOperatorId()));
+        attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator(selectedSim).getOperatorId()));
         attributes.setMessage(message);
-        attributes.setClientNumber(getCurrentMobileNumber());
+        attributes.setClientNumber(getCurrentMobileNumber(selectedSim));
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyPulsaBalance.setAttributes(attributes);
@@ -517,8 +503,8 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
 
     @Override
-    public Operator getSelectedUssdOperator() {
-        String tempMobileNumber = getCurrentMobileNumber();
+    public Operator getSelectedUssdOperator(int simPosition) {
+        String tempMobileNumber = getCurrentMobileNumber(simPosition);
         if (tempMobileNumber != null && !tempMobileNumber.trim().equalsIgnoreCase("") && !tempMobileNumber.trim().equalsIgnoreCase("0") && !tempMobileNumber.trim().equalsIgnoreCase("0UNKNOWN")) {
             CategoryData categoryData = view.getCategoryDataState();
             for (Operator operator : categoryData.getOperatorList()) {
@@ -529,14 +515,25 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 }
 
             }
+        } else {
+            String simOperatorName = DeviceUtil.getOperatorName(view.getActivity(),simPosition);
+            CategoryData categoryData = view.getCategoryDataState();
+            for (Operator operator : categoryData.getOperatorList()) {
+                if (verifyUssdOperator(simOperatorName, operator.getName())) {
+                    return operator;
+                }
+            }
         }
+//        Operator operator=new Operator();
+//        operator.setUssdCode("*111#");
         return new Operator();
     }
 
     @Override
-    public String getCurrentMobileNumber() {
+    public String getCurrentMobileNumber(int simPosition) {
+        currentMobileNumber=null;
         if (currentMobileNumber == null) {
-            currentMobileNumber = DeviceUtil.getMobileNumber(view.getActivity());
+            currentMobileNumber = DeviceUtil.getMobileNumber(view.getActivity(),simPosition);
         }
 
         if (currentMobileNumber != null && currentMobileNumber.startsWith("+62")) {
@@ -572,11 +569,36 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             @Override
             public void run() {
                 ussdTimeOut = true;
-               // view.renderPulsaBalance(null);
+                // view.renderPulsaBalance(null);
                 view.showPulsaBalanceError(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }, ussdTimeOutTime);
 
     }
+
+    private boolean verifyUssdOperator(String simOperatorName, String selectedOperatorName) {
+        if (simOperatorName != null && !"".equalsIgnoreCase(simOperatorName.trim())) {
+            simOperatorName = simOperatorName.split(" ")[0];
+        } else {
+            return false;
+        }
+        if (selectedOperatorName != null && !"".equalsIgnoreCase(selectedOperatorName.trim())) {
+            selectedOperatorName = selectedOperatorName.split(" ")[0];
+        } else {
+            return false;
+        }
+
+        if ("Tri".equalsIgnoreCase(selectedOperatorName) && "3".equalsIgnoreCase(simOperatorName)) {
+            return true;
+        }
+
+        if (simOperatorName.equalsIgnoreCase(selectedOperatorName)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 }
 

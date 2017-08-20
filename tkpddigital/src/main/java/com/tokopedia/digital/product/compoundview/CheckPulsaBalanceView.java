@@ -26,6 +26,12 @@ public class CheckPulsaBalanceView extends LinearLayout {
     @BindView(R2.id.btn_check_client_balance)
     TextView btnCheckBalance;
 
+    @BindView(R2.id.tv_check_balance)
+    TextView tvOperatorName;
+
+    @BindView(R2.id.tv_label_check_credit)
+    TextView tvPhoneNumber;
+
     @BindView(R2.id.rl_holder_check_balance)
     RelativeLayout checkBalanceLayout;
     @BindView(R2.id.ll_holder_check_balance_wait)
@@ -65,12 +71,13 @@ public class CheckPulsaBalanceView extends LinearLayout {
 //        tvBalance.setText(text);
 //
 //    }
-    public void hideProgressbar(){
+    public void hideProgressbar() {
         //checkBalanceProgressbar.setVisibility(View.GONE);
         checkBalanceLayout.setVisibility(View.VISIBLE);
         checkBalanceWaitLayout.setVisibility(View.INVISIBLE);
     }
-    public void showCheckBalanceProgressbar(){
+
+    public void showCheckBalanceProgressbar() {
         //checkBalanceProgressbar.setVisibility(View.VISIBLE);
         checkBalanceLayout.setVisibility(View.INVISIBLE);
         checkBalanceWaitLayout.setVisibility(View.VISIBLE);
@@ -81,24 +88,25 @@ public class CheckPulsaBalanceView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderData() {
-        this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked());
+    public void renderData(int simPosition, String ussdCode, String phoneNumber,String operatorName) {
+        this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
+        tvOperatorName.setText(operatorName);
+        tvPhoneNumber.setText(phoneNumber);
     }
 
     @NonNull
-    private OnClickListener getButtonCheckBalanceClicked() {
+    private OnClickListener getButtonCheckBalanceClicked(final int simPosition, final String ussdCode) {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onButtonCheckBalanceClicked();
+                actionListener.onButtonCheckBalanceClicked(simPosition, ussdCode);
             }
         };
     }
 
 
-
     public interface ActionListener {
-        void onButtonCheckBalanceClicked();
+        void onButtonCheckBalanceClicked(int simPosition, String ussdCode);
 
     }
 

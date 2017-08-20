@@ -30,11 +30,11 @@ public interface IProductDigitalPresenter {
             BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct
     );
 
-    void processToCheckBalance(String ussdMobileNumber);
+    void processToCheckBalance(String ussdMobileNumber,int simPosition,String ussdCode);
 
-    void processPulsaBalanceUssdResponse(String result);
+    void processPulsaBalanceUssdResponse(String result,int selectedSim);
 
-    String getCurrentMobileNumber();
+    String getCurrentMobileNumber(int simPosition);
 
-    Operator getSelectedUssdOperator();
+    Operator getSelectedUssdOperator(int simPosition);
 }

@@ -79,7 +79,7 @@ public interface IProductDigitalView extends IBaseView {
 
     void registerUssdReciever();
 
-    void renderPulsaBalance(PulsaBalance pulsaBalance);
+    void renderPulsaBalance(PulsaBalance pulsaBalance,int selectedSim);
 
     void showPulsaBalanceError(String message);
 

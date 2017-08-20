@@ -158,7 +158,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private BannerAdapter bannerAdapter;
     private String categoryId;
-    private CheckPulsaBalanceView checkPulsaBalanceView;
+    private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
     private CompositeSubscription compositeSubscription;
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
@@ -169,6 +169,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ActionListener actionListener;
 
     private USSDBroadcastReceiver ussdBroadcastReceiver;
+    private int selectedSim = 0;//start from 0
 
     public static Fragment newInstance(String categoryId) {
         Fragment fragment = new DigitalProductFragment();
@@ -386,13 +387,26 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance) {
-        if (checkPulsaBalanceView == null) {
-            checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
-        }
-        checkPulsaBalanceView.setActionListener(this);
-        checkPulsaBalanceView.renderData();
+        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
         holderCheckBalance.removeAllViews();
-        holderCheckBalance.addView(checkPulsaBalanceView);
+        for (int i = 0; i < 2; i++) {
+
+            String phoneNumber = DeviceUtil.getMobileNumber(getActivity(), i);
+            Operator operator = presenter.getSelectedUssdOperator(i);
+            String ussdCode = operator.getUssdCode();
+            if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
+                // if (checkPulsaBalanceView == null) {
+                CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
+                // }
+                checkPulsaBalanceView.setActionListener(this);
+                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber, operator.getName());
+                holderCheckBalance.addView(checkPulsaBalanceView);
+            }
+        }
 
     }
 
@@ -624,8 +638,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onButtonCheckBalanceClicked() {
-        DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this);
+    public void onButtonCheckBalanceClicked(int simPosition, String ussdCode) {
+        selectedSim = simPosition;
+        if (holderCheckBalance != null && holderCheckBalance.getChildCount() > selectedSim) {
+            selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSim);
+        }
+        DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
     }
 
     @Override
@@ -661,7 +679,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser,categoryDataState.getName()
+                        getActivity(), operatorListData, titleChooser, categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
@@ -782,12 +800,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 }
                 break;
             case OperatorVerificationDialog.REQUEST_CODE:
-                String ussdMobileNumber = data.getStringExtra(OperatorVerificationDialog.ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY);
-                if (ussdMobileNumber != null) {
-                    presenter.processToCheckBalance(ussdMobileNumber);
-                } else {
-                    showMessageAlert(getActivity().getString(R.string.error_message_ussd_operator_not_matched), getActivity().getString(R.string.message_ussd_title));
-                }
+//                String ussdMobileNumber = data.getStringExtra(OperatorVerificationDialog.ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY);
+//                if (ussdMobileNumber != null) {
+//                    presenter.processToCheckBalance(ussdMobileNumber);
+//                } else {
+//                    showMessageAlert(getActivity().getString(R.string.error_message_ussd_operator_not_matched), getActivity().getString(R.string.message_ussd_title));
+//                }
                 break;
         }
     }
@@ -796,7 +814,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_digital_product_detail, menu);
         if (GlobalConfig.isSellerApp()) {
-            menu.findItem( R.id.action_menu_subscription_digital).setVisible(false);
+            menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -871,9 +889,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
-    public void checkBalanceByUSSD() {
-        presenter.processToCheckBalance(null);
-       UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO,DeviceUtil.getOperatorName(getActivity())+","+DeviceUtil.getMobileNumber(getActivity()));
+    public void checkBalanceByUSSD(int simPosition, String ussdCode) {
+        presenter.processToCheckBalance(null, simPosition, ussdCode);
+        UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + "," + DeviceUtil.getMobileNumber(getActivity(), simPosition));
     }
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
@@ -954,7 +972,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void registerUssdReciever() {
-        checkPulsaBalanceView.showCheckBalanceProgressbar();
+        if (selectedCheckPulsaBalanceView != null)
+            selectedCheckPulsaBalanceView.showCheckBalanceProgressbar();
         if (ussdBroadcastReceiver == null) {
             ussdBroadcastReceiver = new USSDBroadcastReceiver(this);
             getActivity().registerReceiver(ussdBroadcastReceiver, new IntentFilter(
@@ -969,11 +988,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderPulsaBalance(PulsaBalance pulsaBalance) {
-        checkPulsaBalanceView.hideProgressbar();
-        if (pulsaBalance!=null && pulsaBalance.isSuccess()) {
-            pulsaBalance.setMobileNumber(presenter.getCurrentMobileNumber());
-            navigateToActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(), categoryId, categoryDataState.getName()));
+    public void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim) {
+        if (selectedCheckPulsaBalanceView != null)
+            selectedCheckPulsaBalanceView.hideProgressbar();
+        if (pulsaBalance != null && pulsaBalance.isSuccess()) {
+            pulsaBalance.setMobileNumber(presenter.getCurrentMobileNumber(selectedSim));
+            navigateToActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),categoryDataState.getClientNumberList().get(0).getValidation(), categoryId, categoryDataState.getName()));
         } else {
             showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
         }
@@ -982,7 +1002,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void showPulsaBalanceError(String message) {
-        checkPulsaBalanceView.hideProgressbar();
+        if (selectedCheckPulsaBalanceView != null)
+            selectedCheckPulsaBalanceView.hideProgressbar();
         //showToastMessage(message);
         showMessageAlert(message, getActivity().getString(R.string.message_ussd_title));
     }
@@ -996,7 +1017,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onReceivedUssdData(String result) {
-        presenter.processPulsaBalanceUssdResponse(result);
+        presenter.processPulsaBalanceUssdResponse(result, selectedSim);
     }
 
     @Override

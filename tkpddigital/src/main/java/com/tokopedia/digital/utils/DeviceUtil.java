@@ -101,37 +101,52 @@ public class DeviceUtil {
         return requestBodyIdentifier;
     }
 
-    public static String getMobileNumber(Activity context) {
+    public static String getMobileNumber(Activity context, int simPosition) {
         String phoneNumber = null;
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-                for (int i = 0; subscriptionInfos!=null && i < subscriptionInfos.size(); i++) {
-                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(i);
-                    if (lsuSubscriptionInfo!=null&&lsuSubscriptionInfo.getSimSlotIndex() == 0) {
+                if (subscriptionInfos != null && subscriptionInfos.size() > simPosition) {
+                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(simPosition);
+                    if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == simPosition) {
                         phoneNumber = lsuSubscriptionInfo.getNumber();
                         return phoneNumber;
                     }
                 }
 
             }
-            if (phoneNumber == null) {
-                TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                phoneNumber = tMgr.getLine1Number();
+        }
+
+        return phoneNumber;
+    }
+
+    public static String getMobileNumberForSim2(Activity context) {
+        String phoneNumber = null;
+        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+                if (subscriptionInfos != null && subscriptionInfos.size() > 1) {
+                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(1);
+                    if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == 1) {
+                        phoneNumber = lsuSubscriptionInfo.getNumber();
+                        return phoneNumber;
+                    }
+                }
+
             }
         }
 
         return phoneNumber;
     }
 
-    public static String getOperatorName(Activity context) {
+    public static String getOperatorName(Activity context, int simPosition) {
         String operatorName = null;
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-                for (int i = 0; subscriptionInfos!=null && i < subscriptionInfos.size(); i++) {
-                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(i);
-                    if (lsuSubscriptionInfo.getSimSlotIndex() == 0) {
+                if (subscriptionInfos != null && subscriptionInfos.size() > simPosition) {
+                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(simPosition);
+                    if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == simPosition) {
                         if (lsuSubscriptionInfo.getCarrierName() != null) {
                             operatorName = lsuSubscriptionInfo.getCarrierName().toString();
                             return operatorName;
@@ -140,23 +155,40 @@ public class DeviceUtil {
                 }
 
             }
-            if (operatorName == null) {
-                TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                operatorName = tMgr.getSimOperatorName();
+        }
+        return operatorName;
+    }
+
+    public static String getOperatorNameForSim2(Activity context) {
+        String operatorName = null;
+        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+                if (subscriptionInfos != null && subscriptionInfos.size() > 1) {
+                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(1);
+                    if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == 1) {
+                        if (lsuSubscriptionInfo.getCarrierName() != null) {
+                            operatorName = lsuSubscriptionInfo.getCarrierName().toString();
+                            return operatorName;
+                        }
+                    }
+                }
 
             }
         }
         return operatorName;
     }
 
-    public static PhoneAccountHandle getPhoneHandleSim1(Activity context) {
+    public static PhoneAccountHandle getPhoneHandle(Activity context, int simPosition) {
         PhoneAccountHandle sim1 = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-                final List<PhoneAccountHandle> enabledAccounts = telecomManager.getCallCapablePhoneAccounts();
-                if (enabledAccounts != null && enabledAccounts.size() > 1) {
-                    return enabledAccounts.get(0);
+        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                    final List<PhoneAccountHandle> enabledAccounts = telecomManager.getCallCapablePhoneAccounts();
+                    if (enabledAccounts != null && enabledAccounts.size() > simPosition) {
+                        return enabledAccounts.get(simPosition);
+                    }
                 }
             }
         }
