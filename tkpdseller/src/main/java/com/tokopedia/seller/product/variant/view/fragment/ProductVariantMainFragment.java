@@ -117,10 +117,12 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
         switch (requestCode) {
             case VARIANT_LEVEL_ONE_VALUE:
                 setVariantLevel(VARIANT_LEVEL_ONE_VALUE, variantUnitSubmit);
+                checkVariantValidation(VARIANT_LEVEL_ONE_VALUE, variantUnitSubmit);
                 updateVariantUnitView();
                 break;
             case VARIANT_LEVEL_TWO_VALUE:
                 setVariantLevel(VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit);
+                checkVariantValidation(VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit);
                 updateVariantUnitView();
                 break;
             default:
@@ -145,6 +147,26 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
         }
         // Variant unit not found, add it
         variantData.getVariantUnitSubmitList().add(variantUnitSubmit);
+    }
+
+    /**
+     * If option list empty, need to remove other variant level
+     * for example level 1 empty, level 2, 3, 4 need to be removed
+     *
+     * @param level
+     * @param variantUnitSubmit
+     */
+    private void checkVariantValidation(int level, VariantUnitSubmit variantUnitSubmit) {
+        if (variantUnitSubmit.getVariantSubmitOptionList() != null && variantUnitSubmit.getVariantSubmitOptionList().size() > 0) {
+            return;
+        }
+        int variantUnitSubmitSize = variantData.getVariantUnitSubmitList().size();
+        for (int i = 0; i < variantUnitSubmitSize; i++) {
+            VariantUnitSubmit variantUnitSubmitTemp = variantData.getVariantUnitSubmitList().get(i);
+            if (variantUnitSubmitTemp.getPosition() > level) {
+                variantData.getVariantUnitSubmitList().remove(i);
+            }
+        }
     }
 
     private void updateVariantUnitView() {
@@ -198,7 +220,7 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     }
 
     private ProductVariantByCatModel getProductVariantByCatModel(int level) {
-        for (ProductVariantByCatModel variantByCatModel: productVariantByCatModelList) {
+        for (ProductVariantByCatModel variantByCatModel : productVariantByCatModelList) {
             if (variantByCatModel.getStatus() == level) {
                 return variantByCatModel;
             }
