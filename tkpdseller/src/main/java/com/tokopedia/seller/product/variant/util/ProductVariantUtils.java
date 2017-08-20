@@ -20,7 +20,7 @@ public class ProductVariantUtils {
     private static final String VARIANT_TITLE_SEPARATOR = ",";
 
     public static String getTitle(int level, VariantUnitSubmit variantUnitSubmit,
-                                   ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+                                  ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
         if (variantUnitSubmit == null) {
             return title;
@@ -62,6 +62,15 @@ public class ProductVariantUtils {
                         }
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    public static ProductVariantValue getProductVariantValue(VariantSubmitOption variantSubmitOption, List<ProductVariantValue> productVariantValueList) {
+        for (ProductVariantValue productVariantValue : productVariantValueList) {
+            if (productVariantValue.getValueId() == variantSubmitOption.getVariantUnitValueId()) {
+                return productVariantValue;
             }
         }
         return null;

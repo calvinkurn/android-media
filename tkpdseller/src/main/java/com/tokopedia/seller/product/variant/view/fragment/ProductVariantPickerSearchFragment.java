@@ -15,6 +15,9 @@ import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
+import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
@@ -36,6 +39,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     private List<ProductVariantUnit> productVariantUnitList;
     private List<ProductVariantValue> productVariantValueList;
     private List<ProductVariantValue> filteredProductVariantValueList;
+    private VariantUnitSubmit variantUnitSubmit;
     private SpinnerTextView unitSpinnerTextView;
 
     private long currentVariantUnitId;
@@ -49,9 +53,13 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         ProductVariantByCatModel productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
             productVariantUnitList = productVariantByCatModel.getUnitList();
-            currentVariantUnitId = productVariantUnitList.get(0).getUnitId();
             productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
+            currentVariantUnitId = productVariantUnitList.get(0).getUnitId();
             filteredProductVariantValueList = productVariantValueList;
+        }
+        variantUnitSubmit = getActivity().getIntent().getParcelableExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
+        if (variantUnitSubmit != null) {
+            currentVariantUnitId = variantUnitSubmit.getVariantUnitId();
         }
     }
 
@@ -69,6 +77,22 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unitSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_variant_unit);
+        unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+            @Override
+            public void onItemChanged(int position, String entry, String value) {
+                for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
+                    if (value.equalsIgnoreCase(String.valueOf(productVariantUnit.getUnitId()))) {
+                        currentVariantUnitId = productVariantUnit.getUnitId();
+                        productVariantValueList = productVariantUnit.getProductVariantValueList();
+                        filteredProductVariantValueList = productVariantValueList;
+                        pickerMultipleItem.removeAllItemFromSearch();
+                        ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).clearCheck();
+                        resetPageAndSearch();
+                        break;
+                    }
+                }
+            }
+        });
         if (productVariantUnitList != null && productVariantUnitList.size() >= MINIMUM_SHOW_UNIT_SIZE) {
             String[] variantUnitTextArray = new String[productVariantUnitList.size()];
             String[] variantUnitValueArray = new String[productVariantUnitList.size()];
@@ -81,26 +105,30 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             unitSpinnerTextView.setEntries(variantUnitTextArray);
             unitSpinnerTextView.setValues(variantUnitValueArray);
             unitSpinnerTextView.setVisibility(View.VISIBLE);
+            unitSpinnerTextView.setSpinnerValue(String.valueOf(currentVariantUnitId));
         }
-        unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
-            @Override
-            public void onItemChanged(int position, String entry, String value) {
-                if (value.equalsIgnoreCase(String.valueOf(currentVariantUnitId))) {
-                    return;
-                }
-                for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
-                    if (value.equalsIgnoreCase(String.valueOf(productVariantUnit.getUnitId()))) {
-                        currentVariantUnitId = productVariantUnit.getUnitId();
-                        productVariantValueList = productVariantUnit.getProductVariantValueList();
-                        pickerMultipleItem.removeAllItemFromSearch();
-                        ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).clearCheck();
-                        resetPageAndSearch();
-                        break;
-                    }
-                }
-            }
-        });
+        initCheckedItem();
         resetPageAndSearch();
+    }
+
+    private void initCheckedItem() {
+        if (variantUnitSubmit == null) {
+            return;
+        }
+        for (VariantSubmitOption variantSubmitOption : variantUnitSubmit.getVariantSubmitOptionList()) {
+            if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+                ProductVariantValue productVariantValue = ProductVariantUtils.getProductVariantValue(variantSubmitOption, productVariantValueList);
+                if (productVariantValue != null) {
+                    ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).setChecked(productVariantValue.getId(), true);
+                    onItemChecked(productVariantValue, true);
+                }
+            } else {
+                ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
+                productVariantViewModel.setUnitValueId(variantSubmitOption.getVariantUnitValueId());
+                productVariantViewModel.setTitle(variantSubmitOption.getCustomText());
+                pickerMultipleItem.addItemFromSearch(productVariantViewModel);
+            }
+        }
     }
 
     @Override

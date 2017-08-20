@@ -103,6 +103,7 @@ public class ProductVariantMainFragment extends BaseDaggerFragment implements Pr
     private void pickVariant(int level) {
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY, getProductVariantByCatModel(level));
+        intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT, getVariantUnitSubmit(level));
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, level * MULTIPLY_START_TEMP_ID);
         startActivityForResult(intent, level);
     }

@@ -121,10 +121,10 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     protected void setupFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            Fragment searchListFragment = getInitialSearchListFragment();
-            fragmentTransaction.replace(R.id.layout_container_list, searchListFragment, CONTAINER_SEARCH_LIST_TAG);
             Fragment cacheListFragment = getInitialCacheListFragment();
             fragmentTransaction.replace(R.id.layout_container_cache, cacheListFragment, CONTAINER_CACHE_LIST_TAG);
+            Fragment searchListFragment = getInitialSearchListFragment();
+            fragmentTransaction.replace(R.id.layout_container_list, searchListFragment, CONTAINER_SEARCH_LIST_TAG);
             fragmentTransaction.commit();
         }
     }
