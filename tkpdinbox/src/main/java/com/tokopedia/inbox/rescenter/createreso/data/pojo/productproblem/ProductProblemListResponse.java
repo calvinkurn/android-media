@@ -25,9 +25,12 @@ public class ProductProblemListResponse {
 
     @Override
     public String toString() {
-        return "ProductProblemListResponse{" +
-                "data='" + productProblemResponseList.toString() + '\'' +
-                '}';
+        if (productProblemResponseList != null) {
+            return "ProductProblemListResponse{" +
+                    "data='" + productProblemResponseList.toString() + '\'' +
+                    '}';
+        }
+        return "";
     }
 
 }

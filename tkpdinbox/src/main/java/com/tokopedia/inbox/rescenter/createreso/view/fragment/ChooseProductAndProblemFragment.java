@@ -16,6 +16,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponen
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblem;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.List;
@@ -27,12 +28,17 @@ import javax.inject.Inject;
  */
 
 public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ProductProblem.View, ProductProblemItemListener {
+
+    public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+
     RecyclerView rvProductProblem;
     ProductProblemAdapter adapter;
+    ProductProblemListViewModel productProblemListViewModel;
 
-    public static ChooseProductAndProblemFragment newInstance() {
+    public static ChooseProductAndProblemFragment newInstance(ProductProblemListViewModel productProblemListViewModel) {
         ChooseProductAndProblemFragment fragment = new ChooseProductAndProblemFragment();
         Bundle bundle = new Bundle();
+        bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemListViewModel);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -84,6 +90,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
 
     @Override
     protected void setupArguments(Bundle arguments) {
+        productProblemListViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
 
     }
 
@@ -98,7 +105,8 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
         rvProductProblem.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ProductProblemAdapter(context, this);
         rvProductProblem.setAdapter(adapter);
-        presenter.populateProductProblem();
+        adapter.updateAdapter(productProblemListViewModel.getProductProblemViewModels());
+//        presenter.populateProductProblem();
     }
 
     @Override

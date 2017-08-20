@@ -2,7 +2,9 @@ package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public interface CreateResolutionCenter {
 
         void showCreateResoResponse(boolean isSuccess, String message);
 
-        void transitionToChooseProductAndProblemPage();
+        void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel);
 
         void showSuccessToast();
 

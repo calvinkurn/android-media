@@ -6,6 +6,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemActi
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemView;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndProblemFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemActivityPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 /**
  * Created by yoasfs on 15/08/17.
@@ -21,8 +23,8 @@ public class ProductProblemActivityPresenterImpl implements ProductProblemActivi
     }
 
     @Override
-    public void initFragment() {
-        mainView.inflateFragment(ChooseProductAndProblemFragment.newInstance(),
+    public void initFragment(ProductProblemListViewModel productProblemListViewModel) {
+        mainView.inflateFragment(ChooseProductAndProblemFragment.newInstance(productProblemListViewModel),
                 ChooseProductAndProblemFragment.class.getSimpleName());
     }
 }

@@ -15,12 +15,15 @@ import android.widget.Toast;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import javax.inject.Inject;
 
@@ -221,8 +224,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void transitionToChooseProductAndProblemPage() {
+    public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel) {
         Intent intent = new Intent(getActivity(), ProductProblemActivity.class);
+        intent.putExtra(KEY_PARAM_PASS_DATA, productProblemListViewModel);
         startActivity(intent);
     }
 
