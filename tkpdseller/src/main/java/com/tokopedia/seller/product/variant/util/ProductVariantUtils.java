@@ -2,11 +2,13 @@ package com.tokopedia.seller.product.variant.util;
 
 import android.text.TextUtils;
 
+import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +21,30 @@ public class ProductVariantUtils {
 
     private static final String VARIANT_TITLE_SEPARATOR = ",";
 
-    public static String getTitle(int level, VariantUnitSubmit variantUnitSubmit,
-                                  ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+    public static String getMultipleVariantOptionTitle(int level, VariantUnitSubmit variantUnitSubmit,
+                                                       ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
         if (variantUnitSubmit == null) {
             return title;
         }
         for (VariantSubmitOption variantSubmitOption : variantUnitSubmit.getVariantSubmitOptionList()) {
-            if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
-                // Check variant option title from server
-                ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
-                        level, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
-                if (productVariantValue != null) {
-                    title = getAdditionalTitleText(title, productVariantValue.getValue());
-                }
-            } else {
-                // Get custom name
-                title = getAdditionalTitleText(title, variantSubmitOption.getCustomText());
+            title = getAdditionalTitleText(title, getTitle(level, variantSubmitOption, productVariantByCatModelList));
+        }
+        return title;
+    }
+
+    private static String getTitle(int level, VariantSubmitOption variantSubmitOption, ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+        String title = "";
+        if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+            // Check variant option title from server
+            ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
+                    level, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
+            if (productVariantValue != null) {
+                title = productVariantValue.getValue();
             }
+        } else {
+            // Get custom name
+            title = variantSubmitOption.getCustomText();
         }
         return title;
     }
@@ -74,5 +82,23 @@ public class ProductVariantUtils {
             }
         }
         return null;
+    }
+
+    public static ProductVariantManageViewModel getProductVariantManageViewModel(
+            VariantSubmitOption variantSubmitOption, VariantUnitSubmit variantUnitSubmit, ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+        ProductVariantManageViewModel productVariantManageViewModel = new ProductVariantManageViewModel();
+        productVariantManageViewModel.setTemporaryId(variantSubmitOption.getTemporaryId());
+        productVariantManageViewModel.setTitle(getTitle(ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption, productVariantByCatModelList));
+        productVariantManageViewModel.setContent(getMultipleVariantOptionTitle(ExtraConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit, productVariantByCatModelList));
+        if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+            // Check variant option title from server
+            ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
+                    ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
+            if (productVariantValue != null) {
+                productVariantManageViewModel.setHexCode(productVariantValue.getHexCode());
+                productVariantManageViewModel.setImageUrl(productVariantValue.getIcon());
+            }
+        }
+        return productVariantManageViewModel;
     }
 }

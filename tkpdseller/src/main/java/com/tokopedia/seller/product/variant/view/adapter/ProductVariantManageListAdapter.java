@@ -19,7 +19,7 @@ public class ProductVariantManageListAdapter extends BaseListAdapter<ProductVari
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ProductVariantViewModel.TYPE:
-                return new ProductVariantManageViewHolder(getLayoutView(parent, R.layout.item_base_cache_chip));
+                return new ProductVariantManageViewHolder(getLayoutView(parent, R.layout.item_product_variant_manage));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

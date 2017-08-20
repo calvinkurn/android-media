@@ -12,4 +12,7 @@ public class ExtraConstant {
     public static final String EXTRA_PRODUCT_VARIANT_CATEGORY = "EXTRA_PRODUCT_VARIANT_CATEGORY";
 
     public static final String EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT = "EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT";
+
+    public static final int VARIANT_LEVEL_ONE_VALUE = 1;
+    public static final int VARIANT_LEVEL_TWO_VALUE = 2;
 }
