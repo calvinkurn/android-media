@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
-import com.tokopedia.seller.product.variant.constant.ExtraConstant;
+import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
@@ -25,7 +25,7 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startTempId = getActivity().getIntent().getIntExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, 0);
+        startTempId = getActivity().getIntent().getIntExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, 0);
         currentTempId = startTempId;
     }
 

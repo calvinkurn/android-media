@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.variant.util;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.variant.constant.ExtraConstant;
+import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
@@ -95,12 +95,12 @@ public class ProductVariantUtils {
             VariantSubmitOption variantSubmitOption, VariantUnitSubmit variantUnitSubmit, List<ProductVariantByCatModel> productVariantByCatModelList) {
         ProductVariantManageViewModel productVariantManageViewModel = new ProductVariantManageViewModel();
         productVariantManageViewModel.setTemporaryId(variantSubmitOption.getTemporaryId());
-        productVariantManageViewModel.setTitle(getTitle(ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption, productVariantByCatModelList));
-        productVariantManageViewModel.setContent(getMultipleVariantOptionTitle(ExtraConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit, productVariantByCatModelList));
+        productVariantManageViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption, productVariantByCatModelList));
+        productVariantManageViewModel.setContent(getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit, productVariantByCatModelList));
         if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
             // Check variant option title from server
             ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
-                    ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
+                    ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
             if (productVariantValue != null) {
                 productVariantManageViewModel.setHexCode(productVariantValue.getHexCode());
                 productVariantManageViewModel.setImageUrl(productVariantValue.getIcon());
@@ -116,20 +116,20 @@ public class ProductVariantUtils {
     public static List<ProductVariantManageViewModel> getProductVariantManageViewModelListTwoLevel(
             List<VariantUnitSubmit> variantUnitSubmitList, List<VariantStatus> variantStatusList, List<ProductVariantByCatModel> productVariantByCatModelList) {
         List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
-        VariantUnitSubmit variantUnitSubmitLv1 = getVariantUnitSubmit(ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmitList);
+        VariantUnitSubmit variantUnitSubmitLv1 = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmitList);
         for (VariantSubmitOption variantSubmitOptionLv1 : variantUnitSubmitLv1.getVariantSubmitOptionList()) {
             ProductVariantManageViewModel productVariantManageViewModel = new ProductVariantManageViewModel();
             productVariantManageViewModel.setTemporaryId(variantSubmitOptionLv1.getTemporaryId());
-            productVariantManageViewModel.setTitle(getTitle(ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOptionLv1, productVariantByCatModelList));
+            productVariantManageViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOptionLv1, productVariantByCatModelList));
 
             List<VariantSubmitOption> variantSubmitOptionList = getPairingVariantSubmitOptionListBy(variantSubmitOptionLv1.getTemporaryId(), variantUnitSubmitList, variantStatusList);
-            String contentText = getMultipleVariantOptionTitle(ExtraConstant.VARIANT_LEVEL_TWO_VALUE, variantSubmitOptionList, productVariantByCatModelList);
+            String contentText = getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantSubmitOptionList, productVariantByCatModelList);
 
             productVariantManageViewModel.setContent(contentText);
             if (TextUtils.isEmpty(variantSubmitOptionLv1.getCustomText())) {
                 // Check variant option title from server
                 ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
-                        ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOptionLv1.getVariantUnitValueId(), productVariantByCatModelList);
+                        ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOptionLv1.getVariantUnitValueId(), productVariantByCatModelList);
                 if (productVariantValue != null) {
                     productVariantManageViewModel.setHexCode(productVariantValue.getHexCode());
                     productVariantManageViewModel.setImageUrl(productVariantValue.getIcon());
@@ -220,9 +220,9 @@ public class ProductVariantUtils {
 
     public static ProductVariantByCatModel getProductVariantByCatModel(int level, List<ProductVariantByCatModel> productVariantByCatModelList) {
         for (ProductVariantByCatModel variantByCatModel : productVariantByCatModelList) {
-            if (level == ExtraConstant.VARIANT_LEVEL_ONE_VALUE && variantByCatModel.getStatus() == ExtraConstant.VARIANT_STATUS_TWO) {
+            if (level == ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE && variantByCatModel.getStatus() == ProductVariantConstant.VARIANT_STATUS_TWO) {
                 return variantByCatModel;
-            } else if (level == ExtraConstant.VARIANT_LEVEL_TWO_VALUE && variantByCatModel.getStatus() == ExtraConstant.VARIANT_STATUS_ONE) {
+            } else if (level == ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE && variantByCatModel.getStatus() == ProductVariantConstant.VARIANT_STATUS_ONE) {
                 return variantByCatModel;
             }
         }
@@ -231,10 +231,10 @@ public class ProductVariantUtils {
 
     public static int getVariantPositionByStatus(int status) {
         switch (status) {
-            case ExtraConstant.VARIANT_STATUS_ONE:
-                return ExtraConstant.VARIANT_LEVEL_TWO_VALUE;
-            case ExtraConstant.VARIANT_STATUS_TWO:
-                return ExtraConstant.VARIANT_LEVEL_ONE_VALUE;
+            case ProductVariantConstant.VARIANT_STATUS_ONE:
+                return ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE;
+            case ProductVariantConstant.VARIANT_STATUS_TWO:
+                return ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
         }
         return -1;
     }
