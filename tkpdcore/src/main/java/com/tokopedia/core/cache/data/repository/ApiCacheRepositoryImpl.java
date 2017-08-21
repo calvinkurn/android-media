@@ -47,12 +47,17 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
     @Override
     public Observable<Boolean> checkVersion() {
-        if (localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE) != null && localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE).equals(versionName)) {
+        if (localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE) == null) {// fresh install
             // update version name
             localCacheHandler.putString(TkpdCache.Key.VERSION_NAME_IN_CACHE, versionName);
             return Observable.just(false);
+        } else if (localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE) != null && localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE).equals(versionName)) {
+            // update version name
+            localCacheHandler.putString(TkpdCache.Key.VERSION_NAME_IN_CACHE, versionName);
+            return Observable.just(false);
+        } else {
+            return Observable.just(true);
         }
-        return Observable.just(true);
     }
 
     @Override
