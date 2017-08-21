@@ -53,13 +53,12 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        productVariantByCatModelList = getActivity().getIntent()
+        Intent activityIntent = getActivity().getIntent();
+        productVariantByCatModelList = activityIntent
                 .getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
         if (savedInstanceState == null) {
-            ProductVariantSubmit productVariantSubmit = getActivity().getIntent()
-                    .getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
-            if (productVariantSubmit!= null && productVariantSubmit.hasAnyData()) {
-                variantData = productVariantSubmit.getVariantData();
+            if (activityIntent.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                variantData = activityIntent.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
             }
         } else {
             variantData = savedInstanceState.getParcelable(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);

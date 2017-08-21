@@ -571,7 +571,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                                             ProductVariantSubmit productVariantSubmit) {
         Intent intent = new Intent(getActivity(), ProductVariantManageActivity.class);
         intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
-        intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantSubmit);
+        if (productVariantSubmit!= null && productVariantSubmit.hasAnyData()) {
+            intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantSubmit.getVariantData());
+        }
         startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT);
     }
 
