@@ -13,7 +13,6 @@ import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailEditGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;

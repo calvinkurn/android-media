@@ -10,8 +10,6 @@ import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailNewGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailNewProductActivity;
 
 /**
  * Created by zulfikarrahman on 2/22/17.

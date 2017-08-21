@@ -19,7 +19,6 @@ import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourc
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailEditShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
