@@ -85,7 +85,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         adapter = new InboxReputationAdapter(typeFactory);
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,

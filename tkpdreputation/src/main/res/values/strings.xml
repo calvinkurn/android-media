@@ -6,4 +6,13 @@
     <string name="empty_inbox_reputation">Reputasi kosong</string>
     <string name="deadline_prefix">Reputasi akan dikunci dalam</string>
     <string name="deadline_suffix">hari lagi</string>
+    <string name="title_activity_submit_review">Ulasan Produk</string>
+    <string name="product_quality">Kualitas Produk</string>
+    <string name="hint_review">Tulis ulasan produk Anda</string>
+    <string name="upload_image">Upload Gambar Produk</string>
+    <string name="share_to_facebook">Bagikan ke Facebook</string>
+    <string name="anonym">Anonim</string>
+    <string name="hint_anonym">Profil ditampilkan sebagai A***o</string>
+    <string name="submit_review">Kirim</string>
+
 </resources>

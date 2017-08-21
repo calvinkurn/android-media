@@ -76,7 +76,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
@@ -95,6 +94,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         listProduct.setAdapter(adapter);
 
         listProduct.addOnScrollListener(onScroll());
+
+
     }
 
     private RecyclerView.OnScrollListener onScroll() {

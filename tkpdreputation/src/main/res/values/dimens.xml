@@ -3,4 +3,10 @@
     <dimen name="user_avatar">40dp</dimen>
     <dimen name="notif_size">8dp</dimen>
     <dimen name="footer_height">56dp</dimen>
+    <dimen name="padding_activity">16dp</dimen>
+    <dimen name="rating_width">208dp</dimen>
+    <dimen name="rating_height">36dp</dimen>
+    <dimen name="height_image_upload">74dp</dimen>
+    <dimen name="padding_activity_large">23dp</dimen>
+    <dimen name="button_height">52dp</dimen>
 </resources>

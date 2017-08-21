@@ -13,7 +13,10 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".inbox.view.activity.InboxReputationDetailActivity"
-            android:label="@string/title_activity_reputation"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".inbox.view.activity.InboxReputationFormActivity"
+            android:label="@string/title_activity_submit_review"
             android:screenOrientation="portrait"/>
     </application>
 

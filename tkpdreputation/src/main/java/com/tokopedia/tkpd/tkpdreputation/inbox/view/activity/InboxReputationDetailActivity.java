@@ -80,7 +80,8 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
         return getApplicationComponent();
     }
 
-    public static Intent getCallingIntent(Context context, String reputationId,
+    public static Intent getCallingIntent(Context context,
+                                          String reputationId,
                                           int adapterPosition,
                                           int tab) {
         Intent intent = new Intent(context, InboxReputationDetailActivity.class);
@@ -90,5 +91,12 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
         bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setTitle("Invoice Number");
+        toolbar.setSubtitle("daaate");
     }
 }
