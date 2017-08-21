@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.drew.lang.annotations.NotNull;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -135,6 +136,7 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     public void setUsedVoucher(String voucherName, String message) {
+        UnifyTracking.eventVoucherSuccess(voucherCode,"");
         voucherCode = voucherName;
         usedVoucher.setText(message);
         holderVoucher.setVisibility(VISIBLE);

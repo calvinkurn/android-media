@@ -1843,6 +1843,16 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+
+    public static void eventVoucherSuccess(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE,
+                AppEventTracking.Action.VOUCHER_SUCCESS+action,
+                label
+        ).getEvent());
+    }
+
     public static void eventSwitchRpToDollarAddProduct(){
         eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
     }
