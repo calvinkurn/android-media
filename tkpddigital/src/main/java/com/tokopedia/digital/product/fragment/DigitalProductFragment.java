@@ -582,6 +582,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
+        UnifyTracking.eventClickBuyDigital(preCheckoutProduct.getCategoryName());
+        if (preCheckoutProduct.isInstantCheckout()) {
+            UnifyTracking.eventClickDigitalBuyWithInstantCheckout();
+        }
         if (!preCheckoutProduct.isCanBeCheckout()) {
             showToastMessage(preCheckoutProduct.getErrorCheckout());
             return;
@@ -592,7 +596,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
-
         UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
@@ -605,7 +608,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
-
         UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
@@ -618,7 +620,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
-
         UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
@@ -667,7 +668,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
         );
     }
-
 
     @Override
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {

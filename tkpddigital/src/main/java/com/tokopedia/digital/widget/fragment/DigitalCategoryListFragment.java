@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -304,6 +305,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
+        UnifyTracking.eventClickDigitalCategory(itemData.getName());
         if (itemData.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
                 && tokoCashData.getLink() != 1) {
             String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
