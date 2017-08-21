@@ -44,6 +44,7 @@ import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -566,6 +567,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void destroy() {
+        if (SessionHandler.isV4Login(this)){
+            ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(this));
+        }
         Log.d(getClass().getSimpleName(), "destroy");
         this.setResult(RESULT_OK);
         this.finish();

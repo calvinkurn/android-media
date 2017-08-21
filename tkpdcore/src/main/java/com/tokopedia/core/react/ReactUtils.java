@@ -75,4 +75,13 @@ public class ReactUtils {
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
+
+    public static void sendDestroyPageEmitter() {
+        WritableMap params = Arguments.createMap();
+        sendEmittEvent(
+                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                ReactConst.EventEmitter.PAGE_DESTROYED,
+                params
+        );
+    }
 }

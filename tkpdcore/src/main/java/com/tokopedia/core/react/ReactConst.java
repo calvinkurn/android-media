@@ -24,6 +24,7 @@ public interface ReactConst {
         String FAVORITE_ADD = "FavoriteAdd";
         String FAVORITE_REMOVE = "FavoriteRemove";
         String LOGIN = "Login";
+        String PAGE_DESTROYED = "PageDestroyed";
     }
 
 }
