@@ -17,5 +17,15 @@
     <string name="favorite_button">+ Favoritkan</string>
     <string name="title_activity_detail_review">Detail Ulasan</string>
     <string name="seller">Penjual</string>
+    <string name="filter_time">Waktu</string>
+    <string name="filter_all_time">Semua Waktu</string>
+    <string name="filter_last_7_days">7 Hari Terakhir</string>
+    <string name="filter_this_month">Bulan Ini</string>
+    <string name="filter_last_3_month">3 Bulan Terakhir</string>
+    <string name="title_filter">Filter</string>
+    <string name="filter_status">Status</string>
+    <string name="filter_all">Semua</string>
+    <string name="filter_given_reputation">Sudah Dinilai</string>
+    <string name="filter_no_reputation">Belum Dinilai</string>
 
 </resources>

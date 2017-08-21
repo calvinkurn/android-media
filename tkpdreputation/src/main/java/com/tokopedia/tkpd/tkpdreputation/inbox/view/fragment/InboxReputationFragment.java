@@ -9,25 +9,40 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPassModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.OptionViewModel;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity.CACHE_INBOX_REPUTATION_FILTER;
 
 /**
  * @author by nisie on 8/11/17.
@@ -37,15 +52,21 @@ public class InboxReputationFragment extends BaseDaggerFragment
         implements InboxReputation.View {
 
     private final static String PARAM_TAB = "tab";
+    private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
     private static final int REQUEST_OPEN_DETAIL = 101;
+    private static final int REQUEST_FILTER = 102;
 
     private RecyclerView mainList;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;
     private InboxReputationAdapter adapter;
+    private InboxReputationFilterViewModel filterData;
 
     @Inject
     InboxReputationPresenter presenter;
+
+    @Inject
+    GlobalCacheManager cacheManager;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
@@ -76,7 +97,88 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null
+                && savedInstanceState.getParcelable(ARGS_FILTER_DATA) != null) {
+            filterData = savedInstanceState.getParcelable(ARGS_FILTER_DATA);
+        } else {
+            filterData = new InboxReputationFilterViewModel(createListFilter());
+        }
         initVar();
+    }
+
+    private ArrayList<FilterViewModel> createListFilter() {
+        ArrayList<FilterViewModel> listFilter = new ArrayList<>();
+        listFilter.add(createFilterTime());
+        listFilter.add(createFilterStatus());
+
+        return listFilter;
+    }
+
+    private FilterViewModel createFilterStatus() {
+        FilterViewModel statusFilter = new FilterViewModel(
+                getString(R.string.filter_status),
+                createListFilterStatus());
+        return statusFilter;
+    }
+
+    private ArrayList<OptionViewModel> createListFilterStatus() {
+        ArrayList<OptionViewModel> list = new ArrayList<OptionViewModel>();
+        list.add(new OptionViewModel(getString(R.string.filter_all),
+                GetFirstTimeInboxReputationUseCase.PARAM_STATUS, "1", list.size()));
+        list.add(new OptionViewModel(getString(R.string.filter_given_reputation),
+                GetFirstTimeInboxReputationUseCase.PARAM_STATUS, "2", list.size()));
+        list.add(new OptionViewModel(getString(R.string.filter_no_reputation),
+                GetFirstTimeInboxReputationUseCase.PARAM_STATUS, "3", list.size()));
+        return list;
+    }
+
+    private FilterViewModel createFilterTime() {
+        FilterViewModel timeFilter = new FilterViewModel(
+                getString(R.string.filter_time),
+                createListFilterTime());
+        return timeFilter;
+    }
+
+    private ArrayList<OptionViewModel> createListFilterTime() {
+        ArrayList<OptionViewModel> list = new ArrayList<OptionViewModel>();
+        list.add(new OptionViewModel(getString(R.string.filter_all_time),
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "1", list.size()));
+        list.add(new OptionViewModel(getString(R.string.filter_last_7_days),
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "2", list.size()));
+        list.add(new OptionViewModel(getString(R.string.filter_this_month),
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "3", list.size()));
+        list.add(new OptionViewModel(getString(R.string.filter_last_3_month),
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "4", list.size()));
+        return list;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_filter, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_filter) {
+            openFilter();
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
+    }
+
+    private void openFilter() {
+
+        FilterPassModel opportunityFilterPassModel = new FilterPassModel();
+        opportunityFilterPassModel.setListFilter(filterData.getListFilter());
+
+        cacheManager.setKey(InboxReputationFilterActivity.CACHE_INBOX_REPUTATION_FILTER);
+        cacheManager.setValue(CacheUtil.convertModelToString(opportunityFilterPassModel,
+                new TypeToken<FilterPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+        Intent intent = InboxReputationFilterActivity.createIntent(getActivity());
+        startActivityForResult(intent, REQUEST_FILTER);
     }
 
     private void initVar() {

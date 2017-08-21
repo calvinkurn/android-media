@@ -22,6 +22,10 @@
             android:name=".inbox.view.activity.InboxReputationReviewDetailActivity"
             android:label="@string/title_activity_detail_review"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".inbox.view.activity.InboxReputationFilterActivity"
+            android:label="@string/title_filter"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
