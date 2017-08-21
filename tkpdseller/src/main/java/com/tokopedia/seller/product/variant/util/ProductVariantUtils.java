@@ -23,7 +23,7 @@ public class ProductVariantUtils {
     private static final String VARIANT_TITLE_SEPARATOR = ",";
 
     public static String getMultipleVariantOptionTitle(int level, VariantUnitSubmit variantUnitSubmit,
-                                                       ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+                                                       List<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
         if (variantUnitSubmit == null) {
             return title;
@@ -32,7 +32,7 @@ public class ProductVariantUtils {
     }
 
     public static String getMultipleVariantOptionTitle(int level, List<VariantSubmitOption> variantSubmitOptionList,
-                                                       ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+                                                       List<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
         for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
             title = getAdditionalTitleText(title, getTitle(level, variantSubmitOption, productVariantByCatModelList));
@@ -40,7 +40,7 @@ public class ProductVariantUtils {
         return title;
     }
 
-    private static String getTitle(int level, VariantSubmitOption variantSubmitOption, ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+    private static String getTitle(int level, VariantSubmitOption variantSubmitOption, List<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
         if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
             // Check variant option title from server
@@ -65,9 +65,9 @@ public class ProductVariantUtils {
     }
 
     private static ProductVariantValue getProductVariantByCatModelByVariantId(
-            long level, long optionId, ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+            long level, long optionId, List<ProductVariantByCatModel> productVariantByCatModelList) {
         for (ProductVariantByCatModel productVariantByCatModel : productVariantByCatModelList) {
-            if (productVariantByCatModel.getStatus() == level) {
+            if (level == getVariantPositionByStatus(productVariantByCatModel.getStatus())) {
                 List<ProductVariantUnit> productVariantUnitList = productVariantByCatModel.getUnitList();
                 for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
                     List<ProductVariantValue> productVariantValueList = productVariantUnit.getProductVariantValueList();
@@ -92,7 +92,7 @@ public class ProductVariantUtils {
     }
 
     public static ProductVariantManageViewModel getProductVariantManageViewModel(
-            VariantSubmitOption variantSubmitOption, VariantUnitSubmit variantUnitSubmit, ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+            VariantSubmitOption variantSubmitOption, VariantUnitSubmit variantUnitSubmit, List<ProductVariantByCatModel> productVariantByCatModelList) {
         ProductVariantManageViewModel productVariantManageViewModel = new ProductVariantManageViewModel();
         productVariantManageViewModel.setTemporaryId(variantSubmitOption.getTemporaryId());
         productVariantManageViewModel.setTitle(getTitle(ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption, productVariantByCatModelList));
@@ -114,7 +114,7 @@ public class ProductVariantUtils {
     }
 
     public static List<ProductVariantManageViewModel> getProductVariantManageViewModelListTwoLevel(
-            List<VariantUnitSubmit> variantUnitSubmitList, List<VariantStatus> variantStatusList, ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+            List<VariantUnitSubmit> variantUnitSubmitList, List<VariantStatus> variantStatusList, List<ProductVariantByCatModel> productVariantByCatModelList) {
         List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
         VariantUnitSubmit variantUnitSubmitLv1 = getVariantUnitSubmit(ExtraConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmitList);
         for (VariantSubmitOption variantSubmitOptionLv1 : variantUnitSubmitLv1.getVariantSubmitOptionList()) {
@@ -174,7 +174,7 @@ public class ProductVariantUtils {
         return null;
     }
 
-    private static VariantUnitSubmit getVariantUnitSubmit(int level, List<VariantUnitSubmit> variantUnitSubmitList) {
+    public static VariantUnitSubmit getVariantUnitSubmit(int level, List<VariantUnitSubmit> variantUnitSubmitList) {
         int variantUnitSubmitSize = variantUnitSubmitList.size();
         for (int i = 0; i < variantUnitSubmitSize; i++) {
             VariantUnitSubmit variantUnitSubmitTemp = variantUnitSubmitList.get(i);
@@ -216,5 +216,26 @@ public class ProductVariantUtils {
             }
         }
         return variantStatusList;
+    }
+
+    public static ProductVariantByCatModel getProductVariantByCatModel(int level, List<ProductVariantByCatModel> productVariantByCatModelList) {
+        for (ProductVariantByCatModel variantByCatModel : productVariantByCatModelList) {
+            if (level == ExtraConstant.VARIANT_LEVEL_ONE_VALUE && variantByCatModel.getStatus() == ExtraConstant.VARIANT_STATUS_TWO) {
+                return variantByCatModel;
+            } else if (level == ExtraConstant.VARIANT_LEVEL_TWO_VALUE && variantByCatModel.getStatus() == ExtraConstant.VARIANT_STATUS_ONE) {
+                return variantByCatModel;
+            }
+        }
+        return null;
+    }
+
+    public static int getVariantPositionByStatus(int status) {
+        switch (status) {
+            case ExtraConstant.VARIANT_STATUS_ONE:
+                return ExtraConstant.VARIANT_LEVEL_TWO_VALUE;
+            case ExtraConstant.VARIANT_STATUS_TWO:
+                return ExtraConstant.VARIANT_LEVEL_ONE_VALUE;
+        }
+        return -1;
     }
 }

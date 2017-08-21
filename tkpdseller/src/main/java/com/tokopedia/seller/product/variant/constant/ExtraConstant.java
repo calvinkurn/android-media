@@ -15,4 +15,7 @@ public class ExtraConstant {
 
     public static final int VARIANT_LEVEL_ONE_VALUE = 1;
     public static final int VARIANT_LEVEL_TWO_VALUE = 2;
+
+    public static final int VARIANT_STATUS_ONE = 1;
+    public static final int VARIANT_STATUS_TWO = 2;
 }

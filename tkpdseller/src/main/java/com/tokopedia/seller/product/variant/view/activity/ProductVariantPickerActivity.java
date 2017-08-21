@@ -15,6 +15,7 @@ import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
+import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
@@ -75,7 +76,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         VariantUnitSubmit variantUnitSubmit = new VariantUnitSubmit();
         variantUnitSubmit.setVariantId(productVariantByCatModel.getVariantId());
         variantUnitSubmit.setVariantUnitId(((ProductVariantPickerSearchFragment) getSearchListFragment()).getCurrentUnitId());
-        variantUnitSubmit.setPosition(productVariantByCatModel.getStatus());
+        variantUnitSubmit.setPosition(ProductVariantUtils.getVariantPositionByStatus(productVariantByCatModel.getStatus()));
         variantUnitSubmit.setVariantSubmitOptionList(((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList());
         Intent intent = new Intent();
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT, variantUnitSubmit);

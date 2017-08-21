@@ -71,7 +71,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
             return;
         }
         if (productVariantByCatModelList.size() >= ExtraConstant.VARIANT_LEVEL_ONE_VALUE) {
-            ProductVariantByCatModel productVariantByCatModel = getProductVariantByCatModel(ExtraConstant.VARIANT_LEVEL_ONE_VALUE);
+            ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ExtraConstant.VARIANT_LEVEL_ONE_VALUE, productVariantByCatModelList);
             if (productVariantByCatModel != null) {
                 variantLevelOneLabelView.setVisibility(View.VISIBLE);
                 variantLevelOneLabelView.setTitle(productVariantByCatModel.getName());
@@ -84,7 +84,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
             }
         }
         if (productVariantByCatModelList.size() >= ExtraConstant.VARIANT_LEVEL_TWO_VALUE) {
-            ProductVariantByCatModel productVariantByCatModel = getProductVariantByCatModel(ExtraConstant.VARIANT_LEVEL_TWO_VALUE);
+            ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ExtraConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
             if (productVariantByCatModel != null) {
                 variantLevelTwoLabelView.setVisibility(View.VISIBLE);
                 variantLevelTwoLabelView.setTitle(productVariantByCatModel.getName());
@@ -120,7 +120,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
 
     private void pickVariant(int level) {
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
-        intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY, getProductVariantByCatModel(level));
+        intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_CATEGORY, ProductVariantUtils.getProductVariantByCatModel(level, productVariantByCatModelList));
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT, getVariantUnitSubmit(level));
         intent.putExtra(ExtraConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, level * MULTIPLY_START_TEMP_ID);
         startActivityForResult(intent, level);
@@ -150,8 +150,6 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     }
 
     private void setVariantLevel(int level, VariantUnitSubmit variantUnitSubmit) {
-        // TODO need to clarify position same as level ? Different level if fetch by category, override for temporary solution
-        variantUnitSubmit.setPosition(level);
         if (variantData == null) {
             variantData = new VariantData();
         }
@@ -259,23 +257,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         if (variantData == null) {
             return null;
         }
-        int variantUnitSubmitSize = variantData.getVariantUnitSubmitList().size();
-        for (int i = 0; i < variantUnitSubmitSize; i++) {
-            VariantUnitSubmit variantUnitSubmitTemp = variantData.getVariantUnitSubmitList().get(i);
-            if (variantUnitSubmitTemp.getPosition() == level) {
-                return variantUnitSubmitTemp;
-            }
-        }
-        return null;
-    }
-
-    private ProductVariantByCatModel getProductVariantByCatModel(int level) {
-        for (ProductVariantByCatModel variantByCatModel : productVariantByCatModelList) {
-            if (variantByCatModel.getStatus() == level) {
-                return variantByCatModel;
-            }
-        }
-        return null;
+        return ProductVariantUtils.getVariantUnitSubmit(level, variantData.getVariantUnitSubmitList());
     }
 
     @Override
