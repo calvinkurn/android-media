@@ -35,7 +35,7 @@ public class ProductVariantHelper {
     private SparseArray<String> unitIdMap; // 0->"1:", 10-> "7:umur bayi"
     private HashMap<String, Integer> unitIdInverseMap; // "1:"->0, "7:umur bayi" -> 10
 
-    private LongSparseArray unitValuesIdMap; // 1->"1:0:Putih" 109->"7:10:0-3 Bulan"
+    private LongSparseArray<String> unitValuesIdMap; // 1->"1:0:Putih" 109->"7:10:0-3 Bulan"
     private HashMap<String, Long> unitValuesIdInverseMap; // "1:0:Putih"->1 "7:10:0-3 Bulan"->109
 
     // for submit
@@ -74,7 +74,7 @@ public class ProductVariantHelper {
         variantIdInverseMap = new DefaultHashMap<>(0);
         unitIdMap = new SparseArray<>();
         unitIdInverseMap = new DefaultHashMap<>(0);
-        unitValuesIdMap = new LongSparseArray();
+        unitValuesIdMap = new LongSparseArray<>();
         unitValuesIdInverseMap = new DefaultHashMap<>(0L);
 
         for (int i = 0, sizei = productVariantByCatModelList.size(); i < sizei; i++) {

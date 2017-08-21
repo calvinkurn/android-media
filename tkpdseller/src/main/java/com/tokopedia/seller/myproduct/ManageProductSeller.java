@@ -47,7 +47,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQ
 @RuntimePermissions
 public class ManageProductSeller extends ManageProduct implements
         ProductDraftListCountView {
-    public static final int MAX_INSTAGRAM_SELECT = 10;
+    public static final int MAX_INSTAGRAM_SELECT = 20;
     public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
     private BroadcastReceiver draftBroadCastReceiver;
 
@@ -238,6 +238,7 @@ public class ManageProductSeller extends ManageProduct implements
         } else {
             CommonUtils.UniversalToast(this,getString(R.string.product_draft_instagram_save_success,
                     productIds.size()));
+            startActivity(new Intent(this, ProductDraftListActivity.class));
         }
     }
 

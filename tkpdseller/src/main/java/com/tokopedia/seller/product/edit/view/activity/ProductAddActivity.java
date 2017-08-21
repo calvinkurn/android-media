@@ -237,20 +237,17 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                             // no op, just dismiss
                         }
                     });
-            // seller app only
-            if (GlobalConfig.isSellerApp()) {
-                alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        boolean doSave = saveProductToDraft();
-                        if (!doSave) {
-                            UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
-                                    AppEventTracking.EventLabel.SAVE_DRAFT);
-                            ProductAddActivity.super.onBackPressed();
-                        }
+            alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    boolean doSave = saveProductToDraft();
+                    if (!doSave) {
+                        UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
+                                AppEventTracking.EventLabel.SAVE_DRAFT);
+                        ProductAddActivity.super.onBackPressed();
                     }
-                });
-            }
+                }
+            });
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
         } else {
