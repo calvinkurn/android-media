@@ -126,6 +126,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String clientNumberState;
     private CategoryData categoryDataState;
     private List<BannerData> bannerDataListState;
+    private List<BannerData> otherBannerDataListState;
     private HistoryClientNumber historyClientNumberState;
     private String voucherCodeCopiedState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
@@ -300,6 +301,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         bannerAdapter.addBannerDataListAndTitle(bannerDataList, formattedTitle);
     }
 
+    @Override
+    public void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList) {
+        String formattedTitle = getResources().getString(R.string.promo_category, title);
+        this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
+        bannerAdapter.addBannerDataListAndTitle(otherBannerDataList, formattedTitle);
+    }
+
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
         for (int i = bannerDataList.size() - 1; i >= 0; i--) {
             if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
@@ -406,10 +414,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public List<BannerData> getOtherBannerDataListState() {
+        return otherBannerDataListState;
+    }
+
+    @Override
     public HistoryClientNumber getHistoryClientNumberState() {
         return historyClientNumberState;
     }
-
 
     @Override
     public String getVersionInfoApplication() {
@@ -592,7 +604,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
-
         UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
@@ -618,7 +629,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
-
         UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
@@ -631,7 +641,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
-
         UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
@@ -667,7 +676,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
         );
     }
-
 
     @Override
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
