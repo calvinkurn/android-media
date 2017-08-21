@@ -755,9 +755,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 presenter.processResultTalk(resultCode, data);
                 break;
             case REQUEST_CODE_LOGIN:
-                if (SessionHandler.isV4Login(getActivity())){
-                    ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(getActivity()));
-                }
                 videoDescriptionLayout.refreshVideo();
                 presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;

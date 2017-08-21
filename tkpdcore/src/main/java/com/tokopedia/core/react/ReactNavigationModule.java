@@ -24,32 +24,12 @@ import com.tokopedia.core.util.SessionHandler;
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule {
     private static final int LOGIN_REQUEST_CODE = 1005;
-    private Promise mPickerPromise;
 
     private Context context;
-
-    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
-
-        @Override
-        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
-            if (requestCode == LOGIN_REQUEST_CODE) {
-                if (mPickerPromise != null) {
-                    if (SessionHandler.isV4Login(context)) {
-                        mPickerPromise.resolve(SessionHandler.getLoginID(context));
-                    } else {
-                        mPickerPromise.reject("");
-                    }
-                    mPickerPromise = null;
-                }
-            }
-        }
-    };
-
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
-        reactContext.addActivityEventListener(mActivityEventListener);
     }
 
     @Override
@@ -76,21 +56,9 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void navigateToLoginWithResult(Promise promise) {
-        Activity currentActivity = getCurrentActivity();
-
-        if (currentActivity == null) {
-            promise.reject("");
-            return;
-        }
-
-        mPickerPromise = promise;
-
         if (((IDigitalModuleRouter) context.getApplicationContext()).isSupportedDelegateDeepLink(Constants.Applinks.LOGIN)) {
-            Intent intent = ((IDigitalModuleRouter) context.getApplicationContext()).getIntentDeepLinkHandlerActivity();
-            intent.setData(Uri.parse(Constants.Applinks.LOGIN));
-            currentActivity.startActivityForResult(intent, LOGIN_REQUEST_CODE);
-        } else {
-            promise.reject("");
+            ((TkpdCoreRouter) context.getApplicationContext())
+                    .actionApplink(this.getCurrentActivity(), Constants.Applinks.LOGIN);
         }
     }
 }

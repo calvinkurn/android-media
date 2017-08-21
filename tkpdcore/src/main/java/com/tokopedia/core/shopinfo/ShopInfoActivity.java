@@ -877,11 +877,6 @@ public class ShopInfoActivity extends BaseActivity
                     break;
             }
         }
-        if (requestCode == FAVORITE_LOGIN_REQUEST_CODE){
-            if (SessionHandler.isV4Login(ShopInfoActivity.this)){
-                ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(ShopInfoActivity.this));
-            }
-        }
     }
 
     @Override

@@ -307,10 +307,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             if (productAdapter != null && position != -1) {
                 productAdapter.updateWishlistStatus(isWishlist, position);
             }
-        } else if (requestCode == ProductDetailFragment.REQUEST_CODE_LOGIN) {
-            if (SessionHandler.isV4Login(getActivity())){
-                ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(getActivity()));
-            }
         }
     }
 
