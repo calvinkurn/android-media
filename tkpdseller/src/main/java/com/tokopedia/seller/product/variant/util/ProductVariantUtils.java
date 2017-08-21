@@ -11,7 +11,6 @@ import com.tokopedia.seller.product.variant.data.model.variantbyprd.Option;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantDatum;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
@@ -247,13 +246,12 @@ public class ProductVariantUtils {
         return -1;
     }
 
-    public static ProductVariantSubmit generateProductVariantSubmit(ProductVariantByPrdModel productVariantByPrdModel) {
+    public static VariantData generateProductVariantSubmit(ProductVariantByPrdModel productVariantByPrdModel) {
         if (productVariantByPrdModel.getVariantOptionList() == null ||
                 productVariantByPrdModel.getVariantOptionList().size() == 0) {
             // Means all the variants have been removed
             return null;
         }
-        ProductVariantSubmit productVariantSubmit = new ProductVariantSubmit();
         VariantData variantData = new VariantData();
 
         // generate Unit Submit List
@@ -323,8 +321,6 @@ public class ProductVariantUtils {
             variantStatusList.add(variantStatus);
         }
         variantData.setVariantStatusList(variantStatusList);
-
-        productVariantSubmit.setVariantData(variantData);
-        return productVariantSubmit;
+        return variantData;
     }
 }

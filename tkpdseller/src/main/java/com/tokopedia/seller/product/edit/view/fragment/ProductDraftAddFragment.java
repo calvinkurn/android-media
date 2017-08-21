@@ -134,7 +134,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
             productAdditionalInfoViewHolder.setPreOrderValue(model.getPoProcessValue());
         }
         if (model.getSwitchVariant() > 0) {
-            productAdditionalInfoViewHolder.setProductVariantSubmit(model.getProductVariantSubmit());
+            productAdditionalInfoViewHolder.setVariantData(model.getVariantData());
         }
     }
 

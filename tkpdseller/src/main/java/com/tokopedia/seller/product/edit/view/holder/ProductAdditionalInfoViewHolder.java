@@ -29,7 +29,7 @@ import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
@@ -60,7 +60,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private Listener listener;
     private boolean goldMerchant;
 
-    private ProductVariantSubmit productVariantSubmit;
+    private VariantData variantData;
     private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
 
     /**
@@ -108,7 +108,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         variantLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.startProductVariantActivity(productVariantByCatModelList, productVariantSubmit);
+                listener.startProductVariantActivity(productVariantByCatModelList, variantData);
             }
         });
         preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
@@ -190,8 +190,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         return videoIdList;
     }
 
-    public ProductVariantSubmit getProductVariantSubmit() {
-        return productVariantSubmit;
+    public VariantData getVariantData() {
+        return variantData;
     }
 
     public void setVideoIdList(List<String> videoIdList) {
@@ -226,24 +226,25 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void onSuccessGetSelectedProductVariant(ProductVariantByPrdModel productVariantByPrdModel) {
-        ProductVariantSubmit productVariantSubmit =
+        VariantData variantData =
                 ProductVariantUtils.generateProductVariantSubmit(productVariantByPrdModel);
-        setProductVariantSubmit(productVariantSubmit);
+        setVariantData(variantData);
     }
 
-    public void setProductVariantSubmit(ProductVariantSubmit productVariantSubmit) {
-        this.productVariantSubmit = productVariantSubmit;
+    public void setVariantData(VariantData variantData) {
+        this.variantData = variantData;
         setUiVariantSelection();
     }
 
     private void setUiVariantSelection() {
-        if (productVariantSubmit == null || !productVariantSubmit.hasAnyData()
+        if (variantData == null || variantData.getVariantUnitSubmitList() == null ||
+                variantData.getVariantUnitSubmitList().size() == 0
                 || productVariantByCatModelList == null
                 || productVariantByCatModelList.size() == 0) {
             variantLabelView.resetContentText();
         } else {
             String selectedVariantString = "";
-            List<VariantUnitSubmit> variantUnitSubmitList = productVariantSubmit.getVariantData().getVariantUnitSubmitList();
+            List<VariantUnitSubmit> variantUnitSubmitList = variantData.getVariantUnitSubmitList();
             for (int i = 0, sizei = variantUnitSubmitList.size(); i < sizei; i++) {
                 VariantUnitSubmit variantUnitSubmit = variantUnitSubmitList.get(i);
                 int position = variantUnitSubmit.getPosition();
@@ -314,7 +315,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<>(videoIdList));
-        savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, productVariantSubmit);
+        savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, variantData);
         savedInstanceState.putParcelableArrayList(SAVED_VARIANT_CAT, productVariantByCatModelList);
     }
 
@@ -327,7 +328,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         if (stringArrayList != null) {
             setVideoIdList(stringArrayList);
         }
-        productVariantSubmit = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
+        variantData = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
         productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT_CAT);
     }
 
@@ -344,7 +345,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
 
         void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelArrayList,
-                                         ProductVariantSubmit productVariantSubmit);
+                                         VariantData productVariantSubmit);
 
         void onDescriptionTextChanged(String text);
 

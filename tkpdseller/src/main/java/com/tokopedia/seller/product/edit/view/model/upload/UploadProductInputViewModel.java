@@ -6,7 +6,7 @@ import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class UploadProductInputViewModel {
     private int productChangeWholesale;
     private int productChangeCatalog;
     private int switchVariant;
-    private ProductVariantSubmit productVariantSubmit;
+    private VariantData variantData;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -92,13 +92,14 @@ public class UploadProductInputViewModel {
         return switchVariant;
     }
 
-    public ProductVariantSubmit getProductVariantSubmit() {
-        return productVariantSubmit;
+    public VariantData getVariantData() {
+        return variantData;
     }
 
-    public void setProductVariantBySubmit(ProductVariantSubmit productVariantSubmit) {
-        this.productVariantSubmit = productVariantSubmit;
-        if (productVariantSubmit == null || !productVariantSubmit.hasAnyData()) {
+    public void setProductVariantData(VariantData variantData) {
+        this.variantData = variantData;
+        if (variantData == null || variantData.getVariantUnitSubmitList()==null ||
+                variantData.getVariantUnitSubmitList().size() == 0) {
             this.switchVariant = 0;
         } else {
             this.switchVariant = 1;
@@ -383,7 +384,8 @@ public class UploadProductInputViewModel {
         if (poProcessValue!= defaultModel.getPoProcessValue()) {
             return false;
         }
-        if (productVariantSubmit!= null && productVariantSubmit.hasAnyData()){
+        if (variantData != null && variantData.getVariantUnitSubmitList()!= null &&
+                variantData.getVariantUnitSubmitList().size() > 0){
             return false;
         }
         return true;

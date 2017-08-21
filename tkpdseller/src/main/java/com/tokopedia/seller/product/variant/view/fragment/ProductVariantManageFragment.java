@@ -16,7 +16,6 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
