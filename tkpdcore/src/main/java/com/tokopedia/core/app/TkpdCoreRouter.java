@@ -34,6 +34,8 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
+    void goToDraftProductList(Context context);
+
     void goToManageEtalase(Context context);
 
     void clearEtalaseCache();
