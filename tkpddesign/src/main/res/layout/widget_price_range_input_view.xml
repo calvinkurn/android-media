@@ -50,6 +50,8 @@
             android:singleLine="true"
             android:layout_weight="1"
             android:gravity="start"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             android:inputType="number"
             android:digits="0123456789"
             />
@@ -70,6 +72,8 @@
             tools:text="pmax"
             android:layout_weight="1"
             android:gravity="end"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             android:inputType="number"
             android:digits="0123456789"
             />
