@@ -308,7 +308,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         List<CacheApiWhiteListDomain> deletedWhiteLists = getRemovedWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        requestParams.putObject(CacheApiWhiteListUseCase.DELETE_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
+        requestParams.putObject(CacheApiWhiteListUseCase.DELETE_WHITELIST_COLLECTIONS, deletedWhiteLists);
         cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
