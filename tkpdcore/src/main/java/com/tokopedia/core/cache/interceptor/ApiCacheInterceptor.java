@@ -97,6 +97,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);
                 builder.code(200);
+                builder.message("");
                 builder.body(ResponseBody.create(MediaType.parse("application/json"), tempData.getResponseBody()));
                 return builder.build();
             }
