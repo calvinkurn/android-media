@@ -21,17 +21,14 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
     private final NotificationManager notificationManager;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
-    private final ProductVariantRepository productVariantRepository;
     private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
     public ProceedUploadProduct(NotificationManager notificationManager, UploadProductRepository uploadProductRepository,
                                 ImageProductUploadRepository imageProductUploadRepository,
-                                UploadProductUseCase.ProductDraftUpdate draftUpdate,
-                                ProductVariantRepository productVariantRepository) {
+                                UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.notificationManager = notificationManager;
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
         this.draftUpdate = draftUpdate;
-        this.productVariantRepository = productVariantRepository;
     }
 
     @Override
@@ -41,7 +38,7 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
                     .flatMap(new AddProductImage(imageProductUploadRepository))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareAddProductValidation(domainModel))
-                    .flatMap(new AddProductValidation(uploadProductRepository, productVariantRepository))
+                    .flatMap(new AddProductValidation(uploadProductRepository))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .flatMap(new ProcessAddProductValidation(domainModel, imageProductUploadRepository, uploadProductRepository))
                     .doOnNext(notificationManager.getUpdateNotification());
@@ -53,7 +50,7 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
                     .flatMap(new UploadImageEditProduct(uploadProductRepository, imageProductUploadRepository, draftUpdate))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareEditProduct(domainModel))
-                    .flatMap(new EditProduct(uploadProductRepository, productVariantRepository))
+                    .flatMap(new EditProduct(uploadProductRepository))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new ToUploadProductModel(domainModel));
         } else {

@@ -44,10 +44,9 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
     }
 
     @Override
-    public Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel domainModel,
-                                                                            List< ProductVariantByCatModel> productVariantByCatModelList) {
+    public Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel domainModel) {
         AddProductValidationInputServiceModel serviceModel = new AddProductValidationInputServiceModel();
-        addProductValidationInputMapper.map(serviceModel, domainModel, productVariantByCatModelList);
+        addProductValidationInputMapper.map(serviceModel, domainModel);
         return uploadProductDataSource.addProductValidation(serviceModel)
                 .map(new AddProductValidationMapper());
     }
@@ -60,10 +59,9 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
     }
 
     @Override
-    public Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel,
-                                           List<ProductVariantByCatModel> productVariantByCatModelList) {
+    public Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
         EditProductInputServiceModel serviceModel = new EditProductInputServiceModel();
-        editProductInputMapper.map(serviceModel, uploadProductInputDomainModel, productVariantByCatModelList);
+        editProductInputMapper.map(serviceModel, uploadProductInputDomainModel);
         return uploadProductDataSource.editProduct(serviceModel)
                 .map(new EditProductMapper());
     }

@@ -17,35 +17,14 @@ import rx.functions.Func1;
 
 public class AddProductValidation implements Func1<UploadProductInputDomainModel, Observable<AddProductValidationDomainModel>> {
     private final UploadProductRepository uploadProductRepository;
-    private final ProductVariantRepository productVariantRepository;
 
-    public AddProductValidation(UploadProductRepository uploadProductRepository,
-                                ProductVariantRepository productVariantRepository) {
+    public AddProductValidation(UploadProductRepository uploadProductRepository) {
         this.uploadProductRepository = uploadProductRepository;
-        this.productVariantRepository = productVariantRepository;
     }
 
     @Override
     public Observable<AddProductValidationDomainModel> call(final UploadProductInputDomainModel uploadProductInputDomainModel) {
-        return Observable.just(uploadProductInputDomainModel.getProductDepartmentId())
-                    .flatMap(new Func1<Long, Observable<List<ProductVariantByCatModel>>>() {
-                        @Override
-                        public Observable<List<ProductVariantByCatModel>> call(Long categoryId) {
-                            if (categoryId > 0) {
-                                return productVariantRepository.fetchProductVariantByCat(categoryId);
-                            }
-                            else {
-                                return null;
-                            }
-                        }
-                    })
-                    .flatMap(new Func1<List<ProductVariantByCatModel>, Observable<AddProductValidationDomainModel>>() {
-                        @Override
-                        public Observable<AddProductValidationDomainModel> call(List<ProductVariantByCatModel> productVariantByCatModelList) {
-                            return uploadProductRepository
-                                    .addProductValidation(uploadProductInputDomainModel, productVariantByCatModelList);
-                        }
-                    });
+        return uploadProductRepository.addProductValidation(uploadProductInputDomainModel);
     }
 
 }

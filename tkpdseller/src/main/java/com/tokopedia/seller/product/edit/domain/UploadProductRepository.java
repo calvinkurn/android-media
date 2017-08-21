@@ -17,11 +17,11 @@ import rx.Observable;
  */
 
 public interface UploadProductRepository {
-    Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel, List<ProductVariantByCatModel> productVariantByCatModelList);
+    Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel);
 
     Observable<AddProductDomainModel> addProductSubmit(AddProductSubmitInputDomainModel addProductPictureDomainModel);
 
-    Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel, List<ProductVariantByCatModel> productVariantByCatModelList);
+    Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel);
 
     Observable<EditImageProductDomainModel> editImageProduct(String picObj);
 

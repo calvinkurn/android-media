@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.variant.data.model.variantsubmit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +12,7 @@ import java.util.List;
  * Created by hendry on 8/15/2017.
  */
 
-public class VariantData {
+public class VariantData implements Parcelable {
 
     @SerializedName("variant")
     @Expose
@@ -50,4 +53,34 @@ public class VariantData {
         this.variantStatusList = variantStatus;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(this.variantUnitSubmitList);
+        dest.writeTypedList(this.variantStatusList);
+    }
+
+    public VariantData() {
+    }
+
+    protected VariantData(Parcel in) {
+        this.variantUnitSubmitList = in.createTypedArrayList(VariantUnitSubmit.CREATOR);
+        this.variantStatusList = in.createTypedArrayList(VariantStatus.CREATOR);
+    }
+
+    public static final Parcelable.Creator<VariantData> CREATOR = new Parcelable.Creator<VariantData>() {
+        @Override
+        public VariantData createFromParcel(Parcel source) {
+            return new VariantData(source);
+        }
+
+        @Override
+        public VariantData[] newArray(int size) {
+            return new VariantData[size];
+        }
+    };
 }

@@ -4,6 +4,7 @@ import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class UploadProductInputDomainModel {
     private int productChangeCatalog;
     private int productChangeWholesale;
     private int switchVariant;
-    private ProductVariantByPrdModel productVariantByPrdModel;
+    private ProductVariantSubmit productVariantSubmit;
 
     public long getId() {
         return id;
@@ -325,12 +326,12 @@ public class UploadProductInputDomainModel {
         return switchVariant;
     }
 
-    public ProductVariantByPrdModel getProductVariantByPrdModel() {
-        return productVariantByPrdModel;
+    public ProductVariantSubmit getProductVariantSubmit() {
+        return productVariantSubmit;
     }
 
-    public void setProductVariantByPrdModel(ProductVariantByPrdModel productVariantByPrdModel) {
-        this.productVariantByPrdModel = productVariantByPrdModel;
+    public void setProductVariantSubmit(ProductVariantSubmit productVariantSubmit) {
+        this.productVariantSubmit = productVariantSubmit;
     }
 
     public void setSwitchVariant(int switchVariant) {

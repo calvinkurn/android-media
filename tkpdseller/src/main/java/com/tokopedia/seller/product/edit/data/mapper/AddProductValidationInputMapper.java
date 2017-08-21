@@ -23,8 +23,7 @@ public class AddProductValidationInputMapper extends UploadProductPictureInputMa
     public AddProductValidationInputMapper() {
     }
 
-    public void map(AddProductValidationInputServiceModel serviceModel, UploadProductInputDomainModel domainModel,
-                    List<ProductVariantByCatModel> productVariantByCatModelList) {
+    public void map(AddProductValidationInputServiceModel serviceModel, UploadProductInputDomainModel domainModel) {
         mapProductPhoto(serviceModel, domainModel);
         serviceModel.setProductWholesale(mapWholesale(domainModel.getProductPriceOne()));
         serviceModel.setProductCatalogId(domainModel.getProductCatalogId());
@@ -47,11 +46,8 @@ public class AddProductValidationInputMapper extends UploadProductPictureInputMa
         serviceModel.setPoProcessValue(domainModel.getPoProcessValue());
         serviceModel.setProductVideo(domainModel.getProductVideos());
         serviceModel.setSwitchVariant(domainModel.getSwitchVariant());
-        if (domainModel.getSwitchVariant() > 0 &&
-                productVariantByCatModelList!= null && productVariantByCatModelList.size() > 0) {
-            serviceModel.setProductVariantSubmit(
-                    new ProductVariantHelper(productVariantByCatModelList,
-                            domainModel.getProductVariantByPrdModel()).generateProductVariantSubmit());
+        if (domainModel.getSwitchVariant() > 0 ) {
+            serviceModel.setProductVariantSubmit(domainModel.getProductVariantSubmit());
         }
     }
 
