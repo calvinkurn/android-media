@@ -1,12 +1,9 @@
 package com.tokopedia.seller.product.edit.data.mapper;
 
-import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductPictureInputServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValidationInputServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductWholesaleServiceModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.varianthelper.ProductVariantHelper;
 
 import java.util.ArrayList;
 import java.util.List;
