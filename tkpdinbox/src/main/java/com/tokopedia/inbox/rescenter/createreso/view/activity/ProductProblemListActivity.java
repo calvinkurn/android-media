@@ -3,23 +3,24 @@ package com.tokopedia.inbox.rescenter.createreso.view.activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemActivityPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemActivityPresenterImpl;
-import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListActivityPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemListActivityPresenterImpl;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 
 /**
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductProblemActivity extends BasePresenterActivity<ProductProblemActivityPresenter> implements ProductProblemView, HasComponent {
+public class ProductProblemListActivity extends BasePresenterActivity<ProductProblemListActivityPresenter> implements ProductProblemListActivityView, HasComponent {
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
+    public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+
+
     ProductProblemListViewModel productProblemListViewModel;
 
     @Override
@@ -34,7 +35,7 @@ public class ProductProblemActivity extends BasePresenterActivity<ProductProblem
 
     @Override
     protected void initialPresenter() {
-        presenter = new ProductProblemActivityPresenterImpl(this, this);
+        presenter = new ProductProblemListActivityPresenterImpl(this, this);
     }
 
     @Override
@@ -76,4 +77,6 @@ public class ProductProblemActivity extends BasePresenterActivity<ProductProblem
     public Object getComponent() {
         return getApplicationComponent();
     }
+
+
 }

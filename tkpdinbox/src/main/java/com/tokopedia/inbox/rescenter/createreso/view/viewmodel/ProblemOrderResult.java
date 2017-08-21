@@ -9,6 +9,10 @@ import org.json.JSONObject;
 public class ProblemOrderResult {
     public ProblemOrderDetailResult detail;
 
+    public ProblemOrderResult() {
+        detail = new ProblemOrderDetailResult();
+    }
+
     public JSONObject writeToJson() {
         JSONObject object = new JSONObject();
         try {

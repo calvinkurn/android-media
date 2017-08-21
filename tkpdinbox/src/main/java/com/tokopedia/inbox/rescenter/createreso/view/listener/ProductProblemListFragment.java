@@ -15,7 +15,7 @@ import java.util.List;
  * Created by yoasfs on 14/08/17.
  */
 
-public interface ProductProblem {
+public interface ProductProblemListFragment {
 
     interface View extends CustomerView {
 
@@ -24,6 +24,6 @@ public interface ProductProblem {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void populateProductProblem();
+        void loadProblemAndProduct(List<ProductProblemViewModel> productProblemViewModelList);
     }
 }

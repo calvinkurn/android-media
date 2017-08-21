@@ -12,6 +12,12 @@ public class ProblemResult {
     public int quantity;
     public ProblemOrderResult order;
     public String remark;
+    public boolean isDelivered = false;
+    public boolean canShowInfo = false;
+
+    public ProblemResult() {
+        order = new ProblemOrderResult();
+    }
 
     public JSONObject writeToJson() {
         JSONObject object = new JSONObject();

@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +12,11 @@ import android.widget.Toast;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemDetailActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.ProductProblemAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblem;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
@@ -27,7 +30,7 @@ import javax.inject.Inject;
  * Created by yoasfs on 14/08/17.
  */
 
-public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ProductProblem.View, ProductProblemItemListener {
+public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ProductProblemListFragment.View, ProductProblemItemListener {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
 
@@ -105,8 +108,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
         rvProductProblem.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ProductProblemAdapter(context, this);
         rvProductProblem.setAdapter(adapter);
-        adapter.updateAdapter(productProblemListViewModel.getProductProblemViewModels());
-//        presenter.populateProductProblem();
+        presenter.loadProblemAndProduct(productProblemListViewModel.getProductProblemViewModels());
     }
 
     @Override
@@ -121,6 +123,8 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onItemClicked(ProductProblemViewModel productProblemViewModel) {
-        Toast.makeText(context, productProblemViewModel.getOrder().getProduct().getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), ProductProblemDetailActivity.class);
+        intent.putExtra(PRODUCT_PROBLEM_DATA, productProblemViewModel);
+        startActivity(intent);
     }
 }

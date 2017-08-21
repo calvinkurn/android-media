@@ -20,7 +20,7 @@ public class OrderProductResponse {
     @SerializedName("quantity")
     @Expose
     private int quantity;
-    @SerializedName("amoubt")
+    @SerializedName("amount")
     @Expose
     private AmountResponse amount;
 

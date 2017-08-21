@@ -95,15 +95,17 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     public class ItemHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
         ImageView ivProduct;
-        LinearLayout llItem;
-        TextView tvProductName, tvTitleSection;
+        LinearLayout llItem, llFreeReturn;
+        TextView tvProductName, tvTitleSection, tvFreeReturn;
         public ItemHolder(View itemView) {
             super(itemView);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
             ivProduct = (ImageView) itemView.findViewById(R.id.iv_product_image);
             tvProductName = (TextView) itemView.findViewById(R.id.tv_product_name);
             tvTitleSection = (TextView) itemView.findViewById(R.id.tv_title_section);
+            tvFreeReturn = (TextView) itemView.findViewById(R.id.tv_free_return);
             llItem = (LinearLayout) itemView.findViewById(R.id.ll_item_view);
+            llFreeReturn = (LinearLayout) itemView.findViewById(R.id.ll_free_return);
         }
     }
 }

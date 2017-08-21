@@ -1,0 +1,241 @@
+package com.tokopedia.inbox.rescenter.createreso.view.fragment;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.design.text.TkpdTextInputLayout;
+import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
+
+import javax.inject.Inject;
+
+/**
+ * Created by yoasfs on 21/08/17.
+ */
+
+public class ProductProblemDetailFragment extends BaseDaggerFragment implements com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment.View {
+
+    public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+
+    ProductProblemViewModel productProblemViewModel;
+
+    ImageView ivProductImage, btnInfo;
+    TextView tvProductName, tvProductPrice, tvQty;
+    Button btnArrived, btnNotArrived, btnSaveAndChooseOther, btnSave, btnCancel;
+    SpinnerTextView stvProblem;
+    TkpdTextInputLayout tilComplainReason;
+    EditText etComplainReason;
+    ImageButton btnPlus, btnMinus;
+
+
+    ProductProblemDetailFragmentPresenter presenter;
+
+    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel) {
+        ProductProblemDetailFragment fragment = new ProductProblemDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemViewModel);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        presenter = new ProductProblemDetailFragmentPresenter(getActivity());
+        presenter.attachView(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        productProblemViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
+
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_product_problem_detail;
+    }
+
+    @Override
+    protected void initView(View view) {
+        ivProductImage = (ImageView) view.findViewById(R.id.iv_product_image);
+        tvProductName = (TextView) view.findViewById(R.id.tv_product_name);
+        tvProductPrice = (TextView) view.findViewById(R.id.tv_product_price);
+        tvQty = (TextView) view.findViewById(R.id.tv_qty);
+        btnArrived = (Button) view.findViewById(R.id.btn_arrived);
+        btnNotArrived = (Button) view.findViewById(R.id.btn_not_arrived);
+        btnSaveAndChooseOther = (Button) view.findViewById(R.id.btn_save_and_choose_other);
+        btnSave = (Button) view.findViewById(R.id.btn_save);
+        btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        stvProblem = (SpinnerTextView) view.findViewById(R.id.stv_problem);
+        tilComplainReason = (TkpdTextInputLayout) view.findViewById(R.id.til_complain);
+        etComplainReason = (EditText) view.findViewById(R.id.et_complain);
+        btnPlus = (ImageButton) view.findViewById(R.id.btn_plus);
+        btnMinus = (ImageButton) view.findViewById(R.id.btn_minus);
+        btnInfo = (ImageView) view.findViewById(R.id.btn_info);
+
+        stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
+        tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
+
+        presenter.populateData(productProblemViewModel);
+
+    }
+
+    @Override
+    protected void setViewListener() {
+        btnArrived.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.btnArrivedClicked();
+            }
+        });
+
+        btnNotArrived.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.btnNotArrivedClicked();
+            }
+        });
+
+        stvProblem.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+            @Override
+            public void onItemChanged(int position, String entry, String value) {
+                presenter.updateTroubleValue(value);
+            }
+        });
+
+        etComplainReason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                presenter.updateComplainReason(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void populateDataToScreen(ProductProblemViewModel productProblemViewModel) {
+        Glide.with(getActivity()).load(productProblemViewModel.getOrder().getProduct().getThumb()).into(ivProductImage);
+        tvProductName.setText(productProblemViewModel.getOrder().getProduct().getName());
+        tvProductPrice.setText(productProblemViewModel.getOrder().getProduct().getAmount().getIdr());
+    }
+
+    @Override
+    public void updateArriveStatusButton(boolean isArrived, boolean canShowInfo) {
+        btnInfo.setVisibility(View.GONE);
+        if(canShowInfo) {
+            presenter.updateSpinner(true);
+            btnInfo.setVisibility(View.VISIBLE);
+            buttonDisabled(btnNotArrived);
+            buttonSelected(btnArrived);
+        } else {
+            if (isArrived) {
+                buttonCanSelected(btnNotArrived);
+                buttonSelected(btnArrived);
+            } else {
+                buttonCanSelected(btnArrived);
+                buttonSelected(btnNotArrived);
+            }
+        }
+//        if (isArrived) {
+//            buttonCanSelected(btnNotArrived);
+//            buttonSelected(btnArrived);
+//        } else {
+//            buttonCanSelected(btnArrived);
+//            buttonSelected(btnNotArrived);
+//        }
+
+
+    }
+    public void buttonCanSelected(Button button) {
+        button.setClickable(true);
+        button.setEnabled(true);
+        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable1));
+        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_btn));
+    }
+
+    public void buttonSelected(Button button) {
+        button.setClickable(true);
+        button.setEnabled(true);
+        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setTextColor(Color.parseColor("#ffffff"));
+    }
+
+    public void buttonDisabled(Button button) {
+        button.setClickable(false);
+        button.setEnabled(false);
+        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_70));
+    }
+
+    @Override
+    public void populateReasonSpinner(String[] reasonStringArray) {
+        if (reasonStringArray != null) {
+            stvProblem.setValues(reasonStringArray);
+            stvProblem.setEntries(reasonStringArray);
+        }
+    }
+
+    @Override
+    public void updateComplainReasonView(boolean isSuccess, String message) {
+        if (!isSuccess) {
+            tilComplainReason.setError(message);
+        } else {
+            tilComplainReason.hideErrorSuccess();
+        }
+    }
+}

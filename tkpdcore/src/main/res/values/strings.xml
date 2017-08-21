@@ -2024,6 +2024,18 @@ di Tokopedia Sekarang!</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>
 
+    <!--product problem detail string-->
+    <string name="string_button_save_choose">Simpan dan Pilih Barang Lain</string>
+    <string name="string_product_status">Status Barang</string>
+    <string name="string_product_arrived">Sudah Sampai</string>
+    <string name="string_product_not_arrived">Belum Sampai</string>
+    <string name="string_choose_problem">Pilih Masalah</string>
+    <string name="string_complain_reason">Alasan Komplain</string>
+    <string name="string_product_qty">Jumlah Barang</string>
+    <string name="string_button_save">Simpan</string>
+    <string name="string_button_cancel">Batal</string>
+    <string name="string_support_free_return">Produk Ini Didukung Free Returns</string>
+
     <!-- finish dialog string-->
     <string name="string_finish_title">Selesaikan Pemesanan</string>
     <string name="string_finish_body">1. Pilih \"Selesai\" untuk menyelesaikan pemesanan\n\n2. Pilih \"Komplain\" apabila ada kendala pada pemesanan</string>

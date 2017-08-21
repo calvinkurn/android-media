@@ -1,0 +1,83 @@
+package com.tokopedia.inbox.rescenter.createreso.view.activity;
+
+import android.app.Fragment;
+import android.net.Uri;
+import android.os.Bundle;
+
+import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailActivityPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailActivityPresenterImpl;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
+
+/**
+ * Created by yoasfs on 14/08/17.
+ */
+
+public class ProductProblemDetailActivity extends BasePresenterActivity<ProductProblemDetailActivityPresenter> implements ProductProblemDetailActivityView, HasComponent {
+
+    public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+
+
+    ProductProblemViewModel productProblemViewModel;
+
+    @Override
+    protected void setupURIPass(Uri data) {
+
+    }
+
+    @Override
+    protected void setupBundlePass(Bundle extras) {
+        productProblemViewModel = (ProductProblemViewModel) extras.get(PRODUCT_PROBLEM_DATA);
+    }
+
+    @Override
+    protected void initialPresenter() {
+        presenter = new ProductProblemDetailActivityPresenterImpl(this, this);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_product_problem;
+    }
+
+    @Override
+    protected void initView() {
+        setTitle(productProblemViewModel.getOrder().getProduct().getName());
+        presenter.initFragment(productProblemViewModel);
+
+    }
+
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
+    }
+
+    @Override
+    public void inflateFragment(Fragment fragment, String TAG) {
+        if (getFragmentManager().findFragmentByTag(TAG) == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, fragment, TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
+    }
+
+
+}
