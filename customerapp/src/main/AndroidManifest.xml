@@ -25,6 +25,7 @@
         <meta-data
             android:name="SKIP_GCM_REGISTRATION"
             android:value="true"/>
+        <meta-data android:name="AF_PRE_INSTALL_PATH" android:value="/data/local/tmp/pre_install.appsflyer" />GT
 
         <activity
             android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
