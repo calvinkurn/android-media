@@ -461,13 +461,8 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_DRAFT_PRODUCT:
-                    Intent draftProductIntent = context.getPackageManager()
-                            .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-
-                    if (draftProductIntent != null) {
-                        context.startActivity(draftProductIntent);
-                    } else if (context.getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToDraftProductList(context);
                     }
                     break;
                 case TkpdState.DrawerPosition.GOLD_MERCHANT:
