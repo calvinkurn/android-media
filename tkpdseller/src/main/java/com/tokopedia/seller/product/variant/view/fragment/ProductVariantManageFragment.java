@@ -52,7 +52,17 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        productVariantByCatModelList = getActivity().getIntent().getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
+        Intent activityIntent = getActivity().getIntent();
+        productVariantByCatModelList = activityIntent
+                .getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
+        if (savedInstanceState == null) {
+            if (activityIntent.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                variantData = activityIntent.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+            }
+        } else {
+            variantData = savedInstanceState.getParcelable(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+        }
+
     }
 
     @Nullable
@@ -263,5 +273,11 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, variantData);
     }
 }

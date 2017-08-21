@@ -63,6 +63,18 @@ public class VariantOption implements Parcelable {
         return 0;
     }
 
+    public int getvId() {
+        return vId;
+    }
+
+    public int getVuId() {
+        return vuId;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.pvId);

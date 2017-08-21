@@ -1,11 +1,17 @@
 package com.tokopedia.seller.product.variant.util;
 
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.Option;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantDatum;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -21,6 +27,7 @@ import java.util.List;
 public class ProductVariantUtils {
 
     private static final String VARIANT_TITLE_SEPARATOR = ",";
+    private static final String SPLIT_DELIMITER = ":"; // this depends on the api.
 
     public static String getMultipleVariantOptionTitle(int level, VariantUnitSubmit variantUnitSubmit,
                                                        List<ProductVariantByCatModel> productVariantByCatModelList) {
@@ -237,5 +244,83 @@ public class ProductVariantUtils {
                 return ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
         }
         return -1;
+    }
+
+    public static VariantData generateProductVariantSubmit(ProductVariantByPrdModel productVariantByPrdModel) {
+        if (productVariantByPrdModel.getVariantOptionList() == null ||
+                productVariantByPrdModel.getVariantOptionList().size() == 0) {
+            // Means all the variants have been removed
+            return null;
+        }
+        VariantData variantData = new VariantData();
+
+        // generate Unit Submit List
+        int tIdCounter = 1;
+        SparseIntArray tempIdInverseMap = new SparseIntArray();
+
+        // Maps the unit and unit value
+        List<VariantUnitSubmit> variantUnitSubmitList = new ArrayList<>();
+        List<VariantOption> variantOptionSourceList = productVariantByPrdModel.getVariantOptionList();
+        for (int i = 0, sizei = variantOptionSourceList.size();
+             i < sizei; i++) {
+            VariantOption varianOptionSource = variantOptionSourceList.get(i);
+            VariantUnitSubmit variantUnitSubmit = new VariantUnitSubmit();
+            variantUnitSubmit.setVariantId(varianOptionSource.getvId());
+            variantUnitSubmit.setVariantUnitId(varianOptionSource.getVuId());
+            variantUnitSubmit.setPosition(varianOptionSource.getPosition());
+            variantUnitSubmit.setProductVariant(varianOptionSource.getPvId());
+
+            //set options
+            List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
+            List<Option> optionSourceList = varianOptionSource.getOptionList();
+            for (int k = 0, sizek = optionSourceList.size(); k < sizek; k++) {
+                Option optionSource = optionSourceList.get(k);
+                VariantSubmitOption variantSubmitOption = new VariantSubmitOption();
+                variantSubmitOption.setProductVariantOptionId(optionSource.getPvoId());
+                String optionValue = optionSource.getValue();
+                int pvoId = optionSource.getPvoId();
+                long varUnitValId = optionSource.getVuvId();
+                variantSubmitOption.setVariantUnitValueId(varUnitValId);
+                variantSubmitOption.setProductVariantOptionId(pvoId);
+                if (varUnitValId == 0) {
+                    variantSubmitOption.setCustomText(optionValue);
+                } else {
+                    variantSubmitOption.setCustomText("");
+                }
+                variantSubmitOption.setTemporaryId(tIdCounter);
+                // add to map, to enable inverse lookup later
+                tempIdInverseMap.put(pvoId, tIdCounter);
+
+                tIdCounter++;
+
+                variantSubmitOptionList.add(variantSubmitOption);
+            }
+            variantUnitSubmit.setVariantSubmitOptionList(variantSubmitOptionList);
+            variantUnitSubmitList.add(variantUnitSubmit);
+        }
+        variantData.setVariantUnitSubmitList(variantUnitSubmitList);
+
+        // generate the variant status, merah+ukuran39=status true; putih+ukuran 41 status true; etc
+
+        List<VariantStatus> variantStatusList = new ArrayList<>();
+        // add the metrics status here
+        List<VariantDatum> variantSourceDataList = productVariantByPrdModel.getVariantDataList();
+        for (int i = 0, sizei = variantSourceDataList.size(); i < sizei; i++) {
+            VariantDatum variantSourceDatum = variantSourceDataList.get(i);
+            VariantStatus variantStatus = new VariantStatus();
+            variantStatus.setPvd(variantSourceDatum.getPvdId());
+            variantStatus.setStatus(variantSourceDatum.getStatus());
+            List<Long> optList = new ArrayList<>();
+            String vSourceCode = variantSourceDatum.getvCode();
+            String[] vCodeSplit = vSourceCode.split(SPLIT_DELIMITER);
+            for (String aVCodeSplit : vCodeSplit) {
+                long optTId = tempIdInverseMap.get(Integer.parseInt(aVCodeSplit));
+                optList.add(optTId);
+            }
+            variantStatus.setOptionList(optList);
+            variantStatusList.add(variantStatus);
+        }
+        variantData.setVariantStatusList(variantStatusList);
+        return variantData;
     }
 }

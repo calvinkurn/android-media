@@ -4,8 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductPhotoListDraftModel;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductWholesaleDraftModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 
 import java.util.List;
 
@@ -99,8 +98,8 @@ public class ProductDraftModel {
 
     @SerializedName("switch_variant")
     private int switchVariant;
-    @SerializedName("product_variant_submit")
-    private ProductVariantSubmit productVariantSubmit;
+    @SerializedName("variant_data")
+    private VariantData variantData;
 
     public int getSwitchVariant() {
         return switchVariant;
@@ -110,12 +109,12 @@ public class ProductDraftModel {
         this.switchVariant = switchVariant;
     }
 
-    public ProductVariantSubmit getProductVariantSubmit() {
-        return productVariantSubmit;
+    public VariantData getVariantData() {
+        return variantData;
     }
 
-    public void setProductVariantSubmit (ProductVariantSubmit productVariantSubmit) {
-        this.productVariantSubmit = productVariantSubmit;
+    public void setVariantData(VariantData variantData) {
+        this.variantData = variantData;
     }
 
     public int getProductNameEditable() {
