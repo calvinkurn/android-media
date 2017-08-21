@@ -30,6 +30,18 @@
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".newdynamicfilter.DynamicFilterColorActivity"
+            android:label="Filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".newdynamicfilter.DynamicFilterDetailActivity"
+            android:label="Filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".activity.SortProductActivity"
             android:label="Urutkan"
             android:screenOrientation="portrait"

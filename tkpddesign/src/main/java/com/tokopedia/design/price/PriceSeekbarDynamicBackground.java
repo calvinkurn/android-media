@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -15,7 +16,7 @@ import com.tokopedia.design.base.BaseCustomView;
  * Created by henrypriyono on 8/15/17.
  */
 
-public class PriceSeekbarDynamicBackground extends BaseCustomView {
+public class PriceSeekbarDynamicBackground extends View {
 
     private float firstPointPercentage = 0;
     private float secondPointPercentage = 0;
