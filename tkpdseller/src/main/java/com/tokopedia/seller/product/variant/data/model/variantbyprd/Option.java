@@ -51,6 +51,10 @@ public class Option implements Parcelable {
         return picture;
     }
 
+    public int getVuvId() {
+        return vuvId;
+    }
+
     @Override
     public int describeContents() {
         return 0;

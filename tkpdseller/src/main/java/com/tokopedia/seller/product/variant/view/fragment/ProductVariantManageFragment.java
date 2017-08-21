@@ -16,6 +16,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -52,7 +53,18 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        productVariantByCatModelList = getActivity().getIntent().getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
+        productVariantByCatModelList = getActivity().getIntent()
+                .getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
+        if (savedInstanceState == null) {
+            ProductVariantSubmit productVariantSubmit = getActivity().getIntent()
+                    .getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+            if (productVariantSubmit!= null && productVariantSubmit.hasAnyData()) {
+                variantData = productVariantSubmit.getVariantData();
+            }
+        } else {
+            variantData = savedInstanceState.getParcelable(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+        }
+
     }
 
     @Nullable
@@ -263,5 +275,11 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, variantData);
     }
 }

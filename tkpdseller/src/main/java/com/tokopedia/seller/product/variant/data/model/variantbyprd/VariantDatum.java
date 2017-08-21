@@ -33,23 +33,6 @@ public class VariantDatum implements Parcelable {
     @Expose
     private String vCode;
 
-    /**
-     * same as vcode but with name instead of id
-     */
-    private List<String> vCodeName;
-
-    public List<String> getvCodeName() {
-        return vCodeName;
-    }
-
-    /**
-     * same as vcode but with name instead of id
-     * example: List of "warna:maroon" "ukuran:38"
-     */
-    public void setvCodeName(List<String> vCodeName) {
-        this.vCodeName = vCodeName;
-    }
-
     public int getPvdId() {
         return pvdId;
     }
@@ -80,7 +63,6 @@ public class VariantDatum implements Parcelable {
         dest.writeInt(this.status);
         dest.writeInt(this.stock);
         dest.writeString(this.vCode);
-        dest.writeStringList(this.vCodeName);
     }
 
     protected VariantDatum(Parcel in) {
@@ -88,7 +70,6 @@ public class VariantDatum implements Parcelable {
         this.status = in.readInt();
         this.stock = in.readInt();
         this.vCode = in.readString();
-        this.vCodeName = in.createStringArrayList();
     }
 
     public static final Parcelable.Creator<VariantDatum> CREATOR = new Parcelable.Creator<VariantDatum>() {
