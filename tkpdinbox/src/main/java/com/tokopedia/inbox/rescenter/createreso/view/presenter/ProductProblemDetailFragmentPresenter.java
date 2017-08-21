@@ -50,6 +50,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
         problemResult.quantity = 1;
         problemResult.order.detail.id = productProblemViewModel.getOrder().getDetail().getId();
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
+        mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
     }
 
     @Override
@@ -95,15 +96,43 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     @Override
     public void updateTroubleValue(String trouble) {
         problemResult.trouble = troubleHashMap.get(trouble);
+        validateMainButton();
     }
 
     @Override
     public void updateComplainReason(String reason) {
         if (reason.length() < 30) {
             mainView.updateComplainReasonView(false,"Minimal 30 karakter");
+            problemResult.remark = "";
         } else {
             problemResult.remark = reason;
             mainView.updateComplainReasonView(true,"");
         }
+        validateMainButton();
     }
+
+    @Override
+    public void increaseQty() {
+        updatePlusMinusView(1);
+    }
+
+    @Override
+    public void decreaseQty() {
+        updatePlusMinusView(-1);
+    }
+
+    public void updatePlusMinusView(int diff) {
+        problemResult.quantity += diff;
+        mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
+    }
+
+    public void validateMainButton() {
+        if (!problemResult.remark.equals("") && problemResult.trouble != 0) {
+            mainView.updateBottomMainButton(true);
+        } else {
+            mainView.updateBottomMainButton(false);
+        }
+    }
+
+
 }

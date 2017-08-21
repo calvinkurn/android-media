@@ -21,6 +21,10 @@ public interface ProductProblemDetailFragment {
         void populateReasonSpinner(String[] reasonStringArray);
 
         void updateComplainReasonView(boolean isSuccess, String message);
+
+        void updateBottomMainButton(boolean isEnabled);
+
+        void updatePlusMinusButton(int currentValue, int maxValue);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -35,6 +39,10 @@ public interface ProductProblemDetailFragment {
         void updateTroubleValue(String trouble);
 
         void updateComplainReason(String reason);
+
+        void increaseQty();
+
+        void decreaseQty();
 
     }
 }

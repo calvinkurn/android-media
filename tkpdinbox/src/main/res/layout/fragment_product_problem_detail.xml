@@ -178,6 +178,9 @@
                     android:id="@+id/tv_qty"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="@dimen/font_medium"
                     />
 
                 <ImageButton

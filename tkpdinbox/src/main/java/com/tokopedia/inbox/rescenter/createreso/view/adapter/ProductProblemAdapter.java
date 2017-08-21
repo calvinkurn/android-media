@@ -23,6 +23,9 @@ import java.util.List;
  */
 
 public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAdapter.ItemHolder> {
+
+    public static final int FREE_RETURN = 3;
+
     private Context context;
     private List<ProductProblemViewModel> productProblemList = new ArrayList<>();
     private List<Object> itemList = new ArrayList<>();
@@ -50,7 +53,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
 
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemHolder(LayoutInflater.from(context).inflate(R.layout.item_product_problem, null));
+        return new ItemHolder(LayoutInflater.from(context).inflate(R.layout.item_product_problem, parent, false));
     }
 
     @Override
@@ -59,15 +62,25 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             final ProductProblemViewModel productProblem = (ProductProblemViewModel) itemList.get(position);
             holder.tvTitleSection.setVisibility(View.GONE);
             holder.llItem.setVisibility(View.VISIBLE);
+            holder.llFreeReturn.setVisibility(View.GONE);
             if (productProblem.getProblem().getType() == 1) {
                 holder.tvProductName.setText(productProblem.getProblem().getName());
             } else {
                 if (productProblem.getOrder() != null) {
+                    holder.tvProductName.setVisibility(View.VISIBLE);
+                    if (productProblem.getOrder().getDetail().getReturnable() == FREE_RETURN) {
+                        holder.llFreeReturn.setVisibility(View.VISIBLE);
+                        holder.tvProductName.setVisibility(View.GONE);
+                    }
                     if (productProblem.getOrder().getProduct() != null) {
                         if (productProblem.getOrder().getProduct().getThumb() != null) {
                             Glide.with(context).load(productProblem.getOrder().getProduct().getThumb()).into(holder.ivProduct);
                         }
-                        holder.tvProductName.setText(productProblem.getOrder().getProduct().getName());
+                        if (productProblem.getOrder().getDetail().getReturnable() == FREE_RETURN) {
+                            holder.tvFreeReturn.setText(productProblem.getOrder().getProduct().getName());
+                        } else {
+                            holder.tvProductName.setText(productProblem.getOrder().getProduct().getName());
+                        }
                     }
                 }
             }

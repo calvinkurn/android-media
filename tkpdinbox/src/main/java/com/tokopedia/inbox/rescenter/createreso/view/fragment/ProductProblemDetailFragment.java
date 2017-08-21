@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,12 +32,14 @@ import javax.inject.Inject;
 public class ProductProblemDetailFragment extends BaseDaggerFragment implements com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment.View {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+    public static final int FREE_RETURN = 3;
 
     ProductProblemViewModel productProblemViewModel;
 
     ImageView ivProductImage, btnInfo;
     TextView tvProductName, tvProductPrice, tvQty;
     Button btnArrived, btnNotArrived, btnSaveAndChooseOther, btnSave, btnCancel;
+    LinearLayout llFreeReturn;
     SpinnerTextView stvProblem;
     TkpdTextInputLayout tilComplainReason;
     EditText etComplainReason;
@@ -113,6 +116,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         btnPlus = (ImageButton) view.findViewById(R.id.btn_plus);
         btnMinus = (ImageButton) view.findViewById(R.id.btn_minus);
         btnInfo = (ImageView) view.findViewById(R.id.btn_info);
+        llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
 
         stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
         tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
@@ -160,6 +164,20 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
             }
         });
+
+        btnPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.increaseQty();
+            }
+        });
+
+        btnMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.decreaseQty();
+            }
+        });
     }
 
     @Override
@@ -172,6 +190,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         Glide.with(getActivity()).load(productProblemViewModel.getOrder().getProduct().getThumb()).into(ivProductImage);
         tvProductName.setText(productProblemViewModel.getOrder().getProduct().getName());
         tvProductPrice.setText(productProblemViewModel.getOrder().getProduct().getAmount().getIdr());
+        if (productProblemViewModel.getOrder().getDetail().getReturnable() == FREE_RETURN) {
+            llFreeReturn.setVisibility(View.VISIBLE);
+        } else {
+            llFreeReturn.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -236,6 +259,29 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             tilComplainReason.setError(message);
         } else {
             tilComplainReason.hideErrorSuccess();
+        }
+    }
+
+    @Override
+    public void updatePlusMinusButton(int currentValue, int maxValue) {
+        tvQty.setText(String.valueOf(currentValue));
+        btnPlus.setEnabled(true);
+        btnMinus.setEnabled(true);
+        if (currentValue == 1) {
+            btnMinus.setEnabled(false);
+        }
+        if (currentValue == maxValue) {
+            btnPlus.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void updateBottomMainButton(boolean isEnabled) {
+        buttonDisabled(btnSaveAndChooseOther);
+        buttonDisabled(btnSave);
+        if (isEnabled) {
+            buttonSelected(btnSaveAndChooseOther);
+            buttonCanSelected(btnSave);
         }
     }
 }
