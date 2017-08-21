@@ -795,7 +795,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         setGoldMerchantFeatures(context, data);
                         getProductCampaign(context, data.getInfo().getProductId().toString());
                         getMostHelpfulReview(context,data.getInfo().getProductId().toString());
-                        getProductVariant(context,data.getInfo().getProductCatalogId().toString());
+                        getProductVariant(context,data.getInfo().getProductId().toString());
                     }
 
                     @Override

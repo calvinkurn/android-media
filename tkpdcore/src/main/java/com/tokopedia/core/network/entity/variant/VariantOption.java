@@ -1,11 +1,15 @@
 
 package com.tokopedia.core.network.entity.variant;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class VariantOption {
+public class VariantOption implements Parcelable {
 
     @SerializedName("pv_id")
     @Expose
@@ -107,4 +111,82 @@ public class VariantOption {
         this.option = option;
     }
 
+
+    protected VariantOption(Parcel in) {
+        pvId = in.readByte() == 0x00 ? null : in.readInt();
+        name = in.readString();
+        identifier = in.readString();
+        unitName = in.readString();
+        vId = in.readByte() == 0x00 ? null : in.readInt();
+        vuId = in.readByte() == 0x00 ? null : in.readInt();
+        status = in.readByte() == 0x00 ? null : in.readInt();
+        position = in.readByte() == 0x00 ? null : in.readInt();
+        if (in.readByte() == 0x01) {
+            option = new ArrayList<Option>();
+            in.readList(option, Option.class.getClassLoader());
+        } else {
+            option = null;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (pvId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(pvId);
+        }
+        dest.writeString(name);
+        dest.writeString(identifier);
+        dest.writeString(unitName);
+        if (vId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(vId);
+        }
+        if (vuId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(vuId);
+        }
+        if (status == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(status);
+        }
+        if (position == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(position);
+        }
+        if (option == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(option);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<VariantOption> CREATOR = new Parcelable.Creator<VariantOption>() {
+        @Override
+        public VariantOption createFromParcel(Parcel in) {
+            return new VariantOption(in);
+        }
+
+        @Override
+        public VariantOption[] newArray(int size) {
+            return new VariantOption[size];
+        }
+    };
 }

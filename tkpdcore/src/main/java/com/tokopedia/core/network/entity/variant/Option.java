@@ -1,10 +1,13 @@
 
 package com.tokopedia.core.network.entity.variant;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Option {
+public class Option implements Parcelable {
 
     @SerializedName("pvo_id")
     @Expose
@@ -29,7 +32,7 @@ public class Option {
     private String hex;
     @SerializedName("picture")
     @Expose
-    private Object picture;
+    private String picture;
 
     public Integer getPvoId() {
         return pvoId;
@@ -91,8 +94,74 @@ public class Option {
         return picture;
     }
 
-    public void setPicture(Object picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 
+
+    protected Option(Parcel in) {
+        pvoId = in.readByte() == 0x00 ? null : in.readInt();
+        vId = in.readByte() == 0x00 ? null : in.readInt();
+        vuId = in.readByte() == 0x00 ? null : in.readInt();
+        vuvId = in.readByte() == 0x00 ? null : in.readInt();
+        value = in.readString();
+        status = in.readByte() == 0x00 ? null : in.readInt();
+        hex = in.readString();
+        picture = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (pvoId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(pvoId);
+        }
+        if (vId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(vId);
+        }
+        if (vuId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(vuId);
+        }
+        if (vuvId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(vuvId);
+        }
+        dest.writeString(value);
+        if (status == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(status);
+        }
+        dest.writeString(hex);
+        dest.writeString(picture);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() {
+        @Override
+        public Option createFromParcel(Parcel in) {
+            return new Option(in);
+        }
+
+        @Override
+        public Option[] newArray(int size) {
+            return new Option[size];
+        }
+    };
 }

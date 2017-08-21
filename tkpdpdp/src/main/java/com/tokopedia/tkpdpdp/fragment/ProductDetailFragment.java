@@ -62,6 +62,7 @@ import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
@@ -371,7 +372,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onVariantClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, WholesaleActivity.class);
+        Intent intent = new Intent(context, VariantActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(0,0);
@@ -893,6 +894,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
+        productVariant.setProductName(productData.getInfo().getProductName());
+        productVariant.setProductImageUrl(productData.getProductImages().get(0).getImageSrc300());
+        productVariant.setProductPrice(productData.getInfo().getProductPrice());
         this.priceSimulationView.addProductVariant(productVariant);
     }
 

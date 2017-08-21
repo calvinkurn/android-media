@@ -13,6 +13,7 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -116,13 +117,13 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         setVisibility(VISIBLE);
     }
 
-    public void addProductVariant(ProductVariant productVariant) {
+    public void addProductVariant(final ProductVariant productVariant) {
         tvVariant.setText(getContext().getString(R.string.choose_variant));
         variantLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                //TODO parse product variant to bundle
+                bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
                 listener.onVariantClicked(bundle);
             }
         });
