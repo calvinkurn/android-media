@@ -14,5 +14,8 @@
     <string name="anonym">Anonim</string>
     <string name="hint_anonym">Profil ditampilkan sebagai A***o</string>
     <string name="submit_review">Kirim</string>
+    <string name="favorite_button">+ Favoritkan</string>
+    <string name="title_activity_detail_review">Detail Ulasan</string>
+    <string name="seller">Penjual</string>
 
 </resources>

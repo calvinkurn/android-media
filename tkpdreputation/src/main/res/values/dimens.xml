@@ -9,4 +9,6 @@
     <dimen name="height_image_upload">74dp</dimen>
     <dimen name="padding_activity_large">23dp</dimen>
     <dimen name="button_height">52dp</dimen>
+    <dimen name="detail_reputation_avatar">40dp</dimen>
+    <dimen name="detail_reputation_product_image">52dp</dimen>
 </resources>

@@ -1,7 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/margin_small"
+              android:background="@color/white"
+              android:orientation="vertical">
 
+    <include layout="@layout/reputation_review_header"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"/>
+
+    <RelativeLayout
+        android:id="@+id/add_review_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <ImageView
+            android:id="@+id/right_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:src="@drawable/ic_chevron_right_green"/>
+
+        <TextView
+            android:id="@+id/action"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@id/right_arrow"
+            android:gravity="center_vertical"
+            android:textColor="@color/medium_green"
+            android:textSize="14sp"
+            tools:text="Beri Penilaian dan Balas Ulasan"/>
+
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/review_layout"
+        layout="@layout/review_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"/>
 </LinearLayout>
