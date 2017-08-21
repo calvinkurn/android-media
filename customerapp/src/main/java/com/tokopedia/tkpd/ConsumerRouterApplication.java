@@ -15,7 +15,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -55,6 +54,8 @@ import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.session.activity.Login;
@@ -87,7 +88,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
 
-    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
+    public GoldMerchantComponent getGoldMerchantComponent() {
+        throw new RuntimeException("method used in sellerapp only");
+    }
+
+    @Override
+    public ProductComponent getProductComponent() {
         throw new RuntimeException("method used in sellerapp only");
     }
 
@@ -263,6 +269,13 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ManageProduct.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToDraftProductList(Context context) {
+        Intent intent = new Intent(context, ProductDraftListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
