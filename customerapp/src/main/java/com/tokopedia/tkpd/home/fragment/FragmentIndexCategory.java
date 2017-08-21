@@ -401,7 +401,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                             currentPosition = -1;
                         }
                         holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
-                        bannerHandler.postDelayed(this, 3000);
+                        bannerHandler.postDelayed(this, SLIDE_DELAY);
                     }
                 }
             };
@@ -414,7 +414,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void startAutoScrollBanner() {
         if (bannerHandler != null && runnableScrollBanner != null) {
-            bannerHandler.postDelayed(runnableScrollBanner, 3000);
+            bannerHandler.postDelayed(runnableScrollBanner, SLIDE_DELAY);
         }
     }
 
