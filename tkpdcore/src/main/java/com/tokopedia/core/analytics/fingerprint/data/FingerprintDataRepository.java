@@ -19,9 +19,9 @@ public class FingerprintDataRepository implements FingerprintRepository {
     }
 
     @Override
-    public Observable<String> getFingerPrint(FingerPrint data) {
+    public Observable<String> getFingerPrint() {
         return fingerprintDataStoreFactory
                 .createDiskFingerprintDataStore()
-                .getFingerprint(data);
+                .getFingerprint();
     }
 }

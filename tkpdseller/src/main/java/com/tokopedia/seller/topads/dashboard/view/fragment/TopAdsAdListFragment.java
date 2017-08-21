@@ -294,8 +294,8 @@ public abstract class TopAdsAdListFragment<T extends
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
         if (presenter != null) {
             presenter.unSubscribe();
         }

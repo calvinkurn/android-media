@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
@@ -32,6 +33,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisti
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.GMStatRetryDataBinder;
 
 import java.util.Date;
 
@@ -158,7 +160,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
         emptyTransactionDataBinder.setEmptyTitleText(null);
         emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
         emptyTransactionDataBinder.setEmptyContentItemText(null);
@@ -175,6 +177,11 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new GMStatRetryDataBinder(adapter);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         transactionTablePresenter.detachView();
@@ -187,13 +194,10 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                 int previousSortBy = sortBy;
                 switch (sortByIndexSelection = GMStatisticUtil.findSelection(gmStatSortBy, item.getTitle().toString())) {
                     case 0:
-                        sortBy = GMTransactionTableSortBy.ORDER_SUM;
-                        break;
-                    case 1:
                         sortBy = GMTransactionTableSortBy.TRANS_SUM;
                         break;
                     default:
-                    case 2:
+                    case 1:
                         sortBy = GMTransactionTableSortBy.DELIVERED_AMT;
                         break;
                 }

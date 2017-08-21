@@ -33,7 +33,7 @@ public class TkpdState {
 		public static final int LOGIN = 6;
 		public static final int MANAGE_PEOPLE = 7;
         public static final int MANAGE_PRODUCT = 8;
-        public static final int MANAGE_PRODUCT_DIGITAL = 55;
+        public static final int MANAGE_PAYMENT_AND_TOPUP = 55;
         public static final int MANAGE_TRANSACTION_DIGITAL = 56;
         public static final int MANAGE_PRICE_PRODUCT_DIGITAL = 57;
         public static final int DRAFT_PRODUCT = 54;
