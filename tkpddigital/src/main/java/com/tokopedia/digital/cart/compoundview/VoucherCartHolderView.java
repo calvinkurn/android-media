@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.drew.lang.annotations.NotNull;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 
@@ -156,6 +157,7 @@ public class VoucherCartHolderView extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventClickCancelVoucher("","");
                 hideHolderVoucher();
                 editTextVoucher.setText("");
                 checkBoxVoucher.setChecked(false);

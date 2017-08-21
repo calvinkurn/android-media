@@ -248,6 +248,7 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
         String UPLOAD_SUCCESS = "Success Upload";
         String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
+        String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
