@@ -386,10 +386,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             });
 
+            if (promoList.size() == 1) {
+                holder.bannerIndicator.setVisibility(View.GONE);
+            }
+
             PagerSnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(holder.bannerPager);
 
-            startAutoScrollBanner();
+//            startAutoScrollBanner();
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
         }
@@ -895,7 +899,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
-            startAutoScrollBanner();
+//            startAutoScrollBanner();
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();

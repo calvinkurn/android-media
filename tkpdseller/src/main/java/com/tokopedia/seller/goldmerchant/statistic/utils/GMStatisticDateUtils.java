@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by nathan on 7/19/17.
@@ -116,14 +114,14 @@ public class GMStatisticDateUtils {
     }
 
     public static PeriodRangeModel getComparedDate(long startdate, long endDate) {
-        int diffDate = (int) DatePickerUtils.getDateDiff(startdate, endDate, TimeUnit.DAYS);
+        int diffDate = (int) GoldMerchantDateUtils.generateDateRanges(startdate, endDate).size();
         long comparedStartDate = 0;
         long comparedEndDate = 0;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(startdate);
         calendar.add(Calendar.DATE, -1);
         comparedEndDate = calendar.getTimeInMillis();
-        calendar.add(Calendar.DATE, -diffDate);
+        calendar.add(Calendar.DATE, -diffDate + 1);
         comparedStartDate = calendar.getTimeInMillis();
         PeriodRangeModel periodRangeModel = new PeriodRangeModel(comparedStartDate, comparedEndDate);
         return periodRangeModel;

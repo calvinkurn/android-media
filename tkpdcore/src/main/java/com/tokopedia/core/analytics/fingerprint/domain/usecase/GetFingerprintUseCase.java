@@ -23,7 +23,7 @@ public class GetFingerprintUseCase extends UseCase<String>{
 
     @Override
     public Observable<String> createObservable(RequestParams requestParams) {
-        return fingerprintRepository.getFingerPrint(new FingerPrint.FingerPrintBuilder().build());
+        return fingerprintRepository.getFingerPrint();
     }
 
 }
