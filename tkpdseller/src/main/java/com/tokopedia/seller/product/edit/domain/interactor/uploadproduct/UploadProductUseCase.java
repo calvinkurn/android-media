@@ -32,7 +32,6 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private final ImageProductUploadRepository imageProductUploadRepository;
     private final GenerateHostRepository generateHostRepository;
     private final UploadProductRepository uploadProductRepository;
-    private final ProductVariantRepository productVariantRepository;
 
     private AddProductNotificationListener listener;
 
@@ -43,14 +42,12 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
             ProductDraftRepository productDraftRepository,
             GenerateHostRepository generateHostRepository,
             ImageProductUploadRepository imageProductUploadRepository,
-            UploadProductRepository uploadProductRepository,
-            ProductVariantRepository productVariantRepository) {
+            UploadProductRepository uploadProductRepository) {
         super(threadExecutor, postExecutionThread);
         this.productDraftRepository = productDraftRepository;
         this.generateHostRepository = generateHostRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
         this.uploadProductRepository = uploadProductRepository;
-        this.productVariantRepository = productVariantRepository;
     }
 
     public void setListener(AddProductNotificationListener listener) {
@@ -73,8 +70,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                 .flatMap(new GetProductModelObservable())
                 .flatMap(new UploadProduct(productId, listener, generateHostRepository,
                         uploadProductRepository, imageProductUploadRepository,
-                        new ProductDraftUpdate(productDraftRepository, productId),
-                        productVariantRepository))
+                        new ProductDraftUpdate(productDraftRepository, productId)))
                 .doOnNext(new DeleteProductDraft(productId, productDraftRepository));
     }
 

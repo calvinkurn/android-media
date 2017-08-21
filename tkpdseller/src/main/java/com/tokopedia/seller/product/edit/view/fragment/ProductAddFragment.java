@@ -668,7 +668,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         }
         viewModel.setProductStatus(getStatusUpload());
         viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
-        viewModel.setProductVariantByPrdModel(productAdditionalInfoViewHolder.getProductVariantByPrdModel());
+        viewModel.setProductVariantBySubmit(productAdditionalInfoViewHolder.getProductVariantSubmit());
         return viewModel;
     }
 

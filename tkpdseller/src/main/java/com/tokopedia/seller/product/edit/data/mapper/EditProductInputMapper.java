@@ -19,9 +19,8 @@ public class EditProductInputMapper extends AddProductValidationInputMapper{
     public EditProductInputMapper() {
     }
 
-    public void map(EditProductInputServiceModel serviceModel, UploadProductInputDomainModel domainModel,
-                    List<ProductVariantByCatModel> productVariantByCatModelList){
-        map((AddProductValidationInputServiceModel) serviceModel, domainModel, productVariantByCatModelList);
+    public void map(EditProductInputServiceModel serviceModel, UploadProductInputDomainModel domainModel){
+        map((AddProductValidationInputServiceModel) serviceModel, domainModel);
         serviceModel.setProductChangeCatalog(domainModel.getProductChangeCatalog());
         serviceModel.setProductChangePhoto(domainModel.getProductChangePhoto());
         serviceModel.setProductChangeWholesale(domainModel.getProductChangeWholesale());

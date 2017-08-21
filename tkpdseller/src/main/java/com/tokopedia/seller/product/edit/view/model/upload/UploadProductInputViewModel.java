@@ -6,8 +6,7 @@ import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class UploadProductInputViewModel {
     private int productChangeWholesale;
     private int productChangeCatalog;
     private int switchVariant;
-    private ProductVariantByPrdModel productVariantByPrdModel;
+    private ProductVariantSubmit productVariantSubmit;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -93,14 +92,13 @@ public class UploadProductInputViewModel {
         return switchVariant;
     }
 
-    public ProductVariantByPrdModel getProductVariantByPrdModel() {
-        return productVariantByPrdModel;
+    public ProductVariantSubmit getProductVariantSubmit() {
+        return productVariantSubmit;
     }
 
-    public void setProductVariantByPrdModel(ProductVariantByPrdModel productVariantByPrdModel) {
-        this.productVariantByPrdModel = productVariantByPrdModel;
-        if (productVariantByPrdModel == null || productVariantByPrdModel.getVariantOptionList() == null ||
-                productVariantByPrdModel.getVariantOptionList().size() == 0) {
+    public void setProductVariantBySubmit(ProductVariantSubmit productVariantSubmit) {
+        this.productVariantSubmit = productVariantSubmit;
+        if (productVariantSubmit == null || !productVariantSubmit.hasAnyData()) {
             this.switchVariant = 0;
         } else {
             this.switchVariant = 1;
@@ -385,8 +383,7 @@ public class UploadProductInputViewModel {
         if (poProcessValue!= defaultModel.getPoProcessValue()) {
             return false;
         }
-        if (productVariantByPrdModel.getVariantOptionList()!= null &&
-                productVariantByPrdModel.getVariantOptionList().size() > 0){
+        if (productVariantSubmit!= null && productVariantSubmit.hasAnyData()){
             return false;
         }
         return true;

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -49,10 +48,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public static final int INACTIVE_PREORDER = -1;
 
-    public static final String SAVED_PRD_VARIANT = "svd_variant";
-    public static final String SAVED_VARIANT = "svd_var";
+    public static final String SAVED_PRD_VARIANT_SUBMIT = "svd_variant";
+    public static final String SAVED_VARIANT_CAT = "svd_var";
 
-    private TextInputLayout descriptionTextInputLayout;
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
     private LabelView variantLabelView;
@@ -62,8 +60,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private Listener listener;
     private boolean goldMerchant;
 
-    private ProductVariantByPrdModel productVariantByPrdModel;
+    private ProductVariantSubmit productVariantSubmit;
     private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
+    private ProductVariantByPrdModel productVariantByPrdModel;
 
     /**
      * this prevent duplication at videoIdList;
@@ -72,7 +71,6 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public ProductAdditionalInfoViewHolder(View view) {
         videoIdList = new ArrayList<>();
-        descriptionTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_description);
         descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
         labelAddVideoView = (LabelView) view.findViewById(R.id.label_add_video_view);
         variantLabelView = (LabelView) view.findViewById(R.id.label_view_variant);
@@ -193,8 +191,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         return videoIdList;
     }
 
-    public ProductVariantByPrdModel getProductVariantByPrdModel() {
-        return productVariantByPrdModel;
+    public ProductVariantSubmit getProductVariantSubmit() {
+        return productVariantSubmit;
     }
 
     public void setVideoIdList(List<String> videoIdList) {
@@ -218,17 +216,24 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList){
+    public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList) {
         this.productVariantByCatModelList = (ArrayList<ProductVariantByCatModel>) productVariantByCatModelList;
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             variantLabelView.setVisibility(View.GONE);
         } else {
             variantLabelView.setVisibility(View.VISIBLE);
         }
+        generateProductVariantSubmit();
     }
 
     public void onSuccessGetSelectedProductVariant(ProductVariantByPrdModel productVariantByPrdModel) {
         this.productVariantByPrdModel = productVariantByPrdModel;
+        generateProductVariantSubmit();
+    }
+
+    public void setProductVariantSubmit(ProductVariantSubmit productVariantSubmit) {
+        this.productVariantSubmit = productVariantSubmit;
+        // TODO hendry use productVariantSubmit to populate the description
         if (productVariantByPrdModel == null ||
                 productVariantByPrdModel.getVariantOptionList() == null ||
                 productVariantByPrdModel.getVariantOptionList().size() == 0) {
@@ -243,7 +248,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                     selectedVariantString += "\n";
                 }
                 List<Option> optionList = variantOption.getOptionList();
-                if (optionList== null || optionList.size() == 0) {
+                if (optionList == null || optionList.size() == 0) {
                     continue;
                 }
                 selectedVariantString += optionList.size() + " " + variantName;
@@ -300,8 +305,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<>(videoIdList));
-        savedInstanceState.putParcelable(SAVED_PRD_VARIANT, productVariantByPrdModel);
-        savedInstanceState.putParcelableArrayList(SAVED_VARIANT, productVariantByCatModelList);
+        savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, productVariantSubmit);
+        savedInstanceState.putParcelableArrayList(SAVED_VARIANT_CAT, productVariantByCatModelList);
     }
 
     @Override
@@ -313,13 +318,16 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         if (stringArrayList != null) {
             setVideoIdList(stringArrayList);
         }
-        productVariantByPrdModel = savedInstanceState.getParcelable(SAVED_PRD_VARIANT);
-        productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT);
+        productVariantSubmit = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
+        productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT_CAT);
     }
 
     private ProductVariantSubmit generateProductVariantSubmit() {
-        if (productVariantByPrdModel!= null && productVariantByCatModelList!=null
-                && productVariantByPrdModel.getVariantOptionList()!= null
+        if (productVariantSubmit != null) {
+            return productVariantSubmit;
+        }
+        if (productVariantByPrdModel != null && productVariantByCatModelList != null
+                && productVariantByPrdModel.getVariantOptionList() != null
                 && productVariantByPrdModel.getVariantOptionList().size() > 0
                 && productVariantByCatModelList.size() > 0) {
             ProductVariantHelper productVariantHelper = new ProductVariantHelper(productVariantByCatModelList, productVariantByPrdModel);

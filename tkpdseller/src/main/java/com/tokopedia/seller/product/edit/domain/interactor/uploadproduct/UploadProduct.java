@@ -8,7 +8,6 @@ import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationL
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -23,21 +22,18 @@ public class UploadProduct implements Func1<UploadProductInputDomainModel, Obser
     private final GenerateHostRepository generateHostRepository;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
-    private final ProductVariantRepository productVariantRepository;
     private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
 
     public UploadProduct(long productId, AddProductNotificationListener listener,
                          GenerateHostRepository generateHostRepository,
                          UploadProductRepository uploadProductRepository,
                          ImageProductUploadRepository imageProductUploadRepository,
-                         UploadProductUseCase.ProductDraftUpdate draftUpdate,
-                         ProductVariantRepository productVariantRepository) {
+                         UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.productId = productId;
         this.listener = listener;
         this.generateHostRepository = generateHostRepository;
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
-        this.productVariantRepository = productVariantRepository;
         this.draftUpdate = draftUpdate;
     }
 
@@ -48,7 +44,7 @@ public class UploadProduct implements Func1<UploadProductInputDomainModel, Obser
                 .flatMap(new GetGeneratedHost(generateHostRepository))
                 .doOnNext(notificationManager.getUpdateNotification())
                 .map(new PrepareUploadImage(domainModel))
-                .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, imageProductUploadRepository, draftUpdate,productVariantRepository))
+                .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, imageProductUploadRepository, draftUpdate))
                 .onErrorResumeNext(new AddProductStatusToError(domainModel.getProductStatus()));
     }
 
