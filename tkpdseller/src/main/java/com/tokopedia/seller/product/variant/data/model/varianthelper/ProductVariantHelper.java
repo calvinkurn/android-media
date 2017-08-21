@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.variant.data.model.variantbyprd.Option;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantDatum;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VarianStatus;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -97,7 +97,7 @@ public class ProductVariantHelper {
                 List<ProductVariantValue> productVariantValueList = productVariantUnit.getProductVariantValueList();
                 for (int k = 0, sizek = productVariantValueList.size(); k < sizek; k++) {
                     ProductVariantValue productVariantValue = productVariantValueList.get(k);
-                    int valueId = productVariantValue.getValueId();
+                    long valueId = productVariantValue.getValueId();
                     String valueLongName = variantId + DELIMITER + unitId + DELIMITER + productVariantValue.getValue();
 
                     unitValuesIdMap.put(valueId, valueLongName);
@@ -177,7 +177,7 @@ public class ProductVariantHelper {
         VariantData variantData = new VariantData();
 
         variantData.setVariantUnitSubmitList(generateUnitSubmitList());
-        variantData.setVarianStatusList(getVariantStatusSubmitList());
+        variantData.setVariantStatusList(getVariantStatusSubmitList());
 
         productVariantSubmit.setVariantData(variantData);
         return productVariantSubmit;
@@ -233,26 +233,26 @@ public class ProductVariantHelper {
         return variantUnitSubmitList;
     }
 
-    private List<VarianStatus> getVariantStatusSubmitList() {
-        List<VarianStatus> varianStatusList = new ArrayList<>();
+    private List<VariantStatus> getVariantStatusSubmitList() {
+        List<VariantStatus> variantStatusList = new ArrayList<>();
         // add the metrics status here
         List<VariantDatum> variantSourceDataList = productVariantByPrdModel.getVariantDataList();
         for (int i = 0, sizei = variantSourceDataList.size(); i < sizei; i++) {
             VariantDatum variantSourceDatum = variantSourceDataList.get(i);
-            VarianStatus varianStatus = new VarianStatus();
-            varianStatus.setPvd(variantSourceDatum.getPvdId());
-            varianStatus.setStatus(variantSourceDatum.getStatus());
-            List<Integer> optList = new ArrayList<>();
+            VariantStatus variantStatus = new VariantStatus();
+            variantStatus.setPvd(variantSourceDatum.getPvdId());
+            variantStatus.setStatus(variantSourceDatum.getStatus());
+            List<Long> optList = new ArrayList<>();
             List<String> codeNameSourceList = variantSourceDatum.getvCodeName();
             for (int k = 0, sizek = codeNameSourceList.size(); k < sizek; k++) {
                 String codeNameSource = codeNameSourceList.get(k);
-                int optTId = tempIdInverseMap.get(codeNameSource);
+                long optTId = tempIdInverseMap.get(codeNameSource);
                 optList.add(optTId);
             }
-            varianStatus.setOptionList(optList);
-            varianStatusList.add(varianStatus);
+            variantStatus.setOptionList(optList);
+            variantStatusList.add(variantStatus);
         }
-        return varianStatusList;
+        return variantStatusList;
     }
 
 

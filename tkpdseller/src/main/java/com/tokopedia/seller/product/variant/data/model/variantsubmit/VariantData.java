@@ -16,7 +16,7 @@ public class VariantData {
     private List<VariantUnitSubmit> variantUnitSubmitList;
     @SerializedName("product_variant")
     @Expose
-    private List<VarianStatus> varianStatusList;
+    private List<VariantStatus> variantStatusList;
 
     /**
      * Summary of the selected variant list. for example. Color and size.
@@ -36,18 +36,18 @@ public class VariantData {
 
     /**
      * Detail of the combination for variant level 1+ variant level 2 + so on
-     * @return  varianStatusList list of the metrics of selected variants
+     * @return  variantStatusList list of the metrics of selected variants
      */
-    public List<VarianStatus> getVarianStatusList() {
-        return varianStatusList;
+    public List<VariantStatus> getVariantStatusList() {
+        return variantStatusList;
     }
 
     /**
      * Detail of the combination for variant level 1+ variant level 2 + so on
-     * @param varianStatus list of the metrics of selected variants
+     * @param variantStatus list of the metrics of selected variants
      */
-    public void setVarianStatusList(List<VarianStatus> varianStatus) {
-        this.varianStatusList = varianStatus;
+    public void setVariantStatusList(List<VariantStatus> variantStatus) {
+        this.variantStatusList = variantStatus;
     }
 
 }

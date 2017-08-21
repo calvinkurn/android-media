@@ -16,6 +16,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ExtraConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -144,6 +145,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
+        updateVariantStatusToDefault();
         updateVariantItemList();
         updateVariantUnitView();
     }
@@ -153,6 +155,8 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         variantUnitSubmit.setPosition(level);
         if (variantData == null) {
             variantData = new VariantData();
+        }
+        if (variantData.getVariantUnitSubmitList() == null) {
             variantData.setVariantUnitSubmitList(new ArrayList<VariantUnitSubmit>());
         }
         int variantUnitSubmitSize = variantData.getVariantUnitSubmitList().size();
@@ -187,15 +191,31 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         }
     }
 
+    private void updateVariantStatusToDefault() {
+        if (variantData == null) {
+            variantData = new VariantData();
+        }
+        if (variantData.getVariantStatusList() == null) {
+            variantData.setVariantStatusList(new ArrayList<VariantStatus>());
+        }
+        List<VariantStatus> variantStatusList = new ArrayList<>();
+        if (productVariantByCatModelList.size() >= ExtraConstant.VARIANT_LEVEL_TWO_VALUE) {
+            variantStatusList = ProductVariantUtils.getVariantStatusList(
+                    getVariantUnitSubmit(ExtraConstant.VARIANT_LEVEL_ONE_VALUE), getVariantUnitSubmit(ExtraConstant.VARIANT_LEVEL_TWO_VALUE));
+        } else if (productVariantByCatModelList.size() >= ExtraConstant.VARIANT_LEVEL_ONE_VALUE) {
+            variantStatusList = ProductVariantUtils.getVariantStatusList(
+                    getVariantUnitSubmit(ExtraConstant.VARIANT_LEVEL_ONE_VALUE));
+        }
+        variantData.setVariantStatusList(variantStatusList);
+    }
+
     private void updateVariantItemList() {
         List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
-        VariantUnitSubmit variantUnitSubmit = getVariantUnitSubmit(ExtraConstant.VARIANT_LEVEL_ONE_VALUE);
-        if (variantUnitSubmit != null) {
-            for (VariantSubmitOption variantSubmitOption : variantUnitSubmit.getVariantSubmitOptionList()) {
-                ProductVariantManageViewModel productVariantManageViewModel = ProductVariantUtils.getProductVariantManageViewModel(
-                        variantSubmitOption, variantUnitSubmit, productVariantByCatModelList);
-                productVariantManageViewModelList.add(productVariantManageViewModel);
-            }
+        if (productVariantByCatModelList.size() >= ExtraConstant.VARIANT_LEVEL_TWO_VALUE) {
+            productVariantManageViewModelList = ProductVariantUtils.getProductVariantManageViewModelListTwoLevel(
+                    variantData.getVariantUnitSubmitList(), variantData.getVariantStatusList(), productVariantByCatModelList);
+        } else if (productVariantByCatModelList.size() >= ExtraConstant.VARIANT_LEVEL_ONE_VALUE) {
+
         }
         onSearchLoaded(productVariantManageViewModelList, productVariantManageViewModelList.size());
     }
