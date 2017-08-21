@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:padding="@dimen/dynamic_filter_item_padding">
 
-    <com.example.henrypriyono.simulatedynamicfilter.PriceRangeInputView
+    <com.tokopedia.design.price.PriceRangeInputView
         android:id="@+id/slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
