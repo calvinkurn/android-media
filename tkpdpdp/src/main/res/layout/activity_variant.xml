@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/simple_top_bar_layout" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/variant_parent_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/top_bar_shadow" />
+
+
+        <com.tokopedia.tkpdpdp.customview.ButtonBuyView
+            android:id="@+id/view_buy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginBottom="@dimen/margin_sm"
+            app:layout_anchorGravity="bottom" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>
