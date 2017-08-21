@@ -631,7 +631,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickButtonNext() {
-        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName() + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain());
+        UnifyTracking.eventClickLanjutCheckoutPage(
+                cartDigitalInfoDataState.getAttributes().getCategoryName(),
+                cartDigitalInfoDataState.getAttributes().getOperatorName()
+                        + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain()
+        );
         presenter.processToCheckout();
     }
 
