@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
+import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -21,7 +22,8 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
  * Created by nathan on 8/2/17.
  */
 
-public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel> implements ProductVariantPickerMultipleItem<ProductVariantViewModel> {
+public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel>
+        implements ProductVariantPickerMultipleItem<ProductVariantViewModel>, TextPickerDialogListener {
 
     private ProductVariantByCatModel productVariantByCatModel;
 
@@ -64,6 +66,11 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public void removeItemFromCache(ProductVariantViewModel productVariantViewModel) {
         super.removeItemFromCache(productVariantViewModel);
         updateBottomSheetInfo();
+    }
+
+    @Override
+    public void onTextPickerSubmitted(String text) {
+        ((ProductVariantPickerSearchFragment) getSearchListFragment()).onTextPickerSubmitted(text);
     }
 
     @Override

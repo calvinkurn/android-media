@@ -2,6 +2,9 @@ package com.tokopedia.seller.product.variant.view.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.design.text.SpinnerTextView;
@@ -11,6 +14,8 @@ import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
+import com.tokopedia.seller.product.etalase.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
@@ -19,6 +24,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubm
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
+import com.tokopedia.seller.product.variant.view.dialog.ProductVariantItemPickerAddDialogFragment;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
@@ -30,11 +36,14 @@ import java.util.List;
  */
 
 public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantValue>
-        implements BasePickerItemSearchList<ProductVariantViewModel>, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue> {
+        implements BasePickerItemSearchList<ProductVariantViewModel>,
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue>, TextPickerDialogListener {
 
     private static final int MINIMUM_SHOW_UNIT_SIZE = 2;
+    private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
 
     private ProductVariantPickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
+    private ProductVariantByCatModel productVariantByCatModel;
 
     private List<ProductVariantUnit> productVariantUnitList;
     private List<ProductVariantValue> productVariantValueList;
@@ -50,7 +59,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (getActivity() instanceof BasePickerMultipleItem) {
             pickerMultipleItem = (ProductVariantPickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
-        ProductVariantByCatModel productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
             productVariantUnitList = productVariantByCatModel.getUnitList();
             productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
@@ -61,6 +70,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (variantUnitSubmit != null) {
             currentVariantUnitId = variantUnitSubmit.getVariantUnitId();
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -145,6 +155,13 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     }
 
     @Override
+    public void onTextPickerSubmitted(String text) {
+        ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
+        productVariantViewModel.setTitle(text);
+        pickerMultipleItem.addItemFromSearch(productVariantViewModel);
+    }
+
+    @Override
     public void onItemClicked(ProductVariantValue productVariantValue) {
         // Already handled onItemChecked
     }
@@ -197,5 +214,29 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     public long getCurrentUnitId() {
         return currentVariantUnitId;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_product_variant_item_picker_search, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add) {
+            showAddDialog();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showAddDialog() {
+        ProductVariantItemPickerAddDialogFragment dialogFragment = new ProductVariantItemPickerAddDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_TITLE, productVariantByCatModel.getName());
+        dialogFragment.setArguments(bundle);
+        dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);
     }
 }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
+    <string name="label_add">Tambah</string>
     <string name="label_empty_value">-</string>
     <string name="label_back">Kembali</string>
     <string name="title_date_setting">Atur Tanggal</string>
