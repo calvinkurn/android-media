@@ -68,24 +68,26 @@
 
                 <RelativeLayout
                     android:id="@+id/fl_input_number"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
+                    android:layout_marginLeft="@dimen/margin_sm"
                     android:visibility="visible">
 
                     <AutoCompleteTextView
                         android:id="@+id/ac_number"
-                        android:layout_width="match_parent"
+                        android:layout_width="165dp"
                         android:layout_height="wrap_content"
                         android:focusableInTouchMode="true"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
+                       android:layout_alignParentRight="true"
                         android:popupBackground="@color/white"
                         android:textColor="@color/green_btn"
                         android:textColorHint="@color/grey_400"
                         android:textSize="@dimen/fonts" />
 
                     <LinearLayout
+                        android:id="@+id/ll_clear"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -102,7 +104,8 @@
                             android:layout_gravity="end|center_vertical"
                             android:layout_marginEnd="@dimen/margin_vs"
                             android:layout_marginRight="@dimen/margin_vs"
-                            android:contentDescription="@string/app_name" />
+                            android:contentDescription="@string/app_name"
+                            android:visibility="gone" />
 
                         <ImageView
                             android:id="@+id/btn_clear_number"
@@ -133,6 +136,7 @@
 
 
             </LinearLayout>
+
             <TextView
                 android:id="@+id/tv_error_number"
                 android:layout_width="match_parent"
@@ -144,6 +148,7 @@
                 android:textColor="@color/red_600"
                 android:textSize="@dimen/fontvs"
                 android:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

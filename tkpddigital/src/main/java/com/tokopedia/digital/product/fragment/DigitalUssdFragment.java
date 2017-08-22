@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -73,7 +72,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
     @BindView(R2.id.tv_balance)
     TextView tvBalance;
-//    @BindView(R2.id.tv_phone_number)
+    //    @BindView(R2.id.tv_phone_number)
 //    TextView tvPhoneNumber;
     @BindView(R2.id.tv_operator_name)
     TextView tv_operator_name;
@@ -117,6 +116,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     private Product productSelected;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
     private List<Validation> validationList;
+    private boolean isOperaorVerified = false;
 
     /**
      * Use this factory method to create a new instance of
@@ -206,18 +206,26 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     @Override
     protected void initView(View view) {
         digitalProductChooserView = new DigitalProductChooserView(context);
-        clearHolder(holderChooserProduct);
-        holderChooserProduct.addView(digitalProductChooserView);
-        digitalProductChooserView.renderInitDataList(selectedOperator.getProductList());
-        digitalProductChooserView.setActionListener(getActionListenerProductChooser());
         productPriceInfoView = new ProductPriceInfoView(context);
+
+        clearHolder(holderChooserProduct);
+        digitalProductChooserView.setActionListener(getActionListenerProductChooser());
+        digitalProductChooserView.renderInitDataList(selectedOperator.getProductList());
+        digitalProductChooserView.setLabelText(selectedOperator.getRule().getProductText());
+        holderChooserProduct.addView(digitalProductChooserView);
+
+        for (Product product : selectedOperator.getProductList()) {
+            if (product.getStatus() != Product.STATUS_INACTIVE) {
+                productSelected = product;
+                break;
+            }
+        }
+        handleCallBackProductChooser(productSelected);
+
         tvBalance.setText(pulsaBalance.getPulsaBalance());
         //tvPhoneNumber.setText(pulsaBalance.getMobileNumber());
         tv_operator_name.setText(selectedOperator.getName());
         btnBuyDigital.setOnClickListener(getButtonBuyClickListener());
-        productSelected = selectedOperator.getProductList().get(0);
-        digitalProductChooserView.setLabelText(selectedOperator.getRule().getProductText());
-        handleCallBackProductChooser(productSelected);
 
         final TextWatcher textWatcher = getTextWatcherInput();
         autoCompleteTextView.removeTextChangedListener(textWatcher);
@@ -236,10 +244,13 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                isOperaorVerified = false;
                 String tempInput = charSequence.toString();
                 btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
+                pulsaBalance.setMobileNumber(tempInput);
                 if (tempInput.length() < 4) {
                     imgOperator.setVisibility(GONE);
+
                 }
                 String tempInputTrim = tempInput;
                 if (tempInput.startsWith("+62")) {
@@ -265,6 +276,13 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                     if (errorString == null) {
                         tvErrorNumber.setText("");
                         tvErrorNumber.setVisibility(GONE);
+                        if(matchOperator(tempInputTrim)){
+                            isOperaorVerified = true;
+                        }else{
+                            tvErrorNumber.setText("Operator doesn't match");
+                            tvErrorNumber.setVisibility(VISIBLE);
+                        }
+
                     } else {
                         if (tempInput.isEmpty()) {
                             tvErrorNumber.setText("");
@@ -286,14 +304,28 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         };
     }
 
+    private boolean matchOperator(String tempInputTrim) {
+        for (String prefix : selectedOperator.getPrefixList()) {
+            if (tempInputTrim.startsWith(prefix)) {
+                enableImageOperator(selectedOperator.getImage());
+                return true;
+            }
+        }
+        return false;
+    }
+
     @NonNull
     private View.OnClickListener getButtonBuyClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pulsaBalance.setMobileNumber(autoCompleteTextView.getText().toString());
-                presenter.processAddToCartProduct(presenter.generateCheckoutPassData(selectedOperator, pulsaBalance, mCategoryId, mCategoryName, productSelected.getProductId(), cbInstantCheckout.isChecked()));
-                UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_BUY_PULSA,selectedOperator.getName()+","+pulsaBalance.getMobileNumber());
+                if (isOperaorVerified) {
+                    pulsaBalance.setMobileNumber(autoCompleteTextView.getText().toString());
+                    presenter.processAddToCartProduct(presenter.generateCheckoutPassData(selectedOperator, pulsaBalance, mCategoryId, mCategoryName, productSelected.getProductId(), cbInstantCheckout.isChecked()));
+                    UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_BUY_PULSA, selectedOperator.getName() + "," + pulsaBalance.getMobileNumber());
+                } else {
+                    showToastMessage("Operator does not match.");
+                }
             }
         };
     }
@@ -363,9 +395,11 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     }
 
     public void enableImageOperator(String imageUrl) {
-        imgOperator.setVisibility(VISIBLE);
-        Glide.with(getActivity()).load(imageUrl).dontAnimate().into(this.imgOperator);
+       // imgOperator.setVisibility(VISIBLE);
+       // Glide.with(getActivity()).load(imageUrl).dontAnimate().into(this.imgOperator);
+
     }
+
     @Override
     public String getVersionInfoApplication() {
         return VersionInfo.getVersionInfo(getActivity());
