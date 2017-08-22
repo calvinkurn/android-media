@@ -22,6 +22,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -71,6 +72,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -301,6 +303,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
+    public void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
+        ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
     }
 
     @Override

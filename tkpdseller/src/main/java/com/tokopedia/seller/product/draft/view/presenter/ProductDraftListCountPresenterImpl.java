@@ -159,6 +159,7 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
         fetchAllDraftProductCountUseCase.unsubscribe();
         clearAllDraftProductUseCase.unsubscribe();
         updateUploadingDraftProductUseCase.unsubscribe();
+        saveBulkDraftProductUseCase.unsubscribe();
     }
 
     private Subscriber<Boolean> getUploadingSubscriber() {

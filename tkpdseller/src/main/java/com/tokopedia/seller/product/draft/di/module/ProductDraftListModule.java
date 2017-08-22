@@ -32,13 +32,6 @@ public class ProductDraftListModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    FetchAllDraftProductUseCase provideFetchAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                                       ProductDraftRepository productDraftRepository){
-        return new FetchAllDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
-    }
-
-    @ProductAddScope
-    @Provides
     ProductDraftListPresenter providePresenterDraft(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                                     DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                                     UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
@@ -47,18 +40,5 @@ public class ProductDraftListModule extends ProductAddModule {
                 updateUploadingDraftProductUseCase, saveBulkDraftProductUseCase);
     }
 
-    @ProductAddScope
-    @Provides
-    DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                                                    ProductDraftRepository productDraftRepository){
-        return new DeleteSingleDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
-    }
-
-    @ProductAddScope
-    @Provides
-    UpdateUploadingDraftProductUseCase provideUpdateUploadingDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                                                    ProductDraftRepository productDraftRepository){
-        return new UpdateUploadingDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
-    }
 }
 
