@@ -17,6 +17,10 @@ import java.util.HashMap;
  */
 
 public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<ProductProblemDetailFragment.View> implements ProductProblemDetailFragment.Presenter {
+
+    public static final int RESULT_SAVE = 2001;
+    public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
+
     private Context context;
     private ProductProblemDetailFragment.View mainView;
     private ProblemResult problemResult;
@@ -48,6 +52,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
         getCanShowNotArrived();
         problemResult.remark = "";
         problemResult.quantity = 1;
+        problemResult.name = productProblemViewModel.getProblem().getName();
         problemResult.order.detail.id = productProblemViewModel.getOrder().getDetail().getId();
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
         mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
@@ -102,11 +107,11 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     @Override
     public void updateComplainReason(String reason) {
         if (reason.length() < 30) {
-            mainView.updateComplainReasonView(false,"Minimal 30 karakter");
+            mainView.updateComplainReasonView(false, "Minimal 30 karakter");
             problemResult.remark = "";
         } else {
             problemResult.remark = reason;
-            mainView.updateComplainReasonView(true,"");
+            mainView.updateComplainReasonView(true, "");
         }
         validateMainButton();
     }
@@ -127,12 +132,11 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     }
 
     public void validateMainButton() {
-        if (!problemResult.remark.equals("") && problemResult.trouble != 0) {
-            mainView.updateBottomMainButton(true);
-        } else {
-            mainView.updateBottomMainButton(false);
-        }
+        mainView.updateBottomMainButton((!problemResult.remark.equals("") && problemResult.trouble != 0));
     }
 
-
+    @Override
+    public void btnSaveClicked(boolean isSaveAndChooseOtherButton) {
+        mainView.saveData(problemResult, isSaveAndChooseOtherButton ? RESULT_SAVE_AND_CHOOSE_OTHER : RESULT_SAVE);
+    }
 }

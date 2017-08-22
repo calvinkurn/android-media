@@ -2035,6 +2035,7 @@ di Tokopedia Sekarang!</string>
     <string name="string_button_save">Simpan</string>
     <string name="string_button_cancel">Batal</string>
     <string name="string_support_free_return">Produk Ini Didukung Free Returns</string>
+    <string name="string_continue">Lanjut</string>
 
     <!-- finish dialog string-->
     <string name="string_finish_title">Selesaikan Pemesanan</string>

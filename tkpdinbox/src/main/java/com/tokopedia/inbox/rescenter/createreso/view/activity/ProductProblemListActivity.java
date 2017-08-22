@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -79,4 +80,8 @@ public class ProductProblemListActivity extends BasePresenterActivity<ProductPro
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

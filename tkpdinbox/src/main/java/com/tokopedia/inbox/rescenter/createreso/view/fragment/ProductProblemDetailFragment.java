@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,7 @@ import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import javax.inject.Inject;
@@ -32,6 +34,8 @@ import javax.inject.Inject;
 public class ProductProblemDetailFragment extends BaseDaggerFragment implements com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment.View {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+    public static final String RESULT_DATA = "result_data";
+    public static final String RESULT_STEP_CODE = "result_step_code";
     public static final int FREE_RETURN = 3;
 
     ProductProblemViewModel productProblemViewModel;
@@ -44,7 +48,6 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     TkpdTextInputLayout tilComplainReason;
     EditText etComplainReason;
     ImageButton btnPlus, btnMinus;
-
 
     ProductProblemDetailFragmentPresenter presenter;
 
@@ -178,6 +181,20 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
                 presenter.decreaseQty();
             }
         });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.btnSaveClicked(false);
+            }
+        });
+
+        btnSaveAndChooseOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.btnSaveClicked(true);
+            }
+        });
     }
 
     @Override
@@ -283,5 +300,14 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             buttonSelected(btnSaveAndChooseOther);
             buttonCanSelected(btnSave);
         }
+    }
+
+    @Override
+    public void saveData(ProblemResult problemResult, int resultStepCode) {
+        Intent output = new Intent();
+        output.putExtra(RESULT_DATA, problemResult);
+        output.putExtra(RESULT_STEP_CODE, resultStepCode);
+        getActivity().setResult(getActivity().RESULT_OK, output);
+        getActivity().finish();
     }
 }

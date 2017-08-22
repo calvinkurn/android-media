@@ -1,12 +1,10 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.List;
@@ -19,11 +17,26 @@ public interface ProductProblemListFragment {
 
     interface View extends CustomerView {
 
-        void populateProblemAndProduct(List<ProductProblemViewModel> productProblemViewModelList);
+        void populateProblemAndProduct(ProductProblemListViewModel productProblemViewModelList);
+
+        void onProblemResultListUpdated(List<ProblemResult> problemResults);
+
+        void enableBottomButton();
+
+        void disableBottomButton();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void loadProblemAndProduct(List<ProductProblemViewModel> productProblemViewModelList);
+        void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList);
+
+        void addOrRemoveStringProblem(ProductProblemViewModel productProblemViewModel);
+
+        void updateProblemResultData();
+
+        void removeProblemResult(ProductProblemViewModel productProblemViewModel);
+
+        void processResultData(ProblemResult problemResult, int resultStepCode);
     }
 }

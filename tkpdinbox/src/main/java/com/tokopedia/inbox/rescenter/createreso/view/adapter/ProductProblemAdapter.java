@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
 
     private Context context;
     private List<ProductProblemViewModel> productProblemList = new ArrayList<>();
+    private List<ProblemResult> selectedProblemResultList = new ArrayList<>();
     private List<Object> itemList = new ArrayList<>();
     private ProductProblemItemListener listener;
 
@@ -35,6 +37,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     public ProductProblemAdapter(Context context, ProductProblemItemListener listener) {
         this.context = context;
         this.listener = listener;
+        selectedProblemResultList = new ArrayList<>();
     }
 
     public void updateAdapter(List<ProductProblemViewModel> productProblemList) {
@@ -44,12 +47,23 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
         for (ProductProblemViewModel productProblem : productProblemList) {
             if (type != productProblem.getProblem().getType()) {
                 type = productProblem.getProblem().getType();
-                itemList.add(productProblem.getProblem().getName());
+                if (type == 2) {
+                    itemList.add("Kendala Produk");
+                } else {
+                    itemList.add(productProblem.getProblem().getName());
+                }
             }
             itemList.add(productProblem);
         }
         notifyDataSetChanged();
     }
+
+    public void clearAndUpdateSelectedItem(List<ProblemResult> selectedProblemResultList) {
+        this.selectedProblemResultList = selectedProblemResultList;
+        notifyDataSetChanged();
+    }
+
+
 
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -58,11 +72,21 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
 
     @Override
     public void onBindViewHolder(ItemHolder holder, int position) {
+        holder.checkBox.setClickable(false);
         if (itemList.get(position) instanceof ProductProblemViewModel) {
             final ProductProblemViewModel productProblem = (ProductProblemViewModel) itemList.get(position);
             holder.tvTitleSection.setVisibility(View.GONE);
             holder.llItem.setVisibility(View.VISIBLE);
             holder.llFreeReturn.setVisibility(View.GONE);
+            holder.checkBox.setChecked(false);
+            for (ProblemResult problemResult : selectedProblemResultList) {
+                if (problemResult.name.equals(productProblem.getProblem().getName())) {
+                    holder.checkBox.setChecked(true);
+                    if (productProblem.getProblem().getType() == 2) {
+                        holder.checkBox.setClickable(true);
+                    }
+                }
+            }
             if (productProblem.getProblem().getType() == 1) {
                 holder.tvProductName.setText(productProblem.getProblem().getName());
             } else {
@@ -89,6 +113,17 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                 public void onClick(View view) {
                     if (productProblem.getProblem().getType() == 2) {
                         listener.onItemClicked(productProblem);
+                    } else {
+                        listener.onStringProblemClicked(productProblem);
+                    }
+                }
+            });
+
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (productProblem.getProblem().getType() == 2) {
+                        listener.onRemoveProductProblem(productProblem);
                     }
                 }
             });

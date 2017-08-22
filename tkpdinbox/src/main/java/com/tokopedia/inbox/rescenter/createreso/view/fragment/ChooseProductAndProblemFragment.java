@@ -2,26 +2,28 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.Button;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemDetailActivity;
-import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.ProductProblemAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,10 +35,17 @@ import javax.inject.Inject;
 public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ProductProblemListFragment.View, ProductProblemItemListener {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+    public static final String RESULT_DATA = "result_data";
+    public static final String RESULT_STEP_CODE = "result_step_code";
+    public static final int REQUEST_CODE = 1234;
+    public static final int RESULT_SAVE = 2001;
+    public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
+
 
     RecyclerView rvProductProblem;
     ProductProblemAdapter adapter;
     ProductProblemListViewModel productProblemListViewModel;
+    Button btnContinue;
 
     public static ChooseProductAndProblemFragment newInstance(ProductProblemListViewModel productProblemListViewModel) {
         ChooseProductAndProblemFragment fragment = new ChooseProductAndProblemFragment();
@@ -105,10 +114,12 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     @Override
     protected void initView(View view) {
         rvProductProblem = (RecyclerView) view.findViewById(R.id.rv_product_problem);
+        btnContinue = (Button) view.findViewById(R.id.btn_continue);
+        disableBottomButton();
         rvProductProblem.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ProductProblemAdapter(context, this);
         rvProductProblem.setAdapter(adapter);
-        presenter.loadProblemAndProduct(productProblemListViewModel.getProductProblemViewModels());
+        presenter.loadProblemAndProduct(productProblemListViewModel);
     }
 
     @Override
@@ -117,14 +128,58 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     }
 
     @Override
-    public void populateProblemAndProduct(List<ProductProblemViewModel> productProblemViewModelList) {
-        adapter.updateAdapter(productProblemViewModelList);
+    public void populateProblemAndProduct(ProductProblemListViewModel productProblemViewModelList) {
+        adapter.updateAdapter(productProblemViewModelList.getProductProblemViewModels());
     }
 
     @Override
     public void onItemClicked(ProductProblemViewModel productProblemViewModel) {
         Intent intent = new Intent(getActivity(), ProductProblemDetailActivity.class);
         intent.putExtra(PRODUCT_PROBLEM_DATA, productProblemViewModel);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE);
     }
+
+    @Override
+    public void onRemoveProductProblem(ProductProblemViewModel productProblemViewModel) {
+        presenter.removeProblemResult(productProblemViewModel);
+    }
+
+    @Override
+    public void onStringProblemClicked(ProductProblemViewModel productProblemViewModel) {
+        presenter.addOrRemoveStringProblem(productProblemViewModel);
+
+    }
+
+    @Override
+    public void onProblemResultListUpdated(List<ProblemResult> problemResults) {
+        adapter.clearAndUpdateSelectedItem(problemResults);
+
+    }
+
+    @Override
+    public void enableBottomButton() {
+        btnContinue.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_green));
+        btnContinue.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        btnContinue.setClickable(true);
+        btnContinue.setEnabled(true);
+    }
+
+    @Override
+    public void disableBottomButton() {
+        btnContinue.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        btnContinue.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
+        btnContinue.setClickable(false);
+        btnContinue.setEnabled(false);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == getActivity().RESULT_OK) {
+                presenter.processResultData((ProblemResult) data.getParcelableExtra(RESULT_DATA), data.getIntExtra(RESULT_STEP_CODE, 0));
+            }
+        }
+    }
+
 }
