@@ -48,6 +48,8 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     private SharedPreferences preferences;
 
+    private int selectedExpandableItemPosition;
+
     public static void moveTo(AppCompatActivity fragmentActivity,
                               List<Filter> filterCategoryList) {
         if (fragmentActivity != null) {
@@ -126,6 +128,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
                 OptionHelper.saveOptionInputState(option, checkedState, savedTextInput);
             }
         }
+        adapter.notifyItemChanged(selectedExpandableItemPosition);
     }
 
     private boolean saveFilterText() {
@@ -157,6 +160,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     @Override
     public void onExpandableItemClicked(Filter filter) {
+        selectedExpandableItemPosition = adapter.getItemPosition(filter);
         enrichWithInputState(filter);
         FilterDetailActivityRouter.launchDetailActivity(this, filter);
     }

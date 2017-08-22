@@ -68,6 +68,7 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
 
         public void bind(final Option option) {
             checkBox.setText(option.getName());
+            checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(Boolean.parseBoolean(option.getInputState()));
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

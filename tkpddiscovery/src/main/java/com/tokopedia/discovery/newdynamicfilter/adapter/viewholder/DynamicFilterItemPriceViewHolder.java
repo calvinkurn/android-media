@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdynamicfilter.adapter.viewholder;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -83,12 +84,18 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
                 defaultMinValue, defaultMaxValue);
     }
 
-    private void bindWholesaleOptionItem(Option option) {
+    private void bindWholesaleOptionItem(final Option option) {
         wholesaleTitle.setText(option.getName());
         if (Boolean.TRUE.equals(dynamicFilterView.getLastCheckedState(option))) {
             wholesaleToggle.setChecked(true);
         } else {
             wholesaleToggle.setChecked(false);
         }
+        wholesaleToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                dynamicFilterView.saveCheckedState(option, isChecked);
+            }
+        });
     }
 }
