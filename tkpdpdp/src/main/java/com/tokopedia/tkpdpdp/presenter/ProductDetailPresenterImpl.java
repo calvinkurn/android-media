@@ -419,7 +419,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         + " "
                                         + context.getResources()
                                         .getString(R.string.toast_success_promo2);
-                                viewListener.showToastMessage(msg);
+                                viewListener.showDinkSuccess(MethodChecker.fromHtml(productName).toString());
                             } else {
                                 String msg = context.getResources().getString(R.string.toast_promo_error1)
                                         + " "
@@ -429,7 +429,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         + "\n"
                                         + context.getResources().getString(R.string.toast_promo_error2);
 
-                                viewListener.showToastMessage(msg);
+                                viewListener.showDinkFailed(MethodChecker.fromHtml(productName).toString(),
+                                        data.getExpiry());
                             }
 
                             String expireDate = data.getExpiry();
@@ -462,7 +463,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     + cacheHandler.getString(DATE_EXPIRE,"")
                     + "\n"
                     + context.getResources().getString(R.string.toast_promo_error2);
-            viewListener.showToastMessage(msg);
+            viewListener.showDinkFailed(MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME,"")).toString(),
+                    cacheHandler.getString(DATE_EXPIRE,""));
         }
     }
 

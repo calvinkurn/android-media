@@ -276,4 +276,8 @@ public interface ProductDetailView extends ViewListener {
     void showSuccessWishlistSnackBar();
 
     void showProductCampaign(ProductCampaign productCampaign);
+
+    void showDinkSuccess(String productName);
+
+    void showDinkFailed(String productName, String expired);
 }

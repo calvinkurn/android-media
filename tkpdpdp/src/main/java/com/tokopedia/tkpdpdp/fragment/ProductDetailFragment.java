@@ -58,6 +58,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
+import com.tokopedia.tkpdpdp.DinkFailedActivity;
+import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -603,7 +605,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProgressLoading() {
-  
+
     }
 
     @Override
@@ -867,6 +869,21 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 })
                 .setActionTextColor(getResources().getColor(R.color.tkpd_main_green ))
                 .show();
+    }
+
+    @Override
+    public void showDinkSuccess(String productName) {
+        Intent intent = new Intent(getActivity(), DinkSuccessActivity.class);
+        intent.putExtra(DinkSuccessActivity.EXTRA_PRODUCT, productName);
+        startActivity(intent);
+    }
+
+    @Override
+    public void showDinkFailed(String productName, String expired) {
+        Intent intent = new Intent(getActivity(), DinkFailedActivity.class);
+        intent.putExtra(DinkFailedActivity.EXTRA_PRODUCT, productName);
+        intent.putExtra(DinkFailedActivity.EXTRA_TIME_EXP, expired);
+        startActivity(intent);
     }
 
     @Override

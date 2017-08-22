@@ -194,6 +194,10 @@
     <item name="fab_detail" type="id" />
     <item name="view_price_simulation" type="id" />
     <item name="button_buy_container" type="id" />
+    <item name="button_use_topads" type="id" />
+    <item name="tv_promo_product" type="id" />
+    <item name="tv_promo_expired" type="id" />
+    <item name="toolbar_title" type="id" />
 
 
 </resources>
