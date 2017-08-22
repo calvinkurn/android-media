@@ -31,7 +31,7 @@ public interface ProductProblemListFragment {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList);
+        void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList, List<ProblemResult> problemResultList);
 
         void addOrRemoveStringProblem(ProductProblemViewModel productProblemViewModel);
 

@@ -32,8 +32,15 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
     }
 
     @Override
-    public void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList) {
+    public void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList,
+                                      List<ProblemResult> problemResultList) {
         mainView.populateProblemAndProduct(productProblemViewModelList);
+        if (problemResultList != null) {
+            if (problemResultList.size() != 0) {
+                this.problemResultList = problemResultList;
+                updateProblemResultList();
+            }
+        }
     }
 
     @Override
@@ -104,20 +111,34 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     @Override
     public void processResultData(ProblemResult problemResult, int resultStepCode) {
-        if (problemResultList.size() != 0) {
-            List<ProblemResult> tempResultList = new ArrayList<>();
-            for (ProblemResult problemObject : problemResultList) {
-                if (problemObject.name.equals(problemResult.name)) {
-                    tempResultList.add(problemResult);
-                } else {
-                    tempResultList.add(problemObject);
-                }
+        boolean isContain = false;
+        List<ProblemResult> tempResultList = new ArrayList<>();
+        for (ProblemResult problemObject : problemResultList) {
+            if (problemObject.name.equals(problemResult.name)) {
+                isContain = true;
+                tempResultList.add(problemResult);
+            } else {
+                tempResultList.add(problemObject);
             }
-            problemResultList = tempResultList;
+        }
+        if (!isContain) {
+            addResultList(problemResult);
         } else {
-            problemResultList.add(problemResult);
+            updateResultList(problemResult);
         }
         updateProblemResultList();
+    }
+
+    public void addResultList(ProblemResult problemResult) {
+        problemResultList.add(problemResult);
+    }
+
+    public void updateResultList(ProblemResult problemResult) {
+        List<ProblemResult> tempList = new ArrayList<>();
+        for(ProblemResult problemObject : problemResultList) {
+            tempList.add((problemObject.name.equals(problemResult.name)) ? problemResult : problemObject);
+        }
+        problemResultList = tempList;
     }
 
     public void updateContinueButton() {

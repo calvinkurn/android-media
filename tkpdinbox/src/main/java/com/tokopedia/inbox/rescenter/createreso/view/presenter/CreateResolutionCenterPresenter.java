@@ -87,7 +87,11 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void chooseProductProblemClicked() {
-        mainView.transitionToChooseProductAndProblemPage(mappingDomainToViewModel(productProblemResponseDomain));
+        ArrayList<ProblemResult> problemResults = new ArrayList<>();
+        for (ProblemResult problemResult : resultViewModel.problem) {
+            problemResults.add(problemResult);
+        }
+        mainView.transitionToChooseProductAndProblemPage(mappingDomainToViewModel(productProblemResponseDomain), problemResults);
     }
 
     @Override

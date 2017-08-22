@@ -49,12 +49,14 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     RecyclerView rvProductProblem;
     ProductProblemAdapter adapter;
     ProductProblemListViewModel productProblemListViewModel;
+    List<ProblemResult> problemResultList = new ArrayList<>();
     Button btnContinue;
 
-    public static ChooseProductAndProblemFragment newInstance(ProductProblemListViewModel productProblemListViewModel) {
+    public static ChooseProductAndProblemFragment newInstance(ProductProblemListViewModel productProblemListViewModel, ArrayList<ProblemResult> problemResultList) {
         ChooseProductAndProblemFragment fragment = new ChooseProductAndProblemFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemListViewModel);
+        bundle.putParcelableArrayList(PROBLEM_RESULT_LIST_DATA, problemResultList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -107,6 +109,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     @Override
     protected void setupArguments(Bundle arguments) {
         productProblemListViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
+        problemResultList = arguments.getParcelableArrayList(PROBLEM_RESULT_LIST_DATA);
 
     }
 
@@ -123,7 +126,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
         rvProductProblem.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ProductProblemAdapter(context, this);
         rvProductProblem.setAdapter(adapter);
-        presenter.loadProblemAndProduct(productProblemListViewModel);
+        presenter.loadProblemAndProduct(productProblemListViewModel, problemResultList);
     }
 
     @Override
