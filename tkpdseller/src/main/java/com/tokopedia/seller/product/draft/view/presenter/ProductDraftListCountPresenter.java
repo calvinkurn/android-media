@@ -15,5 +15,4 @@ public abstract class ProductDraftListCountPresenter extends BaseDaggerPresenter
     public abstract void fetchAllDraftCountWithUpdateUploading();
     public abstract void fetchAllDraftCount();
     public abstract void clearAllDraft();
-    public abstract void saveInstagramToDraft(Context context, ArrayList<String>localPathList, ArrayList<String> instagramDescList);
 }

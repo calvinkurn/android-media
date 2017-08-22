@@ -165,7 +165,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         searchForPage(currentPage);
     }
 
-    protected void resetPageAndSearch() {
+    public void resetPageAndSearch() {
         searchForPage(getStartPage());
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.draft.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,27 +14,22 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.draft.di.component.ProductDraftListCountComponent;
-import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
+import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
+import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
-import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 /**
  * Created by User on 6/19/2017.
@@ -57,7 +51,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
     }
 
     public static Intent createInstance(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList){
-        Intent intent = new Intent(context, ProductDraftAddActivity.class);
+        Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.putParcelableArrayListExtra(INSTAGRAM_MEDIA_LIST, instagramMediaModelList);
         return intent;
     }
@@ -102,10 +96,10 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
                             }
                             DaggerProductDraftSaveBulkComponent
                                     .builder()
-                                    .productDraftListCountModule(new ProductDraftListCountModule())
+                                    .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
                                     .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
                                     .build()
-                                    .inject(this);
+                                    .inject(ProductDraftListActivity.this);
                             productDraftSaveBulkPresenter.attachView(ProductDraftListActivity.this);
                             productDraftSaveBulkPresenter.saveInstagramToDraft(ProductDraftListActivity.this,
                                     localPaths, imageDescriptionList);
@@ -221,10 +215,14 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
         if (productIds.size() == 1) {
             ProductDraftAddActivity.start(this,
                     productIds.get(0).toString());
-            this.finish();
         } else {
             CommonUtils.UniversalToast(this,getString(R.string.product_draft_instagram_save_success,
                     productIds.size()));
+            ProductDraftListFragment productDraftListFragment =
+                    (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+            if (productDraftListFragment!= null) {
+                productDraftListFragment.resetPageAndSearch();
+            }
         }
     }
 

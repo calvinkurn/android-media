@@ -34,11 +34,9 @@ public class ProductDraftListCountModule extends ProductAddModule {
     @Provides
     ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
                                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase,
-                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                                         SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
+                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
         return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase,
-                saveBulkDraftProductUseCase);
+                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase);
     }
 
 }
