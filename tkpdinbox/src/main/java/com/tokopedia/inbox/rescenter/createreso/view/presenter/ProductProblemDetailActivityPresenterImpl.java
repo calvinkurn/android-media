@@ -6,6 +6,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemDeta
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndProblemFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.ProductProblemDetailFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailActivityPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 /**
@@ -22,8 +23,8 @@ public class ProductProblemDetailActivityPresenterImpl implements ProductProblem
     }
 
     @Override
-    public void initFragment(ProductProblemViewModel productProblemViewModel) {
-        mainView.inflateFragment(ProductProblemDetailFragment.newInstance(productProblemViewModel),
+    public void initFragment(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
+        mainView.inflateFragment(ProductProblemDetailFragment.newInstance(productProblemViewModel, problemResult),
                 ChooseProductAndProblemFragment.class.getSimpleName());
     }
 }

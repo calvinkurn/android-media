@@ -19,9 +19,13 @@ import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemList
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -32,12 +36,16 @@ import javax.inject.Inject;
 public class CreateResolutionCenterFragment extends BaseDaggerFragment implements CreateResolutionCenter.View {
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
+    public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
+
+    private static final int REQUEST_STEP1 = 1001;
+    private static final int REQUEST_STEP2 = 1002;
+    private static final int REQUEST_STEP3 = 1003;
 
     FrameLayout ffChooseProductProblem, ffSolution, ffUploadProve;
     TextView tvChooseProductProblem, tvChooseProductProblemTitle, tvSolution, tvSolutionTitle, tvUploadProve, tvUploadProveTitle;
     ImageView ivChooseProductProblem, ivSolution, ivUploadProve;
     Button btnCreateResolution;
-    ButtonState buttonState;
 
     String orderId = "";
 
@@ -132,9 +140,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         btnCreateResolution = (Button) view.findViewById(R.id.btn_create_resolution);
 
-        buttonState = new ButtonState();
-        buttonState.isChooseProductProblemButtonEnabled = true;
-        updateView(buttonState);
+        updateView(new ResultViewModel());
         presenter.loadProductProblem(orderId);
     }
 
@@ -143,80 +149,59 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         ffChooseProductProblem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.chooseProductProblemClicked(buttonState);
+                presenter.chooseProductProblemClicked();
             }
         });
 
         ffSolution.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.solutionClicked(buttonState);
+                presenter.solutionClicked();
             }
         });
 
         ffUploadProve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.uploadProveClicked(buttonState);
+                presenter.uploadProveClicked();
             }
         });
 
         btnCreateResolution.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.createResoClicked(buttonState);
+                presenter.createResoClicked();
             }
         });
     }
 
 
     @Override
-    public void updateView(ButtonState buttonState) {
-        ffChooseProductProblem.setEnabled(buttonState.isChooseProductProblemButtonEnabled);
-        ffSolution.setEnabled(buttonState.isSolutionButtonEnabled);
-        ffUploadProve.setEnabled(buttonState.isUploadProveButtonEnabled);
-        btnCreateResolution.setEnabled(buttonState.isCreateResolutionButtonEnabled);
-        btnCreateResolution.setClickable(buttonState.isCreateResolutionButtonEnabled);
+    public void updateView(ResultViewModel resultViewModel) {
 
-        if (buttonState.isChooseProductProblemButtonEnabled) {
-            ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
-        } else {
-            ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
-        }
+        ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
 
-        if (buttonState.isChooseProductProblemHaveValue) {
+        if (resultViewModel.problem.size() != 0) {
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
-        } else {
-            ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
-        }
-
-        if (buttonState.isSolutionButtonEnabled) {
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
         } else {
+            ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
         }
 
-        if (buttonState.isSolutionHaveValue) {
+        if (resultViewModel.solution != 0) {
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
-        } else {
-            ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
-        }
-
-        if (buttonState.isUploadProveButtonEnabled) {
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
         } else {
+            ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
         }
 
-        if (buttonState.isUploadProveHaveValue) {
+        if (resultViewModel.attachmentCount != 0) {
             ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
-        } else {
-            ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
-        }
-
-        if (buttonState.isCreateResolutionButtonEnabled) {
             btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
         } else {
+            ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
         }
     }
@@ -225,7 +210,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel) {
         Intent intent = new Intent(getActivity(), ProductProblemListActivity.class);
         intent.putExtra(KEY_PARAM_PASS_DATA, productProblemListViewModel);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_STEP1);
     }
 
     @Override
@@ -243,6 +228,15 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void showErrorToast(String error) {
         Toast.makeText(getActivity(), "error : " + error, Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_STEP1) {
+            if (resultCode == getActivity().RESULT_OK) {
+                presenter.addResultFromStep1(data.<ProblemResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
+            }
+        }
     }
 }

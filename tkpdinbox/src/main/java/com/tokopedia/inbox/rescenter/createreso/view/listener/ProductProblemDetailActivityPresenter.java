@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
 
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 /**
@@ -8,5 +9,5 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Pr
  */
 
 public interface ProductProblemDetailActivityPresenter {
-    void initFragment(ProductProblemViewModel productProblemViewModel);
+    void initFragment(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult);
 }

@@ -7,6 +7,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public interface ProductProblemListFragment {
 
         void disableBottomButton();
 
+        void saveData(ArrayList<ProblemResult> problemResults);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -38,5 +40,7 @@ public interface ProductProblemListFragment {
         void removeProblemResult(ProductProblemViewModel productProblemViewModel);
 
         void processResultData(ProblemResult problemResult, int resultStepCode);
+
+        void buttonContinueClicked();
     }
 }

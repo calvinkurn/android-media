@@ -39,10 +39,23 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     }
 
     @Override
-    public void populateData(ProductProblemViewModel productProblemViewModel) {
+    public void populateData(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
         this.productProblemViewModel = productProblemViewModel;
-        initProblemResult(productProblemViewModel);
+        if (problemResult != null) {
+            updateProblemResult(problemResult);
+        } else {
+            initProblemResult(productProblemViewModel);
+        }
         mainView.populateDataToScreen(productProblemViewModel);
+    }
+
+    public void updateProblemResult(ProblemResult problemResult) {
+        this.problemResult = problemResult;
+        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
+        mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
+        mainView.updateComplainReasonValue(problemResult.remark);
+        validateMainButton();
+
     }
 
     public void initProblemResult(ProductProblemViewModel productProblemViewModel) {

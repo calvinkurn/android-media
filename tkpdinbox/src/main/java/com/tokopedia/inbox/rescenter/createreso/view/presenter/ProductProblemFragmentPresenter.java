@@ -81,6 +81,15 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     }
 
+    public ProblemResult getProblemResultItem(ProductProblemViewModel productProblemViewModel) {
+        for (ProblemResult problemResult : problemResultList) {
+            if (problemResult.name.equals(productProblemViewModel.getProblem().getName())) {
+                return problemResult;
+            }
+         }
+        return null;
+    }
+
     @Override
     public void removeProblemResult(ProductProblemViewModel productProblemViewModel) {
         List<ProblemResult> tempResultList = new ArrayList<>();
@@ -117,5 +126,14 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
         } else {
             mainView.disableBottomButton();
         }
+    }
+
+    @Override
+    public void buttonContinueClicked() {
+        ArrayList<ProblemResult> problemResultArrayList = new ArrayList<>();
+        for (ProblemResult problemResult : problemResultList) {
+            problemResultArrayList.add(problemResult);
+        }
+        mainView.saveData(problemResultArrayList);
     }
 }

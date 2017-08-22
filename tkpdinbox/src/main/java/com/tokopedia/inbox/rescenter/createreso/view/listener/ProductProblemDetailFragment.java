@@ -23,6 +23,8 @@ public interface ProductProblemDetailFragment {
 
         void updateComplainReasonView(boolean isSuccess, String message);
 
+        void updateComplainReasonValue(String complainString);
+
         void updateBottomMainButton(boolean isEnabled);
 
         void updatePlusMinusButton(int currentValue, int maxValue);
@@ -31,7 +33,7 @@ public interface ProductProblemDetailFragment {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void populateData(ProductProblemViewModel productProblemViewModel);
+        void populateData(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult);
 
         void btnArrivedClicked();
 

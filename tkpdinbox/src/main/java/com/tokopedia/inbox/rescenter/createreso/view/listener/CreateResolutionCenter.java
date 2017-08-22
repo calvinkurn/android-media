@@ -3,10 +3,13 @@ package com.tokopedia.inbox.rescenter.createreso.view.listener;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +21,7 @@ public interface CreateResolutionCenter {
 
     interface View extends CustomerView {
 
-        void updateView(ButtonState buttonState);
+        void updateView(ResultViewModel resultViewModel);
 
         void showCreateResoResponse(boolean isSuccess, String message);
 
@@ -33,14 +36,16 @@ public interface CreateResolutionCenter {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void chooseProductProblemClicked(ButtonState buttonState);
+        void chooseProductProblemClicked();
 
-        void solutionClicked(ButtonState buttonState);
+        void solutionClicked();
 
-        void uploadProveClicked(ButtonState buttonState);
+        void uploadProveClicked();
 
-        void createResoClicked(ButtonState buttonState);
+        void createResoClicked();
 
         void loadProductProblem(String orderId);
+
+        void addResultFromStep1(ArrayList<ProblemResult> problemResultList);
     }
 }

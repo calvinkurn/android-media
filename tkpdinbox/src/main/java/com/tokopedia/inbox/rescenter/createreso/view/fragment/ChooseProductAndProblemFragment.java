@@ -35,11 +35,15 @@ import javax.inject.Inject;
 public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ProductProblemListFragment.View, ProductProblemItemListener {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+    public static final String PROBLEM_RESULT_DATA = "problem_result_data";
     public static final String RESULT_DATA = "result_data";
     public static final String RESULT_STEP_CODE = "result_step_code";
     public static final int REQUEST_CODE = 1234;
     public static final int RESULT_SAVE = 2001;
     public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
+
+
+    public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
 
 
     RecyclerView rvProductProblem;
@@ -124,6 +128,12 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
 
     @Override
     protected void setViewListener() {
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.buttonContinueClicked();
+            }
+        });
 
     }
 
@@ -136,6 +146,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     public void onItemClicked(ProductProblemViewModel productProblemViewModel) {
         Intent intent = new Intent(getActivity(), ProductProblemDetailActivity.class);
         intent.putExtra(PRODUCT_PROBLEM_DATA, productProblemViewModel);
+        intent.putExtra(PROBLEM_RESULT_DATA, presenter.getProblemResultItem(productProblemViewModel));
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -170,6 +181,14 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
         btnContinue.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
         btnContinue.setClickable(false);
         btnContinue.setEnabled(false);
+    }
+
+    @Override
+    public void saveData(ArrayList<ProblemResult> problemResults) {
+        Intent output = new Intent();
+        output.putParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA, problemResults);
+        getActivity().setResult(getActivity().RESULT_OK, output);
+        getActivity().finish();
     }
 
     @Override

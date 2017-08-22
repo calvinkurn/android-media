@@ -9,6 +9,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailActivityPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailActivityPresenterImpl;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
@@ -19,8 +20,9 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Pr
 public class ProductProblemDetailActivity extends BasePresenterActivity<ProductProblemDetailActivityPresenter> implements ProductProblemDetailActivityView, HasComponent {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+    public static final String PROBLEM_RESULT_DATA = "problem_result_data";
 
-
+    ProblemResult problemResult;
     ProductProblemViewModel productProblemViewModel;
 
     @Override
@@ -31,6 +33,7 @@ public class ProductProblemDetailActivity extends BasePresenterActivity<ProductP
     @Override
     protected void setupBundlePass(Bundle extras) {
         productProblemViewModel = (ProductProblemViewModel) extras.get(PRODUCT_PROBLEM_DATA);
+        problemResult = (ProblemResult) extras.get(PROBLEM_RESULT_DATA);
     }
 
     @Override
@@ -46,7 +49,7 @@ public class ProductProblemDetailActivity extends BasePresenterActivity<ProductP
     @Override
     protected void initView() {
         setTitle(productProblemViewModel.getOrder().getProduct().getName());
-        presenter.initFragment(productProblemViewModel);
+        presenter.initFragment(productProblemViewModel, problemResult);
 
     }
 

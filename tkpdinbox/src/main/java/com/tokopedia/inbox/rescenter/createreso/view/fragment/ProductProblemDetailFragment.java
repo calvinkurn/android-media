@@ -34,11 +34,13 @@ import javax.inject.Inject;
 public class ProductProblemDetailFragment extends BaseDaggerFragment implements com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment.View {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
+    public static final String PROBLEM_RESULT_DATA = "problem_result_data";
     public static final String RESULT_DATA = "result_data";
     public static final String RESULT_STEP_CODE = "result_step_code";
     public static final int FREE_RETURN = 3;
 
     ProductProblemViewModel productProblemViewModel;
+    ProblemResult problemResult;
 
     ImageView ivProductImage, btnInfo;
     TextView tvProductName, tvProductPrice, tvQty;
@@ -51,10 +53,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
     ProductProblemDetailFragmentPresenter presenter;
 
-    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel) {
+    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
         ProductProblemDetailFragment fragment = new ProductProblemDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemViewModel);
+        bundle.putParcelable(PROBLEM_RESULT_DATA, problemResult);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -94,6 +97,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     @Override
     protected void setupArguments(Bundle arguments) {
         productProblemViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
+        problemResult = arguments.getParcelable(PROBLEM_RESULT_DATA);
 
     }
 
@@ -124,7 +128,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
         tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
 
-        presenter.populateData(productProblemViewModel);
+        presenter.populateData(productProblemViewModel, problemResult);
 
     }
 
@@ -277,6 +281,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         } else {
             tilComplainReason.hideErrorSuccess();
         }
+    }
+
+    @Override
+    public void updateComplainReasonValue(String complainString) {
+        etComplainReason.setText(complainString);
     }
 
     @Override

@@ -15,6 +15,8 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Stat
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.OrderDetailViewModel;
@@ -44,9 +46,13 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private CreateResolutionCenter.View mainView;
     private GetProductProblemUseCase getProductProblemUseCase;
     private ProductProblemResponseDomain productProblemResponseDomain;
+
+    private ResultViewModel resultViewModel;
+
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase) {
         this.getProductProblemUseCase = getProductProblemUseCase;
+        resultViewModel = new ResultViewModel();
     }
 
     @Override
@@ -80,31 +86,28 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     }
 
     @Override
-    public void chooseProductProblemClicked(ButtonState buttonState) {
-//        buttonState.isChooseProductProblemButtonEnabled = true;
-//        buttonState.isChooseProductProblemHaveValue = true;
-//        buttonState.isSolutionButtonEnabled = true;
-//        mainView.updateView(buttonState);
+    public void chooseProductProblemClicked() {
         mainView.transitionToChooseProductAndProblemPage(mappingDomainToViewModel(productProblemResponseDomain));
+    }
+
+    @Override
+    public void solutionClicked() {
 
     }
 
     @Override
-    public void solutionClicked(ButtonState buttonState) {
-        buttonState.isSolutionHaveValue = true;
-        buttonState.isUploadProveButtonEnabled = true;
-        mainView.updateView(buttonState);
+    public void uploadProveClicked() {
+
     }
 
     @Override
-    public void uploadProveClicked(ButtonState buttonState) {
-        buttonState.isUploadProveHaveValue = true;
-        buttonState.isCreateResolutionButtonEnabled = true;
-        mainView.updateView(buttonState);
+    public void addResultFromStep1(ArrayList<ProblemResult> problemResultList) {
+        resultViewModel.problem = problemResultList;
+        mainView.updateView(resultViewModel);
     }
 
     @Override
-    public void createResoClicked(ButtonState buttonState) {
+    public void createResoClicked() {
         mainView.showCreateResoResponse(true, "Dummy Success");
     }
 
