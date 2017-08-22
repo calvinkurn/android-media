@@ -9,8 +9,8 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
 import com.tokopedia.seller.product.etalase.view.dialog.AddEtalaseDialog;
-import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.etalase.view.fragment.EtalasePickerFragment;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
@@ -20,7 +20,7 @@ import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
  */
 
 public class EtalasePickerActivity extends BaseSimpleActivity implements HasComponent<ProductComponent>,
-        EtalasePickerFragmentListener, TextPickerDialogListener {
+        EtalasePickerFragmentListener, TextPickerDialog.Listener {
 
     public static final String ETALASE_ID = "ETALASE_ID";
     public static final String ETALASE_NAME = "ETALASE_NAME";

@@ -21,12 +21,13 @@ import com.tokopedia.seller.R;
  * @author sebastianuskh on 4/17/17.
  */
 
-public abstract class TextPickerDialog extends DialogFragment{
+public abstract class TextPickerDialog extends DialogFragment {
 
     protected EditText textInput;
     protected TextInputLayout textInputLayout;
-    protected TextPickerDialogListener listener;
     protected TextView stringPickerTitle;
+
+    protected Listener listener;
 
     @NonNull
     @Override
@@ -48,10 +49,10 @@ public abstract class TextPickerDialog extends DialogFragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof TextPickerDialogListener){
-            listener = (TextPickerDialogListener) context;
+        if (context instanceof Listener) {
+            listener = (Listener) context;
         } else {
-            throw new RuntimeException("Activity must implement TextPickerDialogListener");
+            throw new RuntimeException("Activity must implement Listener");
         }
     }
 
@@ -79,8 +80,16 @@ public abstract class TextPickerDialog extends DialogFragment{
         return view;
     }
 
-    protected void onTextSubmited(String text){
+    protected void onTextSubmited(String text) {
         listener.onTextPickerSubmitted(text);
         dismiss();
+    }
+
+    /**
+     * @author sebastianuskh on 4/5/17.
+     */
+
+    public interface Listener {
+        void onTextPickerSubmitted(String newEtalaseName);
     }
 }

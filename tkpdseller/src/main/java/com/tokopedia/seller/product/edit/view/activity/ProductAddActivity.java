@@ -33,7 +33,7 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
-import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
+import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
@@ -59,7 +59,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 
 @RuntimePermissions
 public class ProductAddActivity extends BaseSimpleActivity implements HasComponent<ProductComponent>,
-        TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
+        TextPickerDialog.Listener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
     public static final int PRODUCT_REQUEST_CODE = 8293;
     public static final String EXTRA_IMAGE_URLS = "img_urls";

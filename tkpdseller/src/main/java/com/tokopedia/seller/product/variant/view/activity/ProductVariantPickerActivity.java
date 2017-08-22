@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
-import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialogListener;
+import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -23,7 +23,7 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
  */
 
 public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel>
-        implements ProductVariantPickerMultipleItem<ProductVariantViewModel>, TextPickerDialogListener {
+        implements ProductVariantPickerMultipleItem<ProductVariantViewModel>, TextPickerDialog.Listener {
 
     private ProductVariantByCatModel productVariantByCatModel;
 
