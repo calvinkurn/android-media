@@ -361,15 +361,17 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    UnifyTracking.eventClickPaymentAndTopupOnDrawer();
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalCategoryList());
+                    UnifyTracking.eventClickPaymentAndTopupOnDrawer();
+//                    sendGTMNavigationEvent(AppEventTracking.EventLabel.PAYMENT_AND_TOPUP);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    UnifyTracking.eventClickDigitalTransactionListOnDrawer();
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                     + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
+                    UnifyTracking.eventClickDigitalTransactionListOnDrawer();
+//                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
                     UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DRAFT_PRODUCT);

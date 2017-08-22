@@ -1940,22 +1940,4 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickBuyDigital(String category) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.RECHARGE + category,
-                AppEventTracking.Action.CLICK_BUY_DIGITAL,
-                AppEventTracking.EventLabel.PRODUCT + category
-        ).getEvent());
-    }
-
-    public static void eventClickDigitalBuyWithInstantCheckout(String category) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.RECHARGE + category,
-                AppEventTracking.Action.CLICK_BUY_DIGITAL_WITH_INSTANT_CHECKOUT,
-                AppEventTracking.EventLabel.PRODUCT + category
-        ).getEvent());
-    }
-
 }

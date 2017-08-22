@@ -282,8 +282,6 @@ public interface AppEventTracking {
         String REMOVE = "Remove";
 
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
-        String CLICK_BUY_DIGITAL = "Click Buy";
-        String CLICK_BUY_DIGITAL_WITH_INSTANT_CHECKOUT = "Click Buy with Instant Checkout";
     }
 
     interface EventLabel {
