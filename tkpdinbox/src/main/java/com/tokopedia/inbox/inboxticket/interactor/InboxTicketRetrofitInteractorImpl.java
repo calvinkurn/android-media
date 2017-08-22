@@ -315,6 +315,87 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                 .subscribe(subscriber));
     }
 
+
+    @Override
+    public void commentRating(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final CommentRatingListener listener) {
+        setRequesting(true);
+        Observable<Response<TkpdResponse>> observable = inboxTicketService.getApi()
+                .commentRating(AuthUtil.generateParams(context, params));
+
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+                setRequesting(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                setRequesting(false);
+
+                Log.e(TAG, e.toString());
+                if (e instanceof UnknownHostException) {
+                    listener.onNoConnectionError();
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onTimeout();
+                } else {
+                    listener.onError("Terjadi Kesalahan, " +
+                            "Mohon ulangi beberapa saat lagi");
+                }
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> response) {
+                if (response.isSuccessful()) {
+                    if (!response.body().isError()) {
+                        listener.onSuccess(null);
+
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
+                    } else {
+                        if (response.body().isNullData()) listener.onNullData();
+                        else listener.onError(response.body().getErrorMessages().toString());
+                    }
+                } else {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            listener.onTimeout();
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+
+                        @Override
+                        public void onForbidden() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+                    }, response.code());
+                }
+            }
+        };
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+    }
+
+
     @Override
     public void sendReply(@NonNull final Context context, @NonNull final InboxTicketParam params, @NonNull final ReplyTicketListener listener) {
         setRequesting(true);
@@ -584,4 +665,5 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
     public void unsubscribe() {
         compositeSubscription.unsubscribe();
     }
+
 }

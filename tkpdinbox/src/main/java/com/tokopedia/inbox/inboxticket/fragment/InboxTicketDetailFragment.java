@@ -56,6 +56,9 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         implements InboxTicketDetailFragmentView, InboxTicketConstant {
 
 
+    private View noView;
+    private View yesView;
+
     public interface DoActionInboxTicketListener {
         void sendRating(Bundle param);
     }
@@ -80,6 +83,10 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @BindView(R2.id.add_comment_area)
     View commentView;
+
+    @BindView(R2.id.menu_help)
+    View helpfulView;
+
 
     @BindView(R2.id.loading_layout)
     View loading;
@@ -150,6 +157,8 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @Override
     protected void initView(View view) {
+        noView = view.findViewById(R.id.no);
+        yesView = view.findViewById(R.id.yes);
         adapter = InboxTicketDetailAdapter.createAdapter(getActivity(), presenter);
         listTicket.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listTicket.setAdapter(adapter);
@@ -209,6 +218,13 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
                 dialog.show();
             }
         });
+
+        yesView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating();
+            }
+        });
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -259,9 +275,16 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         listTicket.setVisibility(View.VISIBLE);
         adapter.setData(result);
         if (result.getTicket().getTicketStatus() == TICKET_OPEN) {
-            commentView.setVisibility(View.VISIBLE);
+            if(result.isShowRating()){
+                commentView.setVisibility(View.GONE);
+                helpfulView.setVisibility(View.VISIBLE);
+            }else {
+                commentView.setVisibility(View.VISIBLE);
+                helpfulView.setVisibility(View.GONE);
+            }
         } else {
             commentView.setVisibility(View.GONE);
+            helpfulView.setVisibility(View.GONE);
         }
 
         setStatus(result.getTicket().getTicketStatus());

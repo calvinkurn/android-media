@@ -119,6 +119,51 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
         return param.getViewMoreParam();
     }
 
+
+    private Map<String, String> getCommentRatingParam() {
+        InboxTicketParam param = new InboxTicketParam();
+        param.setCommentId("");
+        param.setRating("");
+        param.setUserId("");
+        return param.getCommentRatingParam();
+    }
+
+
+    @Override
+    public void commentRating() {
+        networkInteractor.commentRating(viewListener.getActivity(), getCommentRatingParam(), new InboxTicketRetrofitInteractor.CommentRatingListener() {
+            @Override
+            public void onSuccess(ReplyResult replyResult) {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+
+            @Override
+            public void onNullData() {
+
+            }
+
+            @Override
+            public void onNoConnectionError() {
+
+            }
+
+            @Override
+            public void onFailAuth() {
+
+            }
+        });
+    }
+
     @Override
     public void onRefresh() {
         pagingHandler.resetPage();
@@ -297,6 +342,7 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
     public void onDestroyView() {
         networkInteractor.unsubscribe();
     }
+
 
     private boolean isReplyValid() {
         if (viewListener.getComment().trim().equals("")) {

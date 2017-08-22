@@ -30,4 +30,8 @@ public interface InboxTicketApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_GET_OPEN_TICKET_FORM)
     Observable<Response<TkpdResponse>> getOpenTicketForm(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.User.PATH_COMMENT_RATING)
+    Observable<Response<TkpdResponse>> commentRating(@FieldMap Map<String, String> params);
 }

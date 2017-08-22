@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxticket.interactor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -33,6 +34,9 @@ public interface InboxTicketRetrofitInteractor {
     void setRequesting(boolean isRequesting);
 
     void unsubscribe();
+
+    void commentRating(@NonNull Context context, @NonNull Map<String, String> commentRatingParam
+            ,@NonNull CommentRatingListener commentRatingListener);
 
     interface GetInboxTicketListener {
 
@@ -90,7 +94,24 @@ public interface InboxTicketRetrofitInteractor {
 
         void onFailAuth();
 
+    }
+
+
+    interface CommentRatingListener {
+
+        void onSuccess(ReplyResult replyResult);
+
+        void onTimeout();
+
+        void onError(String error);
+
+        void onNullData();
+
+        void onNoConnectionError();
+
+        void onFailAuth();
 
     }
+
 
 }
