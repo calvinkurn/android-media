@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
@@ -27,8 +28,8 @@ import java.util.List;
 
 public class DynamicFilterDetailActivity extends AppCompatActivity {
 
-    protected static final int REQUEST_CODE = 220;
-
+    public static final int REQUEST_CODE = 220;
+    public static final String EXTRA_RESULT = "EXTRA_RESULT";
     protected static String EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST";
     protected static String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
     protected static String EXTRA_IS_SEARCHABLE = "EXTRA_IS_SEARCHABLE";
@@ -39,6 +40,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
     DynamicFilterDetailAdapter adapter;
     List<Option> optionList;
     OptionSearchFilter searchFilter;
+    TextView buttonApply;
 
     private boolean isSearchable;
     private String searchHint;
@@ -79,6 +81,13 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.filter_detail_recycler_view);
         searchInputView = (EditText) findViewById(R.id.filter_detail_search);
         searchInputContainer = findViewById(R.id.filter_detail_search_container);
+        buttonApply = (TextView) findViewById(R.id.button_apply);
+        buttonApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyFilter();
+            }
+        });
     }
 
     private void initSearchView() {
@@ -126,6 +135,18 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
 
     private void loadFilterItems() {
         adapter.setOptionList(optionList);
+    }
+
+    private void applyFilter() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_RESULT, Parcels.wrap(optionList));
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    private void closePageWithoutApply() {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     public class OptionSearchFilter extends android.widget.Filter {

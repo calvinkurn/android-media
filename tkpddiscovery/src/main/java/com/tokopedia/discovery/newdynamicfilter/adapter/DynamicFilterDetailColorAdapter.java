@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -39,9 +40,16 @@ public class DynamicFilterDetailColorAdapter extends DynamicFilterDetailAdapter 
         }
 
         @Override
-        public void bind(Option option) {
+        public void bind(final Option option) {
             colorIcon.getBackground().setColorFilter(Color.parseColor(option.getHexColor()), PorterDuff.Mode.ADD);
             colorTitle.setText(option.getName());
+            colorCheckBox.setChecked(Boolean.parseBoolean(option.getInputState()));
+            colorCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    option.setInputState(Boolean.toString(isChecked));
+                }
+            });
         }
     }
 }

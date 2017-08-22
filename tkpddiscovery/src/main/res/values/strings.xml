@@ -17,4 +17,5 @@
     <string name="formated_in_category">di %1$s</string>
     <string name="shop_list_favorite_button_already_favorited">Favorit</string>
     <string name="shop_list_favorite_button_not_yet_favorited">Favoritkan</string>
+    <string name="dynamic_filter_apply_button_text">Apply</string>
 </resources>

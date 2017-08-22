@@ -15,9 +15,13 @@ import java.util.List;
  */
 public class Option implements Serializable, Parcelable {
 
-    public static String PRICE_MIN_LABEL_KEY = "pmin";
-    public static String PRICE_MAX_LABEL_KEY = "pmax";
+    public static final String PRICE_MIN_KEY = "pmin";
+    public static final String PRICE_MAX_KEY = "pmax";
+    public static final String PRICE_MIN_MAX_RANGE_KEY = "pmin-pmax";
     public static final String PRICE_WHOLESALE_KEY = "wholesale";
+
+    public static final String INPUT_TYPE_TEXTBOX = "textbox";
+    public static final String INPUT_TYPE_CHECKBOX = "checkbox";
 
     @SerializedName("name")
     @Expose
@@ -55,6 +59,8 @@ public class Option implements Serializable, Parcelable {
     @SerializedName("child")
     @Expose
     List<LevelTwoCategory> levelTwoCategoryList;
+
+    String inputState = "";
 
     /**
      * @return The name
@@ -168,12 +174,24 @@ public class Option implements Serializable, Parcelable {
         this.valMax = valMax;
     }
 
+    public String getInputState() {
+        return inputState;
+    }
+
+    public void setInputState(String inputState) {
+        this.inputState = inputState;
+    }
+
     public List<LevelTwoCategory> getLevelTwoCategoryList() {
         return levelTwoCategoryList;
     }
 
     public void setLevelTwoCategoryList(List<LevelTwoCategory> levelTwoCategoryList) {
         this.levelTwoCategoryList = levelTwoCategoryList;
+    }
+
+    public String getUniqueId() {
+        return key + "_" + value;
     }
 
     protected Option(Parcel in) {
@@ -188,6 +206,7 @@ public class Option implements Serializable, Parcelable {
         keyMax = in.readString();
         valMin = in.readString();
         valMax = in.readString();
+        inputState = in.readString();
         if (in.readByte() == 0x01) {
             levelTwoCategoryList = new ArrayList<>();
             in.readList(levelTwoCategoryList, LevelTwoCategory.class.getClassLoader());
@@ -214,6 +233,7 @@ public class Option implements Serializable, Parcelable {
         dest.writeString(keyMax);
         dest.writeString(valMin);
         dest.writeString(valMax);
+        dest.writeString(inputState);
         if (levelTwoCategoryList == null) {
             dest.writeByte((byte) (0x00));
         } else {

@@ -30,7 +30,17 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/filter_detail_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
+    
+    <TextView
+        android:id="@+id/button_apply"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dynamic_filter_apply_button_height"
+        android:gravity="center"
+        android:background="@color/medium_green"
+        style="@style/TextView.Button.White"
+        android:text="@string/dynamic_filter_apply_button_text"/>
 
 </LinearLayout>

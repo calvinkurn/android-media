@@ -9,6 +9,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 /**
  * Created by henrypriyono on 8/11/17.
@@ -18,13 +19,22 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
     private TextView wholesaleTitle;
     private Switch wholesaleToggle;
-    private PriceRangeInputView sliderView;
+    private PriceRangeInputView priceRangeInputView;
+    private final DynamicFilterView dynamicFilterView;
 
-    public DynamicFilterItemPriceViewHolder(View itemView) {
+    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView dynamicFilterView) {
         super(itemView);
+        this.dynamicFilterView = dynamicFilterView;
         wholesaleTitle = (TextView) itemView.findViewById(R.id.wholesale_title);
         wholesaleToggle = (Switch) itemView.findViewById(R.id.wholesale_toggle);
-        sliderView = (PriceRangeInputView) itemView.findViewById(R.id.slider);
+        priceRangeInputView = (PriceRangeInputView) itemView.findViewById(R.id.price_range_input_view);
+        priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int minValue, int maxValue) {
+                dynamicFilterView.saveTextInput(Option.PRICE_MIN_KEY, String.valueOf(minValue));
+                dynamicFilterView.saveTextInput(Option.PRICE_MAX_KEY, String.valueOf(maxValue));
+            }
+        });
     }
 
     @Override
@@ -35,28 +45,50 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         String minLabel = "";
 
         for (Option option : filter.getOptions()) {
-            if (!TextUtils.isEmpty(option.getValMin())) {
+            if (Option.PRICE_MIN_MAX_RANGE_KEY.equals(option.getKey())) {
                 minBound = Integer.parseInt(option.getValMin());
-            }
-
-            if (!TextUtils.isEmpty(option.getValMax())) {
                 maxBound = Integer.parseInt(option.getValMax());
             }
 
-            if (Option.PRICE_MIN_LABEL_KEY.equals(option.getKey())) {
+            if (Option.PRICE_MIN_KEY.equals(option.getKey())) {
                 minLabel = option.getName();
             }
 
-            if (Option.PRICE_MAX_LABEL_KEY.equals(option.getKey())) {
+            if (Option.PRICE_MAX_KEY.equals(option.getKey())) {
                 maxLabel = option.getName();
             }
 
             if (Option.PRICE_WHOLESALE_KEY.equals(option.getKey())) {
-                wholesaleTitle.setText(option.getName());
-                wholesaleToggle.setChecked(Boolean.parseBoolean(option.getValue()));
+                bindWholesaleOptionItem(option);
             }
         }
 
-        sliderView.setData(minLabel, maxLabel, minBound, maxBound);
+        String savedMinValue = dynamicFilterView.getTextInput(Option.PRICE_MIN_KEY);
+        int defaultMinValue;
+        if (TextUtils.isEmpty(savedMinValue)) {
+            defaultMinValue = minBound;
+        } else {
+            defaultMinValue = Integer.parseInt(savedMinValue);
+        }
+
+        String savedMaxValue = dynamicFilterView.getTextInput(Option.PRICE_MAX_KEY);
+        int defaultMaxValue;
+        if (TextUtils.isEmpty(savedMaxValue)) {
+            defaultMaxValue = maxBound;
+        } else {
+            defaultMaxValue = Integer.parseInt(savedMaxValue);
+        }
+
+        priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
+                defaultMinValue, defaultMaxValue);
+    }
+
+    private void bindWholesaleOptionItem(Option option) {
+        wholesaleTitle.setText(option.getName());
+        if (Boolean.TRUE.equals(dynamicFilterView.getLastCheckedState(option))) {
+            wholesaleToggle.setChecked(true);
+        } else {
+            wholesaleToggle.setChecked(false);
+        }
     }
 }

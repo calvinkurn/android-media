@@ -20,10 +20,10 @@ public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
     public static final String TEMPLATE_NAME_PRICE = "template_price";
     public static final String TITLE_SEPARATOR = "Separator";
 
-    private DynamicFilterView viewListener;
+    private DynamicFilterView filterView;
 
-    public DynamicFilterTypeFactoryImpl(DynamicFilterView viewListener) {
-        this.viewListener = viewListener;
+    public DynamicFilterTypeFactoryImpl(DynamicFilterView filterView) {
+        this.filterView = filterView;
     }
 
     @Override
@@ -43,11 +43,11 @@ public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
     @Override
     public DynamicFilterViewHolder createViewHolder(View view, int viewType) {
         if (viewType == R.layout.dynamic_filter_item_price) {
-            return new DynamicFilterItemPriceViewHolder(view);
+            return new DynamicFilterItemPriceViewHolder(view, filterView);
         } else if (viewType == R.layout.dynamic_filter_item_toggle) {
-            return new DynamicFilterItemToggleViewHolder(view);
+            return new DynamicFilterItemToggleViewHolder(view, filterView);
         } else if (viewType == R.layout.dynamic_filter_expandable_item) {
-            return new DynamicFilterExpandableItemViewHolder(view, viewListener);
+            return new DynamicFilterExpandableItemViewHolder(view, filterView);
         } else {
             return new DynamicFilterNoViewHolder(view);
         }

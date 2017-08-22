@@ -38,6 +38,8 @@ public class PriceRangeInputView extends BaseCustomView {
     private View minButton;
     private View maxButton;
 
+    private OnValueChangedListener onValueChangedListener;
+
     private int seekbarButtonSize;
     private int minBound = 0;
     private int maxBound = 0;
@@ -99,14 +101,16 @@ public class PriceRangeInputView extends BaseCustomView {
         maxValueInput.addTextChangedListener(new MaxInputWatcher());
     }
 
-    public void setData(String minText, String maxText, int minBound, int maxBound) {
+    public void setData(String minText, String maxText,
+                        int minBound, int maxBound,
+                        int minValue, int maxValue) {
         minLabel.setText(minText);
         maxLabel.setText(maxText);
 
         this.minBound = minBound;
         this.maxBound = maxBound;
-        this.minValue = minBound;
-        this.maxValue = maxBound;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
         this.valueRange = maxBound - minBound;
         updateValueCalculation();
         refreshButtonPosition();
@@ -156,6 +160,7 @@ public class PriceRangeInputView extends BaseCustomView {
         maxValueInput.setText(formatToRupiah(maxValue));
         minValueInput.setSelection(minValueInput.length());
         maxValueInput.setSelection(maxValueInput.length());
+        onValueChangedListener.onValueChanged(minValue, maxValue);
         isAutoTextChange = false;
     }
 
@@ -254,6 +259,10 @@ public class PriceRangeInputView extends BaseCustomView {
         return viewArea.contains((int) x, (int) y);
     }
 
+    public void setOnValueChangedListener(OnValueChangedListener onValueChangedListener) {
+        this.onValueChangedListener = onValueChangedListener;
+    }
+
     private class MinInputWatcher extends InputTextWatcher {
         @Override
         void updateValue(int newValue) {
@@ -314,5 +323,9 @@ public class PriceRangeInputView extends BaseCustomView {
         }
 
         abstract void updateValue(int newValue);
+    }
+
+    public interface OnValueChangedListener {
+        void onValueChanged(int minValue, int maxValue);
     }
 }

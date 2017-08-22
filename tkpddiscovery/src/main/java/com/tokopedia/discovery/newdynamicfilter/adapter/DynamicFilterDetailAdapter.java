@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
@@ -65,8 +66,15 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
             checkBox = (CheckBox) itemView.findViewById(R.id.filter_detail_item_checkbox);
         }
 
-        public void bind(Option option) {
+        public void bind(final Option option) {
             checkBox.setText(option.getName());
+            checkBox.setChecked(Boolean.parseBoolean(option.getInputState()));
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    option.setInputState(Boolean.toString(isChecked));
+                }
+            });
         }
     }
 }

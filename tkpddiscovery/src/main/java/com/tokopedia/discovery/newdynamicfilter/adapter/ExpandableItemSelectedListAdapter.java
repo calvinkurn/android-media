@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.List;
 
@@ -20,18 +21,22 @@ public class ExpandableItemSelectedListAdapter extends
         RecyclerView.Adapter<ExpandableItemSelectedListAdapter.ViewHolder> {
 
     List<Option> selectedOptionsList;
+    DynamicFilterView filterView;
+
+    public ExpandableItemSelectedListAdapter(DynamicFilterView filterView) {
+        this.filterView = filterView;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.selected_list_item, parent, false);
-
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(selectedOptionsList.get(position));
+        holder.bind(selectedOptionsList.get(position), position);
     }
 
     @Override
@@ -44,7 +49,7 @@ public class ExpandableItemSelectedListAdapter extends
         notifyDataSetChanged();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         DeletableItemView selectedItem;
 
         public ViewHolder(View itemView) {
@@ -52,8 +57,17 @@ public class ExpandableItemSelectedListAdapter extends
             selectedItem = (DeletableItemView) itemView.findViewById(R.id.selected_item);
         }
 
-        public void bind(Option option) {
+        public void bind(final Option option, final int position) {
             selectedItem.setItemName(option.getName());
+            selectedItem.setOnDeleteListener(new DeletableItemView.OnDeleteListener() {
+                @Override
+                public void onDelete() {
+                    filterView.saveCheckedState(option, false);
+                    selectedOptionsList.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, getItemCount());
+                }
+            });
         }
     }
 }

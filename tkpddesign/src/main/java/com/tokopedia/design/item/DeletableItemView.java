@@ -49,7 +49,6 @@ public class DeletableItemView extends BaseCustomView {
         buttonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                rootView.setVisibility(GONE);
                 if (onDeleteListener != null) {
                     onDeleteListener.onDelete();
                 }
