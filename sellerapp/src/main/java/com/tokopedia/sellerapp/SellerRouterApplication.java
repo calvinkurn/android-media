@@ -47,6 +47,7 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.goldmerchant.common.di.component.DaggerGoldMerchantComponent;
@@ -68,6 +69,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -275,6 +277,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
+    public void goToDatePicker(Activity activity, List<PeriodRangeModel> periodRangeModels) {
+
     }
 
     @Override

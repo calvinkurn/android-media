@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by nathan on 7/19/17.
@@ -26,8 +28,8 @@ import java.util.Locale;
 
 public class GMStatisticDateUtils {
 
-    private static final int MAX_DATE_RANGE = 60;
-    private static final String MIN_DATE = "25 07 2015";
+    protected static final int MAX_DATE_RANGE = 60;
+    protected static final String MIN_DATE = "25 07 2015";
 
     public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel) {
         return getDatePickerIntent(activity, datePickerViewModel, false);
@@ -74,7 +76,7 @@ public class GMStatisticDateUtils {
         return intent;
     }
 
-    private static Calendar getMaxDateCalendar() {
+    protected static Calendar getMaxDateCalendar() {
         Calendar maxCalendar = Calendar.getInstance();
         maxCalendar.add(Calendar.DATE, GMStatConstant.MAX_DAY_FROM_CURRENT_DATE);
         maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
@@ -83,7 +85,7 @@ public class GMStatisticDateUtils {
         return maxCalendar;
     }
 
-    private static ArrayList<PeriodRangeModel> getPeriodRangeList(Context context) {
+    protected static ArrayList<PeriodRangeModel> getPeriodRangeList(Context context) {
         ArrayList<PeriodRangeModel> periodRangeList = new ArrayList<>();
         Calendar startCalendar = Calendar.getInstance();
         Calendar endCalendar = Calendar.getInstance();
@@ -114,14 +116,14 @@ public class GMStatisticDateUtils {
     }
 
     public static PeriodRangeModel getComparedDate(long startdate, long endDate) {
-        int diffDate = (int) GoldMerchantDateUtils.generateDateRanges(startdate, endDate).size();
+        int diffDate = (int) DatePickerUtils.getDateDiff(startdate, endDate, TimeUnit.DAYS);
         long comparedStartDate = 0;
         long comparedEndDate = 0;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(startdate);
         calendar.add(Calendar.DATE, -1);
         comparedEndDate = calendar.getTimeInMillis();
-        calendar.add(Calendar.DATE, -diffDate + 1);
+        calendar.add(Calendar.DATE, -diffDate);
         comparedStartDate = calendar.getTimeInMillis();
         PeriodRangeModel periodRangeModel = new PeriodRangeModel(comparedStartDate, comparedEndDate);
         return periodRangeModel;
