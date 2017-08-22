@@ -317,7 +317,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
-        if(layoutManager != null)
+        if (layoutManager != null)
             layoutManager = null;
     }
 
@@ -813,8 +813,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 DeepLinkChecker.openCatalog(url, getActivity());
                 break;
             default:
-                if (TextUtils.isEmpty(url)) {
-                    startActivity(TopPicksWebView.newInstance(getActivity(), url));
+                if (!TextUtils.isEmpty(url)) {
+                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
+                            , url);
                 }
         }
     }
