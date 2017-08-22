@@ -24,7 +24,7 @@ import java.util.Locale;
 
 public class DatePickerUtil extends GMStatisticDateUtils {
     public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel, List<PeriodRangeModel> periodRangeModels) {
-        Intent intent = new Intent(activity, DatePickerActivity.class);
+        Intent intent = new Intent(activity, DatePickerTokoCashActivity.class);
         Calendar maxCalendar = getMaxDateCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, Locale.ENGLISH);

@@ -31,6 +31,7 @@ import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -41,6 +42,7 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
+import com.tokopedia.digital.tokocash.activity.TopUpTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -50,7 +52,6 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -59,6 +60,7 @@ import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
@@ -223,6 +225,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentTokoCashActivation() {
         return ActivateTokoCashActivity.newInstance(this);
+    }
+
+    @Override
+    public Intent instanceIntentTokoCashTopUp() {
+        return TopUpTokoCashActivity.newInstance(this);
     }
 
     @Override
@@ -487,25 +494,19 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void goToDatePicker(Activity activity, List<PeriodRangeModel> periodRangeModels) {
-        Intent datePickerIntent = DatePickerUtil.getDatePickerIntent(activity, GMStatisticDateUtils.getDefaultDatePickerViewModel(), periodRangeModels);
-        activity.startActivityForResult(datePickerIntent, DatePickerConstant.REQUEST_CODE_DATE);
+    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels) {
+        return DatePickerUtil.getDatePickerIntent(activity,
+                GMStatisticDateUtils.getDefaultDatePickerViewModel(), convert(periodRangeModels));
     }
 
-    public static PeriodRangeModel convert(long startDate, long endDate, String label) {
-        return new PeriodRangeModel(startDate, endDate, label);
-    }
-
-    public static List<PeriodRangeModel> convert(List<Long> startDates, List<Long> endDates, List<String> labels) {
-        if (startDates == null || endDates == null || labels == null)
-            return null;
-        if (startDates.size() != endDates.size() || endDates.size() != labels.size()) {
-            return null;
-        }
-
+    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores){
         List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
-        for (int i = 0; i < startDates.size(); i++) {
-            periodRangeModels.add(convert(startDates.get(i), endDates.get(i), labels.get(i)));
+        for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
+            periodRangeModels.add(new PeriodRangeModel(
+                    periodRangeModelCore.getStartDate(),
+                    periodRangeModelCore.getEndDate(),
+                    periodRangeModelCore.getLabel()
+            ));
         }
         return periodRangeModels;
     }

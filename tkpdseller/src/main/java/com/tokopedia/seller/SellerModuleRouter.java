@@ -1,8 +1,5 @@
 package com.tokopedia.seller;
 
-import android.app.Activity;
-import android.content.Context;
-
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -12,13 +9,11 @@ import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.List;
-
 /**
  * Created by normansyahputa on 12/14/16.
  */
 
-public interface SellerModuleRouter {
+public interface SellerModuleRouter extends com.tokopedia.core.router.digitalmodule.sellermodule.SellerModuleRouter {
 
     GoldMerchantComponent getGoldMerchantComponent();
 
@@ -29,4 +24,5 @@ public interface SellerModuleRouter {
 
     void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
     void goToDatePicker(Activity activity, List<PeriodRangeModel> periodRangeModels);
+    GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule);
 }
