@@ -86,8 +86,7 @@ public class InboxReputationFilterActivity extends BasePresenterActivity
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
         cacheManager = new GlobalCacheManager();
 
         if (savedInstanceState != null) {
@@ -101,6 +100,8 @@ public class InboxReputationFilterActivity extends BasePresenterActivity
             listFilter = filterPassModel.getListFilter();
             listPass = new ArrayList<>();
         }
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override

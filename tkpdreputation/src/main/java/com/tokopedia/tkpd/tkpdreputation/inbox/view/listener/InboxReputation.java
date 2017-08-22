@@ -2,7 +2,10 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPass;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 8/10/17.
@@ -27,15 +30,19 @@ public interface InboxReputation {
         void showLoadingNext();
 
         void onGoToDetail(String reputationId, int adapterPosition);
+
+        void showRefreshing();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getFirstTimeInboxReputation(int tab);
 
-        void getNextPage(int lastItemPosition, int visibleItem, String query, int timeFilter,
-              int tab);
+        void getNextPage(int lastItemPosition, int visibleItem, String query,
+                         ArrayList<FilterPass> listPass, int tab);
 
         void refreshItem(String id, int tab);
+
+        void getFilteredInboxReputation(String query, ArrayList<FilterPass> listPass, int tab);
     }
 }

@@ -5,8 +5,12 @@ import android.text.TextUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPass;
+
+import java.util.ArrayList;
 
 import rx.Observable;
 
@@ -14,7 +18,7 @@ import rx.Observable;
  * @author by nisie on 8/18/17.
  */
 
-public class GetInboxReputationUseCase extends GetFirstTimeInboxReputationUseCase{
+public class GetInboxReputationUseCase extends GetFirstTimeInboxReputationUseCase {
 
     private static final String PARAM_KEYWORD = "keyword";
 
@@ -29,14 +33,18 @@ public class GetInboxReputationUseCase extends GetFirstTimeInboxReputationUseCas
         return reputationRepository.getInboxReputationFromCloud(requestParams);
     }
 
-    public static RequestParams getParam(int page, String keyword, int timeFilter, int tab) {
+    public static RequestParams getParam(int page, String keyword, ArrayList<FilterPass> listPass, int tab) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
         params.putInt(PARAM_PAGE, page);
         params.putInt(PARAM_ROLE, getRole(tab));
         if (TextUtils.isEmpty(keyword))
             params.putString(PARAM_KEYWORD, keyword);
-        params.putInt(PARAM_TIME_FILTER, timeFilter);
+        if (!listPass.isEmpty()) {
+            for (FilterPass pass : listPass) {
+                params.putString(pass.getKey(), pass.getValue());
+            }
+        }
         params.putInt(PARAM_STATUS, getStatus(tab));
         return params;
     }

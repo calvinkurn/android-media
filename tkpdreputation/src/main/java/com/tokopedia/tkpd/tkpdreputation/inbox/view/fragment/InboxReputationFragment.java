@@ -33,6 +33,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.In
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPass;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPassModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import static com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity.CACHE_INBOX_REPUTATION_FILTER;
+
 
 /**
  * @author by nisie on 8/11/17.
@@ -55,12 +57,18 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
     private static final int REQUEST_OPEN_DETAIL = 101;
     private static final int REQUEST_FILTER = 102;
+    private static final String FILTER_ALL_TIME = "1";
+    private static final String FILTER_LAST_WEEK = "2";
+    private static final String FILTER_THIS_MONTH = "3";
+    private static final String FILTER_LAST_3_MONTH = "4";
+    private static final String FILTER_GIVEN_REPUTATION = "2";
 
     private RecyclerView mainList;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;
     private InboxReputationAdapter adapter;
     private InboxReputationFilterViewModel filterData;
+    private FilterPassModel filterPassModel;
 
     @Inject
     InboxReputationPresenter presenter;
@@ -97,6 +105,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (savedInstanceState != null
                 && savedInstanceState.getParcelable(ARGS_FILTER_DATA) != null) {
             filterData = savedInstanceState.getParcelable(ARGS_FILTER_DATA);
@@ -126,7 +135,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
         list.add(new OptionViewModel(getString(R.string.filter_all),
                 GetFirstTimeInboxReputationUseCase.PARAM_STATUS, "1", list.size()));
         list.add(new OptionViewModel(getString(R.string.filter_given_reputation),
-                GetFirstTimeInboxReputationUseCase.PARAM_STATUS, "2", list.size()));
+                GetFirstTimeInboxReputationUseCase.PARAM_STATUS, FILTER_GIVEN_REPUTATION, list.size
+                ()));
         list.add(new OptionViewModel(getString(R.string.filter_no_reputation),
                 GetFirstTimeInboxReputationUseCase.PARAM_STATUS, "3", list.size()));
         return list;
@@ -142,19 +152,23 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private ArrayList<OptionViewModel> createListFilterTime() {
         ArrayList<OptionViewModel> list = new ArrayList<OptionViewModel>();
         list.add(new OptionViewModel(getString(R.string.filter_all_time),
-                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "1", list.size()));
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_ALL_TIME, list.size
+                ()));
         list.add(new OptionViewModel(getString(R.string.filter_last_7_days),
-                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "2", list.size()));
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_LAST_WEEK, list.size
+                ()));
         list.add(new OptionViewModel(getString(R.string.filter_this_month),
-                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "3", list.size()));
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_THIS_MONTH, list.size
+                ()));
         list.add(new OptionViewModel(getString(R.string.filter_last_3_month),
-                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, "4", list.size()));
+                GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_LAST_3_MONTH, list.size
+                ()));
         return list;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_filter, menu);
+        inflater.inflate(R.menu.menu_filter_inbox_reputation, menu);
     }
 
     @Override
@@ -168,11 +182,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     private void openFilter() {
 
-        FilterPassModel opportunityFilterPassModel = new FilterPassModel();
-        opportunityFilterPassModel.setListFilter(filterData.getListFilter());
+        filterPassModel = new FilterPassModel();
+        filterPassModel.setListFilter(filterData.getListFilter());
 
-        cacheManager.setKey(InboxReputationFilterActivity.CACHE_INBOX_REPUTATION_FILTER);
-        cacheManager.setValue(CacheUtil.convertModelToString(opportunityFilterPassModel,
+        cacheManager.setKey(CACHE_INBOX_REPUTATION_FILTER);
+        cacheManager.setValue(CacheUtil.convertModelToString(filterPassModel,
                 new TypeToken<FilterPassModel>() {
                 }.getType()));
         cacheManager.store();
@@ -225,7 +239,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!adapter.isLoading())
-                    presenter.getNextPage(lastItemPosition, visibleItem, "", 1, getTab());
+                    presenter.getNextPage(lastItemPosition, visibleItem, "",
+                            filterPassModel.getListPass(), getTab
+                                    ());
             }
         };
     }
@@ -331,7 +347,27 @@ public class InboxReputationFragment extends BaseDaggerFragment
             presenter.refreshItem(
                     data.getStringExtra(InboxReputationDetailActivity.ARGS_REPUTATION_ID),
                     getTab());
+        } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
+            filterPassModel =
+                    cacheManager.getConvertObjData(InboxReputationFilterActivity
+                                    .CACHE_INBOX_REPUTATION_FILTER,
+                            FilterPassModel.class);
+            filterData.setListFilter(filterPassModel.getListFilter());
+
+            ArrayList<FilterPass> listPass = filterPassModel.getListPass();
+
+            if (listPass != null) {
+                presenter.getFilteredInboxReputation(
+                        getQuery(),
+                        listPass,
+                        getTab()
+                );
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private String getQuery() {
+        return "";
     }
 }

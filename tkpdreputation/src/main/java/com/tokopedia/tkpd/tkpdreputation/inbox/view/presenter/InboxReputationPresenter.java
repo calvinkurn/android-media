@@ -6,9 +6,13 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetFilteredInboxReputationSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetFirstTimeInboxReputationSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetNextPageInboxReputationSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationSubscriber;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPass;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -50,7 +54,8 @@ public class InboxReputationPresenter
     }
 
     @Override
-    public void getNextPage(int lastItemPosition, int visibleItem, String query, int timeFilter,
+    public void getNextPage(int lastItemPosition, int visibleItem,
+                            String query, ArrayList<FilterPass> listPass,
                             int tab) {
         if (hasNextPage() && isOnLastPosition(lastItemPosition,
                 visibleItem)) {
@@ -59,7 +64,7 @@ public class InboxReputationPresenter
             getInboxReputationUseCase.execute(
                     GetInboxReputationUseCase.getParam(pagingHandler.getPage(),
                             query,
-                            timeFilter,
+                            listPass,
                             tab),
                     new GetNextPageInboxReputationSubscriber(viewListener));
         }
@@ -68,6 +73,18 @@ public class InboxReputationPresenter
     @Override
     public void refreshItem(String id, int tab) {
 
+    }
+
+    @Override
+    public void getFilteredInboxReputation(String query, ArrayList<FilterPass> listPass, int tab) {
+        viewListener.showRefreshing();
+        pagingHandler.resetPage();
+        getInboxReputationUseCase.execute(
+                GetInboxReputationUseCase.getParam(pagingHandler.getPage(),
+                        query,
+                        listPass,
+                        tab),
+                new GetFilteredInboxReputationSubscriber(viewListener));
     }
 
     private boolean hasNextPage() {
@@ -94,4 +111,6 @@ public class InboxReputationPresenter
         getFirstTimeInboxReputationUseCase.unsubscribe();
         getInboxReputationUseCase.unsubscribe();
     }
+
+
 }
