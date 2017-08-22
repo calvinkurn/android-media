@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.discovery.model.Filter;
@@ -41,6 +43,9 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     RecyclerView recyclerView;
     DynamicFilterAdapter adapter;
+    TextView buttonApply;
+    TextView buttonReset;
+    View buttonClose;
 
     HashMap<String, String> selectedFilter = new HashMap<>();
     HashMap<String, Boolean> checkedState = new HashMap<>();
@@ -72,6 +77,27 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     private void bindView() {
         recyclerView = (RecyclerView) findViewById(R.id.dynamic_filter_recycler_view);
+        buttonClose = findViewById(R.id.top_bar_close_button);
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        buttonReset = (TextView) findViewById(R.id.top_bar_button_reset);
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetAllFilter();
+            }
+        });
+        buttonApply = (TextView) findViewById(R.id.button_finish);
+        buttonApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyFilter();
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -131,14 +157,20 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         adapter.notifyItemChanged(selectedExpandableItemPosition);
     }
 
-    private boolean saveFilterText() {
+    private void applyFilter() {
+        saveFilterCheckedState();
+        saveFilterTextState();
+        finish();
+    }
+
+    private boolean saveFilterTextState() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(FILTER_TEXT_PREF, new Gson().toJson(savedTextInput));
         editor.apply();
         return true;
     }
 
-    private boolean saveFilterSelectionPosition() {
+    private boolean saveFilterCheckedState() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(FILTER_CHECKED_STATE_PREF, new Gson().toJson(checkedState));
         editor.apply();
@@ -156,6 +188,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         checkedState.clear();
         savedTextInput.clear();
         selectedFilter.clear();
+        adapter.notifyDataSetChanged();
     }
 
     @Override

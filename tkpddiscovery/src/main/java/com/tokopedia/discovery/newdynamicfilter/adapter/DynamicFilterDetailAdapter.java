@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdynamicfilter.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,13 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
         notifyDataSetChanged();
     }
 
+    public void resetAllOptionsInputState() {
+        for (Option option : list) {
+            option.setInputState("");
+        }
+        notifyDataSetChanged();
+    }
+
     private static class ViewHolder extends AbstractViewHolder<Option> {
 
         private CheckBox checkBox;
@@ -69,7 +77,11 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
         public void bind(final Option option) {
             checkBox.setText(option.getName());
             checkBox.setOnCheckedChangeListener(null);
-            checkBox.setChecked(Boolean.parseBoolean(option.getInputState()));
+            if (!TextUtils.isEmpty(option.getInputState())) {
+                checkBox.setChecked(Boolean.parseBoolean(option.getInputState()));
+            } else {
+                checkBox.setChecked(false);
+            }
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

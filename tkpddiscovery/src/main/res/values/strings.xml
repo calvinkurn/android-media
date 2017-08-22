@@ -18,4 +18,6 @@
     <string name="shop_list_favorite_button_already_favorited">Favorit</string>
     <string name="shop_list_favorite_button_not_yet_favorited">Favoritkan</string>
     <string name="dynamic_filter_apply_button_text">Apply</string>
+    <string name="filter_button_reset_text">Reset</string>
+    <string name="dynamic_filter_finish_button_text">Selesai</string>
 </resources>

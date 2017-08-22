@@ -40,6 +40,9 @@
     <style name="TextView.Title.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="TextView.Title.Bold.BlackPrimary">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
 
     <style name="TextView.Subheading">
         <item name="android:textSize">@dimen/font_subheading</item>
@@ -111,8 +114,12 @@
     </style>
     <style name="TextView.Button">
         <item name="android:textSize">@dimen/font_button</item>
+        <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Button.White">
         <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="TextView.Button.MediumGreen">
+        <item name="android:textColor">@color/medium_green</item>
     </style>
 </resources>

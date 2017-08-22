@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdynamicfilter.adapter;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -43,7 +44,11 @@ public class DynamicFilterDetailColorAdapter extends DynamicFilterDetailAdapter 
         public void bind(final Option option) {
             colorIcon.getBackground().setColorFilter(Color.parseColor(option.getHexColor()), PorterDuff.Mode.ADD);
             colorTitle.setText(option.getName());
-            colorCheckBox.setChecked(Boolean.parseBoolean(option.getInputState()));
+            if (!TextUtils.isEmpty(option.getInputState())) {
+                colorCheckBox.setChecked(Boolean.parseBoolean(option.getInputState()));
+            } else {
+                colorCheckBox.setChecked(false);
+            }
             colorCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -41,6 +41,8 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
     List<Option> optionList;
     OptionSearchFilter searchFilter;
     TextView buttonApply;
+    TextView buttonReset;
+    View buttonClose;
 
     private boolean isSearchable;
     private String searchHint;
@@ -81,6 +83,20 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.filter_detail_recycler_view);
         searchInputView = (EditText) findViewById(R.id.filter_detail_search);
         searchInputContainer = findViewById(R.id.filter_detail_search_container);
+        buttonClose = findViewById(R.id.top_bar_close_button);
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        buttonReset = (TextView) findViewById(R.id.top_bar_button_reset);
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetFilter();
+            }
+        });
         buttonApply = (TextView) findViewById(R.id.button_apply);
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,9 +160,8 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
         finish();
     }
 
-    private void closePageWithoutApply() {
-        setResult(RESULT_CANCELED);
-        finish();
+    private void resetFilter() {
+        adapter.resetAllOptionsInputState();
     }
 
     public class OptionSearchFilter extends android.widget.Filter {
