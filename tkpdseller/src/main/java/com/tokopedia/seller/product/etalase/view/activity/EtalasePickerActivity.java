@@ -49,10 +49,10 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public void onTextPickerSubmitted(String newEtalaseName) {
+    public void onTextPickerSubmitted(String text) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if (fragment != null && fragment instanceof EtalasePickerView){
-            ((EtalasePickerView)fragment).addNewEtalase(newEtalaseName);
+            ((EtalasePickerView)fragment).addNewEtalase(text);
         } else {
             throw new RuntimeException("fragment is not available or not instance of EtalasePicker");
         }

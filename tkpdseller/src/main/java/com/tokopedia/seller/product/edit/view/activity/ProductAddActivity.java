@@ -315,7 +315,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     @Override
-    public void onTextPickerSubmitted(String newEtalaseName) {
+    public void onTextPickerSubmitted(String text) {
 
     }
 

@@ -155,5 +155,6 @@
     <string name="product_variant_item_picker_add_variant_title_dialog">Tambah %1$s</string>
     <string name="product_variant_item_picker_add_variant_hint_dialog">Nama %1$s</string>
     <string name="product_variant_item_picker_add_variant_error_name_empty">Nama varian harus diisi</string>
+    <string name="product_variant_item_picker_add_variant_error_name_existed">Nama varian sudah ada</string>
 
 </resources>

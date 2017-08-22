@@ -92,9 +92,9 @@ public class YoutubeAddVideoActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void onTextPickerSubmitted(String youtubeUrl) {
+    public void onTextPickerSubmitted(String text) {
         if (youtubeAddVideoFragment() != null) {
-            youtubeAddVideoFragment().addYoutubeUrl(youtubeUrl);
+            youtubeAddVideoFragment().addYoutubeUrl(text);
         }
     }
 

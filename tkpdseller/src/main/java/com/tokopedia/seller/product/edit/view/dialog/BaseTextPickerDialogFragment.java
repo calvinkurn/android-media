@@ -90,6 +90,8 @@ public abstract class BaseTextPickerDialogFragment extends DialogFragment {
      */
 
     public interface Listener {
-        void onTextPickerSubmitted(String newEtalaseName);
+
+        void onTextPickerSubmitted(String text);
+        
     }
 }
