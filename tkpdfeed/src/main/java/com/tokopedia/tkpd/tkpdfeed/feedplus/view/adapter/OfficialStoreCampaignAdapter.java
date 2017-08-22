@@ -83,8 +83,8 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             shopAva.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToShopDetailFromCampaign(list.get(getAdapterPosition())
-                            .getShopUrl());
+                    viewListener.onGoToShopDetailFromCampaign(
+                            list.get(getAdapterPosition()).getShopUrl());
                 }
             });
             shopName.setOnClickListener(new View.OnClickListener() {

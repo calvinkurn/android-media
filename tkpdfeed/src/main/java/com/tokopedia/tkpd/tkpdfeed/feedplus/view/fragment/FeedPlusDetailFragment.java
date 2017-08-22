@@ -194,19 +194,24 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onWishlistClicked(int adapterPosition, Integer productId, boolean isWishlist) {
         if (!isWishlist) {
             presenter.addToWishlist(adapterPosition, String.valueOf(productId));
-            UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.ADD_TO_WISHLIST +
-                    FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
+            UnifyTracking.eventFeedClickProduct(
+                    String.valueOf(productId),
+                    FeedTrackingEventLabel.Click.ADD_TO_WISHLIST +
+                            FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
         } else {
             presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
-            UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.REMOVE_WISHLIST +
-                    FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
+            UnifyTracking.eventFeedClickProduct(
+                    String.valueOf(productId),
+                    FeedTrackingEventLabel.Click.REMOVE_WISHLIST +
+                            FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
         }
     }
 
     @Override
     public void onGoToShopDetail(Integer shopId) {
         goToShopDetail(shopId);
-        UnifyTracking.eventFeedView(FeedTrackingEventLabel.View.PRODUCTLIST_SHOP);
+        UnifyTracking.eventFeedViewShop(String.valueOf(shopId),
+                FeedTrackingEventLabel.View.PRODUCTLIST_SHOP);
 
     }
 
@@ -308,7 +313,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 goToShopDetail(shopId);
-                UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.VISIT_SHOP);
+                UnifyTracking.eventFeedClickShop(String.valueOf(shopId),
+                        FeedTrackingEventLabel.Click.VISIT_SHOP);
             }
         };
     }

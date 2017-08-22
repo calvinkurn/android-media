@@ -8,7 +8,6 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
@@ -76,7 +75,7 @@ public class FeedPlusPresenter
         currentCursor = "";
         getFirstPageFeedsUseCase.execute(
                 getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
-                new GetFirstPageFeedsSubscriber(viewListener));
+                new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
     }
 
     @Override
@@ -90,7 +89,7 @@ public class FeedPlusPresenter
                         pagingHandler.getPage(),
                         sessionHandler,
                         currentCursor),
-                new GetFeedsSubscriber(viewListener));
+                new GetFeedsSubscriber(viewListener, pagingHandler.getPage()));
     }
 
     public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
@@ -148,7 +147,7 @@ public class FeedPlusPresenter
         currentCursor = "";
         getFirstPageFeedsCloudUseCase.execute(
                 getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
-                new GetFirstPageFeedsSubscriber(viewListener));
+                new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
     }
 
     @Override

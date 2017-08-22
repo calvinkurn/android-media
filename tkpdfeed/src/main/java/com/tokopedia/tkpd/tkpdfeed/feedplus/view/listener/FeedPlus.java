@@ -32,17 +32,17 @@ public interface FeedPlus{
                                    String imgUrl,
                                    String contentMessage);
 
-        void onGoToProductDetail(String productId);
+        void onGoToProductDetail(int page, String productId);
 
         void onGoToProductDetailFromRecentView(String productID);
 
         void onGoToProductDetailFromInspiration(String productId);
 
-        void onGoToFeedDetail(String feedId);
+        void onGoToFeedDetail(int page, String feedId);
 
         void onGoToShopDetail(Integer shopId, String url);
 
-        void onCopyClicked(String s, String name);
+        void onCopyClicked(String id, String s, String name);
 
         void onGoToBlogWebView(String url);
 
@@ -78,7 +78,7 @@ public interface FeedPlus{
 
         void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
 
-        void onSeePromo(String link, String name);
+        void onSeePromo(String id, String link, String name);
 
         void onRetryClicked();
 
