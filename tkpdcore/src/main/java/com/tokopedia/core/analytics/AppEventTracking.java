@@ -283,6 +283,7 @@ public interface AppEventTracking {
         String INSTALL = "Install";
         String REMOVE = "Remove";
         String VOUCHER_SUCCESS = "Voucher Success - ";
+        String VOUCHER_ERROR = "Voucher Error - ";
     }
 
     interface EventLabel {

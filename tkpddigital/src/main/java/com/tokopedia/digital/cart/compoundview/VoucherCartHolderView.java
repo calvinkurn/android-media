@@ -144,6 +144,7 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     public void setErrorVoucher(String errorMessage) {
+        UnifyTracking.eventVoucherError(errorMessage,"");
         hideHolderVoucher();
         errorVoucher.setVisibility(VISIBLE);
         errorVoucher.setText(errorMessage);

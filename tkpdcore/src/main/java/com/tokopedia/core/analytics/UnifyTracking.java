@@ -1843,6 +1843,14 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventVoucherError(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE,
+                AppEventTracking.Action.VOUCHER_ERROR+action,
+                label
+        ).getEvent());
+    }
 
     public static void eventVoucherSuccess(String action, String label) {
         sendGTMEvent(new EventTracking(
