@@ -21,7 +21,7 @@ import com.tokopedia.seller.R;
  * @author sebastianuskh on 4/17/17.
  */
 
-public abstract class TextPickerDialog extends DialogFragment {
+public abstract class BaseTextPickerDialogFragment extends DialogFragment {
 
     protected EditText textInput;
     protected TextInputLayout textInputLayout;
@@ -59,7 +59,7 @@ public abstract class TextPickerDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.string_picker_dialog_layout, container, false);
+        View view = inflater.inflate(R.layout.dialog_fragment_string_picker, container, false);
         stringPickerTitle = (TextView) view.findViewById(R.id.string_picker_dialog_title);
         textInput = (EditText) view.findViewById(R.id.string_picker_dialog_edit_text);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.string_picker_dialog_input_layout);

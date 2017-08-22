@@ -14,7 +14,6 @@ import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
@@ -36,7 +35,7 @@ import java.util.List;
 
 public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantValue>
         implements BasePickerItemSearchList<ProductVariantViewModel>,
-        BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue>, TextPickerDialog.Listener {
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue>, ProductVariantItemPickerAddDialogFragment.Listener {
 
     private static final int MINIMUM_SHOW_UNIT_SIZE = 2;
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";

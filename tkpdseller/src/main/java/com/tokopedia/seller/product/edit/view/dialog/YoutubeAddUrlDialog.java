@@ -16,7 +16,7 @@ import com.tokopedia.seller.product.edit.utils.YoutubeVideoLinkUtils;
  * @author normansyahputa on 4/13/17.
  */
 
-public class YoutubeAddUrlDialog extends TextPickerDialog {
+public class YoutubeAddUrlDialog extends BaseTextPickerDialogFragment {
 
     public static final String TAG = "YoutubeAddUrlDialog";
 

@@ -7,13 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
+import com.tokopedia.seller.product.edit.view.dialog.BaseTextPickerDialogFragment;
 
 /**
  * @author sebastianuskh on 4/5/17.
  */
 
-public class ProductVariantItemPickerAddDialogFragment extends TextPickerDialog {
+public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDialogFragment {
 
     public static final String EXTRA_VARIANT_TITLE = "EXTRA_VARIANT_TITLE";
 

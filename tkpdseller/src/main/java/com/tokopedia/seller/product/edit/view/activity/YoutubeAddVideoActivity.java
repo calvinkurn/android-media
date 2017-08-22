@@ -11,7 +11,7 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.di.component.DaggerYoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
-import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
+import com.tokopedia.seller.product.edit.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.YoutubeAddUrlDialog;
 import com.tokopedia.seller.product.edit.view.fragment.YoutubeAddVideoFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoActView;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author normansyahputa on 4/17/17.
  */
 public class YoutubeAddVideoActivity extends BaseSimpleActivity
-        implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, TextPickerDialog.Listener {
+        implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, BaseTextPickerDialogFragment.Listener {
 
     /**
      * due to limitation of existing dataset videoIds throw back is from here.
