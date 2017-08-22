@@ -1,9 +1,14 @@
 import React from 'react'
 import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native'
+import { icons } from '../../../icons/index'
 
 const { width } = Dimensions.get('window')
-const iconCheck = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-gcheck.png?alt=media&token=a0a1e5de-c41e-4bd8-aa7e-9e8bfa98d518'
-const iconUSP = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-usp.png?alt=media&token=410c02e3-30c4-41f8-a24c-faf425286131'
+
+// // Icon from Firebase
+// const iconCheck = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-gcheck.png?alt=media&token=a0a1e5de-c41e-4bd8-aa7e-9e8bfa98d518'
+// const iconUSP = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-usp.png?alt=media&token=410c02e3-30c4-41f8-a24c-faf425286131'
+
+
 // Get Width of View Component
 getWidthofView = (event) => {
   this.viewWidth =  Math.floor(event.nativeEvent.layout.width)
@@ -20,14 +25,14 @@ const OfficialStoreIntro = () => {
   return (
     <View style={styles.osIntro}>
       <View style={styles.osIntroInner}>
-        <Image source={{ uri: iconUSP }} style={styles.osIntroImage}/>
+        <Image source={ icons.icon_usp } style={styles.osIntroImage}/>
         <View style={styles.osIntroTextWrap}>
           <Text style={styles.uspHeadingTitle}>{'Official Store Tokopedia'.toUpperCase()}</Text>
           <View style={styles.uspTextInner} onLayout={this.getWidthofView}>
           {
             uspText.map((usp, idx) => (
               <View key={idx} style={styles.uspText}>
-                <Image source={{ uri: iconCheck }} style={{width: 10, height: 15, resizeMode: 'contain', marginRight: 5, marginLeft: 5}}/>
+                <Image source={icons.icon_gcheck} style={{width: 10, height: 15, resizeMode: 'contain', marginRight: 5, marginLeft: 5}}/>
                 <Text numberOfLines={2} style={styles.uspTextContent}>{usp}</Text>
               </View>
             ))

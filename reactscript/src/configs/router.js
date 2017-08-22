@@ -11,18 +11,18 @@ const white = '#FFFFFF';
 
 
 
-export const OfficialStore = StackNavigator({
-    OfficalStore: {
-        screen: Official_Store_Page,
-        navigationOptions: {
-            title: 'Official Store',
-            headerTintColor: white,
-            headerStyle: {
-                backgroundColor: '#42b549'
-            }
-        }
-    }
-})
+// export const OfficialStore = StackNavigator({
+//     OfficalStore: {
+//         screen: Official_Store_Page,
+//         navigationOptions: {
+//             title: 'Official Store',
+//             headerTintColor: white,
+//             headerStyle: {
+//                 backgroundColor: '#42b549'
+//             }
+//         }
+//     }
+// })
 
 export const HotList_ = StackNavigator({
     OfficalStore: {

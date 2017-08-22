@@ -7,11 +7,12 @@ import {
   StyleSheet,
   Text,
   AppState,
+  AsyncStorage,
   View
 } from 'react-native';
 import { NavigationModule, NetworkModule } from 'NativeModules';
-import { HotList_, OfficialStore } from './src/configs/router';
-// import OfficialStore from './src/pages/official-store/setup'
+import { HotList_ } from './src/configs/router';
+import OfficialStore from './src/pages/official-store/setup'
 
 
 // let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
@@ -20,6 +21,30 @@ class Home extends Component {
   componentWillMount() { 
     // console.log(this.props)
     // console.log('masuk awal')
+
+    // AsyncStorage.removeItem('user_id').then(res => {
+    //   console.log('remove uuid first', res)
+    // })
+
+    if (this.props.User_ID != ''){
+      AsyncStorage.setItem('user_id', this.props.User_ID);
+    } else {
+      AsyncStorage.removeItem('user_id').then(res => {
+        console.log('remove uuid first', res)
+      })
+      AsyncStorage.getItem('user_id')
+      .then(uid => {
+          console.log(uid, typeof(uid))
+          // if (uid) {
+          //   // AsyncStorage.removeItem('uid', (err) => console.log('remove uuid first', err));
+          //   AsyncStorage.removeItem('user_id').then(res => {
+          //     console.log('remove uuid first', res)
+          //   })
+          // }
+      })
+    }
+
+    
   }
   
 

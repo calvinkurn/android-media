@@ -154,7 +154,6 @@ this.renderCampaign = (c) => {
               </View>
             </TouchableWithoutFeedback>
             <WishListButton
-              User_ID={ID_User}
               isWishlist={dataProducts.is_wishlist || false}
               productId={dataProducts.id} />
           </View>

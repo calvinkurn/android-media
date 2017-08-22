@@ -14,7 +14,8 @@ import {
     ADD_TO_WISHLIST_PDP_CAMPAIGN,
     REMOVE_WISHLIST_PDP_CAMPAIGN,
     ADD_TO_WISHLIST_BRAND_PDP,
-    REMOVE_WISHLIST_BRAND_PDP
+    REMOVE_WISHLIST_BRAND_PDP,
+    // FIRST
 } from '../actions/actions'
 
 
@@ -31,6 +32,7 @@ const campaigns = (state = {
             })
         case `${FETCH_CAMPAIGNS}_${FULFILLED}`:
             const campaignData = action.payload.data
+            console.log(campaignData)
             return {
                 items: state.items.length === 0 ? [...state.items, ...campaignData] : [...campaignData],
                 isFetching: false,
@@ -506,5 +508,18 @@ const rootReducer = combineReducers({
     banners,
     brands,
 })
+
+// const appReducer = combineReducers({
+//     campaigns,
+//     banners,
+//     brands
+// })
+
+// const rootReducer = (state, action) => {
+//     if (action.type === 'FIRST'){
+//         state = undefined
+//     }
+//     return appReducer(state, action)
+// }
 
 export default rootReducer

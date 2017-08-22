@@ -11,6 +11,14 @@ const endpoints = {
 }
 
 
+
+// export const FIRST = 'FIRST'
+// export const first = (state, action) => {
+//     return {
+//         type: FIRST
+//     }
+// }
+
 // ========================= Check Product in Wishlist ========================= //
 const checkProductInWishlist = (userId, pIds) => {
     if (userId == 0) {
@@ -44,6 +52,7 @@ const checkProductInWishlist = (userId, pIds) => {
 // ========================= Fetch Campaigns ========================= //
 export const FETCH_CAMPAIGNS = 'FETCH_CAMPAIGNS'
 export const fetchCampaigns = (User_ID) => {
+    console.log(User_ID)
     const device = 'lite'
     const imageSize = 200
     const imageSquare = true
@@ -59,7 +68,8 @@ export const fetchCampaigns = (User_ID) => {
         return NetworkModule.getResponse(url, "GET", "", true)
     }
 
-    const getCampaigns = () => {
+    const getCampaigns = (User_ID) => {
+        console.log(User_ID)
             return NetworkModule.getResponse(url, "GET", "", true)
                 .then(response => {
                     const jsonResponseCampaigns = JSON.parse(response)
@@ -85,7 +95,7 @@ export const fetchCampaigns = (User_ID) => {
 
                             let wishlistProd = []
                             let URL = `${MOJITO_HOSTNAME}/v1/users/` + User_ID + `/wishlist/check/` + pIds.toString();
-                            // console.log(URL)
+                            console.log(URL)
                             return NetworkModule.getResponse(URL, "GET", '', true)
                                 .then(response => {
                                     let jsonResponse = JSON.parse(response)
@@ -148,7 +158,7 @@ export const fetchCampaigns = (User_ID) => {
 
     return {
         type: FETCH_CAMPAIGNS,
-        payload: getCampaigns()
+        payload: getCampaigns(User_ID)
     }
 }
 
@@ -173,6 +183,13 @@ export const fetchBanners = () => ({
 
 
 // ========================= Fetch Brands ========================= //
+export const RESET_BRANDS = 'RESET_BRANDS'
+export const resetBrands = (limit, offset, User_ID, status) => ({
+  type: RESET_BRANDS,
+  payload: getBrands(limit, offset, User_ID, status)
+})
+
+
 export const FETCH_BRANDS = 'FETCH_BRANDS'
 export const fetchBrands = (limit, offset, User_ID, status) => ({
     type: FETCH_BRANDS,
@@ -181,11 +198,11 @@ export const fetchBrands = (limit, offset, User_ID, status) => ({
 
 getBrands = (limit, offset, User_ID, status) => {
     // console.log(User_ID, !User_ID)
-        // const offsetForLoadAndReplace = status === 'LOADANDREPLACE' ? 0 : offset
+    // const offsetForLoadAndReplace = status === 'LOADANDREPLACE' ? 0 : offset
     const Check_UserID = !User_ID ? 0 : User_ID
     // console.log(Check_UserID)
     const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${Check_UserID}&limit=${limit}&offset=${offset}`
-    // console.log(url)
+    console.log(url)
     return NetworkModule.getResponse(url, "GET", "", false)
         .then(response => {
             const jsonResponse = JSON.parse(response)
@@ -206,7 +223,7 @@ getBrands = (limit, offset, User_ID, status) => {
             shopIds = shopIds.toString()
             const shopCount = shopIds.length
             const url_brands = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
-            // console.log(url_brands)
+            console.log(url_brands)
 
             let ids = []
             let wishlistProd = []

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   Dimensions,
+  AsyncStorage,
   RefreshControl 
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -17,6 +18,7 @@ import Infographic from '../components/infographic'
 import BackToTop from '../common/BackToTop/backToTop'
 import Seo from '../components/seo'
 import OfficialStoreIntro from '../components/OfficialStoreIntro'
+// import { fetchBanners, fetchCampaigns, fetchBrands, refreshState, first } from '../actions/actions'
 import { fetchBanners, fetchCampaigns, fetchBrands, refreshState } from '../actions/actions'
 
 
@@ -24,6 +26,19 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { showBtn: false, refreshing: false, }
+  }
+
+  componentWillMount(){
+    console.log('Mount App.js')
+    // this.props.dispatch(first())
+    // const aaaa = await AsyncStorage.getItem('user_id')
+    // console.log(aa)
+    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
+  }
+
+  componentWillUnmount(){
+    console.log('WillUnmount App.js')
+    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
   }
 
   _onRefresh() {
@@ -52,15 +67,6 @@ class App extends Component {
     }
   }
 
-  componentWillMount(){
-    console.log('Mount App.js')
-    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
-  }
-
-  componentWillUnmount(){
-    console.log('WillUnmount App.js')
-    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
-  }
 
   render() {
     return (

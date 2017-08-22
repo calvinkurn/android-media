@@ -10,7 +10,8 @@ import {
   addToFavouritePdp,
   removeFavoritePdp,
   addWishlistFromPdpBrands,
-  removeWishlistPdpBrands
+  removeWishlistPdpBrands,
+  resetBrands
 } from '../actions/actions'
 import BrandList from '../components/brandList'
 
@@ -35,26 +36,31 @@ class BrandContainer extends Component {
     })
 
     this.checkLogin = DeviceEventEmitter.addListener('Login', (res) => {
-      console.log(res)
+      console.log(res, 'brandContainer Login')
+      const userid_from_login_os = res.user_id
+      this.props.resetBrandsAfterLogin(limit, offset, userid_from_login_os, 'REFRESH')
+      // this.props.resetBrands(limit, offset, userid_from_login_os, 'REFRESH')
     })
 
-    // console.log('Mount BrandContainer.js')
+    console.log('Mount BrandContainer.js')
   }
 
 
   componentWillUnmount(){
+    console.log('WillUnmount BrandContainer')
+
     this.addToWishlist.remove()
     this.removeWishlist.remove()
     this.addToFavoritePDP.remove()
     this.removeFavoritePDP.remove()
     this.checkLogin.remove()
-    // console.log('WillUnmount')
-    this.props.loadMore(10, 0, User_ID, 'REFRESH')
+    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
   }
 
 
 
   render() {
+    console.log(this.props.brands)
     // console.log('render BrandContainer.js')
     const { offset, limit } = this.props.brands.pagination
     const { status, isFetching } = this.props.brands
@@ -79,6 +85,8 @@ class BrandContainer extends Component {
       User_ID: this.props.screenProps.User_ID
     }
 
+    console.log(bannerListProps)
+
     return (
       <BrandList {...bannerListProps} />
     )
@@ -100,7 +108,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     addFavouriteFromPDP: bindActionCreators(addToFavouritePdp, dispatch),
     removeFavoriteFromPdp: bindActionCreators(removeFavoritePdp, dispatch),
     brandAddWishlistPdp: bindActionCreators(addWishlistFromPdpBrands, dispatch),
-    brandRemoveWishlistPdp: bindActionCreators(removeWishlistPdpBrands, dispatch)
+    brandRemoveWishlistPdp: bindActionCreators(removeWishlistPdpBrands, dispatch),
+    resetBrandsAfterLogin: bindActionCreators(resetBrands, dispatch)
   }
 }
 

@@ -1,8 +1,13 @@
 import React from 'react'
 import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native'
-import { icons } from '../../../../components/icons'
+import { icons } from '../../../../icons/index'
+// import { icons } from '../../../../components/icons'
 
-const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/chevron_thin_up.png?alt=media&token=415b8665-7660-46f1-ae76-64aaf85fd3f3'
+// // icon from Firebase
+// const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/chevron_thin_up.png?alt=media&token=415b8665-7660-46f1-ae76-64aaf85fd3f3'
+
+// const icon_arrowUp = chevron_thin_up
+
 const BackToTop = (props) => {
   return (
     <View style={{ alignItems: 'center', }}>
@@ -10,7 +15,7 @@ const BackToTop = (props) => {
         underlayColor='#fff' onPress={props.onTap}>
         <View style={{ flex: 1, flexDirection: 'row', padding: 10, alignSelf: 'center', justifyContent: 'center', }}>
           <Text style={{ color: 'rgba(0,0,0,.7)', textAlign: 'center', fontSize: 13}}>Kembali ke atas</Text>
-          <Image source={{ uri: icon_arrowUp }} style={{width:15, height:10, marginLeft:7, marginTop:3}} />
+          <Image source={ icons.chevron_thin_up } style={{width:15, height:10, marginLeft:7, marginTop:3}} />
         </View>
       </TouchableOpacity>
     </View>
