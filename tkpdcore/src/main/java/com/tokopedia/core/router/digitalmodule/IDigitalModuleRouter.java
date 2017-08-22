@@ -44,4 +44,6 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentTokoCashActivation();
 
+    Intent instanceIntentTokoCashTopUp();
+
 }

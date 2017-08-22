@@ -28,6 +28,7 @@ import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -39,6 +40,7 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
+import com.tokopedia.digital.tokocash.activity.TopUpTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -280,8 +282,8 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToDatePicker(Activity activity, List<PeriodRangeModel> periodRangeModels) {
-
+    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels) {
+        return null;
     }
 
     @Override
@@ -397,6 +399,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public Intent instanceIntentTokoCashActivation() {
         return ActivateTokoCashActivity.newInstance(this);
+    }
+
+    @Override
+    public Intent instanceIntentTokoCashTopUp() {
+        return null;
     }
 
     @Override
