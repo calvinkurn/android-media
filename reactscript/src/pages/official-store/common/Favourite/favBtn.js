@@ -5,6 +5,7 @@ import {
   TouchableNativeFeedback,
   TouchableOpacity,
   Platform,
+  AsyncStorage,
   Text,
   View,
 } from 'react-native'
@@ -13,24 +14,26 @@ import { NavigationModule } from 'NativeModules';
 
 class FavouriteButton extends Component {
   _onTap = (isShopFav, shopId) => {
-    const { dispatch, User_ID } = this.props
-
-    if (!User_ID){
-      NavigationModule.navigateToLoginWithResult()
-    } else {
-      if (isShopFav) {
-        return dispatch(removeFromFavourite(shopId, User_ID))
+    const { dispatch } = this.props
+    
+    AsyncStorage.getItem('user_id').then(res => { 
+      User_ID = res 
+      if (User_ID != null) {
+        if (isShopFav) {
+          return dispatch(removeFromFavourite(shopId, User_ID))
+        } else {
+          return dispatch(addToFavourite(shopId, User_ID))
+        }
       } else {
-        return dispatch(addToFavourite(shopId, User_ID))
+        NavigationModule.navigateToLoginWithResult()
       }
-    }
+    })
   }
 
   render() {
     const isShopFav = this.props.isFav
     const shopId = this.props.shopId
     const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
-    // console.log(shopId + ' ' + isShopFav)
 
     return (
       <Touchable

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Button,
   TouchableWithoutFeedback,
-  Linking
+  // Linking
 } from 'react-native'
 import { NetworkModule, NavigationModule } from 'NativeModules';
 import unescape from 'lodash/unescape'
@@ -20,7 +20,7 @@ import WishlistBtn from '../common/Wishlist/WishlistButton'
 
 const BrandList = (props) => {
   const gridProps = {
-    User_ID: props.User_ID,
+    // User_ID: props.User_ID,
     rows: 3,
     columns: 3,
     data: props.gridData,
@@ -58,7 +58,6 @@ const BrandList = (props) => {
               </TouchableWithoutFeedback>
               <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center' }}>
                 <FavouriteBtn
-                  User_ID={props.User_ID}
                   shopId={b.id}
                   isFav={b.isFav} />
               </View>
@@ -129,7 +128,6 @@ const BrandList = (props) => {
                         }
                       </View>
                       <WishlistBtn
-                        User_ID={props.User_ID}
                         isWishlist={p.is_wishlist} 
                         productId={p.id} />
                     </View>

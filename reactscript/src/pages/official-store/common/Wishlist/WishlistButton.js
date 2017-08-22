@@ -15,19 +15,14 @@ import { addToWishlist, removeFromWishlist } from '../../actions/actions'
 import { NavigationModule } from 'NativeModules'
 import { icons } from '../../../../icons/index'
 
-
 // // Icon from Firebase
 // const icon_love = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist-red.png?alt=media&token=7cb838f9-3f3b-4705-8218-eb242a0377f1'
 // const icon_notlove = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist.png?alt=media&token=f13280d1-7d29-4e3c-838e-f040fa8a50c2'
 
-// const icon_love = icon_wishlist_red
-// const icon_notlove = icon_wishlist
-
 
 class Wishlist extends Component {
   _onTap = (isWishlist, pId, User_ID) => {
-    console.log('dipencet ', pId, User_ID)
-    console.log(!User_ID, User_ID != null)
+    console.log('dipencet ', pId, User_ID, !User_ID, User_ID != null)
 
     if (User_ID != null){
       if (isWishlist) {

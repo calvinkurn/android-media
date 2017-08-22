@@ -7,7 +7,6 @@ import {
   FlatList,
   Image,
   ScrollView,
-  Linking,
   TouchableWithoutFeedback
 } from 'react-native';
 import unescape from 'lodash/unescape'
@@ -15,15 +14,12 @@ import { NavigationModule, NetworkModule } from 'NativeModules';
 import WishListButton from '../common/Wishlist/WishlistButton';
 
 
-let ID_User;
+// let ID_User;
 const CampaignList = ({ campaigns, User_ID }) => {
-  ID_User = User_ID
-
   return (
     <View style={styles.container}>
       <ScrollView>
         <FlatList
-          User_ID={ID_User}
           data={campaigns}
           keyExtractor={item => item.banner_id}
           renderItem={this.renderCampaign}

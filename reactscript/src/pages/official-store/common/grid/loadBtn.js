@@ -3,6 +3,7 @@ import {
   View,
   Image,
   Button,
+  AsyncStorage,
   Text,
   TouchableNativeFeedback,
   TouchableOpacity,
@@ -13,8 +14,12 @@ import { icons } from '../../../../components/icons'
 import iconLoadMore from '../../components/img/load-more.png'
 
 const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/load-more.png?alt=media&token=bbc027ae-dea6-4a81-a319-776c4c3effbe'
-// const icon_LoadMore = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/load-more.png?alt=media&token=bbc027ae-dea6-4a81-a319-776c4c3effbe'
-const LoadMore = ({ User_ID, onLoadMore, onSlideMore, offset, limit, canFetch, isFetching }) => {
+
+const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching }) => {
+  const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
+  let User_ID;
+  AsyncStorage.getItem('user_id').then(res => { User_ID = res })
+
   _onClick = () => {
     if (isFetching) {
       return
@@ -26,8 +31,6 @@ const LoadMore = ({ User_ID, onLoadMore, onSlideMore, offset, limit, canFetch, i
       }
     }
   }
-
-  const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
   
   return (
     <View style={{flex: 1 / 3}}>

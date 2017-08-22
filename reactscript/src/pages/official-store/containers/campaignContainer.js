@@ -47,8 +47,7 @@ class CampaignContainer extends Component {
             <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
                 <ActivityIndicator size="large" />
             </View> : 
-            <CampaignList
-                campaigns={campaigns} />
+            <CampaignList campaigns={campaigns} />
         )
     }
     
