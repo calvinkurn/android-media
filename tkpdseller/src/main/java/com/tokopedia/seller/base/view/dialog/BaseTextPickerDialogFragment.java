@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.dialog;
+package com.tokopedia.seller.base.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -92,6 +92,6 @@ public abstract class BaseTextPickerDialogFragment extends DialogFragment {
     public interface Listener {
 
         void onTextPickerSubmitted(String text);
-        
+
     }
 }

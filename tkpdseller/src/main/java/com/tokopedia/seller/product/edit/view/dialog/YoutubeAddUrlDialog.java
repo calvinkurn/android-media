@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.utils.YoutubeVideoLinkUtils;
 
 /**

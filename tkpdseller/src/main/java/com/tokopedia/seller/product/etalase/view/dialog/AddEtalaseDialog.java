@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.view.dialog.BaseTextPickerDialogFragment;
+import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 
 /**
  * @author sebastianuskh on 4/5/17.

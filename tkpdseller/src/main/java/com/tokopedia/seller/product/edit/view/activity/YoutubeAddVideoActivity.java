@@ -11,7 +11,7 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.di.component.DaggerYoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
-import com.tokopedia.seller.product.edit.view.dialog.BaseTextPickerDialogFragment;
+import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.YoutubeAddUrlDialog;
 import com.tokopedia.seller.product.edit.view.fragment.YoutubeAddVideoFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoActView;
