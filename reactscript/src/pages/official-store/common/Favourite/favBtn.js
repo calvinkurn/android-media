@@ -17,7 +17,7 @@ class FavouriteButton extends Component {
     const { dispatch } = this.props
     
     AsyncStorage.getItem('user_id').then(res => { 
-      User_ID = res 
+      const User_ID = res 
       if (User_ID != null) {
         if (isShopFav) {
           return dispatch(removeFromFavourite(shopId, User_ID))

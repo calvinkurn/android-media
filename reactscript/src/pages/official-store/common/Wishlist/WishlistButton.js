@@ -21,25 +21,30 @@ import { icons } from '../../../../icons/index'
 
 
 class Wishlist extends Component {
-  _onTap = (isWishlist, pId, User_ID) => {
-    console.log('dipencet ', pId, User_ID, !User_ID, User_ID != null)
+  _onTap = (isWishlist, pId) => {
+    // console.log('dipencet ', pId, User_ID, !User_ID, User_ID != null)
+    
+    AsyncStorage.getItem('user_id').then(res => { 
+      const User_ID = res 
+      console.log(User_ID)
 
-    if (User_ID != null){
-      if (isWishlist) {
-        console.log('remove wishlist ', pId, User_ID)
-        this.props.dispatch(removeFromWishlist(pId, User_ID))
+      if (User_ID != null){
+        if (isWishlist) {
+          console.log('remove wishlist ', pId, User_ID)
+          this.props.dispatch(removeFromWishlist(pId, User_ID))
+        } else {
+          console.log('add wishlist ', pId, User_ID)
+          this.props.dispatch(addToWishlist(pId, User_ID))
+        }
       } else {
-        console.log('add wishlist ', pId, User_ID)
-        this.props.dispatch(addToWishlist(pId, User_ID))
+        NavigationModule.navigateToLoginWithResult().then(response => { console.log(response) })
       }
-    } else {
-      NavigationModule.navigateToLoginWithResult().then(response => { console.log(response) })
-    }
+    })
   }
 
   render() {
-    let User_ID;
-    AsyncStorage.getItem('user_id').then(res => { User_ID = res })
+    // let User_ID;
+    // AsyncStorage.getItem('user_id').then(res => { User_ID = res })
 
     const isWishlist = this.props.isWishlist || false
     // const { productId, User_ID } = this.props
@@ -47,7 +52,7 @@ class Wishlist extends Component {
     const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
     return (
       <View style={styles.wrapper}>
-        <Touchable onPress={() => this._onTap(isWishlist, productId, User_ID)}>
+        <Touchable onPress={() => this._onTap(isWishlist, productId)}>
            <View>
             {
               isWishlist ? (<Image source={ icons.icon_wishlist_red } style={{width:20, height:20, margin:10}} />) :
