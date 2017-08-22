@@ -89,6 +89,16 @@ public class ProductVariantUtils {
         return null;
     }
 
+    public static ProductVariantValue getProductVariantValueByVariantUnit(VariantSubmitOption variantSubmitOption, List<ProductVariantUnit> productVariantUnitList) {
+        for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
+            ProductVariantValue productVariantValue = getProductVariantValue(variantSubmitOption, productVariantUnit.getProductVariantValueList());
+            if (productVariantValue != null) {
+                return productVariantValue;
+            }
+        }
+        return null;
+    }
+
     public static ProductVariantValue getProductVariantValue(VariantSubmitOption variantSubmitOption, List<ProductVariantValue> productVariantValueList) {
         for (ProductVariantValue productVariantValue : productVariantValueList) {
             if (productVariantValue.getValueId() == variantSubmitOption.getVariantUnitValueId()) {
@@ -322,5 +332,22 @@ public class ProductVariantUtils {
         }
         variantData.setVariantStatusList(variantStatusList);
         return variantData;
+    }
+
+    public static List<String> getTitleList(List<VariantSubmitOption> variantSubmitOptionList, List<ProductVariantUnit> productVariantUnitList) {
+        List<String> titleList = new ArrayList<>();
+        for (VariantSubmitOption variantSubmitOption: variantSubmitOptionList) {
+            // If name already on custom text, add custom text on title list
+            if (!TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+                titleList.add(variantSubmitOption.getCustomText());
+            } else {
+                // If not, search and mapping with variant value list from server
+                ProductVariantValue productVariantValue = getProductVariantValueByVariantUnit(variantSubmitOption, productVariantUnitList);
+                if (productVariantValue != null) {
+                    titleList.add(productVariantValue.getValue());
+                }
+            }
+        }
+        return titleList;
     }
 }

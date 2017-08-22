@@ -7,13 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.view.dialog.TextPickerDialog;
+import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 
 /**
  * @author sebastianuskh on 4/5/17.
  */
 
-public class AddEtalaseDialog extends TextPickerDialog {
+public class AddEtalaseDialog extends BaseTextPickerDialogFragment {
 
     public static final String TAG = "AddEtalaseDialog";
 

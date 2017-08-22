@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.dialog;
+package com.tokopedia.seller.base.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -21,12 +21,13 @@ import com.tokopedia.seller.R;
  * @author sebastianuskh on 4/17/17.
  */
 
-public abstract class TextPickerDialog extends DialogFragment{
+public abstract class BaseTextPickerDialogFragment extends DialogFragment {
 
     protected EditText textInput;
     protected TextInputLayout textInputLayout;
-    protected TextPickerDialogListener listener;
     protected TextView stringPickerTitle;
+
+    protected Listener listener;
 
     @NonNull
     @Override
@@ -48,17 +49,17 @@ public abstract class TextPickerDialog extends DialogFragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof TextPickerDialogListener){
-            listener = (TextPickerDialogListener) context;
+        if (context instanceof Listener) {
+            listener = (Listener) context;
         } else {
-            throw new RuntimeException("Activity must implement TextPickerDialogListener");
+            throw new RuntimeException("Activity must implement Listener");
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.string_picker_dialog_layout, container, false);
+        View view = inflater.inflate(R.layout.dialog_fragment_string_picker, container, false);
         stringPickerTitle = (TextView) view.findViewById(R.id.string_picker_dialog_title);
         textInput = (EditText) view.findViewById(R.id.string_picker_dialog_edit_text);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.string_picker_dialog_input_layout);
@@ -79,8 +80,18 @@ public abstract class TextPickerDialog extends DialogFragment{
         return view;
     }
 
-    protected void onTextSubmited(String text){
+    protected void onTextSubmited(String text) {
         listener.onTextPickerSubmitted(text);
         dismiss();
+    }
+
+    /**
+     * @author sebastianuskh on 4/5/17.
+     */
+
+    public interface Listener {
+
+        void onTextPickerSubmitted(String text);
+
     }
 }

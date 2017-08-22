@@ -94,7 +94,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getGoldMerchantMenu());
         data.add(getPaymentAndTopupMenu());
         data.add(new DrawerItem(context.getString(R.string.drawer_title_mitra_toppers),
-                R.drawable.statistik_icon,
+                R.drawable.ic_mitra_toppers,
                 TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),

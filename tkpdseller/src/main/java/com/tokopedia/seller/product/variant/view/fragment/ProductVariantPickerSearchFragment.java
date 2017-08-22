@@ -30,11 +30,13 @@ import java.util.List;
  */
 
 public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantValue>
-        implements BasePickerItemSearchList<ProductVariantViewModel>, BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue> {
+        implements BasePickerItemSearchList<ProductVariantViewModel>,
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue> {
 
     private static final int MINIMUM_SHOW_UNIT_SIZE = 2;
 
     private ProductVariantPickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
+    private ProductVariantByCatModel productVariantByCatModel;
 
     private List<ProductVariantUnit> productVariantUnitList;
     private List<ProductVariantValue> productVariantValueList;
@@ -50,7 +52,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (getActivity() instanceof BasePickerMultipleItem) {
             pickerMultipleItem = (ProductVariantPickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
-        ProductVariantByCatModel productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
             productVariantUnitList = productVariantByCatModel.getUnitList();
             productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
@@ -61,6 +63,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (variantUnitSubmit != null) {
             currentVariantUnitId = variantUnitSubmit.getVariantUnitId();
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
