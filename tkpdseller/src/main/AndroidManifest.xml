@@ -318,6 +318,11 @@
             android:name=".product.variant.view.activity.ProductVariantManageActivity"
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.variant.view.activity.ProductVariantDataManageActivity"
+            android:label="@string/title_product"
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity"

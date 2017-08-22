@@ -119,5 +119,10 @@
     <string name="product_instagram_draft_error_save_unknown">Terjadi kesalahan ketika mengupload draft instagram.</string>
     <string name="product_instagram_draft_error_save_resolution">Gambar instagram ke-%1$d memiliki resolusi di bawah 300 pixel.</string>
     <string name="product_draft_instagram_save_success">%1$d Produk Instagram Anda berhasil ditambahkan di draft.</string>
+    <string name="delete_this_variant">Hapus Variant untuk <![CDATA[<b>%1$s</b>]]>?</string>
+    <string name="label_variant_save">Simpan</string>
+    <string name="product_variant_status">Status Produk</string>
+    <string name="product_variant_status_available">Tersedia</string>
+    <string name="product_variant_status_not_available">Kosong</string>
 
 </resources>
