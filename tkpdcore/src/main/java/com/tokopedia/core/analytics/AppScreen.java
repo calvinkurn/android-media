@@ -193,6 +193,7 @@ public final class AppScreen {
     public static final String SCREEN_DEEP_LINK = "Deeplink page";
     public static final String SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL = "Product Reputation View Detail";
     public static final String SCREEN_RECHARGE = "Recharge";
+    public static final String SCREEN_RECHARGE_PRODUCT_PAGE = "Recharge Product Page";
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
