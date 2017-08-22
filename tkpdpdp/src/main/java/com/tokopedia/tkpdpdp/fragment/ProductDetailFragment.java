@@ -41,6 +41,7 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -68,6 +69,7 @@ import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
+import com.tokopedia.tkpdpdp.customview.LatestTalkView;
 import com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
@@ -99,6 +101,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLI
  * Created by Angga.Prasetiyo on 22/10/2015.
  * Edited by alifa, rohmadi, henry for v2
  */
+@SuppressWarnings("all")
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPresenter>
         implements ProductDetailView {
@@ -133,6 +136,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
+    private LatestTalkView latestTalkView;
     private ProgressBar progressBar;
 
     private Toolbar toolbar;
@@ -216,6 +220,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
+        latestTalkView = (LatestTalkView) view.findViewById(R.id.view_latest_discussion);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
@@ -251,6 +256,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         mostHelpfulReviewView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
+        latestTalkView.setListener(this);
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1018,4 +1024,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
+    @Override
+    public void showLatestTalkView(LatestTalkViewModel latestTalkViewModel) {
+        this.productData.setLatestTalkViewModel(latestTalkViewModel);
+        this.latestTalkView.renderData(this.productData);
+        this.latestTalkView.setVisibility(View.VISIBLE);
+    }
 }

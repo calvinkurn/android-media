@@ -30,12 +30,14 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
+import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -298,8 +300,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
                             getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
+                            getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context,productDetailData.getInfo().getProductId().toString());
-                            getProductVariant(context,productDetailData.getInfo().getProductId().toString());
                         }
 
                         @Override
@@ -801,7 +803,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         setGoldMerchantFeatures(context, data);
                         getProductCampaign(context, data.getInfo().getProductId().toString());
                         getMostHelpfulReview(context,data.getInfo().getProductId().toString());
-                        getProductVariant(context,data.getInfo().getProductId().toString());
+                        getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
                     }
 
                     @Override
@@ -930,5 +932,57 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     }
                 }
         );
+    }
+
+    public void getTalk(@NonNull final Context context, @NonNull final String productId, final String shopId) {
+        retrofitInteractor.getProductDiscussion(context, productId, shopId,
+                new DiscussionListener() {
+                    @Override
+                    public void onSucccess(LatestTalkViewModel latestTalkViewModel) {
+                        if (latestTalkViewModel != null) {
+                            if (latestTalkViewModel.getTalkCounterComment() > 0) {
+                                String talkId = latestTalkViewModel.getTalkId();
+                                getTalkComment(context, talkId, shopId, latestTalkViewModel);
+                            } else {
+                                viewListener.showLatestTalkView(latestTalkViewModel);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+    }
+
+    public void getTalkComment(@NonNull Context context,
+                               @NonNull String talkId,
+                               @NonNull  String shopId,
+                               final LatestTalkViewModel latestTalkViewModel) {
+        retrofitInteractor.getProductTalkComment(context, talkId, shopId,
+                new DiscussionListener() {
+                    @Override
+                    public void onSucccess(LatestTalkViewModel talkComment) {
+
+                        if (talkComment != null) {
+                            latestTalkViewModel.setCommentId(talkComment.getCommentId());
+                            latestTalkViewModel.setCommentId(talkComment.getCommentId());
+                            latestTalkViewModel.setCommentMessage(talkComment.getCommentMessage());
+                            latestTalkViewModel.setCommentDate(talkComment.getCommentDate());
+                            latestTalkViewModel.setCommentUserId(talkComment.getCommentUserId());
+                            latestTalkViewModel.setCommentUserName(talkComment.getCommentUserName());
+                            latestTalkViewModel.setCommentUserLabel(talkComment.getCommentUserLabel());
+                            latestTalkViewModel.setCommentUserAvatar(talkComment.getCommentUserAvatar());
+
+                            viewListener.showLatestTalkView(latestTalkViewModel);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
     }
 }
