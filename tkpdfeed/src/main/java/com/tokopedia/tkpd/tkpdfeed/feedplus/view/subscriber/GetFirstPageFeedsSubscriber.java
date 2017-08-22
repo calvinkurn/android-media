@@ -53,7 +53,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
-    private static final String TYPE_TOPPICKS = "top_picks";
+    private static final String TYPE_TOPPICKS = "toppick";
 
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener) {
