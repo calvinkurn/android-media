@@ -277,6 +277,7 @@ public interface AppEventTracking {
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";
+        String CLICK_DAFTAR_TX = "Click Daftar Transaksi";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";

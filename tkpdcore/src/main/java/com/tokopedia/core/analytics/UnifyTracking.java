@@ -1863,9 +1863,19 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickPhoneIcon(String category, String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+category,
                 AppEventTracking.Action.CLICK_PHONEBOOK_ICON,
+                AppEventTracking.EventLabel.PRODUCT+label
+        ).getEvent());
+    }
+
+
+    public static void eventClickDaftarTransaksiEvent(String category, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+category,
+                AppEventTracking.Action.CLICK_DAFTAR_TX,
                 AppEventTracking.EventLabel.PRODUCT+label
         ).getEvent());
     }
