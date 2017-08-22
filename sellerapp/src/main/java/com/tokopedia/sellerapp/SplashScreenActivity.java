@@ -2,14 +2,19 @@ package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
@@ -20,12 +25,27 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
-        if(!sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
-            // Means it is a Seller
-            startActivity(new Intent(SplashScreenActivity.this, SellerHomeActivity.class));
+        if (!sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
+            if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
+                String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
+                DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
+                if (delegate.supportsUri(applinkUrl)) {
+                    Intent intent = getIntent();
+                    intent.setData(Uri.parse(applinkUrl));
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+                    intent.putExtras(bundle);
+                    delegate.dispatchFrom(this, intent);
+                } else {
+                    startActivity(new Intent(SplashScreenActivity.this, SellerHomeActivity.class));
+                }
+            } else {
+                // Means it is a Seller
+                startActivity(new Intent(SplashScreenActivity.this, SellerHomeActivity.class));
+            }
         } else {
             // Means it is buyer
-            if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
+            if (!TextUtils.isEmpty(sessionHandler.getLoginID())) {
                 Intent intent = moveToCreateShop(this);
                 startActivity(intent);
             } else {
@@ -38,17 +58,17 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        if(context == null)
+        if (context == null)
             return null;
 
-        if(SessionHandler.isMsisdnVerified()) {
+        if (SessionHandler.isMsisdnVerified()) {
             Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
-        }else{
+        } else {
             Intent intent;
             intent = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
