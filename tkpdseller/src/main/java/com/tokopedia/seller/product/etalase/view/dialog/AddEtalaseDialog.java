@@ -28,13 +28,13 @@ public class AddEtalaseDialog extends BaseTextPickerDialogFragment {
     }
 
     @Override
-    protected void onTextSubmited(String text) {
+    protected void onTextSubmitted(String text) {
         if(text.trim().isEmpty()){
             textInputLayout.setError(getString(R.string.product_etalase_picker_add_etalase_name_empty));
         } else if (text.trim().length() < 3) {
             textInputLayout.setError(getString(R.string.product_etalase_picker_add_etalase_name_too_short));
         } else {
-            super.onTextSubmited(text);
+            super.onTextSubmitted(text);
         }
     }
 }
