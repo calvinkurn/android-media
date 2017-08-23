@@ -19,7 +19,6 @@ import rx.Observable;
 
 public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
 
-    public static final String DELETE_WHITELIST_COLLECTIONS = "DELETE_WHITELIST_COLLECTIONS";
     public static final String ADD_WHITELIST_COLLECTIONS = "ADD_WHITELIST_COLLECTIONS";
 
     private ApiCacheRepository apiCacheRepository;
@@ -36,9 +35,6 @@ public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         Object object = requestParams.getObject(ADD_WHITELIST_COLLECTIONS);
-        final Object object1 = requestParams.getObject(DELETE_WHITELIST_COLLECTIONS);
-        return Observable.concat(
-                apiCacheRepository.bulkInsert((Collection<CacheApiWhiteListDomain>) object),
-                apiCacheRepository.bulkDelete((Collection<CacheApiWhiteListDomain>) object1));
+        return apiCacheRepository.bulkInsert((Collection<CacheApiWhiteListDomain>) object);
     }
 }

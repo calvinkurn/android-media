@@ -15,7 +15,6 @@ import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,9 +39,21 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
         this.cacheHelper = cacheHelper;
     }
 
+    /**
+     * this is for older class.
+     * removed if no longer used
+     */
     public static void DeleteAllCache() {
+        deleteAllCacheData();
+        deleteAllWhiteLists();
+    }
+
+    protected static void deleteAllCacheData() {
         SQLite.delete(CacheApiData.class).execute();
-        SQLite.delete(CacheApiWhitelist.class);
+    }
+
+    protected static void deleteAllWhiteLists() {
+        SQLite.delete(CacheApiWhitelist.class).execute();
     }
 
     @Override
@@ -66,6 +77,9 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
                 if (!aBoolean) {// if version is upgdated
+
+                    deleteAllCache();
+
                     Observable.from(cacheApiDatas)
                             .flatMap(new Func1<CacheApiWhiteListDomain, Observable<CacheApiWhitelist>>() {
                                 @Override
@@ -73,35 +87,6 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
                                     CacheApiWhitelist from = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
                                     from.save();
                                     return Observable.just(from);
-                                }
-                            }).toList().toBlocking().first();
-                }
-                return Observable.just(aBoolean);
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> bulkDelete(@Nullable final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
-        return checkVersion().flatMap(new Func1<Boolean, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                if (!aBoolean) {// if version is upgdated
-                    Observable.from(cacheApiDatas)
-                            .flatMap(new Func1<CacheApiWhiteListDomain, Observable<CacheApiWhitelist>>() {
-                                @Override
-                                public Observable<CacheApiWhitelist> call(CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-                                    CacheApiWhitelist cacheApiWhitelist = cacheHelper.queryFromRaw(cacheApiWhiteListDomain.getHost(), cacheApiWhiteListDomain.getPath());
-                                    cacheApiWhitelist.delete();
-
-                                    List<CacheApiData> cacheApiDatas1 = cacheHelper.queryDataFrom(cacheApiWhiteListDomain.getHost(), cacheApiWhiteListDomain.getPath());
-                                    if (cacheApiDatas1 != null) {
-                                        for (CacheApiData cacheApiData : cacheApiDatas1) {
-                                            cacheApiData.delete();
-                                        }
-                                    }
-
-                                    return Observable.just(cacheApiWhitelist);
                                 }
                             }).toList().toBlocking().first();
                 }
@@ -129,8 +114,8 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
     @Override
     public void deleteAllCache() {
-        SQLite.delete(CacheApiData.class).execute();
-        SQLite.delete(CacheApiWhitelist.class);
+        deleteAllCacheData();
+        deleteAllWhiteLists();
     }
 
 }

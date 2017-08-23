@@ -305,10 +305,8 @@ public class MainApplication extends TkpdMultiDexApplication {
 
     private void addToWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
-        List<CacheApiWhiteListDomain> deletedWhiteLists = getRemovedWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        requestParams.putObject(CacheApiWhiteListUseCase.DELETE_WHITELIST_COLLECTIONS, deletedWhiteLists);
         cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -332,13 +330,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
         cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 120));
         cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
-        return cacheApiWhitelists;
-    }
-
-    protected List<CacheApiWhiteListDomain> getRemovedWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
-//        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN.replace("https://", "").replace(".com/", ".com"), "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 60));
-//        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN.replace("https://", "").replace(".com/", ".com"), TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
         return cacheApiWhitelists;
     }
 
