@@ -194,7 +194,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionHandler.setFirstTimeUser(getActivity(), false);
+                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
                 Intent intent = new Intent();
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
@@ -207,7 +207,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionHandler.setFirstTimeUser(getActivity(), false);
+                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
                 Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
                 startActivity(intent);
                 getActivity().finish();
