@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -16,6 +17,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
@@ -39,10 +41,23 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            return getCallingIntent(context, extras.getString("ad_id", ""))
-                    .setData(uri.build())
-                    .putExtras(extras);
+            String userId = extras.getString("user_id", "");
+            if (!TextUtils.isEmpty(userId)) {
+                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                    Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+                    return getCallingIntent(context, extras.getString("ad_id", ""))
+                            .setData(uri.build())
+                            .putExtras(extras);
+                } else {
+                    return TopAdsDashboardActivity.getCallingIntent(context)
+                            .putExtras(extras);
+                }
+            } else {
+                Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+                return getCallingIntent(context, extras.getString("ad_id", ""))
+                        .setData(uri.build())
+                        .putExtras(extras);
+            }
         } else {
             Intent launchIntent = context.getPackageManager()
                     .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
