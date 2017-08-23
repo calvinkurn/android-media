@@ -86,14 +86,14 @@ public class YoutubeAddUrlDialog extends BaseTextPickerDialogFragment {
     }
 
     @Override
-    protected void onTextSubmited(String text) {
+    protected void onTextSubmitted(String text) {
         validateFirstTime();
 
         if (isErrorReturn) {
             return;
         }
 
-        super.onTextSubmited(text);
+        super.onTextSubmitted(text);
     }
 
     /**

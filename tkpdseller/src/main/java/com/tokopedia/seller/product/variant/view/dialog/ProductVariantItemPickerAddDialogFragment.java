@@ -42,18 +42,18 @@ public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDia
     }
 
     @Override
-    protected void onTextSubmited(String text) {
+    protected void onTextSubmitted(String text) {
         text = text.trim();
         if (TextUtils.isEmpty(text)) {
             textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_empty));
             return;
         }
         for (String reservedTitle: reservedTitleList) {
-            if (reservedTitle.equalsIgnoreCase(text)) {
+            if (reservedTitle.equalsIgnoreCase(text.trim())) {
                 textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_existed));
                 return;
             }
         }
-        super.onTextSubmited(text);
+        super.onTextSubmitted(text);
     }
 }

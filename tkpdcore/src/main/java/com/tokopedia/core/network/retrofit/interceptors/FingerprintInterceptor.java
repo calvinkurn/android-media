@@ -2,7 +2,6 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.util.Base64;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
@@ -19,6 +18,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+import static com.tokopedia.core.database.model.InboxTalkModelDB_Table.json;
 
 /**
  * Created by ricoharisin on 3/10/17.
@@ -62,6 +63,7 @@ public class FingerprintInterceptor implements Interceptor {
                                 e.printStackTrace();
                                 return "UnsupportedEncoding";
                             }
+
                         }
                     }).doOnError(new Action1<Throwable>() {
                         @Override

@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;

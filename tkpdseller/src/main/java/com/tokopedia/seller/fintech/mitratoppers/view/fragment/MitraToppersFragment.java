@@ -1,4 +1,4 @@
-package com.tokopedia.seller.digital.mitratoppers.view.fragment;
+package com.tokopedia.seller.fintech.mitratoppers.view.fragment;
 
 import android.net.Uri;
 

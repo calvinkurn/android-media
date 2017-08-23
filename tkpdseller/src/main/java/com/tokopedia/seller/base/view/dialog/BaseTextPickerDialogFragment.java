@@ -67,7 +67,7 @@ public abstract class BaseTextPickerDialogFragment extends DialogFragment {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onTextSubmited(textInput.getText().toString());
+                        onTextSubmitted(textInput.getText().toString());
                     }
                 });
         view.findViewById(R.id.string_picker_dialog_cancel)
@@ -80,7 +80,7 @@ public abstract class BaseTextPickerDialogFragment extends DialogFragment {
         return view;
     }
 
-    protected void onTextSubmited(String text) {
+    protected void onTextSubmitted(String text) {
         listener.onTextPickerSubmitted(text);
         dismiss();
     }

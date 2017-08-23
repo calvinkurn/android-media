@@ -55,7 +55,9 @@ import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
@@ -90,14 +92,29 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
+    private DaggerProductComponent.Builder daggerProductBuilder;
+    private ProductComponent productComponent;
 
     public GoldMerchantComponent getGoldMerchantComponent() {
         throw new RuntimeException("method used in sellerapp only");
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        initializeDagger();
+    }
+
+    private void initializeDagger() {
+        daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
+    }
+
+    @Override
     public ProductComponent getProductComponent() {
-        throw new RuntimeException("method used in sellerapp only");
+        if (productComponent == null) {
+            productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return productComponent;
     }
 
     @Override

@@ -32,7 +32,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
-import com.tokopedia.seller.digital.mitratoppers.view.activity.MitraToppersActivity;
+import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;

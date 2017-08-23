@@ -10,6 +10,6 @@ import rx.Observable;
 
 public interface FingerprintDataStore {
 
-    Observable<String> getFingerprint(FingerPrint data);
+    Observable<String> getFingerprint();
 
 }
