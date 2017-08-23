@@ -311,7 +311,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onProductReviewClicked(@NonNull Bundle bundle) {
+    public void onProductReviewClicked() {
+        Bundle bundle = new Bundle();
+        bundle.putString("product_id", String.valueOf(productData.getInfo().getProductId()));
+        bundle.putString("shop_id", String.valueOf(productData.getShopInfo().getShopId()));
+        bundle.putString("prod_name", productData.getInfo().getProductName());
         presenter.processToReputation(context, bundle);
     }
 

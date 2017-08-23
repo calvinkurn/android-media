@@ -4,8 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.View;
 import android.widget.TextView;
 
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -69,7 +68,7 @@ public class MostHelpfulReviewView extends BaseView<List<Review>,ProductDetailVi
 
     @Override
     public void renderData(@NonNull List<Review> data) {
-        reviewPagerAdapter = new ReviewPagerAdapter(getContext(), data);
+        reviewPagerAdapter = new ReviewPagerAdapter(getContext(), data, listener);
         vpImage.setAdapter(reviewPagerAdapter);
         vpImage.setAdapter(reviewPagerAdapter);
         circlePageIndicator.setViewPager(vpImage);
@@ -79,5 +78,11 @@ public class MostHelpfulReviewView extends BaseView<List<Review>,ProductDetailVi
 
     public void updateTotalReviews(String value) {
         textAllReview.setText(getResources().getString(R.string.title_all_reviews)+" ("+value+")");
+        textAllReview.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onProductReviewClicked();
+            }
+        });
     }
 }

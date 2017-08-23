@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,12 @@ public class ReviewPagerAdapter extends PagerAdapter{
 
     private Context context;
     private List<Review> reviews = new ArrayList<>();
+    private final ProductDetailView listener;
 
-    public ReviewPagerAdapter(Context context, List<Review> reviews) {
+    public ReviewPagerAdapter(Context context, List<Review> reviews, ProductDetailView listener) {
         this.context = context;
         this.reviews = reviews;
+        this.listener = listener;
     }
 
     @Override
@@ -60,6 +63,13 @@ public class ReviewPagerAdapter extends PagerAdapter{
         ((TextView) view.findViewById(R.id.text_review_time)).setText(reviews.get(position).getReviewCreateTime().getDateTimeFmt1());
         ((TextView) view.findViewById(R.id.text_review)).setText( reviews.get(position).getReviewMessage());
         ((ImageView) view.findViewById(R.id.image_rating_review_pdp)).setImageResource(getRatingDrawable(reviews.get(position).getProductRating()/20));
+
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onProductReviewClicked();
+            }
+        });
 
         container.addView(view);
         return view;
