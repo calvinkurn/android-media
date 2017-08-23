@@ -7,6 +7,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
@@ -30,6 +31,7 @@ public class FeedPlusPresenter
         implements FeedPlus.Presenter {
 
     private final SessionHandler sessionHandler;
+    private final CheckNewFeedUseCase checkNewFeedUseCase;
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
@@ -43,12 +45,14 @@ public class FeedPlusPresenter
                       GetFeedsUseCase getFeedsUseCase,
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
                       FavoriteShopUseCase favoriteShopUseCase,
-                      GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
+                      GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
+                      CheckNewFeedUseCase checkNewFeedUseCase) {
         this.sessionHandler = sessionHandler;
         this.getFeedsUseCase = getFeedsUseCase;
         this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
         this.doFavoriteShopUseCase = favoriteShopUseCase;
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
+        this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.pagingHandler = new PagingHandler();
     }
 
@@ -152,9 +156,12 @@ public class FeedPlusPresenter
 
     @Override
     public void checkNewFeed(String firstCursor) {
-        getFirstPageFeedsCloudUseCase.execute(
-                getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
-                new CheckNewFeedSubscriber(firstCursor, viewListener));
+//        getFirstPageFeedsCloudUseCase.execute(
+//                getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
+//                new CheckNewFeedSubscriber(firstCursor, viewListener));
+        checkNewFeedUseCase.execute(
+                CheckNewFeedUseCase.getParam(sessionHandler, firstCursor),
+                new CheckNewFeedSubscriber(viewListener));
     }
 
 

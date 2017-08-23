@@ -19,6 +19,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.WishlistFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.AddWishlistMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FavoriteShopMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
@@ -33,6 +34,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
@@ -104,7 +106,8 @@ public class FeedPlusModule {
                                    FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
-                                   RecentProductMapper recentProductMapper) {
+                                   RecentProductMapper recentProductMapper,
+                                   CheckNewFeedMapper checkNewFeedMapper) {
         return new FeedFactory(
                 context,
                 apolloClient,
@@ -114,7 +117,8 @@ public class FeedPlusModule {
                 globalCacheManager,
                 feedDetailListMapper,
                 mojitoService,
-                recentProductMapper
+                recentProductMapper,
+                checkNewFeedMapper
         );
     }
 
@@ -206,7 +210,6 @@ public class FeedPlusModule {
     }
 
 
-
     @FeedPlusScope
     @Provides
     GetFeedsUseCase provideGetFeedsUseCase(
@@ -296,4 +299,21 @@ public class FeedPlusModule {
                 postExecutionThread,
                 feedRepository);
     }
+
+    @FeedPlusScope
+    @Provides
+    CheckNewFeedMapper provideCheckNewFeedMapper() {
+        return new CheckNewFeedMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    CheckNewFeedUseCase provideCheckNewFeedUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   FeedRepository feedRepository) {
+        return new CheckNewFeedUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
 }

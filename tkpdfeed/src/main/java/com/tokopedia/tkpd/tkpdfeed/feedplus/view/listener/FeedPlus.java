@@ -21,6 +21,8 @@ public interface FeedPlus{
 
     interface View extends CustomerView {
 
+        void setFirstCursor(String firstCursor);
+
         interface Toppicks {
             void onToppicksClicked(String url);
 
@@ -106,7 +108,7 @@ public interface FeedPlus{
 
         void unsetEndlessScroll();
 
-        void onShowNewFeed();
+        void onShowNewFeed(int totalData);
 
         void onGoToPromoPageFromHeader();
 

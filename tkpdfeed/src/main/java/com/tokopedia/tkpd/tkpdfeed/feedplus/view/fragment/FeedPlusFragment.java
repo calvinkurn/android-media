@@ -64,10 +64,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -98,6 +96,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
 
     private static final int OPEN_DETAIL = 54;
+    private static final String FIRST_CURSOR = "FIRST_CURSOR";
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
@@ -113,8 +112,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private static final String TOPADS_ITEM = "4";
-    private static final String POSITION = "position";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
+    private String firstCursor = "";
 
     @Override
     protected String getScreenName() {
@@ -136,6 +135,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
+            firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
         initVar();
     }
 
@@ -143,7 +144,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(POSITION, TAG);
+        outState.putString(FIRST_CURSOR, firstCursor);
     }
 
     private void initVar() {
@@ -319,6 +320,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         presenter.detachView();
         if (layoutManager != null)
             layoutManager = null;
+    }
+
+    @Override
+    public void setFirstCursor(String firstCursor) {
+        this.firstCursor = firstCursor;
     }
 
     @Override
@@ -524,7 +530,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowNewFeed() {
+    public void onShowNewFeed(int totalData) {
         newFeed.setVisibility(View.VISIBLE);
     }
 
@@ -700,32 +706,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-//        if (getUserVisibleHint() && presenter != null) {
-//            checkNewFeed();
-//        }
-    }
-
-    private void checkNewFeed() {
-        if (hasFeed()
-                && adapter.getlist().get(0) instanceof RecentViewViewModel
-                && adapter.getlist().get(1) instanceof ActivityCardViewModel) {
-            presenter.checkNewFeed(((ActivityCardViewModel) adapter.getlist().get(1))
-                    .getCursor());
-        } else if (hasFeed()
-                && adapter.getlist().get(0) instanceof ActivityCardViewModel) {
-            presenter.checkNewFeed(((ActivityCardViewModel) adapter.getlist().get(0))
-                    .getCursor());
-        } else if (adapter.getlist() != null && !adapter.getlist().isEmpty()) {
-            presenter.checkNewFeed("");
+        if (getUserVisibleHint() && presenter != null) {
+            presenter.checkNewFeed(firstCursor);
         }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser && presenter != null) {
-//            checkNewFeed();
-//        }
+        if (isVisibleToUser && presenter != null) {
+            presenter.checkNewFeed(firstCursor);
+        }
     }
 
     @Override

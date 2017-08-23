@@ -95,8 +95,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             viewListener.onShowEmpty(checkCanShowTopads(feedResult.getDataSource()));
 
 
-        if (hasFeed(feedDomain))
+        if (hasFeed(feedDomain)) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
+            viewListener.setFirstCursor(getCurrentCursor(feedResult));
+        }
 
         if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.finishLoading();
@@ -139,8 +141,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && !feedDomain.getListFeed().isEmpty()
                 && feedDomain.getListFeed().get(0) != null
                 && feedDomain.getListFeed().get(0).getContent() != null
-                && feedDomain.getListFeed().get(0).getContent().getType() != null
-                && feedDomain.getListFeed().get(0).getContent().getType().equals(TYPE_NEW_PRODUCT);
+                && feedDomain.getListFeed().get(0).getContent().getType() != null;
     }
 
     private boolean hasRecentView(FeedDomain feedDomain) {

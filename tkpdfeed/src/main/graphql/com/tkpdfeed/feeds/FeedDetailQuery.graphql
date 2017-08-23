@@ -1,4 +1,5 @@
 query FeedDetail ($userID: Int!, $detailID: String!, $pageDetail: Int!, $limitDetail: Int!){
+
     feed(userID: $userID, detailID: $detailID, pageDetail: $pageDetail, limitDetail: $limitDetail) {
         data {
             id
