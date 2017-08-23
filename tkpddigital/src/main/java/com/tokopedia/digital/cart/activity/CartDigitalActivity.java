@@ -19,13 +19,14 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
  */
 
-public class CartDigitalActivity extends BasePresenterActivity implements
+public class CartDigitalActivity extends BaseDigitalPresenterActivity implements
         CartDigitalFragment.ActionListener {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private DigitalCheckoutPassData passData;
@@ -138,5 +139,10 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
         return SessionHandler.getLoginID(MainApplication.getAppContext()) + "_" + (token.isEmpty() ? timeMillis : token);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
     }
 }
