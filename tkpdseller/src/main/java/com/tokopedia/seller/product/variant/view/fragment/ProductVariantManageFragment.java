@@ -324,6 +324,14 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         return ProductVariantUtils.getVariantUnitSubmit(level, variantData.getVariantUnitSubmitList());
     }
 
+    /**
+     * function to return the result to the caller (activity)
+     * @return
+     */
+    public VariantData getVariantData() {
+        return variantData;
+    }
+
     @Override
     protected String getScreenName() {
         return null;
