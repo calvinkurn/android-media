@@ -46,6 +46,12 @@
             android:name=".wallets.WalletToDepositThanksActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".tokocash.activity.TopUpTokoCashActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".tokocash.activity.HistoryTokocashActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".product.service.USSDAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">

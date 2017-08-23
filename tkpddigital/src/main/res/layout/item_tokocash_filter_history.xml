@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_filter_tokocash"
+    android:background="@color/filter_tokocash_selected"
+    android:padding="@dimen/padding_small"
+    android:layout_marginTop="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:layout_marginLeft="@dimen/margin_vs"
+    android:layout_marginRight="@dimen/margin_vs">
+
+    <TextView
+        android:id="@+id/filter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Semua"
+        android:textSize="@dimen/fontvs"
+        android:textColor="@color/white"
+        android:layout_alignTop="@+id/clear_filter"
+        android:layout_alignBottom="@id/clear_filter"
+        android:gravity="center_vertical"/>
+
+    <ImageView
+        android:id="@+id/clear_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_clear_widget"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:tint="@color/white"
+        android:layout_toRightOf="@+id/filter_name"/>
+
+</RelativeLayout>
