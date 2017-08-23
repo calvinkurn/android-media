@@ -94,6 +94,8 @@ import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.digital.wallets.WalletToDepositActivity;
+import com.tokopedia.digital.wallets.WalletToDepositPassData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -824,6 +826,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 }
                 break;
         }
+
+        if (requestCode == WalletToDepositActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case WalletToDepositActivity.RESULT_WALLET_TO_DEPOSIT_FAILED:
+                    showToastMessage("Wallet to Deposit Failed");
+                    break;
+                case WalletToDepositActivity.RESULT_WALLET_TO_DEPOSIT_SUCCESS:
+                    showToastMessage("Wallet to Deposit Success");
+                    break;
+            }
+        }
     }
 
     @Override
@@ -839,11 +852,29 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
-            navigateToActivity(
-                    DigitalWebActivity.newInstance(
-                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
-                    )
+//            navigateToActivity(
+//                    DigitalWebActivity.newInstance(
+//                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+//                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
+//                    )
+//            );
+
+            WalletToDepositPassData.Params params = new WalletToDepositPassData.Params();
+            params.setRefundId("4099");
+            params.setRefundType("tokorefund");
+            navigateToActivityRequest(
+                    WalletToDepositActivity.newInstance(getActivity(),
+                            new WalletToDepositPassData.Builder()
+                                    .method("POST")
+                                    .name("movetosaldo")
+                                    .title("Move to Tokopedia Deposit")
+                                    .url("http://localhost:9001/api/v1/transfer/withdraw/saldo")
+                                    .params(params)
+                                    .amount(100000)
+                                    .amountFormatted("Rp 100.000,-")
+                                    .build()
+                    ),
+                    WalletToDepositActivity.REQUEST_CODE
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {

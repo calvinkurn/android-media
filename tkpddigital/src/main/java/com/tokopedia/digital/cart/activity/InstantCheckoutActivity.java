@@ -24,6 +24,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 
@@ -33,7 +34,7 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 3/23/17.
  */
 
-public class InstantCheckoutActivity extends BasePresenterActivity {
+public class InstantCheckoutActivity extends BaseDigitalPresenterActivity {
     public static final int REQUEST_CODE = InstantCheckoutActivity.class.hashCode();
     private static final long FORCE_TIMEOUT = 60000L;
     private static final String TAG = InstantCheckoutActivity.class.getSimpleName();
@@ -130,6 +131,11 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
         webView.loadUrl(instantCheckoutData.getRedirectUrl());
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
     }
 
     private class InstantCheckoutWebViewChromeClient extends WebChromeClient {

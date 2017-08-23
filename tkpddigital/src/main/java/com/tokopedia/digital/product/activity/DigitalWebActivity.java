@@ -18,11 +18,12 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 
 /**
  * @author anggaprasetiyo on 5/15/17.
  */
-public class DigitalWebActivity extends BasePresenterActivity
+public class DigitalWebActivity extends BaseDigitalPresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     private static final String EXTRA_URL = "EXTRA_URL";
@@ -33,32 +34,6 @@ public class DigitalWebActivity extends BasePresenterActivity
     public static Intent newInstance(Context context, String url) {
         return new Intent(context, DigitalWebActivity.class)
                 .putExtra(EXTRA_URL, url);
-    }
-
-    @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-        setTheme(R.style.WebViewActivity);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (parentView != null) {
-                    parentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                }
-                window.setStatusBarColor(getResources().getColor(R.color.white, null));
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-                }
-            }
-        }
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
-
-        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
     }
 
     @Override
@@ -168,5 +143,9 @@ public class DigitalWebActivity extends BasePresenterActivity
         } else {
             finish();
         }
+    }
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.product.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.fragment.DigitalChooserProductFragment;
 import com.tokopedia.digital.product.model.Operator;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-public class DigitalChooserActivity extends BasePresenterActivity implements
+public class DigitalChooserActivity extends BaseDigitalPresenterActivity implements
         DigitalChooserProductFragment.ActionListener, DigitalChooserOperatorFragment.ActionListener {
 
     private static final String EXTRA_LIST_DATA_PRODUCT = "EXTRA_LIST_DATA_PRODUCT";
@@ -179,4 +180,8 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
 }
