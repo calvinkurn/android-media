@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.dashboard.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +12,16 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
@@ -50,6 +55,32 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     private BaseDatePickerPresenterImpl datePickerPresenter;
     private TopAdsDashboardTabListener topadsDashList;
     private ShowCaseDialog showCaseDialog;
+
+
+    @DeepLink(Constants.Applinks.SellerApp.TOPADS_DASHBOARD)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return getCallingIntent(context)
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            Intent launchIntent = context.getPackageManager()
+                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+            if (launchIntent == null) {
+                launchIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
+                );
+            } else {
+                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            }
+            return launchIntent;
+        }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, TopAdsDashboardActivity.class);
+    }
 
     @Override
     public String getScreenName() {
@@ -164,18 +195,28 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            //coming from deeplink
-            if (getApplication() instanceof TkpdCoreRouter) {
-                TkpdCoreRouter router = (TkpdCoreRouter) getApplication();
-                try {
-                    Intent intent = new Intent(this, router.getHomeClass(this));
-                    this.startActivity(intent);
-                    this.finish();
-                    return;
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+            if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+                Intent homeIntent = null;
+                if (GlobalConfig.isSellerApp()) {
+                    homeIntent = SellerAppRouter.getSellerHomeActivity(this);
+                } else {
+                    homeIntent = HomeRouter.getHomeActivity(this);
                 }
-            }
+                startActivity(homeIntent);
+                finish();
+            } else
+                //coming from deeplink
+                if (getApplication() instanceof TkpdCoreRouter) {
+                    TkpdCoreRouter router = (TkpdCoreRouter) getApplication();
+                    try {
+                        Intent intent = new Intent(this, router.getHomeClass(this));
+                        this.startActivity(intent);
+                        this.finish();
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
         }
         super.onBackPressed();
     }
@@ -186,7 +227,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         if (ShowCasePreference.hasShown(this, showCaseTag)) {
             return;
         }
-        if (showCaseDialog!= null) {
+        if (showCaseDialog != null) {
             return;
         }
         if (dashboardProductFragment == null) {
@@ -213,7 +254,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         viewPager.post(new Runnable() {
             @Override
             public void run() {
-                if (isFinishing() ) {
+                if (isFinishing()) {
                     return;
                 }
                 View depositView = dashboardProductFragment.getDepositView();
