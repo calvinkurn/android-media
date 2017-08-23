@@ -134,7 +134,8 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         //        new ArrayList<Long>() //test
         //        );
         Intent intent = new Intent(getContext(), ProductVariantDataManageActivity.class);
-        getContext().startActivity(intent);
+        ProductVariantManageFragment.this.startActivityForResult(intent,
+                ProductVariantDataManageActivity.REQUEST_CODE);
     }
 
     private void pickVariant(int level) {

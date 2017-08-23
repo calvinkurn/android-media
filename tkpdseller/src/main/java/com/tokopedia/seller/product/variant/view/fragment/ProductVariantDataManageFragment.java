@@ -105,7 +105,7 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSubmitVariant(productVariantDataAdapter.getVariantValueIdList());
+                listener.onSubmitVariant(productVariantDataAdapter.getVariantValueIdListSorted());
             }
         });
         // default value: if all is checked, set label switch summary to tersedia else to kosong

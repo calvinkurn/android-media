@@ -114,6 +114,23 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
         return variantValueIdList;
     }
 
+    /**
+     * @return variantValueIdList, the rearrangement is followed by the source.
+     */
+    public ArrayList<Long> getVariantValueIdListSorted() {
+        ArrayList<Long> sortedArrayList = new ArrayList<>();
+        for (int i=0, sizei = productVariantValueArrayList.size(); i<sizei; i++) {
+            int position = variantValueIdList.indexOf(productVariantValueArrayList.get(i).getIdLong());
+            if (position >= 0) {
+                sortedArrayList.add(variantValueIdList.get(position));
+            }
+        }
+        if (sortedArrayList.size() == 0) {
+            return null;
+        }
+        return sortedArrayList;
+    }
+
     public boolean isCheckAny(){
         return productVariantValueArrayList.size() > 0;
     }
