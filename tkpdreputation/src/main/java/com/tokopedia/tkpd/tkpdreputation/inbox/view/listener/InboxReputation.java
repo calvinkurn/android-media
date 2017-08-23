@@ -32,6 +32,12 @@ public interface InboxReputation {
         void onGoToDetail(String reputationId, int adapterPosition);
 
         void showRefreshing();
+
+        void onSuccessGetFilteredInboxReputation();
+
+        void onErrorGetFilteredInboxReputation(String errorMessage);
+
+        void finishRefresh();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -39,10 +45,10 @@ public interface InboxReputation {
         void getFirstTimeInboxReputation(int tab);
 
         void getNextPage(int lastItemPosition, int visibleItem, String query,
-                         ArrayList<FilterPass> listPass, int tab);
+                         String listPass, int tab);
 
         void refreshItem(String id, int tab);
 
-        void getFilteredInboxReputation(String query, ArrayList<FilterPass> listPass, int tab);
+        void getFilteredInboxReputation(String query, String listPass, int tab);
     }
 }

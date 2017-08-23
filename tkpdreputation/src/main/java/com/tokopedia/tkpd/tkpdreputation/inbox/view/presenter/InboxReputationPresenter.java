@@ -10,9 +10,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetFilteredInboxR
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetFirstTimeInboxReputationSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetNextPageInboxReputationSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationSubscriber;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPass;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -55,7 +52,7 @@ public class InboxReputationPresenter
 
     @Override
     public void getNextPage(int lastItemPosition, int visibleItem,
-                            String query, ArrayList<FilterPass> listPass,
+                            String query, String timeFilter,
                             int tab) {
         if (hasNextPage() && isOnLastPosition(lastItemPosition,
                 visibleItem)) {
@@ -64,7 +61,7 @@ public class InboxReputationPresenter
             getInboxReputationUseCase.execute(
                     GetInboxReputationUseCase.getParam(pagingHandler.getPage(),
                             query,
-                            listPass,
+                            timeFilter,
                             tab),
                     new GetNextPageInboxReputationSubscriber(viewListener));
         }
@@ -76,13 +73,13 @@ public class InboxReputationPresenter
     }
 
     @Override
-    public void getFilteredInboxReputation(String query, ArrayList<FilterPass> listPass, int tab) {
+    public void getFilteredInboxReputation(String query, String timeFilter, int tab) {
         viewListener.showRefreshing();
         pagingHandler.resetPage();
         getInboxReputationUseCase.execute(
                 GetInboxReputationUseCase.getParam(pagingHandler.getPage(),
                         query,
-                        listPass,
+                        timeFilter,
                         tab),
                 new GetFilteredInboxReputationSubscriber(viewListener));
     }

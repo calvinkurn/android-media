@@ -78,6 +78,7 @@ public final class AppScreen {
     public static final String SCREEN_INBOX_MESSAGE_DETAIL_VIEW = "Inbox Message Detail View";
     public static final String SCREEN_INBOX_TALK = "Inbox talk";
     public static final String SCREEN_INBOX_REVIEW = "Inbox review";
+    public static final String SCREEN_INBOX_REPUTATION_FILTER = "Inbox Reputation - Filter";
     public static final String SCREEN_INBOX_REPUTATION_DETAIL = "Inbox detail reputation";
     public static final String SCREEN_INBOX_REPUTATION_REVIEW_DETAIL = "Inbox Detail Reputation " +
             "Review";
@@ -244,7 +245,6 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_DISCUSSION = "Resolution Center - Discussion";
     public static final String CREATE_SHOP_REDIRECT = "Create Shop Redirect Page";
     public static final String SCREEN_FEED_DETAIL = "Feed Detail";
-
 
     private AppScreen() {
 

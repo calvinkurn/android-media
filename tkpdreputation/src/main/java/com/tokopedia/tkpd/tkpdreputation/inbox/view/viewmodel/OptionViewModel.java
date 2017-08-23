@@ -21,6 +21,15 @@ public class OptionViewModel implements Parcelable {
         this.value = value;
         this.isSelected = false;
         this.isActive = false;
+        this.position = position;
+    }
+
+    public OptionViewModel(String name) {
+        this.name = name;
+        this.key = "";
+        this.value = "";
+        this.isSelected = false;
+        this.isActive = false;
         this.position = 0;
     }
 

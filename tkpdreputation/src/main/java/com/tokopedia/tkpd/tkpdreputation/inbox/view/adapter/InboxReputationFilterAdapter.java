@@ -8,6 +8,9 @@ import android.widget.CheckBox;
 
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.OptionViewModel;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 8/21/17.
@@ -16,11 +19,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterViewModel;
 public class InboxReputationFilterAdapter
         extends RecyclerView.Adapter<InboxReputationFilterAdapter.ViewHolder> {
 
-    private static final int VIEW_FILTER = 100;
-
     public interface FilterListener {
-
-        void onFilterSelected(int position, String optionViewModel);
+        void onFilterSelected(OptionViewModel optionViewModel);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -34,45 +34,45 @@ public class InboxReputationFilterAdapter
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onFilterSelected(filterViewModel.getPosition(),
-                            filterViewModel.getListChild().get(getAdapterPosition()).getName());
+                    listener.onFilterSelected(listOption.get(getAdapterPosition()));
                 }
             });
         }
     }
 
-    private FilterViewModel filterViewModel;
+    private final ArrayList<OptionViewModel> listOption;
     private final FilterListener listener;
 
 
-    public static InboxReputationFilterAdapter createInstance(FilterListener listener) {
-        return new InboxReputationFilterAdapter(listener);
+    public static InboxReputationFilterAdapter createInstance(FilterListener listener,
+                                                              ArrayList<OptionViewModel>
+                                                                      listOption) {
+        return new InboxReputationFilterAdapter(listener, listOption);
     }
 
-    private InboxReputationFilterAdapter(FilterListener listener) {
+    private InboxReputationFilterAdapter(FilterListener listener,
+                                         ArrayList<OptionViewModel> listOption) {
         this.listener = listener;
-        this.filterViewModel = new FilterViewModel();
+        this.listOption = listOption;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public InboxReputationFilterAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                      int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.listview_filter, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.checkBox.setText(filterViewModel.getListChild().get(position).getName());
-        holder.checkBox.setChecked(filterViewModel.getListChild().get(position).isSelected());
+    public void onBindViewHolder(InboxReputationFilterAdapter.ViewHolder holder,
+                                 int position) {
+        holder.checkBox.setText(listOption.get(position).getName());
+        holder.checkBox.setChecked(listOption.get(position).isSelected());
+
     }
 
     @Override
     public int getItemCount() {
-        return filterViewModel.getListChild().size();
-    }
-
-    public void setData(FilterViewModel filterViewModel) {
-        this.filterViewModel = filterViewModel;
-        notifyDataSetChanged();
+        return listOption.size();
     }
 }
