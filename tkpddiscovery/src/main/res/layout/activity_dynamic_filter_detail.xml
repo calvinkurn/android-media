@@ -24,6 +24,7 @@
             android:paddingEnd="@dimen/filter_detail_search_padding_side"
             android:background="@color/white"
             android:drawableLeft="@drawable/ic_search_icon"
+            android:drawablePadding="16dp"
             android:maxLines="1"
             android:imeOptions="actionSearch" />
 
