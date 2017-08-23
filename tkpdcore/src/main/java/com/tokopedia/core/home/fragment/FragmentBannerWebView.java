@@ -109,7 +109,7 @@ public class FragmentBannerWebView extends Fragment {
     public static FragmentBannerWebView createInstance(String url) {
         FragmentBannerWebView fragment = new FragmentBannerWebView();
         Bundle args = new Bundle();
-        if(!TextUtils.isEmpty(url)){
+        if (!TextUtils.isEmpty(url)) {
             args.putString(EXTRA_URL, url);
             Uri uri = Uri.parse(url);
             if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
@@ -121,12 +121,15 @@ public class FragmentBannerWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if (((IDigitalModuleRouter) getActivity().getApplication())
-                .isSupportedDelegateDeepLink(url)) {
-            ((IDigitalModuleRouter) getActivity().getApplication())
-                    .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-            return true;
-        }
+        if (getActivity() != null && getActivity().getApplication() != null)
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                if (((IDigitalModuleRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(url)) {
+                    ((IDigitalModuleRouter) getActivity().getApplication())
+                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                    return true;
+                }
+            }
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
 
@@ -163,7 +166,7 @@ public class FragmentBannerWebView extends Fragment {
             }
         } else {
             String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
-            if( query != null && query.equals(QUERY_PARAM_PLUS)){
+            if (query != null && query.equals(QUERY_PARAM_PLUS)) {
                 Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
                 intent.putExtra("login", DownloadService.GOOGLE);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
@@ -177,11 +180,11 @@ public class FragmentBannerWebView extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOGIN_GPLUS){
-            String historyUrl="";
+        if (requestCode == LOGIN_GPLUS) {
+            String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webview.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
-                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex()-1).getUrl();
+                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex() - 1).getUrl();
             if (!historyUrl.contains(SEAMLESS))
                 webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(historyUrl, getActivity()));
             else {

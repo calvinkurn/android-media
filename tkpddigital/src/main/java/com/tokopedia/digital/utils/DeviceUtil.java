@@ -89,4 +89,16 @@ public class DeviceUtil {
         requestBodyIdentifier.setOsType("1");
         return requestBodyIdentifier;
     }
+
+    public static String validatePrefixClientNumber(String phoneNumber) {
+        if (phoneNumber.startsWith("62")) {
+            phoneNumber = phoneNumber.replaceFirst("62", "0");
+        }
+        if (phoneNumber.startsWith("+62")) {
+            phoneNumber = phoneNumber.replace("+62", "0");
+        }
+        phoneNumber = phoneNumber.replace(".", "");
+
+        return phoneNumber.replaceAll("[^0-9]+", "");
+    }
 }

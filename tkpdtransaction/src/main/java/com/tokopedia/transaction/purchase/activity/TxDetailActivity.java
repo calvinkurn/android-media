@@ -227,10 +227,13 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
         btnRejectOrder.setVisibility(View.GONE);
 
-        btnDoComplain.setVisibility(orderData.getOrderButton().getButtonComplaintReceived().equals("1")
-                || orderData.getOrderButton().getButtonComplaintNotReceived().equals("1")
-                ? View.VISIBLE : View.GONE);
-
+        if (orderData.getOrderButton().getButtonResCenterGoTo().equals("1")) {
+            btnDoComplain.setVisibility(View.GONE);
+        } else {
+            btnDoComplain.setVisibility(orderData.getOrderButton().getButtonComplaintReceived().equals("1")
+                    || orderData.getOrderButton().getButtonComplaintNotReceived().equals("1")
+                    ? View.VISIBLE : View.GONE);
+        }
         btnComplainOrder.setVisibility(orderData.getOrderButton().getButtonResCenterGoTo() != null
                 && orderData.getOrderButton().getButtonResCenterGoTo().equals("1")
                 ? View.VISIBLE : View.GONE);
@@ -334,7 +337,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
-        presenter.processConfirmDeliver(this, orderData);
+        presenter.processFinish(this, orderData);
         UnifyTracking.eventReceivedShipping();
     }
 

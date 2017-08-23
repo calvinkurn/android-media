@@ -58,7 +58,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processGetCategoryAndBannerData() {
         String categoryId = view.getCategoryId();
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+        if (GlobalConfig.isSellerApp()) {
+            paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+        }
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
         view.showInitialProgressLoading();
