@@ -1,9 +1,13 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,7 +30,7 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantDataManageFragment extends BasePresenterFragment implements ProductVariantDataAdapter.OnProductVariantDataAdapterListener {
+public class ProductVariantDataManageFragment extends Fragment implements ProductVariantDataAdapter.OnProductVariantDataAdapterListener {
 
     private OnProductVariantDataManageFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
@@ -142,9 +146,27 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
         setStockLabelEmpty();
     }
 
+    /*
+     * Deprecated on API 23
+     * Use onAttachToContext instead
+     */
+    @SuppressWarnings("deprecation")
     @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachListener(activity);
+        }
+    }
+
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachListener(context);
+    }
+
     protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
         listener = (OnProductVariantDataManageFragmentListener) context;
     }
 

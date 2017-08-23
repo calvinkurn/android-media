@@ -42,13 +42,11 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     private static final int MINIMUM_SHOW_SEARCH_BOX = 20;
 
     private ProductVariantPickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
-    private ProductVariantByCatModel productVariantByCatModel;
 
     private List<ProductVariantUnit> productVariantUnitList;
     private List<ProductVariantValue> productVariantValueList;
     private List<ProductVariantValue> filteredProductVariantValueList;
     private VariantUnitSubmit variantUnitSubmit;
-    private SpinnerTextView unitSpinnerTextView;
 
     private long currentVariantUnitId;
 
@@ -58,7 +56,8 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (getActivity() instanceof BasePickerMultipleItem) {
             pickerMultipleItem = (ProductVariantPickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
-        productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        ProductVariantByCatModel productVariantByCatModel =
+                getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
             productVariantUnitList = productVariantByCatModel.getUnitList();
             productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
@@ -94,7 +93,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unitSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_variant_unit);
+        SpinnerTextView unitSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_variant_unit);
         unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
             @Override
             public void onItemChanged(int position, String entry, String value) {
