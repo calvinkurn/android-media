@@ -15,7 +15,7 @@ import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
 
 
-// let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
   componentWillMount() {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
+Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 
