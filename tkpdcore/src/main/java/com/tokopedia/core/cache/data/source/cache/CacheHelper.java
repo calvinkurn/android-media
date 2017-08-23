@@ -51,7 +51,7 @@ public class CacheHelper {
 
     public CacheApiWhiteListDomain from2(String host, String path, long expiredTime){
         CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
-        cacheApiWhitelist.setHost(host);
+        cacheApiWhitelist.setHost(host.replace("https://", "").replace(".com/", ".com"));
         cacheApiWhitelist.setPath(path);
         cacheApiWhitelist.setExpireTime(expiredTime);
 
