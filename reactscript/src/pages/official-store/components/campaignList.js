@@ -14,7 +14,6 @@ import { NavigationModule, NetworkModule } from 'NativeModules';
 import WishListButton from '../common/Wishlist/WishlistButton';
 
 
-// let ID_User;
 const CampaignList = ({ campaigns, User_ID }) => {
   return (
     <View style={styles.container}>

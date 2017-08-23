@@ -1,12 +1,9 @@
 import React from 'react'
 import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native'
 import { icons } from '../../../../icons/index'
-// import { icons } from '../../../../components/icons'
 
 // // icon from Firebase
 // const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/chevron_thin_up.png?alt=media&token=415b8665-7660-46f1-ae76-64aaf85fd3f3'
-
-// const icon_arrowUp = chevron_thin_up
 
 const BackToTop = (props) => {
   return (

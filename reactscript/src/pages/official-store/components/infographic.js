@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Image, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
-import OriginalImage from './img/icon-original.png'
-import ServiceImage from './img/icon-service.png'
-import PromotionImage from './img/icon-promotion.png'
 import { icons } from '../../../icons/index'
 
 

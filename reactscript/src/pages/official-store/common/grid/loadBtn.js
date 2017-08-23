@@ -10,11 +10,10 @@ import {
   Platform,
   StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
-import { icons } from '../../../../components/icons'
-import iconLoadMore from '../../components/img/load-more.png'
+import { icons } from '../../../../icons/index'
 
-const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/load-more.png?alt=media&token=bbc027ae-dea6-4a81-a319-776c4c3effbe'
 
+// const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/load-more.png?alt=media&token=bbc027ae-dea6-4a81-a319-776c4c3effbe'
 const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching }) => {
   const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
   let User_ID;
@@ -36,7 +35,7 @@ const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching
     <View style={{flex: 1 / 3}}>
       <Touchable onPress={_onClick}>
         <View style={styles.container}>
-          <Image source={{ uri: icon_arrowUp }} style={{ flex:1, width:35, height:10, marginTop:30, marginBottom:5 }} />
+          <Image source={ icons.load_more } style={{ flex:1, width:35, height:10, marginTop:30, marginBottom:5 }} />
           <Text style={styles.text}>Brand Lainnya</Text>
         </View>
       </Touchable>

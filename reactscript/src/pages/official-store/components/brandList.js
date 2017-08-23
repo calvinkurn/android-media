@@ -7,8 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Button,
-  TouchableWithoutFeedback,
-  // Linking
+  TouchableWithoutFeedback
 } from 'react-native'
 import { NetworkModule, NavigationModule } from 'NativeModules';
 import unescape from 'lodash/unescape'
@@ -20,7 +19,6 @@ import WishlistBtn from '../common/Wishlist/WishlistButton'
 
 const BrandList = (props) => {
   const gridProps = {
-    // User_ID: props.User_ID,
     rows: 3,
     columns: 3,
     data: props.gridData,
@@ -31,8 +29,6 @@ const BrandList = (props) => {
     isFetching: props.isFetching,
     canFetch: props.canFetch
   }
-
-  // console.log(props.isFetching)
 
   const validBrands = props.brands.filter(brand => brand && brand.microsite_url && brand.products.length && brand.logo_url)
   
