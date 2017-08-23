@@ -6,37 +6,39 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model;
 
 public class RevieweeBadgeCustomerDomain {
 
-    private String positive;
-    private String neutral;
-    private String negative;
-    private String positive_percentage;
-    private String no_reputation;
+    private int positive;
+    private int neutral;
+    private int negative;
+    private String positivePercentage;
+    private int noReputation;
 
-    public RevieweeBadgeCustomerDomain(String positive, String neutral, String negative, String positive_percentage, String no_reputation) {
+    public RevieweeBadgeCustomerDomain(int positive, int neutral,
+                                       int negative, String positivePercentage,
+                                       int noReputation) {
         this.positive = positive;
         this.neutral = neutral;
         this.negative = negative;
-        this.positive_percentage = positive_percentage;
-        this.no_reputation = no_reputation;
+        this.positivePercentage = positivePercentage;
+        this.noReputation = noReputation;
     }
 
-    public String getPositive() {
+    public int getPositive() {
         return positive;
     }
 
-    public String getNeutral() {
+    public int getNeutral() {
         return neutral;
     }
 
-    public String getNegative() {
+    public int getNegative() {
         return negative;
     }
 
-    public String getPositive_percentage() {
-        return positive_percentage;
+    public String getPositivePercentage() {
+        return positivePercentage;
     }
 
-    public String getNo_reputation() {
-        return no_reputation;
+    public int getNoReputation() {
+        return noReputation;
     }
 }

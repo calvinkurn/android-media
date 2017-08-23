@@ -4,9 +4,8 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class RevieweeBadge {
+public class RevieweeShopBadge {
 
-//    SELLER BADGE
     @SerializedName("tooltip")
     @Expose
     private String tooltip;
@@ -74,40 +73,4 @@ public class RevieweeBadge {
         this.reputationBadge = reputationBadge;
     }
 
-    //    CUSTOMER BADGE
-    @SerializedName("positive")
-    @Expose
-    private String positive;
-    @SerializedName("neutral")
-    @Expose
-    private String neutral;
-    @SerializedName("negative")
-    @Expose
-    private String negative;
-    @SerializedName("positive_percentage")
-    @Expose
-    private String positive_percentage;
-    @SerializedName("no_reputation")
-    @Expose
-    private String no_reputation;
-
-    public String getPositive() {
-        return positive;
-    }
-
-    public String getNeutral() {
-        return neutral;
-    }
-
-    public String getNegative() {
-        return negative;
-    }
-
-    public String getPositive_percentage() {
-        return positive_percentage;
-    }
-
-    public String getNo_reputation() {
-        return no_reputation;
-    }
 }

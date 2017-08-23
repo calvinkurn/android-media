@@ -7,10 +7,10 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model;
 public class OrderDataDomain {
 
     private String invoiceRefNum;
-    private CreateTimeFmtDomain createTimeFmt;
+    private String createTimeFmt;
     private String invoiceUrl;
 
-    public OrderDataDomain(String invoiceRefNum, CreateTimeFmtDomain createTimeFmt,
+    public OrderDataDomain(String invoiceRefNum, String createTimeFmt,
                            String invoiceUrl) {
         this.invoiceRefNum = invoiceRefNum;
         this.createTimeFmt = createTimeFmt;
@@ -21,7 +21,7 @@ public class OrderDataDomain {
         return invoiceRefNum;
     }
 
-    public CreateTimeFmtDomain getCreateTimeFmt() {
+    public String getCreateTimeFmt() {
         return createTimeFmt;
     }
 

@@ -18,9 +18,12 @@ public class RevieweeData {
     @SerializedName("reviewee_picture")
     @Expose
     private String revieweePicture;
-    @SerializedName("reviewee_badge")
+    @SerializedName("reviewee_buyer_badge")
     @Expose
-    private RevieweeBadge revieweeBadge;
+    private RevieweeBuyerBadge revieweeBuyerBadge;
+    @SerializedName("reviewee_shop_badge")
+    @Expose
+    private RevieweeShopBadge revieweeShopBadge;
 
     public String getRevieweeName() {
         return revieweeName;
@@ -54,12 +57,20 @@ public class RevieweeData {
         this.revieweePicture = revieweePicture;
     }
 
-    public RevieweeBadge getRevieweeBadge() {
-        return revieweeBadge;
+    public RevieweeBuyerBadge getRevieweeBuyerBadge() {
+        return revieweeBuyerBadge;
     }
 
-    public void setRevieweeBadge(RevieweeBadge revieweeBadge) {
-        this.revieweeBadge = revieweeBadge;
+    public void setRevieweeBuyerBadge(RevieweeBuyerBadge revieweeBuyerBadge) {
+        this.revieweeBuyerBadge = revieweeBuyerBadge;
+    }
+
+    public RevieweeShopBadge getRevieweeShopBadge() {
+        return revieweeShopBadge;
+    }
+
+    public void setRevieweeShopBadge(RevieweeShopBadge revieweeShopBadge) {
+        this.revieweeShopBadge = revieweeShopBadge;
     }
 
 }

@@ -12,8 +12,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.OrderData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.Paging;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.ReputationBadge;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.ReputationData;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.RevieweeBadge;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.RevieweeBuyerBadge;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.RevieweeData;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.RevieweeShopBadge;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.CreateTimeFmtDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
@@ -126,7 +127,7 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
     private OrderDataDomain mappingToOrderData(OrderData orderData) {
         return new OrderDataDomain(
                 orderData.getInvoiceRefNum(),
-                mappingToCreateTimeFmt(orderData.getCreateTimeFmt()),
+                orderData.getCreateTimeFmt(),
                 orderData.getInvoiceUrl()
         );
     }
@@ -143,47 +144,34 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
     }
 
     private RevieweeDataDomain mappingToRevieweeData(RevieweeData revieweeData) {
-        if (isCustomerBadge(revieweeData.getRevieweeBadge())) {
-            return new RevieweeDataDomain(
-                    revieweeData.getRevieweeName(),
-                    revieweeData.getRevieweeUri(),
-                    revieweeData.getRevieweeRole(),
-                    revieweeData.getRevieweePicture(),
-                    mappingToRevieweeBadgeSeller(revieweeData.getRevieweeBadge())
-            );
-        } else {
-            return new RevieweeDataDomain(
-                    revieweeData.getRevieweeName(),
-                    revieweeData.getRevieweeUri(),
-                    revieweeData.getRevieweeRole(),
-                    revieweeData.getRevieweePicture(),
-                    mappingToRevieweeBadgeCustomer(revieweeData.getRevieweeBadge())
-            );
-        }
+        return new RevieweeDataDomain(
+                revieweeData.getRevieweeName(),
+                revieweeData.getRevieweeUri(),
+                revieweeData.getRevieweeRole(),
+                revieweeData.getRevieweePicture(),
+                mappingToRevieweeBadgeCustomer(revieweeData.getRevieweeBuyerBadge()),
+                mappingToRevieweeBadgeSeller(revieweeData.getRevieweeShopBadge())
+        );
 
     }
 
-    private RevieweeBadgeCustomerDomain mappingToRevieweeBadgeCustomer(RevieweeBadge revieweeBadge) {
+    private RevieweeBadgeCustomerDomain mappingToRevieweeBadgeCustomer(RevieweeBuyerBadge revieweeBadge) {
         return new RevieweeBadgeCustomerDomain(
                 revieweeBadge.getPositive(),
                 revieweeBadge.getNeutral(),
                 revieweeBadge.getNegative(),
-                revieweeBadge.getPositive_percentage(),
-                revieweeBadge.getNo_reputation()
+                revieweeBadge.getPositivePercentage(),
+                revieweeBadge.getNoReputation()
         );
     }
 
-    private RevieweeBadgeSellerDomain mappingToRevieweeBadgeSeller(RevieweeBadge revieweeBadge) {
+    private RevieweeBadgeSellerDomain mappingToRevieweeBadgeSeller(RevieweeShopBadge revieweeBadge) {
         return new RevieweeBadgeSellerDomain(revieweeBadge.getTooltip(),
                 revieweeBadge.getReputationScore(),
                 revieweeBadge.getScore(),
                 revieweeBadge.getMinBadgeScore(),
                 revieweeBadge.getReputationBadgeUrl(),
                 mappingToReputationBadge(revieweeBadge.getReputationBadge()));
-    }
-
-    private boolean isCustomerBadge(RevieweeBadge revieweeBadge) {
-        return revieweeBadge.getPositive_percentage() != null;
     }
 
     private ReputationBadgeDomain mappingToReputationBadge(ReputationBadge reputationBadge) {

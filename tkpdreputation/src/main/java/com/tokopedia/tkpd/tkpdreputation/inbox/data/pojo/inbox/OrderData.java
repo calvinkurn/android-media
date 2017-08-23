@@ -11,7 +11,7 @@ public class OrderData {
     private String invoiceRefNum;
     @SerializedName("create_time_fmt")
     @Expose
-    private CreateTimeFmt createTimeFmt;
+    private String createTimeFmt;
     @SerializedName("invoice_url")
     @Expose
     private String invoiceUrl;
@@ -24,11 +24,11 @@ public class OrderData {
         this.invoiceRefNum = invoiceRefNum;
     }
 
-    public CreateTimeFmt getCreateTimeFmt() {
+    public String getCreateTimeFmt() {
         return createTimeFmt;
     }
 
-    public void setCreateTimeFmt(CreateTimeFmt createTimeFmt) {
+    public void setCreateTimeFmt(String createTimeFmt) {
         this.createTimeFmt = createTimeFmt;
     }
 

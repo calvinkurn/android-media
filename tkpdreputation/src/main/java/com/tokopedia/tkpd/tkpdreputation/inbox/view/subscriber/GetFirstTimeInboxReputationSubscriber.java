@@ -58,7 +58,7 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
             list.add(new InboxReputationItemViewModel(
                     String.valueOf(domain.getReputationId()),
                     domain.getRevieweeData().getRevieweeName(),
-                    domain.getOrderData().getCreateTimeFmt().getDateTimeFmt1(),
+                    domain.getOrderData().getCreateTimeFmt(),
                     domain.getRevieweeData().getRevieweePicture(),
                     domain.getReputationData().isShowLockingDeadline(),
                     String.valueOf(domain.getReputationData().getLockingDeadlineDays()),

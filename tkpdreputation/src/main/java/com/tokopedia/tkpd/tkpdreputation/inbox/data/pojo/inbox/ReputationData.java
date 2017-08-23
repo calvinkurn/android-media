@@ -45,6 +45,9 @@ public class ReputationData {
     @SerializedName("show_bookmark")
     @Expose
     private boolean showBookmark;
+    @SerializedName("action_message")
+    @Expose
+    private String actionMessage;
 
     public int getRevieweeScore() {
         return revieweeScore;
@@ -148,6 +151,14 @@ public class ReputationData {
 
     public void setShowBookmark(boolean showBookmark) {
         this.showBookmark = showBookmark;
+    }
+
+    public String getActionMessage() {
+        return actionMessage;
+    }
+
+    public void setActionMessage(String actionMessage) {
+        this.actionMessage = actionMessage;
     }
 
 }

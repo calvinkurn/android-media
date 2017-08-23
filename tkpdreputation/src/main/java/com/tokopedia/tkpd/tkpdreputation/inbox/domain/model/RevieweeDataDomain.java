@@ -15,24 +15,14 @@ public class RevieweeDataDomain {
 
     public RevieweeDataDomain(String revieweeName, String revieweeUri,
                               String revieweeRole, String revieweePicture,
+                              RevieweeBadgeCustomerDomain revieweeBadgeCustomer,
                               RevieweeBadgeSellerDomain revieweeBadgeSeller) {
         this.revieweeName = revieweeName;
         this.revieweeUri = revieweeUri;
         this.revieweeRole = revieweeRole;
         this.revieweePicture = revieweePicture;
-        this.revieweeBadgeSeller = revieweeBadgeSeller;
-        this.revieweeBadgeCustomer = null;
-    }
-
-    public RevieweeDataDomain(String revieweeName, String revieweeUri,
-                              String revieweeRole, String revieweePicture,
-                              RevieweeBadgeCustomerDomain revieweeBadgeCustomer) {
-        this.revieweeName = revieweeName;
-        this.revieweeUri = revieweeUri;
-        this.revieweeRole = revieweeRole;
-        this.revieweePicture = revieweePicture;
         this.revieweeBadgeCustomer = revieweeBadgeCustomer;
-        this.revieweeBadgeSeller = null;
+        this.revieweeBadgeSeller = revieweeBadgeSeller;
     }
 
     public String getRevieweeName() {
