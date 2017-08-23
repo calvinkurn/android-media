@@ -24,6 +24,7 @@
         app:title="@string/product_label_choose" />
 
     <LinearLayout
+        android:id="@+id/linear_layout_variant_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

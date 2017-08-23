@@ -41,6 +41,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
 
     private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
     private VariantData variantData;
+    private View variantListView;
 
     public static ProductVariantManageFragment newInstance() {
         Bundle args = new Bundle();
@@ -62,18 +63,28 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         } else {
             variantData = savedInstanceState.getParcelable(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
         }
-
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product_variant_main, container, false);
+    protected int getFragmentLayout() {
+        return R.layout.fragment_product_variant_main;
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
         variantLevelOneLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_one);
         variantLevelTwoLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_two);
+        variantLevelTwoLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_two);
+        variantListView = view.findViewById(R.id.linear_layout_variant_list);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initVariantLabel();
         updateVariantUnitView();
-        return view;
+        updateVariantItemListView();
     }
 
     private void initVariantLabel() {
@@ -155,8 +166,8 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
                 super.onActivityResult(requestCode, resultCode, data);
         }
         updateVariantStatusToDefault();
-        updateVariantItemList();
         updateVariantUnitView();
+        updateVariantItemListView();
     }
 
     private void setVariantLevel(int level, VariantUnitSubmit variantUnitSubmit) {
@@ -216,7 +227,14 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         variantData.setVariantStatusList(variantStatusList);
     }
 
-    private void updateVariantItemList() {
+    /**
+     * Update variant item list view
+     */
+    private void updateVariantItemListView() {
+        if (variantData == null) {
+            variantListView.setVisibility(View.GONE);
+            return;
+        }
         List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
         if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE) {
             productVariantManageViewModelList = ProductVariantUtils.getProductVariantManageViewModelListTwoLevel(
@@ -224,6 +242,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         } else if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
 
         }
+        variantListView.setVisibility(View.VISIBLE);
         onSearchLoaded(productVariantManageViewModelList, productVariantManageViewModelList.size());
     }
 
