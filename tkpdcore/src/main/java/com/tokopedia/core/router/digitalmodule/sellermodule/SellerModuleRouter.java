@@ -16,5 +16,8 @@ public interface SellerModuleRouter {
 
     void goToProductDetail(Context context, String productUrl);
 
-    Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels);
+    Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels, long startDate, long endDate,
+                          int datePickerSelection, int datePickerType);
+
+    String getRangeDateFormatted(Context context, long startDate, long endDate);
 }
