@@ -32,7 +32,7 @@ import java.util.List;
  * Created by hendry on 8/2/17.
  */
 
-public class ProductVariantDataManageActivity extends BaseSimpleActivity implements HasComponent<ProductComponent>,
+public class ProductVariantDataManageActivity extends BaseSimpleActivity implements
         ProductVariantDataManageFragment.OnProductVariantDataManageFragmentListener {
 
     public static final String EXTRA_VARIANT_ID = "var_id";
@@ -88,11 +88,6 @@ public class ProductVariantDataManageActivity extends BaseSimpleActivity impleme
     @Override
     protected Fragment getNewFragment() {
         return ProductVariantDataManageFragment.newInstance();
-    }
-
-    @Override
-    public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 
     @Override
