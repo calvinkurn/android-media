@@ -54,7 +54,7 @@ public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHold
     private List<Option> getSelectedOptions(List<Option> options) {
         List<Option> selectedOptions = new ArrayList<>();
         for (Option option : options) {
-            if (Boolean.TRUE.equals(filterView.getLastCheckedState(option))) {
+            if (Boolean.TRUE.equals(filterView.loadLastCheckedState(option))) {
                 selectedOptions.add(option);
             }
         }

@@ -64,7 +64,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             }
         }
 
-        String savedMinValue = dynamicFilterView.getTextInput(Option.PRICE_MIN_KEY);
+        String savedMinValue = dynamicFilterView.loadLastTextInput(Option.PRICE_MIN_KEY);
         int defaultMinValue;
         if (TextUtils.isEmpty(savedMinValue)) {
             defaultMinValue = minBound;
@@ -72,7 +72,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             defaultMinValue = Integer.parseInt(savedMinValue);
         }
 
-        String savedMaxValue = dynamicFilterView.getTextInput(Option.PRICE_MAX_KEY);
+        String savedMaxValue = dynamicFilterView.loadLastTextInput(Option.PRICE_MAX_KEY);
         int defaultMaxValue;
         if (TextUtils.isEmpty(savedMaxValue)) {
             defaultMaxValue = maxBound;
@@ -87,7 +87,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private void bindWholesaleOptionItem(final Option option) {
         wholesaleTitle.setText(option.getName());
         wholesaleToggle.setOnCheckedChangeListener(null);
-        if (Boolean.TRUE.equals(dynamicFilterView.getLastCheckedState(option))) {
+        if (Boolean.TRUE.equals(dynamicFilterView.loadLastCheckedState(option))) {
             wholesaleToggle.setChecked(true);
         } else {
             wholesaleToggle.setChecked(false);

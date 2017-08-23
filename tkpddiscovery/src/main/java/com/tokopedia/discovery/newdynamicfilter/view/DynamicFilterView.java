@@ -9,15 +9,10 @@ import com.tokopedia.core.discovery.model.Option;
 
 public interface DynamicFilterView {
     void onExpandableItemClicked(Filter filter);
-    String getSelectedFilter(String key);
-    void saveSelectedFilter(String key, String value);
-    void removeSelectedFilter(String key);
 
-    Boolean getLastCheckedState(Option option);
+    Boolean loadLastCheckedState(Option option);
     void saveCheckedState(Option option, Boolean isChecked);
-    void removeCheckedState(String key);
 
-    String getTextInput(String key);
+    String loadLastTextInput(String key);
     void saveTextInput(String key, String textInput);
-    void removeTextInput(String key);
 }

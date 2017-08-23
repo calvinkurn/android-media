@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.FilterMapAtribut;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
@@ -27,6 +29,7 @@ import org.parceler.Parcels;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 8/8/17.
@@ -34,12 +37,12 @@ import java.util.List;
 
 public class RevampedDynamicFilterActivity extends AppCompatActivity implements DynamicFilterView {
 
-    protected static final int REQUEST_CODE = 219;
+    public static final int REQUEST_CODE = 219;
+    public static final String EXTRA_FILTERS = "EXTRA_FILTERS";
 
     private static String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
 
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
-    public static final String FILTER_SELECTED_PREF = "filter_selected";
     public static final String FILTER_TEXT_PREF = "filter_text";
 
     RecyclerView recyclerView;
@@ -48,12 +51,10 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     TextView buttonReset;
     View buttonClose;
 
-    HashMap<String, String> selectedFilter = new HashMap<>();
-    HashMap<String, Boolean> checkedState = new HashMap<>();
+    HashMap<String, Boolean> savedCheckedState = new HashMap<>();
     HashMap<String, String> savedTextInput = new HashMap<>();
 
     private SharedPreferences preferences;
-
     private int selectedExpandableItemPosition;
 
     public static void moveTo(AppCompatActivity fragmentActivity,
@@ -126,25 +127,22 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     }
 
     private void recoverLastFilterState(Bundle savedInstanceState) {
-        selectedFilter = Parcels.unwrap(savedInstanceState.getParcelable(FILTER_SELECTED_PREF));
-        checkedState = Parcels.unwrap(savedInstanceState.getParcelable(FILTER_CHECKED_STATE_PREF));
+        savedCheckedState = Parcels.unwrap(savedInstanceState.getParcelable(FILTER_CHECKED_STATE_PREF));
         savedTextInput = Parcels.unwrap(savedInstanceState.getParcelable(FILTER_TEXT_PREF));
     }
 
     private void loadLastFilterStateFromPreference() {
-        String savedFilterPos = preferences.getString(FILTER_CHECKED_STATE_PREF, new Gson().toJson(checkedState));
-        checkedState = new Gson().fromJson(savedFilterPos, checkedState.getClass());
-        String savedtext = preferences.getString(FILTER_TEXT_PREF, new Gson().toJson(savedTextInput));
-        savedTextInput = new Gson().fromJson(savedtext, savedTextInput.getClass());
-        String savedFilter = preferences.getString(FILTER_SELECTED_PREF, new Gson().toJson(selectedFilter));
-        selectedFilter = new Gson().fromJson(savedFilter, selectedFilter.getClass());
+        String savedCheckedStateJson = preferences.getString(FILTER_CHECKED_STATE_PREF, new Gson().toJson(savedCheckedState));
+        savedCheckedState = new Gson().fromJson(savedCheckedStateJson, savedCheckedState.getClass());
+
+        String savedTextInputJson = preferences.getString(FILTER_TEXT_PREF, new Gson().toJson(savedTextInput));
+        savedTextInput = new Gson().fromJson(savedTextInputJson, savedTextInput.getClass());
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(FILTER_CHECKED_STATE_PREF, Parcels.wrap(checkedState));
-        outState.putParcelable(FILTER_SELECTED_PREF, Parcels.wrap(selectedFilter));
+        outState.putParcelable(FILTER_CHECKED_STATE_PREF, Parcels.wrap(savedCheckedState));
         outState.putParcelable(FILTER_TEXT_PREF, Parcels.wrap(savedTextInput));
     }
 
@@ -155,43 +153,72 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
             List<Option> optionList
                     = Parcels.unwrap(data.getParcelableExtra(DynamicFilterDetailActivity.EXTRA_RESULT));
             for (Option option : optionList) {
-                OptionHelper.saveOptionInputState(option, checkedState, savedTextInput);
+                OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
             }
         }
         adapter.notifyItemChanged(selectedExpandableItemPosition);
     }
 
     private void applyFilter() {
-        saveFilterCheckedState();
-        saveFilterTextState();
+        writeFilterCheckedStateToPreference();
+        writeFilterTextInputToPreference();
+        renderFilterResult();
         finish();
     }
 
-    private boolean saveFilterTextState() {
+    private boolean writeFilterTextInputToPreference() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(FILTER_TEXT_PREF, new Gson().toJson(savedTextInput));
         editor.apply();
         return true;
     }
 
-    private boolean saveFilterCheckedState() {
+    private boolean writeFilterCheckedStateToPreference() {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(FILTER_CHECKED_STATE_PREF, new Gson().toJson(checkedState));
+        editor.putString(FILTER_CHECKED_STATE_PREF, new Gson().toJson(savedCheckedState));
         editor.apply();
         return true;
     }
 
-    private boolean saveFilterSelection() {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(FILTER_SELECTED_PREF, new Gson().toJson(selectedFilter));
-        editor.apply();
-        return true;
+    private void renderFilterResult() {
+        HashMap<String, String> selectedFilter = generateSelectedFilterMap();
+
+        Intent intent = new Intent();
+        FilterMapAtribut.FilterMapValue filterMapValue = new FilterMapAtribut.FilterMapValue();
+        filterMapValue.setValue(selectedFilter);
+        intent.putExtra(EXTRA_FILTERS, filterMapValue);
+        setResult(RESULT_OK, intent);
+    }
+
+    private HashMap<String, String> generateSelectedFilterMap() {
+        HashMap<String, String> selectedFilterMap = new HashMap<>();
+
+        selectedFilterMap.putAll(savedTextInput);
+
+        for (Map.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
+            if (Boolean.TRUE.equals(entry.getValue())) {
+                appendToMap(selectedFilterMap, entry.getKey());
+            }
+        }
+
+        return selectedFilterMap;
+    }
+
+    private void appendToMap(HashMap<String, String> selectedFilterMap, String uniqueId) {
+        String checkBoxKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
+        String checkBoxValue = OptionHelper.parseValueFromUniqueId(uniqueId);
+        String mapValue = selectedFilterMap.get(checkBoxKey);
+        if (TextUtils.isEmpty(mapValue)) {
+            mapValue = checkBoxValue;
+        } else {
+            mapValue += "," + checkBoxValue;
+        }
+        selectedFilterMap.put(checkBoxKey, mapValue);
     }
 
     public void resetAllFilter() {
-        checkedState.clear();
+        savedCheckedState.clear();
         savedTextInput.clear();
-        selectedFilter.clear();
         adapter.notifyDataSetChanged();
     }
 
@@ -205,53 +232,28 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     private void enrichWithInputState(Filter filter) {
         for (Option option : filter.getOptions()) {
             option.setInputState(
-                    OptionHelper.loadOptionInputState(option, checkedState, savedTextInput)
+                    OptionHelper.loadOptionInputState(option, savedCheckedState, savedTextInput)
             );
         }
     }
 
     @Override
-    public String getSelectedFilter(String key) {
-        return selectedFilter.get(key);
-    }
-
-    @Override
-    public void saveSelectedFilter(String key, String value) {
-        selectedFilter.put(key, value);
-    }
-
-    @Override
-    public void removeSelectedFilter(String key) {
-        selectedFilter.remove(key);
-    }
-
-    @Override
-    public Boolean getLastCheckedState(Option option) {
-        return checkedState.get(option.getUniqueId());
+    public Boolean loadLastCheckedState(Option option) {
+        return savedCheckedState.get(option.getUniqueId());
     }
 
     @Override
     public void saveCheckedState(Option option, Boolean isChecked) {
-        checkedState.put(option.getUniqueId(), isChecked);
+        savedCheckedState.put(option.getUniqueId(), isChecked);
     }
 
     @Override
-    public void removeCheckedState(String key) {
-        checkedState.remove(key);
-    }
-
-    @Override
-    public String getTextInput(String key) {
+    public String loadLastTextInput(String key) {
         return savedTextInput.get(key);
     }
 
     @Override
     public void saveTextInput(String key, String textInput) {
         savedTextInput.put(key, textInput);
-    }
-
-    @Override
-    public void removeTextInput(String key) {
-        savedTextInput.remove(key);
     }
 }

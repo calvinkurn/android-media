@@ -497,7 +497,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_SORT:
-                case DynamicFilterView.REQUEST_CODE:
+                case RevampedDynamicFilterActivity.REQUEST_CODE:
                     browsePresenter.handleResultData(requestCode, data);
                     BrowseParentFragment parentFragment = (BrowseParentFragment)
                             fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);

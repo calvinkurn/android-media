@@ -41,6 +41,7 @@ import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import org.json.JSONArray;
@@ -258,9 +259,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 }
                 sendSortGTM(browseModel.getOb());
                 break;
-            case DynamicFilterView.REQUEST_CODE:
+            case RevampedDynamicFilterActivity.REQUEST_CODE:
                 FilterMapAtribut.FilterMapValue filterMapValue =
-                        data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS);
+                        data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_FILTERS);
                 mFilterMapAtribut.getFiltersMap()
                         .put(browseModel.getActiveTab(), filterMapValue);
                 browseModel.setFilterOptions(filterMapValue.getValue());
@@ -488,9 +489,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                                 selectedPositions.put(s, true);
                             }
                             SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_POS_PREF, new Gson().toJson(selectedPositions));
-                            editor.apply();
-                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_PREF, new Gson().toJson(filters));
+                            editor.putString(RevampedDynamicFilterActivity.FILTER_CHECKED_STATE_PREF, new Gson().toJson(selectedPositions));
                             editor.apply();
                         }
 
@@ -797,9 +796,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
     private void deleteFilterCache() {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(DynamicFilterActivity.FILTER_SELECTED_PREF);
-        editor.remove(DynamicFilterActivity.FILTER_TEXT_PREF);
-        editor.remove(DynamicFilterActivity.FILTER_SELECTED_POS_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_CHECKED_STATE_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_TEXT_PREF);
         editor.apply();
         if (browseModel != null) {
             browseModel.setFilterOptions(new HashMap<String, String>());

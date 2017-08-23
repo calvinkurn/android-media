@@ -69,4 +69,14 @@ public class OptionHelper {
         String result = savedTextInput.get(option.getKey());
         return TextUtils.isEmpty(result) ? "" : result;
     }
+
+    public static String parseKeyFromUniqueId(String uniqueId) {
+        int separatorPos = uniqueId.indexOf("_");
+        return uniqueId.substring(0, separatorPos);
+    }
+
+    public static String parseValueFromUniqueId(String uniqueId) {
+        int separatorPos = uniqueId.indexOf("_");
+        return uniqueId.substring(separatorPos + 1, uniqueId.length());
+    }
 }
