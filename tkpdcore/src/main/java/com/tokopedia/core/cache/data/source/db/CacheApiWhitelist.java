@@ -16,7 +16,6 @@ import com.tokopedia.core.database.DbFlowDatabase;
         uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.ABORT)})
 public class CacheApiWhitelist extends BaseModel {
     @Column
-    @Unique(unique = true)
     @PrimaryKey
     private String host;
 
