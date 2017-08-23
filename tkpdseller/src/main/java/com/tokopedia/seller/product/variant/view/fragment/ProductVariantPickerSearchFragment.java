@@ -1,11 +1,14 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
@@ -19,6 +22,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubm
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
+import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantItemPickerSearchEmptyDataBinder;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
@@ -31,9 +35,11 @@ import java.util.List;
 
 public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantValue>
         implements BasePickerItemSearchList<ProductVariantViewModel>,
-        BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue> {
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantValue>,
+        BaseEmptyDataBinder.Callback {
 
     private static final int MINIMUM_SHOW_UNIT_SIZE = 2;
+    private static final int MINIMUM_SHOW_SEARCH_BOX = 20;
 
     private ProductVariantPickerMultipleItem<ProductVariantViewModel> pickerMultipleItem;
     private ProductVariantByCatModel productVariantByCatModel;
@@ -63,7 +69,6 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (variantUnitSubmit != null) {
             currentVariantUnitId = variantUnitSubmit.getVariantUnitId();
         }
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -74,6 +79,16 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     @Override
     protected BaseMultipleCheckListAdapter<ProductVariantValue> getNewAdapter() {
         return new ProductVariantPickerSearchListAdapter();
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        ProductVariantItemPickerSearchEmptyDataBinder emptyDataBinder = new ProductVariantItemPickerSearchEmptyDataBinder(adapter);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.label_empty_value));
+        emptyDataBinder.setEmptyContentText(null);
+        emptyDataBinder.setEmptyButtonItemText(getString(R.string.label_back));
+        emptyDataBinder.setCallback(this);
+        return emptyDataBinder;
     }
 
     @Override
@@ -110,6 +125,10 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             unitSpinnerTextView.setVisibility(View.VISIBLE);
             unitSpinnerTextView.setSpinnerValue(String.valueOf(currentVariantUnitId));
         }
+        if (productVariantValueList != null && productVariantValueList.size() >= MINIMUM_SHOW_SEARCH_BOX) {
+            searchInputView.setVisibility(View.VISIBLE);
+        }
+        pickerMultipleItem.validateFooterAndInfoView();
         initCheckedItem();
         resetPageAndSearch();
     }
@@ -167,6 +186,24 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     }
 
     @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        pickerMultipleItem.validateFooterAndInfoView();
+    }
+
+    @Override
+    protected void showViewSearchNoResult() {
+        super.showViewSearchNoResult();
+        pickerMultipleItem.validateFooterAndInfoView();
+    }
+
+    @Override
+    protected void showViewList(@NonNull List<ProductVariantValue> list) {
+        super.showViewList(list);
+        pickerMultipleItem.validateFooterAndInfoView();
+    }
+
+    @Override
     public void deselectItem(ProductVariantViewModel productVariantViewModel) {
         ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).setChecked(String.valueOf(productVariantViewModel.getUnitValueId()), false);
         resetPageAndSearch();
@@ -182,6 +219,20 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     public void onSearchTextChanged(String text) {
         filterSearch(text);
         resetPageAndSearch();
+    }
+
+    @Override
+    public void onEmptyContentItemTextClicked() {
+        // Do nothing
+    }
+
+    @Override
+    public void onEmptyButtonClicked() {
+
+    }
+
+    public List<ProductVariantValue> getItemList() {
+        return filteredProductVariantValueList;
     }
 
     private void filterSearch(String text) {
