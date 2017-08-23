@@ -13,11 +13,12 @@ public class DatePickerTokoCashActivity extends DatePickerActivity {
     protected void setupLayout() {
         super.setupLayout();
         tabLayout.removeAllTabs();
-        tabLayout.addTab(tabLayout.newTab().setText("Pilih Rentang Waktu"));
-        tabLayout.addTab(tabLayout.newTab().setText("Pilih Tanggal"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.toko_cash_tab_choose_date_range)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.toko_cash_tab_choose_date)));
 
-        getSupportActionBar().setTitle("Rentang Tanggal");
+        getSupportActionBar().setTitle(getString(R.string.toko_cash_title_page_date_range));
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_new_action_back_grey);
+        getSupportActionBar().show();
     }
 
     @Override

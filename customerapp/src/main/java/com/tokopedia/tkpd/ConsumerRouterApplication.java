@@ -52,10 +52,10 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
@@ -240,26 +240,26 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
             );
@@ -494,12 +494,19 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels) {
-        return DatePickerUtil.getDatePickerIntent(activity,
-                GMStatisticDateUtils.getDefaultDatePickerViewModel(), convert(periodRangeModels));
+    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels,
+                                 long startDate, long endDate,
+                                 int datePickerSelection, int datePickerType) {
+        return DatePickerUtil.getDatePickerIntent(activity, startDate, endDate, convert(periodRangeModels),
+                datePickerSelection, datePickerType);
     }
 
-    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores){
+    @Override
+    public String getRangeDateFormatted(Context context, long startDate, long endDate) {
+        return DatePickerUtils.getRangeDateFormatted(context, startDate, endDate);
+    }
+
+    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
         List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
         for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
             periodRangeModels.add(new PeriodRangeModel(

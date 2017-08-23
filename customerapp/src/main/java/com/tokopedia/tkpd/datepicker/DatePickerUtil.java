@@ -3,9 +3,7 @@ package com.tokopedia.tkpd.datepicker;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 
@@ -23,7 +21,9 @@ import java.util.Locale;
  */
 
 public class DatePickerUtil extends GMStatisticDateUtils {
-    public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel, List<PeriodRangeModel> periodRangeModels) {
+    public static Intent getDatePickerIntent(Activity activity, long startDate, long endDate,
+                                             List<PeriodRangeModel> periodRangeModels,
+                                             int datePickerSelection, int datePickerType) {
         Intent intent = new Intent(activity, DatePickerTokoCashActivity.class);
         Calendar maxCalendar = getMaxDateCalendar();
 
@@ -41,18 +41,17 @@ public class DatePickerUtil extends GMStatisticDateUtils {
         minCalendar.set(Calendar.SECOND, 0);
         minCalendar.set(Calendar.MILLISECOND, 0);
 
-        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, datePickerViewModel.getStartDate());
-        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, datePickerViewModel.getEndDate());
+        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, startDate);
+        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, endDate);
 
         intent.putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, minCalendar.getTimeInMillis());
         intent.putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, maxCalendar.getTimeInMillis());
         intent.putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, MAX_DATE_RANGE);
 
         intent.putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, new ArrayList<>(periodRangeModels));
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, datePickerViewModel.getDatePickerSelection());
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, datePickerViewModel.getDatePickerType());
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, datePickerSelection);
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, datePickerType);
 
-        intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, activity.getString(com.tokopedia.seller.R.string.set_date));
         return intent;
     }
 }
