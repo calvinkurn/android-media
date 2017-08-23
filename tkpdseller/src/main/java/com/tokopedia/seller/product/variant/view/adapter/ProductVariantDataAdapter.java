@@ -25,7 +25,7 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
 
     private OnProductVariantDataAdapterListener onProductVariantDataAdapterListener;
     public interface OnProductVariantDataAdapterListener{
-        void onCheckAll();
+        void onCheckAny();
         void onUnCheckAll();
     }
 
@@ -53,7 +53,9 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
             return;
         }
         for (ProductVariantValue productVariantValue : productVariantValueArrayList) {
-            variantValueIdList.add(productVariantValue.getIdLong());
+            if (! variantValueIdList.contains(productVariantValue.getIdLong())) {
+                variantValueIdList.add(productVariantValue.getIdLong());
+            }
         }
         notifyDataSetChanged();
     }
@@ -87,11 +89,12 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
                 }
                 notifyItemChanged(holder.getAdapterPosition());
                 if (onProductVariantDataAdapterListener != null) {
-                    if (variantValueIdList.size() == productVariantValueArrayList.size()) {
-                        onProductVariantDataAdapterListener.onCheckAll();
-                    }
                     if (variantValueIdList.size() == 0) {
                         onProductVariantDataAdapterListener.onUnCheckAll();
+                    } else if (variantValueIdList.size() == 1){
+                        if (checked) {
+                            onProductVariantDataAdapterListener.onCheckAny();
+                        }
                     }
                 }
             }
@@ -111,8 +114,8 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
         return variantValueIdList;
     }
 
-    public boolean isCheckAll(){
-        return productVariantValueArrayList.size() == productVariantValueArrayList.size();
+    public boolean isCheckAny(){
+        return productVariantValueArrayList.size() > 0;
     }
 
     @Override

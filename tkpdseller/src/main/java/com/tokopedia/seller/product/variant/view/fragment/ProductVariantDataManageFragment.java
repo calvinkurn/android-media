@@ -17,6 +17,7 @@ import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDataManageActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDataAdapter;
+import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,8 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
         buttonSave = view.findViewById(R.id.button_save);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         recyclerView.setAdapter(productVariantDataAdapter);
         return view;
     }
@@ -107,7 +109,7 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
             }
         });
         // default value: if all is checked, set label switch summary to tersedia else to kosong
-        if (productVariantDataAdapter.isCheckAll()) {
+        if (productVariantDataAdapter.isCheckAny()) {
             setStockLabelAvailable();
         } else {
             setStockLabelEmpty();
@@ -116,20 +118,28 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
 
     private void setStockLabelAvailable(){
         labelSwitchStatus.setSummary(getString(R.string.product_variant_status_available));
+        if (!labelSwitchStatus.isChecked()) {
+            labelSwitchStatus.setCheckedNoListener(true);
+        }
     }
 
     private void setStockLabelEmpty(){
         labelSwitchStatus.setSummary(getString(R.string.product_variant_status_not_available));
+        if (labelSwitchStatus.isChecked()) {
+            labelSwitchStatus.setCheckedNoListener(false);
+        }
     }
 
     @Override
-    public void onCheckAll() {
-        labelSwitchStatus.setChecked(true);
+    public void onCheckAny() {
+        labelSwitchStatus.setCheckedNoListener(true);
+        setStockLabelAvailable();
     }
 
     @Override
     public void onUnCheckAll() {
-        labelSwitchStatus.setChecked(false);
+        labelSwitchStatus.setCheckedNoListener(false);
+        setStockLabelEmpty();
     }
 
     @Override

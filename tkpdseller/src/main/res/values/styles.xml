@@ -51,6 +51,14 @@
         <item name="android:paddingBottom">@dimen/top_ads_dashboard_padding_cards</item>
     </style>
 
+    <style name="LabelLayout2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:padding">@dimen/activity_horizontal_margin</item>
+    </style>
+
     <style name="LabelLayout.Border">
         <item name="android:background">@drawable/border_background_view_topads</item>
     </style>
