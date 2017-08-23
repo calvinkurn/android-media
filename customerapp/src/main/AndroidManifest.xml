@@ -190,6 +190,10 @@
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".datepicker.DatePickerTokoCashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+
     </application>
 
 </manifest>

@@ -177,16 +177,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onTopUpTokoCashClicked() {
-        /* Jangan komentar. memang ini HARDCODE dan Jorok */
-        Intent intent = DigitalProductActivity.newInstance(
-                getActivity(), new DigitalCategoryDetailPassData.Builder()
-                        .appLinks("tokopedia://digital/form?category_id=103")
-                        .categoryId("103")
-                        .categoryName("Tokocash")
-                        .build()
-        );
-        startActivity(intent);
-
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
+            startActivity(digitalModuleRouter.instanceIntentTokoCashTopUp());
+        }
     }
 
     @Override
