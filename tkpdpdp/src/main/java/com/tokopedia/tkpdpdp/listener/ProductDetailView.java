@@ -280,4 +280,6 @@ public interface ProductDetailView extends ViewListener {
     void showDinkSuccess(String productName);
 
     void showDinkFailed(String productName, String expired);
+
+    void onPromoAdsClicked();
 }

@@ -102,4 +102,6 @@ public interface ProductDetailPresenter {
     void reportProduct(@NonNull Context context);
 
     void processGetGTMTicker();
+
+    void onPromoAdsClicked(Context context, String shopId, int itemId, String userId);
 }

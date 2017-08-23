@@ -1,5 +1,7 @@
 package com.tokopedia.tkpdpdp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -28,6 +30,7 @@ public class DinkSuccessActivity extends TActivity {
     TextView tvTitle;
 
     public static final String EXTRA_PRODUCT = "EXTRA_PRODUCT";
+    private static final String ads_url = "https://www.tokopedia.com/iklan?medium=android&source=dink";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class DinkSuccessActivity extends TActivity {
 
     @OnClick(R2.id.button_use_topads)
     public void onViewClicked() {
-
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(ads_url));
+        startActivity(i);
     }
 }

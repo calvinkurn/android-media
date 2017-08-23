@@ -30,6 +30,8 @@ import android.widget.TextView;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -43,6 +45,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -884,6 +887,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         intent.putExtra(DinkFailedActivity.EXTRA_PRODUCT, productName);
         intent.putExtra(DinkFailedActivity.EXTRA_TIME_EXP, expired);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPromoAdsClicked() {
+        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
+                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override

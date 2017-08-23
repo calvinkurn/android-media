@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
@@ -24,6 +25,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
@@ -39,6 +41,7 @@ import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -412,23 +415,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             if (productName == null) productName = "WS BELUM SIAP";
                             cacheHandler.putString(PRODUCT_NAME, productName);
                             if (data.getIsDink() == 1) {
-                                String msg = context.getResources()
-                                        .getString(R.string.toast_success_promo1)
-                                        + " "
-                                        + MethodChecker.fromHtml(productName)
-                                        + " "
-                                        + context.getResources()
-                                        .getString(R.string.toast_success_promo2);
                                 viewListener.showDinkSuccess(MethodChecker.fromHtml(productName).toString());
                             } else {
-                                String msg = context.getResources().getString(R.string.toast_promo_error1)
-                                        + " "
-                                        + MethodChecker.fromHtml(productName)
-                                        + "\n"
-                                        + data.getExpiry()
-                                        + "\n"
-                                        + context.getResources().getString(R.string.toast_promo_error2);
-
                                 viewListener.showDinkFailed(MethodChecker.fromHtml(productName).toString(),
                                         data.getExpiry());
                             }
@@ -455,14 +443,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     });
         } else {
-            String msg = context.getResources()
-                    .getString(R.string.toast_promo_error1)
-                    + " "
-                    + MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME,""))
-                    + "\n"
-                    + cacheHandler.getString(DATE_EXPIRE,"")
-                    + "\n"
-                    + context.getResources().getString(R.string.toast_promo_error2);
             viewListener.showDinkFailed(MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME,"")).toString(),
                     cacheHandler.getString(DATE_EXPIRE,""));
         }
@@ -883,5 +863,41 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onError(String error) { }
                 }
         );
+    }
+
+    @Override
+    public void onPromoAdsClicked(final Context context, String shopId, int itemId, final String userId) {
+        retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
+            @Override
+            public void onSuccess(String adsId) {
+                if(adsId.equals("0")){
+                    openPromoteAds(context, "sellerapp://topads/buy");
+                } else {
+                    openPromoteAds(context, "sellerapp://topads/product/"+adsId+"?user_id="+userId);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void openPromoteAds(Context context, String url){
+        String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+        if (topadsIntent != null) {
+            Activity activity = (Activity) context;
+            if (((IDigitalModuleRouter) activity.getApplicationContext())
+                    .isSupportedDelegateDeepLink(url)) {
+                ((IDigitalModuleRouter) activity.getApplicationContext())
+                        .actionNavigateByApplinksUrl(activity, url, new Bundle());
+            }
+        } else if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
+        }
     }
 }

@@ -338,14 +338,13 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_to_etalase">Ke etalase</string>
     <string name="promo_active">Promo masih aktif untuk produk:</string>
     <string name="promo_dink_success">Promo pada produk %1$s telah berhasil!</string>
-    <string name="toast_promo_error1">Anda belum dapat menggunakan fitur Promo pada saat ini.
-		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
-    <string name="toast_promo_error2">Ingin bebas promosikan produk Anda ? Yuk, pakai TopAds sekarang juga!</string>
+    <string name="toast_promo_error1">Anda belum dapat menggunakan fitur promo pada saat ini. Fitur Promo berlaku 60 menit sekali untuk masing-masing toko.</string>
+    <string name="toast_promo_error2">Yuk, pakai TopAds untuk Promo tanpa batas waktu!</string>
     <string name="toast_promo_error_cache">Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="dink_expired">Berlaku sampai %1$s</string>
-    <string name="use_topads">Pakai TopAds</string>
+    <string name="learn_topads">Pelajari TopAds</string>
     <string name="toast_success_promo1">Promo pada produk</string>
-    <string name="toast_success_promo2">Promosi belum maksimal? Yuk,pakai TopAds untuk tingkatkan penjualan Anda!</string>
+    <string name="toast_success_promo2">Yuk, pakai TopAds untuk tingkatkan penjualan Anda!</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>

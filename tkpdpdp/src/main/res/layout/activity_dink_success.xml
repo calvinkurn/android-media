@@ -82,7 +82,7 @@
                 android:layout_gravity="center"
                 android:paddingLeft="@dimen/padding_large"
                 android:paddingRight="@dimen/padding_large"
-                android:text="@string/use_topads" />
+                android:text="@string/learn_topads" />
         </LinearLayout>
 
     </ScrollView>

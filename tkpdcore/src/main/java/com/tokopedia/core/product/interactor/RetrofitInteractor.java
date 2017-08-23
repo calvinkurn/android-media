@@ -61,6 +61,8 @@ public interface RetrofitInteractor {
     void getProductCampaign(@NonNull Context context, @NonNull String productId,
                             @NonNull ProductCampaignListener listener);
 
+    void checkPromoAds(String shopId, int itemId, String userId, CheckPromoAdsListener listener);
+
     interface ProductDetailListener {
 
         void onSuccess(@NonNull ProductDetailData data);
@@ -148,6 +150,12 @@ public interface RetrofitInteractor {
     interface ProductCampaignListener {
 
         void onSucccess(ProductCampaign productCampaign);
+
+        void onError(String error);
+    }
+
+    interface CheckPromoAdsListener {
+        void onSuccess(String adsId);
 
         void onError(String error);
     }

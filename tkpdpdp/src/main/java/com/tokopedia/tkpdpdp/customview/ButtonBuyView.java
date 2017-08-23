@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.customview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -31,7 +33,6 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     private TextView tvBuy;
     private TextView tvPromoTopAds;
     private LinearLayout container;
-    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -160,15 +161,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
 
         @Override
         public void onClick(View view) {
-            Intent topadsIntent = getContext().getPackageManager()
-                    .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-            if (topadsIntent != null) {
-                getContext().startActivity(topadsIntent);
-                UnifyTracking.eventTopAdsSwitcher(AppEventTracking.EventLabel.OPEN_APP);
-            } else if (getContext().getApplicationContext() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
-                UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
-            }
+            listener.onPromoAdsClicked();
         }
     }
 }
