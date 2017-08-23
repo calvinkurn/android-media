@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -90,6 +91,17 @@ public class ProductVariant implements Parcelable {
         productName = in.readString();
         productPrice = in.readString();
         productImageUrl = in.readString();
+    }
+
+    public List<Integer> getCombinationFromSelectedVariant(int variantOptionId) {
+        List<Integer> products = new ArrayList<>();
+        for (VariantDatum variantDatum: getVariantData()) {
+            if (variantDatum.getOptionIds().contains(variantOptionId)) {
+                products.addAll(variantDatum.getOptionIds());
+            }
+        }
+        products.removeAll(Collections.singleton(variantOptionId));
+        return products;
     }
 
     @Override

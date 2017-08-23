@@ -34,6 +34,8 @@ public class Option implements Parcelable {
     @Expose
     private String picture;
 
+    private boolean enabled = true;
+
     public Integer getPvoId() {
         return pvoId;
     }
@@ -98,6 +100,13 @@ public class Option implements Parcelable {
         this.picture = picture;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     protected Option(Parcel in) {
         pvoId = in.readByte() == 0x00 ? null : in.readInt();
