@@ -11,13 +11,13 @@ const endpoints = {
 }
 
 
-
-// export const FIRST = 'FIRST'
-// export const first = (state, action) => {
-//     return {
-//         type: FIRST
-//     }
-// }
+// ========================= Reload State ========================= //
+export const RELOADSTATE = 'RELOADSTATE'
+export const reloadState = (state, action) => {
+    return {
+        type: RELOADSTATE
+    }
+}
 
 // ========================= Check Product in Wishlist ========================= //
 const checkProductInWishlist = (userId, pIds) => {
@@ -52,7 +52,7 @@ const checkProductInWishlist = (userId, pIds) => {
 // ========================= Fetch Campaigns ========================= //
 export const FETCH_CAMPAIGNS = 'FETCH_CAMPAIGNS'
 export const fetchCampaigns = (User_ID) => {
-    console.log(User_ID)
+    // console.log(User_ID)
     const device = 'lite'
     const imageSize = 200
     const imageSquare = true
@@ -69,7 +69,7 @@ export const fetchCampaigns = (User_ID) => {
     }
 
     const getCampaigns = (User_ID) => {
-        console.log(User_ID)
+        // console.log(User_ID)
             return NetworkModule.getResponse(url, "GET", "", true)
                 .then(response => {
                     const jsonResponseCampaigns = JSON.parse(response)
@@ -95,7 +95,7 @@ export const fetchCampaigns = (User_ID) => {
 
                             let wishlistProd = []
                             let URL = `${MOJITO_HOSTNAME}/v1/users/` + User_ID + `/wishlist/check/` + pIds.toString();
-                            console.log(URL)
+                            // console.log(URL)
                             return NetworkModule.getResponse(URL, "GET", '', true)
                                 .then(response => {
                                     let jsonResponse = JSON.parse(response)
@@ -196,15 +196,34 @@ export const fetchBrands = (limit, offset, User_ID, status) => ({
     payload: getBrands(limit, offset, User_ID, status)
 })
 
+// const checkShopFavorite = (shopId, User_ID) => {
+//     // console.log(User_ID, shopId)
+//     const checkFavShopURL = `https://tome.tokopedia.com/v1/ssi/user/isfollowing?shop_id=${shopId}&user_id=${User_ID}`
+//     return NetworkModule.getResponse(checkFavShopURL, "GET", "", true)
+//         .then(response => {
+//             const jsonResponse = JSON.parse(response)
+//             // console.log(jsonResponse, shopId, User_ID)
+//             return jsonResponse
+//         })
+//         .catch(error => { })
+// }
+
+
 getBrands = (limit, offset, User_ID, status) => {
-    // console.log(User_ID, !User_ID)
-    // const offsetForLoadAndReplace = status === 'LOADANDREPLACE' ? 0 : offset
     const Check_UserID = !User_ID ? 0 : User_ID
-    // console.log(Check_UserID)
     const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${Check_UserID}&limit=${limit}&offset=${offset}`
-    console.log(url)
     return NetworkModule.getResponse(url, "GET", "", false)
         .then(response => {
+            // const jsonResponse = JSON.parse(response)
+            // const brands = jsonResponse.data
+            // console.log(brands)
+            // const total_brands = jsonResponse.total_brands
+            // let shopList = brands.map(shop => 
+            //     checkShopFavorite(shop.shop_id, Check_UserID)
+            //         .then(checkRes => {
+            //             console.log(shop.shop_id, checkRes, typeof(checkRes))
+            //         })
+            // )
             const jsonResponse = JSON.parse(response)
             const brands = jsonResponse.data
             const total_brands = jsonResponse.total_brands
@@ -284,7 +303,7 @@ getBrands = (limit, offset, User_ID, status) => {
                                 }
                             })
                             .catch(err => {
-                                console.log(err)
+                                // console.log(err)
                             })
                     } else {
                         return {

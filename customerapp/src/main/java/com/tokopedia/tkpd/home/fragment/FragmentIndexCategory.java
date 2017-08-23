@@ -71,6 +71,7 @@ import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -919,7 +920,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         category.unSubscribe();
-        subscription.unsubscribe();
+        RxUtils.unsubscribeIfNotNull(subscription);
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();

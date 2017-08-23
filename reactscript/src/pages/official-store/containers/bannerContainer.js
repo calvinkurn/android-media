@@ -13,7 +13,6 @@ class BannerContainer extends Component {
 
   onBannerPress = (e, banner) => {
     //TODO: Add GTM Event.
-    // console.log('[bannerContainer] Banner di-klik: ' + banner.redirect_url + ' ' + banner.redirect_url_app)
     NavigationModule.navigateWithMobileUrl(banner.redirect_url_app, banner.redirect_url, "")
   }
 
@@ -25,7 +24,11 @@ class BannerContainer extends Component {
   render() {
     const banners = this.props.banners.items
     return (
-      this.props.banners.isFetching ? null : <BannerList
+      this.props.banners.isFetching ? <BannerList
+        banners={banners}
+        onBannerPress={this.onBannerPress}
+        onViewAllPress={this.onViewAllPress}
+      /> : <BannerList
         banners={banners}
         onBannerPress={this.onBannerPress}
         onViewAllPress={this.onViewAllPress}

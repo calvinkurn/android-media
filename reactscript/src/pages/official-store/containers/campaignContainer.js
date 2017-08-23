@@ -19,13 +19,11 @@ class CampaignContainer extends Component {
             dispatch(removeWishlistFromPdp(res))
         });
         this.checkLogin = DeviceEventEmitter.addListener('Login', (res) => {
-            console.log(res, 'campaignContainer Login')
             const userid_from_login_os = res.user_id
             AsyncStorage.setItem('user_id', userid_from_login_os);
             
             AsyncStorage.getItem('user_id')
             .then(uid => {
-                console.log(uid, typeof(uid))
                 dispatch(fetchCampaigns(uid))
             })
         })
@@ -53,7 +51,6 @@ class CampaignContainer extends Component {
     
     render() {
         const campaigns = this.props.campaigns.items
-        console.log(this.props.campaigns)
         if (campaigns.length == 1){
             return this.renderCampaign(campaigns[0])
         } else {

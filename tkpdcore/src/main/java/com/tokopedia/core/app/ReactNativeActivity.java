@@ -60,6 +60,16 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
     }
 
     @Override
+    public void onBackPressed(){
+        if(reactInstanceManager != null){
+            reactInstanceManager.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         reactRootView = new ReactRootView(this);

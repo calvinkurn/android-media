@@ -32,6 +32,8 @@ const BrandList = (props) => {
     canFetch: props.canFetch
   }
 
+  // console.log(props.isFetching)
+
   const validBrands = props.brands.filter(brand => brand && brand.microsite_url && brand.products.length && brand.logo_url)
   
   return (

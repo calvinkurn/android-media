@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   Dimensions,
+  DeviceEventEmitter,
   AsyncStorage,
   RefreshControl 
 } from 'react-native'
@@ -18,8 +19,7 @@ import Infographic from '../components/infographic'
 import BackToTop from '../common/BackToTop/backToTop'
 import Seo from '../components/seo'
 import OfficialStoreIntro from '../components/OfficialStoreIntro'
-// import { fetchBanners, fetchCampaigns, fetchBrands, refreshState, first } from '../actions/actions'
-import { fetchBanners, fetchCampaigns, fetchBrands, refreshState } from '../actions/actions'
+import { fetchBanners, fetchCampaigns, fetchBrands, refreshState, reloadState } from '../actions/actions'
 
 
 class App extends Component {
@@ -29,26 +29,24 @@ class App extends Component {
   }
 
   componentWillMount(){
-    console.log('Mount App.js')
-    // this.props.dispatch(first())
-    // const aaaa = await AsyncStorage.getItem('user_id')
-    // console.log(aa)
-    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
+    const { dispatch } = this.props
+    AsyncStorage.getItem('user_id')
+      .then(uid => {
+        dispatch(reloadState())
+      })
   }
 
-  componentWillUnmount(){
-    console.log('WillUnmount App.js')
-    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
-  }
 
   _onRefresh() {
     this.setState({ refreshing: true });
     const { dispatch } = this.props
-    const { User_ID } = this.props.screenProps
-    dispatch(refreshState())
-    dispatch(fetchBanners())
-    dispatch(fetchCampaigns(User_ID))
-    dispatch(fetchBrands(10, 0, User_ID, 'REFRESH'))
+    AsyncStorage.getItem('user_id')
+      .then(uid => {
+          dispatch(refreshState())
+          dispatch(fetchBanners())
+          dispatch(fetchCampaigns(uid))
+          dispatch(fetchBrands(10, 0, uid, 'REFRESH'))
+      })
     setTimeout(() => {
       this.setState({ refreshing: false });
     }, 5000)

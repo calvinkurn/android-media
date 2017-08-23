@@ -36,30 +36,19 @@ class BrandContainer extends Component {
     })
 
     this.checkLogin = DeviceEventEmitter.addListener('Login', (res) => {
-      console.log(res, 'brandContainer Login')
-      // const userid_from_login_os = res.user_id
-      // AsyncStorage.setItem('user_id_brands', res.user_id);
-      
       AsyncStorage.getItem('user_id')
       .then(uid => {
-          console.log(uid, typeof(uid))
-          // dispatch(fetchCampaigns(uid))
           this.props.resetBrandsAfterLogin(limit, offset, uid, 'REFRESH')
       })
-      // const userid_from_login_os = res.user_id
-      // this.props.resetBrandsAfterLogin(limit, offset, userid_from_login_os, 'REFRESH')
     })
-    console.log('Mount BrandContainer.js')
   }
 
   componentWillUnmount(){
-    console.log('WillUnmount BrandContainer')
     this.addToWishlist.remove()
     this.removeWishlist.remove()
     this.addToFavoritePDP.remove()
     this.removeFavoritePDP.remove()
     this.checkLogin.remove()
-    // this.props.loadMore(10, 0, User_ID, 'REFRESH')
   }
 
   render() {
@@ -83,7 +72,6 @@ class BrandContainer extends Component {
       isFetching,
       loadMore: this.props.loadMore,
       slideMore: this.props.slideMore,
-      // User_ID: this.props.screenProps.User_ID
     }
 
     return (
