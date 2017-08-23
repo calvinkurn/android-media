@@ -32,16 +32,15 @@ public class ProductVariantManageViewHolder extends BaseViewHolder<ProductVarian
     @Override
     public void bindObject(final ProductVariantManageViewModel productVariantManageViewModel) {
         if (!TextUtils.isEmpty(productVariantManageViewModel.getHexCode())) {
-            imageView.setVisibility(View.VISIBLE);
             imageView.setBackgroundColor(Color.parseColor(productVariantManageViewModel.getHexCode()));
             imageView.setImageDrawable(null);
         } else if (!TextUtils.isEmpty(productVariantManageViewModel.getImageUrl())) {
-            imageView.setVisibility(View.VISIBLE);
             imageView.setBackgroundColor(Color.TRANSPARENT);
             Glide.with(imageView.getContext()).load(productVariantManageViewModel.getImageUrl())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else {
-            imageView.setVisibility(View.GONE);
+            imageView.setBackgroundColor(Color.GRAY);
+            imageView.setImageDrawable(null);
         }
         titleTextView.setText(productVariantManageViewModel.getTitle());
         contentTextView.setText(productVariantManageViewModel.getContent());

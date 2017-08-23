@@ -19,8 +19,7 @@
         <ImageView
             android:id="@+id/image_view"
             android:layout_width="@dimen/base_picker_multiple_item_cache_image_height"
-            android:layout_height="@dimen/base_picker_multiple_item_cache_image_height"
-            tools:visibility="visible" />
+            android:layout_height="@dimen/base_picker_multiple_item_cache_image_height"/>
 
         <LinearLayout
             android:layout_width="0dp"
