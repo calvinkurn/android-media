@@ -896,7 +896,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(ProductVariant productVariant) {
-                        if (productVariant.getVariantData()!=null && productVariant.getVariantData().size()>0) {
+                        if (productVariant.getVariantOption()!=null && productVariant.getVariantOption().size()>0
+                                && productVariant.getVariantData()!=null && productVariant.getVariantData().size()>0) {
                             viewListener.addProductVariant(productVariant);
                         }
                     }

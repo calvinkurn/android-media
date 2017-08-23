@@ -171,15 +171,17 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         List<Integer> combinations = variant.getCombinationFromSelectedVariant(option.getPvoId());
         if (level==1) {
             level1Selected = option;
-            for (Option otherLevelOption: variantOptionAdapterLevel2.getVariantOptions()) {
-                if (combinations.contains(otherLevelOption.getPvoId())) {
-                    otherLevelOption.setEnabled(true);
-                } else {
-                    otherLevelOption.setEnabled(false);
+            if (variant.getVariantOption().size()>1) {
+                for (Option otherLevelOption: variantOptionAdapterLevel2.getVariantOptions()) {
+                    if (combinations.contains(otherLevelOption.getPvoId())) {
+                        otherLevelOption.setEnabled(true);
+                    } else {
+                        otherLevelOption.setEnabled(false);
+                    }
                 }
+                variantOptionAdapterLevel2.notifyDataSetChanged();
+                onVariantChosen(variantOptionAdapterLevel2.getVariantOptions().get(variantOptionAdapterLevel2.getSelectedPosition()),2);
             }
-            variantOptionAdapterLevel2.notifyDataSetChanged();
-            onVariantChosen(variantOptionAdapterLevel2.getVariantOptions().get(variantOptionAdapterLevel2.getSelectedPosition()),2);
         } else {
             level2Selected = option;
             if (!combinations.contains(variantOptionAdapterLevel1.getVariantOptions().get(variantOptionAdapterLevel1.getSelectedPosition()).getPvoId())) {

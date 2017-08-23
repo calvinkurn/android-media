@@ -105,7 +105,7 @@ public class ProductVariant implements Parcelable {
     }
 
     public int getLevel1Variant() {
-        if (variantOption.size()>1 && variantOption.get(0).getPosition()!=1) {
+        if (variantOption!=null && variantOption.size()>1 && variantOption.get(0).getPosition()!=1) {
             return 1;
         }
         return 0;
