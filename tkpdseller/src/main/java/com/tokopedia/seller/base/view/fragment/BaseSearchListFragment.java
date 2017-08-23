@@ -13,7 +13,7 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 
 public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> implements SearchInputView.Listener {
 
-    private SearchInputView searchInputView;
+    protected SearchInputView searchInputView;
 
     @Override
     protected int getFragmentLayout() {

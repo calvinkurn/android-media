@@ -10,4 +10,6 @@ import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 public interface ProductVariantPickerMultipleItem<T extends ItemPickerType> extends BasePickerMultipleItem<T> {
 
     void removeAllItemFromSearch();
+
+    void validateFooterAndInfoView();
 }

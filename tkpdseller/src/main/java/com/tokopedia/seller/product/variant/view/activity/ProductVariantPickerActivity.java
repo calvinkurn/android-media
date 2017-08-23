@@ -13,6 +13,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
@@ -35,6 +36,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
 
     private ProductVariantByCatModel productVariantByCatModel;
+    private List<ProductVariantValue> productVariantValueList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +84,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
         productVariantViewModel.setTitle(text);
         addItemFromSearch(productVariantViewModel);
+        validateFooterAndInfoView();
     }
 
     @Override
@@ -97,21 +100,43 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     private void updateBottomSheetInfo() {
-        Fragment fragment = getCacheListFragment();
-        int selectedItemSize = 0;
-        if ((fragment) != null) {
-            selectedItemSize = ((ProductVariantPickerCacheFragment) fragment).getItemList().size();
-        }
         String variantCategoryName = "";
         if (productVariantByCatModel != null && !TextUtils.isEmpty(productVariantByCatModel.getName())) {
             variantCategoryName = productVariantByCatModel.getName();
         }
         bottomSheetTitleTextView.setText(getString(R.string.product_variant_item_picker_selected_title,
-                String.valueOf(selectedItemSize), variantCategoryName));
-        if (selectedItemSize > 0) {
+                String.valueOf(getCacheListSize()), variantCategoryName));
+        if (getCacheListSize() > 0) {
             showBottomSheetInfo(true);
         } else {
             showBottomSheetInfo(false);
+        }
+    }
+
+    private int getSearchListSize() {
+        Fragment fragment = getSearchListFragment();
+        int selectedItemSize = 0;
+        if ((fragment) != null) {
+            selectedItemSize = ((ProductVariantPickerSearchFragment) fragment).getItemList().size();
+        }
+        return selectedItemSize;
+    }
+
+    private int getCacheListSize() {
+        Fragment fragment = getCacheListFragment();
+        int selectedItemSize = 0;
+        if ((fragment) != null) {
+            selectedItemSize = ((ProductVariantPickerCacheFragment) fragment).getItemList().size();
+        }
+        return selectedItemSize;
+    }
+
+    @Override
+    public void validateFooterAndInfoView() {
+        if (getSearchListSize() < 1 && getCacheListSize() < 1) {
+            showFooterAndInfo(false);
+        } else {
+            showFooterAndInfo(true);
         }
     }
 

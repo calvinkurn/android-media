@@ -172,7 +172,19 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         }
     }
 
-    protected void showBottomSheetInfo(boolean show) {
+    public void showFooterAndInfo(boolean show) {
+        bottomSheetContainerView.setVisibility(show ? View.VISIBLE : View.GONE);
+        footerView.setVisibility(show ? View.VISIBLE : View.GONE);
+        int containerBottomMargin = (int) (getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height));
+        if (!show) {
+            containerBottomMargin = 0;
+        }
+        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
+        p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
+        containerListView.requestLayout();
+    }
+
+    public void showBottomSheetInfo(boolean show) {
         int peekHeight = (int) (getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_height));
         int containerBottomMargin = (int) getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height);
         if (show) {
