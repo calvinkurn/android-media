@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDataManageActivity;
@@ -36,9 +35,10 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
     private LabelSwitch labelSwitchStatus;
     private View buttonSave;
     private ProductVariantDataAdapter productVariantDataAdapter;
+    private boolean isVariantHasStock;
 
     public interface OnProductVariantDataManageFragmentListener {
-        void onSubmitVariant(List<Long> selectedVariantValueIds);
+        void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
     }
 
     public static ProductVariantDataManageFragment newInstance() {
@@ -50,18 +50,25 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent activityIntent = getActivity().getIntent();
-        // TODO hendry just for test
-        ArrayList<Long> variantValueIdList;
-        ArrayList<ProductVariantValue> productVariantValueArrayList;
+
+        ArrayList<Long> variantValueIdList = null;
+        ArrayList<ProductVariantValue> productVariantValueArrayList = null;
         if (!activityIntent.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST)) {
-            productVariantValueArrayList = new ArrayList<>();
-            productVariantValueArrayList.add(new ProductVariantValue(1,"Cak Lontong"));
-            productVariantValueArrayList.add(new ProductVariantValue(2,"Cak Norman"));
-            productVariantValueArrayList.add(new ProductVariantValue(3,"Cak Norman tong"));
-            productVariantValueArrayList.add(new ProductVariantValue(4,"Cak tong norman"));
-            variantValueIdList = new ArrayList<>();
-            variantValueIdList.add(1L);
-            variantValueIdList.add(3L);
+            if (!activityIntent.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK)) {
+                // TODO hendry just for test
+                //                productVariantValueArrayList = new ArrayList<>();
+                //                productVariantValueArrayList.add(new ProductVariantValue(1,"Cak Lontong"));
+                //                productVariantValueArrayList.add(new ProductVariantValue(2,"Cak Norman"));
+                //                productVariantValueArrayList.add(new ProductVariantValue(3,"Cak Norman tong"));
+                //                productVariantValueArrayList.add(new ProductVariantValue(4,"Cak tong norman"));
+                //                variantValueIdList = new ArrayList<>();
+                //                variantValueIdList.add(1L);
+                //                variantValueIdList.add(3L);
+                isVariantHasStock = true;
+            } else {
+                isVariantHasStock = activityIntent.getBooleanExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK, false);
+            }
+
         }
         else {
             productVariantValueArrayList = activityIntent.getParcelableArrayListExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST);
@@ -109,11 +116,12 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSubmitVariant(productVariantDataAdapter.getVariantValueIdListSorted());
+                listener.onSubmitVariant(labelSwitchStatus.isChecked(),
+                        productVariantDataAdapter.getVariantValueIdListSorted());
             }
         });
         // default value: if all is checked, set label switch summary to tersedia else to kosong
-        if (productVariantDataAdapter.isCheckAny()) {
+        if (isVariantHasStock) {
             setStockLabelAvailable();
         } else {
             setStockLabelEmpty();

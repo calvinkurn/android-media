@@ -126,5 +126,6 @@
     <string name="product_variant_status_not_available">Kosong</string>
     <string name="product_label_variant">Varian</string>
     <string name="product_variant_option_x">Pilihan %1$s</string>
+    <string name="product_variant_manage_variant">Atur Varian</string>
 
 </resources>

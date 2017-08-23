@@ -196,7 +196,14 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
                     if (variantIdToUpdate != 0) {
                         ArrayList<Long> selectedVariantValueIdList = (ArrayList<Long>)
                                 data.getSerializableExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST);
-                        // TODO select the variantID with selected value: selectedVariantValueIdList
+                        if (selectedVariantValueIdList == null || selectedVariantValueIdList.size() == 0) {
+                            if (data.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK)) {
+                                boolean variantHasStock = data.getBooleanExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK, false);
+                                //TODO set the variant stock to available/empty (based on variantHasStock)
+                            }
+                        } else {
+                            // TODO update the selectedVariantValueIdList of the variant to available
+                        }
                     }
                 }
             }
