@@ -61,6 +61,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
         } else {
             Intent launchIntent = context.getPackageManager()
                     .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (launchIntent == null) {
                 launchIntent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
