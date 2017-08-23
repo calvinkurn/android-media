@@ -22,11 +22,7 @@ import java.util.List;
 
 public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractViewHolder<Option>>{
 
-    List<Option> list;
-
-    public DynamicFilterDetailAdapter() {
-        this.list = new ArrayList<>();
-    }
+    private List<Option> list = new ArrayList<>();
 
     @Override
     public AbstractViewHolder<Option> onCreateViewHolder(ViewGroup parent, int viewType) {

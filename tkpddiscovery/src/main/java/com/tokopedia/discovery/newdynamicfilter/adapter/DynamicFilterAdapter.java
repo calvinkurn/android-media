@@ -19,12 +19,11 @@ import java.util.List;
 
 public class DynamicFilterAdapter extends RecyclerView.Adapter<DynamicFilterViewHolder>{
 
-    List<Filter> list;
+    private List<Filter> list = new ArrayList<>();
     private DynamicFilterTypeFactory typeFactory;
 
     public DynamicFilterAdapter(DynamicFilterTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
-        this.list = new ArrayList<>();
     }
 
     @Override

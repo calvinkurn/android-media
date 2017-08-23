@@ -11,6 +11,7 @@ import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +21,8 @@ import java.util.List;
 public class ExpandableItemSelectedListAdapter extends
         RecyclerView.Adapter<ExpandableItemSelectedListAdapter.ViewHolder> {
 
-    List<Option> selectedOptionsList;
-    DynamicFilterView filterView;
+    private List<Option> selectedOptionsList = new ArrayList<>();
+    private DynamicFilterView filterView;
 
     public ExpandableItemSelectedListAdapter(DynamicFilterView filterView) {
         this.filterView = filterView;
