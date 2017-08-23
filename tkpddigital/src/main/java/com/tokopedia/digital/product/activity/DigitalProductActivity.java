@@ -38,11 +38,6 @@ public class DigitalProductActivity extends BasePresenterActivity
     }
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_RECHARGE_PRODUCT_PAGE;
-    }
-
-    @Override
     protected void setupURIPass(Uri data) {
 
     }
