@@ -24,5 +24,5 @@ public interface InboxTicketDetailFragmentPresenter {
 
     void onDestroyView();
 
-    void commentRating();
+    void commentRating(String isHelpful);
 }

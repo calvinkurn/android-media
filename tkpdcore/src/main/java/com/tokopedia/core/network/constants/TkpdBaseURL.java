@@ -258,7 +258,6 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
-        public static final String PATH_COMMENT_RATING = "contact-us/v2/rating";
     }
 
     public static class Shop {
@@ -713,10 +712,12 @@ public class TkpdBaseURL {
     }
 
     public static class ContactUs {
+        public static final String URL_BASE = BASE_DOMAIN + "contact-us/";
         public static final String PATH_GET_SOLUTION = "ajax/solution/{id}";
         public static final String PATH_CREATE_STEP_1 = "ajax/create/step/1";
         public static final String PATH_CREATE_STEP_2 = "ajax/create/step/2";
         public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
+        public static final String PATH_COMMENT_RATING = "v2/rating";
     }
 
     public static class TopCash {

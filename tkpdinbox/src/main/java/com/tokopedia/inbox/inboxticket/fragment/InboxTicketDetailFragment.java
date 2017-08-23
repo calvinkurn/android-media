@@ -32,6 +32,7 @@ import com.tokopedia.inbox.inboxticket.InboxTicketConstant;
 import com.tokopedia.inbox.inboxticket.adapter.ImageUploadAdapter;
 import com.tokopedia.inbox.inboxticket.adapter.InboxTicketDetailAdapter;
 import com.tokopedia.inbox.inboxticket.listener.InboxTicketDetailFragmentView;
+import com.tokopedia.inbox.inboxticket.model.InboxTicketParam;
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail;
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
@@ -58,6 +59,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     private View noView;
     private View yesView;
+    private String commentId;
 
     public interface DoActionInboxTicketListener {
         void sendRating(Bundle param);
@@ -157,8 +159,8 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @Override
     protected void initView(View view) {
-        noView = view.findViewById(R.id.no);
-        yesView = view.findViewById(R.id.yes);
+        noView = view.findViewById(R.id.icon_dislike);
+        yesView = view.findViewById(R.id.icon_like);
         adapter = InboxTicketDetailAdapter.createAdapter(getActivity(), presenter);
         listTicket.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listTicket.setAdapter(adapter);
@@ -222,9 +224,18 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         yesView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.commentRating();
+                presenter.commentRating(InboxTicketParam.YES_HELPFUL);
             }
         });
+
+        noView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating(InboxTicketParam.NO_HELPFUL);
+            }
+        });
+
+
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -276,6 +287,8 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         adapter.setData(result);
         if (result.getTicket().getTicketStatus() == TICKET_OPEN) {
             if(result.isShowRating()){
+                int replySize = result.getTicketReply().getTicketReplyData().size();
+                commentId = result.getTicketReply().getTicketReplyData().get(replySize-1).getTicketDetailId();
                 commentView.setVisibility(View.GONE);
                 helpfulView.setVisibility(View.VISIBLE);
             }else {
@@ -356,6 +369,17 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     @Override
     public String getComment() {
         return comment.getText().toString();
+    }
+
+    @Override
+    public String getCommentId() {
+        return commentId;
+    }
+
+    @Override
+    public void showCommentView() {
+        commentView.setVisibility(View.VISIBLE);
+        helpfulView.setVisibility(View.GONE);
     }
 
     @Override

@@ -27,7 +27,7 @@
             />
         
         <TextView
-            android:id="@+id/no"
+            android:id="@+id/icon_dislike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/no"/>
@@ -45,7 +45,7 @@
             />
 
         <TextView
-            android:id="@+id/yes"
+            android:id="@id/icon_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/yes"/>

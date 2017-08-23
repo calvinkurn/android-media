@@ -35,9 +35,6 @@ public interface InboxTicketRetrofitInteractor {
 
     void unsubscribe();
 
-    void commentRating(@NonNull Context context, @NonNull Map<String, String> commentRatingParam
-            ,@NonNull CommentRatingListener commentRatingListener);
-
     interface GetInboxTicketListener {
 
         void onSuccess(@NonNull InboxTicket result);
@@ -95,23 +92,5 @@ public interface InboxTicketRetrofitInteractor {
         void onFailAuth();
 
     }
-
-
-    interface CommentRatingListener {
-
-        void onSuccess(ReplyResult replyResult);
-
-        void onTimeout();
-
-        void onError(String error);
-
-        void onNullData();
-
-        void onNoConnectionError();
-
-        void onFailAuth();
-
-    }
-
 
 }
