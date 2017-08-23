@@ -5,12 +5,23 @@
 
     <include layout="@layout/filter_top_bar_layout"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/dynamic_filter_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/dynamic_filter_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/top_bar_shadow" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/button_finish"
