@@ -184,7 +184,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFirstTimeInboxReputation(String errorMessage) {
-        adapter.removeLoadingFull();
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
                 NetworkErrorHelper
                         .RetryClickedListener() {
@@ -197,9 +196,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
-        adapter.removeLoadingFull();
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+    }
+
+    @Override
+    public void finishLoadingFull() {
+        adapter.removeLoadingFull();
     }
 
     @Override
@@ -224,7 +227,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorRefresh(String errorMessage) {
-        swipeToRefresh.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
                 NetworkErrorHelper
                         .RetryClickedListener() {
@@ -237,7 +239,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel) {
-        swipeToRefresh.setRefreshing(false);
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
@@ -281,6 +282,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void finishRefresh() {
         swipeToRefresh.setRefreshing(false);
+    }
+
+    @Override
+    public void onShowEmpty() {
+        adapter.clearList();
+        adapter.showEmpty();
     }
 
     @Override

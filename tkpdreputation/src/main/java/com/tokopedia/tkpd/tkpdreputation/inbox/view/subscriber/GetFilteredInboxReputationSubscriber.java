@@ -23,6 +23,7 @@ public class GetFilteredInboxReputationSubscriber extends GetFirstTimeInboxReput
 
     @Override
     public void onError(Throwable e) {
+        viewListener.finishRefresh();
         viewListener.onErrorGetFilteredInboxReputation(ErrorHandler.getErrorMessage(e));
 
     }

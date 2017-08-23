@@ -18,11 +18,13 @@ public class RefreshInboxReputationSubscriber extends GetFirstTimeInboxReputatio
 
     @Override
     public void onError(Throwable e) {
+        viewListener.finishRefresh();
         viewListener.onErrorRefresh(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(InboxReputationDomain inboxReputationDomain) {
+        viewListener.finishRefresh();
         viewListener.onSuccessRefresh(mappingToViewModel(inboxReputationDomain));
     }
 }

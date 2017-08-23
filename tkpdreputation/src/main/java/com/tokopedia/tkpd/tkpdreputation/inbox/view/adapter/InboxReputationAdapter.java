@@ -88,9 +88,14 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
     }
 
     public void showLoadingFull() {
+        this.list.add(loadingModel);
     }
 
     public void removeLoadingFull() {
+        this.list.remove(loadingModel);
+    }
 
+    public void clearList() {
+        this.list.clear();
     }
 }

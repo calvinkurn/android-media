@@ -169,18 +169,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case TkpdState.RequestCode.CODE_OPEN_DETAIL_REPUTATION:
-                getFragmentManager().findFragmentById(R.id.pager).onActivityResult(requestCode,
-                        resultCode, data);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));

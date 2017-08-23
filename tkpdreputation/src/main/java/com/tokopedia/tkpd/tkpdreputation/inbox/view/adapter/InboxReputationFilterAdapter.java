@@ -34,7 +34,15 @@ public class InboxReputationFilterAdapter
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    for (OptionViewModel viewModel : listOption) {
+                        if (viewModel == listOption.get(getAdapterPosition()))
+                            viewModel.setSelected(!viewModel.isSelected());
+                        else
+                            viewModel.setSelected(false);
+                    }
+                    if(getAdapterPosition() != -1)
                     listener.onFilterSelected(listOption.get(getAdapterPosition()));
+                    notifyDataSetChanged();
                 }
             });
         }

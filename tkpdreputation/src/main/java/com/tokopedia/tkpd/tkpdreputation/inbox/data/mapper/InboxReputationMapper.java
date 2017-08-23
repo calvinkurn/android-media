@@ -54,8 +54,9 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
                 }
             }
         } else {
-            if (response.body().getErrorMessages() == null
-                    && response.body().getErrorMessages().isEmpty()) {
+            if (response.body() == null
+                    || response.body().getErrorMessages() == null
+                    || response.body().getErrorMessages().isEmpty()) {
                 throw new RuntimeException(String.valueOf(response.code()));
             } else {
                 throw new ErrorMessageException(response.body().getErrorMessageJoined());

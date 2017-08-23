@@ -31,13 +31,18 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
 
     @Override
     public void onError(Throwable e) {
+        viewListener.finishLoadingFull();
         viewListener.onErrorGetFirstTimeInboxReputation(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(InboxReputationDomain inboxReputationDomain) {
-        viewListener.onSuccessGetFirstTimeInboxReputation(mappingToViewModel(inboxReputationDomain));
-
+        viewListener.finishLoadingFull();
+        if (inboxReputationDomain.getInboxReputation().isEmpty()) {
+            viewListener.onShowEmpty();
+        } else {
+            viewListener.onSuccessGetFirstTimeInboxReputation(mappingToViewModel(inboxReputationDomain));
+        }
     }
 
     protected InboxReputationViewModel mappingToViewModel(InboxReputationDomain inboxReputationDomain) {

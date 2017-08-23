@@ -19,6 +19,8 @@ public interface InboxReputation {
 
         void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel);
 
+        void finishLoadingFull();
+
         void onErrorGetNextPage(String errorMessage);
 
         void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel);
@@ -38,6 +40,9 @@ public interface InboxReputation {
         void onErrorGetFilteredInboxReputation(String errorMessage);
 
         void finishRefresh();
+
+        void onShowEmpty();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
