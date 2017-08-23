@@ -44,6 +44,7 @@ public class DynamicFilterDetailColorAdapter extends DynamicFilterDetailAdapter 
         public void bind(final Option option) {
             colorIcon.getBackground().setColorFilter(Color.parseColor(option.getHexColor()), PorterDuff.Mode.ADD);
             colorTitle.setText(option.getName());
+            colorCheckBox.setOnCheckedChangeListener(null);
             if (!TextUtils.isEmpty(option.getInputState())) {
                 colorCheckBox.setChecked(Boolean.parseBoolean(option.getInputState()));
             } else {

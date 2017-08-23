@@ -86,6 +86,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
     private void bindWholesaleOptionItem(final Option option) {
         wholesaleTitle.setText(option.getName());
+        wholesaleToggle.setOnCheckedChangeListener(null);
         if (Boolean.TRUE.equals(dynamicFilterView.getLastCheckedState(option))) {
             wholesaleToggle.setChecked(true);
         } else {

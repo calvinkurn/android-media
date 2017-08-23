@@ -32,6 +32,8 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
         final Option option = filter.getOptions().get(0);
         title.setText(option.getName());
 
+        toggle.setOnCheckedChangeListener(null);
+
         if (Boolean.TRUE.equals(dynamicFilterView.getLastCheckedState(option))) {
             toggle.setChecked(true);
         } else {
