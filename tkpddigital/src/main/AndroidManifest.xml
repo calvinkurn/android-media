@@ -32,13 +32,19 @@
         <activity
             android:name=".widget.activity.DigitalCategoryListActivity"
             android:label="@string/title_activity_category_list_digital_module"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".tokocash.activity.ActivateTokoCashActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.ActivateTokoCashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".wallets.WalletToDepositActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".wallets.WalletToDepositThanksActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

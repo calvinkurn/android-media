@@ -33,7 +33,6 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
@@ -81,6 +80,8 @@ import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.digital.wallets.WalletToDepositActivity;
+import com.tokopedia.digital.wallets.WalletToDepositPassData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -623,7 +624,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser,categoryDataState.getName()
+                        getActivity(), operatorListData, titleChooser, categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );

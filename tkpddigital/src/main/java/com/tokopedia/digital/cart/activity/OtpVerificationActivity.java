@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.PinEntryEditText;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.otp.data.factory.OtpSourceFactory;
@@ -31,6 +30,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.interactor.OtpVerificationInteractor;
 import com.tokopedia.digital.cart.listener.IOtpVerificationView;
@@ -53,7 +53,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 3/9/17.
  */
 @RuntimePermissions
-public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificationPresenter>
+public class OtpVerificationActivity extends BaseDigitalPresenterActivity<IOtpVerificationPresenter>
         implements IOtpVerificationView, IncomingSmsReceiver.ReceiveSMSListener {
     public static final int REQUEST_CODE = OtpVerificationActivity.class.hashCode();
     public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -495,5 +495,10 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
         Intent intent = new Intent().putExtra(EXTRA_MESSAGE, message);
         setResult(RESULT_OTP_CANCELED, intent);
         finish();
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
     }
 }
