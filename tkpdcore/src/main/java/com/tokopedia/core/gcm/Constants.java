@@ -104,6 +104,7 @@ public interface Constants {
             String GOLD_MERCHANT = "sellerapp://gold";
             String SELLER_APP_HOME = "sellerapp://home";
             String TOPADS_DASHBOARD = "sellerapp://topads";
+            String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
         }
     }
 
