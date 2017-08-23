@@ -62,9 +62,10 @@ public class TokoCashHeaderView extends RelativeLayout {
                 .getDrawerTokoCashAction());
         headerTokoCashLabel.setText(tokoCashLabel);
         if (tokoCashData.getLink() == 1) {
-            setOnClickListener(onMainViewClickedListener(tokoCashRedirectUrl));
+            setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashRedirectUrl));
             tokoCashAmount.setText(tokoCashData.getBalance());
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_top_up));
+            //TODO : direct Top Up to page Top Up page native
             tokoCashButton.setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashActionRedirectUrl));
             pendingLayout.setVisibility(GONE);
             normalLayout.setVisibility(VISIBLE);

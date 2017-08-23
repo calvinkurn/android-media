@@ -542,9 +542,9 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCashWithOtp(String topCashUrl) {
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, topCashUrl);
+        if (context.getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
+            context.startActivity(digitalModuleRouter.instanceIntentTokoCashTopUp());
         }
     }
 
