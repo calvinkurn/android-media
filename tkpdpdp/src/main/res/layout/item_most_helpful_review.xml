@@ -10,7 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/padding_small">
 
         <ImageView
             android:id="@+id/image_reviewer"
@@ -68,20 +69,21 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/font_medium"
                 android:textColor="@color/black_54"
-                android:maxLines="4"/>
+                android:lines="3"
+                android:ellipsize="end"/>
 
 
         </LinearLayout>
 
         <ImageView
             android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/margin_med"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="@dimen/margin_small"
-            android:src="@drawable/group_12"
-            android:scaleType="centerCrop" />
+            android:layout_marginRight="@dimen/margin_med"
+            android:src="@drawable/ic_quote"
+            android:scaleType="fitXY"/>
 
 
     </RelativeLayout>

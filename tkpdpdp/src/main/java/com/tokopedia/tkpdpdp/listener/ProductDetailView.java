@@ -49,12 +49,8 @@ public interface ProductDetailView extends ViewListener {
      */
     void onProductTalkClicked(@NonNull Bundle bundle);
 
-    /**
-     * Pada saat diskusi produk diklik
-     *
-     * @param bundle bundle data yang dikirim
-     */
-    void onProductReviewClicked(@NonNull Bundle bundle);
+
+    void onProductReviewClicked();
 
     /**
      * Pada saat promosikan produk diklik
