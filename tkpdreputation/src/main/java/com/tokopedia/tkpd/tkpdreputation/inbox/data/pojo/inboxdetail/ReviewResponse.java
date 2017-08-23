@@ -11,10 +11,10 @@ public class ReviewResponse {
     private String responseMessage;
     @SerializedName("response_create_time")
     @Expose
-    private ResponseCreateTime responseCreateTime;
+    private String responseCreateTime;
     @SerializedName("response_by")
     @Expose
-    private int responseBy;
+    private String responseBy;
 
     public String getResponseMessage() {
         return responseMessage;
@@ -24,19 +24,19 @@ public class ReviewResponse {
         this.responseMessage = responseMessage;
     }
 
-    public ResponseCreateTime getResponseCreateTime() {
+    public String getResponseCreateTime() {
         return responseCreateTime;
     }
 
-    public void setResponseCreateTime(ResponseCreateTime responseCreateTime) {
+    public void setResponseCreateTime(String responseCreateTime) {
         this.responseCreateTime = responseCreateTime;
     }
 
-    public int getResponseBy() {
+    public String getResponseBy() {
         return responseBy;
     }
 
-    public void setResponseBy(int responseBy) {
+    public void setResponseBy(String responseBy) {
         this.responseBy = responseBy;
     }
 

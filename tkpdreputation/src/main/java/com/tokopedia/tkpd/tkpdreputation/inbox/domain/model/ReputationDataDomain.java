@@ -22,6 +22,7 @@ public class ReputationDataDomain {
     private boolean showLockingDeadline;
     private int lockingDeadlineDays;
     private boolean showBookmark;
+    private String actionMessage;
 
     public ReputationDataDomain(int revieweeScore, int revieweeScoreStatus,
                                 boolean showRevieweeScore, int reviewerScore,
@@ -29,7 +30,7 @@ public class ReputationDataDomain {
                                 boolean isInserted, boolean isLocked,
                                 boolean isAutoScored, boolean isCompleted,
                                 boolean showLockingDeadline, int lockingDeadlineDays,
-                                boolean showBookmark) {
+                                boolean showBookmark, String actionMessage) {
         this.revieweeScore = revieweeScore;
         this.revieweeScoreStatus = revieweeScoreStatus;
         this.showRevieweeScore = showRevieweeScore;
@@ -43,6 +44,7 @@ public class ReputationDataDomain {
         this.showLockingDeadline = showLockingDeadline;
         this.lockingDeadlineDays = lockingDeadlineDays;
         this.showBookmark = showBookmark;
+        this.actionMessage = actionMessage;
     }
 
     public int getRevieweeScore() {
@@ -95,5 +97,9 @@ public class ReputationDataDomain {
 
     public boolean isShowBookmark() {
         return showBookmark;
+    }
+
+    public String getActionMessage() {
+        return actionMessage;
     }
 }

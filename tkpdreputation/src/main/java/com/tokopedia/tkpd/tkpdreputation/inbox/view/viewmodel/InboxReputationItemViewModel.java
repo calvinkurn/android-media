@@ -16,11 +16,12 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
     private String invoice;
     private boolean showBookmark;
     private String reputationId;
+    private String actionMessage;
 
     public InboxReputationItemViewModel(String reputationId, String revieweeName, String createTime,
                                         String revieweePicture, boolean showLockingDeadline,
                                         String reputationDaysLeft, String invoice,
-                                        boolean showBookmark) {
+                                        boolean showBookmark, String actionMessage) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.createTime = createTime;
@@ -29,6 +30,7 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         this.reputationDaysLeft = reputationDaysLeft;
         this.invoice = invoice;
         this.showBookmark = showBookmark;
+        this.actionMessage = actionMessage;
     }
 
     public String getRevieweeName() {
@@ -61,6 +63,18 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
 
     public String getReputationId() {
         return reputationId;
+    }
+
+    public boolean isShowLockingDeadline() {
+        return showLockingDeadline;
+    }
+
+    public boolean isShowBookmark() {
+        return showBookmark;
+    }
+
+    public String getActionMessage() {
+        return actionMessage;
     }
 
     @Override

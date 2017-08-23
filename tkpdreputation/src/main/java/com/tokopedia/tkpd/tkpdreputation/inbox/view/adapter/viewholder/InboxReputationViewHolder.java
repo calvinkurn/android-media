@@ -73,7 +73,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
 
     private void setAction(InboxReputationItemViewModel inboxReputationItemViewModel) {
-        action.setText("Beri Reputasi dan Penilaian");
+        action.setText(inboxReputationItemViewModel.getActionMessage());
     }
 
     private void setNotification(boolean showBookmark) {

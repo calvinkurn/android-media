@@ -27,16 +27,16 @@ public class ReviewData {
     private List<Object> reviewImageUrl = null;
     @SerializedName("review_create_time")
     @Expose
-    private ReviewCreateTime reviewCreateTime;
+    private String reviewCreateTime;
     @SerializedName("review_update_time")
     @Expose
-    private ReviewUpdateTime reviewUpdateTime;
-    @SerializedName("review_response")
-    @Expose
-    private ReviewResponse reviewResponse;
+    private String reviewUpdateTime;
     @SerializedName("review_anonymity")
     @Expose
     private boolean reviewAnonymity;
+    @SerializedName("review_response")
+    @Expose
+    private ReviewResponse reviewResponse;
 
     public int getReviewId() {
         return reviewId;
@@ -86,28 +86,20 @@ public class ReviewData {
         this.reviewImageUrl = reviewImageUrl;
     }
 
-    public ReviewCreateTime getReviewCreateTime() {
+    public String getReviewCreateTime() {
         return reviewCreateTime;
     }
 
-    public void setReviewCreateTime(ReviewCreateTime reviewCreateTime) {
+    public void setReviewCreateTime(String reviewCreateTime) {
         this.reviewCreateTime = reviewCreateTime;
     }
 
-    public ReviewUpdateTime getReviewUpdateTime() {
+    public String getReviewUpdateTime() {
         return reviewUpdateTime;
     }
 
-    public void setReviewUpdateTime(ReviewUpdateTime reviewUpdateTime) {
+    public void setReviewUpdateTime(String reviewUpdateTime) {
         this.reviewUpdateTime = reviewUpdateTime;
-    }
-
-    public ReviewResponse getReviewResponse() {
-        return reviewResponse;
-    }
-
-    public void setReviewResponse(ReviewResponse reviewResponse) {
-        this.reviewResponse = reviewResponse;
     }
 
     public boolean isReviewAnonymity() {
@@ -116,6 +108,14 @@ public class ReviewData {
 
     public void setReviewAnonymity(boolean reviewAnonymity) {
         this.reviewAnonymity = reviewAnonymity;
+    }
+
+    public ReviewResponse getReviewResponse() {
+        return reviewResponse;
+    }
+
+    public void setReviewResponse(ReviewResponse reviewResponse) {
+        this.reviewResponse = reviewResponse;
     }
 
 }

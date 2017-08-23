@@ -17,7 +17,7 @@ import rx.Observable;
 
 public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDetailDomain> {
 
-    private static final String PARAM_REPUTATION_ID = "reputation_ids";
+    private static final String PARAM_REPUTATION_ID = "reputation_id";
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_ROLE = "role";
     protected static final int ROLE_BUYER = 1;

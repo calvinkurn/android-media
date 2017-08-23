@@ -63,7 +63,8 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
                     domain.getReputationData().isShowLockingDeadline(),
                     String.valueOf(domain.getReputationData().getLockingDeadlineDays()),
                     domain.getOrderData().getInvoiceRefNum(),
-                    domain.getReputationData().isShowBookmark()
+                    domain.getReputationData().isShowBookmark(),
+                    domain.getReputationData().getActionMessage()
             ));
         }
         return list;

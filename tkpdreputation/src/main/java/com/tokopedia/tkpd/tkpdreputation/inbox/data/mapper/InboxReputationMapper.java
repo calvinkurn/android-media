@@ -121,7 +121,8 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
                 reputationData.isIsCompleted(),
                 reputationData.isShowLockingDeadline(),
                 reputationData.getLockingDeadlineDays(),
-                reputationData.isShowBookmark());
+                reputationData.isShowBookmark(),
+                reputationData.getActionMessage());
     }
 
     private OrderDataDomain mappingToOrderData(OrderData orderData) {

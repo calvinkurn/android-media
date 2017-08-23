@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -21,6 +22,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdet
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -123,11 +127,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void showLoading() {
         adapter.showLoading();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onErrorGetInboxDetail(String errorMessage) {
-        adapter.removeLoading();
+        finishLoading();
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -140,8 +145,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 });
     }
 
-    @Override
-    public void onSuccessGetInboxDetail() {
+    private void finishLoading() {
         adapter.removeLoading();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSuccessGetInboxDetail(InboxReputationDetailHeaderViewModel model, List<Visitable> list) {
+        finishLoading();
     }
 }
