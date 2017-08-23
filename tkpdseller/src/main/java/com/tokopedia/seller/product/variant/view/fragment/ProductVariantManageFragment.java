@@ -191,7 +191,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
                         // TODO delete variant status for variantIdToDelete
                         // remove from selected variantIdToDelete
                     }
-                } else if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_DELETE)) {
+                } else if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_SUBMIT)) {
                     long variantIdToUpdate = data.getLongExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_ID, 0);
                     if (variantIdToUpdate != 0) {
                         ArrayList<Long> selectedVariantValueIdList = (ArrayList<Long>)
