@@ -486,11 +486,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         topAdsRecyclerAdapter.shouldLoadAds(true);
 
         adapter.setList(listFeed);
-        adapter.showAddFeed();
         adapter.notifyDataSetChanged();
-        hideTopAdsAdapterLoading();
+        int positionStart = adapter.getItemCount();
+        adapter.showAddFeed();
+        adapter.notifyItemRangeInserted(positionStart, 1);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
-
     }
 
     @Override
@@ -706,6 +706,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
+        if (firstCursor == null)
+            firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             presenter.checkNewFeed(firstCursor);
         }
@@ -714,6 +716,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        if (firstCursor == null)
+            firstCursor = "";
         if (isVisibleToUser && presenter != null) {
             presenter.checkNewFeed(firstCursor);
         }
