@@ -16,6 +16,5 @@
         android:textColor="@color/href_link_rev"
         android:textSize="@dimen/fontl"
         android:textStyle="bold" />
-    <!--android:layout_height="@dimen/abc_action_bar_default_height_material"-->
 
 </FrameLayout>
