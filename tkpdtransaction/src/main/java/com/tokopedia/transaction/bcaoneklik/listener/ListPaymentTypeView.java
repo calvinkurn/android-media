@@ -10,4 +10,6 @@ public interface ListPaymentTypeView {
 
     Context getContext();
 
+    void showMainDialog();
+
 }
