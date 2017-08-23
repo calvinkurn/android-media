@@ -17,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -93,6 +95,8 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
+import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 
 /**
  * ProductDetailFragment
@@ -106,6 +110,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
     public static final int REQUEST_CODE_EDIT_PRODUCT = 2;
     public static final int REQUEST_CODE_LOGIN = 561;
+    public static final int REQUEST_VARIANT = 99;
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
@@ -148,6 +153,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductCampaign productCampaign;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
+    private Option variantLevel1;
+    private Option variantLevel2;
 
     private DetailFragmentInteractionListener interactionListener;
     private DeepLinkWebViewHandleListener webViewHandleListener;
@@ -374,8 +381,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onVariantClicked(@NonNull Bundle bundle) {
         Intent intent = new Intent(context, VariantActivity.class);
         intent.putExtras(bundle);
-        startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        intent.putExtra(KEY_LEVEL1_SELECTED,variantLevel1);
+        intent.putExtra(KEY_LEVEL2_SELECTED,variantLevel2);
+        startActivityForResult(intent,REQUEST_VARIANT);
+        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
     }
 
     @Override
@@ -383,7 +392,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
     }
 
     @Override
@@ -391,7 +400,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
     }
 
     @Override
@@ -767,9 +776,24 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 videoDescriptionLayout.refreshVideo();
                 presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;
+            case REQUEST_VARIANT:
+                if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT) {
+                    if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                        variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
+                        String variantText = variantLevel1.getValue();
+                        if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
+                        {
+                            variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
+                            variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
+                        }
+                        priceSimulationView.updateVariant(variantText);
+                    }
+                }
+                break;
             default:
                 break;
         }
+
     }
 
     @Override
