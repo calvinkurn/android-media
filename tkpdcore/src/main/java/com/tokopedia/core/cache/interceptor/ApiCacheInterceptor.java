@@ -33,7 +33,7 @@ import okio.Okio;
  */
 
 public class ApiCacheInterceptor implements Interceptor {
-    private static final String LOG_TAG = "ChuckInterceptor";
+    private static final String LOG_TAG = "ApiCacheInterceptor";
     private static final Charset UTF8 = Charset.forName("UTF-8");
     CacheHelper cacheHelper = new CacheHelper();
     private long maxContentLength = 250000L;
@@ -53,7 +53,7 @@ public class ApiCacheInterceptor implements Interceptor {
             CacheApiData tempData = cacheHelper.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
 
             if (tempData == null) {
-                Log.d(LOG_TAG, "null is here !!");
+                Log.d(LOG_TAG, whiteList_ + " data is not here !!");
                 Response response;
                 try {
                     response = chain.proceed(request);
@@ -72,7 +72,7 @@ public class ApiCacheInterceptor implements Interceptor {
 
             if ((System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList_.getExpiredTime()) {
                 // delete row
-                Log.d(LOG_TAG, "expired time !!");
+                Log.d(LOG_TAG, whiteList_ + " is expired time !!");
                 tempData.delete();
 
 
@@ -92,7 +92,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 return response;
             } else {
 
-                Log.d(LOG_TAG, "already in here !!");
+                Log.d(LOG_TAG, whiteList_ + " already in here !!");
                 Response.Builder builder = new Response.Builder();
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);

@@ -106,6 +106,7 @@ public class OkHttpFactory {
     public OkHttpClient buildClientDefaultAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new ApiCacheInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()

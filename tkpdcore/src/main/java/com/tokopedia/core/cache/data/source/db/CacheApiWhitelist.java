@@ -50,4 +50,12 @@ public class CacheApiWhitelist extends BaseModel {
     public void setExpiredTime(long expiredTime) {
         this.expiredTime = expiredTime;
     }
+
+    @Override
+    public String toString() {
+        return "CacheApiWhitelist{" +
+                "host='" + host + '\'' +
+                ", path='" + path +
+                '}';
+    }
 }
