@@ -177,6 +177,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
         fetchAllDraftProductUseCase.unsubscribe();
         deleteSingleDraftProductUseCase.unsubscribe();
         updateUploadingDraftProductUseCase.unsubscribe();
+        saveBulkDraftProductUseCase.unsubscribe();
     }
 
     public Subscriber<Boolean> getUpdateUploadingSubscriber() {

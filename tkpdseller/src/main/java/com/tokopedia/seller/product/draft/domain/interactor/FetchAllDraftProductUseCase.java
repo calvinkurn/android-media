@@ -9,6 +9,8 @@ import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainMo
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -18,6 +20,7 @@ import rx.Observable;
 public class FetchAllDraftProductUseCase extends UseCase<List<UploadProductInputDomainModel>> {
     private ProductDraftRepository productDraftRepository;
 
+    @Inject
     public FetchAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                        ProductDraftRepository productDraftRepository) {
         super(threadExecutor, postExecutionThread);

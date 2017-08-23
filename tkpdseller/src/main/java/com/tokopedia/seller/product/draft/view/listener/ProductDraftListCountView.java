@@ -11,7 +11,4 @@ import java.util.List;
 public interface ProductDraftListCountView extends CustomerView {
     void onDraftCountLoaded(long rowCount);
     void onDraftCountLoadError();
-    void onSaveBulkDraftSuccess(List<Long> productIds);
-    void onSaveBulkDraftError(Throwable throwable);
-    void onSaveInstagramResolutionError(int position, String localPath);
 }

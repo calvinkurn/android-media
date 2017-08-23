@@ -4,15 +4,17 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
-import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
-import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenterImpl;
+import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
+import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,7 +24,7 @@ import dagger.Provides;
  */
 @ProductAddScope
 @Module
-public class ProductDraftListCountModule extends ProductAddModule {
+public class ProductDraftSaveBulkModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
@@ -32,12 +34,8 @@ public class ProductDraftListCountModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
-                                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase,
-                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
-        return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase);
+    ProductDraftSaveBulkPresenter provideProductDraftSaveBulkPresenter(SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
+        return new ProductDraftSaveBulkPresenterImpl(saveBulkDraftProductUseCase);
     }
-
 }
 

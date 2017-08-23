@@ -6,6 +6,8 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -15,6 +17,7 @@ import rx.Observable;
 public class ClearAllDraftProductUseCase extends UseCase<Boolean> {
     private final ProductDraftRepository productDraftRepository;
 
+    @Inject
     public ClearAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ProductDraftRepository productDraftRepository) {
         super(threadExecutor, postExecutionThread);
         this.productDraftRepository = productDraftRepository;

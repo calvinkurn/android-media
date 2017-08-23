@@ -5,10 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:foreground="?android:attr/selectableItemBackground"
-    android:paddingBottom="@dimen/margin_sm"
-    android:paddingLeft="@dimen/margin_sm"
-    android:paddingRight="@dimen/margin_sm"
-    android:paddingTop="@dimen/margin_sm">
+    android:padding="@dimen/activity_horizontal_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,6 +17,8 @@
             android:id="@+id/image_view"
             android:layout_width="@dimen/base_picker_multiple_item_cache_image_height"
             android:layout_height="@dimen/base_picker_multiple_item_cache_image_height"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginEnd="@dimen/margin_vs"
             android:scaleType="centerCrop"
             tools:src="@drawable/shape_oval"
             tools:visibility="visible" />
@@ -28,15 +27,14 @@
             android:id="@+id/text_view_title"
             style="@style/TextView.Body1"
             android:layout_width="0dp"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginStart="@dimen/margin_vs"
             android:layout_weight="1"
             tools:text="@string/app_id" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/check_box"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:theme="@style/checkBoxStyle"/>
 
     </LinearLayout>
 </FrameLayout>

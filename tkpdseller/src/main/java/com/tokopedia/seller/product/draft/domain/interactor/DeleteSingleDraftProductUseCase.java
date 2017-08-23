@@ -6,6 +6,8 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -17,6 +19,7 @@ public class DeleteSingleDraftProductUseCase extends UseCase<Boolean> {
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
     private ProductDraftRepository productDraftRepository;
 
+    @Inject
     public DeleteSingleDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                            ProductDraftRepository productDraftRepository) {
         super(threadExecutor, postExecutionThread);
