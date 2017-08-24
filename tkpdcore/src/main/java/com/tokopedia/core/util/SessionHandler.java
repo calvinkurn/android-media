@@ -392,7 +392,7 @@ public class SessionHandler {
 
     public static boolean isFirstTimeUser(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER, true);
+        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
     }
 
     public static boolean setFirstTimeUser(Context context, boolean isFirstTime) {

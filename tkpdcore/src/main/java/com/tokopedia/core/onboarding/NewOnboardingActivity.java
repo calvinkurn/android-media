@@ -42,7 +42,6 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
 
 public class NewOnboardingActivity extends OnboardingActivity {
 
-    private RelativeLayout main;
     protected View indicator;
     protected View bottom;
     private TextView skipView;
@@ -58,7 +57,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
         addSlides();
         pager.setOffscreenPageLimit(1);
         setSkip();
-        setTransitionBackground();
+        pager.setPageTransformer(false, new CustomAnimationPageTransformer());
     }
 
     private void initView() {
@@ -100,19 +99,6 @@ public class NewOnboardingActivity extends OnboardingActivity {
                 OnBoardingFragment.VIEW_ENDING, 4));
     }
 
-    private void setStepper() {
-
-    }
-
-    private View.OnClickListener goToSlide(final int i) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pager.setCurrentItem(i);
-            }
-        };
-    }
-
     private void setSkip() {
         showSkipButton(true);
         setSkipText("Lewati");
@@ -125,17 +111,6 @@ public class NewOnboardingActivity extends OnboardingActivity {
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) skipView.getLayoutParams();
         params.leftMargin = (int) (20 * d);
         setSeparatorColor(MethodChecker.getColor(this, R.color.transparent));
-    }
-
-    private void setTransitionBackground() {
-        Integer[] list = new Integer[]{
-                MethodChecker.getColor(this, R.color.medium_green)
-                , MethodChecker.getColor(this, R.color.blue_nob)
-                , MethodChecker.getColor(this, R.color.orange_nob)
-                , MethodChecker.getColor(this, R.color.medium_green)
-                , MethodChecker.getColor(this, R.color.orange_nob)};
-
-        pager.setPageTransformer(false, new CustomAnimationPageTransformer());
     }
 
     @Override
@@ -210,7 +185,6 @@ public class NewOnboardingActivity extends OnboardingActivity {
                         permissionsArray.remove(position);
                     } else {
                         ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
-//                        pager.setCurrentItem(pager.getCurrentItem() + 1);
                         pager.postDelayed(new Runnable() {
                             @Override
                             public void run() {

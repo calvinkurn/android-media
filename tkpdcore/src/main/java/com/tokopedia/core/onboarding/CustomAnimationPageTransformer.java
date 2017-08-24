@@ -10,8 +10,7 @@ public class CustomAnimationPageTransformer implements ViewPager.PageTransformer
         if (page.getTag() instanceof CustomAnimationPageTransformerDelegate) {
             CustomAnimationPageTransformerDelegate delegate =
                     (CustomAnimationPageTransformerDelegate) page.getTag();
-
-            page.setTranslationY(position < 0 ? 0f : -page.getHeight() * position);
+            
             if (position == 0.0f) {
                 // Page is selected
                 delegate.onPageSelected();

@@ -46,7 +46,7 @@
         android:lineSpacingExtra="@dimen/line_spacing_6"
         android:visibility="invisible"
         android:textColor="@color/white"
-        android:textSize="@dimen/font_large"
+        android:textSize="@dimen/fontxl"
         android:textStyle="bold"
         tools:text="Judul"
         tools:textColor="@color/colorPrimaryDark" />
@@ -62,7 +62,7 @@
         android:minLines="2"
         android:visibility="invisible"
         android:textColor="@color/white"
-        android:textSize="@dimen/font_medium"
+        android:textSize="@dimen/font_large"
         android:textStyle="normal"
         android:gravity="center"
         tools:text="Deskripsi"

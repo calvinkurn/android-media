@@ -254,11 +254,11 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
         } else if (position <= 1) {
             // Counteract the default slide transition
-            page.setTranslationX(page.getWidth() * -position);
+//            page.setTranslationX(page.getWidth() * -position);
 
             // set Y position to swipe in from top
-            float yPosition = position * page.getHeight();
-            page.setTranslationY(yPosition);
+//            float yPosition = position * page.getHeight();
+//            page.setTranslationY(yPosition);
 
         } else {
             main.setAlpha(0);
@@ -352,7 +352,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     }
 
     public void animateOut() {
-        lottieAnimationView.setProgress(0.5f);
+        lottieAnimationView.setProgress(0.4f);
         lottieAnimationView.reverseAnimation();
         ValueAnimator slideTitle = slideToX(titleView, 1, 0, mScreenWidth);
         slideTitle.start();
