@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.edit.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -86,6 +87,11 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
+    @CallSuper
+    /*
+     * for onSuccess Variant for edit product, @see ProductEditFragment
+     * {@link #onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel)}
+     */
     public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
         hideLoading();
         productInfoViewHolder.setNameNoWatcher(model.getProductName());

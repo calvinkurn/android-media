@@ -238,6 +238,12 @@ public class ProductVariantUtils {
         return variantStatusList;
     }
 
+    /**
+     * get the position of productVariantByCatModelList
+     * @param level level, currently has 2 depth
+     * @param productVariantByCatModelList list to select
+     * @return ProductVariantByCatModel for that level, example: Object for Color, Object for Size
+     */
     public static ProductVariantByCatModel getProductVariantByCatModel(int level, List<ProductVariantByCatModel> productVariantByCatModelList) {
         for (ProductVariantByCatModel variantByCatModel : productVariantByCatModelList) {
             if (level == ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE && variantByCatModel.getStatus() == ProductVariantConstant.VARIANT_STATUS_TWO) {
