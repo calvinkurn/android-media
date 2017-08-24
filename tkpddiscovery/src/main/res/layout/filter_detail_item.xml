@@ -9,7 +9,7 @@
 
     <CheckBox
         android:id="@+id/filter_detail_item_checkbox"
-        style="@style/TextView.Subheading.BlackPrimary"
+        style="@style/CheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Free Returns"/>

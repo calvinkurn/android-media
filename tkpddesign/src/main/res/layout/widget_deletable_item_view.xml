@@ -6,12 +6,20 @@
     android:layout_height="wrap_content"
     android:background="@drawable/deletable_item_background">
 
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:visibility="gone"
+        />
+
     <TextView
         android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Same Day Service"
-        android:padding="6dp"/>
+        android:padding="8dp"/>
 
     <View
         android:id="@+id/delete_button"

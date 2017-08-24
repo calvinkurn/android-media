@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
@@ -22,8 +23,8 @@ public class DeletableItemView extends BaseCustomView {
     private View rootView;
     private TextView textView;
     private View buttonView;
+    private ImageView imageView;
 
-    private String itemName = "";
     private OnDeleteListener onDeleteListener;
 
     public DeletableItemView(@NonNull Context context) {
@@ -44,8 +45,8 @@ public class DeletableItemView extends BaseCustomView {
     private void init(Context context) {
         rootView = inflate(context, R.layout.widget_deletable_item_view, this);
         textView = (TextView) rootView.findViewById(R.id.item_name);
+        imageView = (ImageView) rootView.findViewById(R.id.item_image);
         buttonView = rootView.findViewById(R.id.delete_button);
-        textView.setText(itemName);
         buttonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,9 +58,20 @@ public class DeletableItemView extends BaseCustomView {
     }
 
     public void setItemName(String itemName) {
-        this.itemName = itemName;
         if (textView != null) {
             textView.setText(itemName);
+        }
+        if (imageView != null) {
+            imageView.setVisibility(GONE);
+        }
+    }
+
+    public void setItemDrawable(int resId) {
+        if (textView != null) {
+            textView.setVisibility(GONE);
+        }
+        if (imageView != null) {
+            imageView.setImageResource(resId);
         }
     }
 

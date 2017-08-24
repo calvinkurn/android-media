@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.RatingHelper;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
@@ -59,7 +60,13 @@ public class ExpandableItemSelectedListAdapter extends
         }
 
         public void bind(final Option option, final int position) {
-            selectedItem.setItemName(option.getName());
+            if (Option.RATING_KEY.equals(option.getKey())) {
+                int ratingCount = Integer.parseInt(option.getName());
+                selectedItem.setItemDrawable(RatingHelper.getRatingDrawable(ratingCount));
+            } else {
+                selectedItem.setItemName(option.getName());
+            }
+
             selectedItem.setOnDeleteListener(new DeletableItemView.OnDeleteListener() {
                 @Override
                 public void onDelete() {

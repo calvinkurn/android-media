@@ -20,6 +20,7 @@ public class Option implements Serializable, Parcelable {
     public static final String PRICE_MIN_MAX_RANGE_KEY = "pmin-pmax";
     public static final String PRICE_WHOLESALE_KEY = "wholesale";
     public static final String CATEGORY_KEY = "sc";
+    public static final String RATING_KEY = "rt";
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
