@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -32,12 +33,13 @@ import static com.tokopedia.core.network.entity.variant.VariantOption.IDENTIFIER
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
+    public static final String KEY_BUY_MODE = "ON_BUY_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
     public static final int SELECTED_VARIANT_RESULT = 99;
+    public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
 
     private TextView topBarTitle;
-    private ProductVariant variant;
     private ImageView productImage;
     private TextView productName;
     private TextView productPrice;
@@ -46,10 +48,12 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private RecyclerView optionRecyclerViewLevel2;
     private TextView optionNameLevel2;
     private FrameLayout buttonSave;
+    private TextView textButtonSave;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
+    private ProductVariant variant;
     private Option level1Selected;
     private Option level2Selected;
 
@@ -85,17 +89,37 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionNameLevel2 = (TextView) findViewById(R.id.text_variant_option_level2);
         optionRecyclerViewLevel2 = (RecyclerView) findViewById(R.id.rv_variant_option_level2);
         buttonSave = (FrameLayout) findViewById(R.id.button_save);
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra(KEY_LEVEL1_SELECTED,level1Selected);
-                if (level1Selected!=null)  intent.putExtra(KEY_LEVEL2_SELECTED,level2Selected);
-                setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
-                finish();
-                VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-            }
-        });
+        textButtonSave = (TextView) findViewById(R.id.text_button_save_variant);
+
+        if (getIntent().getBooleanExtra(KEY_BUY_MODE,false)) {
+            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_orange));
+            textButtonSave.setText(getResources().getString(R.string.title_buy));
+            buttonSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.putExtra(KEY_LEVEL1_SELECTED,level1Selected);
+                    if (level1Selected!=null)  intent.putExtra(KEY_LEVEL2_SELECTED,level2Selected);
+                    setResult(VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY, intent);
+                    finish();
+                    VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+                }
+            });
+        } else {
+            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_green));
+            textButtonSave.setText(getResources().getString(R.string.title_save));
+            buttonSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.putExtra(KEY_LEVEL1_SELECTED,level1Selected);
+                    if (level1Selected!=null)  intent.putExtra(KEY_LEVEL2_SELECTED,level2Selected);
+                    setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
+                    finish();
+                    VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+                }
+            });
+        }
     }
 
     public void initData() {
@@ -171,7 +195,16 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         List<Integer> combinations = variant.getCombinationFromSelectedVariant(option.getPvoId());
         if (level==1) {
             level1Selected = option;
-            if (variant.getVariantOption().size()>1) {
+            if (combinations.size()==0) {
+                option.setEnabled(false);
+                for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
+                    if (combinations.contains(variantOptionAdapterLevel1.getVariantOptions().get(i).getPvoId())) {
+                        variantOptionAdapterLevel1.setSelectedPosition(i);
+                        variantOptionAdapterLevel1.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            } else  if (variant.getVariantOption().size()>1) {
                 for (Option otherLevelOption: variantOptionAdapterLevel2.getVariantOptions()) {
                     if (combinations.contains(otherLevelOption.getPvoId())) {
                         otherLevelOption.setEnabled(true);
