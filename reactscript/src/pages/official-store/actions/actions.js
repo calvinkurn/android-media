@@ -95,7 +95,8 @@ export const fetchCampaigns = (User_ID) => {
                                         return {
                                             ...c,
                                             Products: c.Products.map(p => {
-                                            const is_wishlist = wishlistProd.indexOf(p.data.id) > -1 ? true : false
+                                            const is_wishlist = User_ID === '' ? (false) : (wishlistProd.indexOf(p.data.id) > -1 ? true : false)
+                                            // const is_wishlist = wishlistProd.indexOf(p.data.id) > -1 ? true : false
                                             return {
                                                 ...p,
                                                 data: {

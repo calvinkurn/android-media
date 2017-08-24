@@ -32,7 +32,7 @@ class Home extends Component {
     if (this.props.Screen == 'HotList'){
       return <HotList_ />
     } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore screenProps={{ User_ID: this.props.User_ID }}  /> 
+      return <OfficialStore screenProps={{ User_ID: this.props.User_ID, Screen: this.props.Screen }}  /> 
     } else {
       return(
         <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
+// Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 

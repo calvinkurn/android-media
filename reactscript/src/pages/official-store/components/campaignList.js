@@ -170,7 +170,7 @@ this.renderCampaign = (c) => {
       {
         item.html_id === 6 ? (
           <TouchableWithoutFeedback onPress={() => {
-            NavigationModule.navigate(item.redirect_url_desktop, item.redirect_url_mobile, "")}}>
+            NavigationModule.navigateWithMobileUrl(item.redirect_url_app, item.redirect_url_mobile, "")}}>
             <Image source={{ uri: item.image_url }} style={{ height: 80 }} />
           </TouchableWithoutFeedback>
         ) :

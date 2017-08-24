@@ -30,10 +30,12 @@ class App extends Component {
 
   componentWillMount(){
     const { dispatch } = this.props
-    AsyncStorage.getItem('user_id')
-      .then(uid => {
-        dispatch(reloadState())
-      })
+    if (this.props.screenProps.Screen === 'official-store'){
+      AsyncStorage.getItem('user_id')
+        .then(uid => {
+          dispatch(reloadState())
+        })  
+    }
   }
 
 
