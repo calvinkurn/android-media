@@ -21,6 +21,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.database.manager.DbManagerImpl;
@@ -122,6 +123,9 @@ public class DialogLogoutFragment extends DialogFragment {
 
                                         ApiCacheRepositoryImpl.DeleteAllCache();
                                         localCacheHandler.clearCache(TkpdCache.Key.VERSION_NAME_IN_CACHE);
+                                        if (activity != null && activity.getApplication() instanceof MainApplication) {
+                                            ((MainApplication) activity.getApplication()).addToWhiteList();
+                                        }
 
                                         NotificationModHandler.clearCacheAllNotification(getActivity());
                                         SessionHandler.onLogoutListener logout = (SessionHandler.onLogoutListener) activity;

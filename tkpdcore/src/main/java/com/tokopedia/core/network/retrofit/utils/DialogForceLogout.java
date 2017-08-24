@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.retrofit.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -40,6 +42,10 @@ public class DialogForceLogout {
 
                         ApiCacheRepositoryImpl.DeleteAllCache();
                         localCacheHandler.clearCache(TkpdCache.Key.VERSION_NAME_IN_CACHE);
+                        Activity activity = (Activity) context;
+                        if (activity != null && activity.getApplication() instanceof MainApplication) {
+                            ((MainApplication) activity.getApplication()).addToWhiteList();
+                        }
 
                         listener.onDialogClicked();
                         dialog.dismiss();

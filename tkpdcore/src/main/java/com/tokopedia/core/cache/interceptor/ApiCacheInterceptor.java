@@ -110,12 +110,6 @@ public class ApiCacheInterceptor implements Interceptor {
                 throw e;
             }
 
-            cacheApiData.setResponseDate(System.currentTimeMillis() / 1000L);
-
-            putResponseBody(cacheApiData, response);
-
-            cacheApiData.save();
-
             return response;
         }
     }
