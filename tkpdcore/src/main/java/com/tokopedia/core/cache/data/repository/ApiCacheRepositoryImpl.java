@@ -11,6 +11,7 @@ import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
+import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -61,10 +62,12 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
         if (localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE) == null) {// fresh install
             // update version name
             localCacheHandler.putString(TkpdCache.Key.VERSION_NAME_IN_CACHE, versionName);
+            localCacheHandler.applyEditor();
             return Observable.just(false);
         } else if (localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE) != null && localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE).equals(versionName)) {
             // update version name
             localCacheHandler.putString(TkpdCache.Key.VERSION_NAME_IN_CACHE, versionName);
+            localCacheHandler.applyEditor();
             return Observable.just(false);
         } else {
             return Observable.just(true);
@@ -108,6 +111,26 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
             @Override
             public Boolean call(Object o) {
                 return false;
+            }
+        });
+    }
+
+    @Override
+    public Observable<Boolean> singleDataDelete(@Nullable final CacheApiDataDomain cacheApiDataDomain) {
+        return Observable.just(true).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Boolean aBoolean) {
+                if (cacheApiDataDomain == null) {
+                    return Observable.just(false);
+                }
+
+                CacheApiData cacheApiData = cacheHelper.queryDataFrom(cacheApiDataDomain.getHost(), cacheApiDataDomain.getPath(), cacheApiDataDomain.getParam());
+                if (cacheApiData == null) {
+                    return Observable.just(false);
+                } else {
+                    cacheApiData.delete();
+                    return Observable.just(true);
+                }
             }
         });
     }

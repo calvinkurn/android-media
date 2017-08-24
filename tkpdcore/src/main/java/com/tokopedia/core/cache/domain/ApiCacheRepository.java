@@ -2,6 +2,7 @@ package com.tokopedia.core.cache.domain;
 
 import android.support.annotation.Nullable;
 
+import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
@@ -39,5 +40,15 @@ public interface ApiCacheRepository {
      */
     Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain);
 
+    /**
+     * delete data stored at whitelist cache data
+     *
+     * @param cacheApiDataDomain {@link CacheApiDataDomain} object
+     * @return true if delete operation success, false if param is null or data isn't available
+     */
+    Observable<Boolean> singleDataDelete(@Nullable CacheApiDataDomain cacheApiDataDomain);
+
     void deleteAllCache();
+
+
 }

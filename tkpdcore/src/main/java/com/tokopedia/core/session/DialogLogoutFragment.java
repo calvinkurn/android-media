@@ -15,11 +15,13 @@ import android.widget.Toast;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.database.manager.DbManagerImpl;
@@ -31,6 +33,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 
 import java.util.HashMap;
 
@@ -80,6 +83,8 @@ public class DialogLogoutFragment extends DialogFragment {
     }
 
     public void logoutToTheInternet(final Activity activity) {
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.CACHE_API);
+
         SessionService sessionService = new SessionService();
         compositeSubscription.add(
                 sessionService.getApi().logout(AuthUtil.generateParams(activity, new HashMap<String, String>()))
@@ -117,6 +122,11 @@ public class DialogLogoutFragment extends DialogFragment {
                                         notif.dismissAllActivedNotifications();
 
                                         ApiCacheRepositoryImpl.DeleteAllCache();
+                                        localCacheHandler.clearCache(TkpdCache.Key.VERSION_NAME_IN_CACHE);
+                                        if (activity != null && activity.getApplication() instanceof MainApplication) {
+                                            ((MainApplication) activity.getApplication()).addToWhiteList();
+                                        }
+
                                         NotificationModHandler.clearCacheAllNotification(getActivity());
                                         SessionHandler.onLogoutListener logout = (SessionHandler.onLogoutListener) activity;
                                         if (logout != null)

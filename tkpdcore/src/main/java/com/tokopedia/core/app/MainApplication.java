@@ -303,7 +303,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         addToWhiteList();
     }
 
-    private void addToWhiteList() {
+    public void addToWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
@@ -328,7 +328,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
         cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 120));
+        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
         cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
         return cacheApiWhitelists;
     }
