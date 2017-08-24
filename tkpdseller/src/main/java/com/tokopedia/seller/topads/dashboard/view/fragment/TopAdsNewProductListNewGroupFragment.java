@@ -41,4 +41,9 @@ public class TopAdsNewProductListNewGroupFragment extends TopAdsNewProductListFr
         hideLoading();
         stepperListener.goToNextPage(stepperModel);
     }
+
+    @Override
+    protected boolean isHideExistingGroup() {
+        return false;
+    }
 }

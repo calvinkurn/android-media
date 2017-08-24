@@ -116,12 +116,7 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         addProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
-                intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, true);
-                intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, true);
-                intent.putExtra(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, 50);
-                intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<Parcelable>(adapter.getData()));
-                startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
+                goToAddProduct();
             }
         });
         buttonNext.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +128,15 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+    }
+
+    protected void goToAddProduct() {
+        Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, isHideExistingGroup());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, 50);
+        intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<Parcelable>(adapter.getData()));
+        startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }
 
     @Override
@@ -229,5 +233,9 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         List<TopAdsProductViewModel> topAdsProductViewModels = new ArrayList<>();
         topAdsProductViewModels.add(topAdsProductViewModel);
         populateView(topAdsProductViewModels);
+    }
+
+    protected boolean isHideExistingGroup() {
+        return true;
     }
 }
