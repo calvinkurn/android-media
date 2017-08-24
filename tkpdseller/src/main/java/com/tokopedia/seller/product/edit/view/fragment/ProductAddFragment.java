@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -467,6 +468,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     }
 
+    @CallSuper
     protected boolean isDataValid() {
         if (!productInfoViewHolder.isDataValid().first) {
             UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
@@ -649,6 +651,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productInfoViewHolder.processCategory(stringArray);
     }
 
+    @CallSuper
     protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
@@ -694,6 +697,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
         productInfoViewHolder.onViewStateRestored(savedInstanceState);
         productImageViewHolder.onViewStateRestored(savedInstanceState);
         productDetailViewHolder.onViewStateRestored(savedInstanceState);
