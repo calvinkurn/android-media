@@ -7,23 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDataManageFragment;
-import com.tokopedia.seller.product.variant.view.fragment.ProductVariantManageFragment;
 
 import java.util.ArrayList;
 import java.util.List;

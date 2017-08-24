@@ -16,13 +16,13 @@ import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantManageViewHolder extends BaseViewHolder<ProductVariantManageViewModel> {
+public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVariantManageViewModel> {
 
     private ImageView imageView;
     private TextView titleTextView;
     private TextView contentTextView;
 
-    public ProductVariantManageViewHolder(View itemView) {
+    public ProductVariantDashboardViewHolder(View itemView) {
         super(itemView);
         imageView = (ImageView) itemView.findViewById(R.id.image_view);
         titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);

@@ -20,7 +20,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnit
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDataManageActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
-import com.tokopedia.seller.product.variant.view.adapter.ProductVariantManageListAdapter;
+import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
 
@@ -31,7 +31,7 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantManageFragment extends BaseListFragment<BlankPresenter, ProductVariantManageViewModel> implements ProductVariantMainView {
+public class ProductVariantDashboardFragment extends BaseListFragment<BlankPresenter, ProductVariantManageViewModel> implements ProductVariantMainView {
 
     private static final int MULTIPLY_START_TEMP_ID = 10000;
 
@@ -42,9 +42,9 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     private VariantData variantData;
     private View variantListView;
 
-    public static ProductVariantManageFragment newInstance() {
+    public static ProductVariantDashboardFragment newInstance() {
         Bundle args = new Bundle();
-        ProductVariantManageFragment fragment = new ProductVariantManageFragment();
+        ProductVariantDashboardFragment fragment = new ProductVariantDashboardFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -125,7 +125,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
 
     @Override
     protected BaseListAdapter<ProductVariantManageViewModel> getNewAdapter() {
-        return new ProductVariantManageListAdapter();
+        return new ProductVariantDashboardAdapter();
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         productVariantValueList.addAll(ProductVariantUtils.getProductVariantValueListForVariantDetail(
                 productVariantManageViewModel.getTemporaryId(), variantData.getVariantUnitSubmitList(),
                 variantData.getVariantStatusList(), productVariantByCatModel.getUnitList()));
-        ProductVariantDataManageActivity.start(getContext(), ProductVariantManageFragment.this,
+        ProductVariantDataManageActivity.start(getContext(), ProductVariantDashboardFragment.this,
                 productVariantManageViewModel.getTemporaryId(),
                 productVariantManageViewModel.getTitle(),
                 true,
