@@ -246,6 +246,10 @@ public class TickerView extends BaseCustomView {
             }
         }
 
+        if (listMessage.size() == 1) {
+            tickerIndicator.setVisibility(GONE);
+        }
+
         tickerAdapter.setListMessage(listMessage);
         tickerAdapter.setListTextColor(listTextColor);
         tickerAdapter.setListBackGroundColor(listBackGroundColor);
