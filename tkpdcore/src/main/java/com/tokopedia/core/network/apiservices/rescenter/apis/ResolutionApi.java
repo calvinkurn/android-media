@@ -4,9 +4,13 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -26,6 +30,10 @@ public interface ResolutionApi {
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_STEP_1)
     Observable<Response<TkpdResponse>> getProductProblemList(@Path("order_id") String orderId,
                                                              @QueryMap TKPDMapParam<String, Object> params);
+
+    @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_STEP_2_3)
+    Observable<Response<TkpdResponse>> getSolution(@Path("order_id") String orderId,
+                                                   @Body String object);
 
 
     //Version 1

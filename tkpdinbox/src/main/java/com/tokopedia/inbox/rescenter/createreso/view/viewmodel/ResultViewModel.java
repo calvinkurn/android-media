@@ -20,16 +20,13 @@ public class ResultViewModel implements Parcelable {
     public int refundAmount;
     public ProblemMessageResult message;
     public int attachmentCount;
+    public String orderId;
 
     public JSONObject writeToJson() {
         JSONObject object = new JSONObject();
         try {
             if (problem.size() != 0) {
-                JSONArray problemArray = new JSONArray();
-                for (ProblemResult problemResult : problem) {
-                    problemArray.put(problemResult.writeToJson());
-                }
-                object.put("problem", problemArray);
+                object.put("problem", getProblemArray());
             }
             if (solution != 0) {
                 object.put("solution", solution);
@@ -49,6 +46,22 @@ public class ResultViewModel implements Parcelable {
         return object;
     }
 
+    public ResultViewModel() {
+    }
+
+    public JSONArray getProblemArray() {
+        try {
+            JSONArray problemArray = new JSONArray();
+            for (ProblemResult problemResult : problem) {
+                problemArray.put(problemResult.writeToJson());
+            }
+            return problemArray;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -56,23 +69,21 @@ public class ResultViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.problem);
+        dest.writeTypedList(this.problem);
         dest.writeInt(this.solution);
         dest.writeInt(this.refundAmount);
         dest.writeParcelable(this.message, flags);
         dest.writeInt(this.attachmentCount);
-    }
-
-    public ResultViewModel() {
+        dest.writeString(this.orderId);
     }
 
     protected ResultViewModel(Parcel in) {
-        this.problem = new ArrayList<ProblemResult>();
-        in.readList(this.problem, ProblemResult.class.getClassLoader());
+        this.problem = in.createTypedArrayList(ProblemResult.CREATOR);
         this.solution = in.readInt();
         this.refundAmount = in.readInt();
         this.message = in.readParcelable(ProblemMessageResult.class.getClassLoader());
         this.attachmentCount = in.readInt();
+        this.orderId = in.readString();
     }
 
     public static final Creator<ResultViewModel> CREATOR = new Creator<ResultViewModel>() {

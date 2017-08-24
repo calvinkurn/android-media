@@ -63,6 +63,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void loadProductProblem(String orderId) {
+        resultViewModel.orderId = orderId;
         getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId), new Subscriber<ProductProblemResponseDomain>() {
             @Override
             public void onCompleted() {

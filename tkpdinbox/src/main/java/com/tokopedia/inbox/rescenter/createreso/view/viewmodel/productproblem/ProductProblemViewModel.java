@@ -21,10 +21,6 @@ public class ProductProblemViewModel implements Parcelable {
         this.statusList = statusList;
     }
 
-
-
-
-
     public ProblemViewModel getProblem() {
         return problem;
     }

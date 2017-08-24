@@ -8,11 +8,15 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
-import com.tokopedia.inbox.rescenter.createreso.data.factory.ProductProblemFactory;
+import com.tokopedia.inbox.rescenter.createreso.data.factory.CreateResolutionFactory;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepositoryImpl;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 
 
 import dagger.Module;
@@ -35,11 +39,16 @@ public class CreateResoModule {
     }
 
 
-
     @CreateResoScope
     @Provides
     ResolutionApi provideResolutionService(@ResolutionQualifier Retrofit retrofit) {
         return retrofit.create(ResolutionApi.class);
+    }
+
+    @CreateResoScope
+    @Provides
+    SolutionMapper provideSolutionMapper() {
+        return new SolutionMapper(new Gson());
     }
 
     @CreateResoScope
@@ -50,24 +59,40 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    ProductProblemFactory provideProductProblemFactory(@ActivityContext Context context,
-                                                       GetProductProblemMapper mapper,
-                                                       ResolutionApi resolutionApi) {
-        return new ProductProblemFactory(context, mapper, resolutionApi);
+    CreateResolutionFactory provideProductProblemFactory(@ActivityContext Context context,
+                                                         GetProductProblemMapper getProductProblemMapper,
+                                                         SolutionMapper solutionMapper,
+                                                         ResolutionApi resolutionApi) {
+        return new CreateResolutionFactory(context, getProductProblemMapper, solutionMapper, resolutionApi);
     }
 
     @CreateResoScope
     @Provides
-    ProductProblemRepository provideProductProblemRepository(ProductProblemFactory productProblemFactory) {
-        return new ProductProblemRepositoryImpl(productProblemFactory);
+    SolutionRepository provideSolutionRepository(CreateResolutionFactory createResolutionFactory) {
+        return new SolutionRepositoryImpl(createResolutionFactory);
     }
 
     @CreateResoScope
     @Provides
-    GetProductProblemUseCase provideGetProductProblemUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ProductProblemRepository productProblemRepository) {
+    ProductProblemRepository provideProductProblemRepository(CreateResolutionFactory createResolutionFactory) {
+        return new ProductProblemRepositoryImpl(createResolutionFactory);
+    }
+
+    @CreateResoScope
+    @Provides
+    GetSolutionUseCase provideGetSolutionUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 SolutionRepository solutionRepository) {
+        return new GetSolutionUseCase(threadExecutor,
+                postExecutionThread,
+                solutionRepository);
+    }
+
+    @CreateResoScope
+    @Provides
+    GetProductProblemUseCase provideGetProductProblemUseCase(ThreadExecutor threadExecutor,
+                                                             PostExecutionThread postExecutionThread,
+                                                             ProductProblemRepository productProblemRepository) {
         return new GetProductProblemUseCase(threadExecutor,
                 postExecutionThread,
                 productProblemRepository);

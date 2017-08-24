@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
@@ -13,6 +14,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponen
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 
 import javax.inject.Inject;
 
@@ -83,7 +85,7 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
     }
 
     @Override
@@ -104,7 +106,17 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     }
 
     @Override
-    public void populateDataToView(ResultViewModel resultViewModel) {
+    public void populateDataToView(SolutionResponseViewModel solutionResponseViewModel) {
 
     }
+
+    @Override
+    public void showSuccessToast() {
+    }
+
+    @Override
+    public void showErrorToast(String error) {
+        Toast.makeText(getActivity(), "error : " + error, Toast.LENGTH_SHORT).show();
+    }
+
 }

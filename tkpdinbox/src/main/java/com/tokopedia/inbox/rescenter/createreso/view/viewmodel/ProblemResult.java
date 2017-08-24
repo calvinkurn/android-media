@@ -32,14 +32,16 @@ public class ProblemResult implements Parcelable {
             if (trouble != 0) {
                 object.put("trouble", trouble);
             }
-            if (quantity != 0) {
-                object.put("quantity", quantity);
-            }
-            if (order != null) {
-                object.put("order", order.writeToJson());
-            }
-            if (!remark.equals("")) {
-                object.put("remark", remark);
+            if (type == 2) {
+                if (quantity != 0) {
+                    object.put("quantity", quantity);
+                }
+                if (order != null) {
+                    object.put("order", order.writeToJson());
+                }
+                if (!remark.equals("")) {
+                    object.put("remark", remark);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
