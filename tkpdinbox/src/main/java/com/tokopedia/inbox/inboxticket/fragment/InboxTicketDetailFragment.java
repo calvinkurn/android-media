@@ -60,6 +60,8 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     private View noView;
     private View yesView;
     private String commentId;
+    private View noTView;
+    private View yesTView;
 
     public interface DoActionInboxTicketListener {
         void sendRating(Bundle param);
@@ -88,7 +90,6 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @BindView(R2.id.menu_help)
     View helpfulView;
-
 
     @BindView(R2.id.loading_layout)
     View loading;
@@ -161,6 +162,9 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     protected void initView(View view) {
         noView = view.findViewById(R.id.icon_dislike);
         yesView = view.findViewById(R.id.icon_like);
+        noTView = view.findViewById(R.id.counter_dislike);
+        yesTView = view.findViewById(R.id.counter_like);
+
         adapter = InboxTicketDetailAdapter.createAdapter(getActivity(), presenter);
         listTicket.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listTicket.setAdapter(adapter);
@@ -235,7 +239,23 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
             }
         });
 
+        yesTView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating(InboxTicketParam.YES_HELPFUL);
+            }
+        });
 
+        noTView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating(InboxTicketParam.NO_HELPFUL);
+            }
+        });
+    }
+
+    private void commentRating(String isHelpful){
+        presenter.commentRating(isHelpful);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})

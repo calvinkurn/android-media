@@ -143,27 +143,27 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
 
             @Override
             public void onTimeout() {
-
+                showError(viewListener.getString(R.string.default_request_error_timeout));
             }
 
             @Override
             public void onError(String error) {
-
+                showError(error);
             }
 
             @Override
             public void onNullData() {
-
+                showError(viewListener.getString(R.string.default_request_error_null_data));
             }
 
             @Override
             public void onNoConnectionError() {
-
+                showError(viewListener.getString(R.string.error_no_connection2));
             }
 
             @Override
             public void onFailAuth() {
-
+                showError(viewListener.getString(R.string.default_request_error_unknown));
             }
         });
     }

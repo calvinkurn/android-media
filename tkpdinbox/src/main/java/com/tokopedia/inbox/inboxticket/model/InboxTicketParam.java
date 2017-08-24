@@ -20,7 +20,7 @@ public class InboxTicketParam {
     private static final String PARAM_KEYWORD = "keyword";
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_STATUS = "status";
-    private static final String PARAM_RATING = "status";
+    private static final String PARAM_RATING = "rating";
 
     private static final String PARAM_TICKET_INBOX_ID = "ticket_inbox_id";
 

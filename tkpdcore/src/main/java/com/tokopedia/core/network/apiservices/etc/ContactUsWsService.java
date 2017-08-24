@@ -17,7 +17,7 @@ public class ContactUsWsService extends AuthService<ContactUsApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.ContactUs.URL_BASE;
+        return TkpdBaseURL.BASE_DOMAIN;
     }
 
     @Override
