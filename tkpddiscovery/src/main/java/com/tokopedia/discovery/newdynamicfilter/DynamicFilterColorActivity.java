@@ -22,17 +22,19 @@ public class DynamicFilterColorActivity extends DynamicFilterDetailActivity {
         return new DynamicFilterDetailColorAdapter();
     }
 
-    public static void moveTo(AppCompatActivity fragmentActivity,
+    public static void moveTo(AppCompatActivity activity,
+                              String pageTitle,
                               List<Option> optionList,
                               boolean isSearchable,
                               String searchHint) {
 
-        if (fragmentActivity != null) {
-            Intent intent = new Intent(fragmentActivity, DynamicFilterColorActivity.class);
+        if (activity != null) {
+            Intent intent = new Intent(activity, DynamicFilterColorActivity.class);
+            intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
             intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
-            fragmentActivity.startActivityForResult(intent, REQUEST_CODE);
+            activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
 }

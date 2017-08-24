@@ -21,6 +21,7 @@ public class FilterDetailActivityRouter {
             case TEMPLATE_NAME_COLOR:
                 DynamicFilterColorActivity
                         .moveTo(activity,
+                                filter.getTitle(),
                                 filter.getOptions(),
                                 filter.getSearch().getSearchable() == 1,
                                 filter.getSearch().getPlaceholder());
@@ -33,6 +34,7 @@ public class FilterDetailActivityRouter {
             default:
                 DynamicFilterDetailActivity
                         .moveTo(activity,
+                                filter.getTitle(),
                                 filter.getOptions(),
                                 filter.getSearch().getSearchable() == 1,
                                 filter.getSearch().getPlaceholder());

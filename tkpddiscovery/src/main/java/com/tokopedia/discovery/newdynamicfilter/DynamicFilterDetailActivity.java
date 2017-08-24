@@ -31,34 +31,39 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 220;
     public static final String EXTRA_RESULT = "EXTRA_RESULT";
-    protected static String EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST";
-    protected static String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
-    protected static String EXTRA_IS_SEARCHABLE = "EXTRA_IS_SEARCHABLE";
+    protected static final String EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST";
+    protected static final String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
+    protected static final String EXTRA_IS_SEARCHABLE = "EXTRA_IS_SEARCHABLE";
+    protected static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
 
-    View searchInputContainer;
-    EditText searchInputView;
-    RecyclerView recyclerView;
-    DynamicFilterDetailAdapter adapter;
-    List<Option> optionList;
-    OptionSearchFilter searchFilter;
-    TextView buttonApply;
-    TextView buttonReset;
-    View buttonClose;
+    private View searchInputContainer;
+    private EditText searchInputView;
+    private RecyclerView recyclerView;
+    private DynamicFilterDetailAdapter adapter;
+    private List<Option> optionList;
+    private OptionSearchFilter searchFilter;
+    private TextView buttonApply;
+    private TextView buttonReset;
+    private View buttonClose;
+    private TextView topBarTitle;
 
     private boolean isSearchable;
     private String searchHint;
+    private String pageTitle;
 
-    public static void moveTo(AppCompatActivity fragmentActivity,
+    public static void moveTo(AppCompatActivity activity,
+                              String pageTitle,
                               List<Option> optionList,
                               boolean isSearchable,
                               String searchHint) {
 
-        if (fragmentActivity != null) {
-            Intent intent = new Intent(fragmentActivity, DynamicFilterDetailActivity.class);
+        if (activity != null) {
+            Intent intent = new Intent(activity, DynamicFilterDetailActivity.class);
+            intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
             intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
-            fragmentActivity.startActivityForResult(intent, REQUEST_CODE);
+            activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
 
@@ -68,6 +73,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dynamic_filter_detail);
         fetchDataFromIntent();
         bindView();
+        initTopBar();
         initRecyclerView();
         loadFilterItems();
         initSearchView();
@@ -78,12 +84,14 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
                 getIntent().getParcelableExtra(EXTRA_OPTION_LIST));
         isSearchable = getIntent().getBooleanExtra(EXTRA_IS_SEARCHABLE, false);
         searchHint = getIntent().getStringExtra(EXTRA_SEARCH_HINT);
+        pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);
     }
 
     private void bindView() {
         recyclerView = (RecyclerView) findViewById(R.id.filter_detail_recycler_view);
         searchInputView = (EditText) findViewById(R.id.filter_detail_search);
         searchInputContainer = findViewById(R.id.filter_detail_search_container);
+        topBarTitle = (TextView) findViewById(R.id.top_bar_title);
         buttonClose = findViewById(R.id.top_bar_close_button);
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +113,10 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
                 applyFilter();
             }
         });
+    }
+
+    private void initTopBar() {
+        topBarTitle.setText(pageTitle);
     }
 
     private void initSearchView() {

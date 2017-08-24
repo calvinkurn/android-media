@@ -64,12 +64,12 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     private String selectedCategoryId;
     private String selectedCategoryName;
 
-    public static void moveTo(AppCompatActivity fragmentActivity,
+    public static void moveTo(AppCompatActivity activity,
                               List<Filter> filterCategoryList) {
-        if (fragmentActivity != null) {
-            Intent intent = new Intent(fragmentActivity, RevampedDynamicFilterActivity.class);
+        if (activity != null) {
+            Intent intent = new Intent(activity, RevampedDynamicFilterActivity.class);
             intent.putExtra(EXTRA_FILTER_LIST, Parcels.wrap(filterCategoryList));
-            fragmentActivity.startActivityForResult(intent, REQUEST_CODE);
+            activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
 
