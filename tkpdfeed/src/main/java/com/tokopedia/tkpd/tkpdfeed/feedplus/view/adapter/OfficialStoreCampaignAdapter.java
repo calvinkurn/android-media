@@ -60,7 +60,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             freeReturn = (ImageView) itemLayoutView.findViewById(R.id.free_return);
 
             labels.setLayoutManager(new StaggeredGridLayoutManager(3,
-                    StaggeredGridLayoutManager.VERTICAL));
+                    StaggeredGridLayoutManager.HORIZONTAL));
             adapter = new LabelsAdapter();
             labels.setAdapter(adapter);
 

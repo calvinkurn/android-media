@@ -340,7 +340,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 officialStoreDomain.getShop_id(),
                 officialStoreDomain.getShop_apps_url(),
                 officialStoreDomain.getShop_name(),
-                officialStoreDomain.getLogo_url(),
+                officialStoreDomain.getMicrosite_url(),
                 officialStoreDomain.getIs_new()
         );
     }
