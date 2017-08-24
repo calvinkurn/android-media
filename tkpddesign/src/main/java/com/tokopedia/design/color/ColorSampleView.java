@@ -18,8 +18,6 @@ public class ColorSampleView extends View {
     private static final float OUTLINE_WIDTH = 2;
     private Paint fillPaint;
     private Paint outlinePaint;
-    private int color;
-    private int outlineColor;
 
     public ColorSampleView(Context context) {
         super(context);
@@ -37,13 +35,13 @@ public class ColorSampleView extends View {
     }
 
     private void init(Context context) {
-        color = context.getResources().getColor(R.color.grey_200);
+        int defaultFillColor = context.getResources().getColor(R.color.grey_200);
         fillPaint = new Paint();
         fillPaint.setAntiAlias(false);
-        fillPaint.setColor(color);
+        fillPaint.setColor(defaultFillColor);
         fillPaint.setStyle(Paint.Style.FILL);
 
-        outlineColor = context.getResources().getColor(R.color.grey_300);
+        int outlineColor = context.getResources().getColor(R.color.grey_300);
         outlinePaint = new Paint();
         outlinePaint.setAntiAlias(false);
         outlinePaint.setColor(outlineColor);
@@ -52,7 +50,7 @@ public class ColorSampleView extends View {
     }
 
     public void setColor(int color) {
-        this.color = color;
+        fillPaint.setColor(color);
         invalidate();
     }
 
@@ -61,9 +59,9 @@ public class ColorSampleView extends View {
         super.onDraw(canvas);
         float cx = (float) canvas.getWidth() / 2;
         float cy = (float) canvas.getHeight() / 2;
-        float radius = (float) canvas.getWidth() / 2;
+        float radius = (float) canvas.getWidth() / 2 - OUTLINE_WIDTH;
 
         canvas.drawCircle(cx, cy, radius, fillPaint);
-        canvas.drawCircle(cx, cy, radius + OUTLINE_WIDTH, outlinePaint);
+        canvas.drawCircle(cx, cy, radius, outlinePaint);
     }
 }
