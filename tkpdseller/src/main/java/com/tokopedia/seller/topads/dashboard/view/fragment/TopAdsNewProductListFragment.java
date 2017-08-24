@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
@@ -151,12 +152,12 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
 
     private void updateSelectedProductCount() {
         if (adapter.getDataSize() > 0) {
-            counterProduct.setText(getString(R.string.top_ads_label_total_selected_product, adapter.getDataSize()));
+            counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product, adapter.getDataSize())));
             addProduct.setText(R.string.label_edit);
             buttonNext.setEnabled(true);
         } else {
-            counterProduct.setText(getString(R.string.top_ads_label_total_selected_product_zero, adapter.getDataSize()));
-            addProduct.setText(R.string.label_top_ads_add_product);
+            counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product_zero, adapter.getDataSize())));
+            addProduct.setText(R.string.top_ads_keyword_add);
             buttonNext.setEnabled(false);
         }
         updateEmptyView();

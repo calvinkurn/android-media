@@ -44,7 +44,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         progressStepper = (RoundCornerProgressBar) findViewById(R.id.stepper_progress);
         progressStepper.setMax(getListFragment().size());
         progressStepper.setProgress(currentPosition);
-        setToolbarColor();
         updateToolbarTitle();
     }
 
@@ -118,26 +117,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     @NonNull
     protected abstract List<Fragment> getListFragment();
 
-    private void setToolbarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_700));
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
-    }
 
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
@@ -146,5 +125,10 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

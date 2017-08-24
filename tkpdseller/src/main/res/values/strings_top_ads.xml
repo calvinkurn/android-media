@@ -14,6 +14,7 @@
     <string name="title_top_ads_add_promo_product">Tambah Promo Produk</string>
     <string name="title_top_ads_edit_promo_product">Ubah Promo Produk</string>
     <string name="title_top_ads_keyword_add_detail">Tambah Kata Kunci</string>
+    <string name="topads_title_promo_grup_activity">Promo Grup</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
@@ -45,6 +46,7 @@
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
     <string name="title_group_ad_detail">Detil Promo Grup</string>
     <string name="title_group_ad_edit">Ubah Promo Grup</string>
+    <string name="title_product_ad_edit">Ubah Promo Produk</string>
     <string name="title_delete_promo">Hapus promo</string>
     <string name="title_delete_group">Hapus grup</string>
     <string name="title_edit_shop_ad">Ubah Promo Toko</string>
@@ -75,17 +77,18 @@
     <string name="label_top_ads_icon">Icon TopAds</string>
     <string name="top_ads_label_cost">Biaya</string>
     <string name="top_ads_label_schedule">Jadwal Tampil</string>
+    <string name="top_ads_label_schedule_detail">Jadwal</string>
 
     <!-- Top Ads Edit Promo Budget-->
     <string name="label_top_ads_budget">Anggaran</string>
-    <string name="label_top_ads_budget_lifetime">Anggaran tidak dibatasi</string>
+    <string name="label_top_ads_budget_lifetime">Tidak Dibatasi</string>
     <string name="label_top_ads_budget_per_day">Per Hari</string>
     <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
 
     <!-- Top Ads Edit Promo Show Time-->
     <string name="label_top_ads_show_time">Waktu Tampil</string>
-    <string name="label_top_ads_show_time_automatic">Otomatis</string>
-    <string name="label_top_ads_show_time_configured">Atur tanggal mulai dan berhenti</string>
+    <string name="label_top_ads_show_time_automatic">Tidak Dibatasi</string>
+    <string name="label_top_ads_show_time_configured">Atur Tanggal Mulai Dan Berhenti</string>
     <string name="label_top_ads_show_time_start">Mulai</string>
     <string name="label_top_ads_show_time_end">Selesai</string>
 
@@ -115,6 +118,7 @@
     <string name="topads_title_review_statistic">Ringkasan Statistik</string>
     <string name="topads_format_daily_budget">%1$s / %2$s</string>
     <string name="topads_label_title_price_promo">Biaya Promo</string>
+    <string name="topads_label_title_percentation_detail">Persentase Klik</string>
 
     <!-- Top Ads Statistic-->
     <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat promo anda.</string>
@@ -140,8 +144,9 @@
     <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
     <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
     <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
-    <string name="label_top_ads_info_group_option_exist">Pengaturan biaya dan jadwal akan mengikuti dari grup promo.</string>
-    <string name="label_top_ads_info_group_option_new">Pengaturan biaya dan jadwal akan mengikuti dari produk promo.</string>
+    <string name="label_top_ads_info_group_option_exist">Produk akan dimasukkan ke grup promo yang sudah ada.</string>
+    <string name="label_top_ads_info_group_option_new">Produk akan dimasukkan ke grup promo baru.</string>
+    <string name="label_top_ads_info_group_option_empty">Produk tidak masuk grup promo, pengaturannya akan dilakukan per promo.</string>
     <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
     <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
     <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
@@ -149,8 +154,8 @@
     <string name="top_ads_detail_edit_default_max_price_currency_value">50</string>
     <string name="top_ads_detail_edit_default_lifetime_currency_value">5000</string>
     <string name="top_ads_per_click_detail">%1s Per Klik</string>
-    <string name="top_ads_label_total_selected_product"><b>%02d / 50</b> Produk Terpilih</string>
-    <string name="top_ads_label_total_selected_product_zero"><b>%1$d / 50</b> Produk Terpilih</string>
+    <string name="top_ads_label_total_selected_product"><![CDATA[<b>%02d/50</b> Produk Terpilih]]></string>
+    <string name="top_ads_label_total_selected_product_zero"><![CDATA[<b>%1$d/50</b> Produk Terpilih]]></string>
     <string name="top_ads_label_count_product_group">%1d Produk</string>
     <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
     <string name="top_ads_label_choose_product">Pilih Produk</string>

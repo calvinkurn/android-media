@@ -109,6 +109,14 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
     }
 
     @Override
+    protected void populateDataFromFields() {
+        super.populateDataFromFields();
+        if(detailAd.getEndDate() != null && !detailAd.getEndDate().isEmpty()){
+            detailAd.setScheduled(true);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         daggerPresenter.detachView();

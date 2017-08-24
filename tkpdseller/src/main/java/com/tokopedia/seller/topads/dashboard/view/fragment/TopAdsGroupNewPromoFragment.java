@@ -28,26 +28,6 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     }
 
     @Override
-    protected String getTextInfoChooseGroupOption() {
-        return getString(R.string.label_top_ads_info_group_option_exist);
-    }
-
-    @Override
-    protected String getTextInfoNewGroupOption() {
-        return "";
-    }
-
-    @Override
-    protected boolean getVisibleInfoChooseGroupOption() {
-        return true;
-    }
-
-    @Override
-    protected boolean getVisibleInfoNewGroupOption() {
-        return false;
-    }
-
-    @Override
     protected void onSubmitFormNewGroup(String groupName) {
         Intent intent = TopAdsCreatePromoNewGroupActivity.createIntent(getActivity(),groupName, itemIdToAdd);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);

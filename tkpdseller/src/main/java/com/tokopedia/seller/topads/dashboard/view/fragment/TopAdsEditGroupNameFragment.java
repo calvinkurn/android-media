@@ -108,6 +108,9 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
             onSaveAdError(getString(R.string.label_top_ads_error_empty_group_name));
             return;
         }
+        if(detailAd.getEndDate() != null && !detailAd.getEndDate().isEmpty()){
+            detailAd.setScheduled(true);
+        }
         detailAd.setTitle(nameEditText.getText().toString());
     }
 

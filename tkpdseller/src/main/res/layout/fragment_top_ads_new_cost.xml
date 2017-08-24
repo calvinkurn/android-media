@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:layout_above="@+id/button_submit"
+        android:layout_above="@+id/container_button_next"
         android:padding="@dimen/padding_med"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -34,9 +34,17 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/button_submit"
-        style="@style/Button.Submit.Green"
+    <LinearLayout
+        android:id="@+id/container_button_next"
         android:layout_alignParentBottom="true"
-        android:text="@string/label_top_ads_next" />
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/partial_separator_horizontal"/>
+        <Button
+            android:id="@+id/button_submit"
+            style="@style/Button.Submit.Green"
+            android:text="@string/label_top_ads_next" />
+    </LinearLayout>
 </RelativeLayout>

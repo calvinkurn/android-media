@@ -43,7 +43,7 @@
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsGroupAdListActivity"
-            android:label="@string/title_top_ads_promo_group"
+            android:label="@string/topads_title_promo_grup_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
@@ -362,7 +362,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsEditProductMainPageActivity"
-            android:label="@string/title_group_ad_edit"
+            android:label="@string/title_product_ad_edit"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsEditShopMainPageActivity"

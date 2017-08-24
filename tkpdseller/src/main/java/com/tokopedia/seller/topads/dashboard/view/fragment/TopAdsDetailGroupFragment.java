@@ -115,7 +115,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void updateMainView(GroupAd ad) {
         super.updateMainView(ad);
-        items.setContent(String.valueOf(ad.getTotalItem()));
+        items.setContent(getString(R.string.top_ads_label_count_product_group, ad.getTotalItem()));
         if (ad.getTotalItem() > 0) {
             items.setVisibleArrow(true);
             items.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
