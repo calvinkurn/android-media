@@ -33,10 +33,6 @@ public class ProductVariantValue implements Parcelable, ItemIdType {
         return String.valueOf(valueId);
     }
 
-    public long getIdLong(){
-        return valueId;
-    }
-
     public long getValueId() {
         return valueId;
     }
