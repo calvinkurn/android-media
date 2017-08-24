@@ -223,18 +223,20 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 );
             } else if (categoryDetailIncluded.getType()
                     .equalsIgnoreCase(BannerData.OTHER_TYPE_CONTRACT)) {
-                otherBannerDataList.add(
-                        new BannerData.Builder()
-                                .id(categoryDetailIncluded.getId())
-                                .type(categoryDetailIncluded.getType())
-                                .title(categoryDetailIncluded.getAttributes().getTitle())
-                                .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
-                                .promocode(categoryDetailIncluded.getAttributes().getPromocode())
-                                .image(categoryDetailIncluded.getAttributes().getImage())
-                                .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
-                                .link(categoryDetailIncluded.getAttributes().getLink())
-                                .build()
-                );
+                if (categoryDetailIncluded.getAttributes() != null) {
+                    otherBannerDataList.add(
+                            new BannerData.Builder()
+                                    .id(categoryDetailIncluded.getId())
+                                    .type(categoryDetailIncluded.getType())
+                                    .title(categoryDetailIncluded.getAttributes().getTitle())
+                                    .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
+                                    .promocode(categoryDetailIncluded.getAttributes().getPromocode())
+                                    .image(categoryDetailIncluded.getAttributes().getImage())
+                                    .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
+                                    .link(categoryDetailIncluded.getAttributes().getLink())
+                                    .build()
+                    );
+                }
             }
         }
         categoryData.setOperatorList(operatorCategoryList);
