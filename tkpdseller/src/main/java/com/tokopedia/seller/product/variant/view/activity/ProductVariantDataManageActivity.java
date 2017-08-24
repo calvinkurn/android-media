@@ -32,11 +32,12 @@ import java.util.List;
  * Created by hendry on 8/2/17.
  */
 
-public class ProductVariantDataManageActivity extends BaseSimpleActivity implements HasComponent<ProductComponent>,
+public class ProductVariantDataManageActivity extends BaseSimpleActivity implements
         ProductVariantDataManageFragment.OnProductVariantDataManageFragmentListener {
 
     public static final String EXTRA_VARIANT_ID = "var_id";
     public static final String EXTRA_VARIANT_NAME = "var_name";
+    public static final String EXTRA_VARIANT_HAS_STOCK = "var_has_stock";
     public static final String EXTRA_VARIANT_VALUE_LIST = "var_lst";
     public static final String EXTRA_SELECTED_VARIANT_ID_LIST = "sel_var_id_lst";
 
@@ -51,9 +52,10 @@ public class ProductVariantDataManageActivity extends BaseSimpleActivity impleme
     public static void start(Context context, Fragment fragment,
                              long variantId,
                              String variantName,
+                             boolean hasStock,
                              ArrayList<ProductVariantValue> productVariantValueArrayList,
                              ArrayList<Long> selectedVariantValueId){
-        Intent intent = createInstance(context, variantId, variantName,
+        Intent intent = createInstance(context, variantId, variantName, hasStock,
                 productVariantValueArrayList, selectedVariantValueId);
         fragment.startActivityForResult(intent, REQUEST_CODE);
     }
@@ -61,11 +63,13 @@ public class ProductVariantDataManageActivity extends BaseSimpleActivity impleme
     public static Intent createInstance(Context context,
                                         long variantId,
                                         String variantName,
+                                        boolean hasStock,
                                         ArrayList<ProductVariantValue> productVariantValueArrayList,
                                         ArrayList<Long> selectedVariantValueId){
         Intent intent = new Intent(context, ProductVariantDataManageActivity.class);
         intent.putExtra(EXTRA_VARIANT_ID, variantId);
         intent.putExtra(EXTRA_VARIANT_NAME, variantName);
+        intent.putExtra(EXTRA_VARIANT_HAS_STOCK, hasStock);
         intent.putParcelableArrayListExtra(EXTRA_VARIANT_VALUE_LIST, productVariantValueArrayList);
         intent.putExtra(EXTRA_SELECTED_VARIANT_ID_LIST, selectedVariantValueId);
         return intent;
@@ -88,11 +92,6 @@ public class ProductVariantDataManageActivity extends BaseSimpleActivity impleme
     @Override
     protected Fragment getNewFragment() {
         return ProductVariantDataManageFragment.newInstance();
-    }
-
-    @Override
-    public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 
     @Override
@@ -136,9 +135,10 @@ public class ProductVariantDataManageActivity extends BaseSimpleActivity impleme
     }
 
     @Override
-    public void onSubmitVariant(List<Long> selectedVariantValueIds) {
+    public void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds) {
         Intent intent = new Intent(EXTRA_ACTION_SUBMIT);
         intent.putExtra(EXTRA_VARIANT_ID, variantId);
+        intent.putExtra(EXTRA_VARIANT_HAS_STOCK, isVariantHasStock);
         intent.putExtra(EXTRA_VARIANT_VALUE_LIST,(ArrayList) selectedVariantValueIds);
         setResult(Activity.RESULT_OK, intent);
         finish();

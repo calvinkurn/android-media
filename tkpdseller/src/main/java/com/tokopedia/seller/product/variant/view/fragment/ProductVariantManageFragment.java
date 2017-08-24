@@ -191,12 +191,19 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
                         // TODO delete variant status for variantIdToDelete
                         // remove from selected variantIdToDelete
                     }
-                } else if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_DELETE)) {
+                } else if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_SUBMIT)) {
                     long variantIdToUpdate = data.getLongExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_ID, 0);
                     if (variantIdToUpdate != 0) {
                         ArrayList<Long> selectedVariantValueIdList = (ArrayList<Long>)
                                 data.getSerializableExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST);
-                        // TODO select the variantID with selected value: selectedVariantValueIdList
+                        if (selectedVariantValueIdList == null || selectedVariantValueIdList.size() == 0) {
+                            if (data.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK)) {
+                                boolean variantHasStock = data.getBooleanExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK, false);
+                                //TODO set the variant stock to available/empty (based on variantHasStock)
+                            }
+                        } else {
+                            // TODO update the selectedVariantValueIdList of the variant to available
+                        }
                     }
                 }
             }
@@ -322,6 +329,14 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
             return null;
         }
         return ProductVariantUtils.getVariantUnitSubmit(level, variantData.getVariantUnitSubmitList());
+    }
+
+    /**
+     * function to return the result to the caller (activity)
+     * @return
+     */
+    public VariantData getVariantData() {
+        return variantData;
     }
 
     @Override

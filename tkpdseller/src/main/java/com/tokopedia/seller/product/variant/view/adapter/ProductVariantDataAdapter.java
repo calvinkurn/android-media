@@ -34,10 +34,10 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
     }
 
     public ProductVariantDataAdapter(Context context,
-                                     @NonNull ArrayList<ProductVariantValue> productVariantValueArrayList,
+                                     ArrayList<ProductVariantValue> productVariantValueArrayList,
                                      ArrayList<Long> variantValueIdList){
         this.context = context;
-        this.productVariantValueArrayList = productVariantValueArrayList;
+        this.productVariantValueArrayList = productVariantValueArrayList == null ? new ArrayList<ProductVariantValue>(): productVariantValueArrayList;
         this.variantValueIdList = variantValueIdList == null ? new ArrayList<Long>(): variantValueIdList;
     }
 

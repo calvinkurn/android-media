@@ -36,12 +36,12 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
 
     private ProductVariantByCatModel productVariantByCatModel;
-    private List<ProductVariantValue> productVariantValueList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariantByCatModel = getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()) );
         updateBottomSheetInfo();
     }
 

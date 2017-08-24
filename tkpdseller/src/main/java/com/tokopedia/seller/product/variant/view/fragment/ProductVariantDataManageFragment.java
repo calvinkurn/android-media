@@ -1,9 +1,13 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDataManageActivity;
@@ -26,15 +29,16 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantDataManageFragment extends BasePresenterFragment implements ProductVariantDataAdapter.OnProductVariantDataAdapterListener {
+public class ProductVariantDataManageFragment extends Fragment implements ProductVariantDataAdapter.OnProductVariantDataAdapterListener {
 
     private OnProductVariantDataManageFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
     private View buttonSave;
     private ProductVariantDataAdapter productVariantDataAdapter;
+    private boolean isVariantHasStock;
 
     public interface OnProductVariantDataManageFragmentListener {
-        void onSubmitVariant(List<Long> selectedVariantValueIds);
+        void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
     }
 
     public static ProductVariantDataManageFragment newInstance() {
@@ -46,18 +50,25 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent activityIntent = getActivity().getIntent();
-        // TODO hendry just for test
-        ArrayList<Long> variantValueIdList;
-        ArrayList<ProductVariantValue> productVariantValueArrayList;
+
+        ArrayList<Long> variantValueIdList = null;
+        ArrayList<ProductVariantValue> productVariantValueArrayList = null;
         if (!activityIntent.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST)) {
-            productVariantValueArrayList = new ArrayList<>();
-            productVariantValueArrayList.add(new ProductVariantValue(1,"Cak Lontong"));
-            productVariantValueArrayList.add(new ProductVariantValue(2,"Cak Norman"));
-            productVariantValueArrayList.add(new ProductVariantValue(3,"Cak Norman tong"));
-            productVariantValueArrayList.add(new ProductVariantValue(4,"Cak tong norman"));
-            variantValueIdList = new ArrayList<>();
-            variantValueIdList.add(1L);
-            variantValueIdList.add(3L);
+            if (!activityIntent.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK)) {
+                // TODO hendry just for test
+                //                productVariantValueArrayList = new ArrayList<>();
+                //                productVariantValueArrayList.add(new ProductVariantValue(1,"Cak Lontong"));
+                //                productVariantValueArrayList.add(new ProductVariantValue(2,"Cak Norman"));
+                //                productVariantValueArrayList.add(new ProductVariantValue(3,"Cak Norman tong"));
+                //                productVariantValueArrayList.add(new ProductVariantValue(4,"Cak tong norman"));
+                //                variantValueIdList = new ArrayList<>();
+                //                variantValueIdList.add(1L);
+                //                variantValueIdList.add(3L);
+                isVariantHasStock = true;
+            } else {
+                isVariantHasStock = activityIntent.getBooleanExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK, false);
+            }
+
         }
         else {
             productVariantValueArrayList = activityIntent.getParcelableArrayListExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST);
@@ -105,11 +116,12 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSubmitVariant(productVariantDataAdapter.getVariantValueIdListSorted());
+                listener.onSubmitVariant(labelSwitchStatus.isChecked(),
+                        productVariantDataAdapter.getVariantValueIdListSorted());
             }
         });
         // default value: if all is checked, set label switch summary to tersedia else to kosong
-        if (productVariantDataAdapter.isCheckAny()) {
+        if (isVariantHasStock) {
             setStockLabelAvailable();
         } else {
             setStockLabelEmpty();
@@ -142,9 +154,27 @@ public class ProductVariantDataManageFragment extends BasePresenterFragment impl
         setStockLabelEmpty();
     }
 
+    /*
+     * Deprecated on API 23
+     * Use onAttachToContext instead
+     */
+    @SuppressWarnings("deprecation")
     @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachListener(activity);
+        }
+    }
+
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachListener(context);
+    }
+
     protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
         listener = (OnProductVariantDataManageFragmentListener) context;
     }
 

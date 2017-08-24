@@ -268,6 +268,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 break;
             case ProductAdditionalInfoViewHolder.REQUEST_CODE_GET_VIDEO:
                 productAdditionalInfoViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT:
+                productAdditionalInfoViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }

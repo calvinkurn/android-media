@@ -245,7 +245,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.variant.view.activity.ProductVariantPickerActivity"
-            android:label="@string/title_activity_edit_product"
+            android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.draft.view.activity.ProductDraftListActivity"
@@ -316,11 +316,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.variant.view.activity.ProductVariantManageActivity"
-            android:label="@string/product_label_video"
+            android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.variant.view.activity.ProductVariantDataManageActivity"
-            android:label="@string/title_product"
+            android:label="@string/product_variant_label_title"
             android:exported="true"
             android:screenOrientation="portrait" />
 

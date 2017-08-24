@@ -27,6 +27,7 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
@@ -167,6 +168,15 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                     // means that no data at all.
                     this.videoIdList.clear();
                     setLabelViewText(new ArrayList<>(videoIdList));
+                }
+                break;
+            case REQUEST_CODE_VARIANT:
+                if (resultCode == Activity.RESULT_OK) {
+                    // TODO save the data to variantdata
+                    if (data!= null && data.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                        setVariantData((VariantData) data.getParcelableExtra(
+                                ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION));
+                    }
                 }
                 break;
         }

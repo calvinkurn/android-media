@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_apps"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view"
@@ -14,7 +16,7 @@
     <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_variant_unit"
         style="@style/LabelLayout"
-        android:layout_height="110dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_med"
         android:visibility="gone" />
 
