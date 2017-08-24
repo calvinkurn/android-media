@@ -11,6 +11,7 @@ import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
+import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -110,6 +111,26 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
             @Override
             public Boolean call(Object o) {
                 return false;
+            }
+        });
+    }
+
+    @Override
+    public Observable<Boolean> singleDataDelete(@Nullable final CacheApiDataDomain cacheApiDataDomain) {
+        return Observable.just(true).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Boolean aBoolean) {
+                if (cacheApiDataDomain == null) {
+                    return Observable.just(false);
+                }
+
+                CacheApiData cacheApiData = cacheHelper.queryDataFrom(cacheApiDataDomain.getHost(), cacheApiDataDomain.getPath(), cacheApiDataDomain.getParam());
+                if (cacheApiData == null) {
+                    return Observable.just(false);
+                } else {
+                    cacheApiData.delete();
+                    return Observable.just(true);
+                }
             }
         });
     }
