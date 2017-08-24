@@ -410,7 +410,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
-                    if (!response.body().isError()) {
+                    if (!response.body().isError() && response.body().getJsonData().optString("is_success").equals("1")) {
                         listener.onSuccess(null);
 
                     } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
