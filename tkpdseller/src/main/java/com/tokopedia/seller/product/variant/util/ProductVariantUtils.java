@@ -321,12 +321,23 @@ public class ProductVariantUtils {
             variantStatus.setPvd(variantSourceDatum.getPvdId());
             variantStatus.setStatus(variantSourceDatum.getStatus());
             List<Long> optList = new ArrayList<>();
-            String vSourceCode = variantSourceDatum.getvCode();
-            String[] vCodeSplit = vSourceCode.split(SPLIT_DELIMITER);
-            for (String aVCodeSplit : vCodeSplit) {
-                long optTId = tempIdInverseMap.get(Integer.parseInt(aVCodeSplit));
-                optList.add(optTId);
+
+            List<Long> sourceOptionList = variantSourceDatum.getOptionIdList();
+            // TODO to remove the vcode, split by ":" will no longer used.
+            if (sourceOptionList == null || sourceOptionList.size() == 0) {
+                String vSourceCode = variantSourceDatum.getvCode();
+                String[] vCodeSplit = vSourceCode.split(SPLIT_DELIMITER);
+                for (String aVCodeSplit : vCodeSplit) {
+                    long optTId = tempIdInverseMap.get(Integer.parseInt(aVCodeSplit));
+                    optList.add(optTId);
+                }
+            } else {
+                for (long sourceOptionId : sourceOptionList) {
+                    long optTId = tempIdInverseMap.get((int)sourceOptionId);
+                    optList.add(optTId);
+                }
             }
+
             variantStatus.setOptionList(optList);
             variantStatusList.add(variantStatus);
         }
