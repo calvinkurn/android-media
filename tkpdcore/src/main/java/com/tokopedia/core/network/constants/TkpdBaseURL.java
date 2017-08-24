@@ -16,7 +16,7 @@ public class TkpdBaseURL {
     public static String BASE_DOMAIN = LIVE_DOMAIN;
     public static String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
     public static String ACE_DOMAIN = "https://ace.tokopedia.com/";
-    public static String TOME_DOMAIN = "";
+    public static String TOME_DOMAIN = "https://tome.tokopedia.com/";
     public static String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
