@@ -264,12 +264,12 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                     continue;
                 }
                 String variantName = productVariantByCatModel.getName();
-                if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
-                    selectedVariantString += "\n";
-                }
                 List<VariantSubmitOption> optionList = variantUnitSubmit.getVariantSubmitOptionList();
                 if (optionList == null || optionList.size() == 0) {
                     continue;
+                }
+                if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
+                    selectedVariantString += "\n";
                 }
                 selectedVariantString += optionList.size() + " " + variantName;
             }
