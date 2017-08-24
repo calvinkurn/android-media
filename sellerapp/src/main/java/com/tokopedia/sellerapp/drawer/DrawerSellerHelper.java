@@ -36,6 +36,7 @@ import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActiv
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
@@ -210,6 +211,9 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_OPENED, false),
                 0);
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_add_product),
+                TkpdState.DrawerPosition.ADD_PRODUCT,
+                true));
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_product_list),
                 TkpdState.DrawerPosition.MANAGE_PRODUCT,
                 true));
@@ -358,6 +362,10 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
                     intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
+                    context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.ADD_PRODUCT:
+                    intent = new Intent(context, ProductAddActivity.class);
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
