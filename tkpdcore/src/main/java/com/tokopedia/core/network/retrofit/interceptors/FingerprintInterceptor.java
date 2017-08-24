@@ -9,6 +9,7 @@ import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUse
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
@@ -45,37 +46,42 @@ public class FingerprintInterceptor implements Interceptor {
         FingerprintRepository fpRepo = new FingerprintDataRepository();
         getFingerprintUseCase = new GetFingerprintUseCase(fpRepo);
         String json = "";
-        try {
-            json = getFingerprintUseCase.execute(null)
-                    .map(new Func1<String, String>() {
-                        @Override
-                        public String call(String s) {
-                            return s;
-                        }
-                    }).map(new Func1<String, String>() {
-                        @Override
-                        public String call(String s) {
-                            try {
-                                return Utilities.toBase64(s, Base64.NO_WRAP);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return "UnsupportedEncoding";
-                            }
 
-                        }
-                    }).doOnError(new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            throwable.printStackTrace();
-                        }
-                    }).onErrorReturn(new Func1<Throwable, String>() {
-                        @Override
-                        public String call(Throwable throwable) {
-                            return throwable.toString();
-                        }
-                    }).toBlocking().single();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(GlobalConfig.isSellerApp()){
+
+        }else{
+            try {
+                json = getFingerprintUseCase.execute(null)
+                        .map(new Func1<String, String>() {
+                            @Override
+                            public String call(String s) {
+                                return s;
+                            }
+                        }).map(new Func1<String, String>() {
+                            @Override
+                            public String call(String s) {
+                                try {
+                                    return Utilities.toBase64(s, Base64.NO_WRAP);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return "UnsupportedEncoding";
+                                }
+
+                            }
+                        }).doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                            }
+                        }).onErrorReturn(new Func1<Throwable, String>() {
+                            @Override
+                            public String call(Throwable throwable) {
+                                return throwable.toString();
+                            }
+                        }).toBlocking().single();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         SessionHandler session = new SessionHandler(MainApplication.getAppContext());
