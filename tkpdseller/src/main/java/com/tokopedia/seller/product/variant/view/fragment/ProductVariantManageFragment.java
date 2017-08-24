@@ -3,11 +3,8 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -16,6 +13,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -138,15 +136,17 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     @Override
     public void onItemClicked(ProductVariantManageViewModel productVariantManageViewModel) {
         // TODO start activity with the correct parameter
-        //ProductVariantDataManageActivity.start(getContext(),ProductVariantManageFragment.this,
-        //        10, //
-        //        "Warna", // test,
-        //        new ArrayList<ProductVariantValue>(), // test
-        //        new ArrayList<Long>() //test
-        //        );
-        Intent intent = new Intent(getContext(), ProductVariantDataManageActivity.class);
-        ProductVariantManageFragment.this.startActivityForResult(intent,
-                ProductVariantDataManageActivity.REQUEST_CODE);
+        ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
+        ArrayList<ProductVariantValue> productVariantValueList = new ArrayList<>();
+        productVariantValueList.addAll(ProductVariantUtils.getProductVariantValueListForVariantDetail(
+                productVariantManageViewModel.getTemporaryId(), variantData.getVariantUnitSubmitList(),
+                variantData.getVariantStatusList(), productVariantByCatModel.getUnitList()));
+        ProductVariantDataManageActivity.start(getContext(), ProductVariantManageFragment.this,
+                productVariantManageViewModel.getTemporaryId(),
+                productVariantManageViewModel.getTitle(),
+                true,
+                productVariantValueList,
+                new ArrayList<Long>());
     }
 
     private void pickVariant(int level) {
@@ -165,27 +165,35 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         }
         switch (requestCode) {
             case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
-            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE: {
-                VariantUnitSubmit variantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
-                switch (requestCode) {
-                    case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
-                        setVariantLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmit);
-                        checkVariantValidation(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmit);
-                        break;
-                    case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
-                        setVariantLevel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit);
-                        checkVariantValidation(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit);
-                        break;
-                    default:
-                        super.onActivityResult(requestCode, resultCode, data);
-                }
-                updateVariantStatusToDefault();
-                updateVariantUnitView();
-                updateVariantItemListView();
-            }
-            break;
-            case ProductVariantDataManageActivity.REQUEST_CODE: {
-                if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_DELETE)) {
+            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
+                onActivityResultFromItemPicker(requestCode, data);
+                break;
+            case ProductVariantDataManageActivity.REQUEST_CODE:
+                onActivityResultFromDataManage(data);
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void onActivityResultFromItemPicker(int requestCode, Intent data) {
+        VariantUnitSubmit variantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
+        switch (requestCode) {
+            case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
+                setVariantLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmit);
+                checkVariantValidation(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmit);
+                break;
+            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
+                setVariantLevel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit);
+                checkVariantValidation(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit);
+                break;
+        }
+        updateVariantStatusToDefault();
+        updateVariantUnitView();
+        updateVariantItemListView();
+    }
+
+    private void onActivityResultFromDataManage(Intent data) {
+        if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_DELETE)) {
                     long variantIdToDelete = data.getLongExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_ID, 0);
                     if (variantIdToDelete != 0) {
                         // TODO delete variant status for variantIdToDelete
@@ -206,10 +214,6 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
                         }
                     }
                 }
-            }
-            break;
-        }
-
     }
 
     private void setVariantLevel(int level, VariantUnitSubmit variantUnitSubmit) {

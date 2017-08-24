@@ -53,8 +53,8 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
             return;
         }
         for (ProductVariantValue productVariantValue : productVariantValueArrayList) {
-            if (! variantValueIdList.contains(productVariantValue.getIdLong())) {
-                variantValueIdList.add(productVariantValue.getIdLong());
+            if (! variantValueIdList.contains(productVariantValue.getValueId())) {
+                variantValueIdList.add(productVariantValue.getValueId());
             }
         }
         notifyDataSetChanged();
@@ -72,7 +72,7 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
     @Override
     public void onBindViewHolder(final ProductVariantItemPickerSearchViewHolder holder, final int position) {
         final ProductVariantValue productVariantValue = productVariantValueArrayList.get(position);
-        long productId = productVariantValue.getIdLong();
+        long productId = productVariantValue.getValueId();
         boolean isChecked = false;
         if (variantValueIdList.contains(productId)) {
             isChecked = true;
@@ -81,7 +81,7 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
         final BaseMultipleCheckViewHolder.CheckedCallback<ProductVariantValue> checkedCallback = new BaseMultipleCheckViewHolder.CheckedCallback<ProductVariantValue>() {
             @Override
             public void onItemChecked(ProductVariantValue productVariantValue, boolean checked) {
-                long productVariantId = productVariantValue.getIdLong();
+                long productVariantId = productVariantValue.getValueId();
                 if (checked) {
                     variantValueIdList.add(productVariantId);
                 } else {
@@ -120,7 +120,7 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
     public ArrayList<Long> getVariantValueIdListSorted() {
         ArrayList<Long> sortedArrayList = new ArrayList<>();
         for (int i=0, sizei = productVariantValueArrayList.size(); i<sizei; i++) {
-            int position = variantValueIdList.indexOf(productVariantValueArrayList.get(i).getIdLong());
+            int position = variantValueIdList.indexOf(productVariantValueArrayList.get(i).getValueId());
             if (position >= 0) {
                 sortedArrayList.add(variantValueIdList.get(position));
             }

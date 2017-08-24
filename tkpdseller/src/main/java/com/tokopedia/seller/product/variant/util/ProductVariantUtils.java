@@ -89,9 +89,9 @@ public class ProductVariantUtils {
         return null;
     }
 
-    public static ProductVariantValue getProductVariantValueByVariantUnit(VariantSubmitOption variantSubmitOption, List<ProductVariantUnit> productVariantUnitList) {
+    public static ProductVariantValue getProductVariantValueByVariantUnit(long unitValueId, List<ProductVariantUnit> productVariantUnitList) {
         for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
-            ProductVariantValue productVariantValue = getProductVariantValue(variantSubmitOption, productVariantUnit.getProductVariantValueList());
+            ProductVariantValue productVariantValue = getProductVariantValue(unitValueId, productVariantUnit.getProductVariantValueList());
             if (productVariantValue != null) {
                 return productVariantValue;
             }
@@ -99,9 +99,9 @@ public class ProductVariantUtils {
         return null;
     }
 
-    public static ProductVariantValue getProductVariantValue(VariantSubmitOption variantSubmitOption, List<ProductVariantValue> productVariantValueList) {
+    public static ProductVariantValue getProductVariantValue(long unitValueId, List<ProductVariantValue> productVariantValueList) {
         for (ProductVariantValue productVariantValue : productVariantValueList) {
-            if (productVariantValue.getValueId() == variantSubmitOption.getVariantUnitValueId()) {
+            if (productVariantValue.getValueId() == unitValueId) {
                 return productVariantValue;
             }
         }
@@ -336,18 +336,43 @@ public class ProductVariantUtils {
 
     public static List<String> getTitleList(List<VariantSubmitOption> variantSubmitOptionList, List<ProductVariantUnit> productVariantUnitList) {
         List<String> titleList = new ArrayList<>();
-        for (VariantSubmitOption variantSubmitOption: variantSubmitOptionList) {
+        for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
             // If name already on custom text, add custom text on title list
             if (!TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
                 titleList.add(variantSubmitOption.getCustomText());
             } else {
                 // If not, search and mapping with variant value list from server
-                ProductVariantValue productVariantValue = getProductVariantValueByVariantUnit(variantSubmitOption, productVariantUnitList);
+                ProductVariantValue productVariantValue = getProductVariantValueByVariantUnit(variantSubmitOption.getVariantUnitValueId(), productVariantUnitList);
                 if (productVariantValue != null) {
                     titleList.add(productVariantValue.getValue());
                 }
             }
         }
         return titleList;
+    }
+
+    public static List<ProductVariantValue> getProductVariantValueListForVariantDetail(
+            long tempId, List<VariantUnitSubmit> variantUnitSubmitList,
+            List<VariantStatus> variantStatusList, List<ProductVariantUnit> productVariantUnitList) {
+        List<ProductVariantValue> productVariantValueList = new ArrayList<>();
+        List<VariantSubmitOption> variantSubmitOptionList = getPairingVariantSubmitOptionListBy(
+                tempId, variantUnitSubmitList, variantStatusList);
+        for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
+            String title = "";
+            // If name already on custom text, add custom text on title list
+            if (!TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+                title = variantSubmitOption.getCustomText();
+            } else {
+                // If not, search and mapping with variant value list from server
+                ProductVariantValue productVariantValueTemp = getProductVariantValueByVariantUnit(
+                        variantSubmitOption.getVariantUnitValueId(), productVariantUnitList);
+                if (productVariantValueTemp != null) {
+                    title = productVariantValueTemp.getValue();
+                }
+            }
+            ProductVariantValue productVariantValue = new ProductVariantValue(variantSubmitOption.getTemporaryId(), title);
+            productVariantValueList.add(productVariantValue);
+        }
+        return productVariantValueList;
     }
 }

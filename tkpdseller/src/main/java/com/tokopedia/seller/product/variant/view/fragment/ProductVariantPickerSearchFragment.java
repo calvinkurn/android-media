@@ -138,7 +138,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         }
         for (VariantSubmitOption variantSubmitOption : variantUnitSubmit.getVariantSubmitOptionList()) {
             if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
-                ProductVariantValue productVariantValue = ProductVariantUtils.getProductVariantValue(variantSubmitOption, productVariantValueList);
+                ProductVariantValue productVariantValue = ProductVariantUtils.getProductVariantValue(variantSubmitOption.getVariantUnitValueId(), productVariantValueList);
                 if (productVariantValue != null) {
                     ((BaseMultipleCheckListAdapter<ProductVariantValue>) adapter).setChecked(productVariantValue.getId(), true);
                     onItemChecked(productVariantValue, true);
