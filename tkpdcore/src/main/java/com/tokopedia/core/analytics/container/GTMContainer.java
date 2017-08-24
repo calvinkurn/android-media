@@ -270,8 +270,7 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public String getString(String key) {
         if (ContainerHolderSingleton.isContainerHolderAvailable())
-            if(GTMContainer.getContainer()!=null)
-                return GTMContainer.getContainer().getString(key);
+            return GTMContainer.getContainer().getString(key);
         return "";
     }
 
