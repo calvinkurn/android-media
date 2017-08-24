@@ -86,17 +86,17 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
     private void bindWholesaleOptionItem(final Option option) {
         wholesaleTitle.setText(option.getName());
-        wholesaleToggle.setOnCheckedChangeListener(null);
-        if (Boolean.TRUE.equals(dynamicFilterView.loadLastCheckedState(option))) {
-            wholesaleToggle.setChecked(true);
-        } else {
-            wholesaleToggle.setChecked(false);
-        }
-        wholesaleToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                dynamicFilterView.saveCheckedState(option, isChecked);
-            }
-        });
+
+        CompoundButton.OnCheckedChangeListener onCheckedChangeListener
+                = new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        dynamicFilterView.saveCheckedState(option, isChecked);
+                    }
+                };
+
+        bindSwitch(wholesaleToggle,
+                dynamicFilterView.loadLastCheckedState(option),
+                onCheckedChangeListener);
     }
 }

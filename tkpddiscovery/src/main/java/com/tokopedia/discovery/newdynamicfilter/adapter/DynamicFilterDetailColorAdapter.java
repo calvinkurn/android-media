@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 
 /**
  * Created by henrypriyono on 8/16/17.
@@ -42,21 +43,10 @@ public class DynamicFilterDetailColorAdapter extends DynamicFilterDetailAdapter 
         }
 
         @Override
-        public void bind(final Option option) {
+        public void bind(Option option) {
             colorIcon.setColor(Color.parseColor(option.getHexColor()));
             colorTitle.setText(option.getName());
-            colorCheckBox.setOnCheckedChangeListener(null);
-            if (!TextUtils.isEmpty(option.getInputState())) {
-                colorCheckBox.setChecked(Boolean.parseBoolean(option.getInputState()));
-            } else {
-                colorCheckBox.setChecked(false);
-            }
-            colorCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    option.setInputState(Boolean.toString(isChecked));
-                }
-            });
+            OptionHelper.bindOptionWithCheckbox(option, colorCheckBox);
         }
     }
 }

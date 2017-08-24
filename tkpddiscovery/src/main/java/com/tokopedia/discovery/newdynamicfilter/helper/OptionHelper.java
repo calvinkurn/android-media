@@ -1,6 +1,8 @@
 package com.tokopedia.discovery.newdynamicfilter.helper;
 
 import android.text.TextUtils;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.tokopedia.core.discovery.model.LevelThreeCategory;
 import com.tokopedia.core.discovery.model.LevelTwoCategory;
@@ -83,6 +85,23 @@ public class OptionHelper {
     public static String parseValueFromUniqueId(String uniqueId) {
         int separatorPos = uniqueId.indexOf("_");
         return uniqueId.substring(separatorPos + 1, uniqueId.length());
+    }
+
+    public static void bindOptionWithCheckbox(final Option option, CheckBox checkBox) {
+        checkBox.setOnCheckedChangeListener(null);
+
+        if (!TextUtils.isEmpty(option.getInputState())) {
+            checkBox.setChecked(Boolean.parseBoolean(option.getInputState()));
+        } else {
+            checkBox.setChecked(false);
+        }
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                option.setInputState(Boolean.toString(isChecked));
+            }
+        });
     }
 
     public static List<Category> convertToCategoryList(List<Option> optionList) {

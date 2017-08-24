@@ -13,6 +13,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 
 /**
  * Created by henrypriyono on 8/24/17.
@@ -45,18 +46,7 @@ public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter
             int ratingCount = Integer.parseInt(option.getName());
             ratingView.setImageResource(RatingHelper.getRatingDrawable(ratingCount));
 
-            checkBox.setOnCheckedChangeListener(null);
-            if (!TextUtils.isEmpty(option.getInputState())) {
-                checkBox.setChecked(Boolean.parseBoolean(option.getInputState()));
-            } else {
-                checkBox.setChecked(false);
-            }
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    option.setInputState(Boolean.toString(isChecked));
-                }
-            });
+            OptionHelper.bindOptionWithCheckbox(option, checkBox);
         }
     }
 }
