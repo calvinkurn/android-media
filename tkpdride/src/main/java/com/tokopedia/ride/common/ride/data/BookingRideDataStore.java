@@ -62,7 +62,5 @@ public interface BookingRideDataStore {
 
     Observable<String> updateRequest(TKPDMapParam<String, Object> parameters);
 
-    Observable<TipListEntity> getTipList();
-
     Observable<String> sendTip(TKPDMapParam<String, Object> parameters);
 }

@@ -13,6 +13,9 @@ import rx.Observable;
  */
 
 public class SendTipUseCase extends UseCase<String> {
+    public static final String PARAM_REQUEST_ID = "request_id";
+    public static final String PARAM_TIP_AMOUNT = "tip_amount";
+
     private final BookingRideRepository mBookingRideRepository;
 
     public SendTipUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, BookingRideRepository mBookingRideRepository) {

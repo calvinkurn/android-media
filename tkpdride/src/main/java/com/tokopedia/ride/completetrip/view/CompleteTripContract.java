@@ -1,9 +1,13 @@
 package com.tokopedia.ride.completetrip.view;
 
+import android.app.Activity;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+
+import java.util.ArrayList;
 
 /**
  * Created by alvarisi on 3/31/17.
@@ -48,11 +52,29 @@ public interface CompleteTripContract {
         String getRateStars();
 
         void closePage();
+
+        void showTipLayout();
+
+        void hideTipLayout();
+
+        void enableRatingSubmitButton();
+
+        void disableRatingSubmitButton();
+
+        Activity getActivity();
+
+        ArrayList<String> getFormmattedTipList();
+
+        RequestParams getTipParam();
+
+        int getTipAmount();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void actionGetReceipt();
 
-        void actionSendRating();
+        void actionSubmitRatingAndDriverTip();
+
+        void handleRatingStarClick(float v);
     }
 }

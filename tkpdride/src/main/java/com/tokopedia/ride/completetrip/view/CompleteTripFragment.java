@@ -13,15 +13,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -47,16 +50,16 @@ import com.tokopedia.ride.completetrip.di.CompleteTripComponent;
 import com.tokopedia.ride.completetrip.di.DaggerCompleteTripComponent;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
+import com.tokopedia.ride.completetrip.domain.SendTipUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
-import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
-import com.tokopedia.ride.ontrip.di.OnTripComponent;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +133,10 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     RelativeLayout ratingResultLayout;
     @BindView(R2.id.rb_rate_star_result)
     RatingBar ratingBarResult;
-
+    @BindView(R2.id.grid_layout_tip)
+    GridLayout tipLayout;
+    @BindView(R2.id.tip_seperator)
+    ImageView tipSeperator;
 
     @BindView(R2.id.pending_fare_layout)
     RelativeLayout pendingFareLayout;
@@ -150,6 +156,9 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     private Receipt receipt;
     private DigitalCheckoutPassData passData;
     private OnFragmentInteractionListener interactionListener;
+    private int selectedTipIndex = -1;
+    private ArrayList<String> tipList;
+    private int tipAmount;
 
     public interface OnFragmentInteractionListener {
         void actionSuccessRatingSubmited();
@@ -260,22 +269,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         rateStarRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                if (ratingBar.getRating() > 0.0) {
-                    rateConfirmationButton.setEnabled(true);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
-                    } else {
-                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
-                    }
-                } else {
-                    rateConfirmationButton.setEnabled(false);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
-                    } else {
-                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
-                    }
-                }
+                presenter.handleRatingStarClick(v);
             }
         });
     }
@@ -318,7 +312,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
-    public void renderReceipt(Receipt receipt, boolean isPendingPaymentExists) {
+    public void renderReceipt(final Receipt receipt, boolean isPendingPaymentExists) {
         this.receipt = receipt;
         totalChargedTextView.setText(receipt.getTotalCharged());
         totalChargedTopTextView.setText(receipt.getTotalFare());
@@ -388,6 +382,51 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             pendingFareLayout.setVisibility(View.VISIBLE);
         } else {
             ratingLayout.setVisibility(View.VISIBLE);
+
+            //create tip buttons
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            tipList = null;
+            if (receipt.getTipList() != null && receipt.getTipList().getList() != null) {
+                tipList = receipt.getTipList().getFormattedCurrecyList();
+            }
+
+            if (tipList != null) {
+                tipLayout.removeAllViews();
+                for (int index = 0; index < tipList.size(); index++) {
+                    TextView tipButton = (TextView) inflater.inflate(R.layout.layout_tip_button, null);
+                    tipButton.setText(tipList.get(index));
+                    tipButton.setTag(index);
+                    tipButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            selectedTipIndex = (int) v.getTag();
+                            tipAmount = receipt.getTipList().getList().get(selectedTipIndex);
+
+                            //redraw tip buttons to show selected item
+                            for (int count = 0; count < tipList.size(); count++) {
+                                TextView button = (TextView) tipLayout.getChildAt(count);
+                                int textColor = ContextCompat.getColor(getActivity(), R.color.black);
+                                int backgroundDrawableResId = R.drawable.shape_bg_rounded_white_rectangle;
+
+                                if (selectedTipIndex == count) {
+                                    textColor = ContextCompat.getColor(getActivity(), R.color.white);
+                                    backgroundDrawableResId = R.drawable.shape_bg_rounded_yellow_rectangle;
+                                }
+
+                                button.setTextColor(textColor);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                    button.setBackground(getResources().getDrawable(backgroundDrawableResId));
+                                } else {
+                                    button.setBackgroundDrawable(getResources().getDrawable(backgroundDrawableResId));
+                                }
+                            }
+                        }
+                    });
+                    tipLayout.addView(tipButton);
+                }
+            }
         }
     }
 
@@ -449,7 +488,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {
-        presenter.actionSendRating();
+        presenter.actionSubmitRatingAndDriverTip();
     }
 
     @Override
@@ -480,7 +519,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.actionSendRating();
+                presenter.actionSubmitRatingAndDriverTip();
             }
         });
     }
@@ -588,6 +627,19 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
     }
 
+
+    @Override
+    public void showTipLayout() {
+        tipSeperator.setVisibility(View.VISIBLE);
+        tipLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideTipLayout() {
+        tipSeperator.setVisibility(View.GONE);
+        tipLayout.setVisibility(View.GONE);
+    }
+
     private String generateIdEmpotency(String requestId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
@@ -612,5 +664,49 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             }
         }
         return queryPairs;
+    }
+
+    @Override
+    public void enableRatingSubmitButton() {
+        rateConfirmationButton.setEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+        } else {
+            rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+        }
+    }
+
+    @Override
+    public void disableRatingSubmitButton() {
+        rateConfirmationButton.setEnabled(false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        } else {
+            rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        }
+    }
+
+    @Override
+    public ArrayList<String> getFormmattedTipList() {
+        return tipList;
+    }
+
+    @Override
+    public RequestParams getTipParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(SendTipUseCase.PARAM_TIP_AMOUNT, String.valueOf(getTipAmount()));
+        requestParams.putString(SendTipUseCase.PARAM_REQUEST_ID, requestId);
+        return requestParams;
+    }
+
+    @Override
+    public int getTipAmount() {
+
+        if (rateStarRatingBar.getRating() >= 4 && tipAmount > 0) {
+            return tipAmount;
+        }
+
+        return tipAmount;
     }
 }

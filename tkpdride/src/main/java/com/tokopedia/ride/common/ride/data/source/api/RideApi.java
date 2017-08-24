@@ -94,9 +94,6 @@ public interface RideApi {
     @FormUrlEncoded
     Observable<String> updateRequest(@FieldMap TKPDMapParam<String, Object> parameters);
 
-    @GET(RideUrl.TIP_LIST)
-    Observable<TipListEntity> getTipList();
-
     @POST(RideUrl.SEND_TIP)
     @FormUrlEncoded
     Observable<String> sendTip(@FieldMap TKPDMapParam<String, Object> parameters);

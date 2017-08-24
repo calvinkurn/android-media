@@ -55,7 +55,6 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final TimePriceEstimateEntityMapper timePriceEstimateEntityMapper;
     private final PriceEstimateEntityMapper priceEstimateEntityMapper;
     private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
-    private final TipListEntityMapper tipListEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
@@ -70,7 +69,6 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         timePriceEstimateEntityMapper = new TimePriceEstimateEntityMapper();
         priceEstimateEntityMapper = new PriceEstimateEntityMapper();
         rideHistoryWrapperMapper = new RideHistoryWrapperMapper();
-        tipListEntityMapper = new TipListEntityMapper();
     }
 
     @Override
@@ -339,18 +337,6 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     public Observable<String> updateRequest(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .updateRequest(parameters);
-    }
-
-    @Override
-    public Observable<TipList> getTipList() {
-        return mBookingRideDataStoreFactory.createCloudDataStore()
-                .getTipList()
-                .map(new Func1<TipListEntity, TipList>() {
-                    @Override
-                    public TipList call(TipListEntity tipListEntity) {
-                        return tipListEntityMapper.transform(tipListEntity);
-                    }
-                });
     }
 
     @Override

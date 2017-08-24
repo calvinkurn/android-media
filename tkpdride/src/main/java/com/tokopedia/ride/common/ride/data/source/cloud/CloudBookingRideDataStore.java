@@ -149,11 +149,6 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     }
 
     @Override
-    public Observable<TipListEntity> getTipList() {
-        return mRideApi.getTipList();
-    }
-
-    @Override
     public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
         return mRideApi.sendTip(parameters);
     }
