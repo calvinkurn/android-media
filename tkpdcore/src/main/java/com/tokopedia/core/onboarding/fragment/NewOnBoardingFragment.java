@@ -4,6 +4,7 @@ package com.tokopedia.core.onboarding.fragment;
  * Created by hafizh HERDI on 3/21/2016.
  */
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -178,7 +179,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         descView = (TextView) v.findViewById(R.id.description);
         main = v.findViewById(R.id.main);
         lottieAnimationView = (LottieAnimationView) v.findViewById(R.id.animation_view);
-        lottieAnimationView.setAnimation("empty_cactus.json", LottieAnimationView.CacheStrategy.Strong);
+        lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong);
         lottieAnimationView.playAnimation();
 
         titleView.setText(title);
@@ -351,6 +352,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     }
 
     public void animateOut() {
+        lottieAnimationView.setProgress(0.5f);
         lottieAnimationView.reverseAnimation();
         ValueAnimator slideTitle = slideToX(titleView, 1, 0, mScreenWidth);
         slideTitle.start();

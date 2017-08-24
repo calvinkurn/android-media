@@ -93,9 +93,9 @@ public class NewOnboardingActivity extends OnboardingActivity {
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_4_title),
                 getString(R.string.nonb_4_desc), "onboarding4.json",
                 ContextCompat.getColor(getApplicationContext(), R.color.medium_green),
-                OnBoardingFragment.VIEW_DEFAULT, 3));``
+                OnBoardingFragment.VIEW_DEFAULT, 3));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
-                getString(R.string.nonb_5_desc), "onboarding2.json",
+                getString(R.string.nonb_5_desc), "onboarding5.json",
                 ContextCompat.getColor(getApplicationContext(), R.color.orange_300),
                 OnBoardingFragment.VIEW_ENDING, 4));
     }
