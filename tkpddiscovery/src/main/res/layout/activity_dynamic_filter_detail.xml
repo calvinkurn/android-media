@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dynamic_filter_item_padding"
-            android:background="@color/grey_300">
+            android:background="@color/grey_200">
 
             <EditText
                 android:id="@+id/filter_detail_search"
