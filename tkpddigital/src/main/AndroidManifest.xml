@@ -40,10 +40,10 @@
             android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".wallets.WalletToDepositActivity"
+            android:name=".wallets.wallettodeposit.WalletToDepositActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".wallets.WalletToDepositThanksActivity"
+            android:name=".wallets.wallettodeposit.WalletToDepositThanksActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".tokocash.activity.TopUpTokoCashActivity"
             android:screenOrientation="portrait" />
