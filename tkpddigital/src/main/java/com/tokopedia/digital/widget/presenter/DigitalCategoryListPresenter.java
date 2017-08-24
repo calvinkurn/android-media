@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.presenter;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
@@ -17,7 +16,6 @@ import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.Iterator;
 import java.util.List;
 
 import rx.Subscriber;
@@ -31,16 +29,10 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     private final IDigitalCategoryListInteractor digitalCategoryListInteractor;
     private final IDigitalCategoryListView digitalCategoryListView;
 
-    private final String UBER = "Uber";
-    private final String TIKET_KERETA_API = "Tiket Kereta Api";
-
-    private boolean isFromSeller;
-
     public DigitalCategoryListPresenter(
-            boolean isFromSeller, IDigitalCategoryListInteractor digitalCategoryListInteractor,
+            IDigitalCategoryListInteractor digitalCategoryListInteractor,
             IDigitalCategoryListView iDigitalCategoryListView
     ) {
-        this.isFromSeller = isFromSeller;
         this.digitalCategoryListInteractor = digitalCategoryListInteractor;
         this.digitalCategoryListView = iDigitalCategoryListView;
     }
@@ -89,15 +81,6 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
             @Override
             public void onNext(List<DigitalCategoryItemData> digitalCategoryItemDataList) {
-                if (isFromSeller) {
-                    Iterator<DigitalCategoryItemData> iter = digitalCategoryItemDataList.iterator();
-                    while (iter.hasNext()) {
-                        DigitalCategoryItemData digitalCategoryItemData = iter.next();
-                        if (isUberOrTiketKeretaApi(digitalCategoryItemData.getName())) {
-                            iter.remove();
-                        }
-                    }
-                }
                 digitalCategoryListView.renderDigitalCategoryDataList(
                         digitalCategoryItemDataList
                 );
@@ -130,9 +113,4 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
             }
         };
     }
-
-    private boolean isUberOrTiketKeretaApi(String product) {
-        return product.equals(UBER) || product.equals(TIKET_KERETA_API);
-    }
-
 }

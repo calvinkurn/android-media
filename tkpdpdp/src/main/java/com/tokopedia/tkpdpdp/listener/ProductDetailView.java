@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp.listener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
@@ -49,12 +50,8 @@ public interface ProductDetailView extends ViewListener {
      */
     void onProductTalkClicked(@NonNull Bundle bundle);
 
-    /**
-     * Pada saat diskusi produk diklik
-     *
-     * @param bundle bundle data yang dikirim
-     */
-    void onProductReviewClicked(@NonNull Bundle bundle);
+
+    void onProductReviewClicked();
 
     /**
      * Pada saat promosikan produk diklik
@@ -123,6 +120,8 @@ public interface ProductDetailView extends ViewListener {
     void onCourierClicked(@NonNull Bundle bundle);
 
     void onWholesaleClicked(@NonNull Bundle bundle);
+
+    void onVariantClicked(@NonNull Bundle bundle);
 
     void onInstallmentClicked(@NonNull Bundle bundle);
 
@@ -283,4 +282,5 @@ public interface ProductDetailView extends ViewListener {
 
     void showLatestTalkView(LatestTalkViewModel discussion);
 
+    void addProductVariant(ProductVariant productVariant);
 }

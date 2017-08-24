@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
@@ -57,6 +58,7 @@ public class BcaOneClickDeleteDialog extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.bca_one_click_delete_dialog, container, false);
         cancelButton = (TextView) view.findViewById(R.id.cancel_button);
         deleteButton = (TextView) view.findViewById(R.id.delete_button);
