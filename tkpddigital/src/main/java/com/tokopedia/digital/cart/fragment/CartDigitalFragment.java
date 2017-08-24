@@ -547,7 +547,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorInstantCheckout(String message) {
-        // closeViewWithMessageAlert(message);
         showToastMessage(message);
         presenter.processGetCartDataAfterCheckout();
     }
