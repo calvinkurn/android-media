@@ -321,7 +321,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                     variantLevelTwoLabelView.resetContentText();
                 } else {
                     variantLevelTwoLabelView.setEnabled(true);
-                    variantLevelOneLabelView.setContent(getVariantTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE));
+                    variantLevelTwoLabelView.setContent(getVariantTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE));
                 }
                 break;
         }
