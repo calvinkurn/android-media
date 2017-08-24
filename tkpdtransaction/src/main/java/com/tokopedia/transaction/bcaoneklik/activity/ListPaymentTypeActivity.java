@@ -19,15 +19,21 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickEditActivity;
 import com.tokopedia.transaction.bcaoneklik.adapter.BcaOneClickRecyclerAdapter;
+import com.tokopedia.transaction.bcaoneklik.adapter.CreditCardRecyclerViewAdapter;
+import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
+import com.tokopedia.transaction.bcaoneklik.di.PaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.dialog.BcaOneClickDeleteDialog;
+import com.tokopedia.transaction.bcaoneklik.dialog.DeleteCreditCardDialog;
 import com.tokopedia.transaction.bcaoneklik.listener.BcaOneClickDeleteListener;
 import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
 import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
+import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModel;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenter;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
-import com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -41,7 +47,8 @@ import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CR
  */
 
 public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTypePresenter>
-        implements ListPaymentTypeView, BcaOneClickDeleteListener{
+        implements ListPaymentTypeView, BcaOneClickDeleteListener, CreditCardRecyclerViewAdapter
+        .CreditCardItemListener, DeleteCreditCardDialog.DeleteCreditCardDialogListener{
     public static final int REGISTER_BCA_ONE_CLICK_REQUEST_CODE = 1;
     public static final int EDIT_BCA_ONE_CLICK_REQUEST_CODE = 2;
 
@@ -50,6 +57,10 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     private RecyclerView bcaOneClickRecyclerView;
 
     private BcaOneClickRecyclerAdapter bcaOneClickRecyclerAdapter;
+
+    private CreditCardRecyclerViewAdapter creditCardRecyclerViewAdapter;
+
+    private RecyclerView creditCardVaultRecyclerView;
 
     private LinearLayout bcaOneClickRegisterLayout;
 
@@ -60,6 +71,9 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     private TkpdProgressDialog mainProgressDialog;
 
     private PaymentListModel paymentModels;
+
+    @Inject
+    ListPaymentTypePresenterImpl presenter;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -73,7 +87,17 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
     @Override
     protected void initialPresenter() {
-        presenter = new ListPaymentTypePresenterImpl(this);
+        initInjector();
+        presenter.setViewListener(this);
+    }
+
+    private void initInjector() {
+
+        PaymentOptionComponent component = DaggerPaymentOptionComponent
+                .builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -84,6 +108,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     @Override
     protected void initView() {
         rootView = (RelativeLayout) findViewById(R.id.payment_list_root_view);
+        creditCardVaultRecyclerView = (RecyclerView) findViewById(R.id.credit_card_recycler_view);
+        creditCardVaultRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         bcaOneClickRecyclerView = (RecyclerView) findViewById(R.id.bca_one_click_recycler_view);
         bcaOneClickRegisterLayout = (LinearLayout) findViewById(R.id.bca_one_click_register_layout);
         bcaOneClickRegistrationButton = (TextView) findViewById(R.id.bca_one_click_register_button);
@@ -93,6 +119,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                 TkpdProgressDialog.NORMAL_PROGRESS);
         mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.MAIN_PROGRESS);
+        presenter.onGetCreditCardList(this);
         presenter.onGetPaymentList(paymentListModelSubscriber());
         bcaOneClickRegistrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +175,25 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     @Override
     public void showMainDialog() {
         mainProgressDialog.showDialog();
+    }
+
+    @Override
+    public void receivedCreditCardList(CreditCardModel creditCardModel) {
+        creditCardRecyclerViewAdapter = new CreditCardRecyclerViewAdapter(
+                creditCardModel.getCreditCardList(), ListPaymentTypeActivity.this
+        );
+        creditCardVaultRecyclerView.setAdapter(creditCardRecyclerViewAdapter);
+        creditCardRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void successDeleteCreditCard() {
+        presenter.onGetCreditCardList(this);
+    }
+
+    @Override
+    public void onLoadCreditCardError(String errorMessage) {
+
     }
 
     @Override
@@ -319,5 +365,17 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                 presenter.onGetPaymentList(paymentListModelSubscriber());
             }
         };
+    }
+
+    @Override
+    public void onDeleteButtonClicked(String tokenId) {
+        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(tokenId);
+        creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
+    }
+
+
+    @Override
+    public void onConfirmDelete(String tokenId) {
+        presenter.onCreditCardDeleted(this, tokenId);
     }
 }

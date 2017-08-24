@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.sellerapp.activities.gmstat;
 
 import android.content.Context;
@@ -116,10 +117,12 @@ import static com.tokopedia.sellerapp.activities.sellerhome.SellerHomeTest.SHOP_
 import static com.tokopedia.sellerapp.activities.sellerhome.SellerHomeTest.createSuccess200Response;
 import static org.hamcrest.Matchers.allOf;
 
+*/
 /**
  * Created by normansyahputa on 11/8/16.
  * enable hades network 25/12/2016
- */
+ *//*
+
 
 @RunWith(AndroidJUnit4.class)
 public class GMStatTest {
@@ -263,10 +266,12 @@ public class GMStatTest {
         successfulTransactionDigit("4_segment_views_one_million", "1.0jt","_one_million");
     }
 
-    /**
+    */
+/**
      * 1.55 jt but just get 1.5 ( one digit after comma )
      * @throws Exception
-     */
+     *//*
+
     @Test
     public void checkNumberFormatForSuccessfulTransactionFor1Point55Million() throws Exception{
         oneMPointFiftyFiveillion();
@@ -847,3 +852,4 @@ public class GMStatTest {
         server.shutdown();
     }
 }
+*/

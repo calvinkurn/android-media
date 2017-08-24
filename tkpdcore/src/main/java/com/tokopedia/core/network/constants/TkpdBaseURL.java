@@ -53,6 +53,7 @@ public class TkpdBaseURL {
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
     public static final String FLAG_APP = "?flag_app=1";
     public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
+    public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -808,5 +809,8 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
+        public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
+        public static final String PATH_CC_DELETE = "v2/ccvault/delete";
+
     }
 }

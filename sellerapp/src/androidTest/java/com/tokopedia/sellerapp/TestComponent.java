@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.sellerapp;
 
 import com.tokopedia.sellerapp.activities.MockGooglePlayServiceModule;
@@ -11,9 +12,11 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
+*/
 /**
  * Created by normansyahputa on 8/26/16.
- */
+ *//*
+
 @Singleton
 @Component(modules = {
         AppModule.class,
@@ -26,3 +29,4 @@ public interface TestComponent extends BaseComponent {
     void inject(SellerHomeTest sellerHomeTest);
     void inject(GMStatTest gmStatTest);
 }
+*/

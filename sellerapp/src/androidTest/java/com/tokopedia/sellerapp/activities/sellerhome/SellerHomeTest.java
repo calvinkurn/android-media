@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.sellerapp.activities.sellerhome;
 
 import android.content.Context;
@@ -53,11 +54,13 @@ import static com.tokopedia.sellerapp.activities.gmstat.GMStatTest.SHOP_CATEGORY
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.allOf;
 
+*/
 /**
  * Created by normansyahputa on 9/11/16.
  *
  * TODO : somehow boommenu not working.
- */
+ *//*
+
 @RunWith(AndroidJUnit4.class)
 public class SellerHomeTest {
     public static final String GET_SHOP_INFO_JSON = "get_shop_info.json";
@@ -185,9 +188,11 @@ public class SellerHomeTest {
         context = InstrumentationRegistry.getContext();
     }
 
-//    /**
+//    */
+/**
 //     * @throws Exception
-//     */
+//     *//*
+
 //    @Test
 //    public void testFirstRunSellerHome() throws Exception{
 //        server.enqueue(createSuccess200Response(jsonFactory.getJson(context, GET_SHOP_INFO_JSON)));
@@ -201,9 +206,11 @@ public class SellerHomeTest {
 //        Spoon.screenshot(activityTestRule.getActivity(), "testFirstRunSellerHome");
 //    }
 
-    /**
+    */
+/**
      * run directly to seller home.
-     */
+     *//*
+
 //    protected void startSellerHome() {
 //        LoginResponseParser LoginResponseParser = gson.fromJson(loginSuccessKainan, com.tokopedia.sellerapp.network.apiServices.parsers.user.LoginResponseParser.class);
 //        Intent intent = new Intent();
@@ -312,10 +319,12 @@ public class SellerHomeTest {
 //        Constants.CONNECTION_TIMEOUT = Constants.CONNECTION_TIMEOUT_REAL;
 //    }
 //
-//    /**
+//    */
+/**
 //     * 403 or 404 error code makes no error messages at seller home.
 //     * @throws Exception
-//     */
+//     *//*
+
 //    @Test
 //    public void testIfApiDownForbidden() throws Exception{
 //        server.enqueue(createSuccess200Response(jsonFactory.getJson(context, GET_SHOP_INFO_FIRST_CREATED_JSON)));
@@ -357,9 +366,11 @@ public class SellerHomeTest {
 //    }
 
 
-    /**
+    */
+/**
      * encapsulate the string name from asset in here
-     */
+     *//*
+
     public static final class JsonFactory {
 
         public String getJson(Context context, String name) throws Exception{
@@ -492,3 +503,4 @@ public class SellerHomeTest {
         return mockResponse;
     }
 }
+*/
