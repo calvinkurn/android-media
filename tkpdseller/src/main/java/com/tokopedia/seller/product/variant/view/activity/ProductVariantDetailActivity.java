@@ -7,23 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
-import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDataManageFragment;
-import com.tokopedia.seller.product.variant.view.fragment.ProductVariantManageFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +24,8 @@ import java.util.List;
  * Created by hendry on 8/2/17.
  */
 
-public class ProductVariantDataManageActivity extends BaseSimpleActivity implements
-        ProductVariantDataManageFragment.OnProductVariantDataManageFragmentListener {
+public class ProductVariantDetailActivity extends BaseSimpleActivity implements
+        ProductVariantDetailFragment.OnProductVariantDataManageFragmentListener {
 
     public static final String EXTRA_VARIANT_ID = "var_id";
     public static final String EXTRA_VARIANT_NAME = "var_name";
@@ -66,7 +58,7 @@ public class ProductVariantDataManageActivity extends BaseSimpleActivity impleme
                                         boolean hasStock,
                                         ArrayList<ProductVariantValue> productVariantValueArrayList,
                                         ArrayList<Long> selectedVariantValueId){
-        Intent intent = new Intent(context, ProductVariantDataManageActivity.class);
+        Intent intent = new Intent(context, ProductVariantDetailActivity.class);
         intent.putExtra(EXTRA_VARIANT_ID, variantId);
         intent.putExtra(EXTRA_VARIANT_NAME, variantName);
         intent.putExtra(EXTRA_VARIANT_HAS_STOCK, hasStock);
@@ -91,7 +83,7 @@ public class ProductVariantDataManageActivity extends BaseSimpleActivity impleme
 
     @Override
     protected Fragment getNewFragment() {
-        return ProductVariantDataManageFragment.newInstance();
+        return ProductVariantDetailFragment.newInstance();
     }
 
     @Override

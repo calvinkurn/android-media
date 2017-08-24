@@ -49,6 +49,9 @@ public class ProductVariantUtils {
 
     private static String getTitle(int level, VariantSubmitOption variantSubmitOption, List<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
+        if (variantSubmitOption == null) {
+            return title;
+        }
         if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
             // Check variant option title from server
             ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(

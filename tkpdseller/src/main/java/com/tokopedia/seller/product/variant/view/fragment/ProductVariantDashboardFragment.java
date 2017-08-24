@@ -19,9 +19,9 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDataManageActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
-import com.tokopedia.seller.product.variant.view.adapter.ProductVariantManageListAdapter;
+import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
 import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
@@ -33,7 +33,7 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantManageFragment extends BaseListFragment<BlankPresenter, ProductVariantManageViewModel> implements ProductVariantMainView {
+public class ProductVariantDashboardFragment extends BaseListFragment<BlankPresenter, ProductVariantManageViewModel> implements ProductVariantMainView {
 
     private static final int MULTIPLY_START_TEMP_ID = 10000;
 
@@ -44,9 +44,9 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     private VariantData variantData;
     private View variantListView;
 
-    public static ProductVariantManageFragment newInstance() {
+    public static ProductVariantDashboardFragment newInstance() {
         Bundle args = new Bundle();
-        ProductVariantManageFragment fragment = new ProductVariantManageFragment();
+        ProductVariantDashboardFragment fragment = new ProductVariantDashboardFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -127,7 +127,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
 
     @Override
     protected BaseListAdapter<ProductVariantManageViewModel> getNewAdapter() {
-        return new ProductVariantManageListAdapter();
+        return new ProductVariantDashboardAdapter();
     }
 
     @Override
@@ -148,7 +148,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
         productVariantValueList.addAll(ProductVariantUtils.getProductVariantValueListForVariantDetail(
                 productVariantManageViewModel.getTemporaryId(), variantData.getVariantUnitSubmitList(),
                 variantData.getVariantStatusList(), productVariantByCatModel.getUnitList()));
-        ProductVariantDataManageActivity.start(getContext(), ProductVariantManageFragment.this,
+        ProductVariantDetailActivity.start(getContext(), ProductVariantDashboardFragment.this,
                 productVariantManageViewModel.getTemporaryId(),
                 productVariantManageViewModel.getTitle(),
                 true,
@@ -175,7 +175,7 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
             case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
                 onActivityResultFromItemPicker(requestCode, data);
                 break;
-            case ProductVariantDataManageActivity.REQUEST_CODE:
+            case ProductVariantDetailActivity.REQUEST_CODE:
                 onActivityResultFromDataManage(data);
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -200,20 +200,20 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     }
 
     private void onActivityResultFromDataManage(Intent data) {
-        if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_DELETE)) {
-                    long variantIdToDelete = data.getLongExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_ID, 0);
+        if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
+                    long variantIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
                     if (variantIdToDelete != 0) {
                         // TODO delete variant status for variantIdToDelete
                         // remove from selected variantIdToDelete
                     }
-                } else if (data.getAction().equals(ProductVariantDataManageActivity.EXTRA_ACTION_SUBMIT)) {
-                    long variantIdToUpdate = data.getLongExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_ID, 0);
+                } else if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_SUBMIT)) {
+                    long variantIdToUpdate = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
                     if (variantIdToUpdate != 0) {
                         ArrayList<Long> selectedVariantValueIdList = (ArrayList<Long>)
-                                data.getSerializableExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST);
+                                data.getSerializableExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
                         if (selectedVariantValueIdList == null || selectedVariantValueIdList.size() == 0) {
-                            if (data.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK)) {
-                                boolean variantHasStock = data.getBooleanExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK, false);
+                            if (data.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK)) {
+                                boolean variantHasStock = data.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
                                 //TODO set the variant stock to available/empty (based on variantHasStock)
                             }
                         } else {

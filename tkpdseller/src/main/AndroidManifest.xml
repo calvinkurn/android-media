@@ -315,11 +315,11 @@
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".product.variant.view.activity.ProductVariantManageActivity"
+            android:name=".product.variant.view.activity.ProductVariantDashboardActivity"
             android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".product.variant.view.activity.ProductVariantDataManageActivity"
+            android:name=".product.variant.view.activity.ProductVariantDetailActivity"
             android:label="@string/product_variant_label_title"
             android:exported="true"
             android:screenOrientation="portrait" />
