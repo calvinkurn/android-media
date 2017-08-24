@@ -101,6 +101,7 @@ public class ProductVariant implements Parcelable {
             }
         }
         products.removeAll(Collections.singleton(variantOptionId));
+        products.add(variantOptionId);
         return products;
     }
 

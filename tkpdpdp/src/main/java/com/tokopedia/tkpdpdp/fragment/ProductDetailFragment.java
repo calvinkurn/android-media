@@ -153,6 +153,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductCampaign productCampaign;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
+    private ProductVariant productVariant;
     private Option variantLevel1;
     private Option variantLevel2;
 
@@ -385,6 +386,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onVariantClicked(@NonNull Bundle bundle) {
         Intent intent = new Intent(context, VariantActivity.class);
         intent.putExtras(bundle);
+        intent.putExtra(VariantActivity.KEY_VARIANT_DATA, productVariant);
         intent.putExtra(KEY_LEVEL1_SELECTED,variantLevel1);
         intent.putExtra(KEY_LEVEL2_SELECTED,variantLevel2);
         startActivityForResult(intent,REQUEST_VARIANT);
@@ -424,7 +426,21 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
-        presenter.processToCart(context, data);
+        if (productVariant!=null && productVariant.getVariantOption()!=null
+                && productVariant.getVariantOption().size()>0 && variantLevel1==null) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(VariantActivity.KEY_BUY_MODE, true);
+            onVariantClicked(bundle);
+
+        } else {
+            if (variantLevel1!=null) {
+                String variantText = variantLevel1.getValue();
+                if (variantLevel2!=null) variantText += (", "+variantLevel2.getValue());
+                data.setNotes(variantText);
+            }
+            presenter.processToCart(context, data);
+        }
+
     }
 
     @Override
@@ -792,6 +808,28 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         }
                         priceSimulationView.updateVariant(variantText);
                     }
+                } else if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
+                    if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                        variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
+                        String variantText = variantLevel1.getValue();
+                        if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
+                        {
+                            variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
+                            variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
+                        }
+                        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                                .setImageUri(productData.getProductImages().get(0).getImageSrc300())
+                                .setMinOrder(Integer.parseInt(productData.getInfo().getProductMinOrder()))
+                                .setProductId(String.valueOf(productData.getInfo().getProductId()))
+                                .setProductName(productData.getInfo().getProductName())
+                                .setWeight(productData.getInfo().getProductWeight())
+                                .setShopId(productData.getShopInfo().getShopId())
+                                .setPrice(productData.getInfo().getProductPrice())
+                                .build();
+                        if (!productData.getBreadcrumb().isEmpty()) pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
+                        pass.setNotes(variantText);
+                        presenter.processToCart(context, pass);
+                    }
                 }
                 break;
             default:
@@ -922,6 +960,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
+        this.productVariant = productVariant;
         productVariant.setProductName(productData.getInfo().getProductName());
         productVariant.setProductImageUrl(productData.getProductImages().get(0).getImageSrc300());
         productVariant.setProductPrice(productData.getInfo().getProductPrice());
