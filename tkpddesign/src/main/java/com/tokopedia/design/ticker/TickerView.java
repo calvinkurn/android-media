@@ -3,8 +3,11 @@ package com.tokopedia.design.ticker;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -44,10 +47,13 @@ public class TickerView extends BaseCustomView {
 
 
     public static final float DEFAULT_CORNER_RADIUS = 4.0f;
+    private static final String SAVED = "instance state TickerView.class";
+    private static final String SAVED_STATE_VISIBILITY = "saved_state_visibility";
 
     private ViewPager tickerViewPager;
     private CirclePageIndicator tickerIndicator;
     private RelativeLayout tickerHighlightView;
+    private View imageViewActionClose;
 
     private int defaultHighLightColor;
     private int defaultBackgroundColor;
@@ -68,6 +74,16 @@ public class TickerView extends BaseCustomView {
     private OnPartialTextClickListener onPartialTextClickListener;
 
     private TickerViewAdapter tickerAdapter;
+
+    private int stateVisibility;
+
+    public void setStateVisibility(int stateVisibility) {
+        this.stateVisibility = stateVisibility;
+    }
+
+    public int getStateVisibility() {
+        return stateVisibility;
+    }
 
     @SuppressWarnings("WeakerAccess")
     public interface OnPartialTextClickListener {
@@ -133,6 +149,7 @@ public class TickerView extends BaseCustomView {
         tickerHighlightView = (RelativeLayout) view.findViewById(R.id.parent_view);
         tickerViewPager = (ViewPager) view.findViewById(R.id.view_pager_ticker);
         tickerIndicator = (CirclePageIndicator) view.findViewById(R.id.page_indicator_ticker);
+        imageViewActionClose = view.findViewById(R.id.imageview_ticker_action_close);
 
         int minHeight = (int) getResources().getDimension(R.dimen.height_widget_ticker);
 
@@ -155,6 +172,7 @@ public class TickerView extends BaseCustomView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setStateVisibility(getVisibility());
         setHighLightColor(defaultHighLightColor);
         setBackGroundColor(defaultBackgroundColor);
         setTextColor(defaultTextColor);
@@ -171,6 +189,13 @@ public class TickerView extends BaseCustomView {
         tickerIndicator.setFillColor(defaultPageIndicatorOnColor);
         tickerIndicator.setPageColor(defaultPageIndicatorOffColor);
         tickerIndicator.setViewPager(tickerViewPager);
+        imageViewActionClose.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setStateVisibility(GONE);
+                setVisibility(GONE);
+            }
+        });
     }
 
     public void setHighLightColor(int highLightColor) {
@@ -277,4 +302,24 @@ public class TickerView extends BaseCustomView {
             }
         };
     }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SAVED, super.onSaveInstanceState());
+        bundle.putInt(SAVED_STATE_VISIBILITY, getStateVisibility());
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            setStateVisibility(bundle.getInt(SAVED_STATE_VISIBILITY));
+            setVisibility(getStateVisibility() == GONE ? GONE : VISIBLE);
+            state = bundle.getParcelable(SAVED);
+        }
+        super.onRestoreInstanceState(state);
+    }
+
 }

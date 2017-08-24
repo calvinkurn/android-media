@@ -58,4 +58,18 @@
         android:padding="@dimen/padding_vs"
         />
 
+    <ImageView
+        android:id="@+id/imageview_ticker_action_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginEnd="@dimen/margin_vs"
+        android:src="@drawable/ic_ticker_action_close_12dp"
+        android:contentDescription="@string/text_ticker_action_close"
+        />
+
 </RelativeLayout>
