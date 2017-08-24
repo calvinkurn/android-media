@@ -426,10 +426,10 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getFreeReturns() {
-        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE) {
-            return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
-        } else {
+        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE || freeReturnsSpinnerTextView.getSpinnerValue() == null) {
             return Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_inactive));
+        } else {
+            return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
         }
     }
 
