@@ -18,8 +18,8 @@ import android.widget.CompoundButton;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDataManageActivity;
-import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDataAdapter;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailActivity;
+import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDetailAdapter;
 import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.ArrayList;
@@ -29,20 +29,20 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantDataManageFragment extends Fragment implements ProductVariantDataAdapter.OnProductVariantDataAdapterListener {
+public class ProductVariantDetailFragment extends Fragment implements ProductVariantDetailAdapter.OnProductVariantDataAdapterListener {
 
     private OnProductVariantDataManageFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
     private View buttonSave;
-    private ProductVariantDataAdapter productVariantDataAdapter;
+    private ProductVariantDetailAdapter productVariantDetailAdapter;
     private boolean isVariantHasStock;
 
     public interface OnProductVariantDataManageFragmentListener {
         void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
     }
 
-    public static ProductVariantDataManageFragment newInstance() {
-        return new ProductVariantDataManageFragment();
+    public static ProductVariantDetailFragment newInstance() {
+        return new ProductVariantDetailFragment();
     }
 
     @SuppressWarnings("unchecked")
@@ -53,8 +53,8 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
 
         ArrayList<Long> variantValueIdList = null;
         ArrayList<ProductVariantValue> productVariantValueArrayList = null;
-        if (!activityIntent.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST)) {
-            if (!activityIntent.hasExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK)) {
+        if (!activityIntent.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST)) {
+            if (!activityIntent.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK)) {
                 // TODO hendry just for test
                 //                productVariantValueArrayList = new ArrayList<>();
                 //                productVariantValueArrayList.add(new ProductVariantValue(1,"Cak Lontong"));
@@ -66,23 +66,23 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
                 //                variantValueIdList.add(3L);
                 isVariantHasStock = true;
             } else {
-                isVariantHasStock = activityIntent.getBooleanExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_HAS_STOCK, false);
+                isVariantHasStock = activityIntent.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
             }
 
         }
         else {
-            productVariantValueArrayList = activityIntent.getParcelableArrayListExtra(ProductVariantDataManageActivity.EXTRA_VARIANT_VALUE_LIST);
+            productVariantValueArrayList = activityIntent.getParcelableArrayListExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
 
             if (savedInstanceState == null) {
-                variantValueIdList = activityIntent.getParcelableExtra(ProductVariantDataManageActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
+                variantValueIdList = activityIntent.getParcelableExtra(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
             } else {
                 variantValueIdList = (ArrayList<Long>)
-                        savedInstanceState.getSerializable(ProductVariantDataManageActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
+                        savedInstanceState.getSerializable(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
             }
         }
 
-        productVariantDataAdapter = new ProductVariantDataAdapter(getContext(), productVariantValueArrayList, variantValueIdList);
-        productVariantDataAdapter.setOnProductVariantDataAdapterListener(this);
+        productVariantDetailAdapter = new ProductVariantDetailAdapter(getContext(), productVariantValueArrayList, variantValueIdList);
+        productVariantDetailAdapter.setOnProductVariantDataAdapterListener(this);
     }
 
     @Nullable
@@ -94,7 +94,7 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
-        recyclerView.setAdapter(productVariantDataAdapter);
+        recyclerView.setAdapter(productVariantDetailAdapter);
         return view;
     }
 
@@ -106,10 +106,10 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     setStockLabelAvailable();
-                    productVariantDataAdapter.checkAllItems();
+                    productVariantDetailAdapter.checkAllItems();
                 } else {
                     setStockLabelEmpty();
-                    productVariantDataAdapter.unCheckAllItems();
+                    productVariantDetailAdapter.unCheckAllItems();
                 }
             }
         });
@@ -117,7 +117,7 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
             @Override
             public void onClick(View view) {
                 listener.onSubmitVariant(labelSwitchStatus.isChecked(),
-                        productVariantDataAdapter.getVariantValueIdListSorted());
+                        productVariantDetailAdapter.getVariantValueIdListSorted());
             }
         });
         // default value: if all is checked, set label switch summary to tersedia else to kosong
@@ -181,7 +181,7 @@ public class ProductVariantDataManageFragment extends Fragment implements Produc
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(ProductVariantDataManageActivity.EXTRA_SELECTED_VARIANT_ID_LIST,
-                productVariantDataAdapter.getVariantValueIdList());
+        outState.putSerializable(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST,
+                productVariantDetailAdapter.getVariantValueIdList());
     }
 }

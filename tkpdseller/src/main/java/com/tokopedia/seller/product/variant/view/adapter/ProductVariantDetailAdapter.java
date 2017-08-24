@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by User on 8/22/2017.
  */
 
-public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVariantItemPickerSearchViewHolder> {
+public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVariantItemPickerSearchViewHolder> {
     private Context context;
     private ArrayList<ProductVariantValue> productVariantValueArrayList;
     private ArrayList<Long> variantValueIdList;
@@ -33,9 +33,9 @@ public class ProductVariantDataAdapter extends RecyclerView.Adapter<ProductVaria
         this.onProductVariantDataAdapterListener = onProductVariantDataAdapterListener;
     }
 
-    public ProductVariantDataAdapter(Context context,
-                                     ArrayList<ProductVariantValue> productVariantValueArrayList,
-                                     ArrayList<Long> variantValueIdList){
+    public ProductVariantDetailAdapter(Context context,
+                                       ArrayList<ProductVariantValue> productVariantValueArrayList,
+                                       ArrayList<Long> variantValueIdList){
         this.context = context;
         this.productVariantValueArrayList = productVariantValueArrayList == null ? new ArrayList<ProductVariantValue>(): productVariantValueArrayList;
         this.variantValueIdList = variantValueIdList == null ? new ArrayList<Long>(): variantValueIdList;
