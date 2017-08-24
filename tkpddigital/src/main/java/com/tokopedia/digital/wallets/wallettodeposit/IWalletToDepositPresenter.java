@@ -1,4 +1,4 @@
-package com.tokopedia.digital.wallets;
+package com.tokopedia.digital.wallets.wallettodeposit;
 
 /**
  * @author anggaprasetiyo on 8/21/17.
