@@ -203,7 +203,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
     @Override
     protected String getScreenName() {
-        return null;
+        return productProblemViewModel.getOrder().getProduct().getName();
     }
 
     @Override

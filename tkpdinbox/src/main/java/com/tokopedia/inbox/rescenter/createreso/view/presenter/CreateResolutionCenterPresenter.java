@@ -96,6 +96,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void solutionClicked() {
+        mainView.transitionToSolutionPage(resultViewModel);
 
     }
 

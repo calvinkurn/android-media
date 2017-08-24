@@ -16,6 +16,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
@@ -37,6 +38,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
+    public static final String RESULT_DATA = "result_data";
 
     private static final int REQUEST_STEP1 = 1001;
     private static final int REQUEST_STEP2 = 1002;
@@ -240,5 +242,13 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 presenter.addResultFromStep1(data.<ProblemResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
             }
         }
+    }
+
+    @Override
+    public void transitionToSolutionPage(ResultViewModel resultViewModel) {
+        Intent intent = new Intent(getActivity(), SolutionListActivity.class);
+        intent.putExtra(KEY_PARAM_PASS_DATA, resultViewModel);
+        intent.putExtra(RESULT_DATA, resultViewModel);
+        startActivityForResult(intent, REQUEST_STEP2);
     }
 }

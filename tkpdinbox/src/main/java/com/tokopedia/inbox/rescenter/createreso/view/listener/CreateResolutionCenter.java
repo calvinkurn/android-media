@@ -27,6 +27,8 @@ public interface CreateResolutionCenter {
 
         void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel, ArrayList<ProblemResult> problemResults);
 
+        void transitionToSolutionPage(ResultViewModel resultViewModel);
+
         void showSuccessToast();
 
         void showErrorToast(String error);
