@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
+Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 
