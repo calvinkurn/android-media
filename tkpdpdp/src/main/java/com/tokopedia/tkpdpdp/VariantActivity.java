@@ -16,6 +16,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -23,6 +24,7 @@ import com.tokopedia.core.network.entity.variant.VariantDatum;
 import com.tokopedia.core.network.entity.variant.VariantOption;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 import com.tokopedia.tkpdpdp.adapter.VariantParentAdapter;
+import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +36,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_BUY_MODE = "ON_BUY_MODE";
+    public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
 
@@ -97,6 +100,17 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     setResult(VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY, generateExtraSelectedIntent());
                     finish();
                     VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+                }
+            });
+        } else if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
+            buttonSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(getApplication() instanceof TkpdCoreRouter){
+                        Intent intent = ((TkpdCoreRouter)getApplication()).goToEditProduct(VariantActivity.this, true, Integer.toString(variant.getProductId()));
+                        startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
+                    }
+                    finish();
                 }
             });
         } else {

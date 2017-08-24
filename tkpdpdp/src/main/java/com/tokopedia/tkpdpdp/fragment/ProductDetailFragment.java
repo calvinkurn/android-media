@@ -56,6 +56,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -436,6 +437,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 && productVariant.getVariantOption().size()>0 && variantLevel1==null) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(VariantActivity.KEY_BUY_MODE, true);
+            if (productData.getShopInfo().getShopIsOwner() == 1
+                    || (productData.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
+                bundle.putBoolean(VariantActivity.KEY_SELLER_MODE, true);
+            }
             onVariantClicked(bundle);
 
         } else {
@@ -483,6 +488,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
         this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
+        renderIfAlreadyHaveVariant();
     }
 
     @Override
@@ -1089,6 +1095,19 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             bundle.putBoolean("is_edit", true);
             bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
             onProductManageEditClicked(bundle);
+        }
+    }
+
+    public void renderIfAlreadyHaveVariant() {
+        if (getActivity().getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED)!=null
+                && getActivity().getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+            variantLevel1 = getActivity().getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
+            String variantText = variantLevel1.getValue();
+            if (getActivity().getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && getActivity().getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
+            {
+                variantLevel2 = getActivity().getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
+                variantText+= (", "+variantLevel2.getValue());
+            }
         }
     }
 
