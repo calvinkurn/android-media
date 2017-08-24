@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ReviewCreateTime {
 
-    @SerializedName("date_time_fmt1")
+    @SerializedName("date_time_android")
     @Expose
     private String dateTimeFmt1;
 

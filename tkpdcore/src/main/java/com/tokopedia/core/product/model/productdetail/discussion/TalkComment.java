@@ -12,9 +12,9 @@ public class TalkComment {
     @SerializedName("comment_user_reputation")
     @Expose
     private CommentUserReputation commentUserReputation;
-    @SerializedName("comment_create_time_fmt")
+    @SerializedName("comment_create_time_list")
     @Expose
-    private String commentCreateTimeFmt;
+    private CommentCreateTimeList commentCreateTimeList;
     @SerializedName("comment_create_time")
     @Expose
     private String commentCreateTime;
@@ -75,12 +75,12 @@ public class TalkComment {
         this.commentUserReputation = commentUserReputation;
     }
 
-    public String getCommentCreateTimeFmt() {
-        return commentCreateTimeFmt;
+    public CommentCreateTimeList getCommentCreateTimeList() {
+        return commentCreateTimeList;
     }
 
-    public void setCommentCreateTimeFmt(String commentCreateTimeFmt) {
-        this.commentCreateTimeFmt = commentCreateTimeFmt;
+    public void setCommentCreateTimeList(CommentCreateTimeList commentCreateTimeList) {
+        this.commentCreateTimeList = commentCreateTimeList;
     }
 
     public String getCommentCreateTime() {

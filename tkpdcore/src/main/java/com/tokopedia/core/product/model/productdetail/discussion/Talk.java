@@ -48,9 +48,9 @@ public class Talk {
     @SerializedName("talk_user_id")
     @Expose
     private String talkUserId;
-    @SerializedName("talk_create_time")
+    @SerializedName("talk_create_time_list")
     @Expose
-    private String talkCreateTime;
+    private TalkCreateTimeList talkCreateTimeList;
     @SerializedName("talk_own")
     @Expose
     private int talkOwn;
@@ -177,14 +177,6 @@ public class Talk {
         this.talkUserId = talkUserId;
     }
 
-    public String getTalkCreateTime() {
-        return talkCreateTime;
-    }
-
-    public void setTalkCreateTime(String talkCreateTime) {
-        this.talkCreateTime = talkCreateTime;
-    }
-
     public int getTalkOwn() {
         return talkOwn;
     }
@@ -239,5 +231,13 @@ public class Talk {
 
     public void setTalkUserReputation(TalkUserReputation talkUserReputation) {
         this.talkUserReputation = talkUserReputation;
+    }
+
+    public TalkCreateTimeList getTalkCreateTimeList() {
+        return talkCreateTimeList;
+    }
+
+    public void setTalkCreateTimeList(TalkCreateTimeList talkCreateTimeList) {
+        this.talkCreateTimeList = talkCreateTimeList;
     }
 }
