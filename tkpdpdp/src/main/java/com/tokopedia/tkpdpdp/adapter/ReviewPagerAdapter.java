@@ -64,7 +64,7 @@ public class ReviewPagerAdapter extends PagerAdapter{
         ((TextView) view.findViewById(R.id.text_review)).setText( reviews.get(position).getReviewMessage());
         ((ImageView) view.findViewById(R.id.image_rating_review_pdp)).setImageResource(getRatingDrawable(reviews.get(position).getProductRating()/20));
 
-        container.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onProductReviewClicked();

@@ -11,6 +11,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class VariantOption implements Parcelable {
 
+    public static final String IDENTIFIER_COLOUR = "colour";
+
     @SerializedName("pv_id")
     @Expose
     private Integer pvId;
@@ -37,7 +39,7 @@ public class VariantOption implements Parcelable {
     private Integer position;
     @SerializedName("option")
     @Expose
-    private List<Option> option = null;
+    private ArrayList<Option> option = null;
 
     public Integer getPvId() {
         return pvId;
@@ -71,11 +73,11 @@ public class VariantOption implements Parcelable {
         this.unitName = unitName;
     }
 
-    public Integer getVId() {
+    public Integer getvId() {
         return vId;
     }
 
-    public void setVId(Integer vId) {
+    public void setvId(Integer vId) {
         this.vId = vId;
     }
 
@@ -103,14 +105,13 @@ public class VariantOption implements Parcelable {
         this.position = position;
     }
 
-    public List<Option> getOption() {
+    public ArrayList<Option> getOption() {
         return option;
     }
 
-    public void setOption(List<Option> option) {
+    public void setOption(ArrayList<Option> option) {
         this.option = option;
     }
-
 
     protected VariantOption(Parcel in) {
         pvId = in.readByte() == 0x00 ? null : in.readInt();
