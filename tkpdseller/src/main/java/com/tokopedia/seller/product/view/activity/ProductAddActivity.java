@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -24,6 +25,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -89,6 +91,14 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         Intent intent = new Intent(context, ProductAddActivity.class);
         intent.putStringArrayListExtra(EXTRA_IMAGE_URLS, imageUrls);
         fragment.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
+    }
+
+    @DeepLink(Constants.Applinks.PRODUCT_ADD)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ProductAddActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
     }
 
     @Override
