@@ -836,6 +836,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         pass.setNotes(variantText);
                         presenter.processToCart(context, pass);
                     }
+                } else if (resultCode==VariantActivity.KILL_PDP_BACKGROUND) {
+                    getActivity().finish();
                 }
                 break;
             default:
