@@ -303,7 +303,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         addToWhiteList();
     }
 
-    private void addToWhiteList() {
+    protected void addToWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);

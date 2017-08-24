@@ -105,6 +105,11 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
+
+        // try to check cache wishlist
+        if (getApplication() instanceof MainApplication) {
+            ((MainApplication) getApplication()).addToWhiteList();
+        }
     }
 
     @Override
