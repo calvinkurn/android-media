@@ -16,6 +16,7 @@ import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
@@ -26,6 +27,7 @@ import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimePriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.completetrip.domain.model.TipList;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 
 import java.util.ArrayList;
@@ -53,6 +55,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final TimePriceEstimateEntityMapper timePriceEstimateEntityMapper;
     private final PriceEstimateEntityMapper priceEstimateEntityMapper;
     private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
+    private final TipListEntityMapper tipListEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
@@ -67,6 +70,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         timePriceEstimateEntityMapper = new TimePriceEstimateEntityMapper();
         priceEstimateEntityMapper = new PriceEstimateEntityMapper();
         rideHistoryWrapperMapper = new RideHistoryWrapperMapper();
+        tipListEntityMapper = new TipListEntityMapper();
     }
 
     @Override
@@ -335,5 +339,22 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     public Observable<String> updateRequest(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .updateRequest(parameters);
+    }
+
+    @Override
+    public Observable<TipList> getTipList() {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getTipList()
+                .map(new Func1<TipListEntity, TipList>() {
+                    @Override
+                    public TipList call(TipListEntity tipListEntity) {
+                        return tipListEntityMapper.transform(tipListEntity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore().sendTip(parameters);
     }
 }

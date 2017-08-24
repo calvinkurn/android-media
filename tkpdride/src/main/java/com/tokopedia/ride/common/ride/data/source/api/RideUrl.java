@@ -28,4 +28,6 @@ public interface RideUrl {
     String RIDE_RATING = "/uber/rating";
     String CANCEL_REASONS = "/uber/cancel/reasons";
     String UPDATE_REQUEST = "/uber/request/update";
+    String TIP_LIST = "/uber/tip/list";
+    String SEND_TIP = "/uber/tip/send";
 }

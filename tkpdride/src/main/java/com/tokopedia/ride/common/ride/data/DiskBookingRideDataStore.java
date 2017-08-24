@@ -15,6 +15,7 @@ import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +131,16 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<String> updateRequest(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<TipListEntity> getTipList() {
+        return null;
+    }
+
+    @Override
+    public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
         return null;
     }
 }
