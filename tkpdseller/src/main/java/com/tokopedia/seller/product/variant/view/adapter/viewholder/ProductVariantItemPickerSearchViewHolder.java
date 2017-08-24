@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.variant.view.adapter.viewholder;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -11,7 +12,6 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
 /**
@@ -23,12 +23,14 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
     private ImageView imageView;
     private TextView titleTextView;
     private CheckBox checkBox;
+    private View viewStroke;
 
     public ProductVariantItemPickerSearchViewHolder(View itemView) {
         super(itemView);
         imageView = (ImageView) itemView.findViewById(R.id.image_view);
         titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
         checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
+        viewStroke = itemView.findViewById(R.id.view_stroke);
     }
 
     @Override
@@ -58,16 +60,19 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
     @Override
     public void bindObject(final ProductVariantValue productVariantValue) {
         if (!TextUtils.isEmpty(productVariantValue.getHexCode())) {
+            imageView.setColorFilter(Color.parseColor(productVariantValue.getHexCode()), PorterDuff.Mode.SRC_ATOP);
+            imageView.setImageResource(R.drawable.circle_white);
             imageView.setVisibility(View.VISIBLE);
-            imageView.setBackgroundColor(Color.parseColor(productVariantValue.getHexCode()));
-            imageView.setImageDrawable(null);
+            viewStroke.setVisibility(View.VISIBLE);
         } else if (!TextUtils.isEmpty(productVariantValue.getIcon())) {
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setBackgroundColor(Color.TRANSPARENT);
+            imageView.clearColorFilter();
             Glide.with(imageView.getContext()).load(productVariantValue.getIcon())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
+            viewStroke.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
         } else {
             imageView.setVisibility(View.GONE);
+            viewStroke.setVisibility(View.GONE);
         }
         titleTextView.setText(productVariantValue.getValue());
     }

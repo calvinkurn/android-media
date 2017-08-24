@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -23,6 +24,7 @@ import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerAc
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantManageListAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
+import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +128,11 @@ public class ProductVariantManageFragment extends BaseListFragment<BlankPresente
     @Override
     protected BaseListAdapter<ProductVariantManageViewModel> getNewAdapter() {
         return new ProductVariantManageListAdapter();
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new DividerItemDecoration(getContext());
     }
 
     @Override
