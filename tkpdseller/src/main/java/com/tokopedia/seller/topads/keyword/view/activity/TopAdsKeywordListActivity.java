@@ -246,7 +246,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     private void displayShowCase() {
         final TopAdsKeywordListFragment topAdsKeywordListFragment = getCurrentFragment();
-        if (topAdsKeywordListFragment == null) {
+        if (topAdsKeywordListFragment == null || topAdsKeywordListFragment.getView() == null) {
             return;
         }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -283,6 +283,9 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
             recyclerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if (topAdsKeywordListFragment.getView() == null) {
+                        return;
+                    }
                     View dateView = topAdsKeywordListFragment.getDateView();
                     if (dateView != null) {
                         dateView.setVisibility(View.VISIBLE);

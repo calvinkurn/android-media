@@ -27,6 +27,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.presenter.Session;
@@ -98,11 +99,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         WebViewGeneral.getSettings().setJavaScriptEnabled(true);
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         WebViewGeneral.getSettings().setDomStorageEnabled(true);
-        if (getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
-            WebViewGeneral.setWebViewClient(new MyWebClient());
-        } else {
-            WebViewGeneral.setWebViewClient(new BaseWebViewClient(this));
-        }
+        WebViewGeneral.setWebViewClient(new MyWebClient());
         WebViewGeneral.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -134,6 +131,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
+            if (((IDigitalModuleRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(url)) {
+                ((IDigitalModuleRouter) getActivity().getApplication())
+                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                return true;
+            }
             return overrideUrl(url);
         }
 

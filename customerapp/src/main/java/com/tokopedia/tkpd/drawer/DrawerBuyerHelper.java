@@ -33,6 +33,7 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
@@ -536,13 +537,9 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
-        if (topCashUrl != null && !topCashUrl.equals("")) {
-            String seamlessURL;
-            seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
-            if (context.getApplication() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) context.getApplication())
-                        .goToWallet(context, seamlessURL);
-            }
+        if (context.getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
+            context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
         }
 
     }

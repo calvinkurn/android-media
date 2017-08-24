@@ -488,6 +488,13 @@ public abstract class ChartView extends RelativeLayout {
     }
 
     /**
+     * clear data to display in order to let tooltip use it's own tooltip mechanism.
+     */
+    public void clearDataDisplayDots() {
+        this.dataDisplayTooltip = null;
+    }
+
+    /**
      * Add full chart data.
      *
      * @param data An array of {@link ChartSet}

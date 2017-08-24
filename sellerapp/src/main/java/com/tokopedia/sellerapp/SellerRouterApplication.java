@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -38,6 +39,7 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -198,10 +200,15 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
+        Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            return new Intent(context, SellerHomeActivity.class);
+            if(SessionHandler.isUserSeller(context)){
+                return new Intent(context, SellerHomeActivity.class);
+            }else{
+                return intent;
+            }
         } else {
-            return new Intent(context, WelcomeActivity.class);
+            return intent;
         }
     }
 
@@ -380,29 +387,43 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent instanceIntentTokoCashActivation() {
+        return ActivateTokoCashActivity.newInstance(this);
+    }
+
+    @Override
     public String getBaseUrlDomainPayment() {
         return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
     }
 
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
-        return Uri.parse(originUrl).buildUpon()
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-                )
-                .build().toString();
+        Uri originUri = Uri.parse(originUrl);
+        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+            );
+        }
+        return uriBuilder.build().toString().trim();
     }
 
     @Override

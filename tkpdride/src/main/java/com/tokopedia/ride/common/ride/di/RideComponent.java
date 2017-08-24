@@ -46,4 +46,8 @@ public interface RideComponent {
     GetOverviewPolylineUseCase getOverviewPolylineUseCase();
 
     GiveDriverRatingUseCase giveDriverRatingUseCase();
+
+    SessionHandler sessionHandler();
+
+    GCMHandler gcmHandler();
 }
