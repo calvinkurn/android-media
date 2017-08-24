@@ -14,6 +14,7 @@ import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
 import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModel;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardSuccessDeleteModel;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -103,7 +104,7 @@ public class ListPaymentTypePresenterImpl implements ListPaymentTypePresenter {
         requestBody.addProperty("date", date);
         //TODO change key to production
         requestBody.addProperty("signature", calculateRFC2104HMAC(userId + merchantCode + date,
-                "QN6vublhpfqppu01uxdk5f"));
+                AuthUtil.KEY.KEY_CREDIT_CARD_VAULT));
 
         interactor.getPaymentList(creditCardListSubsciber(), requestBody);
     }
@@ -139,7 +140,7 @@ public class ListPaymentTypePresenterImpl implements ListPaymentTypePresenter {
         requestBody.addProperty("date", date);
         //TODO change key to production
         requestBody.addProperty("signature", calculateRFC2104HMAC(userId + merchantCode + date,
-                "QN6vublhpfqppu01uxdk5f"));
+                AuthUtil.KEY.KEY_CREDIT_CARD_VAULT));
         requestBody.addProperty("token_id", tokenId);
         interactor.deleteCreditCard(creditCardDeleteSubscriber(), requestBody);
     }
@@ -190,7 +191,9 @@ public class ListPaymentTypePresenterImpl implements ListPaymentTypePresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                if(e instanceof ResponseRuntimeException) {
+                    mainView.onDeleteCreditCardError(e.getMessage());
+                }
             }
 
             @Override
@@ -211,7 +214,9 @@ public class ListPaymentTypePresenterImpl implements ListPaymentTypePresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                if(e instanceof ResponseRuntimeException) {
+                    mainView.onLoadCreditCardError(e.getMessage());
+                }
             }
 
             @Override

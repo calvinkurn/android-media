@@ -46,7 +46,8 @@ public class CreditCardRecyclerViewAdapter extends RecyclerView.Adapter<
                 +listCreditCard.get(position).getExpiryYear());
         ImageHandler.LoadImage(holder.cardImage, listCreditCard.get(position).getImage());
         holder.deleteButton.setOnClickListener(onDeleteClickedListener(
-                listCreditCard.get(position).getTokenId())
+                listCreditCard.get(position).getTokenId(),
+                listCreditCard.get(position).getMaskedNumber())
         );
     }
 
@@ -78,16 +79,16 @@ public class CreditCardRecyclerViewAdapter extends RecyclerView.Adapter<
         }
     }
 
-    private View.OnClickListener onDeleteClickedListener(final String tokenId) {
+    private View.OnClickListener onDeleteClickedListener(final String tokenId, final String cardId) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDeleteButtonClicked(tokenId);
+                listener.onDeleteButtonClicked(tokenId, cardId);
             }
         };
     }
 
     public interface CreditCardItemListener {
-        void onDeleteButtonClicked(String tokenId);
+        void onDeleteButtonClicked(String tokenId, String cardId);
     }
 }

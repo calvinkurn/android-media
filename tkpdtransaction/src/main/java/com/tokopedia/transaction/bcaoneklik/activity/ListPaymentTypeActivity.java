@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
@@ -72,6 +73,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
     private PaymentListModel paymentModels;
 
+    private RefreshHandler refreshHandler;
+
     @Inject
     ListPaymentTypePresenterImpl presenter;
 
@@ -89,6 +92,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     protected void initialPresenter() {
         initInjector();
         presenter.setViewListener(this);
+
     }
 
     private void initInjector() {
@@ -119,8 +123,13 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                 TkpdProgressDialog.NORMAL_PROGRESS);
         mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.MAIN_PROGRESS);
-        presenter.onGetCreditCardList(this);
-        presenter.onGetPaymentList(paymentListModelSubscriber());
+        refreshHandler = new RefreshHandler(this, rootView, new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                fetchData();
+            }
+        });
+        fetchData();
         bcaOneClickRegistrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,6 +161,11 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
         });
     }
 
+    private void fetchData() {
+        presenter.onGetCreditCardList(this);
+        presenter.onGetPaymentList(paymentListModelSubscriber());
+    }
+
     @Override
     protected void setViewListener() {
 
@@ -179,6 +193,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
     @Override
     public void receivedCreditCardList(CreditCardModel creditCardModel) {
+        refreshHandler.finishRefresh();
         creditCardRecyclerViewAdapter = new CreditCardRecyclerViewAdapter(
                 creditCardModel.getCreditCardList(), ListPaymentTypeActivity.this
         );
@@ -188,12 +203,26 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
 
     @Override
     public void successDeleteCreditCard() {
+        refreshHandler.finishRefresh();
         presenter.onGetCreditCardList(this);
     }
 
     @Override
     public void onLoadCreditCardError(String errorMessage) {
+        rootView.setVisibility(View.VISIBLE);
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                            errorMessage,
+                            onLoadListRetryListener());
+        mainProgressDialog.dismiss();
+    }
 
+    @Override
+    public void onDeleteCreditCardError(String errorMessage) {
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.createSnackbarWithAction(ListPaymentTypeActivity.this,
+                errorMessage,
+                onLoadListRetryListener());
     }
 
     @Override
@@ -213,20 +242,22 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             public void onError(Throwable e) {
                 rootView.setVisibility(View.VISIBLE);
                 if(e instanceof ResponseRuntimeException) {
-                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                    NetworkErrorHelper.createSnackbarWithAction(ListPaymentTypeActivity.this,
                             e.getMessage(),
-                            onLoadListRetryListener());
+                           onLoadListRetryListener());
                 } else {
-                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                    NetworkErrorHelper.createSnackbarWithAction(ListPaymentTypeActivity.this,
                             onLoadListRetryListener());
                 }
                 mainProgressDialog.dismiss();
+                refreshHandler.finishRefresh();
             }
 
             @Override
             public void onNext(PaymentListModel paymentListModel) {
                 rootView.setVisibility(View.VISIBLE);
                 mainProgressDialog.dismiss();
+                refreshHandler.finishRefresh();
                 if(paymentListModel.getBcaOneClickUserModels() == null) {
                     NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
                             "Layanan Belum Tersedia",
@@ -272,7 +303,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             @Override
             public void onNext(PaymentListModel paymentListModel) {
                 progressDialog.dismiss();
-                presenter.onGetPaymentList(paymentListModelSubscriber());
+                refreshHandler.startRefresh();
             }
         };
     }
@@ -293,10 +324,10 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REGISTER_BCA_ONE_CLICK_REQUEST_CODE:
-                presenter.onGetPaymentList(paymentListModelSubscriber());
+                refreshHandler.startRefresh();
                 break;
             case EDIT_BCA_ONE_CLICK_REQUEST_CODE:
-                presenter.onGetPaymentList(paymentListModelSubscriber());
+                refreshHandler.startRefresh();
                 break;
         }
     }
@@ -362,14 +393,15 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
             @Override
             public void onRetryClicked() {
                 rootView.setVisibility(View.GONE);
-                presenter.onGetPaymentList(paymentListModelSubscriber());
+                refreshHandler.startRefresh();
             }
         };
     }
 
     @Override
-    public void onDeleteButtonClicked(String tokenId) {
-        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(tokenId);
+    public void onDeleteButtonClicked(String tokenId, String cardId) {
+        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(tokenId,
+                cardId);
         creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
     }
 

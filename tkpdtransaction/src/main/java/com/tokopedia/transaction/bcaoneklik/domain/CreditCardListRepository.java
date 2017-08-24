@@ -3,10 +3,13 @@ package com.tokopedia.transaction.bcaoneklik.domain;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.apiservices.transaction.CreditCardVaultService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModel;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModelItem;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardResponse;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardSuccessDeleteModel;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ public class CreditCardListRepository implements ICreditCardRepository {
                 new Func1<Response<String>, CreditCardModel>() {
             @Override
             public CreditCardModel call(Response<String> stringResponse) {
+                handlerFetchError(stringResponse);
                 return creditCardModel(new Gson().fromJson(stringResponse.body(),
                         CreditCardResponse.class));
             }
@@ -46,13 +50,17 @@ public class CreditCardListRepository implements ICreditCardRepository {
                 CreditCardSuccessDeleteModel>() {
             @Override
             public CreditCardSuccessDeleteModel call(Response<String> stringResponse) {
-                return new Gson().fromJson(stringResponse.body(),
+                handlerFetchError(stringResponse);
+                CreditCardSuccessDeleteModel model = new Gson().fromJson(stringResponse.body(),
                         CreditCardSuccessDeleteModel.class);
+                handleDataError(model.isSuccess(), model.getMessage());
+                return model;
             }
         });
     }
 
     private CreditCardModel creditCardModel(CreditCardResponse response) {
+        handleDataError(response.getSuccess(), response.getMessage());
         CreditCardModel convertedCreditCardModel = new CreditCardModel();
         List<CreditCardModelItem> creditCardModels = new ArrayList<>();
         for (int i = 0; i < response.getData().size(); i++) {
@@ -68,5 +76,16 @@ public class CreditCardListRepository implements ICreditCardRepository {
         }
         convertedCreditCardModel.setCreditCardList(creditCardModels);
         return convertedCreditCardModel;
+    }
+
+    private void handlerFetchError(Response<String> response) {
+        if (response.body() == null)
+            throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
+    }
+
+    private void handleDataError(boolean isSuccess, String message) {
+        if(!isSuccess) {
+            throw new ResponseRuntimeException(message);
+        }
     }
 }

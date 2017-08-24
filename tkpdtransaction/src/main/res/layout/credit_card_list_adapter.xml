@@ -10,13 +10,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:background="@drawable/btn_plain"
         android:padding="@dimen/padding_small">
 
+        <ImageView
+            android:id="@+id/card_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/margin_vs"
+            tools:src="@drawable/facebook_square_blue" />
+
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -30,50 +40,69 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vvs"
-                android:textSize="@dimen/text_size_l_medium"
+                android:textColor="@color/grey_700"
                 tools:text="Master Card" />
 
-            <ImageView
-                android:id="@+id/card_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                tools:src="@drawable/facebook_square_blue" />
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
+
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginEnd="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_small"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Nomor Kartu Kredit"
                 android:textColor="@color/label_color" />
 
             <TextView
                 android:id="@+id/card_number"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vvs"
-                android:textSize="@dimen/text_size_l_medium"
+                android:layout_weight="1"
+                android:textColor="@color/grey_700"
                 tools:text="4456 6544 **** **23 " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_small"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_weight="1"
                 android:text="Masa Berlaku"
                 android:textColor="@color/label_color" />
 
             <TextView
                 android:id="@+id/card_expiry_date"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vvs"
-                android:textSize="@dimen/text_size_l_medium"
+                android:layout_weight="1"
+                android:textColor="@color/grey_700"
                 tools:text="1141" />
         </LinearLayout>
 
@@ -84,9 +113,11 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/small_dp"
         android:background="@drawable/btn_plain"
         android:gravity="center"
         android:text="Hapus"
+        android:textColor="@color/grey_800"
         android:textSize="@dimen/text_size_l_medium" />
 
 </LinearLayout>
