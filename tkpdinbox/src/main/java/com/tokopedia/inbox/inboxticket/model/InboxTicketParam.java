@@ -38,7 +38,7 @@ public class InboxTicketParam {
     private static final String PARAM_IS_TEMP = "is_temp";
 
     public final static String YES_HELPFUL = "YES";
-    public final static String NO_HELPFUL = "YES";
+    public final static String NO_HELPFUL = "NO";
 
     private String rating;
     private String commentId;
