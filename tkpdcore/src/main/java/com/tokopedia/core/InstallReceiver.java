@@ -38,10 +38,10 @@ public class InstallReceiver extends BroadcastReceiver {
                         appsflyerInstall.onReceive(receiverData.contextData, receiverData.intentData);
 
                         new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
-                        Campaign campaign = CampaignUtil.getCampaignFromQuery(
-                                receiverData.intentData.getStringExtra(REFERRER)
-                        );
-                        TrackingUtils.eventCampaign(campaign);
+//                        Campaign campaign = CampaignUtil.getCampaignFromQuery(
+//                                receiverData.intentData.getStringExtra(REFERRER)
+//                        );
+//                        TrackingUtils.eventCampaign(campaign);
 
                         ReferralReceiver localyticsInstall = new ReferralReceiver();
                         localyticsInstall.onReceive(receiverData.contextData, receiverData.intentData);
