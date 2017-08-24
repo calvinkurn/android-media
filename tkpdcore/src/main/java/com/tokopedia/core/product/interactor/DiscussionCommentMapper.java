@@ -30,7 +30,7 @@ public class DiscussionCommentMapper implements Func1<Response<TkpdResponse>, La
                 latestTalkViewModel.setCommentId(talkComment.getCommentId());
                 latestTalkViewModel.setCommentId(talkComment.getCommentId());
                 latestTalkViewModel.setCommentMessage(talkComment.getCommentMessage());
-                latestTalkViewModel.setCommentDate(talkComment.getCommentCreateTimeFmt());
+                latestTalkViewModel.setCommentDate(talkComment.getCommentCreateTimeList().getDateTimeAndroid());
                 latestTalkViewModel.setCommentUserId(talkComment.getCommentUserId());
                 latestTalkViewModel.setCommentUserName(talkComment.getCommentUserName());
                 latestTalkViewModel.setCommentUserLabel(talkComment.getCommentUserLabel());

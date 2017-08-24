@@ -28,7 +28,7 @@ class DiscussionMapper implements Func1<Response<TkpdResponse>, LatestTalkViewMo
                     Talk talk = data.getTalkList().get(0);
                     LatestTalkViewModel domain = new LatestTalkViewModel();
                     domain.setTalkId(talk.getTalkId());
-                    domain.setTalkDate(talk.getTalkCreateTimeFmt());
+                    domain.setTalkDate(talk.getTalkCreateTimeList().getDateTimeAndroid());
                     domain.setTalkUserID(talk.getTalkUserId());
                     domain.setTalkUsername(talk.getTalkUserName());
                     domain.setTalkUserAvatar(talk.getTalkUserImage());
