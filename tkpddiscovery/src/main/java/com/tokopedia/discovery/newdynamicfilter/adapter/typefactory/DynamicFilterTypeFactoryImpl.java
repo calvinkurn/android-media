@@ -11,14 +11,14 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilter
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
+import static com.tokopedia.core.discovery.model.Filter.TEMPLATE_NAME_PRICE;
+import static com.tokopedia.core.discovery.model.Filter.TITLE_SEPARATOR;
+
 /**
  * Created by henrypriyono on 8/11/17.
  */
 
 public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
-
-    public static final String TEMPLATE_NAME_PRICE = "template_price";
-    public static final String TITLE_SEPARATOR = "Separator";
 
     private DynamicFilterView filterView;
 

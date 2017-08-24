@@ -31,13 +31,19 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterColorActivity"
-            android:label="Filter"
+            android:label="Warna"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterDetailActivity"
             android:label="Filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".newdynamicfilter.DynamicFilterCategoryActivity"
+            android:label="Kategori"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />

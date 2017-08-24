@@ -48,16 +48,7 @@ public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHold
                 filterView.onExpandableItemClicked(filter);
             }
         });
-        adapter.setSelectedOptionsList(getSelectedOptions(filter.getOptions()));
-    }
 
-    private List<Option> getSelectedOptions(List<Option> options) {
-        List<Option> selectedOptions = new ArrayList<>();
-        for (Option option : options) {
-            if (Boolean.TRUE.equals(filterView.loadLastCheckedState(option))) {
-                selectedOptions.add(option);
-            }
-        }
-        return selectedOptions;
+        adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter));
     }
 }

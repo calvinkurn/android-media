@@ -27,9 +27,12 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tokopedia.core.discovery.model.Option.CATEGORY_KEY;
 
 /**
  * Created by henrypriyono on 8/8/17.
@@ -40,10 +43,12 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     public static final int REQUEST_CODE = 219;
     public static final String EXTRA_FILTERS = "EXTRA_FILTERS";
 
-    private static String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
-
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
     public static final String FILTER_TEXT_PREF = "filter_text";
+
+    private static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
+    private static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
+    private static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
 
     RecyclerView recyclerView;
     DynamicFilterAdapter adapter;
@@ -56,6 +61,8 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     private SharedPreferences preferences;
     private int selectedExpandableItemPosition;
+    private String selectedCategoryId;
+    private String selectedCategoryName;
 
     public static void moveTo(AppCompatActivity fragmentActivity,
                               List<Filter> filterCategoryList) {
@@ -130,6 +137,8 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     private void recoverLastFilterState(Bundle savedInstanceState) {
         savedCheckedState = Parcels.unwrap(savedInstanceState.getParcelable(FILTER_CHECKED_STATE_PREF));
         savedTextInput = Parcels.unwrap(savedInstanceState.getParcelable(FILTER_TEXT_PREF));
+        selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
+        selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
     }
 
     private void loadLastFilterStateFromPreference() {
@@ -138,6 +147,9 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
         String savedTextInputJson = preferences.getString(FILTER_TEXT_PREF, new Gson().toJson(savedTextInput));
         savedTextInput = new Gson().fromJson(savedTextInputJson, savedTextInput.getClass());
+
+        selectedCategoryId = preferences.getString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        selectedCategoryName = preferences.getString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
     }
 
     @Override
@@ -145,40 +157,66 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         super.onSaveInstanceState(outState);
         outState.putParcelable(FILTER_CHECKED_STATE_PREF, Parcels.wrap(savedCheckedState));
         outState.putParcelable(FILTER_TEXT_PREF, Parcels.wrap(savedTextInput));
+        outState.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        outState.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == DynamicFilterDetailActivity.REQUEST_CODE && resultCode == RESULT_OK) {
-            List<Option> optionList
-                    = Parcels.unwrap(data.getParcelableExtra(DynamicFilterDetailActivity.EXTRA_RESULT));
-            for (Option option : optionList) {
-                OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case DynamicFilterDetailActivity.REQUEST_CODE:
+                    handleResultFromDetailPage(data);
+                    break;
+                case DynamicFilterCategoryActivity.REQUEST_CODE:
+                    handleResultFromCategoryPage(data);
+                    break;
             }
         }
         adapter.notifyItemChanged(selectedExpandableItemPosition);
     }
 
+    private void handleResultFromDetailPage(Intent data) {
+        List<Option> optionList
+                = Parcels.unwrap(data.getParcelableExtra(DynamicFilterDetailActivity.EXTRA_RESULT));
+        for (Option option : optionList) {
+            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+        }
+    }
+
+    private void handleResultFromCategoryPage(Intent data) {
+        selectedCategoryId
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_RESULT_SELECTED_CATEGORY_ID);
+        selectedCategoryName
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_RESULT_SELECTED_CATEGORY_NAME);
+    }
+
     private void applyFilter() {
         writeFilterCheckedStateToPreference();
         writeFilterTextInputToPreference();
+        writeSelectedCategoryToPreference();
         renderFilterResult();
         finish();
     }
 
-    private boolean writeFilterTextInputToPreference() {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(FILTER_TEXT_PREF, new Gson().toJson(savedTextInput));
-        editor.apply();
-        return true;
-    }
-
-    private boolean writeFilterCheckedStateToPreference() {
+    private void writeFilterCheckedStateToPreference() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(FILTER_CHECKED_STATE_PREF, new Gson().toJson(savedCheckedState));
         editor.apply();
-        return true;
+    }
+
+    private void writeFilterTextInputToPreference() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(FILTER_TEXT_PREF, new Gson().toJson(savedTextInput));
+        editor.apply();
+    }
+
+    private void writeSelectedCategoryToPreference() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        editor.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
+        editor.apply();
     }
 
     private void renderFilterResult() {
@@ -193,6 +231,10 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     private HashMap<String, String> generateSelectedFilterMap() {
         HashMap<String, String> selectedFilterMap = new HashMap<>();
+
+        if (!TextUtils.isEmpty(selectedCategoryId)) {
+            selectedFilterMap.put(CATEGORY_KEY, selectedCategoryId);
+        }
 
         selectedFilterMap.putAll(savedTextInput);
 
@@ -256,5 +298,42 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     @Override
     public void saveTextInput(String key, String textInput) {
         savedTextInput.put(key, textInput);
+    }
+
+    @Override
+    public List<Option> getSelectedOptions(Filter filter) {
+        List<Option> selectedOptions = new ArrayList<>();
+
+        if (Filter.TEMPLATE_NAME_CATEGORY.equals(filter.getTemplateName())) {
+            selectedOptions.add(getSelectedCategoryAsOption());
+        } else {
+            selectedOptions.addAll(getCheckedOptionList(filter));
+        }
+        return selectedOptions;
+    }
+
+    private Option getSelectedCategoryAsOption() {
+        return OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
+    }
+
+    private List<Option> getCheckedOptionList(Filter filter) {
+        List<Option> checkedOptions = new ArrayList<>();
+
+        for (Option option : filter.getOptions()) {
+            if (Boolean.TRUE.equals(loadLastCheckedState(option))) {
+                checkedOptions.add(option);
+            }
+        }
+        return checkedOptions;
+    }
+
+    @Override
+    public void removeSelectedOption(Option option) {
+        if (CATEGORY_KEY.equals(option.getKey())) {
+            selectedCategoryId = null;
+            selectedCategoryName = null;
+        } else {
+            saveCheckedState(option, false);
+        }
     }
 }

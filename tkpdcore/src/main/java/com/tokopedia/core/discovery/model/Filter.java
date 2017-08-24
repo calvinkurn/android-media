@@ -16,7 +16,10 @@ import java.util.List;
  */
 public class Filter implements Serializable, Parcelable {
     public static final String TITLE_CATEGORY = "Kategori";
+    public static final String TITLE_SEPARATOR = "Separator";
     public static final String TEMPLATE_NAME_CATEGORY = "template_category";
+    public static final String TEMPLATE_NAME_COLOR = "template_color";
+    public static final String TEMPLATE_NAME_PRICE = "template_price";
 
     @SerializedName("title")
     @Expose

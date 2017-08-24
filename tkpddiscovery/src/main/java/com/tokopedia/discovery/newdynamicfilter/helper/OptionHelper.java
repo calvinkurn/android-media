@@ -2,9 +2,14 @@ package com.tokopedia.discovery.newdynamicfilter.helper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.core.discovery.model.LevelThreeCategory;
+import com.tokopedia.core.discovery.model.LevelTwoCategory;
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.categorynav.domain.model.Category;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by henrypriyono on 8/22/17.
@@ -78,5 +83,97 @@ public class OptionHelper {
     public static String parseValueFromUniqueId(String uniqueId) {
         int separatorPos = uniqueId.indexOf("_");
         return uniqueId.substring(separatorPos + 1, uniqueId.length());
+    }
+
+    public static List<Category> convertToCategoryList(List<Option> optionList) {
+        List<Category> categoryList = new ArrayList<>();
+
+        for (Option option : optionList) {
+            categoryList.add(convertToRootCategory(option));
+        }
+
+        return categoryList;
+    }
+
+    private static Category convertToRootCategory(Option option) {
+        Category category = new Category();
+        category.setName(option.getName());
+        category.setId(option.getValue());
+        category.setIconImageUrl(option.getIconUrl());
+        category.setIndentation(1);
+
+        List<Category> levelTwoCategoryList
+                = convertToLevelTwoCategoryList(option.getLevelTwoCategoryList());
+
+        if (!levelTwoCategoryList.isEmpty()) {
+            category.setHasChild(true);
+            category.setChildren(levelTwoCategoryList);
+        } else {
+            category.setHasChild(false);
+        }
+
+        return category;
+    }
+
+    private static List<Category> convertToLevelTwoCategoryList(List<LevelTwoCategory> levelTwoCategories) {
+        List<Category> categoryList = new ArrayList<>();
+        if (levelTwoCategories == null) {
+            return categoryList;
+        }
+
+        for (LevelTwoCategory levelTwoCategory : levelTwoCategories) {
+            categoryList.add(convertToLevelTwoCategory(levelTwoCategory));
+        }
+
+        return categoryList;
+    }
+
+    private static Category convertToLevelTwoCategory(LevelTwoCategory levelTwoCategory) {
+        Category category = new Category();
+        category.setName(levelTwoCategory.getName());
+        category.setId(levelTwoCategory.getValue());
+        category.setIndentation(2);
+
+        List<Category> levelThreeCategoryList
+                = convertToLevelThreeCategoryList(levelTwoCategory.getLevelThreeCategoryList());
+
+        if (!levelThreeCategoryList.isEmpty()) {
+            category.setHasChild(true);
+            category.setChildren(levelThreeCategoryList);
+        } else {
+            category.setHasChild(false);
+        }
+
+        return category;
+    }
+
+    private static List<Category> convertToLevelThreeCategoryList(List<LevelThreeCategory> levelThreeCategoryList) {
+        List<Category> categoryList = new ArrayList<>();
+        if (levelThreeCategoryList == null) {
+            return categoryList;
+        }
+
+        for (LevelThreeCategory levelThreeCategory : levelThreeCategoryList) {
+            categoryList.add(convertToLevelThreeCategory(levelThreeCategory));
+        }
+
+        return categoryList;
+    }
+
+    private static Category convertToLevelThreeCategory(LevelThreeCategory levelThreeCategory) {
+        Category category = new Category();
+        category.setName(levelThreeCategory.getName());
+        category.setId(levelThreeCategory.getValue());
+        category.setIndentation(3);
+        category.setHasChild(false);
+        return category;
+    }
+
+    public static Option generateOptionFromCategory(String categoryId, String categoryName) {
+        Option option = new Option();
+        option.setName(categoryName);
+        option.setKey(Option.CATEGORY_KEY);
+        option.setValue(categoryId);
+        return option;
     }
 }

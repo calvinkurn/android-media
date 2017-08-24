@@ -19,6 +19,7 @@ public class Option implements Serializable, Parcelable {
     public static final String PRICE_MAX_KEY = "pmax";
     public static final String PRICE_MIN_MAX_RANGE_KEY = "pmin-pmax";
     public static final String PRICE_WHOLESALE_KEY = "wholesale";
+    public static final String CATEGORY_KEY = "sc";
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
@@ -56,6 +57,9 @@ public class Option implements Serializable, Parcelable {
     @SerializedName("val_max")
     @Expose
     String valMax;
+    @SerializedName("icon_url")
+    @Expose
+    String iconUrl;
     @SerializedName("child")
     @Expose
     List<LevelTwoCategory> levelTwoCategoryList;
@@ -174,6 +178,14 @@ public class Option implements Serializable, Parcelable {
         this.valMax = valMax;
     }
 
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
     public String getInputState() {
         return inputState;
     }
@@ -194,6 +206,8 @@ public class Option implements Serializable, Parcelable {
         return key + "_" + value;
     }
 
+    public Option() {}
+
     protected Option(Parcel in) {
         name = in.readString();
         key = in.readString();
@@ -206,6 +220,7 @@ public class Option implements Serializable, Parcelable {
         keyMax = in.readString();
         valMin = in.readString();
         valMax = in.readString();
+        iconUrl = in.readString();
         inputState = in.readString();
         if (in.readByte() == 0x01) {
             levelTwoCategoryList = new ArrayList<>();
@@ -233,6 +248,7 @@ public class Option implements Serializable, Parcelable {
         dest.writeString(keyMax);
         dest.writeString(valMin);
         dest.writeString(valMax);
+        dest.writeString(iconUrl);
         dest.writeString(inputState);
         if (levelTwoCategoryList == null) {
             dest.writeByte((byte) (0x00));
