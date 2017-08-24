@@ -5,7 +5,7 @@
     android:installLocation="preferExternal">
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="16"
         android:targetSdkVersion="24"
         tools:overrideLibrary="com.readystatesoftware.chuck"/>
 
@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -102,6 +103,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"
+                  android:label="com.tokopedia.tkpd:string/app_name" />
         <activity
             android:name="com.tokopedia.core.onboarding.OnboardingActivity"
             android:label="@string/app_name"
@@ -293,7 +296,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.home.TopPicksWebView"
-            android:label="@string/title_activity_deep_link"
+            android:label="@string/title_activity_top_picks"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.geolocation.activity.GeolocationActivity"
@@ -352,6 +355,11 @@
             android:name="com.tokopedia.core.home.BrandsWebViewActivity"
             android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.core.app.ReactNativeActivity"
+            android:label="@string/title_official_store"
+            android:screenOrientation="portrait" />
+
 
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->

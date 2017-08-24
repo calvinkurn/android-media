@@ -56,7 +56,7 @@ public class TopAdsCreditAdapter extends BaseLinearRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case VIEW_DATA:
-                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_top_ads_credit, viewGroup, false));
+                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_top_ads_credit, viewGroup, false));
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }

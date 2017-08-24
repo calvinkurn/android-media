@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
+import com.tokopedia.core.customView.ReputationRecyclerView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.review.adapter.ProductReviewAdapter;
@@ -58,7 +59,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     private TkpdProgressDialog progressDialog;
 
     ProgressBar progressBar;
-    RecyclerView recyclerView;
+    ReputationRecyclerView recyclerView;
     View statsView;
 
     SnackbarRetry snackbarRetry;
@@ -109,7 +110,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_fragment_reputation_product, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.include_loading);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView = (ReputationRecyclerView) rootView.findViewById(R.id.recycler_view);
         statsView = rootView.findViewById(R.id.view_rating_stats);
         initView();
         setAdapter();

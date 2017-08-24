@@ -46,11 +46,8 @@ import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
-import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
@@ -64,6 +61,8 @@ import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -84,11 +83,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private CompositeSubscription mCompositeSubscription;
     private AutocompleteFilter mAutocompleteFilter;
     private Location mCurrentLocation;
-    private boolean isLoadingPlaces;
-
     private LocationRequest mLocationRequest;
     private OnQueryListener mOnQueryListener;
-    private GetPeopleAddressesUseCase mGetPeopleAddressesUseCase;
     private CompositeSubscription compositeSubscription;
     private GetUserAddressUseCase getUserAddressUseCase;
     private GetUserAddressCacheUseCase getUserAddressCacheUseCase;
@@ -99,11 +95,10 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         void onQuerySubmit(String query);
     }
 
-    public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase,
-                                      GetUserAddressUseCase getUserAddressUseCase,
+    @Inject
+    public PlaceAutoCompletePresenter(GetUserAddressUseCase getUserAddressUseCase,
                                       GetUserAddressCacheUseCase getUserAddressCacheUseCase,
                                       GetDistanceMatrixUseCase getDistanceMatrixUseCase) {
-        mGetPeopleAddressesUseCase = getPeopleAddressesUseCase;
         compositeSubscription = new CompositeSubscription();
         this.getUserAddressUseCase = getUserAddressUseCase;
         this.getUserAddressCacheUseCase = getUserAddressCacheUseCase;
@@ -120,7 +115,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             AutocompleteFilter.Builder mbuilder = new AutocompleteFilter.Builder()
                     .setTypeFilter(AutocompleteFilter.TYPE_FILTER_NONE);
             mAutocompleteFilter = mbuilder.build();
-            isLoadingPlaces = false;
             mCompositeSubscription.add(
                     Observable.create(new Observable.OnSubscribe<String>() {
                         @Override
@@ -247,51 +241,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                 && !rideAddress.getLongitude().equalsIgnoreCase("0");
     }
 
-    @Override
-    public void actionGetPeopleAddresses(final boolean isLoadMore) {
-        getView().showAutoDetectLocationButton();
-        mGetPeopleAddressesUseCase.execute(getView().getPeopleAddressParam(), new Subscriber<PeopleAddressWrapper>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(PeopleAddressWrapper wrapper) {
-                if (isViewAttached() && !isUnsubscribed()) {
-                    if (!getView().isActiveMarketPlaceSource()) return;
-                    compositeSubscription.clear();
-                    ArrayList<Visitable> addresses = new ArrayList<>();
-                    for (PeopleAddress peopleAddress : wrapper.getAddresses()) {
-                        if (!TextUtils.isEmpty(peopleAddress.getLongitude()) && !TextUtils.isEmpty(peopleAddress.getLatitude())) {
-                            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                            address.setAddress(String.valueOf(peopleAddress.getAddressStreet()));
-                            address.setTitle(String.valueOf(peopleAddress.getAddressName()));
-                            address.setAddressId(peopleAddress.getAddressId());
-                            address.setLatitude(Double.parseDouble(peopleAddress.getLatitude()));
-                            address.setLongitude(Double.parseDouble(peopleAddress.getLongitude()));
-                            address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
-                            addresses.add(address);
-                        }
-                    }
-                    getView().showListPlaces();
-                    getView().setPagingConfiguration(wrapper.getPaging());
-                    if (!isLoadMore) {
-                        getView().renderPlacesList(addresses);
-                    } else {
-                        getView().renderMorePlacesList(addresses);
-                    }
-                    getView().hideAutoCompleteLoadingCross();
-                }
-            }
-        });
-    }
-
     private void prepareInitialView() {
         getView().hideAutoCompleteLoadingCross();
         getView().showAutoDetectLocationButton();
@@ -415,14 +364,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public boolean isLocationPermissionGranted() {
-        if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+        return !((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)
                 && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)) {
-            return false;
-        }
+                != PackageManager.PERMISSION_GRANTED));
 
-        return true;
     }
 
     @Override
@@ -496,7 +442,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     private void getPlacesAndRenderViewByKeyword(String keyword) {
-        isLoadingPlaces = true;
         LatLngBounds bounds = null;
         if (mCurrentLocation != null) {
             bounds = GeoLocationUtils.generateBoundary(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
@@ -507,11 +452,9 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                  @Override
                                  public ArrayList<AutocompletePrediction> call(AutocompletePredictionBuffer autocompletePredictions) {
                                      if (autocompletePredictions.getStatus().isSuccess()) {
-                                         isLoadingPlaces = false;
                                          return DataBufferUtils.freezeAndClose(autocompletePredictions);
                                      }
                                      autocompletePredictions.release();
-                                     isLoadingPlaces = false;
                                      return new ArrayList<>();
                                  }
                              }
@@ -717,7 +660,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void detachView() {
-        mGetPeopleAddressesUseCase.unsubscribe();
         super.detachView();
     }
 

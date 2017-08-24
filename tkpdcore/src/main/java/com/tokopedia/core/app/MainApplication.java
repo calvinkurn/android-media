@@ -12,6 +12,8 @@ import android.content.res.Configuration;
 import android.os.Build;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
@@ -24,11 +26,13 @@ import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.network.di.module.NetModule;
+import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
@@ -42,7 +46,7 @@ import io.fabric.sdk.android.Fabric;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication {
+public class MainApplication extends TkpdMultiDexApplication implements ReactApplication{
 
 
 	public static final int DATABASE_VERSION = 7;
@@ -60,8 +64,11 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
+    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
+    private LocationUtils locationUtils;
 
     private DaggerAppComponent.Builder daggerBuilder;
+    private AppComponent appComponent;
 
     public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
@@ -98,9 +105,16 @@ public class MainApplication extends TkpdMultiDexApplication {
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
+        locationUtils = new LocationUtils(this);
+        locationUtils.initLocationBackground();
         TooLargeTool.startLogging(this);
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        locationUtils.deInitLocationBackground();
+    }
 
     public static boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
@@ -290,7 +304,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         HUDIntent.unbindService(context, hudConnection);
     }
 
-    private void initializeAnalytics() {
+    protected void initializeAnalytics() {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
@@ -341,11 +355,24 @@ public class MainApplication extends TkpdMultiDexApplication {
 	}
 
     public AppComponent getApplicationComponent(ActivityModule activityModule) {
-        return daggerBuilder.activityModule(activityModule)
+        return appComponent = daggerBuilder.activityModule(activityModule)
                 .build();
+    }
+
+    public AppComponent getAppComponent(){
+        return appComponent;
+    }
+
+    public void setAppComponent(AppComponent appComponent){
+        this.appComponent = appComponent;
     }
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+    }
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return reactNativeHost;
     }
 }

@@ -69,7 +69,7 @@
 
         </LinearLayout>
 
-        <com.tokopedia.seller.lib.widget.LabelView
+        <com.tokopedia.seller.common.widget.LabelView
             android:id="@+id/label_view_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             android:focusable="true"/>
     </LinearLayout>
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_view_catalog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

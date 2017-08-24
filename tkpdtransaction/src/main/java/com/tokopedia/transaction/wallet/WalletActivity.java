@@ -23,7 +23,7 @@ import static com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory.KEY_
  * Created by kris on 1/13/17. Tokopedia
  */
 
-public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener{
+public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
 
     public static final String EXTRA_URL = "url";
     private String url;
@@ -83,7 +83,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     public void onProgressResult(String progressResult) {
         Uri uri = Uri.parse(progressResult);
-        if(uri.getPath().contains("thanks_wallet")) {
+        if (uri.getPath().contains("thanks_wallet")) {
             clearTokoCashData();
             finish();
         }
@@ -118,11 +118,16 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     public boolean onOverrideUrl(String url) {
         Uri uri = Uri.parse(url);
-        if(uri.getPath().contains("thanks_wallet")) {
+        if (uri.getPath().contains("thanks_wallet")) {
             clearTokoCashData();
             finish();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onWebTitlePageCompleted(String title) {
+
     }
 }

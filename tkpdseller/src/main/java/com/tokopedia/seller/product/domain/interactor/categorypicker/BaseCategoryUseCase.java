@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.domain.interactor.categorypicker;
 
+import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -13,7 +14,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 3/8/17.
  */
 
-public abstract class BaseCategoryUseCase<T> extends UseCase<T> {
+public abstract class BaseCategoryUseCase<T> extends CompositeUseCase<T> {
     protected final CategoryRepository categoryRepository;
 
     public BaseCategoryUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
@@ -22,7 +23,7 @@ public abstract class BaseCategoryUseCase<T> extends UseCase<T> {
     }
 
     @Override
-    public Observable<T> createObservable(RequestParams requestParams) {
+    public final Observable<T> createObservable(RequestParams requestParams) {
         return Observable.just(true)
                 .flatMap(new CheckVersion())
                 .flatMap(new CheckCategoryAvailable())

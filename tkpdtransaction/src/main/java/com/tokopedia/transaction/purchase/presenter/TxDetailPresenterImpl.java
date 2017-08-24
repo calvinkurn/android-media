@@ -8,7 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -23,6 +28,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TagHandlerUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.activity.TxHistoryActivity;
@@ -43,9 +49,10 @@ import java.util.Map;
  * @author by Angga.Prasetiyo on 28/04/2016.
  */
 public class TxDetailPresenterImpl implements TxDetailPresenter {
+    private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
     private final TxDetailViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
-
+    private static final int FREE_RETURN = 1;
     public TxDetailPresenterImpl(TxDetailViewListener viewListener) {
         this.viewListener = viewListener;
         this.netInteractor = new TxOrderNetInteractorImpl();
@@ -95,7 +102,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          */
                         viewListener.navigateToActivityRequest(
                                 InboxRouter.getCreateResCenterActivityIntent(
-                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, 6
+                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
                                 ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -110,7 +117,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          */
                         viewListener.navigateToActivityRequest(
                                 InboxRouter.getCreateResCenterActivityIntent(
-                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, 1
+                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_REFUND
                                 ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -209,6 +216,11 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                 });
     }
 
+    @Override
+    public void processComplain(Context context, OrderData orderData){
+        showComplainDialog(context, orderData);
+    }
+
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -230,6 +242,117 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         viewListener.showDialog(builder.create());
     }
 
+
+    private void showComplainDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_complain);
+        Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
+        Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
+        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
+        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(R.id.llFreeReturn);
+        TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
+        TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
+        TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle(), null, new TagHandlerUtil()));
+        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg(), null, new TagHandlerUtil()));
+
+        llFreeReturn.setVisibility(View.GONE);
+        btnBack.setVisibility(View.GONE);
+        btnNotReceive.setVisibility(View.GONE);
+        if (orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
+            btnNotReceive.setVisibility(View.VISIBLE);
+        else
+            btnBack.setVisibility(View.VISIBLE);
+
+        if (orderData.getOrderDetail().getDetailFreeReturn() == FREE_RETURN) {
+            llFreeReturn.setVisibility(View.VISIBLE);
+            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+        }
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnNotReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                showNotReceiveDialog(context, orderData);
+            }
+        });
+
+        btnReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                if (orderData.getOrderDetail().getDetailFreeReturn() == FREE_RETURN) {
+                    LocalCacheHandler cache = new LocalCacheHandler(context,
+                            ConstantOnBoarding.CACHE_FREE_RETURN);
+                    if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    } else {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    }
+                } else {
+                    viewListener.navigateToActivityRequest(
+                            InboxRouter.getCreateResCenterActivityIntent(
+                                    context, orderData.getOrderDetail().getDetailOrderId()
+                            ), CREATE_RESCENTER_REQUEST_CODE
+                    );
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showNotReceiveDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_not_received);
+        Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
+        Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
+        TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
+        TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
+        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle(), null, new TagHandlerUtil()));
+        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg(), null,
+                new TagHandlerUtil()));
+        btnRefund.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                viewListener.navigateToActivityRequest(
+                        InboxRouter.getCreateResCenterActivityIntent(
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_REFUND
+                        ), CREATE_RESCENTER_REQUEST_CODE
+                );
+            }
+        });
+
+        btnCheckCourier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                viewListener.navigateToActivityRequest(
+                        InboxRouter.getCreateResCenterActivityIntent(
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
+                        ), CREATE_RESCENTER_REQUEST_CODE
+                );
+            }
+        });
+
+        dialog.show();
+    }
     private void processResolution(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())

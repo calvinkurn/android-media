@@ -332,6 +332,11 @@
  -keep enum com.beloo.widget.**
 -dontwarn com.beloo.widget.**
 
+-keep class com.airbnb.deeplinkdispatch.** { *; }
+-keepclasseswithmembers class * {
+     @com.airbnb.deeplinkdispatch.DeepLink <methods>;
+}
+
 
 
 

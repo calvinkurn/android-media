@@ -4,6 +4,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.DynamicTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.MsisdnInterceptor;
@@ -92,6 +93,16 @@ public class OkHttpFactory {
                 .build();
     }
 
+    public OkHttpClient buildClientDynamicAuth() {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new DynamicTkpdAuthInterceptor())
+                .addInterceptor(getHttpLoggingInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
     public OkHttpClient buildClientDefaultAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
@@ -149,6 +160,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientDigitalAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -339,4 +351,5 @@ public class OkHttpFactory {
                 .addDebugInterceptor()
                 .build();
     }
+
 }

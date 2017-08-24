@@ -57,14 +57,14 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
             if (!isViewAttached()) {
                 return;
             }
-            getView().onErrorLoadProduct(e);
+            getView().onErrorLoadDraftProduct(e);
         }
 
         @Override
         public void onNext(UploadProductInputDomainModel editProductFormDomainModel) {
             checkViewAttached();
             UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(editProductFormDomainModel);
-            getView().onSuccessLoadProduct(model);
+            getView().onSuccessLoadDraftProduct(model);
         }
     }
 }

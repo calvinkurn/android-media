@@ -17,11 +17,6 @@ public class TopAdsAddCreditActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected String getTagFragment() {
-        return TopAdsAddCreditActivity.class.getSimpleName();
-    }
-
-    @Override
     public String getScreenName() {
         return null;
     }

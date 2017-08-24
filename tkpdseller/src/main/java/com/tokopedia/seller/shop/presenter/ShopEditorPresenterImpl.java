@@ -72,20 +72,23 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
             view.loadImageAva(shopEditorModel.getmShopAvaUri());
             modelShopData = shopEditorModel.getModelShopData();
 
-            if(modelShopData.getInfo() != null && modelShopData.getInfo().getShopIsGold() == 1){
-                view.setShopIsGold(modelShopData.getInfo().getShopGoldExpiredTime());
-            }else{
-                view.setShopReguler();
-            }
+            if(modelShopData != null) {
+                view.hideDialog();
+                if (modelShopData.getInfo() != null && modelShopData.getInfo().getShopIsGold() == 1) {
+                    view.setShopIsGold(modelShopData.getInfo().getShopGoldExpiredTime());
+                } else {
+                    view.setShopReguler();
+                }
 
-            if(modelShopData.getClosedScheduleDetail().getCloseStatus() == 1){
-                view.setOpenShop();
-            }else if(modelShopData.getClosedScheduleDetail().getCloseStatus() == 2){
-                view.setCloseShop(modelShopData.getClosedScheduleDetail().getCloseEnd());
-            }else if(modelShopData.getClosedScheduleDetail().getCloseStatus() == 3){
-                view.setCloseShopWithSchedule(modelShopData.getClosedScheduleDetail().getCloseStart());
-            } else {
-                view.setOpenShop();
+                if (modelShopData.getClosedScheduleDetail().getCloseStatus() == 1) {
+                    view.setOpenShop();
+                } else if (modelShopData.getClosedScheduleDetail().getCloseStatus() == 2) {
+                    view.setCloseShop(modelShopData.getClosedScheduleDetail().getCloseEnd());
+                } else if (modelShopData.getClosedScheduleDetail().getCloseStatus() == 3) {
+                    view.setCloseShopWithSchedule(modelShopData.getClosedScheduleDetail().getCloseStart());
+                } else {
+                    view.setOpenShop();
+                }
             }
         }
     }

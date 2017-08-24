@@ -9,7 +9,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -26,7 +25,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -274,7 +272,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "redirect url = " + url);
+            //  Log.d(TAG, "redirect url = " + url);
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
                     url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
@@ -294,22 +292,34 @@ public class TopPayActivity extends Activity implements ITopPayView {
                 showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
-                if (paymentModuleRouter != null && paymentModuleRouter.getSchemeAppLinkCancelPayment() != null
+                if (paymentModuleRouter != null
+                        && paymentModuleRouter.getSchemeAppLinkCancelPayment() != null
                         && paymentModuleRouter.getSchemeAppLinkCancelPayment().equalsIgnoreCase(url)) {
                     if (isEndThanksPage()) callbackPaymentSucceed();
                     else callbackPaymentCanceled();
                     return true;
-                } else if (paymentModuleRouter != null && paymentModuleRouter.isSupportedDelegateDeepLink(url)
+                } else if (paymentModuleRouter != null
+                        && paymentModuleRouter.isSupportedDelegateDeepLink(url)
                         && paymentModuleRouter.getIntentDeepLinkHandlerActivity() != null) {
                     Intent intent = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
                     intent.setData(Uri.parse(url));
                     navigateToActivity(intent);
+                    return true;
+                } else if (paymentModuleRouter != null) {
+                    String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
+                    if (urlFinal == null)
+                        return super.shouldOverrideUrlLoading(view, url);
+                    view.loadUrl(
+                            urlFinal,
+                            paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
+                    );
                     return true;
                 } else {
                     return super.shouldOverrideUrlLoading(view, url);
                 }
             }
         }
+
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -332,14 +342,18 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request,
                                     WebResourceError error) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                showError(view, error.getErrorCode());
             super.onReceivedError(view, request, error);
         }
 
         @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            return super.shouldInterceptRequest(view, url);
+        }
+
+
+        @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "start url = " + url);
+//            Log.d(TAG, "start url = " + url);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -405,13 +419,11 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
         @SuppressWarnings("deprecation")
         public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
+//            Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
         }
 
         public boolean onConsoleMessage(ConsoleMessage cm) {
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
+//            Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
             return true;
         }
     }

@@ -9,6 +9,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -128,6 +129,7 @@ public class DigitalProductActivity extends BasePresenterActivity
     public void updateTitleToolbar(String title) {
         this.titleToolbar = title;
         invalidateTitleToolBar();
+        TrackingUtils.sendMoEngageOpenDigitalCatScreen(title, passData.getCategoryId());
     }
 
     private void invalidateTitleToolBar() {
