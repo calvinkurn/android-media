@@ -16,12 +16,6 @@ public interface Product {
     interface View extends CustomerView {
         void onSuccessGetProduct(ProductDetailData productDetailData);
 
-        void onInstallmentClicked();
-
-        void onBuyClicked();
-
-        void onAddToCartClicked();
-
         void onSuccessGetProductCampaign(ProductCampaign productCampaign);
     }
 

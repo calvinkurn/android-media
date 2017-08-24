@@ -14,6 +14,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.view.widget.productquantity.ProductQuantity;
 import com.tokopedia.posapp.view.widget.productquantity.ProductQuantityView;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -34,6 +35,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private static final String WEEK_TIMER_FORMAT = "%dw : ";
     private static final String DAY_TIMER_FORMAT = "%dd : ";
     private static final String HOUR_MIN_SEC_TIMER_FORMAT = "%02dh : %02dm : %02ds";
+    public static final int DEFAULT_PRODUCT_QUANTITY = 1;
 
     private TextView tvName;
     private TextView cashbackTextView;
@@ -102,7 +104,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackTextView.setText(getContext().getString(com.tokopedia.tkpdpdp.R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
         }
-        productQuantityView.renderData(null);
+        productQuantityView.renderData(new ProductQuantity());
     }
 
     public void renderTempData(ProductPass productPass) {
@@ -186,5 +188,13 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         );
 
         return countdown;
+    }
+
+    public int getProductQuantity() {
+        if(productQuantityView != null) {
+            return productQuantityView.getProductQuantity();
+        }
+
+        return DEFAULT_PRODUCT_QUANTITY;
     }
 }

@@ -82,6 +82,7 @@ public class ProductQuantityView extends BaseView<ProductQuantity,ProductQuantit
 
     @Override
     public void renderData(@NonNull ProductQuantity data) {
+        etQuantity.setText(String.valueOf(data.getQuantity()));
         setVisibility(VISIBLE);
     }
 

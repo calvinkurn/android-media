@@ -58,5 +58,5 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
     compile rootProject.ext.miscDependencies.cardio
 
-    testCompile rootProject.ext.testDependencies.junit
+    compile rootProject.ext.testDependencies.junit
 }

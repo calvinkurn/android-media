@@ -23,8 +23,10 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.di.component.DaggerProductComponent;
+import com.tokopedia.posapp.view.AddToCart;
 import com.tokopedia.posapp.view.Product;
 import com.tokopedia.posapp.view.activity.InstallmentSimulationActivity;
+import com.tokopedia.posapp.view.presenter.AddToCartPresenter;
 import com.tokopedia.posapp.view.presenter.ProductPresenter;
 import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
 import com.tokopedia.posapp.view.widget.HeaderInfoView;
@@ -42,7 +44,8 @@ import javax.inject.Inject;
  * Created by okasurya on 8/8/17.
  */
 
-public class ProductDetailFragment extends BaseDaggerFragment implements Product.View, ProductDetailView {
+public class ProductDetailFragment extends BaseDaggerFragment
+        implements Product.View, ProductDetailView, AddToCart.View {
     public static final String PRODUCT_PASS = "PRODUCT_PASS";
 
     private PictureView pictureView;
@@ -56,6 +59,9 @@ public class ProductDetailFragment extends BaseDaggerFragment implements Product
 
     @Inject
     ProductPresenter productPresenter;
+
+    @Inject
+    AddToCartPresenter addToCartPresenter;
 
     @Inject
     @ActivityContext
@@ -78,6 +84,7 @@ public class ProductDetailFragment extends BaseDaggerFragment implements Product
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_product_detail, container, false);
         initView(parentView);
+        initListener();
         productPresenter.attachView(this);
         return parentView;
     }
@@ -89,11 +96,19 @@ public class ProductDetailFragment extends BaseDaggerFragment implements Product
         videoDescriptionLayout = view.findViewById(R.id.video_layout);
         buttonBuy = view.findViewById(R.id.button_buy);
         buttonAddToCart = view.findViewById(R.id.button_add_to_cart);
+    }
 
+    void initListener() {
         pictureView.setListener(this);
         headerInfoView.setListener(this);
         priceSimulationView.setListener(this);
         videoDescriptionLayout.setListener(this);
+        buttonAddToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addToCartPresenter.add(productPass.getProductId(), headerInfoView.getProductQuantity());
+            }
+        });
     }
 
     @Override
@@ -130,23 +145,18 @@ public class ProductDetailFragment extends BaseDaggerFragment implements Product
     }
 
     @Override
-    public void onInstallmentClicked() {
-
-    }
-
-    @Override
-    public void onBuyClicked() {
-
-    }
-
-    @Override
-    public void onAddToCartClicked() {
-
-    }
-
-    @Override
     public void onSuccessGetProductCampaign(ProductCampaign productCampaign) {
         showProductCampaign(productCampaign);
+    }
+
+    @Override
+    public void onErrorAddToCart(String message) {
+
+    }
+
+    @Override
+    public void onSuccessAddToCart(String message) {
+
     }
 
     @Override

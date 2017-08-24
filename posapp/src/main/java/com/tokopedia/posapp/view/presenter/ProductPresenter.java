@@ -6,8 +6,8 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.posapp.domain.usecase.AddToCartUseCase;
 import com.tokopedia.posapp.domain.usecase.GetProductCampaignUseCase;
 import com.tokopedia.posapp.domain.usecase.GetProductUseCase;
 import com.tokopedia.posapp.view.Product;
@@ -16,13 +16,12 @@ import com.tokopedia.posapp.view.subscriber.GetProductSubscriber;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
-
 /**
  * Created by okasurya on 8/10/17.
  */
 
-public class ProductPresenter extends BaseDaggerPresenter<Product.View> implements Product.Presenter {
+public class ProductPresenter extends BaseDaggerPresenter<Product.View>
+        implements Product.Presenter {
     private static final String PARAM_PRODUCT_ID = "product_id";
     private static final String PARAM_PRODUCT_KEY = "product_key";
     private static final String PARAM_SHOP_DOMAIN = "shop_domain";
@@ -35,7 +34,8 @@ public class ProductPresenter extends BaseDaggerPresenter<Product.View> implemen
     @Inject
     public ProductPresenter(@ActivityContext Context context,
                             GetProductUseCase getProductUseCase,
-                            GetProductCampaignUseCase getProductCampaignUseCase) {
+                            GetProductCampaignUseCase getProductCampaignUseCase,
+                            AddToCartUseCase addToCartUseCase) {
         this.context = context;
         this.getProductUseCase = getProductUseCase;
         this.getProductCampaignUseCase = getProductCampaignUseCase;
