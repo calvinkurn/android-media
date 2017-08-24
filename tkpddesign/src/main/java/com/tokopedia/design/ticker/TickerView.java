@@ -176,9 +176,9 @@ public class TickerView extends BaseCustomView {
     public void setHighLightColor(int highLightColor) {
         GradientDrawable gradientDrawable;
         try {
-            gradientDrawable = new GradientDrawable();
+            gradientDrawable = (GradientDrawable) tickerHighlightView.getBackground();
             gradientDrawable.setColor(highLightColor);
-            gradientDrawable.setCornerRadius(DEFAULT_CORNER_RADIUS);
+
             tickerHighlightView.setBackground(gradientDrawable);
         } catch (Exception e) {
             tickerHighlightView.setBackgroundColor(
