@@ -27,7 +27,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -95,8 +97,18 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     @DeepLink(Constants.Applinks.PRODUCT_ADD)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        Intent intent = null;
+        if (!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0")) {
+            intent = new Intent(context, ProductAddActivity.class);
+        } else {
+            if (GlobalConfig.isSellerApp()) {
+                intent = SellerAppRouter.getSellerHomeActivity(context);
+            } else {
+                intent = HomeRouter.getHomeActivity(context);
+            }
+        }
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ProductAddActivity.class)
+        return intent
                 .setData(uri.build())
                 .putExtras(extras);
     }
@@ -120,13 +132,13 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         return true;
     }
 
-    protected int getCancelMessageRes(){
+    protected int getCancelMessageRes() {
         return R.string.product_draft_dialog_cancel_message;
     }
 
     @Override
     public void onBackPressed() {
-        if (hasDataAdded()){
+        if (hasDataAdded()) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setMessage(getString(getCancelMessageRes()))
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
@@ -163,8 +175,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     protected boolean hasDataAdded() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment!= null && fragment instanceof ProductAddFragment ) {
-            return ((ProductAddFragment)fragment).hasDataAdded();
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            return ((ProductAddFragment) fragment).hasDataAdded();
         }
         return false;
     }
@@ -172,8 +184,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     protected boolean saveProducttoDraft() {
         // save newly added product ToDraft
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment!= null && fragment instanceof ProductAddFragment ) {
-            ((ProductAddFragment)fragment).saveDraft(false);
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            ((ProductAddFragment) fragment).saveDraft(false);
             return true;
         }
         return false;
@@ -428,7 +440,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     @Override
     public void successSaveDraftToDBWhenBackpressed() {
-        CommonUtils.UniversalToast(this,getString(R.string.product_draft_product_has_been_saved_as_draft));
+        CommonUtils.UniversalToast(this, getString(R.string.product_draft_product_has_been_saved_as_draft));
         finish();
     }
 
