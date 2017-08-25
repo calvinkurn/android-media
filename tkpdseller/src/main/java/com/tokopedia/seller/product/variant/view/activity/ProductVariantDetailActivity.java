@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailFragment;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
                              long variantId,
                              String variantName,
                              boolean hasStock,
-                             ArrayList<ProductVariantValue> productVariantValueArrayList,
+                             ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList,
                              ArrayList<Long> selectedVariantValueId){
         Intent intent = createInstance(context, variantId, variantName, hasStock,
                 productVariantValueArrayList, selectedVariantValueId);
@@ -56,7 +56,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
                                         long variantId,
                                         String variantName,
                                         boolean hasStock,
-                                        ArrayList<ProductVariantValue> productVariantValueArrayList,
+                                        ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList,
                                         ArrayList<Long> selectedVariantValueId){
         Intent intent = new Intent(context, ProductVariantDetailActivity.class);
         intent.putExtra(EXTRA_VARIANT_ID, variantId);

@@ -14,7 +14,6 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
@@ -138,16 +137,12 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     public void onItemClicked(ProductVariantManageViewModel productVariantManageViewModel) {
         // TODO start activity with the correct parameter
         ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
-        ArrayList<ProductVariantValue> productVariantValueList = new ArrayList<>();
-        productVariantValueList.addAll(ProductVariantUtils.getProductVariantValueListForVariantDetail(
-                productVariantManageViewModel.getTemporaryId(), variantData.getVariantUnitSubmitList(),
-                variantData.getVariantStatusList(), productVariantByCatModel.getUnitList()));
         ProductVariantDetailActivity.start(getContext(), ProductVariantDashboardFragment.this,
                 productVariantManageViewModel.getTemporaryId(),
                 productVariantManageViewModel.getTitle(),
-                true,
-                productVariantValueList,
-                new ArrayList<Long>());
+                ProductVariantUtils.isContainVariantStatusByOptionId(productVariantManageViewModel.getTemporaryId(), variantData.getVariantStatusList()),
+                new ArrayList<>(ProductVariantUtils.getProductVariantValueListForVariantDetail(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantData.getVariantUnitSubmitList(), productVariantByCatModel.getUnitList())),
+                new ArrayList<>(ProductVariantUtils.getSelectedOptionIdList(productVariantManageViewModel.getTemporaryId(), variantData.getVariantStatusList())));
     }
 
     private void pickVariant(int level) {
@@ -170,7 +165,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 onActivityResultFromItemPicker(requestCode, data);
                 break;
             case ProductVariantDetailActivity.REQUEST_CODE:
-                onActivityResultFromDataManage(data);
+                onActivityResultFromDetail(data);
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
@@ -194,7 +189,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     }
 
     @SuppressWarnings("unchecked")
-    private void onActivityResultFromDataManage(Intent data) {
+    private void onActivityResultFromDetail(Intent data) {
         if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
             long variantIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
             if (variantIdToDelete != 0) {
@@ -327,8 +322,11 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
      * @return selected name String for that variant, ex: "hijau, merah, biru"
      */
     private String getVariantTitle(int level) {
+        String title = "";
         VariantUnitSubmit variantUnitSubmit = getVariantUnitSubmit(level);
-        String title = ProductVariantUtils.getMultipleVariantOptionTitle(level, variantUnitSubmit, productVariantByCatModelList);
+        if (variantUnitSubmit != null) {
+            title = ProductVariantUtils.getMultipleVariantOptionTitle(level, variantUnitSubmit.getVariantSubmitOptionList(), productVariantByCatModelList);
+        }
         if (TextUtils.isEmpty(title)) {
             title = getString(R.string.product_label_choose);
         }

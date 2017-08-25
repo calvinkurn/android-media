@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.variant.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,9 @@ import android.view.ViewGroup;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
+import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDetailViewHolder;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantItemPickerSearchViewHolder;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 
 import java.util.ArrayList;
 
@@ -18,49 +19,52 @@ import java.util.ArrayList;
  * Created by User on 8/22/2017.
  */
 
-public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVariantItemPickerSearchViewHolder> {
+public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVariantDetailViewHolder> {
+
+    public interface OnProductVariantDataAdapterListener {
+        void onCheckAny();
+
+        void onUnCheckAll();
+    }
+
     private Context context;
-    private ArrayList<ProductVariantValue> productVariantValueArrayList;
+    private ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList;
     private ArrayList<Long> variantValueIdList;
 
     private OnProductVariantDataAdapterListener onProductVariantDataAdapterListener;
-    public interface OnProductVariantDataAdapterListener{
-        void onCheckAny();
-        void onUnCheckAll();
-    }
 
     public void setOnProductVariantDataAdapterListener(OnProductVariantDataAdapterListener onProductVariantDataAdapterListener) {
         this.onProductVariantDataAdapterListener = onProductVariantDataAdapterListener;
     }
 
     public ProductVariantDetailAdapter(Context context,
-                                       ArrayList<ProductVariantValue> productVariantValueArrayList,
-                                       ArrayList<Long> variantValueIdList){
+                                       ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList,
+                                       ArrayList<Long> variantValueIdList) {
         this.context = context;
-        this.productVariantValueArrayList = productVariantValueArrayList == null ? new ArrayList<ProductVariantValue>(): productVariantValueArrayList;
-        this.variantValueIdList = variantValueIdList == null ? new ArrayList<Long>(): variantValueIdList;
+        this.productVariantValueArrayList = productVariantValueArrayList == null ? new ArrayList<ProductVariantDetailViewModel>() : productVariantValueArrayList;
+        this.variantValueIdList = variantValueIdList == null ? new ArrayList<Long>() : variantValueIdList;
     }
 
     @Override
-    public ProductVariantItemPickerSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_product_variant_picker_search, parent, false);
-        return new ProductVariantItemPickerSearchViewHolder(view);
+    public ProductVariantDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_product_variant_detail, parent, false);
+        return new ProductVariantDetailViewHolder(view);
     }
 
-    public void checkAllItems(){
+    public void checkAllItems() {
         if (variantValueIdList.size() == productVariantValueArrayList.size()) {
             //already check all.
             return;
         }
-        for (ProductVariantValue productVariantValue : productVariantValueArrayList) {
-            if (! variantValueIdList.contains(productVariantValue.getValueId())) {
-                variantValueIdList.add(productVariantValue.getValueId());
+        for (ProductVariantDetailViewModel productVariantDetailViewModel : productVariantValueArrayList) {
+            if (!variantValueIdList.contains(productVariantDetailViewModel.getValueId())) {
+                variantValueIdList.add(productVariantDetailViewModel.getValueId());
             }
         }
         notifyDataSetChanged();
     }
 
-    public void unCheckAllItems(){
+    public void unCheckAllItems() {
         if (variantValueIdList.size() == 0) {
             //already uncheck all.
             return;
@@ -70,18 +74,18 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
     }
 
     @Override
-    public void onBindViewHolder(final ProductVariantItemPickerSearchViewHolder holder, final int position) {
-        final ProductVariantValue productVariantValue = productVariantValueArrayList.get(position);
-        long productId = productVariantValue.getValueId();
+    public void onBindViewHolder(final ProductVariantDetailViewHolder holder, final int position) {
+        final ProductVariantDetailViewModel productVariantDetailViewModel = productVariantValueArrayList.get(position);
+        long productId = productVariantDetailViewModel.getValueId();
         boolean isChecked = false;
         if (variantValueIdList.contains(productId)) {
             isChecked = true;
         }
-        holder.bindObject(productVariantValueArrayList.get(position),isChecked);
-        final BaseMultipleCheckViewHolder.CheckedCallback<ProductVariantValue> checkedCallback = new BaseMultipleCheckViewHolder.CheckedCallback<ProductVariantValue>() {
+        holder.bindObject(productVariantValueArrayList.get(position), isChecked);
+        final BaseMultipleCheckViewHolder.CheckedCallback<ProductVariantDetailViewModel> checkedCallback = new BaseMultipleCheckViewHolder.CheckedCallback<ProductVariantDetailViewModel>() {
             @Override
-            public void onItemChecked(ProductVariantValue productVariantValue, boolean checked) {
-                long productVariantId = productVariantValue.getValueId();
+            public void onItemChecked(ProductVariantDetailViewModel variantDetailViewModel, boolean checked) {
+                long productVariantId = variantDetailViewModel.getValueId();
                 if (checked) {
                     variantValueIdList.add(productVariantId);
                 } else {
@@ -91,7 +95,7 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
                 if (onProductVariantDataAdapterListener != null) {
                     if (variantValueIdList.size() == 0) {
                         onProductVariantDataAdapterListener.onUnCheckAll();
-                    } else if (variantValueIdList.size() == 1){
+                    } else if (variantValueIdList.size() == 1) {
                         if (checked) {
                             onProductVariantDataAdapterListener.onCheckAny();
                         }
@@ -105,7 +109,7 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
             public void onClick(View v) {
                 boolean checkTo = !holder.isChecked();
                 holder.setChecked(checkTo);
-                checkedCallback.onItemChecked(productVariantValue, checkTo);
+                checkedCallback.onItemChecked(productVariantDetailViewModel, checkTo);
             }
         });
     }
@@ -119,7 +123,7 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
      */
     public ArrayList<Long> getVariantValueIdListSorted() {
         ArrayList<Long> sortedArrayList = new ArrayList<>();
-        for (int i=0, sizei = productVariantValueArrayList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = productVariantValueArrayList.size(); i < sizei; i++) {
             int position = variantValueIdList.indexOf(productVariantValueArrayList.get(i).getValueId());
             if (position >= 0) {
                 sortedArrayList.add(variantValueIdList.get(position));
@@ -131,7 +135,7 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
         return sortedArrayList;
     }
 
-    public boolean isCheckAny(){
+    public boolean isCheckAny() {
         return productVariantValueArrayList.size() > 0;
     }
 

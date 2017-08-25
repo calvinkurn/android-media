@@ -17,9 +17,9 @@ import android.widget.CompoundButton;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDetailAdapter;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
         Intent activityIntent = getActivity().getIntent();
 
         ArrayList<Long> variantValueIdList = null;
-        ArrayList<ProductVariantValue> productVariantValueArrayList = null;
+        ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList = null;
         if (!activityIntent.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST)) {
             if (!activityIntent.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK)) {
                 // TODO hendry just for test
