@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDetailViewHolder;
-import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantItemPickerSearchViewHolder;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 
 import java.util.ArrayList;
@@ -41,8 +39,8 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
                                        ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList,
                                        ArrayList<Long> variantValueIdList) {
         this.context = context;
-        this.productVariantValueArrayList = productVariantValueArrayList == null ? new ArrayList<ProductVariantDetailViewModel>() : productVariantValueArrayList;
-        this.variantValueIdList = variantValueIdList == null ? new ArrayList<Long>() : variantValueIdList;
+        this.productVariantValueArrayList = productVariantValueArrayList;
+        this.variantValueIdList = variantValueIdList;
     }
 
     @Override

@@ -35,7 +35,7 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
     private LabelSwitch labelSwitchStatus;
     private View buttonSave;
     private ProductVariantDetailAdapter productVariantDetailAdapter;
-    private boolean isVariantHasStock;
+    private boolean variantHasStock;
 
     public interface OnProductVariantDataManageFragmentListener {
         void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
@@ -51,34 +51,14 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
         super.onCreate(savedInstanceState);
         Intent activityIntent = getActivity().getIntent();
 
-        ArrayList<Long> variantValueIdList = null;
-        ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList = null;
-        if (!activityIntent.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST)) {
-            if (!activityIntent.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK)) {
-                // TODO hendry just for test
-                //                productVariantValueArrayList = new ArrayList<>();
-                //                productVariantValueArrayList.add(new ProductVariantValue(1,"Cak Lontong"));
-                //                productVariantValueArrayList.add(new ProductVariantValue(2,"Cak Norman"));
-                //                productVariantValueArrayList.add(new ProductVariantValue(3,"Cak Norman tong"));
-                //                productVariantValueArrayList.add(new ProductVariantValue(4,"Cak tong norman"));
-                //                variantValueIdList = new ArrayList<>();
-                //                variantValueIdList.add(1L);
-                //                variantValueIdList.add(3L);
-                isVariantHasStock = true;
-            } else {
-                isVariantHasStock = activityIntent.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
-            }
-
+        ArrayList<Long> variantValueIdList = (ArrayList<Long>) activityIntent.getSerializableExtra(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
+        ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList = activityIntent.getParcelableArrayListExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
+        variantHasStock = activityIntent.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
+        if (variantValueIdList == null) {
+            variantValueIdList = new ArrayList<>();
         }
-        else {
-            productVariantValueArrayList = activityIntent.getParcelableArrayListExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
-
-            if (savedInstanceState == null) {
-                variantValueIdList = activityIntent.getParcelableExtra(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
-            } else {
-                variantValueIdList = (ArrayList<Long>)
-                        savedInstanceState.getSerializable(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
-            }
+        if (productVariantValueArrayList == null) {
+            productVariantValueArrayList = new ArrayList<>();
         }
 
         productVariantDetailAdapter = new ProductVariantDetailAdapter(getContext(), productVariantValueArrayList, variantValueIdList);
@@ -121,21 +101,21 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
             }
         });
         // default value: if all is checked, set label switch summary to tersedia else to kosong
-        if (isVariantHasStock) {
+        if (variantHasStock) {
             setStockLabelAvailable();
         } else {
             setStockLabelEmpty();
         }
     }
 
-    private void setStockLabelAvailable(){
+    private void setStockLabelAvailable() {
         labelSwitchStatus.setSummary(getString(R.string.product_variant_status_available));
         if (!labelSwitchStatus.isChecked()) {
             labelSwitchStatus.setCheckedNoListener(true);
         }
     }
 
-    private void setStockLabelEmpty(){
+    private void setStockLabelEmpty() {
         labelSwitchStatus.setSummary(getString(R.string.product_variant_status_not_available));
         if (labelSwitchStatus.isChecked()) {
             labelSwitchStatus.setCheckedNoListener(false);
