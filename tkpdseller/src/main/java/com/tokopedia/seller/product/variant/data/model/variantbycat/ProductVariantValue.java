@@ -62,15 +62,6 @@ public class ProductVariantValue implements Parcelable, ItemIdType {
         dest.writeString(this.icon);
     }
 
-    public ProductVariantValue() {
-    }
-
-    // TODO hendry for test
-    public ProductVariantValue(long id, String value) {
-        this.valueId = id;
-        this.value = value;
-    }
-
     protected ProductVariantValue(Parcel in) {
         this.valueId = (Long) in.readValue(Integer.class.getClassLoader());
         this.value = in.readString();

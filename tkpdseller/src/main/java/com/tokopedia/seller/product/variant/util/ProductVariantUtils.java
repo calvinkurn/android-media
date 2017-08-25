@@ -15,6 +15,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
 
 import java.util.ArrayList;
@@ -368,10 +369,10 @@ public class ProductVariantUtils {
         return titleList;
     }
 
-    public static List<ProductVariantValue> getProductVariantValueListForVariantDetail(
+    public static List<ProductVariantDetailViewModel> getProductVariantValueListForVariantDetail(
             long optionId, List<VariantUnitSubmit> variantUnitSubmitList,
             List<VariantStatus> variantStatusList, List<ProductVariantUnit> productVariantUnitList) {
-        List<ProductVariantValue> productVariantValueList = new ArrayList<>();
+        List<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();
         List<VariantSubmitOption> variantSubmitOptionList = getPairingVariantSubmitOptionListBy(
                 optionId, variantUnitSubmitList, variantStatusList);
         for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
@@ -387,10 +388,10 @@ public class ProductVariantUtils {
                     title = productVariantValueTemp.getValue();
                 }
             }
-            ProductVariantValue productVariantValue = new ProductVariantValue(variantSubmitOption.getTemporaryId(), title);
-            productVariantValueList.add(productVariantValue);
+            ProductVariantDetailViewModel productVariantDetailViewModel = new ProductVariantDetailViewModel(variantSubmitOption.getTemporaryId(), title);
+            productVariantDetailViewModelList.add(productVariantDetailViewModel);
         }
-        return productVariantValueList;
+        return productVariantDetailViewModelList;
     }
 
     /**
@@ -472,9 +473,18 @@ public class ProductVariantUtils {
      * @return
      */
     private static long getParingId(long optionId, List<Long> optionList) {
+        boolean containOptionId = false;
         for (Long optionIdTemp : optionList) {
-            if (optionIdTemp != optionId) {
-                return optionIdTemp;
+            if (optionIdTemp == optionId) {
+                containOptionId = true;
+                break;
+            }
+        }
+        if (containOptionId) {
+            for (Long optionIdTemp : optionList) {
+                if (optionIdTemp != optionId) {
+                    return optionIdTemp;
+                }
             }
         }
         return NOT_AVAILABLE_OPTION_ID;
