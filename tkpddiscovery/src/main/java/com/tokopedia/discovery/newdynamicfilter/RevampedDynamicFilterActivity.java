@@ -304,12 +304,16 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     public List<Option> getSelectedOptions(Filter filter) {
         List<Option> selectedOptions = new ArrayList<>();
 
-        if (Filter.TEMPLATE_NAME_CATEGORY.equals(filter.getTemplateName())) {
+        if (Filter.TEMPLATE_NAME_CATEGORY.equals(filter.getTemplateName()) && isCategorySelected()) {
             selectedOptions.add(getSelectedCategoryAsOption());
         } else {
             selectedOptions.addAll(getCheckedOptionList(filter));
         }
         return selectedOptions;
+    }
+
+    private boolean isCategorySelected() {
+        return !TextUtils.isEmpty(selectedCategoryId) && !TextUtils.isEmpty(selectedCategoryName);
     }
 
     private Option getSelectedCategoryAsOption() {
