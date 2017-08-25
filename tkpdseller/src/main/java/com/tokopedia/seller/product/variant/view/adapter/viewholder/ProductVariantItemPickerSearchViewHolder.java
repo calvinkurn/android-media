@@ -11,14 +11,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
 /**
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckViewHolder<ProductVariantValue> {
+public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckViewHolder<ProductVariantOption> {
 
     private ImageView imageView;
     private TextView titleTextView;
@@ -34,14 +34,14 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
     }
 
     @Override
-    public void bindObject(final ProductVariantValue productVariantValue, boolean checked) {
-        bindObject(productVariantValue);
+    public void bindObject(final ProductVariantOption productVariantOption, boolean checked) {
+        bindObject(productVariantOption);
         setChecked(checked);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkedCallback != null) {
-                    checkedCallback.onItemChecked(productVariantValue, checkBox.isChecked());
+                    checkedCallback.onItemChecked(productVariantOption, checkBox.isChecked());
                 }
             }
         });
@@ -58,15 +58,15 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
     }
 
     @Override
-    public void bindObject(final ProductVariantValue productVariantValue) {
-        if (!TextUtils.isEmpty(productVariantValue.getHexCode())) {
-            imageView.setColorFilter(Color.parseColor(productVariantValue.getHexCode()), PorterDuff.Mode.SRC_ATOP);
+    public void bindObject(final ProductVariantOption productVariantOption) {
+        if (!TextUtils.isEmpty(productVariantOption.getHexCode())) {
+            imageView.setColorFilter(Color.parseColor(productVariantOption.getHexCode()), PorterDuff.Mode.SRC_ATOP);
             imageView.setImageResource(R.drawable.circle_white);
             imageView.setVisibility(View.VISIBLE);
             viewStroke.setVisibility(View.VISIBLE);
-        } else if (!TextUtils.isEmpty(productVariantValue.getIcon())) {
+        } else if (!TextUtils.isEmpty(productVariantOption.getIcon())) {
             imageView.clearColorFilter();
-            Glide.with(imageView.getContext()).load(productVariantValue.getIcon())
+            Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
             viewStroke.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
@@ -74,6 +74,6 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
             imageView.setVisibility(View.GONE);
             viewStroke.setVisibility(View.GONE);
         }
-        titleTextView.setText(productVariantValue.getValue());
+        titleTextView.setText(productVariantOption.getValue());
     }
 }

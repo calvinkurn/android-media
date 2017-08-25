@@ -13,7 +13,7 @@ import java.util.List;
  * Created by User on 8/15/2017.
  */
 
-public class VariantUnitSubmit implements Parcelable {
+public class ProductVariantUnitSubmit implements Parcelable {
 
     @SerializedName("v")
     @Expose
@@ -29,7 +29,7 @@ public class VariantUnitSubmit implements Parcelable {
     private long productVariant;
     @SerializedName("opt")
     @Expose
-    private List<VariantSubmitOption> variantSubmitOptionList;
+    private List<ProductVariantOptionSubmit> productVariantOptionSubmitList;
 
     /**
      * Varian ID.
@@ -108,17 +108,17 @@ public class VariantUnitSubmit implements Parcelable {
      *
      * @return Option List
      */
-    public List<VariantSubmitOption> getVariantSubmitOptionList() {
-        return variantSubmitOptionList;
+    public List<ProductVariantOptionSubmit> getProductVariantOptionSubmitList() {
+        return productVariantOptionSubmitList;
     }
 
     /**
      * set Option list
      *
-     * @param variantSubmitOptionList example "merah:1" "hijau:2"
+     * @param productVariantOptionSubmitList example "merah:1" "hijau:2"
      */
-    public void setVariantSubmitOptionList(List<VariantSubmitOption> variantSubmitOptionList) {
-        this.variantSubmitOptionList = variantSubmitOptionList;
+    public void setProductVariantOptionSubmitList(List<ProductVariantOptionSubmit> productVariantOptionSubmitList) {
+        this.productVariantOptionSubmitList = productVariantOptionSubmitList;
     }
 
     @Override
@@ -132,30 +132,30 @@ public class VariantUnitSubmit implements Parcelable {
         dest.writeLong(this.variantUnitId);
         dest.writeInt(this.position);
         dest.writeLong(this.productVariant);
-        dest.writeList(this.variantSubmitOptionList);
+        dest.writeList(this.productVariantOptionSubmitList);
     }
 
-    public VariantUnitSubmit() {
+    public ProductVariantUnitSubmit() {
     }
 
-    protected VariantUnitSubmit(Parcel in) {
+    protected ProductVariantUnitSubmit(Parcel in) {
         this.variantId = in.readLong();
         this.variantUnitId = in.readLong();
         this.position = in.readInt();
         this.productVariant = in.readLong();
-        this.variantSubmitOptionList = new ArrayList<VariantSubmitOption>();
-        in.readList(this.variantSubmitOptionList, VariantSubmitOption.class.getClassLoader());
+        this.productVariantOptionSubmitList = new ArrayList<ProductVariantOptionSubmit>();
+        in.readList(this.productVariantOptionSubmitList, ProductVariantOptionSubmit.class.getClassLoader());
     }
 
-    public static final Creator<VariantUnitSubmit> CREATOR = new Creator<VariantUnitSubmit>() {
+    public static final Creator<ProductVariantUnitSubmit> CREATOR = new Creator<ProductVariantUnitSubmit>() {
         @Override
-        public VariantUnitSubmit createFromParcel(Parcel source) {
-            return new VariantUnitSubmit(source);
+        public ProductVariantUnitSubmit createFromParcel(Parcel source) {
+            return new ProductVariantUnitSubmit(source);
         }
 
         @Override
-        public VariantUnitSubmit[] newArray(int size) {
-            return new VariantUnitSubmit[size];
+        public ProductVariantUnitSubmit[] newArray(int size) {
+            return new ProductVariantUnitSubmit[size];
         }
     };
 }

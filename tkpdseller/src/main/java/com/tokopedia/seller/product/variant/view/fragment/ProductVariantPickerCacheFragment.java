@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
@@ -74,18 +74,18 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
         return null;
     }
 
-    public List<VariantSubmitOption> getVariantSubmitOptionList() {
-        List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
+    public List<ProductVariantOptionSubmit> getVariantSubmitOptionList() {
+        List<ProductVariantOptionSubmit> productVariantOptionSubmitList = new ArrayList<>();
         for (ProductVariantViewModel productVariantViewModel: itemList) {
-            VariantSubmitOption variantSubmitOption = new VariantSubmitOption();
-            variantSubmitOption.setTemporaryId(Long.parseLong(productVariantViewModel.getId()));
+            ProductVariantOptionSubmit productVariantOptionSubmit = new ProductVariantOptionSubmit();
+            productVariantOptionSubmit.setTemporaryId(Long.parseLong(productVariantViewModel.getId()));
             if (productVariantViewModel.getUnitValueId() > 0) {
-                variantSubmitOption.setVariantUnitValueId(productVariantViewModel.getUnitValueId());
+                productVariantOptionSubmit.setVariantUnitValueId(productVariantViewModel.getUnitValueId());
             } else {
-                variantSubmitOption.setCustomText(productVariantViewModel.getTitle());
+                productVariantOptionSubmit.setCustomText(productVariantViewModel.getTitle());
             }
-            variantSubmitOptionList.add(variantSubmitOption);
+            productVariantOptionSubmitList.add(productVariantOptionSubmit);
         }
-        return variantSubmitOptionList;
+        return productVariantOptionSubmitList;
     }
 }

@@ -6,13 +6,12 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemIdType;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * Created by hendry on 8/14/2017.
  */
 
-public class ProductVariantValue implements Parcelable, ItemIdType {
+public class ProductVariantOption implements Parcelable, ItemIdType {
 
     public static final int TYPE = 199349;
 
@@ -62,22 +61,22 @@ public class ProductVariantValue implements Parcelable, ItemIdType {
         dest.writeString(this.icon);
     }
 
-    protected ProductVariantValue(Parcel in) {
+    protected ProductVariantOption(Parcel in) {
         this.valueId = (Long) in.readValue(Integer.class.getClassLoader());
         this.value = in.readString();
         this.hexCode = in.readString();
         this.icon = in.readString();
     }
 
-    public static final Parcelable.Creator<ProductVariantValue> CREATOR = new Parcelable.Creator<ProductVariantValue>() {
+    public static final Parcelable.Creator<ProductVariantOption> CREATOR = new Parcelable.Creator<ProductVariantOption>() {
         @Override
-        public ProductVariantValue createFromParcel(Parcel source) {
-            return new ProductVariantValue(source);
+        public ProductVariantOption createFromParcel(Parcel source) {
+            return new ProductVariantOption(source);
         }
 
         @Override
-        public ProductVariantValue[] newArray(int size) {
-            return new ProductVariantValue[size];
+        public ProductVariantOption[] newArray(int size) {
+            return new ProductVariantOption[size];
         }
     };
 

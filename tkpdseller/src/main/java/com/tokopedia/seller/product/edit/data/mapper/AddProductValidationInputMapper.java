@@ -44,7 +44,7 @@ public class AddProductValidationInputMapper extends UploadProductPictureInputMa
         serviceModel.setProductVideo(domainModel.getProductVideos());
         serviceModel.setSwitchVariant(domainModel.getSwitchVariant());
         if (domainModel.getSwitchVariant() > 0 ) {
-            serviceModel.setVariantData(domainModel.getVariantData());
+            serviceModel.setProductVariantDataSubmit(domainModel.getProductVariantDataSubmit());
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
  * Created by hendry on 8/15/2017.
  */
 
-public class VariantStatus implements Parcelable {
+public class ProductVariantCombinationSubmit implements Parcelable {
 
     @SerializedName("st")
     @Expose
@@ -93,25 +93,25 @@ public class VariantStatus implements Parcelable {
         dest.writeInt(this.pvd);
     }
 
-    public VariantStatus() {
+    public ProductVariantCombinationSubmit() {
     }
 
-    protected VariantStatus(Parcel in) {
+    protected ProductVariantCombinationSubmit(Parcel in) {
         this.status = in.readInt();
         this.optionList = new ArrayList<Long>();
         in.readList(this.optionList, Long.class.getClassLoader());
         this.pvd = in.readInt();
     }
 
-    public static final Creator<VariantStatus> CREATOR = new Creator<VariantStatus>() {
+    public static final Creator<ProductVariantCombinationSubmit> CREATOR = new Creator<ProductVariantCombinationSubmit>() {
         @Override
-        public VariantStatus createFromParcel(Parcel source) {
-            return new VariantStatus(source);
+        public ProductVariantCombinationSubmit createFromParcel(Parcel source) {
+            return new ProductVariantCombinationSubmit(source);
         }
 
         @Override
-        public VariantStatus[] newArray(int size) {
-            return new VariantStatus[size];
+        public ProductVariantCombinationSubmit[] newArray(int size) {
+            return new ProductVariantCombinationSubmit[size];
         }
     };
 }

@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 
 import java.util.List;
 import java.util.Locale;
@@ -61,7 +61,7 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     private int poProcessType;
     private int poProcessValue;
     private int switchVariant;
-    private VariantData variantData;
+    private ProductVariantDataSubmit productVariantDataSubmit;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = super.generateMapParam();
@@ -94,7 +94,7 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         params.put(SWITCH_VARIANT, String.valueOf(getSwitchVariant()));
         if (switchVariant > 0) {
             params.put(VARIANT_DATA,
-                    CacheUtil.convertModelToString(getVariantData(), new TypeToken<VariantData>() {
+                    CacheUtil.convertModelToString(getProductVariantDataSubmit(), new TypeToken<ProductVariantDataSubmit>() {
                     }.getType()));
         }
         return params;
@@ -108,12 +108,12 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         this.switchVariant = switchVariant;
     }
 
-    public VariantData getVariantData() {
-        return variantData;
+    public ProductVariantDataSubmit getProductVariantDataSubmit() {
+        return productVariantDataSubmit;
     }
 
-    public void setVariantData(VariantData variantData) {
-        this.variantData = variantData;
+    public void setProductVariantDataSubmit(ProductVariantDataSubmit productVariantDataSubmit) {
+        this.productVariantDataSubmit = productVariantDataSubmit;
     }
 
     public TKPDMapParam<String, String> getWholesaleParams() {

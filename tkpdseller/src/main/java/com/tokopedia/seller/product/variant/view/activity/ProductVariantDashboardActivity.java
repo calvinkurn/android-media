@@ -24,7 +24,7 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
         if (getFragment()!= null && getFragment() instanceof ProductVariantDashboardFragment) {
             Intent intent = new Intent();
             intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION,
-                    ((ProductVariantDashboardFragment) getFragment()).getVariantData());
+                    ((ProductVariantDashboardFragment) getFragment()).getProductVariantDataSubmit());
             setResult(RESULT_OK, intent);
             this.finish();
         } else {

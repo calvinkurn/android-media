@@ -5,16 +5,16 @@ import android.util.SparseIntArray;
 
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantValue;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.Option;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantDatum;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantStatus;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
 
@@ -37,25 +37,25 @@ public class ProductVariantUtils {
     }
 
     public static List<ProductVariantManageViewModel> getProductVariantManageViewModelListTwoLevel(
-            List<VariantUnitSubmit> variantUnitSubmitList, List<VariantStatus> variantStatusList, List<ProductVariantByCatModel> productVariantByCatModelList) {
+            List<ProductVariantUnitSubmit> productVariantUnitSubmitList, List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList, List<ProductVariantByCatModel> productVariantByCatModelList) {
         List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
-        VariantUnitSubmit variantUnitSubmitLv1 = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmitList);
-        for (VariantSubmitOption variantSubmitOptionLv1 : variantUnitSubmitLv1.getVariantSubmitOptionList()) {
+        ProductVariantUnitSubmit productVariantUnitSubmitLv1 = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantUnitSubmitList);
+        for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmitLv1.getProductVariantOptionSubmitList()) {
             ProductVariantManageViewModel productVariantManageViewModel = new ProductVariantManageViewModel();
-            productVariantManageViewModel.setTemporaryId(variantSubmitOptionLv1.getTemporaryId());
-            productVariantManageViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOptionLv1, productVariantByCatModelList));
+            productVariantManageViewModel.setTemporaryId(productVariantOptionSubmitLv1.getTemporaryId());
+            productVariantManageViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantOptionSubmitLv1, productVariantByCatModelList));
 
-            List<VariantSubmitOption> variantSubmitOptionList = getPairingVariantSubmitOptionListBy(variantSubmitOptionLv1.getTemporaryId(), variantUnitSubmitList, variantStatusList);
-            String contentText = getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantSubmitOptionList, productVariantByCatModelList);
+            List<ProductVariantOptionSubmit> productVariantOptionSubmitList = getPairingVariantSubmitOptionListBy(productVariantOptionSubmitLv1.getTemporaryId(), productVariantUnitSubmitList, productVariantCombinationSubmitList);
+            String contentText = getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantOptionSubmitList, productVariantByCatModelList);
 
             productVariantManageViewModel.setContent(contentText);
-            if (TextUtils.isEmpty(variantSubmitOptionLv1.getCustomText())) {
+            if (TextUtils.isEmpty(productVariantOptionSubmitLv1.getCustomText())) {
                 // Check variant option title from server
-                ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
-                        ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOptionLv1.getVariantUnitValueId(), productVariantByCatModelList);
-                if (productVariantValue != null) {
-                    productVariantManageViewModel.setHexCode(productVariantValue.getHexCode());
-                    productVariantManageViewModel.setImageUrl(productVariantValue.getIcon());
+                ProductVariantOption productVariantOption = getProductVariantByCatModelByVariantId(
+                        ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantOptionSubmitLv1.getVariantUnitValueId(), productVariantByCatModelList);
+                if (productVariantOption != null) {
+                    productVariantManageViewModel.setHexCode(productVariantOption.getHexCode());
+                    productVariantManageViewModel.setImageUrl(productVariantOption.getIcon());
                 }
             }
             productVariantManageViewModelList.add(productVariantManageViewModel);
@@ -67,28 +67,28 @@ public class ProductVariantUtils {
      * Get all variant option for variant detail view
      *
      * @param level
-     * @param variantUnitSubmitList
+     * @param productVariantUnitSubmitList
      * @param productVariantUnitList
      * @return
      */
     public static List<ProductVariantDetailViewModel> getProductVariantValueListForVariantDetail(
-            int level, List<VariantUnitSubmit> variantUnitSubmitList, List<ProductVariantUnit> productVariantUnitList) {
+            int level, List<ProductVariantUnitSubmit> productVariantUnitSubmitList, List<ProductVariantUnit> productVariantUnitList) {
         List<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();
-        List<VariantSubmitOption> variantSubmitOptionList = getAllVariantSubmitOptionListByLevel(level, variantUnitSubmitList);
-        for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
+        List<ProductVariantOptionSubmit> productVariantOptionSubmitList = getAllVariantSubmitOptionListByLevel(level, productVariantUnitSubmitList);
+        for (ProductVariantOptionSubmit productVariantOptionSubmit : productVariantOptionSubmitList) {
             String title = "";
             // If name already on custom text, add custom text on title list
-            if (!TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
-                title = variantSubmitOption.getCustomText();
+            if (!TextUtils.isEmpty(productVariantOptionSubmit.getCustomText())) {
+                title = productVariantOptionSubmit.getCustomText();
             } else {
                 // If not, search and mapping with variant value list from server
-                ProductVariantValue productVariantValueTemp = getProductVariantValueByVariantUnitList(
-                        variantSubmitOption.getVariantUnitValueId(), productVariantUnitList);
-                if (productVariantValueTemp != null) {
-                    title = productVariantValueTemp.getValue();
+                ProductVariantOption productVariantOptionTemp = getProductVariantValueByVariantUnitList(
+                        productVariantOptionSubmit.getVariantUnitValueId(), productVariantUnitList);
+                if (productVariantOptionTemp != null) {
+                    title = productVariantOptionTemp.getValue();
                 }
             }
-            ProductVariantDetailViewModel productVariantDetailViewModel = new ProductVariantDetailViewModel(variantSubmitOption.getTemporaryId(), title);
+            ProductVariantDetailViewModel productVariantDetailViewModel = new ProductVariantDetailViewModel(productVariantOptionSubmit.getTemporaryId(), title);
             productVariantDetailViewModelList.add(productVariantDetailViewModel);
         }
         return productVariantDetailViewModelList;
@@ -100,34 +100,34 @@ public class ProductVariantUtils {
      * eg 'red, brown, white, black'
      *
      * @param level
-     * @param variantSubmitOptionList
+     * @param productVariantOptionSubmitList
      * @param productVariantByCatModelList
      * @return
      */
-    public static String getMultipleVariantOptionTitle(int level, List<VariantSubmitOption> variantSubmitOptionList,
+    public static String getMultipleVariantOptionTitle(int level, List<ProductVariantOptionSubmit> productVariantOptionSubmitList,
                                                        List<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
-        for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
-            title = getAdditionalTitleText(title, getTitle(level, variantSubmitOption, productVariantByCatModelList));
+        for (ProductVariantOptionSubmit productVariantOptionSubmit : productVariantOptionSubmitList) {
+            title = getAdditionalTitleText(title, getTitle(level, productVariantOptionSubmit, productVariantByCatModelList));
         }
         return title;
     }
 
-    private static String getTitle(int level, VariantSubmitOption variantSubmitOption, List<ProductVariantByCatModel> productVariantByCatModelList) {
+    private static String getTitle(int level, ProductVariantOptionSubmit productVariantOptionSubmit, List<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
-        if (variantSubmitOption == null) {
+        if (productVariantOptionSubmit == null) {
             return title;
         }
-        if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+        if (TextUtils.isEmpty(productVariantOptionSubmit.getCustomText())) {
             // Check variant option title from server
-            ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
-                    level, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
-            if (productVariantValue != null) {
-                title = productVariantValue.getValue();
+            ProductVariantOption productVariantOption = getProductVariantByCatModelByVariantId(
+                    level, productVariantOptionSubmit.getVariantUnitValueId(), productVariantByCatModelList);
+            if (productVariantOption != null) {
+                title = productVariantOption.getValue();
             }
         } else {
             // Get custom name
-            title = variantSubmitOption.getCustomText();
+            title = productVariantOptionSubmit.getCustomText();
         }
         return title;
     }
@@ -140,16 +140,16 @@ public class ProductVariantUtils {
         return title;
     }
 
-    private static ProductVariantValue getProductVariantByCatModelByVariantId(
+    private static ProductVariantOption getProductVariantByCatModelByVariantId(
             long level, long optionId, List<ProductVariantByCatModel> productVariantByCatModelList) {
         for (ProductVariantByCatModel productVariantByCatModel : productVariantByCatModelList) {
             if (level == getVariantPositionByStatus(productVariantByCatModel.getStatus())) {
                 List<ProductVariantUnit> productVariantUnitList = productVariantByCatModel.getUnitList();
                 for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
-                    List<ProductVariantValue> productVariantValueList = productVariantUnit.getProductVariantValueList();
-                    for (ProductVariantValue productVariantValue : productVariantValueList) {
-                        if (productVariantValue.getValueId() == optionId) {
-                            return productVariantValue;
+                    List<ProductVariantOption> productVariantOptionList = productVariantUnit.getProductVariantOptionList();
+                    for (ProductVariantOption productVariantOption : productVariantOptionList) {
+                        if (productVariantOption.getValueId() == optionId) {
+                            return productVariantOption;
                         }
                     }
                 }
@@ -159,7 +159,7 @@ public class ProductVariantUtils {
     }
 
     /**
-     * Get ProductVariantValue from list of ProductVariantUnit based on id
+     * Get ProductVariantOption from list of ProductVariantUnit based on id
      * eg "unit_id": 3,"name": "UK","short_name": "UK","values": [
      * {"value_id": 20,"value": "14","hex_code": "","icon": ""},{"value_id": 21,"value": "16","hex_code": "","icon": ""}]},
      * {"unit_id": 2,"name": "US","short_name": "US","values": [{"value_id": 8,"value": "0","hex_code": "","icon": ""}]}]
@@ -169,123 +169,123 @@ public class ProductVariantUtils {
      * @param productVariantUnitList
      * @return
      */
-    public static ProductVariantValue getProductVariantValueByVariantUnitList(long unitValueId, List<ProductVariantUnit> productVariantUnitList) {
+    public static ProductVariantOption getProductVariantValueByVariantUnitList(long unitValueId, List<ProductVariantUnit> productVariantUnitList) {
         for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
-            ProductVariantValue productVariantValue = getProductVariantValue(unitValueId, productVariantUnit.getProductVariantValueList());
-            if (productVariantValue != null) {
-                return productVariantValue;
+            ProductVariantOption productVariantOption = getProductVariantValue(unitValueId, productVariantUnit.getProductVariantOptionList());
+            if (productVariantOption != null) {
+                return productVariantOption;
             }
         }
         return null;
     }
 
     /**
-     * Get ProductVariantValue from list of ProductVariantValue based on id
+     * Get ProductVariantOption from list of ProductVariantOption based on id
      * eg [{"value_id": 22,"value": "Putih","hex_code": "#ffffff","icon": ""},{"value_id": 23,"value": "Hitam","hex_code": "#000000","},{"value_id": 24,"value": "Abu-abu","hex_code": "#a9a9a9","icon": ""}]
      * option Id = 22, return {"value_id": 22,"value": "Putih","hex_code": "#ffffff","icon": ""}
      *
      * @param unitValueId
-     * @param productVariantValueList
+     * @param productVariantOptionList
      * @return
      */
-    public static ProductVariantValue getProductVariantValue(long unitValueId, List<ProductVariantValue> productVariantValueList) {
-        for (ProductVariantValue productVariantValue : productVariantValueList) {
-            if (productVariantValue.getValueId() == unitValueId) {
-                return productVariantValue;
+    public static ProductVariantOption getProductVariantValue(long unitValueId, List<ProductVariantOption> productVariantOptionList) {
+        for (ProductVariantOption productVariantOption : productVariantOptionList) {
+            if (productVariantOption.getValueId() == unitValueId) {
+                return productVariantOption;
             }
         }
         return null;
     }
 
     public static ProductVariantManageViewModel getProductVariantManageViewModel(
-            VariantSubmitOption variantSubmitOption, VariantUnitSubmit variantUnitSubmit, List<ProductVariantByCatModel> productVariantByCatModelList) {
+            ProductVariantOptionSubmit productVariantOptionSubmit, ProductVariantUnitSubmit productVariantUnitSubmit, List<ProductVariantByCatModel> productVariantByCatModelList) {
         ProductVariantManageViewModel productVariantManageViewModel = new ProductVariantManageViewModel();
-        productVariantManageViewModel.setTemporaryId(variantSubmitOption.getTemporaryId());
-        productVariantManageViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption, productVariantByCatModelList));
-        productVariantManageViewModel.setContent(getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmit.getVariantSubmitOptionList(), productVariantByCatModelList));
-        if (TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+        productVariantManageViewModel.setTemporaryId(productVariantOptionSubmit.getTemporaryId());
+        productVariantManageViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantOptionSubmit, productVariantByCatModelList));
+        productVariantManageViewModel.setContent(getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantUnitSubmit.getProductVariantOptionSubmitList(), productVariantByCatModelList));
+        if (TextUtils.isEmpty(productVariantOptionSubmit.getCustomText())) {
             // Check variant option title from server
-            ProductVariantValue productVariantValue = getProductVariantByCatModelByVariantId(
-                    ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantSubmitOption.getVariantUnitValueId(), productVariantByCatModelList);
-            if (productVariantValue != null) {
-                productVariantManageViewModel.setHexCode(productVariantValue.getHexCode());
-                productVariantManageViewModel.setImageUrl(productVariantValue.getIcon());
+            ProductVariantOption productVariantOption = getProductVariantByCatModelByVariantId(
+                    ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantOptionSubmit.getVariantUnitValueId(), productVariantByCatModelList);
+            if (productVariantOption != null) {
+                productVariantManageViewModel.setHexCode(productVariantOption.getHexCode());
+                productVariantManageViewModel.setImageUrl(productVariantOption.getIcon());
             }
         }
         return productVariantManageViewModel;
     }
 
-    private static List<VariantSubmitOption> getPairingVariantSubmitOptionListBy(
-            long optionIdSelected, List<VariantUnitSubmit> variantUnitSubmitList, List<VariantStatus> variantStatusList) {
-        List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
-        for (VariantStatus variantStatus : variantStatusList) {
-            for (Long optionIdTemp : variantStatus.getOptionList()) {
+    private static List<ProductVariantOptionSubmit> getPairingVariantSubmitOptionListBy(
+            long optionIdSelected, List<ProductVariantUnitSubmit> productVariantUnitSubmitList, List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList) {
+        List<ProductVariantOptionSubmit> productVariantOptionSubmitList = new ArrayList<>();
+        for (ProductVariantCombinationSubmit productVariantCombinationSubmit : productVariantCombinationSubmitList) {
+            for (Long optionIdTemp : productVariantCombinationSubmit.getOptionList()) {
                 if (optionIdTemp == optionIdSelected) {
-                    long pairingId = getParingId(optionIdSelected, variantStatus.getOptionList());
+                    long pairingId = getParingId(optionIdSelected, productVariantCombinationSubmit.getOptionList());
                     // Check pairing id
                     if (pairingId >= 0) {
-                        VariantSubmitOption variantSubmitOption = getVariantSubmitOptionById(pairingId, variantUnitSubmitList);
-                        variantSubmitOptionList.add(variantSubmitOption);
+                        ProductVariantOptionSubmit productVariantOptionSubmit = getVariantSubmitOptionById(pairingId, productVariantUnitSubmitList);
+                        productVariantOptionSubmitList.add(productVariantOptionSubmit);
                     }
                 }
             }
         }
-        return variantSubmitOptionList;
+        return productVariantOptionSubmitList;
     }
 
-    private static VariantSubmitOption getVariantSubmitOptionById(long optionId, List<VariantUnitSubmit> variantUnitSubmitList) {
-        for (VariantUnitSubmit variantUnitSubmit : variantUnitSubmitList) {
-            for (VariantSubmitOption variantSubmitOption : variantUnitSubmit.getVariantSubmitOptionList()) {
-                if (variantSubmitOption.getTemporaryId() == optionId) {
-                    return variantSubmitOption;
+    private static ProductVariantOptionSubmit getVariantSubmitOptionById(long optionId, List<ProductVariantUnitSubmit> productVariantUnitSubmitList) {
+        for (ProductVariantUnitSubmit productVariantUnitSubmit : productVariantUnitSubmitList) {
+            for (ProductVariantOptionSubmit productVariantOptionSubmit : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
+                if (productVariantOptionSubmit.getTemporaryId() == optionId) {
+                    return productVariantOptionSubmit;
                 }
             }
         }
         return null;
     }
 
-    public static VariantUnitSubmit getVariantUnitSubmit(int level, List<VariantUnitSubmit> variantUnitSubmitList) {
-        int variantUnitSubmitSize = variantUnitSubmitList.size();
+    public static ProductVariantUnitSubmit getVariantUnitSubmit(int level, List<ProductVariantUnitSubmit> productVariantUnitSubmitList) {
+        int variantUnitSubmitSize = productVariantUnitSubmitList.size();
         for (int i = 0; i < variantUnitSubmitSize; i++) {
-            VariantUnitSubmit variantUnitSubmitTemp = variantUnitSubmitList.get(i);
-            if (variantUnitSubmitTemp.getPosition() == level) {
-                return variantUnitSubmitTemp;
+            ProductVariantUnitSubmit productVariantUnitSubmitTemp = productVariantUnitSubmitList.get(i);
+            if (productVariantUnitSubmitTemp.getPosition() == level) {
+                return productVariantUnitSubmitTemp;
             }
         }
         return null;
     }
 
-    public static List<VariantStatus> getVariantStatusList(VariantUnitSubmit variantUnitSubmit) {
-        List<VariantStatus> variantStatusList = new ArrayList<>();
-        if (variantUnitSubmit == null) {
-            return variantStatusList;
+    public static List<ProductVariantCombinationSubmit> getVariantStatusList(ProductVariantUnitSubmit productVariantUnitSubmit) {
+        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = new ArrayList<>();
+        if (productVariantUnitSubmit == null) {
+            return productVariantCombinationSubmitList;
         }
-        for (VariantSubmitOption variantSubmitOptionLv1 : variantUnitSubmit.getVariantSubmitOptionList()) {
+        for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
             List<Long> optionList = new ArrayList<>();
-            optionList.add(variantSubmitOptionLv1.getTemporaryId());
-            VariantStatus variantStatus = new VariantStatus();
-            variantStatus.setOptionList(optionList);
-            variantStatusList.add(variantStatus);
+            optionList.add(productVariantOptionSubmitLv1.getTemporaryId());
+            ProductVariantCombinationSubmit productVariantCombinationSubmit = new ProductVariantCombinationSubmit();
+            productVariantCombinationSubmit.setOptionList(optionList);
+            productVariantCombinationSubmitList.add(productVariantCombinationSubmit);
         }
-        return variantStatusList;
+        return productVariantCombinationSubmitList;
     }
 
-    public static List<VariantStatus> getVariantStatusList(VariantUnitSubmit variantUnitSubmitLv1, VariantUnitSubmit variantUnitSubmitLv2) {
-        List<VariantStatus> variantStatusList = new ArrayList<>();
-        if (variantUnitSubmitLv1 == null || variantUnitSubmitLv2 == null) {
-            return variantStatusList;
+    public static List<ProductVariantCombinationSubmit> getVariantStatusList(ProductVariantUnitSubmit productVariantUnitSubmitLv1, ProductVariantUnitSubmit productVariantUnitSubmitLv2) {
+        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = new ArrayList<>();
+        if (productVariantUnitSubmitLv1 == null || productVariantUnitSubmitLv2 == null) {
+            return productVariantCombinationSubmitList;
         }
-        for (VariantSubmitOption variantSubmitOptionLv1 : variantUnitSubmitLv1.getVariantSubmitOptionList()) {
-            for (VariantSubmitOption variantSubmitOptionLv2 : variantUnitSubmitLv2.getVariantSubmitOptionList()) {
+        for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmitLv1.getProductVariantOptionSubmitList()) {
+            for (ProductVariantOptionSubmit productVariantOptionSubmitLv2 : productVariantUnitSubmitLv2.getProductVariantOptionSubmitList()) {
                 List<Long> optionList = new ArrayList<>();
-                optionList.add(variantSubmitOptionLv1.getTemporaryId());
-                optionList.add(variantSubmitOptionLv2.getTemporaryId());
-                VariantStatus variantStatus = new VariantStatus();
-                variantStatus.setOptionList(optionList);
-                variantStatusList.add(variantStatus);
+                optionList.add(productVariantOptionSubmitLv1.getTemporaryId());
+                optionList.add(productVariantOptionSubmitLv2.getTemporaryId());
+                ProductVariantCombinationSubmit productVariantCombinationSubmit = new ProductVariantCombinationSubmit();
+                productVariantCombinationSubmit.setOptionList(optionList);
+                productVariantCombinationSubmitList.add(productVariantCombinationSubmit);
             }
         }
-        return variantStatusList;
+        return productVariantCombinationSubmitList;
     }
 
     /**
@@ -322,70 +322,70 @@ public class ProductVariantUtils {
         return NOT_AVAILABLE_POSITION;
     }
 
-    public static VariantData generateProductVariantSubmit(ProductVariantByPrdModel productVariantByPrdModel) {
+    public static ProductVariantDataSubmit generateProductVariantSubmit(ProductVariantByPrdModel productVariantByPrdModel) {
         if (productVariantByPrdModel.getVariantOptionList() == null ||
                 productVariantByPrdModel.getVariantOptionList().size() == 0) {
             // Means all the variants have been removed
             return null;
         }
-        VariantData variantData = new VariantData();
+        ProductVariantDataSubmit productVariantDataSubmit = new ProductVariantDataSubmit();
 
         // generate Unit Submit List
         int tIdCounter = 1;
         SparseIntArray tempIdInverseMap = new SparseIntArray();
 
         // Maps the unit and unit value
-        List<VariantUnitSubmit> variantUnitSubmitList = new ArrayList<>();
+        List<ProductVariantUnitSubmit> productVariantUnitSubmitList = new ArrayList<>();
         List<VariantOption> variantOptionSourceList = productVariantByPrdModel.getVariantOptionList();
         for (int i = 0, sizei = variantOptionSourceList.size();
              i < sizei; i++) {
             VariantOption varianOptionSource = variantOptionSourceList.get(i);
-            VariantUnitSubmit variantUnitSubmit = new VariantUnitSubmit();
-            variantUnitSubmit.setVariantId(varianOptionSource.getvId());
-            variantUnitSubmit.setVariantUnitId(varianOptionSource.getVuId());
-            variantUnitSubmit.setPosition(varianOptionSource.getPosition());
-            variantUnitSubmit.setProductVariant(varianOptionSource.getPvId());
+            ProductVariantUnitSubmit productVariantUnitSubmit = new ProductVariantUnitSubmit();
+            productVariantUnitSubmit.setVariantId(varianOptionSource.getvId());
+            productVariantUnitSubmit.setVariantUnitId(varianOptionSource.getVuId());
+            productVariantUnitSubmit.setPosition(varianOptionSource.getPosition());
+            productVariantUnitSubmit.setProductVariant(varianOptionSource.getPvId());
 
             //set options
-            List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
+            List<ProductVariantOptionSubmit> productVariantOptionSubmitList = new ArrayList<>();
             List<Option> optionSourceList = varianOptionSource.getOptionList();
             for (int k = 0, sizek = optionSourceList.size(); k < sizek; k++) {
                 Option optionSource = optionSourceList.get(k);
-                VariantSubmitOption variantSubmitOption = new VariantSubmitOption();
-                variantSubmitOption.setProductVariantOptionId(optionSource.getPvoId());
+                ProductVariantOptionSubmit productVariantOptionSubmit = new ProductVariantOptionSubmit();
+                productVariantOptionSubmit.setProductVariantOptionId(optionSource.getPvoId());
                 String optionValue = optionSource.getValue();
                 int pvoId = optionSource.getPvoId();
                 long varUnitValId = optionSource.getVuvId();
-                variantSubmitOption.setVariantUnitValueId(varUnitValId);
-                variantSubmitOption.setProductVariantOptionId(pvoId);
+                productVariantOptionSubmit.setVariantUnitValueId(varUnitValId);
+                productVariantOptionSubmit.setProductVariantOptionId(pvoId);
                 if (varUnitValId == 0) {
-                    variantSubmitOption.setCustomText(optionValue);
+                    productVariantOptionSubmit.setCustomText(optionValue);
                 } else {
-                    variantSubmitOption.setCustomText("");
+                    productVariantOptionSubmit.setCustomText("");
                 }
-                variantSubmitOption.setTemporaryId(tIdCounter);
+                productVariantOptionSubmit.setTemporaryId(tIdCounter);
                 // add to map, to enable inverse lookup later
                 tempIdInverseMap.put(pvoId, tIdCounter);
 
                 tIdCounter++;
 
-                variantSubmitOptionList.add(variantSubmitOption);
+                productVariantOptionSubmitList.add(productVariantOptionSubmit);
             }
-            variantUnitSubmit.setVariantSubmitOptionList(variantSubmitOptionList);
-            variantUnitSubmitList.add(variantUnitSubmit);
+            productVariantUnitSubmit.setProductVariantOptionSubmitList(productVariantOptionSubmitList);
+            productVariantUnitSubmitList.add(productVariantUnitSubmit);
         }
-        variantData.setVariantUnitSubmitList(variantUnitSubmitList);
+        productVariantDataSubmit.setProductVariantUnitSubmitList(productVariantUnitSubmitList);
 
         // generate the variant status, merah+ukuran39=status true; putih+ukuran 41 status true; etc
 
-        List<VariantStatus> variantStatusList = new ArrayList<>();
+        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = new ArrayList<>();
         // add the metrics status here
         List<VariantDatum> variantSourceDataList = productVariantByPrdModel.getVariantDataList();
         for (int i = 0, sizei = variantSourceDataList.size(); i < sizei; i++) {
             VariantDatum variantSourceDatum = variantSourceDataList.get(i);
-            VariantStatus variantStatus = new VariantStatus();
-            variantStatus.setPvd(variantSourceDatum.getPvdId());
-            variantStatus.setStatus(variantSourceDatum.getStatus());
+            ProductVariantCombinationSubmit productVariantCombinationSubmit = new ProductVariantCombinationSubmit();
+            productVariantCombinationSubmit.setPvd(variantSourceDatum.getPvdId());
+            productVariantCombinationSubmit.setStatus(variantSourceDatum.getStatus());
             List<Long> optList = new ArrayList<>();
 
             List<Long> sourceOptionList = variantSourceDatum.getOptionIdList();
@@ -404,24 +404,24 @@ public class ProductVariantUtils {
                 }
             }
 
-            variantStatus.setOptionList(optList);
-            variantStatusList.add(variantStatus);
+            productVariantCombinationSubmit.setOptionList(optList);
+            productVariantCombinationSubmitList.add(productVariantCombinationSubmit);
         }
-        variantData.setVariantStatusList(variantStatusList);
-        return variantData;
+        productVariantDataSubmit.setProductVariantCombinationSubmitList(productVariantCombinationSubmitList);
+        return productVariantDataSubmit;
     }
 
-    public static List<String> getTitleList(List<VariantSubmitOption> variantSubmitOptionList, List<ProductVariantUnit> productVariantUnitList) {
+    public static List<String> getTitleList(List<ProductVariantOptionSubmit> productVariantOptionSubmitList, List<ProductVariantUnit> productVariantUnitList) {
         List<String> titleList = new ArrayList<>();
-        for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
+        for (ProductVariantOptionSubmit productVariantOptionSubmit : productVariantOptionSubmitList) {
             // If name already on custom text, add custom text on title list
-            if (!TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
-                titleList.add(variantSubmitOption.getCustomText());
+            if (!TextUtils.isEmpty(productVariantOptionSubmit.getCustomText())) {
+                titleList.add(productVariantOptionSubmit.getCustomText());
             } else {
                 // If not, search and mapping with variant value list from server
-                ProductVariantValue productVariantValue = getProductVariantValueByVariantUnitList(variantSubmitOption.getVariantUnitValueId(), productVariantUnitList);
-                if (productVariantValue != null) {
-                    titleList.add(productVariantValue.getValue());
+                ProductVariantOption productVariantOption = getProductVariantValueByVariantUnitList(productVariantOptionSubmit.getVariantUnitValueId(), productVariantUnitList);
+                if (productVariantOption != null) {
+                    titleList.add(productVariantOption.getValue());
                 }
             }
         }
@@ -436,17 +436,17 @@ public class ProductVariantUtils {
      * level = 1, return [{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]
      *
      * @param level
-     * @param variantUnitSubmitList
+     * @param productVariantUnitSubmitList
      * @return
      */
-    public static List<VariantSubmitOption> getAllVariantSubmitOptionListByLevel(int level, List<VariantUnitSubmit> variantUnitSubmitList) {
-        List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
-        for (VariantUnitSubmit variantUnitSubmit : variantUnitSubmitList) {
-            if (variantUnitSubmit.getPosition() == level) {
-                variantSubmitOptionList.addAll(variantUnitSubmit.getVariantSubmitOptionList());
+    public static List<ProductVariantOptionSubmit> getAllVariantSubmitOptionListByLevel(int level, List<ProductVariantUnitSubmit> productVariantUnitSubmitList) {
+        List<ProductVariantOptionSubmit> productVariantOptionSubmitList = new ArrayList<>();
+        for (ProductVariantUnitSubmit productVariantUnitSubmit : productVariantUnitSubmitList) {
+            if (productVariantUnitSubmit.getPosition() == level) {
+                productVariantOptionSubmitList.addAll(productVariantUnitSubmit.getProductVariantOptionSubmitList());
             }
         }
-        return variantSubmitOptionList;
+        return productVariantOptionSubmitList;
     }
 
     /**
@@ -455,14 +455,14 @@ public class ProductVariantUtils {
      * optionId = 3: return [1,2]
      *
      * @param optionId
-     * @param variantStatusList
+     * @param productVariantCombinationSubmitList
      * @return
      */
-    public static List<Long> getSelectedOptionIdList(long optionId, List<VariantStatus> variantStatusList) {
+    public static List<Long> getSelectedOptionIdList(long optionId, List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList) {
         List<Long> optionIdList = new ArrayList<>();
-        for (VariantStatus variantStatus : variantStatusList) {
-            if (isVariantStatusContainOptionId(optionId, variantStatus.getOptionList())) {
-                optionIdList.add(getParingId(optionId, variantStatus.getOptionList()));
+        for (ProductVariantCombinationSubmit productVariantCombinationSubmit : productVariantCombinationSubmitList) {
+            if (isVariantStatusContainOptionId(optionId, productVariantCombinationSubmit.getOptionList())) {
+                optionIdList.add(getParingId(optionId, productVariantCombinationSubmit.getOptionList()));
             }
         }
         return optionIdList;
@@ -475,12 +475,12 @@ public class ProductVariantUtils {
      * is contain 6 ? false
      *
      * @param optionId
-     * @param variantStatusList
+     * @param productVariantCombinationSubmitList
      * @return
      */
-    public static boolean isContainVariantStatusByOptionId(long optionId, List<VariantStatus> variantStatusList) {
-        List<VariantStatus> variantStatusListTemp = getSelectedVariantStatusList(optionId, variantStatusList);
-        return variantStatusListTemp.size() > 0;
+    public static boolean isContainVariantStatusByOptionId(long optionId, List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList) {
+        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitListTemp = getSelectedVariantStatusList(optionId, productVariantCombinationSubmitList);
+        return productVariantCombinationSubmitListTemp.size() > 0;
     }
 
     /**
@@ -489,17 +489,17 @@ public class ProductVariantUtils {
      * optionId = 1: return [{"st": 1,"opt": [3,1]},{"st": 1,"opt": [4,1]}]
      *
      * @param optionId
-     * @param variantStatusList
+     * @param productVariantCombinationSubmitList
      * @return
      */
-    public static List<VariantStatus> getSelectedVariantStatusList(long optionId, List<VariantStatus> variantStatusList) {
-        List<VariantStatus> variantStatusListTemp = new ArrayList<>();
-        for (VariantStatus variantStatus : variantStatusList) {
-            if (isVariantStatusContainOptionId(optionId, variantStatus.getOptionList())) {
-                variantStatusListTemp.add(variantStatus);
+    public static List<ProductVariantCombinationSubmit> getSelectedVariantStatusList(long optionId, List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList) {
+        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitListTemp = new ArrayList<>();
+        for (ProductVariantCombinationSubmit productVariantCombinationSubmit : productVariantCombinationSubmitList) {
+            if (isVariantStatusContainOptionId(optionId, productVariantCombinationSubmit.getOptionList())) {
+                productVariantCombinationSubmitListTemp.add(productVariantCombinationSubmit);
             }
         }
-        return variantStatusListTemp;
+        return productVariantCombinationSubmitListTemp;
     }
 
 

@@ -31,9 +31,9 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantSubmitOption;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantUnitSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private Listener listener;
     private boolean goldMerchant;
 
-    private VariantData variantData;
+    private ProductVariantDataSubmit productVariantDataSubmit;
     private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
 
     /**
@@ -110,7 +110,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         variantLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.startProductVariantActivity(productVariantByCatModelList, variantData);
+                listener.startProductVariantActivity(productVariantByCatModelList, productVariantDataSubmit);
             }
         });
         preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
@@ -175,7 +175,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                 if (resultCode == Activity.RESULT_OK) {
                     // TODO save the data to variantdata
                     if (data!= null && data.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
-                        setVariantData((VariantData) data.getParcelableExtra(
+                        setProductVariantDataSubmit((ProductVariantDataSubmit) data.getParcelableExtra(
                                 ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION));
                     }
                 }
@@ -201,8 +201,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         return videoIdList;
     }
 
-    public VariantData getVariantData() {
-        return variantData;
+    public ProductVariantDataSubmit getProductVariantDataSubmit() {
+        return productVariantDataSubmit;
     }
 
     public void setVideoIdList(List<String> videoIdList) {
@@ -237,35 +237,35 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void onSuccessGetSelectedProductVariant(ProductVariantByPrdModel productVariantByPrdModel) {
-        VariantData variantData =
+        ProductVariantDataSubmit productVariantDataSubmit =
                 ProductVariantUtils.generateProductVariantSubmit(productVariantByPrdModel);
-        setVariantData(variantData);
+        setProductVariantDataSubmit(productVariantDataSubmit);
     }
 
-    public void setVariantData(VariantData variantData) {
-        this.variantData = variantData;
+    public void setProductVariantDataSubmit(ProductVariantDataSubmit productVariantDataSubmit) {
+        this.productVariantDataSubmit = productVariantDataSubmit;
         setUiVariantSelection();
     }
 
     private void setUiVariantSelection() {
-        if (variantData == null || variantData.getVariantUnitSubmitList() == null ||
-                variantData.getVariantUnitSubmitList().size() == 0
+        if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
+                productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0
                 || productVariantByCatModelList == null
                 || productVariantByCatModelList.size() == 0) {
             variantLabelView.resetContentText();
         } else {
             String selectedVariantString = "";
-            List<VariantUnitSubmit> variantUnitSubmitList = variantData.getVariantUnitSubmitList();
-            for (int i = 0, sizei = variantUnitSubmitList.size(); i < sizei; i++) {
-                VariantUnitSubmit variantUnitSubmit = variantUnitSubmitList.get(i);
-                int position = variantUnitSubmit.getPosition();
+            List<ProductVariantUnitSubmit> productVariantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
+            for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
+                ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
+                int position = productVariantUnitSubmit.getPosition();
                 ProductVariantByCatModel productVariantByCatModel =
                         ProductVariantUtils.getProductVariantByCatModel(position, productVariantByCatModelList);
                 if (productVariantByCatModel == null) {
                     continue;
                 }
                 String variantName = productVariantByCatModel.getName();
-                List<VariantSubmitOption> optionList = variantUnitSubmit.getVariantSubmitOptionList();
+                List<ProductVariantOptionSubmit> optionList = productVariantUnitSubmit.getProductVariantOptionSubmitList();
                 if (optionList == null || optionList.size() == 0) {
                     continue;
                 }
@@ -326,7 +326,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<>(videoIdList));
-        savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, variantData);
+        savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, productVariantDataSubmit);
         savedInstanceState.putParcelableArrayList(SAVED_VARIANT_CAT, productVariantByCatModelList);
     }
 
@@ -336,7 +336,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         if (stringArrayList != null) {
             setVideoIdList(stringArrayList);
         }
-        variantData = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
+        productVariantDataSubmit = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
         productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT_CAT);
     }
 
@@ -353,7 +353,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
 
         void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelArrayList,
-                                         VariantData productVariantSubmit);
+                                         ProductVariantDataSubmit productVariantSubmit);
 
         void onDescriptionTextChanged(String text);
 

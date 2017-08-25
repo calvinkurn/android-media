@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by hendry on 8/15/2017.
  */
 
-public class VariantSubmitOption implements Parcelable {
+public class ProductVariantOptionSubmit implements Parcelable {
 
     @SerializedName("pvo")
     @Expose
@@ -109,25 +109,25 @@ public class VariantSubmitOption implements Parcelable {
         dest.writeString(this.customText);
     }
 
-    public VariantSubmitOption() {
+    public ProductVariantOptionSubmit() {
     }
 
-    protected VariantSubmitOption(Parcel in) {
+    protected ProductVariantOptionSubmit(Parcel in) {
         this.productVariantOptionId = in.readLong();
         this.variantUnitValueId = in.readLong();
         this.temporaryId = in.readLong();
         this.customText = in.readString();
     }
 
-    public static final Creator<VariantSubmitOption> CREATOR = new Creator<VariantSubmitOption>() {
+    public static final Creator<ProductVariantOptionSubmit> CREATOR = new Creator<ProductVariantOptionSubmit>() {
         @Override
-        public VariantSubmitOption createFromParcel(Parcel source) {
-            return new VariantSubmitOption(source);
+        public ProductVariantOptionSubmit createFromParcel(Parcel source) {
+            return new ProductVariantOptionSubmit(source);
         }
 
         @Override
-        public VariantSubmitOption[] newArray(int size) {
-            return new VariantSubmitOption[size];
+        public ProductVariantOptionSubmit[] newArray(int size) {
+            return new ProductVariantOptionSubmit[size];
         }
     };
 }

@@ -7,7 +7,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class UploadProductInputViewModel {
     private int productChangeWholesale;
     private int productChangeCatalog;
     private int switchVariant;
-    private VariantData variantData;
+    private ProductVariantDataSubmit productVariantDataSubmit;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -93,14 +93,14 @@ public class UploadProductInputViewModel {
         return switchVariant;
     }
 
-    public VariantData getVariantData() {
-        return variantData;
+    public ProductVariantDataSubmit getProductVariantDataSubmit() {
+        return productVariantDataSubmit;
     }
 
-    public void setProductVariantData(VariantData variantData) {
-        this.variantData = variantData;
-        if (variantData == null || variantData.getVariantUnitSubmitList()==null ||
-                variantData.getVariantUnitSubmitList().size() == 0) {
+    public void setProductVariantData(ProductVariantDataSubmit productVariantDataSubmit) {
+        this.productVariantDataSubmit = productVariantDataSubmit;
+        if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList()==null ||
+                productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
             this.switchVariant = ProductVariantConstant.SWITCH_VARIANT_NOT_EXIST;
         } else {
             this.switchVariant = ProductVariantConstant.SWITCH_VARIANT_EXIST;
@@ -385,8 +385,8 @@ public class UploadProductInputViewModel {
         if (poProcessValue!= defaultModel.getPoProcessValue()) {
             return false;
         }
-        if (variantData != null && variantData.getVariantUnitSubmitList()!= null &&
-                variantData.getVariantUnitSubmitList().size() > 0){
+        if (productVariantDataSubmit != null && productVariantDataSubmit.getProductVariantUnitSubmitList()!= null &&
+                productVariantDataSubmit.getProductVariantUnitSubmitList().size() > 0){
             return false;
         }
         return true;

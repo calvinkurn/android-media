@@ -25,7 +25,7 @@ public class ProductVariantUnit implements Parcelable {
     private String shortName;
     @SerializedName("values")
     @Expose
-    private List<ProductVariantValue> productVariantValueList = null;
+    private List<ProductVariantOption> productVariantOptionList = null;
 
     public int getUnitId() {
         return unitId;
@@ -39,8 +39,8 @@ public class ProductVariantUnit implements Parcelable {
         return shortName;
     }
 
-    public List<ProductVariantValue> getProductVariantValueList() {
-        return productVariantValueList;
+    public List<ProductVariantOption> getProductVariantOptionList() {
+        return productVariantOptionList;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ProductVariantUnit implements Parcelable {
         dest.writeValue(this.unitId);
         dest.writeString(this.name);
         dest.writeString(this.shortName);
-        dest.writeList(this.productVariantValueList);
+        dest.writeList(this.productVariantOptionList);
     }
 
     public ProductVariantUnit() {
@@ -63,8 +63,8 @@ public class ProductVariantUnit implements Parcelable {
         this.unitId = (Integer) in.readValue(Integer.class.getClassLoader());
         this.name = in.readString();
         this.shortName = in.readString();
-        this.productVariantValueList = new ArrayList<ProductVariantValue>();
-        in.readList(this.productVariantValueList, ProductVariantValue.class.getClassLoader());
+        this.productVariantOptionList = new ArrayList<ProductVariantOption>();
+        in.readList(this.productVariantOptionList, ProductVariantOption.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<ProductVariantUnit> CREATOR = new Parcelable.Creator<ProductVariantUnit>() {

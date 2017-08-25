@@ -62,7 +62,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -574,12 +574,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
-                                            VariantData variantData) {
+                                            ProductVariantDataSubmit productVariantDataSubmit) {
         Intent intent = new Intent(getActivity(), ProductVariantDashboardActivity.class);
         intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
-        if (variantData!= null && variantData.getVariantUnitSubmitList()!= null &&
+        if (productVariantDataSubmit != null && productVariantDataSubmit.getProductVariantUnitSubmitList()!= null &&
                 productVariantByCatModelList.size() > 0) {
-            intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, variantData);
+            intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantDataSubmit);
         }
         startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT);
     }
@@ -681,7 +681,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         }
         viewModel.setProductStatus(getStatusUpload());
         viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
-        viewModel.setProductVariantData(productAdditionalInfoViewHolder.getVariantData());
+        viewModel.setProductVariantData(productAdditionalInfoViewHolder.getProductVariantDataSubmit());
         return viewModel;
     }
 
