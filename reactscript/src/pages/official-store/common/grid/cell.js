@@ -25,7 +25,6 @@ const getCellContent = (data) => {
   if (data) {
     return (
       <TouchableWithoutFeedback onPress={() => {
-        console.log('Brand shop: ', data.shop_apps_url)
         NavigationModule.navigate(data.shop_apps_url, '')
         }}>
       <View style={styles.cellWrapper}>

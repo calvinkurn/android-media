@@ -244,28 +244,27 @@ const brands = (state = {
         case `${FETCH_BRANDS}_${FULFILLED}`:
             const brandsData = action.payload.data || []
             const totalBrands = action.payload.total_brands
-            const itemsRefresh = action.payload.status === 'REFRESH' ? [...state.items.slice(0, 10)] : [...state.items]
-            const items = action.payload.status === 'REFRESH' ? itemsRefresh : [...state.items, ...brandsData]
+            const items = [...state.items, ...brandsData]
             const pagination = {
                 ...state.pagination,
                 offset: items.length
             }
-
+    
             const getVisibleGridData = (brands, count) => {
                 const data = []
                 let howMany = state.grid.itemsToShow
-                let index = action.payload.status === 'REFRESH' ? 0 : state.grid.index
-
-                while (howMany--) {
-                    data.push(brands[index])
-                    index = (index + 1) % count
-                }
-                return {
-                    data,
-                    index,
-                    itemsToShow: 8
-                }
+                let index = state.grid.index
+    
+            while (howMany--) {
+                data.push(brands[index])
+                index = (index + 1) % count
             }
+            return {
+                data,
+                index,
+                itemsToShow: 8
+            }
+        }
             return {
                 status: action.payload.status,
                 items,
@@ -382,6 +381,7 @@ const brands = (state = {
             return {
                 ...state,
                 items: state.items.map(b => {
+                    console.log(action.payload, typeof(action.payload), b.id, typeof(b.id))
                     if (action.payload === b.id) {
                         return Object.assign({}, b, {
                             isFav: true
