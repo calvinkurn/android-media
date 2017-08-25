@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.view.holder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -264,12 +265,12 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                     continue;
                 }
                 String variantName = productVariantByCatModel.getName();
-                if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
-                    selectedVariantString += "\n";
-                }
                 List<VariantSubmitOption> optionList = variantUnitSubmit.getVariantSubmitOptionList();
                 if (optionList == null || optionList.size() == 0) {
                     continue;
+                }
+                if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
+                    selectedVariantString += "\n";
                 }
                 selectedVariantString += optionList.size() + " " + variantName;
             }
@@ -330,10 +331,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            return;
-        }
+    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         ArrayList<String> stringArrayList = savedInstanceState.getStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK);
         if (stringArrayList != null) {
             setVideoIdList(stringArrayList);

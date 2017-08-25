@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +34,11 @@ public class VariantDatum implements Parcelable {
     @Expose
     private String vCode;
 
+    // combination of variant code in arrayList
+    @SerializedName("option_ids")
+    @Expose
+    private List<Long> optionIdList;
+
     public int getPvdId() {
         return pvdId;
     }
@@ -49,6 +55,10 @@ public class VariantDatum implements Parcelable {
         return vCode;
     }
 
+    public List<Long> getOptionIdList() {
+        return optionIdList;
+    }
+
     public VariantDatum() {
     }
 
@@ -63,6 +73,7 @@ public class VariantDatum implements Parcelable {
         dest.writeInt(this.status);
         dest.writeInt(this.stock);
         dest.writeString(this.vCode);
+        dest.writeList(this.optionIdList);
     }
 
     protected VariantDatum(Parcel in) {
@@ -70,6 +81,8 @@ public class VariantDatum implements Parcelable {
         this.status = in.readInt();
         this.stock = in.readInt();
         this.vCode = in.readString();
+        this.optionIdList = new ArrayList<>();
+        in.readList(this.optionIdList, Long.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<VariantDatum> CREATOR = new Parcelable.Creator<VariantDatum>() {

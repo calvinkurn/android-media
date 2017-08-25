@@ -43,6 +43,11 @@ public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVar
             imageView.setImageDrawable(null);
         }
         titleTextView.setText(productVariantManageViewModel.getTitle());
-        contentTextView.setText(productVariantManageViewModel.getContent());
+        if (TextUtils.isEmpty(productVariantManageViewModel.getContent())) {
+            contentTextView.setVisibility(View.GONE);
+        } else {
+            contentTextView.setText(productVariantManageViewModel.getContent());
+            contentTextView.setVisibility(View.VISIBLE);
+        }
     }
 }

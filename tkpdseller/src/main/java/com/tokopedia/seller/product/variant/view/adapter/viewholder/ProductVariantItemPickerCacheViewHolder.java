@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.variant.view.adapter.viewholder;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
@@ -33,16 +34,15 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
     @Override
     public void bindObject(final ProductVariantViewModel productVariantViewModel) {
         if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setBackgroundColor(Color.parseColor(productVariantViewModel.getHexCode()));
-            imageView.setImageDrawable(null);
+            imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
+            imageView.setImageResource(R.drawable.circle_white);
         } else if (!TextUtils.isEmpty(productVariantViewModel.getImageUrl())) {
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setBackgroundColor(Color.TRANSPARENT);
+            imageView.clearColorFilter();
             Glide.with(imageView.getContext()).load(productVariantViewModel.getImageUrl())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
-        } else {
-            imageView.setVisibility(View.GONE);
+        } else { // no hex, no url
+            imageView.setImageResource(R.drawable.circle_grey);
+            imageView.clearColorFilter();
         }
         titleTextView.setText(productVariantViewModel.getTitle());
         closeImageButton.setOnClickListener(new View.OnClickListener() {

@@ -104,6 +104,10 @@ public class LabelView extends BaseCustomView {
         requestLayout();
     }
 
+    public boolean isContentDefault(){
+        return contentTextView.getText().equals(contentText);
+    }
+
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;

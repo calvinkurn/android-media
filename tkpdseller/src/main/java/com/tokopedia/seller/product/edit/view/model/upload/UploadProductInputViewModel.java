@@ -100,7 +100,7 @@ public class UploadProductInputViewModel {
         this.variantData = variantData;
         if (variantData == null || variantData.getVariantUnitSubmitList()==null ||
                 variantData.getVariantUnitSubmitList().size() == 0) {
-            this.switchVariant = 0;
+            this.switchVariant = -1;
         } else {
             this.switchVariant = 1;
         }

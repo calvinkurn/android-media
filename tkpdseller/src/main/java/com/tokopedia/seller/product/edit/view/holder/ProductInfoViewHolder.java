@@ -360,10 +360,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            return;
-        }
+    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         categoryId = savedInstanceState.getLong(BUNDLE_CATEGORY_ID, DEFAULT_CATEGORY_ID);
         if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_CATEGORY_NAME))) {
             categoryLabelView.setContent(savedInstanceState.getString(BUNDLE_CATEGORY_NAME));

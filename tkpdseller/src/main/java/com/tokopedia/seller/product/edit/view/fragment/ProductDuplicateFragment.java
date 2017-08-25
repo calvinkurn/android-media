@@ -21,14 +21,12 @@ import javax.inject.Inject;
 public class ProductDuplicateFragment extends ProductDraftAddFragment implements ProductEditView {
 
     public static final String EDIT_PRODUCT_ID = "EDIT_PRODUCT_ID";
-    public static final String SAVED_PRD_VARIANT_EDIT = "svd_var_edt";
 
     @Inject
     public ProductEditPresenter presenter;
     private String productNameBeforeCopy;
 
     private String productId;
-    private ProductVariantByPrdModel productVariantByPrdModel;
 
     public static ProductDuplicateFragment createInstance(String productId) {
         ProductDuplicateFragment fragment = new ProductDuplicateFragment();
@@ -38,6 +36,11 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        productId = getArguments().getString(EDIT_PRODUCT_ID);
+    }
 
     @Override
     protected void initInjector() {
@@ -70,9 +73,7 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
         showLoading();
         presenter.attachView(this);
         fetchProductInfoData(productId);
-        if (productVariantByPrdModel == null) {
-            fetchProductVariantData(productId);
-        }
+        fetchProductVariantData(productId);
     }
 
     private void fetchProductInfoData(String productId){
@@ -105,14 +106,4 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
         });
     }
 
-    @Override
-    public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
-        this.productVariantByPrdModel = productVariantByPrdModel;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(SAVED_PRD_VARIANT_EDIT, productVariantByPrdModel);
-    }
 }

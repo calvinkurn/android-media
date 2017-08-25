@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -23,6 +24,7 @@ import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerAc
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
+import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +75,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     protected void initView(View view) {
         super.initView(view);
         variantLevelOneLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_one);
-        variantLevelTwoLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_two);
         variantLevelTwoLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_two);
         variantListView = view.findViewById(R.id.linear_layout_variant_list);
     }
@@ -126,6 +127,11 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     @Override
     protected BaseListAdapter<ProductVariantManageViewModel> getNewAdapter() {
         return new ProductVariantDashboardAdapter();
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new DividerItemDecoration(getContext());
     }
 
     @Override
@@ -192,28 +198,29 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         updateVariantItemListView();
     }
 
+    @SuppressWarnings("unchecked")
     private void onActivityResultFromDataManage(Intent data) {
         if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
-                    long variantIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
-                    if (variantIdToDelete != 0) {
-                        // TODO delete variant status for variantIdToDelete
-                        // remove from selected variantIdToDelete
+            long variantIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
+            if (variantIdToDelete != 0) {
+                // TODO delete variant status for variantIdToDelete
+                // remove from selected variantIdToDelete
+            }
+        } else if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_SUBMIT)) {
+            long variantIdToUpdate = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
+            if (variantIdToUpdate != 0) {
+                ArrayList<Long> selectedVariantValueIdList = (ArrayList<Long>)
+                        data.getSerializableExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
+                if (selectedVariantValueIdList == null || selectedVariantValueIdList.size() == 0) {
+                    if (data.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK)) {
+                        boolean variantHasStock = data.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
+                        //TODO set the variant stock to available/empty (based on variantHasStock)
                     }
-                } else if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_SUBMIT)) {
-                    long variantIdToUpdate = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
-                    if (variantIdToUpdate != 0) {
-                        ArrayList<Long> selectedVariantValueIdList = (ArrayList<Long>)
-                                data.getSerializableExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
-                        if (selectedVariantValueIdList == null || selectedVariantValueIdList.size() == 0) {
-                            if (data.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK)) {
-                                boolean variantHasStock = data.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
-                                //TODO set the variant stock to available/empty (based on variantHasStock)
-                            }
-                        } else {
-                            // TODO update the selectedVariantValueIdList of the variant to available
-                        }
-                    }
+                } else {
+                    // TODO update the selectedVariantValueIdList of the variant to available
                 }
+            }
+        }
     }
 
     private void setVariantLevel(int level, VariantUnitSubmit variantUnitSubmit) {
@@ -277,7 +284,8 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
      * Update variant item list view
      */
     private void updateVariantItemListView() {
-        if (variantData == null) {
+        if (variantData == null || variantData.getVariantUnitSubmitList() == null
+                || variantData.getVariantUnitSubmitList().size() == 0) {
             variantListView.setVisibility(View.GONE);
             return;
         }
@@ -308,9 +316,9 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 break;
             case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
                 if (TextUtils.isEmpty(variantLevelOneLabelView.getContent()) ||
-                        variantLevelOneLabelView.getContent().equalsIgnoreCase(getString(R.string.product_label_choose))) {
+                        variantLevelOneLabelView.isContentDefault()) {
                     variantLevelTwoLabelView.setEnabled(false);
-                    variantLevelTwoLabelView.setContent(getString(R.string.product_label_choose));
+                    variantLevelTwoLabelView.resetContentText();
                 } else {
                     variantLevelTwoLabelView.setEnabled(true);
                     variantLevelTwoLabelView.setContent(getVariantTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE));
@@ -319,6 +327,10 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         }
     }
 
+    /**
+     * @param level ex 1
+     * @return selected name String for that variant, ex: "hijau, merah, biru"
+     */
     private String getVariantTitle(int level) {
         VariantUnitSubmit variantUnitSubmit = getVariantUnitSubmit(level);
         String title = ProductVariantUtils.getMultipleVariantOptionTitle(level, variantUnitSubmit, productVariantByCatModelList);
@@ -337,6 +349,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
 
     /**
      * function to return the result to the caller (activity)
+     *
      * @return
      */
     public VariantData getVariantData() {

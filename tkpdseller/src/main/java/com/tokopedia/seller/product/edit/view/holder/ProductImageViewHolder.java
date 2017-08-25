@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.edit.view.holder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -194,7 +195,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
+    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
 
     }
 }

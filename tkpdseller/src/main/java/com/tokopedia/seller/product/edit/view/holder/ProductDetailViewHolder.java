@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -426,7 +427,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getFreeReturns() {
-        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE || freeReturnsSpinnerTextView.getSpinnerValue() != null) {
+        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE || freeReturnsSpinnerTextView.getSpinnerValue() == null) {
             return Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_inactive));
         } else {
             return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
@@ -601,10 +602,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            return;
-        }
+    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         etalaseId = savedInstanceState.getLong(BUNDLE_ETALASE_ID, DEFAULT_ETALASE_ID);
         if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_ETALASE_NAME))) {
             etalaseLabelView.setContent(savedInstanceState.getString(BUNDLE_ETALASE_NAME));

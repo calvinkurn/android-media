@@ -19,7 +19,8 @@ public class ProductVariantPickerCacheListAdapter extends BaseItemPickerCacheAda
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ProductVariantViewModel.TYPE:
-                ProductVariantItemPickerCacheViewHolder productVariantItemPickerCacheViewHolder = new ProductVariantItemPickerCacheViewHolder(getLayoutView(parent, R.layout.item_base_cache_chip));
+                ProductVariantItemPickerCacheViewHolder productVariantItemPickerCacheViewHolder =
+                        new ProductVariantItemPickerCacheViewHolder(getLayoutView(parent, R.layout.item_base_cache_chip));
                 productVariantItemPickerCacheViewHolder.setRemoveCallback(this);
                 return productVariantItemPickerCacheViewHolder;
             default:
