@@ -3,6 +3,7 @@ package com.tokopedia.posapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -14,7 +15,9 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.posapp.view.activity.OutletActivity;
+import com.tokopedia.posapp.deeplink.DeepLinkDelegate;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -80,7 +83,10 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public void actionApplink(Activity activity, String linkUrl) {
-
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.setData(Uri.parse(linkUrl));
+        deepLinkDelegate.dispatchFrom(activity, intent);
     }
 
     @Override

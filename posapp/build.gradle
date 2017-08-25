@@ -66,5 +66,8 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
     compile rootProject.ext.miscDependencies.cardio
 
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
     compile rootProject.ext.testDependencies.junit
 }

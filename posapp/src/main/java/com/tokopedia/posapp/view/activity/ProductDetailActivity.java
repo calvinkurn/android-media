@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -17,6 +19,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.view.fragment.OutletFragment;
 import com.tokopedia.posapp.view.fragment.ProductDetailFragment;
 
@@ -29,6 +32,20 @@ import io.card.payment.CreditCard;
 
 public class ProductDetailActivity extends BasePresenterActivity
         implements HasComponent {
+
+    @DeepLink(Constants.Applinks.PRODUCT_INFO)
+    public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+        extras.putParcelable(
+            ProductDetailFragment.PRODUCT_PASS,
+            ProductPass.Builder.aProductPass().setProductId(uri.getPathSegments().get(0)).build()
+        );
+
+        return new Intent(context, ProductDetailActivity.class)
+                .setData(uri)
+                .putExtras(extras);
+    }
+
     @Override
     public Object getComponent() {
         return getApplicationComponent();
