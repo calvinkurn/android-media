@@ -130,11 +130,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     }
 
     @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getContext());
-    }
-
-    @Override
     protected void searchForPage(int page) {
 
     }

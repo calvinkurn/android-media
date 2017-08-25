@@ -20,6 +20,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputVie
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.ProductDraftPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductDraftView;
+import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 
 import javax.inject.Inject;
 
@@ -139,7 +140,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
             productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
             productAdditionalInfoViewHolder.setPreOrderValue(model.getPoProcessValue());
         }
-        if (model.getSwitchVariant() > 0) {
+        if (model.getSwitchVariant() == ProductVariantConstant.SWITCH_VARIANT_EXIST) {
             productAdditionalInfoViewHolder.setVariantData(model.getVariantData());
         }
     }
