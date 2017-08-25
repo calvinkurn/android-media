@@ -7,12 +7,14 @@ import {
   FlatList,
   Image,
   ScrollView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Dimensions
 } from 'react-native';
 import unescape from 'lodash/unescape'
 import { NavigationModule, NetworkModule } from 'NativeModules';
 import WishListButton from '../common/Wishlist/WishlistButton';
 
+const { width, height } = Dimensions.get('window')
 
 const CampaignList = ({ campaigns, User_ID }) => {
   return (
@@ -41,6 +43,7 @@ this.renderCampaign = (c) => {
     price,
     productGridCampaignRate,
     productGridCampaignRateText,
+    priceContainer,
     badgeImageContainer,
     badgeImage,
     productBadgeWrapper,
@@ -85,27 +88,24 @@ this.renderCampaign = (c) => {
                   numberOfLines={2}>{unescape(dataProducts.name)}</Text>
               </View>
             </TouchableWithoutFeedback>
-            <View style={productGridNormalPrice}>
-              {
-                dataProducts.discount_percentage && (
-                  <View style={{ height: 3 }}>
-                    <Text style={productGridNormalPriceText}>{dataProducts.original_price}</Text>
-                  </View>
-                )
-              }
-            </View>
-            <View style={priceWrapper}>
-              <Text style={price}>{dataProducts.price}</Text>
-              { dataProducts.discount_percentage && (
-                <View style={productGridCampaignRate}>
-                  <Text style={productGridCampaignRateText}>{`${dataProducts.discount_percentage}% OFF`}</Text>
-                </View>)
-              }
-              { dataProducts.badges.map(b => (b.title === 'Free Return' ? (
-                <View key={dataProducts.id} style={badgeImageContainer}>
-                  <Image source={{ uri: b.image_url }} style={badgeImage} />
-                </View>) : null))
-              }
+            <View style={priceContainer}>
+              <View style={productGridNormalPrice}>
+                {
+                  dataProducts.discount_percentage && (
+                    <View style={{ height: 15 }}>
+                      <Text style={productGridNormalPriceText}>{dataProducts.original_price}</Text>
+                    </View>
+                  )
+                }
+              </View>
+              <View style={priceWrapper}>
+                <Text style={price}>{dataProducts.price}</Text>
+                { dataProducts.discount_percentage && (
+                  <View style={productGridCampaignRate}>
+                    <Text style={productGridCampaignRateText}>{`${dataProducts.discount_percentage}% OFF`}</Text>
+                  </View>)
+                }
+              </View>
             </View>
             <View style={productBadgeWrapper}>
               {
@@ -146,6 +146,11 @@ this.renderCampaign = (c) => {
                     ellipsizeMode='tail'
                     numberOfLines={1}>{unescape(dataProducts.shop.name)}</Text>
                 </View>
+                { dataProducts.badges.map(b => (b.title === 'Free Return' ? (
+                  <View key={dataProducts.id} style={badgeImageContainer}>
+                    <Image source={{ uri: b.image_url }} style={badgeImage} />
+                  </View>) : null))
+                }
               </View>
             </TouchableWithoutFeedback>
             <WishListButton
@@ -163,21 +168,20 @@ this.renderCampaign = (c) => {
   }
 
   return (
-    <View style={{ marginBottom: 10, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#e0e0e0' }}>
+    <View style={{ marginBottom: 10, backgroundColor: '#FFF', borderTopWidth: 1, borderColor: '#e0e0e0' }}>
       {
         item.html_id === 6 ? null : <Text style={titleText}>{item.title}</Text>
       }
       {
         item.html_id === 6 ? (
-          <TouchableWithoutFeedback onPress={() => {
-            NavigationModule.navigateWithMobileUrl(item.redirect_url_app, item.redirect_url_mobile, "")}}>
-            <Image source={{ uri: item.image_url }} style={{ height: 80 }} />
+          <TouchableWithoutFeedback onPress={() => Linking.openURL(item.redirect_url_desktop)} >
+            <Image source={{ uri: item.image_url }} style={styles.campaignImage} resizeMode={'contain'} />
           </TouchableWithoutFeedback>
         ) :
           (
             <TouchableWithoutFeedback onPress={() => {
               NavigationModule.navigateWithMobileUrl(item.redirect_url_app, item.redirect_url_mobile, "")}}>
-              <Image source={{ uri: item.mobile_url }} style={{ height: 110 }} />
+              <Image source={{ uri: item.mobile_url }} style={styles.campaignImage} resizeMode={'contain'} />
             </TouchableWithoutFeedback>
           )
       }
@@ -204,7 +208,8 @@ CampaignList.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  priceContainer: {
+    height: 40,
   },
   titleText: {
     fontSize: 16,
@@ -223,24 +228,24 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0'
   },
   priceWrapper: {
-    flex: 1,
+    height: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 34
+    marginVertical: 3,
   },
   price: {
     color: '#ff5722',
     fontSize: 13,
     fontWeight: '600',
-    lineHeight: 20,
+    lineHeight: 15,
     paddingHorizontal: 10
   },
   productName: {
     fontSize: 13,
     fontWeight: '600',
     color: 'rgba(0,0,0,.7)',
-    height: 33.8,
-    paddingHorizontal: 10
+    height: 40,
+    paddingHorizontal: 10,
   },
   productImageWrapper: {
     borderBottomWidth: 1,
@@ -331,24 +336,32 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through'
   },
   badgeImageContainer: {
-    paddingHorizontal: 10,
-    left: 15
+    width: 20,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   badgeImage: {
     height: 16,
     width: 16
   },
   productGridCampaignRate: {
-    backgroundColor: '#ff5722',
+    backgroundColor: '#f02222',
     padding: 3,
     borderRadius: 3,
-    marginLeft: 5
+    marginLeft: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   productGridCampaignRateText: {
     color: '#fff',
-    fontSize: 11,
+    fontSize: 10,
     textAlign: 'center'
-  }
+  },
+  campaignImage: {
+    width,
+    height: width * 0.27,
+  },
 });
 
 export default CampaignList;

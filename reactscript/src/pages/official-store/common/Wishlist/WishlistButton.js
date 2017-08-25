@@ -23,15 +23,12 @@ import { icons } from '../../../../icons/index'
 class Wishlist extends Component {
   _onTap = (isWishlist, pId) => {
     AsyncStorage.getItem('user_id').then(res => { 
-      const User_ID = res 
-      console.log(User_ID)
+      const User_ID = res
 
       if (User_ID != null){
         if (isWishlist) {
-          console.log('remove wishlist ', pId, User_ID)
           this.props.dispatch(removeFromWishlist(pId, User_ID))
         } else {
-          console.log('add wishlist ', pId, User_ID)
           this.props.dispatch(addToWishlist(pId, User_ID))
         }
       } else {
