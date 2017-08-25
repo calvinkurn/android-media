@@ -58,12 +58,16 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
                 if (variantOptions.get(position).isEnabled()) {
                     selectedPosition = position;
                     notifyDataSetChanged();
-                    variantChosenListener.onVariantChosen(variantOptions.get(position),level);
+                    variantChosenListener.onVariantChosen(variantOptions.get(selectedPosition),level);
                 }
             }
         });
     }
 
+    public void notifyItemSelectedChange() {
+        variantChosenListener.onVariantChosen(variantOptions.get(selectedPosition),level);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {
@@ -131,6 +135,11 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
 
     public void setSelectedPosition(int selectedPosition) {
         this.selectedPosition = selectedPosition;
+        notifyDataSetChanged();
+    }
+
+    public Option getSelectedOption() {
+        return variantOptions.get(selectedPosition);
     }
 
     public interface OnVariantOptionChoosedListener{

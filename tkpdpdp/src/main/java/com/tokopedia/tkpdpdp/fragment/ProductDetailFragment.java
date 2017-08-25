@@ -396,6 +396,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         intent.putExtra(VariantActivity.KEY_VARIANT_DATA, productVariant);
         intent.putExtra(KEY_LEVEL1_SELECTED,variantLevel1);
         intent.putExtra(KEY_LEVEL2_SELECTED,variantLevel2);
+        if (productData.getShopInfo().getShopIsOwner() == 1
+                || (productData.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
+            intent.putExtra(VariantActivity.KEY_SELLER_MODE, true);
+        }
         startActivityForResult(intent,REQUEST_VARIANT);
         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
     }
@@ -434,7 +438,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
         if (productVariant!=null && productVariant.getVariantOption()!=null
-                && productVariant.getVariantOption().size()>0 && variantLevel1==null) {
+                && productVariant.getVariantOption().size()>0 && productVariant.getVariantData()!=null
+                && productVariant.getVariantData().size()>0 && variantLevel1==null) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(VariantActivity.KEY_BUY_MODE, true);
             if (productData.getShopInfo().getShopIsOwner() == 1
