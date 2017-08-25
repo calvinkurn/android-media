@@ -195,10 +195,11 @@
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_driver_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginRight="80dp"
                         android:layout_toEndOf="@+id/iv_driver_pict"
                         android:layout_toRightOf="@+id/iv_driver_pict"
                         android:text="Your trip with John"
