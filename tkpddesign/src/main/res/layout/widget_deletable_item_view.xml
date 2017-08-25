@@ -20,6 +20,7 @@
         android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxHeight="@dimen/deletable_item_max_height"
         android:padding="6dp"/>
 
     <View
