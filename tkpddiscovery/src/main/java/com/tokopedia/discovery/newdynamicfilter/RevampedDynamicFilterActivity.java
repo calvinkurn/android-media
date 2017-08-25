@@ -70,6 +70,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
             Intent intent = new Intent(activity, RevampedDynamicFilterActivity.class);
             intent.putExtra(EXTRA_FILTER_LIST, Parcels.wrap(filterCategoryList));
             activity.startActivityForResult(intent, REQUEST_CODE);
+            activity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 
@@ -150,6 +151,12 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
         selectedCategoryId = preferences.getString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
         selectedCategoryName = preferences.getString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core.R.anim.push_down);
     }
 
     @Override
