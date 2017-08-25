@@ -26,6 +26,7 @@ import java.util.List;
 
 public class ProductVariantUtils {
 
+    private static final long NOT_AVAILABLE_OPTION_ID = Long.MIN_VALUE;
     private static final String VARIANT_TITLE_SEPARATOR = ",";
     private static final String SPLIT_DELIMITER = ":"; // this depends on the api.
 
@@ -161,26 +162,21 @@ public class ProductVariantUtils {
     }
 
     private static List<VariantSubmitOption> getPairingVariantSubmitOptionListBy(
-            long optionId, List<VariantUnitSubmit> variantUnitSubmitList, List<VariantStatus> variantStatusList) {
+            long optionIdSelected, List<VariantUnitSubmit> variantUnitSubmitList, List<VariantStatus> variantStatusList) {
         List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
         for (VariantStatus variantStatus : variantStatusList) {
-            for (Long optionIdSelected : variantStatus.getOptionList()) {
-                if (optionIdSelected == optionId) {
-                    long pairingId = getParingId(optionId, variantStatus.getOptionList());
-                    variantSubmitOptionList.add(getVariantSubmitOptionById(pairingId, variantUnitSubmitList));
+            for (Long optionIdTemp : variantStatus.getOptionList()) {
+                if (optionIdTemp == optionIdSelected) {
+                    long pairingId = getParingId(optionIdSelected, variantStatus.getOptionList());
+                    // Check pairing id
+                    if (pairingId >= 0) {
+                        VariantSubmitOption variantSubmitOption = getVariantSubmitOptionById(pairingId, variantUnitSubmitList);
+                        variantSubmitOptionList.add(variantSubmitOption);
+                    }
                 }
             }
         }
         return variantSubmitOptionList;
-    }
-
-    private static long getParingId(long optionId, List<Long> optionList) {
-        for (Long optionIdSelected : optionList) {
-            if (optionIdSelected != optionId) {
-                return optionIdSelected;
-            }
-        }
-        return -1;
     }
 
     private static VariantSubmitOption getVariantSubmitOptionById(long optionId, List<VariantUnitSubmit> variantUnitSubmitList) {
@@ -240,7 +236,8 @@ public class ProductVariantUtils {
 
     /**
      * get the position of productVariantByCatModelList
-     * @param level level, currently has 2 depth
+     *
+     * @param level                        level, currently has 2 depth
      * @param productVariantByCatModelList list to select
      * @return ProductVariantByCatModel for that level, example: Object for Color, Object for Size
      */
@@ -342,7 +339,7 @@ public class ProductVariantUtils {
                 }
             } else {
                 for (long sourceOptionId : sourceOptionList) {
-                    long optTId = tempIdInverseMap.get((int)sourceOptionId);
+                    long optTId = tempIdInverseMap.get((int) sourceOptionId);
                     optList.add(optTId);
                 }
             }
@@ -372,11 +369,11 @@ public class ProductVariantUtils {
     }
 
     public static List<ProductVariantValue> getProductVariantValueListForVariantDetail(
-            long tempId, List<VariantUnitSubmit> variantUnitSubmitList,
+            long optionId, List<VariantUnitSubmit> variantUnitSubmitList,
             List<VariantStatus> variantStatusList, List<ProductVariantUnit> productVariantUnitList) {
         List<ProductVariantValue> productVariantValueList = new ArrayList<>();
         List<VariantSubmitOption> variantSubmitOptionList = getPairingVariantSubmitOptionListBy(
-                tempId, variantUnitSubmitList, variantStatusList);
+                optionId, variantUnitSubmitList, variantStatusList);
         for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
             String title = "";
             // If name already on custom text, add custom text on title list
@@ -394,5 +391,92 @@ public class ProductVariantUtils {
             productVariantValueList.add(productVariantValue);
         }
         return productVariantValueList;
+    }
+
+    /**
+     * Get list of pairing option id from varian status list
+     * eg "product_variant": [{"st": 1,"opt": [3,1]},{"st": 1,"opt": [4,1]},{"st": 1,"opt": [3,2]},{"st": 1,"opt": [4,2]}
+     * optionId = 3: return [1,2]
+     *
+     * @param optionId
+     * @param variantStatusList
+     * @return
+     */
+    public static List<Long> getSelectedOptionIdList(long optionId, List<VariantStatus> variantStatusList) {
+        List<Long> optionIdList = new ArrayList<>();
+        for (VariantStatus variantStatus : variantStatusList) {
+            if (isVariantStatusContainOptionId(optionId, variantStatus.getOptionList())) {
+                optionIdList.add(getParingId(optionId, variantStatus.getOptionList()));
+            }
+        }
+        return optionIdList;
+    }
+
+    /**
+     * Check if variant status list contain selected option id
+     * eg "product_variant": [{"st": 1,"opt": [3,1]},{"st": 1,"opt": [4,1]},{"st": 1,"opt": [3,2]},{"st": 1,"opt": [4,2]}
+     * is contain 3 ? true
+     * is contain 6 ? false
+     *
+     * @param optionId
+     * @param variantStatusList
+     * @return
+     */
+    public static boolean isContainVariantStatusByOptionId(long optionId, List<VariantStatus> variantStatusList) {
+        List<VariantStatus> variantStatusListTemp = getSelectedVariantStatusList(optionId, variantStatusList);
+        return variantStatusListTemp.size() > 0;
+    }
+
+    /**
+     * Get all selected variant status list
+     * eg "product_variant": [{"st": 1,"opt": [3,1]},{"st": 1,"opt": [4,1]},{"st": 1,"opt": [3,2]},{"st": 1,"opt": [4,2]}
+     * optionId = 1: return [{"st": 1,"opt": [3,1]},{"st": 1,"opt": [4,1]}]
+     *
+     * @param optionId
+     * @param variantStatusList
+     * @return
+     */
+    public static List<VariantStatus> getSelectedVariantStatusList(long optionId, List<VariantStatus> variantStatusList) {
+        List<VariantStatus> variantStatusListTemp = new ArrayList<>();
+        for (VariantStatus variantStatus : variantStatusList) {
+            if (isVariantStatusContainOptionId(optionId, variantStatus.getOptionList())) {
+                variantStatusListTemp.add(variantStatus);
+            }
+        }
+        return variantStatusListTemp;
+    }
+
+
+    /**
+     * Check if Variant status contain option ID
+     * eg "opt": [3,1]
+     * is contain 3 ? true
+     * is contain 6 ? false
+     *
+     * @param optionId
+     * @param optionList
+     * @return
+     */
+    public static boolean isVariantStatusContainOptionId(long optionId, List<Long> optionList) {
+        long pairingOptionId = getParingId(optionId, optionList);
+        return pairingOptionId != NOT_AVAILABLE_OPTION_ID;
+    }
+
+    /**
+     * Get pairing id from optionList
+     * eg "opt": [3,1]
+     * option Id = 3, return 1
+     *
+     * @param optionId
+     * @param optionList
+     * @return
+     */
+    private static long getParingId(long optionId, List<Long> optionList) {
+        for (Long optionIdTemp : optionList) {
+            if (optionIdTemp != optionId) {
+                return optionIdTemp;
+            }
+        }
+        return NOT_AVAILABLE_OPTION_ID;
     }
 }
