@@ -205,12 +205,6 @@ public class ShopInfoActivity extends BaseActivity
     @DeepLink(Constants.Applinks.SHOP_ETALASE)
     public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        /*Bundle bundle = new Bundle();
-        bundle.putString("etalase_name", MethodChecker.fromHtml(data.getInfo().getProductEtalase()).toString());
-        bundle.putString("etalase_id", data.getInfo().getProductEtalaseId());
-        bundle.putString("shop_id", extras.getstr);
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);*/
 
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
