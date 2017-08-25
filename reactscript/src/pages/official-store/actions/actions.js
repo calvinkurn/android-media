@@ -185,6 +185,7 @@ export const fetchBrands = (limit, offset, User_ID, status) => ({
 getBrands = (limit, offset, User_ID, status) => {
     const Check_UserID = !User_ID ? 0 : User_ID
     const URL_ = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${Check_UserID}&limit=${limit}&offset=${offset}`
+    console.log(URL_)
     return NetworkModule.getResponse(URL_, "GET", "", false)
         .then(response => {
             const jsonResponse = JSON.parse(response)

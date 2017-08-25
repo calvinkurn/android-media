@@ -174,7 +174,7 @@ this.renderCampaign = (c) => {
       }
       {
         item.html_id === 6 ? (
-          <TouchableWithoutFeedback onPress={() => Linking.openURL(item.redirect_url_desktop)} >
+          <TouchableWithoutFeedback onPress={() => NavigationModule.navigateWithMobileUrl(item.redirect_url_app, item.redirect_url_mobile, "")}>
             <Image source={{ uri: item.image_url }} style={styles.campaignImage} resizeMode={'contain'} />
           </TouchableWithoutFeedback>
         ) :
