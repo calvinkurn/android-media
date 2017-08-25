@@ -1,12 +1,14 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.RequireViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
@@ -27,6 +29,7 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
     private SolutionListFragmentListener.View mainView;
     private GetSolutionUseCase getSolutionUseCase;
     private SolutionResponseDomain solutionResponseDomain;
+    private ResultViewModel resultViewModel;
 
 
     @Inject
@@ -42,6 +45,7 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
 
     @Override
     public void initResultViewModel(ResultViewModel resultViewModel) {
+        this.resultViewModel = resultViewModel;
         getSolutionUseCase.execute(getSolutionUseCase.getSolutionUseCaseParams(resultViewModel), new Subscriber<SolutionResponseDomain>() {
             @Override
             public void onCompleted() {
@@ -63,6 +67,14 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
         });
     }
 
+    @Override
+    public void solutionClicked(SolutionViewModel solutionViewModel) {
+        if (solutionViewModel.getAmount() == null) {
+            resultViewModel.solution = solutionViewModel.getId();
+            mainView.submitData(resultViewModel);
+        }
+    }
+
     private SolutionResponseViewModel mappingSolutionResponseViewModel(SolutionResponseDomain domain) {
         return new SolutionResponseViewModel(
                 domain.getSolutions() != null ? mappingSolutionViewModelList(domain.getSolutions()) : new ArrayList<SolutionViewModel>(),
@@ -75,13 +87,17 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
             viewModelList.add(new SolutionViewModel(
                     solutionDomain.getId(),
                     solutionDomain.getName(),
-                    solutionDomain.getAmount()));
+                    solutionDomain.getAmount() != null ? mappingAmountViewModel(solutionDomain.getAmount()) : null));
         }
         return viewModelList;
     }
 
     private RequireViewModel mappingRequireViewModel(RequireDomain domain) {
         return new RequireViewModel(domain.isAttachment());
+    }
+
+    private AmountViewModel mappingAmountViewModel(AmountDomain domain) {
+        return new AmountViewModel(domain.getIdr(), domain.getInteger());
     }
 
 }

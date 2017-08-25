@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.model.solution;
 
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
+
 import javax.annotation.Nullable;
 
 /**
@@ -12,11 +14,11 @@ public class SolutionDomain {
     @Nullable
     private String name;
     @Nullable
-    private int amount;
+    private AmountDomain amount;
 
     public SolutionDomain(@Nullable int id,
                           @Nullable String name,
-                          @Nullable int amount) {
+                          @Nullable AmountDomain amount) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -41,11 +43,11 @@ public class SolutionDomain {
     }
 
     @Nullable
-    public int getAmount() {
+    public AmountDomain getAmount() {
         return amount;
     }
 
-    public void setAmount(@Nullable int amount) {
+    public void setAmount(@Nullable AmountDomain amount) {
         this.amount = amount;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public class ProductProblemListResponse {
-    @SerializedName("data")
+    @SerializedName("createInfo")
     @Expose
     List<ProductProblemResponse> productProblemResponseList = new ArrayList<>();
 

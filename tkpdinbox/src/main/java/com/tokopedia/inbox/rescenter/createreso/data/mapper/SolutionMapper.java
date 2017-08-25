@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.RequireResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponseResponse;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
@@ -43,8 +45,9 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
 
     private SolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
         try {
-            JSONObject responseObject = new JSONObject(response.body().getStrResponse());
-            SolutionResponseResponse solutionResponseResponse = gson.fromJson(responseObject.getJSONObject("data").toString(), SolutionResponseResponse.class);
+//            JSONObject responseObject = new JSONObject(response.body().getStrResponse());
+//            SolutionResponseResponse solutionResponseResponse = gson.fromJson(responseObject.getJSONObject("data").toString(), SolutionResponseResponse.class);
+            SolutionResponseResponse solutionResponseResponse = response.body().convertDataObj(SolutionResponseResponse.class);
             SolutionResponseDomain model = new SolutionResponseDomain(
                     solutionResponseResponse.getSolution().size() != 0 ? mappingSolutionDomain(solutionResponseResponse.getSolution()) : new ArrayList<SolutionDomain>(),
                     mappingRequireDomain(solutionResponseResponse.getRequire()));
@@ -77,7 +80,9 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
     private List<SolutionDomain> mappingSolutionDomain(List<SolutionResponse> response) {
         List<SolutionDomain> domainList = new ArrayList<>();
         for (SolutionResponse solutionResponse : response) {
-            SolutionDomain solutionDomain = new SolutionDomain(solutionResponse.getId(), solutionResponse.getName(), solutionResponse.getAmount());
+            SolutionDomain solutionDomain = new SolutionDomain(solutionResponse.getId(),
+                    solutionResponse.getName(),
+                    solutionResponse.getAmount() != null ? mappingAmountDomain(solutionResponse.getAmount()) : null);
             domainList.add(solutionDomain);
         }
         return domainList;
@@ -85,6 +90,11 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
 
     private RequireDomain mappingRequireDomain(RequireResponse response) {
         return new RequireDomain(response.isAttachment());
+    }
+
+    private AmountDomain mappingAmountDomain(AmountResponse response) {
+        return new AmountDomain(response.getIdr(),
+                response.getInteger());
     }
 
 }

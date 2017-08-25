@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -190,7 +191,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     public void saveData(ArrayList<ProblemResult> problemResults) {
         Intent output = new Intent();
         output.putParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA, problemResults);
-        getActivity().setResult(getActivity().RESULT_OK, output);
+        getActivity().setResult(Activity.RESULT_OK, output);
         getActivity().finish();
     }
 
@@ -198,7 +199,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
-            if (resultCode == getActivity().RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 presenter.processResultData((ProblemResult) data.getParcelableExtra(RESULT_DATA), data.getIntExtra(RESULT_STEP_CODE, 0));
             }
         }

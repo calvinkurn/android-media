@@ -49,5 +49,7 @@ public interface CreateResolutionCenter {
         void loadProductProblem(String orderId);
 
         void addResultFromStep1(ArrayList<ProblemResult> problemResultList);
+
+        void addResultFromStep2(ResultViewModel resultViewModel);
     }
 }

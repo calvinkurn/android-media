@@ -113,6 +113,12 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     }
 
     @Override
+    public void addResultFromStep2(ResultViewModel resultViewModel) {
+        this.resultViewModel = resultViewModel;
+        mainView.updateView(resultViewModel);
+    }
+
+    @Override
     public void createResoClicked() {
         mainView.showCreateResoResponse(true, "Dummy Success");
     }

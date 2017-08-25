@@ -4,6 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
 /**
  * Created by yoasfs on 24/08/17.
@@ -14,6 +15,8 @@ public interface SolutionListFragmentListener {
     interface View extends CustomerView {
         void populateDataToView(SolutionResponseViewModel solutionResponseViewModel);
 
+        void submitData(ResultViewModel resultViewModel);
+
         void showSuccessToast();
 
         void showErrorToast(String error);
@@ -21,5 +24,7 @@ public interface SolutionListFragmentListener {
 
     interface Presenter extends CustomerPresenter<View> {
         void initResultViewModel(ResultViewModel resultViewModel);
+
+        void solutionClicked(SolutionViewModel solutionViewModel);
     }
 }

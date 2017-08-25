@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.createreso.data.pojo.solution;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 
 /**
  * Created by yoasfs on 14/08/17.
@@ -16,7 +17,7 @@ public class SolutionResponse {
     private String name;
     @SerializedName("amount")
     @Expose
-    private int amount;
+    private AmountResponse amount;
 
     public int getId() {
         return id;
@@ -34,11 +35,11 @@ public class SolutionResponse {
         this.name = name;
     }
 
-    public int getAmount() {
+    public AmountResponse getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(AmountResponse amount) {
         this.amount = amount;
     }
 
@@ -47,7 +48,7 @@ public class SolutionResponse {
         return "SolutionResponse{" +
                 "id='" + id + '\'' +
                 "name='" + name + '\'' +
-                "amount='" + amount + '\'' +
+                "amount='" + amount.toString() + '\'' +
                 '}';
     }
 }

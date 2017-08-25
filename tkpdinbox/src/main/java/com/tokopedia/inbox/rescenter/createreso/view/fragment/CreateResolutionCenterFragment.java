@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -238,8 +239,12 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_STEP1) {
-            if (resultCode == getActivity().RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 presenter.addResultFromStep1(data.<ProblemResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
+            }
+        } else if (requestCode == REQUEST_STEP2) {
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.addResultFromStep2((ResultViewModel) data.getParcelableExtra(RESULT_VIEW_MODEL_DATA));
             }
         }
     }

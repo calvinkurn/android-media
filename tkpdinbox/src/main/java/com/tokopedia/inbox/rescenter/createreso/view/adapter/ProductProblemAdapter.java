@@ -28,7 +28,6 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     public static final int FREE_RETURN = 3;
 
     private Context context;
-    private List<ProductProblemViewModel> productProblemList = new ArrayList<>();
     private List<ProblemResult> selectedProblemResultList = new ArrayList<>();
     private List<Object> itemList = new ArrayList<>();
     private ProductProblemItemListener listener;
@@ -41,7 +40,6 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     }
 
     public void updateAdapter(List<ProductProblemViewModel> productProblemList) {
-        this.productProblemList = productProblemList;
         itemList = new ArrayList<>();
         int type = 0;
         for (ProductProblemViewModel productProblem : productProblemList) {
@@ -91,20 +89,14 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                 holder.tvProductName.setText(productProblem.getProblem().getName());
             } else {
                 if (productProblem.getOrder() != null) {
-                    holder.tvProductName.setVisibility(View.VISIBLE);
                     if (productProblem.getOrder().getDetail().getReturnable() == FREE_RETURN) {
                         holder.llFreeReturn.setVisibility(View.VISIBLE);
-                        holder.tvProductName.setVisibility(View.GONE);
                     }
                     if (productProblem.getOrder().getProduct() != null) {
                         if (productProblem.getOrder().getProduct().getThumb() != null) {
                             Glide.with(context).load(productProblem.getOrder().getProduct().getThumb()).into(holder.ivProduct);
                         }
-                        if (productProblem.getOrder().getDetail().getReturnable() == FREE_RETURN) {
-                            holder.tvFreeReturn.setText(productProblem.getOrder().getProduct().getName());
-                        } else {
-                            holder.tvProductName.setText(productProblem.getOrder().getProduct().getName());
-                        }
+                        holder.tvProductName.setText(productProblem.getOrder().getProduct().getName());
                     }
                 }
             }

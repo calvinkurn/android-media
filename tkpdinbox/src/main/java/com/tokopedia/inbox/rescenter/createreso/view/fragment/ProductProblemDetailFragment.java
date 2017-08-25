@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -316,7 +317,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         Intent output = new Intent();
         output.putExtra(RESULT_DATA, problemResult);
         output.putExtra(RESULT_STEP_CODE, resultStepCode);
-        getActivity().setResult(getActivity().RESULT_OK, output);
+        getActivity().setResult(Activity.RESULT_OK, output);
         getActivity().finish();
     }
 }

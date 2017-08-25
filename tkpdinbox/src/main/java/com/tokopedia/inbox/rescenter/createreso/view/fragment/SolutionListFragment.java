@@ -1,6 +1,9 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +13,14 @@ import android.widget.Toast;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapterListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
 import javax.inject.Inject;
 
@@ -22,13 +28,14 @@ import javax.inject.Inject;
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionListFragment extends BaseDaggerFragment implements SolutionListFragmentListener.View {
+public class SolutionListFragment extends BaseDaggerFragment implements SolutionListFragmentListener.View, SolutionListAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
 
     ResultViewModel resultViewModel;
 
     RecyclerView rvSolution;
+    SolutionListAdapter adapter;
 
     @Inject
     SolutionListFragmentPresenter presenter;
@@ -96,6 +103,7 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     @Override
     protected void initView(View view) {
         rvSolution = (RecyclerView) view.findViewById(R.id.rv_solution);
+        rvSolution.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         presenter.initResultViewModel(resultViewModel);
     }
@@ -106,12 +114,27 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     }
 
     @Override
-    public void populateDataToView(SolutionResponseViewModel solutionResponseViewModel) {
+    public void onItemClicked(SolutionViewModel solutionViewModel) {
+        presenter.solutionClicked(solutionViewModel);
+    }
 
+    @Override
+    public void populateDataToView(SolutionResponseViewModel solutionResponseViewModel) {
+        adapter = new SolutionListAdapter(getActivity(), solutionResponseViewModel.getSolutionViewModelList(), this);
+        rvSolution.setAdapter(adapter);
+    }
+
+    @Override
+    public void submitData(ResultViewModel resultViewModel) {
+        Intent output = new Intent();
+        output.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        getActivity().setResult(Activity.RESULT_OK, output);
+        getActivity().finish();
     }
 
     @Override
     public void showSuccessToast() {
+
     }
 
     @Override
