@@ -48,7 +48,7 @@ public class EmptySearchResultView extends BaseCustomView {
             String titleTemplate
                     = titleView.getContext().getResources().getString(R.string.empty_search_result_title_template);
 
-            titleView.setText(titleTemplate.replace("$1", searchCategory).toLowerCase());
+            titleView.setText(titleTemplate.replace("$1", searchCategory.toLowerCase()));
         }
     }
 
@@ -57,7 +57,7 @@ public class EmptySearchResultView extends BaseCustomView {
             String contentTemplate
                     = contentView.getContext().getResources().getString(R.string.empty_search_result_content_template);
 
-            contentView.setText(contentTemplate.replace("$1", searchQuery).toLowerCase());
+            contentView.setText(contentTemplate.replace("$1", searchQuery.toLowerCase()));
         }
     }
 }
