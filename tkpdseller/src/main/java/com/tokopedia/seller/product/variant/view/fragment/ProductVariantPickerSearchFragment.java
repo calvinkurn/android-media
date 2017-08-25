@@ -49,6 +49,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     private VariantUnitSubmit variantUnitSubmit;
 
     private long currentVariantUnitId;
+    private String unitName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         ProductVariantByCatModel productVariantByCatModel =
                 getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
+            unitName = productVariantByCatModel.getName();
             productVariantUnitList = productVariantByCatModel.getUnitList();
             productVariantValueList = productVariantUnitList.get(0).getProductVariantValueList();
             currentVariantUnitId = productVariantUnitList.get(0).getUnitId();
@@ -94,6 +96,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SpinnerTextView unitSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_variant_unit);
+        unitSpinnerTextView.setHint(getString(R.string.product_variant_standard_unit_x, unitName) );
         unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
             @Override
             public void onItemChanged(int position, String entry, String value) {

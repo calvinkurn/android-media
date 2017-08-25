@@ -6,6 +6,7 @@ import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.VariantData;
 
 import java.util.ArrayList;
@@ -100,9 +101,9 @@ public class UploadProductInputViewModel {
         this.variantData = variantData;
         if (variantData == null || variantData.getVariantUnitSubmitList()==null ||
                 variantData.getVariantUnitSubmitList().size() == 0) {
-            this.switchVariant = -1;
+            this.switchVariant = ProductVariantConstant.SWITCH_VARIANT_NOT_EXIST;
         } else {
-            this.switchVariant = 1;
+            this.switchVariant = ProductVariantConstant.SWITCH_VARIANT_EXIST;
         }
     }
 
