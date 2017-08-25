@@ -135,7 +135,7 @@ public class FeedPlusPresenter
                 if (viewListener.hasFeed())
                     viewListener.updateFavorite(adapterPosition);
                 else
-                    viewListener.updateFavoriteFromEmpty();
+                    viewListener.updateFavoriteFromEmpty(promotedShopViewModel.getShop().getId());
             }
         });
     }

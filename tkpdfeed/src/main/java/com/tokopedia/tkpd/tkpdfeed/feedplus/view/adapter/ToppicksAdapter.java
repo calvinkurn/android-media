@@ -47,7 +47,9 @@ public class ToppicksAdapter extends RecyclerView.Adapter<ToppicksAdapter.ViewHo
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    toppicksListener.onToppicksClicked(list.get(getAdapterPosition()).getUrl());
+                    toppicksListener.onToppicksClicked(
+                            list.get(getAdapterPosition()).getName(),
+                            list.get(getAdapterPosition()).getUrl());
                 }
             });
         }

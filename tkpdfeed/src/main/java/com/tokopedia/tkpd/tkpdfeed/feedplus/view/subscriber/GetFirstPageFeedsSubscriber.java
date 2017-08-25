@@ -257,6 +257,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private ToppicksItemViewModel convertToToppicksProduct(TopPicksDomain topPicksDomain) {
         return new ToppicksItemViewModel(
+                topPicksDomain.getName(),
                 topPicksDomain.getImageUrl(),
                 topPicksDomain.getUrl());
     }

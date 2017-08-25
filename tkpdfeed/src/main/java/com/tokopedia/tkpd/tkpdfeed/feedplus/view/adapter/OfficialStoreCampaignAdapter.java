@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
 import android.graphics.Paint;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
@@ -59,8 +60,9 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             labels = (RecyclerView) itemLayoutView.findViewById(R.id.labels);
             freeReturn = (ImageView) itemLayoutView.findViewById(R.id.free_return);
 
-            labels.setLayoutManager(new StaggeredGridLayoutManager(3,
-                    StaggeredGridLayoutManager.HORIZONTAL));
+            LinearLayoutManager layoutManager = new LinearLayoutManager(itemLayoutView.getContext
+                    (), LinearLayoutManager.HORIZONTAL, false);
+            labels.setLayoutManager(layoutManager);
             adapter = new LabelsAdapter();
             labels.setAdapter(adapter);
 

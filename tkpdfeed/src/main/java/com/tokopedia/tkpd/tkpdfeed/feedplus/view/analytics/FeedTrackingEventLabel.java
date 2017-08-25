@@ -41,6 +41,7 @@ public class FeedTrackingEventLabel {
         public static final String OFFICIAL_STORE_CAMPAIGN_PDP = "Official Store Campaign - PDP";
         public static final String OFFICIAL_STORE_CAMPAIGN_SHOP = "Official Store Campaign - Shop";
         public static final String TOPPICKS_SEE_ALL = "Toppicks - Lihat Semua";
+        public static final String TOPPICKS = "Toppicks : ";
     }
 
     public class Share {

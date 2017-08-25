@@ -379,7 +379,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         if (getActivity().getApplication() instanceof PdpRouter) {
             ((PdpRouter) getActivity().getApplication()).goToProductDetailForResult(this,
                     productId, adapterPosition, REQUEST_OPEN_PDP);
-            UnifyTracking.eventFeedView(FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
+            UnifyTracking.eventFeedViewProduct(productId, FeedTrackingEventLabel.View
+                    .PRODUCTLIST_PDP);
         }
     }
 

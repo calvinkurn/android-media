@@ -388,7 +388,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToShopDetail(Integer shopId, String url) {
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), url);
+        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
         intent.putExtras(bundle);
         startActivity(intent);
         UnifyTracking.eventFeedViewShop(String.valueOf(shopId), FeedTrackingEventLabel.View.FEED_SHOP);
@@ -732,9 +732,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void updateFavoriteFromEmpty() {
+    public void updateFavoriteFromEmpty(String shopId) {
         onRefresh();
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.
+        UnifyTracking.eventFeedClickShop(shopId, FeedTrackingEventLabel.Click.
                 TOP_ADS_FAVORITE);
 
     }
@@ -792,7 +792,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetailFromCampaign(String shopUrl) {
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
+        UnifyTracking.eventFeedClickShop(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), shopUrl);
     }
 
@@ -804,7 +804,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onToppicksClicked(String url) {
+    public void onToppicksClicked(String name, String url) {
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
                 DeepLinkChecker.openBrowse(url, getActivity());
@@ -821,14 +821,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             , url);
                 }
         }
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
-
-
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS + name);
     }
 
     @Override
     public void onSeeAllToppicks() {
         startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
 
 }

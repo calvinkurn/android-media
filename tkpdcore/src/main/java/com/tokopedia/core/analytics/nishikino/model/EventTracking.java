@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.app.MainApplication;
@@ -24,7 +25,6 @@ public class EventTracking {
         this.eventTracking.put("eventCategory", category);
         this.eventTracking.put("eventAction", action);
         this.eventTracking.put("eventLabel", label);
-        this.eventTracking.put("userId", SessionHandler.getLoginID(MainApplication.getAppContext()));
     }
 
     public void setEvent(String event) {
@@ -48,8 +48,15 @@ public class EventTracking {
         return this.eventTracking;
     }
 
+    public EventTracking setUserId() {
+        this.eventTracking.put("userId", TextUtils.isEmpty(SessionHandler.getLoginID(MainApplication
+                .getAppContext())) ? "0" : SessionHandler.getLoginID(MainApplication
+                .getAppContext()));
+        return this;
+    }
+
     public EventTracking setCustomEvent(String key, String value) {
-        eventTracking.put(key, value);
+        this.eventTracking.put(key, value);
         return this;
     }
 }

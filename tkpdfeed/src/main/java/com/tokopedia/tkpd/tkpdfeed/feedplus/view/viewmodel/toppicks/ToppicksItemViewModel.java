@@ -6,10 +6,12 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks;
 
 public class ToppicksItemViewModel {
 
+    private final String name;
     private String image;
     private String url;
 
-    public ToppicksItemViewModel(String image, String url) {
+    public ToppicksItemViewModel(String name, String image, String url) {
+        this.name = name;
         this.image = image;
         this.url = url;
     }
@@ -20,5 +22,9 @@ public class ToppicksItemViewModel {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getName() {
+        return name;
     }
 }

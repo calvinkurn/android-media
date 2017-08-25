@@ -542,8 +542,12 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW,
-                label
-        ).getEvent());
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
     }
 
     public static void eventFeedViewShop(String shopId, String label) {
@@ -552,6 +556,9 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW,
                 label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, shopId)
                 .getEvent());
     }
@@ -562,7 +569,10 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW,
                 label)
+                .setUserId()
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
     }
 
@@ -573,17 +583,11 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 action,
                 label)
+                .setUserId()
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
-    }
-
-    public static void eventFeedView(String action, String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.FEED,
-                AppEventTracking.Category.FEED,
-                action,
-                label
-        ).getEvent());
     }
 
     public static void eventFeedViewAll() {
@@ -591,8 +595,9 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW_RECENT,
-                AppEventTracking.EventLabel.VIEW_ALL_RECENT
-        ).getEvent());
+                AppEventTracking.EventLabel.VIEW_ALL_RECENT)
+                .setUserId()
+                .getEvent());
     }
 
     public static void eventFeedClick(String action, String label) {
@@ -600,8 +605,9 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 action,
-                label
-        ).getEvent());
+                label)
+                .setUserId()
+                .getEvent());
     }
 
     public static void eventFeedClick(String label) {
@@ -609,8 +615,9 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
+                label)
+                .setUserId()
+                .getEvent());
     }
 
 
@@ -620,7 +627,10 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.CLICK,
                 label)
+                .setUserId()
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
     }
 
@@ -630,7 +640,10 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.CLICK,
                 label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, promoId)
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
     }
 
@@ -640,7 +653,10 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 action,
                 label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, promoId)
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
     }
 
@@ -650,6 +666,9 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.CLICK,
                 label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, shopId)
                 .getEvent());
     }

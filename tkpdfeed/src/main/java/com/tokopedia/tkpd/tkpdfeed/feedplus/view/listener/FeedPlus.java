@@ -24,7 +24,7 @@ public interface FeedPlus{
         void setFirstCursor(String firstCursor);
 
         interface Toppicks {
-            void onToppicksClicked(String url);
+            void onToppicksClicked(String name, String url);
 
             void onSeeAllToppicks();
         }
@@ -116,7 +116,7 @@ public interface FeedPlus{
 
         boolean hasFeed();
 
-        void updateFavoriteFromEmpty();
+        void updateFavoriteFromEmpty(String shopId);
 
         void showTopAds(boolean isTopAdsShown);
 
