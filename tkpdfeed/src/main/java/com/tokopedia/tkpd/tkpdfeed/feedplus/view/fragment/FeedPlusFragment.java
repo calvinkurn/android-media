@@ -792,7 +792,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetailFromCampaign(String shopUrl) {
-        UnifyTracking.eventFeedClickShop(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), shopUrl);
     }
 
@@ -805,6 +805,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onToppicksClicked(String name, String url) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS + name);
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
                 DeepLinkChecker.openBrowse(url, getActivity());
@@ -821,7 +822,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             , url);
                 }
         }
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS + name);
     }
 
     @Override

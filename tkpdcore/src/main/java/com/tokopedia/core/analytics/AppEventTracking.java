@@ -636,6 +636,7 @@ public interface AppEventTracking {
     }
 
     interface CustomDimension {
+        String USER_ID = "userId";
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";

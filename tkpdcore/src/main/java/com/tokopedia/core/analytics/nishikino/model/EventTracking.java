@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics.nishikino.model;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -49,8 +50,9 @@ public class EventTracking {
     }
 
     public EventTracking setUserId() {
-        this.eventTracking.put("userId", TextUtils.isEmpty(SessionHandler.getLoginID(MainApplication
-                .getAppContext())) ? "0" : SessionHandler.getLoginID(MainApplication
+        this.eventTracking.put(AppEventTracking.CustomDimension.USER_ID, TextUtils.isEmpty
+                (SessionHandler.getLoginID(MainApplication
+                        .getAppContext())) ? "0" : SessionHandler.getLoginID(MainApplication
                 .getAppContext()));
         return this;
     }
