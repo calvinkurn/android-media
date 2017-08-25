@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdynamicfilter.adapter.viewholder;
 
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -17,13 +18,13 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
     TextView title;
-    Switch toggle;
+    SwitchCompat toggle;
     private final DynamicFilterView dynamicFilterView;
 
     public DynamicFilterItemToggleViewHolder(View itemView, DynamicFilterView dynamicFilterView) {
         super(itemView);
         title = (TextView) itemView.findViewById(R.id.title);
-        toggle = (Switch) itemView.findViewById(R.id.toggle);
+        toggle = (SwitchCompat) itemView.findViewById(R.id.toggle);
         this.dynamicFilterView = dynamicFilterView;
     }
 

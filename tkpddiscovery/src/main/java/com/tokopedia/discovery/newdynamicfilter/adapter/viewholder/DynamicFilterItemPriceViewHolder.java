@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdynamicfilter.adapter.viewholder;
 
+import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -19,7 +20,7 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
     private TextView wholesaleTitle;
-    private Switch wholesaleToggle;
+    private SwitchCompat wholesaleToggle;
     private PriceRangeInputView priceRangeInputView;
     private final DynamicFilterView dynamicFilterView;
 
@@ -27,7 +28,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         super(itemView);
         this.dynamicFilterView = dynamicFilterView;
         wholesaleTitle = (TextView) itemView.findViewById(R.id.wholesale_title);
-        wholesaleToggle = (Switch) itemView.findViewById(R.id.wholesale_toggle);
+        wholesaleToggle = (SwitchCompat) itemView.findViewById(R.id.wholesale_toggle);
         priceRangeInputView = (PriceRangeInputView) itemView.findViewById(R.id.price_range_input_view);
         priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
             @Override
