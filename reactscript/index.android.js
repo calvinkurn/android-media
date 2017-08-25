@@ -8,11 +8,13 @@ import {
   Text,
   AppState,
   AsyncStorage,
+  ActivityIndicator,
   View
 } from 'react-native';
 import { NavigationModule, NetworkModule } from 'NativeModules';
 import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
+import Pos from './src/pages/pos/setup'
 
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
@@ -32,7 +34,9 @@ class Home extends Component {
     if (this.props.Screen == 'HotList'){
       return <HotList_ />
     } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore screenProps={{ User_ID: this.props.User_ID }}  /> 
+      return <OfficialStore screenProps={{ User_ID: this.props.User_ID }}  />
+    } else if(this.props.Screen == 'pos') {
+      return <Pos screenProps={ this.props } />
     } else {
       return(
         <View style={{justifyContent:'center', alignItems:'center', flex:1}}>

@@ -24,24 +24,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".view.activity.LoginActivity"
+        <activity
+            android:name=".view.activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.OutletActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.ProductDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.InstallmentSimulationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.PaymentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.CardDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.ProductListActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".view.activity.OutletActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".view.activity.ProductDetailActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".view.activity.InstallmentSimulationActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".view.activity.PaymentActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".view.activity.CardDetailActivity"
-            android:screenOrientation="portrait" />
+        <service
+            android:name=".view.service.FetcherService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

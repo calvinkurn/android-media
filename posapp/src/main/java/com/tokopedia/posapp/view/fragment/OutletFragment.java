@@ -16,13 +16,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.ReactNativeActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.Outlet;
 import com.tokopedia.posapp.view.Shop;
 import com.tokopedia.posapp.view.activity.ProductDetailActivity;
+import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.adapter.OutletAdapter;
 import com.tokopedia.posapp.di.component.DaggerOutletComponent;
 import com.tokopedia.posapp.view.presenter.OutletPresenter;
@@ -103,7 +107,9 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // TODO: 8/18/17 navigate to product list screen
+//                        getActivity().startActivity(ReactNativeActivity.createReactNativeActivity(getActivity(),
+//                                ReactConst.Screen.POS_O2O, SessionHandler.getLoginID(getActivity())));
+                        getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
                     }
                 })
                 .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
@@ -176,6 +182,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
             }
         });
 
+        // TODO: 8/24/17 temporary
         buttonPdp = parentView.findViewById(R.id.button_pdp);
         buttonPdp.setOnClickListener(new View.OnClickListener() {
             @Override

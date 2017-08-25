@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply from: "../node_modules/react-native/react.gradle"
+apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
 
 
 def allowDistribution() {
@@ -21,6 +23,12 @@ android {
         versionName "1.0"
         multiDexEnabled = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
+        }
 
     }
     buildTypes {

@@ -9,8 +9,10 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 
@@ -72,7 +74,17 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void actionAppLink(Activity activity, String linkUrl) {
+    public void actionAppLink(Context context, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionApplink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
 
     }
 
@@ -97,6 +109,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void goToProfileCompletion(Context context) {
+
+    }
+
+    @Override
     public void goToCreateMerchantRedirect(Context context) {
 
     }
@@ -114,5 +131,10 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent getRegisterIntent(Context context) {
         return null;
+    }
+
+    @Override
+    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
+
     }
 }

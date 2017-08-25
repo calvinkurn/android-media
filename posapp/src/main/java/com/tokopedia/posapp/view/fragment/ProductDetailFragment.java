@@ -363,7 +363,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductShopFaveClicked(String shopId) {
+    public void onProductShopFaveClicked(String shopId, Integer productId) {
 
     }
 
@@ -465,5 +465,20 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     public void showProductCampaign(ProductCampaign productCampaign) {
         headerInfoView.renderProductCampaign(productCampaign);
+    }
+
+    @Override
+    public void actionSuccessAddToWishlist(Integer productId) {
+
+    }
+
+    @Override
+    public void actionSuccessRemoveFromWishlist(Integer productId) {
+
+    }
+
+    @Override
+    public void actionSuccessAddFavoriteShop(String shopId) {
+
     }
 }
