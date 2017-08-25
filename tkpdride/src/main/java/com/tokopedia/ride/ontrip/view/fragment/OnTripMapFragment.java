@@ -484,8 +484,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
 
+            //using state loss, because sometimes this dialog comes on top of location enablegit
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.add(dialogFragment, "loading");
+            transaction.add(dialogFragment, INTERRUPT_DIALOG_TAG);
             transaction.commitAllowingStateLoss();
 
             isOpenInterruptWebviewDialog = true;
