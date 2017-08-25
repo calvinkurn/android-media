@@ -381,7 +381,6 @@ const brands = (state = {
             return {
                 ...state,
                 items: state.items.map(b => {
-                    console.log(action.payload, typeof(action.payload), b.id, typeof(b.id))
                     if (action.payload === b.id) {
                         return Object.assign({}, b, {
                             isFav: true

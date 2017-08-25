@@ -260,7 +260,7 @@ getBrands = (limit, offset, User_ID, status) => {
                                 }
                             }),
                             total_brands,
-                            status: !status ? null : status
+                            // status: !status ? null : status
                         }
                     })
                     .catch(err => { })
@@ -278,7 +278,7 @@ getBrands = (limit, offset, User_ID, status) => {
                             }
                         }),
                         total_brands,
-                        status: !status ? null : status   
+                        // status: !status ? null : status   
                     }
                 }
 
