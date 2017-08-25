@@ -17,11 +17,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -98,6 +100,14 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     View holderFormSender;
     @BindView(R2.id.order_status_layout)
     LinearLayout holderOrderStatus;
+    @BindView(R2.id.instant_courier_driver_layout)
+    LinearLayout instantCourierDriverLayout;
+    @BindView(R2.id.driver_photo)
+    ImageView driverPhoto;
+    @BindView(R2.id.driver_name)
+    TextView driverName;
+    @BindView(R2.id.driver_phone_and_license)
+    TextView driverPhoneAndLicense;
 
     private OrderData orderData;
     private TkpdProgressDialog progressDialog;
@@ -203,6 +213,16 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));
+
+        if(orderData.getDriverInfo() != null
+                && !orderData.getDriverInfo().getDriverName().isEmpty()) {
+            instantCourierDriverLayout.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(driverPhoto, orderData.getDriverInfo().getDriverPhoto());
+            driverName.setText(orderData.getDriverInfo().getDriverName());
+            driverPhoneAndLicense.setText(orderData.getDriverInfo().getDriverPhone()
+                    + " | "
+                    + orderData.getDriverInfo().getLicenseNumber());
+        } else instantCourierDriverLayout.setVisibility(View.GONE);
     }
 
     private void renderActionButton() {
