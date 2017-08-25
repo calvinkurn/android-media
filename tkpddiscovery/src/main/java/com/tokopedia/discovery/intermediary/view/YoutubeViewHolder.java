@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.view.adapter.YoutubeIntermediaryActivity;
 
@@ -25,10 +26,12 @@ public class YoutubeViewHolder extends RelativeLayout {
     private ProgressBar loadingBar;
     private String videoUrl;
     private YouTubeThumbnailLoader youTubeThumbnailLoader;
+    private final String departmentId;
 
-    public YoutubeViewHolder(Context context, String videoUrl) {
+    public YoutubeViewHolder(Context context, String videoUrl, String departmentId) {
         super(context);
         this.videoUrl = videoUrl;
+        this.departmentId = departmentId;
         initView(context, videoUrl);
     }
 
@@ -95,6 +98,8 @@ public class YoutubeViewHolder extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO: ask video name
+                UnifyTracking.eventVideoIntermediary(departmentId,videoUrl);
                 Intent intent = new Intent(getContext(), YoutubeIntermediaryActivity.class);
                 intent.putExtra(YoutubeIntermediaryActivity.EXTRA_YOUTUBE_VIDEO_URL, videoUrl);
                 getContext().startActivity(intent);
