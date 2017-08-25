@@ -10,7 +10,9 @@
         android:id="@+id/item_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:maxWidth="@dimen/deletable_item_max_width"
+        android:maxHeight="@dimen/deletable_item_max_height"
+        android:padding="6dp"
         android:visibility="gone"
         />
 
@@ -18,8 +20,7 @@
         android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Same Day Service"
-        android:padding="8dp"/>
+        android:padding="6dp"/>
 
     <View
         android:id="@+id/delete_button"

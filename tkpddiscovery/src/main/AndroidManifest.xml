@@ -36,6 +36,12 @@
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".newdynamicfilter.DynamicFilterRatingActivity"
+            android:label="Rating"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".newdynamicfilter.DynamicFilterDetailActivity"
             android:label="Filter"
             android:screenOrientation="portrait"
