@@ -259,18 +259,8 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                 mainProgressDialog.dismiss();
                 refreshHandler.finishRefresh();
                 if(paymentListModel.getBcaOneClickUserModels() == null) {
-                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
-                            "Layanan Belum Tersedia",
-                            "Sebentar lagi Anda akan dapat kelola pengaturan pembayaran di sini",
-                            "OK",
-                            R.drawable.emptystate_cactus,
-                            new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    rootView.setVisibility(View.GONE);
-                                    finish();
-                                }
-                            });
+                    bcaOneClickRecyclerView.setVisibility(View.GONE);
+                    bcaOneClickRegisterLayout.setVisibility(View.GONE);
                 } else {
                     paymentModels = paymentListModel;
                     bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
