@@ -479,10 +479,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             if (previousDialog != null) {
                 fragmentTransaction.remove(previousDialog);
             }
+
             fragmentTransaction.addToBackStack(null);
             DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.add(dialogFragment, "loading");
+            transaction.commitAllowingStateLoss();
+
             isOpenInterruptWebviewDialog = true;
         }
     }
