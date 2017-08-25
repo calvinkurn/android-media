@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 
@@ -38,6 +39,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
 
     private View searchInputContainer;
     private EditText searchInputView;
+    private EmptySearchResultView searchResultEmptyView;
     private RecyclerView recyclerView;
     private DynamicFilterDetailAdapter adapter;
     private List<Option> optionList;
@@ -91,6 +93,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.filter_detail_recycler_view);
         searchInputView = (EditText) findViewById(R.id.filter_detail_search);
         searchInputContainer = findViewById(R.id.filter_detail_search_container);
+        searchResultEmptyView = (EmptySearchResultView) findViewById(R.id.filter_detail_empty_search_result_view);
         topBarTitle = (TextView) findViewById(R.id.top_bar_title);
         buttonClose = findViewById(R.id.top_bar_close_button);
         buttonClose.setOnClickListener(new View.OnClickListener() {
@@ -224,6 +227,17 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             List<Option> resultList = (List<Option>) results.values;
+
+            if (resultList.isEmpty()) {
+                searchResultEmptyView.setSearchCategory(pageTitle);
+                searchResultEmptyView.setSearchQuery(constraint.toString());
+                searchResultEmptyView.setVisibility(View.VISIBLE);
+                buttonApply.setVisibility(View.GONE);
+            } else {
+                searchResultEmptyView.setVisibility(View.GONE);
+                buttonApply.setVisibility(View.VISIBLE);
+            }
+
             adapter.setOptionList(resultList);
         }
     }

@@ -42,6 +42,14 @@
             android:layout_height="wrap_content"
             />
 
+        <com.tokopedia.design.search.EmptySearchResultView
+            android:id="@+id/filter_detail_empty_search_result_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/filter_detail_search_container"
+            android:visibility="gone"
+            />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"

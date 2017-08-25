@@ -56,6 +56,10 @@
     <style name="TextView.Subheading.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
+    <style name="TextView.Subheading.BlackSecondary.Bold">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
     <style name="TextView.Subheading.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>
