@@ -265,6 +265,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 mFilterMapAtribut.getFiltersMap()
                         .put(browseModel.getActiveTab(), filterMapValue);
                 browseModel.setFilterOptions(filterMapValue.getValue());
+                clearFilterAttributMap();
                 sendFilterGTM(filterMapValue.getValue());
                 break;
         }
@@ -808,6 +809,10 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     private void deleteFilterAndSortCache() {
         deleteFilterCache();
         browseModel.setOb("23");
+        clearFilterAttributMap();
+    }
+
+    private void clearFilterAttributMap() {
         if (mBrowseProductAtribut != null && mBrowseProductAtribut.getFilterAttributMap() != null) {
             mBrowseProductAtribut.getFilterAttributMap().clear();
         }
