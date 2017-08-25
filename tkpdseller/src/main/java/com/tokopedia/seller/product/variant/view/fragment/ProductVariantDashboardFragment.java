@@ -327,8 +327,11 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
      * @return selected name String for that variant, ex: "hijau, merah, biru"
      */
     private String getVariantTitle(int level) {
+        String title = "";
         VariantUnitSubmit variantUnitSubmit = getVariantUnitSubmit(level);
-        String title = ProductVariantUtils.getMultipleVariantOptionTitle(level, variantUnitSubmit, productVariantByCatModelList);
+        if (variantUnitSubmit != null) {
+            title = ProductVariantUtils.getMultipleVariantOptionTitle(level, variantUnitSubmit.getVariantSubmitOptionList(), productVariantByCatModelList);
+        }
         if (TextUtils.isEmpty(title)) {
             title = getString(R.string.product_label_choose);
         }
