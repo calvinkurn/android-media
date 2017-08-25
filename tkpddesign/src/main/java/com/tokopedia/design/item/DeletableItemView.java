@@ -58,12 +58,13 @@ public class DeletableItemView extends BaseCustomView {
     }
 
     public void setItemName(String itemName) {
-        if (textView != null) {
-            textView.setVisibility(VISIBLE);
-            textView.setText(itemName);
-        }
         if (imageView != null) {
             imageView.setVisibility(GONE);
+        }
+        if (textView != null) {
+            textView.setText(itemName);
+            textView.setVisibility(VISIBLE);
+            textView.requestLayout();
         }
     }
 
@@ -72,8 +73,9 @@ public class DeletableItemView extends BaseCustomView {
             textView.setVisibility(GONE);
         }
         if (imageView != null) {
-            imageView.setVisibility(VISIBLE);
             imageView.setImageResource(resId);
+            imageView.setVisibility(VISIBLE);
+            imageView.requestLayout();
         }
     }
 
