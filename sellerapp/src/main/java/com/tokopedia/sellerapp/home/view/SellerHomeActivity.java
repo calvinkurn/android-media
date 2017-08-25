@@ -375,7 +375,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 mojitoController
                 , gson);
         shopController.subscribe();
-
+        shopController.getTicker(getTicker());
 
         presenter = SellerHomeDependencyInjection.getPresenter(this);
         presenter.attachView(this);
@@ -427,7 +427,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
         shopController.getDeposit(userId, gcmId, getDeposit());
 
-        shopController.getTicker(getTicker());
     }
 
     protected MojitoController.ListenerGetTicker getTicker() {
