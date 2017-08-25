@@ -47,7 +47,7 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
 
     @Override
     public ProductVariantDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_product_variant_picker_search, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_product_variant_detail, parent, false);
         return new ProductVariantDetailViewHolder(view);
     }
 

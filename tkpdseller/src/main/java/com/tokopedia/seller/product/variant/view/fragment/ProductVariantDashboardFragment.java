@@ -146,9 +146,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 productVariantManageViewModel.getTemporaryId(),
                 productVariantManageViewModel.getTitle(),
                 ProductVariantUtils.isContainVariantStatusByOptionId(productVariantManageViewModel.getTemporaryId(), variantData.getVariantStatusList()),
-                new ArrayList<>(ProductVariantUtils.getProductVariantValueListForVariantDetail(
-                        productVariantManageViewModel.getTemporaryId(), variantData.getVariantUnitSubmitList(),
-                        variantData.getVariantStatusList(), productVariantByCatModel.getUnitList())),
+                new ArrayList<>(ProductVariantUtils.getProductVariantValueListForVariantDetail(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantData.getVariantUnitSubmitList(), productVariantByCatModel.getUnitList())),
                 new ArrayList<>(ProductVariantUtils.getSelectedOptionIdList(productVariantManageViewModel.getTemporaryId(), variantData.getVariantStatusList())));
     }
 

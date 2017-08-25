@@ -31,6 +31,38 @@ public class ProductVariantUtils {
     private static final String VARIANT_TITLE_SEPARATOR = ",";
     private static final String SPLIT_DELIMITER = ":"; // this depends on the api.
 
+    /**
+     * Get all variant option for variant detail view
+     *
+     * @param level
+     * @param variantUnitSubmitList
+     * @param productVariantUnitList
+     * @return
+     */
+    public static List<ProductVariantDetailViewModel> getProductVariantValueListForVariantDetail(
+            int level, List<VariantUnitSubmit> variantUnitSubmitList, List<ProductVariantUnit> productVariantUnitList) {
+        List<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();
+        List<VariantSubmitOption> variantSubmitOptionList = getAllVariantSubmitOptionListByLevel(level, variantUnitSubmitList);
+        for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
+            String title = "";
+            // If name already on custom text, add custom text on title list
+            if (!TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
+                title = variantSubmitOption.getCustomText();
+            } else {
+                // If not, search and mapping with variant value list from server
+                ProductVariantValue productVariantValueTemp = getProductVariantValueByVariantUnit(
+                        variantSubmitOption.getVariantUnitValueId(), productVariantUnitList);
+                if (productVariantValueTemp != null) {
+                    title = productVariantValueTemp.getValue();
+                }
+            }
+            ProductVariantDetailViewModel productVariantDetailViewModel = new ProductVariantDetailViewModel(variantSubmitOption.getTemporaryId(), title);
+            productVariantDetailViewModelList.add(productVariantDetailViewModel);
+        }
+        return productVariantDetailViewModelList;
+    }
+
+    
     public static String getMultipleVariantOptionTitle(int level, VariantUnitSubmit variantUnitSubmit,
                                                        List<ProductVariantByCatModel> productVariantByCatModelList) {
         String title = "";
@@ -369,29 +401,25 @@ public class ProductVariantUtils {
         return titleList;
     }
 
-    public static List<ProductVariantDetailViewModel> getProductVariantValueListForVariantDetail(
-            long optionId, List<VariantUnitSubmit> variantUnitSubmitList,
-            List<VariantStatus> variantStatusList, List<ProductVariantUnit> productVariantUnitList) {
-        List<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();
-        List<VariantSubmitOption> variantSubmitOptionList = getPairingVariantSubmitOptionListBy(
-                optionId, variantUnitSubmitList, variantStatusList);
-        for (VariantSubmitOption variantSubmitOption : variantSubmitOptionList) {
-            String title = "";
-            // If name already on custom text, add custom text on title list
-            if (!TextUtils.isEmpty(variantSubmitOption.getCustomText())) {
-                title = variantSubmitOption.getCustomText();
-            } else {
-                // If not, search and mapping with variant value list from server
-                ProductVariantValue productVariantValueTemp = getProductVariantValueByVariantUnit(
-                        variantSubmitOption.getVariantUnitValueId(), productVariantUnitList);
-                if (productVariantValueTemp != null) {
-                    title = productVariantValueTemp.getValue();
-                }
+    /**
+     * Get all variant submit option by level
+     * eg "variant": [
+     * {"v": 2,"vu": 0,"pos": 1,"pv": null,"opt":[{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]},
+     * {"v": 3,"vu": 3,"pos": 2,"pv": null,"opt": [{"pvo": 0,"vuv": 15,"t_id": 3,"cstm": ""},{"pvo": 0,"vuv": 16,"t_id": 4,"cstm": ""}]}
+     * level = 1, return [{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]
+     *
+     * @param level
+     * @param variantUnitSubmitList
+     * @return
+     */
+    public static List<VariantSubmitOption> getAllVariantSubmitOptionListByLevel(int level, List<VariantUnitSubmit> variantUnitSubmitList) {
+        List<VariantSubmitOption> variantSubmitOptionList = new ArrayList<>();
+        for (VariantUnitSubmit variantUnitSubmit : variantUnitSubmitList) {
+            if (variantUnitSubmit.getPosition() == level) {
+                variantSubmitOptionList.addAll(variantUnitSubmit.getVariantSubmitOptionList());
             }
-            ProductVariantDetailViewModel productVariantDetailViewModel = new ProductVariantDetailViewModel(variantSubmitOption.getTemporaryId(), title);
-            productVariantDetailViewModelList.add(productVariantDetailViewModel);
         }
-        return productVariantDetailViewModelList;
+        return variantSubmitOptionList;
     }
 
     /**
