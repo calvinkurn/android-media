@@ -252,7 +252,7 @@ public class ProductVariantUtils {
                     long pairingId = getParingId(optionIdSelected, productVariantCombinationSubmit.getOptionList());
                     // Check pairing id
                     if (pairingId >= 0) {
-                        ProductVariantOptionSubmit productVariantOptionSubmit = getVariantSubmitOptionById(pairingId, productVariantUnitSubmitList);
+                        ProductVariantOptionSubmit productVariantOptionSubmit = getVariantOptionById(pairingId, productVariantUnitSubmitList);
                         productVariantOptionSubmitList.add(productVariantOptionSubmit);
                     }
                 }
@@ -261,7 +261,7 @@ public class ProductVariantUtils {
         return productVariantOptionSubmitList;
     }
 
-    private static ProductVariantOptionSubmit getVariantSubmitOptionById(long optionId, List<ProductVariantUnitSubmit> productVariantUnitSubmitList) {
+    private static ProductVariantOptionSubmit getVariantOptionById(long optionId, List<ProductVariantUnitSubmit> productVariantUnitSubmitList) {
         for (ProductVariantUnitSubmit productVariantUnitSubmit : productVariantUnitSubmitList) {
             for (ProductVariantOptionSubmit productVariantOptionSubmit : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
                 if (productVariantOptionSubmit.getTemporaryId() == optionId) {
@@ -270,6 +270,66 @@ public class ProductVariantUtils {
             }
         }
         return null;
+    }
+
+    public static List<ProductVariantCombinationSubmit> getAddedVariantCombinationList(
+            List<ProductVariantOptionSubmit> oldVariantOptionSubmitList, List<ProductVariantOptionSubmit> newVariantOptionSubmitList,
+            List<ProductVariantCombinationSubmit> variantCombinationSubmitList,
+            List<ProductVariantOptionSubmit> otherLevelVariantOptionSubmitList) {
+        if (variantCombinationSubmitList == null) {
+            variantCombinationSubmitList = new ArrayList<>();
+        }
+        List<ProductVariantOptionSubmit> removedVariantOptionList = getDiffVariantOptionList(oldVariantOptionSubmitList, newVariantOptionSubmitList);
+        for (ProductVariantOptionSubmit productVariantOptionSubmit : removedVariantOptionList) {
+            variantCombinationSubmitList = getRemovedVariantCombinationListByOptionId(productVariantOptionSubmit.getTemporaryId(), variantCombinationSubmitList);
+        }
+        List<ProductVariantOptionSubmit> addedVariantOptionList = getDiffVariantOptionList(newVariantOptionSubmitList, oldVariantOptionSubmitList);
+        List<ProductVariantCombinationSubmit> addedProductVariantCombinationSubmitList;
+        if (otherLevelVariantOptionSubmitList == null || otherLevelVariantOptionSubmitList.size() <= 0) {
+            // Only 1 level, remove combination with 2 level
+            addedProductVariantCombinationSubmitList = getGeneratedVariantCombinationList(addedVariantOptionList);
+            variantCombinationSubmitList = getRemovedLevelVariantCombination(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantCombinationSubmitList);
+        } else {
+            addedProductVariantCombinationSubmitList = getGeneratedVariantCombinationList(addedVariantOptionList, otherLevelVariantOptionSubmitList);
+            variantCombinationSubmitList = getRemovedLevelVariantCombination(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantCombinationSubmitList);
+        }
+        if (addedProductVariantCombinationSubmitList != null) {
+            variantCombinationSubmitList.addAll(addedProductVariantCombinationSubmitList);
+        }
+        return variantCombinationSubmitList;
+    }
+
+    /**
+     * Get list of differentiate variant option list
+     *
+     * @param searchFromVariantOptionSubmitList
+     * @param compareToVariantOptionSubmitList1
+     * @return
+     */
+    private static List<ProductVariantOptionSubmit> getDiffVariantOptionList(
+            List<ProductVariantOptionSubmit> searchFromVariantOptionSubmitList, List<ProductVariantOptionSubmit> compareToVariantOptionSubmitList1) {
+        List<ProductVariantOptionSubmit> diffVariantOptionSubmitList = new ArrayList<>();
+        for (ProductVariantOptionSubmit productVariantOptionSubmit : searchFromVariantOptionSubmitList) {
+            if (getVariantOptionFromOptionId(productVariantOptionSubmit.getTemporaryId(), compareToVariantOptionSubmitList1) == null) {
+                diffVariantOptionSubmitList.add(productVariantOptionSubmit);
+            }
+        }
+        return diffVariantOptionSubmitList;
+    }
+
+
+    private static List<ProductVariantCombinationSubmit> getRemovedLevelVariantCombination(int level, List<ProductVariantCombinationSubmit> variantCombinationSubmitList) {
+        if (variantCombinationSubmitList == null) {
+            variantCombinationSubmitList = new ArrayList<>();
+        }
+        int variantCombinationSize = variantCombinationSubmitList.size();
+        for (int i = variantCombinationSize - 1; i >= 0; i--) {
+            ProductVariantCombinationSubmit productVariantCombinationSubmit = variantCombinationSubmitList.get(i);
+            if (productVariantCombinationSubmit.getOptionList().size() == level) {
+                variantCombinationSubmitList.remove(i);
+            }
+        }
+        return variantCombinationSubmitList;
     }
 
     /**

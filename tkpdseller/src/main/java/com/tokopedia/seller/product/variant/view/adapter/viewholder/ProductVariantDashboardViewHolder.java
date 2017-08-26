@@ -44,10 +44,12 @@ public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVar
         }
         titleTextView.setText(variantManageViewModel.getTitle());
         String content = variantManageViewModel.getContent();
-        if (TextUtils.isEmpty(content) && variantManageViewModel.isStockAvailable()) {
-            content = contentTextView.getContext().getString(R.string.product_variant_stock_available);
-        } else {
-            content = contentTextView.getContext().getString(R.string.product_variant_stock_empty);
+        if (TextUtils.isEmpty(content)) {
+            if (variantManageViewModel.isStockAvailable()) {
+                content = contentTextView.getContext().getString(R.string.product_variant_stock_available);
+            } else {
+                content = contentTextView.getContext().getString(R.string.product_variant_stock_empty);
+            }
         }
         contentTextView.setText(content);
     }

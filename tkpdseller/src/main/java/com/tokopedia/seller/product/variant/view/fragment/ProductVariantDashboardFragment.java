@@ -15,6 +15,7 @@ import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailActivity;
@@ -52,8 +53,10 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent activityIntent = getActivity().getIntent();
-        productVariantByCatModelList = activityIntent
-                .getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
+        productVariantByCatModelList = activityIntent.getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
+        productVariantDataSubmit = new ProductVariantDataSubmit();
+        productVariantDataSubmit.setProductVariantCombinationSubmitList(new ArrayList<ProductVariantCombinationSubmit>());
+        productVariantDataSubmit.setProductVariantUnitSubmitList(new ArrayList<ProductVariantUnitSubmit>());
         if (savedInstanceState == null) {
             if (activityIntent.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
                 productVariantDataSubmit = activityIntent.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
@@ -170,17 +173,18 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
 
     private void onActivityResultFromItemPicker(int requestCode, Intent data) {
         ProductVariantUnitSubmit productVariantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
+        int level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
         switch (requestCode) {
             case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
-                setVariantLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantUnitSubmit);
-                checkVariantValidation(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantUnitSubmit);
+                level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
                 break;
             case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
-                setVariantLevel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantUnitSubmit);
-                checkVariantValidation(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantUnitSubmit);
+                level = ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE;
                 break;
         }
-        updateVariantCombinationToDefault();
+        addVariantCombination(level, productVariantUnitSubmit);
+        setVariantLevel(level, productVariantUnitSubmit);
+        checkVariantValidation(level, productVariantUnitSubmit);
         updateVariantUnitView();
         updateVariantItemListView();
     }
@@ -229,12 +233,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     }
 
     private void setVariantLevel(int level, ProductVariantUnitSubmit productVariantUnitSubmit) {
-        if (productVariantDataSubmit == null) {
-            productVariantDataSubmit = new ProductVariantDataSubmit();
-        }
-        if (productVariantDataSubmit.getProductVariantUnitSubmitList() == null) {
-            productVariantDataSubmit.setProductVariantUnitSubmitList(new ArrayList<ProductVariantUnitSubmit>());
-        }
         int variantUnitSubmitSize = productVariantDataSubmit.getProductVariantUnitSubmitList().size();
         for (int i = 0; i < variantUnitSubmitSize; i++) {
             ProductVariantUnitSubmit productVariantUnitSubmitTemp = productVariantDataSubmit.getProductVariantUnitSubmitList().get(i);
@@ -265,6 +263,37 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 productVariantDataSubmit.getProductVariantUnitSubmitList().remove(i);
             }
         }
+    }
+
+    private void addVariantCombination(int level, ProductVariantUnitSubmit productVariantUnitSubmit) {
+        ProductVariantUnitSubmit otherVariantUnitSubmit = null;
+        List<ProductVariantOptionSubmit> otherVariantUnitSubmitList = new ArrayList<>();
+        ProductVariantUnitSubmit oldVariantUnitSubmit = null;
+        List<ProductVariantOptionSubmit> oldProductVariantOptionSubmitList = new ArrayList<>();
+        List<ProductVariantCombinationSubmit> variantCombinationSubmitList = new ArrayList<>();
+        switch (level) {
+            case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
+                otherVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
+                oldVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
+                break;
+            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
+                otherVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
+                oldVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
+                break;
+        }
+        if (otherVariantUnitSubmit != null) {
+            otherVariantUnitSubmitList = otherVariantUnitSubmit.getProductVariantOptionSubmitList();
+        }
+        if (oldVariantUnitSubmit != null) {
+            oldProductVariantOptionSubmitList = oldVariantUnitSubmit.getProductVariantOptionSubmitList();
+        }
+        if (productVariantDataSubmit != null) {
+            variantCombinationSubmitList = productVariantDataSubmit.getProductVariantCombinationSubmitList();
+        }
+        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = ProductVariantUtils.getAddedVariantCombinationList(
+                oldProductVariantOptionSubmitList, productVariantUnitSubmit.getProductVariantOptionSubmitList(),
+                variantCombinationSubmitList, otherVariantUnitSubmitList);
+        productVariantDataSubmit.setProductVariantCombinationSubmitList(productVariantCombinationSubmitList);
     }
 
     private void updateVariantCombinationToDefault() {
