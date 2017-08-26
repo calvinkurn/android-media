@@ -461,7 +461,7 @@ public class ProductVariantUtils {
     public static List<Long> getSelectedOptionIdList(long optionId, List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList) {
         List<Long> optionIdList = new ArrayList<>();
         for (ProductVariantCombinationSubmit productVariantCombinationSubmit : productVariantCombinationSubmitList) {
-            if (isVariantStatusContainOptionId(optionId, productVariantCombinationSubmit.getOptionList())) {
+            if (isVariantCombinationContainOptionId(optionId, productVariantCombinationSubmit.getOptionList())) {
                 optionIdList.add(getParingId(optionId, productVariantCombinationSubmit.getOptionList()));
             }
         }
@@ -495,7 +495,7 @@ public class ProductVariantUtils {
     public static List<ProductVariantCombinationSubmit> getSelectedVariantStatusList(long optionId, List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList) {
         List<ProductVariantCombinationSubmit> productVariantCombinationSubmitListTemp = new ArrayList<>();
         for (ProductVariantCombinationSubmit productVariantCombinationSubmit : productVariantCombinationSubmitList) {
-            if (isVariantStatusContainOptionId(optionId, productVariantCombinationSubmit.getOptionList())) {
+            if (isVariantCombinationContainOptionId(optionId, productVariantCombinationSubmit.getOptionList())) {
                 productVariantCombinationSubmitListTemp.add(productVariantCombinationSubmit);
             }
         }
@@ -513,7 +513,7 @@ public class ProductVariantUtils {
      * @param optionList
      * @return
      */
-    public static boolean isVariantStatusContainOptionId(long optionId, List<Long> optionList) {
+    public static boolean isVariantCombinationContainOptionId(long optionId, List<Long> optionList) {
         long pairingOptionId = getParingId(optionId, optionList);
         return pairingOptionId != NOT_AVAILABLE_OPTION_ID;
     }
@@ -543,5 +543,98 @@ public class ProductVariantUtils {
             }
         }
         return NOT_AVAILABLE_OPTION_ID;
+    }
+
+    /**
+     * Remove variant data by option id
+     *
+     * @param optionId
+     * @param variantData
+     * @return
+     */
+    public static ProductVariantDataSubmit getRemovedVariantDataByOptionId(long optionId, ProductVariantDataSubmit variantData) {
+        variantData.setProductVariantUnitSubmitList(getRemovedVariantUnitListByOptionId(optionId, variantData.getProductVariantUnitSubmitList()));
+        variantData.setProductVariantCombinationSubmitList(getRemovedVariantCombinationListByOptionId(optionId, variantData.getProductVariantCombinationSubmitList()));
+        return variantData;
+    }
+
+    /**
+     * Remove variant option by option id and return removed variant list
+     * eg [{"v": 2,"vu": 0,"pos": 1,"pv": null,"opt":[{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]},
+     * {"v": 3,"vu": 3,"pos": 2,"pv": null,"opt": [{"pvo": 0,"vuv": 15,"t_id": 3,"cstm": ""},{"pvo": 0,"vuv": 16,"t_id": 4,"cstm": ""}]}
+     * option id(t_id) = 2,
+     * return
+     * [{"v": 2,"vu": 0,"pos": 1,"pv": null,"opt":[{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""}]},
+     * {"v": 3,"vu": 3,"pos": 2,"pv": null,"opt": [{"pvo": 0,"vuv": 15,"t_id": 3,"cstm": ""},{"pvo": 0,"vuv": 16,"t_id": 4,"cstm": ""}]}
+     *
+     * @param optionId
+     * @param variantUnitSubmitList
+     * @return
+     */
+    private static List<ProductVariantUnitSubmit> getRemovedVariantUnitListByOptionId(long optionId, List<ProductVariantUnitSubmit> variantUnitSubmitList) {
+        ProductVariantUnitSubmit variantUnitSubmit = getVariantUnitFromOptionId(optionId, variantUnitSubmitList);
+        ProductVariantOptionSubmit variantOptionSubmit = getVariantOptionFromOptionId(optionId, variantUnitSubmit.getProductVariantOptionSubmitList());
+        variantUnitSubmit.getProductVariantOptionSubmitList().remove(variantOptionSubmit);
+        return variantUnitSubmitList;
+    }
+
+    /**
+     * Remove combination option based on option id
+     * eg [{"st": 1,"opt": [3,1]},{"st": 1,"opt": [4,1]},{"st": 1,"opt": [3,2]},{"st": 1,"opt": [4,2]}
+     * optionId = 4, return [{"st": 1,"opt": [3,1]},{"st": 1,"opt": [3,2]}}
+     *
+     * @param optionId
+     * @param variantCombinationSubmitList
+     * @return
+     */
+    private static List<ProductVariantCombinationSubmit> getRemovedVariantCombinationListByOptionId(long optionId, List<ProductVariantCombinationSubmit> variantCombinationSubmitList) {
+        int variantCombinationSize = variantCombinationSubmitList.size();
+        for (int i = variantCombinationSize - 1; i >= 0; i--) {
+            ProductVariantCombinationSubmit variantCombination = variantCombinationSubmitList.get(i);
+            if (isVariantCombinationContainOptionId(optionId, variantCombination.getOptionList())) {
+                variantCombinationSubmitList.remove(i);
+            }
+        }
+        return variantCombinationSubmitList;
+    }
+
+    /**
+     * Get variant unit from variant unit list based on option id
+     * eg [{"v": 2,"vu": 0,"pos": 1,"pv": null,"opt":[{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]},
+     * {"v": 3,"vu": 3,"pos": 2,"pv": null,"opt": [{"pvo": 0,"vuv": 15,"t_id": 3,"cstm": ""},{"pvo": 0,"vuv": 16,"t_id": 4,"cstm": ""}]}
+     * option id(t_id) = 2,
+     * return
+     * {"v": 2,"vu": 0,"pos": 1,"pv": null,"opt":[{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]}
+     *
+     * @param optionId
+     * @param variantUnitSubmitList
+     * @return
+     */
+    private static ProductVariantUnitSubmit getVariantUnitFromOptionId(long optionId, List<ProductVariantUnitSubmit> variantUnitSubmitList) {
+        for (ProductVariantUnitSubmit productVariantUnitSubmit : variantUnitSubmitList) {
+            ProductVariantOptionSubmit productVariantOptionSubmit = getVariantOptionFromOptionId(optionId, productVariantUnitSubmit.getProductVariantOptionSubmitList());
+            if (productVariantOptionSubmit != null) {
+                return productVariantUnitSubmit;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get variant option from variant option list based on option id
+     * eg {"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]
+     * option id(t_id) = 2, return {"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}
+     *
+     * @param optionId
+     * @param variantOptionSubmitList
+     * @return
+     */
+    private static ProductVariantOptionSubmit getVariantOptionFromOptionId(long optionId, List<ProductVariantOptionSubmit> variantOptionSubmitList) {
+        for (ProductVariantOptionSubmit productVariantOptionSubmit : variantOptionSubmitList) {
+            if (productVariantOptionSubmit.getTemporaryId() == optionId) {
+                return productVariantOptionSubmit;
+            }
+        }
+        return null;
     }
 }

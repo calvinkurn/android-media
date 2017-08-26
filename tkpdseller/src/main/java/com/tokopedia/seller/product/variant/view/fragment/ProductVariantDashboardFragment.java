@@ -189,10 +189,11 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     @SuppressWarnings("unchecked")
     private void onActivityResultFromDetail(Intent data) {
         if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
-            long variantIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
-            if (variantIdToDelete != 0) {
-                // TODO delete variant status for variantIdToDelete
-                // remove from selected variantIdToDelete
+            long optionIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
+            if (optionIdToDelete != 0) {
+                productVariantDataSubmit = ProductVariantUtils.getRemovedVariantDataByOptionId(optionIdToDelete, productVariantDataSubmit);
+                updateVariantUnitView();
+                updateVariantItemListView();
             }
         } else if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_SUBMIT)) {
             long variantIdToUpdate = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
