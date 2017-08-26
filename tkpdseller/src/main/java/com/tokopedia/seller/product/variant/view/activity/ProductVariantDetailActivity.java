@@ -27,7 +27,7 @@ import java.util.List;
 public class ProductVariantDetailActivity extends BaseSimpleActivity implements
         ProductVariantDetailFragment.OnProductVariantDataManageFragmentListener {
 
-    public static final String EXTRA_VARIANT_ID = "var_id";
+    public static final String EXTRA_VARIANT_OPTION_ID = "var_id";
     public static final String EXTRA_VARIANT_NAME = "var_name";
     public static final String EXTRA_VARIANT_HAS_STOCK = "var_has_stock";
     public static final String EXTRA_VARIANT_VALUE_LIST = "var_lst";
@@ -59,7 +59,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
                                         ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList,
                                         ArrayList<Long> selectedVariantValueId){
         Intent intent = new Intent(context, ProductVariantDetailActivity.class);
-        intent.putExtra(EXTRA_VARIANT_ID, variantId);
+        intent.putExtra(EXTRA_VARIANT_OPTION_ID, variantId);
         intent.putExtra(EXTRA_VARIANT_NAME, variantName);
         intent.putExtra(EXTRA_VARIANT_HAS_STOCK, hasStock);
         intent.putParcelableArrayListExtra(EXTRA_VARIANT_VALUE_LIST, productVariantValueArrayList);
@@ -71,12 +71,12 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO hendry for test only
-        if (!getIntent().hasExtra(EXTRA_VARIANT_ID)) {
+        if (!getIntent().hasExtra(EXTRA_VARIANT_OPTION_ID)) {
             variantName = "Norman ganggu";
             variantId = 10;
         } else {
             variantName = getIntent().getStringExtra(EXTRA_VARIANT_NAME);
-            variantId = getIntent().getLongExtra(EXTRA_VARIANT_ID, 0L);
+            variantId = getIntent().getLongExtra(EXTRA_VARIANT_OPTION_ID, 0L);
         }
         toolbar.setTitle(variantName);
     }
@@ -121,7 +121,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
 
     public void onDeleteVariant() {
         Intent intent = new Intent(EXTRA_ACTION_DELETE);
-        intent.putExtra(EXTRA_VARIANT_ID, variantId);
+        intent.putExtra(EXTRA_VARIANT_OPTION_ID, variantId);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -129,7 +129,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
     @Override
     public void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds) {
         Intent intent = new Intent(EXTRA_ACTION_SUBMIT);
-        intent.putExtra(EXTRA_VARIANT_ID, variantId);
+        intent.putExtra(EXTRA_VARIANT_OPTION_ID, variantId);
         intent.putExtra(EXTRA_VARIANT_HAS_STOCK, isVariantHasStock);
         intent.putExtra(EXTRA_VARIANT_VALUE_LIST,(ArrayList) selectedVariantValueIds);
         setResult(Activity.RESULT_OK, intent);

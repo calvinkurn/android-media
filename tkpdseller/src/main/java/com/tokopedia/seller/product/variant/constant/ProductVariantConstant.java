@@ -22,4 +22,7 @@ public class ProductVariantConstant {
 
     public static final int SWITCH_VARIANT_NOT_EXIST = -1;
     public static final int SWITCH_VARIANT_EXIST = 1;
+
+    public static final int VARIANT_COMBINATION_STATUS_AVAILABLE = 1;
+    public static final long NOT_AVAILABLE_OPTION_ID = Long.MIN_VALUE;
 }

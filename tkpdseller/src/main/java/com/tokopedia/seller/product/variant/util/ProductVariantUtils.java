@@ -27,8 +27,8 @@ import java.util.List;
 
 public class ProductVariantUtils {
 
-    private static final long NOT_AVAILABLE_OPTION_ID = Long.MIN_VALUE;
     private static final int NOT_AVAILABLE_POSITION = Integer.MIN_VALUE;
+
     private static final String VARIANT_TITLE_SEPARATOR = ",";
     private static final String SPLIT_DELIMITER = ":"; // this depends on the api.
 
@@ -515,7 +515,7 @@ public class ProductVariantUtils {
      */
     public static boolean isVariantCombinationContainOptionId(long optionId, List<Long> optionList) {
         long pairingOptionId = getParingId(optionId, optionList);
-        return pairingOptionId != NOT_AVAILABLE_OPTION_ID;
+        return pairingOptionId != ProductVariantConstant.NOT_AVAILABLE_OPTION_ID;
     }
 
     /**
@@ -542,11 +542,11 @@ public class ProductVariantUtils {
                 }
             }
         }
-        return NOT_AVAILABLE_OPTION_ID;
+        return ProductVariantConstant.NOT_AVAILABLE_OPTION_ID;
     }
 
     /**
-     * Remove variant data by option id
+     * Remove variant option and variant combination data by option id
      *
      * @param optionId
      * @param variantData
@@ -636,5 +636,101 @@ public class ProductVariantUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Remove and update variant combination list based on option id level 1 and param add (for level 1 only)
+     * eg [{"st":1,"opt":[1]},{"st":1,"opt":[2]},{"st":1,"opt":[3]},{"st":1,"opt":[4]}]
+     * option id lv 1 = 2, add = false
+     * return [{"st":1,"opt":[1]},{"st":1,"opt":[3]},{"st":1,"opt":[4]}]
+     *
+     * @param optionIdLv1
+     * @param currentVariantCombinationList
+     * @return
+     */
+    public static List<ProductVariantCombinationSubmit> getUpdatedVariantCombinationList(
+            long optionIdLv1, boolean add, List<ProductVariantCombinationSubmit> currentVariantCombinationList) {
+        currentVariantCombinationList = getRemovedVariantCombinationListByOptionId(optionIdLv1, currentVariantCombinationList);
+        if (add) {
+            ProductVariantCombinationSubmit variantCombination = generateVariantCombination(optionIdLv1);
+            List<ProductVariantCombinationSubmit> variantCombinationList = new ArrayList<>();
+            variantCombinationList.add(variantCombination);
+            currentVariantCombinationList.addAll(variantCombinationList);
+        }
+
+        return currentVariantCombinationList;
+    }
+
+    /**
+     * Remove and update variant combination list based on option id level 1 and list of option id level 2
+     * eg [{"st":1,"opt":[3,1]},{"st":1,"opt":[4,1]},{"st":1,"opt":[3,2]},{"st":1,"opt":[4,2]}]
+     * option id lv 1 = 2, option id lv 2 list = [3]
+     * return [{"st":1,"opt":[3,1]},{"st":1,"opt":[4,1]},{"st":1,"opt":[3,2]}]
+     *
+     * @param optionIdLv1
+     * @param optionIdLv2List
+     * @param currentVariantCombinationList
+     * @return
+     */
+    public static List<ProductVariantCombinationSubmit> getUpdatedVariantCombinationList(
+            long optionIdLv1, List<Long> optionIdLv2List, List<ProductVariantCombinationSubmit> currentVariantCombinationList) {
+        currentVariantCombinationList = getRemovedVariantCombinationListByOptionId(optionIdLv1, currentVariantCombinationList);
+        List<ProductVariantCombinationSubmit> variantCombinationList = getGeneratedVariantCombinationList(optionIdLv1, optionIdLv2List);
+        currentVariantCombinationList.addAll(variantCombinationList);
+        return currentVariantCombinationList;
+    }
+
+    /**
+     * Generate variant combination list based on option lv 2 list
+     * eg option lv 1 = 1, option lv 2 list = [4,5]
+     * return [{"st":1,"opt":[1,4]},{"st":1,"opt":[1,5]}]
+     *
+     * @param optionIdLv1
+     * @param optionIdLv2List
+     * @return
+     */
+    private static List<ProductVariantCombinationSubmit> getGeneratedVariantCombinationList(long optionIdLv1, List<Long> optionIdLv2List) {
+        List<ProductVariantCombinationSubmit> variantCombinationList = new ArrayList<>();
+        for (long optionIdLv2 : optionIdLv2List) {
+            ProductVariantCombinationSubmit variantCombination = generateVariantCombination(optionIdLv1, optionIdLv2);
+            variantCombinationList.add(variantCombination);
+        }
+        return variantCombinationList;
+    }
+
+    /**
+     * Generate variant combination from option lv 1 and lv 2
+     * eg option lv 1 = 1
+     * return {"st":1,"opt":[1]}
+     *
+     * @param optionIdLv1
+     * @return
+     */
+    private static ProductVariantCombinationSubmit generateVariantCombination(long optionIdLv1) {
+        ProductVariantCombinationSubmit variantCombination = new ProductVariantCombinationSubmit();
+        variantCombination.setStatus(ProductVariantConstant.VARIANT_COMBINATION_STATUS_AVAILABLE);
+        List<Long> optionIdList = new ArrayList<>();
+        optionIdList.add(optionIdLv1);
+        variantCombination.setOptionList(optionIdList);
+        return variantCombination;
+    }
+
+    /**
+     * Generate variant combination from option lv 1 and lv 2
+     * eg option lv 1 = 1, option lv 2 = 2
+     * return {"st":1,"opt":[1,2]}
+     *
+     * @param optionIdLv1
+     * @param optionIdLv2
+     * @return
+     */
+    private static ProductVariantCombinationSubmit generateVariantCombination(long optionIdLv1, long optionIdLv2) {
+        ProductVariantCombinationSubmit variantCombination = new ProductVariantCombinationSubmit();
+        variantCombination.setStatus(ProductVariantConstant.VARIANT_COMBINATION_STATUS_AVAILABLE);
+        List<Long> optionIdList = new ArrayList<>();
+        optionIdList.add(optionIdLv1);
+        optionIdList.add(optionIdLv2);
+        variantCombination.setOptionList(optionIdList);
+        return variantCombination;
     }
 }

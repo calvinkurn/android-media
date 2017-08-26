@@ -133,7 +133,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
 
     @Override
     public void onItemClicked(ProductVariantManageViewModel productVariantManageViewModel) {
-        // TODO start activity with the correct parameter
         ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
         ProductVariantDetailActivity.start(getContext(), ProductVariantDashboardFragment.this,
                 productVariantManageViewModel.getTemporaryId(),
@@ -189,27 +188,56 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     @SuppressWarnings("unchecked")
     private void onActivityResultFromDetail(Intent data) {
         if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
-            long optionIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
-            if (optionIdToDelete != 0) {
-                productVariantDataSubmit = ProductVariantUtils.getRemovedVariantDataByOptionId(optionIdToDelete, productVariantDataSubmit);
-                updateVariantUnitView();
-                updateVariantItemListView();
-            }
+            onActivityResultFromDetailDeleteOption(data);
         } else if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_SUBMIT)) {
-            long variantIdToUpdate = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_ID, 0);
-            if (variantIdToUpdate != 0) {
-                ArrayList<Long> selectedVariantValueIdList = (ArrayList<Long>)
-                        data.getSerializableExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
-                if (selectedVariantValueIdList == null || selectedVariantValueIdList.size() == 0) {
-                    if (data.hasExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK)) {
-                        boolean variantHasStock = data.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
-                        //TODO set the variant stock to available/empty (based on variantHasStock)
-                    }
-                } else {
-                    // TODO update the selectedVariantValueIdList of the variant to available
-                }
-            }
+            onActivityResultFromDetailUpdateList(data);
         }
+    }
+
+    private void onActivityResultFromDetailDeleteOption(Intent data) {
+        long optionIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
+        if (optionIdToDelete == ProductVariantConstant.NOT_AVAILABLE_OPTION_ID) {
+            return;
+        }
+        productVariantDataSubmit = ProductVariantUtils.getRemovedVariantDataByOptionId(optionIdToDelete, productVariantDataSubmit);
+        updateVariantUnitView();
+        updateVariantItemListView();
+    }
+
+    private void onActivityResultFromDetailUpdateList(Intent intent) {
+        long optionIdToUpdated = intent.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
+        if (optionIdToUpdated == ProductVariantConstant.NOT_AVAILABLE_OPTION_ID) {
+            return;
+        }
+        if (productVariantByCatModelList.size() == ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
+            onActivityResultFromDetailUpdateListOneLevel(intent);
+        } else if (productVariantByCatModelList.size() == ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE) {
+            onActivityResultFromDetailUpdateListTwoLevel(intent);
+        }
+    }
+
+    private void onActivityResultFromDetailUpdateListOneLevel(Intent data) {
+        long optionIdToUpdated = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
+        boolean variantHasStock = data.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
+        List<ProductVariantCombinationSubmit> variantCombinationList = ProductVariantUtils.getUpdatedVariantCombinationList(
+                optionIdToUpdated, variantHasStock, productVariantDataSubmit.getProductVariantCombinationSubmitList());
+        productVariantDataSubmit.setProductVariantCombinationSubmitList(variantCombinationList);
+        updateVariantUnitView();
+        updateVariantItemListView();
+    }
+
+    private void onActivityResultFromDetailUpdateListTwoLevel(Intent intent) {
+        long optionIdToUpdated = intent.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
+        ArrayList<Long> selectedVariantValueIdList =
+                (ArrayList<Long>) intent.getSerializableExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
+        if (selectedVariantValueIdList == null) {
+            selectedVariantValueIdList = new ArrayList<>();
+        }
+        List<ProductVariantCombinationSubmit> variantCombinationList = ProductVariantUtils.getUpdatedVariantCombinationList(
+                optionIdToUpdated, selectedVariantValueIdList, productVariantDataSubmit.getProductVariantCombinationSubmitList());
+        productVariantDataSubmit.setProductVariantCombinationSubmitList(variantCombinationList);
+        updateVariantUnitView();
+        updateVariantItemListView();
     }
 
     private void setVariantLevel(int level, ProductVariantUnitSubmit productVariantUnitSubmit) {
