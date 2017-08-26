@@ -15,6 +15,7 @@ public class ProductVariantManageViewModel implements ItemType {
     private String content;
     private String hexCode;
     private String imageUrl;
+    private boolean stockAvailable;
 
     public long getTemporaryId() {
         return temporaryId;
@@ -54,6 +55,14 @@ public class ProductVariantManageViewModel implements ItemType {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean isStockAvailable() {
+        return stockAvailable;
+    }
+
+    public void setStockAvailable(boolean stockAvailable) {
+        this.stockAvailable = stockAvailable;
     }
 
     @Override

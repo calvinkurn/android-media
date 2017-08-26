@@ -79,22 +79,16 @@ public class ProductVariantUtils {
                 variantManageViewModel.setImageUrl(productVariantOption.getIcon());
             }
         }
+        variantManageViewModel.setStockAvailable(isContainVariantStatusByOptionId(variantOptionLv1.getTemporaryId(), variantCombinationList));
         ProductVariantUnitSubmit variantUnitLv2 = getVariantUnitSubmitByLevel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitList);
-        String contentText = "";
         if (variantUnitLv2 != null) {
             // Level 2
             List<ProductVariantOptionSubmit> productVariantOptionSubmitList = getPairingVariantSubmitOptionListBy(
                     variantOptionLv1.getTemporaryId(), variantUnitList, variantCombinationList);
-            contentText = getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE,
+            String contentText = getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE,
                     productVariantOptionSubmitList, variantByCatModelList);
-        } else {
-            // Level 1
-            boolean containOptionId = isContainVariantStatusByOptionId(variantOptionLv1.getTemporaryId(), variantCombinationList);
-            if (containOptionId) {
-                contentText = title;
-            }
+            variantManageViewModel.setContent(contentText);
         }
-        variantManageViewModel.setContent(contentText);
         return variantManageViewModel;
     }
 

@@ -30,24 +30,25 @@ public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVar
     }
 
     @Override
-    public void bindObject(final ProductVariantManageViewModel productVariantManageViewModel) {
-        if (!TextUtils.isEmpty(productVariantManageViewModel.getHexCode())) {
-            imageView.setBackgroundColor(Color.parseColor(productVariantManageViewModel.getHexCode()));
+    public void bindObject(final ProductVariantManageViewModel variantManageViewModel) {
+        if (!TextUtils.isEmpty(variantManageViewModel.getHexCode())) {
+            imageView.setBackgroundColor(Color.parseColor(variantManageViewModel.getHexCode()));
             imageView.setImageDrawable(null);
-        } else if (!TextUtils.isEmpty(productVariantManageViewModel.getImageUrl())) {
+        } else if (!TextUtils.isEmpty(variantManageViewModel.getImageUrl())) {
             imageView.setBackgroundColor(Color.TRANSPARENT);
-            Glide.with(imageView.getContext()).load(productVariantManageViewModel.getImageUrl())
+            Glide.with(imageView.getContext()).load(variantManageViewModel.getImageUrl())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else {
             imageView.setBackgroundColor(Color.GRAY);
             imageView.setImageDrawable(null);
         }
-        titleTextView.setText(productVariantManageViewModel.getTitle());
-        if (TextUtils.isEmpty(productVariantManageViewModel.getContent())) {
-            contentTextView.setVisibility(View.GONE);
+        titleTextView.setText(variantManageViewModel.getTitle());
+        String content = variantManageViewModel.getContent();
+        if (TextUtils.isEmpty(content) && variantManageViewModel.isStockAvailable()) {
+            content = contentTextView.getContext().getString(R.string.product_variant_stock_available);
         } else {
-            contentTextView.setText(productVariantManageViewModel.getContent());
-            contentTextView.setVisibility(View.VISIBLE);
+            content = contentTextView.getContext().getString(R.string.product_variant_stock_empty);
         }
+        contentTextView.setText(content);
     }
 }

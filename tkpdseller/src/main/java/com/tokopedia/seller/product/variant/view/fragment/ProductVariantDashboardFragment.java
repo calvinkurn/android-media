@@ -303,20 +303,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 productVariantDataSubmit.getProductVariantCombinationSubmitList(),
                 productVariantByCatModelList);
         variantListView.setVisibility(View.VISIBLE);
-        updateVariantItemContent(variantManageViewModelList);
         onSearchLoaded(variantManageViewModelList, variantManageViewModelList.size());
-    }
-
-    private void updateVariantItemContent(List<ProductVariantManageViewModel> productVariantManageViewModelList) {
-        for (ProductVariantManageViewModel variantManageViewModel : productVariantManageViewModelList) {
-            if (TextUtils.isEmpty(variantManageViewModel.getContent())) {
-                variantManageViewModel.setContent(getString(R.string.product_variant_stock_empty));
-                continue;
-            }
-            if (variantManageViewModel.getContent().equalsIgnoreCase(variantManageViewModel.getTitle())) {
-                variantManageViewModel.setContent(getString(R.string.product_variant_status_available));
-            }
-        }
     }
 
     private void updateVariantUnitView() {
