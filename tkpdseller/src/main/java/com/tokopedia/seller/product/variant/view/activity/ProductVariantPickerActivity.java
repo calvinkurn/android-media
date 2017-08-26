@@ -162,7 +162,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_TITLE, productVariantByCatModel.getName());
         List<ProductVariantOptionSubmit> productVariantOptionSubmitList = ((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList();
         ArrayList<String> titleList = new ArrayList<>();
-        titleList.addAll(ProductVariantUtils.getTitleList(productVariantOptionSubmitList, productVariantByCatModel.getUnitList()));
+        titleList.addAll(ProductVariantUtils.getVariantOptionNameList(productVariantOptionSubmitList, productVariantByCatModel.getUnitList()));
         bundle.putStringArrayList(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_RESERVED_TITLE_LIST, titleList);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);

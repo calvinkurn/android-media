@@ -282,18 +282,10 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     private void updateVariantStatusToDefault() {
         if (productVariantDataSubmit == null) {
             productVariantDataSubmit = new ProductVariantDataSubmit();
+            productVariantDataSubmit.setProductVariantUnitSubmitList(new ArrayList<ProductVariantUnitSubmit>());
         }
-        if (productVariantDataSubmit.getProductVariantCombinationSubmitList() == null) {
-            productVariantDataSubmit.setProductVariantCombinationSubmitList(new ArrayList<ProductVariantCombinationSubmit>());
-        }
-        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = new ArrayList<>();
-        if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE) {
-            productVariantCombinationSubmitList = ProductVariantUtils.getVariantStatusList(
-                    getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE), getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE));
-        } else if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
-            productVariantCombinationSubmitList = ProductVariantUtils.getVariantStatusList(
-                    getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE));
-        }
+        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList =
+                ProductVariantUtils.getGeneratedDefaultVariantCombinationListFromVariantUnitList(productVariantDataSubmit.getProductVariantUnitSubmitList());
         productVariantDataSubmit.setProductVariantCombinationSubmitList(productVariantCombinationSubmitList);
     }
 
@@ -306,15 +298,25 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             variantListView.setVisibility(View.GONE);
             return;
         }
-        List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
-        if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE) {
-            productVariantManageViewModelList = ProductVariantUtils.getProductVariantManageViewModelListTwoLevel(
-                    productVariantDataSubmit.getProductVariantUnitSubmitList(), productVariantDataSubmit.getProductVariantCombinationSubmitList(), productVariantByCatModelList);
-        } else if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
-
-        }
+        List<ProductVariantManageViewModel> variantManageViewModelList = ProductVariantUtils.getGeneratedVariantDashboardViewModelListTwoLevel(
+                productVariantDataSubmit.getProductVariantUnitSubmitList(),
+                productVariantDataSubmit.getProductVariantCombinationSubmitList(),
+                productVariantByCatModelList);
         variantListView.setVisibility(View.VISIBLE);
-        onSearchLoaded(productVariantManageViewModelList, productVariantManageViewModelList.size());
+        updateVariantItemContent(variantManageViewModelList);
+        onSearchLoaded(variantManageViewModelList, variantManageViewModelList.size());
+    }
+
+    private void updateVariantItemContent(List<ProductVariantManageViewModel> productVariantManageViewModelList) {
+        for (ProductVariantManageViewModel variantManageViewModel : productVariantManageViewModelList) {
+            if (TextUtils.isEmpty(variantManageViewModel.getContent())) {
+                variantManageViewModel.setContent(getString(R.string.product_variant_stock_empty));
+                continue;
+            }
+            if (variantManageViewModel.getContent().equalsIgnoreCase(variantManageViewModel.getTitle())) {
+                variantManageViewModel.setContent(getString(R.string.product_variant_status_available));
+            }
+        }
     }
 
     private void updateVariantUnitView() {
@@ -364,7 +366,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         if (productVariantDataSubmit == null) {
             return null;
         }
-        return ProductVariantUtils.getVariantUnitSubmit(level, productVariantDataSubmit.getProductVariantUnitSubmitList());
+        return ProductVariantUtils.getVariantUnitSubmitByLevel(level, productVariantDataSubmit.getProductVariantUnitSubmitList());
     }
 
     /**
