@@ -209,32 +209,20 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         if (optionIdToUpdated == ProductVariantConstant.NOT_AVAILABLE_OPTION_ID) {
             return;
         }
-        if (productVariantByCatModelList.size() == ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
-            onActivityResultFromDetailUpdateListOneLevel(intent);
-        } else if (productVariantByCatModelList.size() == ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE) {
-            onActivityResultFromDetailUpdateListTwoLevel(intent);
-        }
-    }
-
-    private void onActivityResultFromDetailUpdateListOneLevel(Intent data) {
-        long optionIdToUpdated = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
-        boolean variantHasStock = data.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
-        List<ProductVariantCombinationSubmit> variantCombinationList = ProductVariantUtils.getUpdatedVariantCombinationList(
-                optionIdToUpdated, variantHasStock, productVariantDataSubmit.getProductVariantCombinationSubmitList());
-        productVariantDataSubmit.setProductVariantCombinationSubmitList(variantCombinationList);
-        updateVariantUnitView();
-        updateVariantItemListView();
-    }
-
-    private void onActivityResultFromDetailUpdateListTwoLevel(Intent intent) {
-        long optionIdToUpdated = intent.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
+        boolean variantHasStock = intent.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
         ArrayList<Long> selectedVariantValueIdList =
                 (ArrayList<Long>) intent.getSerializableExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
         if (selectedVariantValueIdList == null) {
             selectedVariantValueIdList = new ArrayList<>();
         }
-        List<ProductVariantCombinationSubmit> variantCombinationList = ProductVariantUtils.getUpdatedVariantCombinationList(
-                optionIdToUpdated, selectedVariantValueIdList, productVariantDataSubmit.getProductVariantCombinationSubmitList());
+        List<ProductVariantCombinationSubmit> variantCombinationList;
+        if (selectedVariantValueIdList.size() > 0) {
+            variantCombinationList = ProductVariantUtils.getUpdatedVariantCombinationList(
+                    optionIdToUpdated, selectedVariantValueIdList, productVariantDataSubmit.getProductVariantCombinationSubmitList());
+        } else {
+            variantCombinationList = ProductVariantUtils.getUpdatedVariantCombinationList(
+                    optionIdToUpdated, variantHasStock, productVariantDataSubmit.getProductVariantCombinationSubmitList());
+        }
         productVariantDataSubmit.setProductVariantCombinationSubmitList(variantCombinationList);
         updateVariantUnitView();
         updateVariantItemListView();
