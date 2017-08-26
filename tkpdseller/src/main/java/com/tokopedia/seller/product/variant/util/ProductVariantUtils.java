@@ -41,8 +41,8 @@ public class ProductVariantUtils {
             List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList,
             List<ProductVariantByCatModel> productVariantByCatModelList) {
         List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
-        ProductVariantUnitSubmit productVariantUnitSubmitLv1 = getVariantUnitSubmitByLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantUnitSubmitList);
-        for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmitLv1.getProductVariantOptionSubmitList()) {
+        ProductVariantUnitSubmit productVariantUnitSubmit = getVariantUnitSubmitByLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantUnitSubmitList);
+        for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
             ProductVariantManageViewModel productVariantManageViewModel = getGeneratedVariantManageViewModel(
                     productVariantOptionSubmitLv1, productVariantUnitSubmitList, productVariantCombinationSubmitList, productVariantByCatModelList);
             productVariantManageViewModelList.add(productVariantManageViewModel);
@@ -592,8 +592,12 @@ public class ProductVariantUtils {
      * @return
      */
     public static boolean isVariantCombinationContainOptionId(long optionId, List<Long> optionList) {
-        long pairingOptionId = getParingId(optionId, optionList);
-        return pairingOptionId != ProductVariantConstant.NOT_AVAILABLE_OPTION_ID;
+        for (Long optionIdTemp : optionList) {
+            if (optionIdTemp == optionId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -606,14 +610,7 @@ public class ProductVariantUtils {
      * @return
      */
     private static long getParingId(long optionId, List<Long> optionList) {
-        boolean containOptionId = false;
-        for (Long optionIdTemp : optionList) {
-            if (optionIdTemp == optionId) {
-                containOptionId = true;
-                break;
-            }
-        }
-        if (containOptionId) {
+        if (isVariantCombinationContainOptionId(optionId, optionList)) {
             for (Long optionIdTemp : optionList) {
                 if (optionIdTemp != optionId) {
                     return optionIdTemp;
