@@ -24,9 +24,6 @@ public class ProductVariantUnitSubmit implements Parcelable {
     @SerializedName("pos")
     @Expose
     private int position;
-    @SerializedName("pv")
-    @Expose
-    private long productVariant;
     @SerializedName("opt")
     @Expose
     private List<ProductVariantOptionSubmit> productVariantOptionSubmitList;
@@ -86,24 +83,6 @@ public class ProductVariantUnitSubmit implements Parcelable {
     }
 
     /**
-     * product variant id, set with the id got from server
-     *
-     * @return productVariant product variant id. example: 659143 for "warna"
-     */
-    public long getProductVariant() {
-        return productVariant;
-    }
-
-    /**
-     * product variant id, set with the id got from server
-     *
-     * @param productVariant product variant id. example: 659143 for "warna"
-     */
-    public void setProductVariant(int productVariant) {
-        this.productVariant = productVariant;
-    }
-
-    /**
      * Option list for this variant. example "merah:1" "hijau:2"
      *
      * @return Option List
@@ -131,7 +110,6 @@ public class ProductVariantUnitSubmit implements Parcelable {
         dest.writeLong(this.variantId);
         dest.writeLong(this.variantUnitId);
         dest.writeInt(this.position);
-        dest.writeLong(this.productVariant);
         dest.writeList(this.productVariantOptionSubmitList);
     }
 
@@ -142,7 +120,6 @@ public class ProductVariantUnitSubmit implements Parcelable {
         this.variantId = in.readLong();
         this.variantUnitId = in.readLong();
         this.position = in.readInt();
-        this.productVariant = in.readLong();
         this.productVariantOptionSubmitList = new ArrayList<ProductVariantOptionSubmit>();
         in.readList(this.productVariantOptionSubmitList, ProductVariantOptionSubmit.class.getClassLoader());
     }

@@ -12,9 +12,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductVariantOptionSubmit implements Parcelable {
 
-    @SerializedName("pvo")
-    @Expose
-    private long productVariantOptionId;
     @SerializedName("vuv")
     @Expose
     private long variantUnitValueId;
@@ -24,26 +21,6 @@ public class ProductVariantOptionSubmit implements Parcelable {
     @SerializedName("cstm")
     @Expose
     private String customText;
-
-    /**
-     * Product variant option, set with the id got from server if there is any
-     * if it is new, set the id as "0"
-     *
-     * @return Product variant option id from server. 0 if new created
-     */
-    public long getProductVariantOptionId() {
-        return productVariantOptionId;
-    }
-
-    /**
-     * Product variant option, set with the id got from server if there is any
-     * if it is new, set the id as "0"
-     *
-     * @param productVariantOptionId "0" if new, previous id from server if existing
-     */
-    public void setProductVariantOptionId(long productVariantOptionId) {
-        this.productVariantOptionId = productVariantOptionId;
-    }
 
     /**
      * if custom, 0. if not custom, id of the variant unit value
@@ -103,7 +80,6 @@ public class ProductVariantOptionSubmit implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.productVariantOptionId);
         dest.writeLong(this.variantUnitValueId);
         dest.writeLong(this.temporaryId);
         dest.writeString(this.customText);
@@ -113,7 +89,6 @@ public class ProductVariantOptionSubmit implements Parcelable {
     }
 
     protected ProductVariantOptionSubmit(Parcel in) {
-        this.productVariantOptionId = in.readLong();
         this.variantUnitValueId = in.readLong();
         this.temporaryId = in.readLong();
         this.customText = in.readString();

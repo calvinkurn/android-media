@@ -413,7 +413,6 @@ public class ProductVariantUtils {
             productVariantUnitSubmit.setVariantId(varianOptionSource.getvId());
             productVariantUnitSubmit.setVariantUnitId(varianOptionSource.getVuId());
             productVariantUnitSubmit.setPosition(varianOptionSource.getPosition());
-            productVariantUnitSubmit.setProductVariant(varianOptionSource.getPvId());
 
             //set options
             List<ProductVariantOptionSubmit> productVariantOptionSubmitList = new ArrayList<>();
@@ -421,12 +420,10 @@ public class ProductVariantUtils {
             for (int k = 0, sizek = optionSourceList.size(); k < sizek; k++) {
                 Option optionSource = optionSourceList.get(k);
                 ProductVariantOptionSubmit productVariantOptionSubmit = new ProductVariantOptionSubmit();
-                productVariantOptionSubmit.setProductVariantOptionId(optionSource.getPvoId());
                 String optionValue = optionSource.getValue();
                 int pvoId = optionSource.getPvoId();
                 long varUnitValId = optionSource.getVuvId();
                 productVariantOptionSubmit.setVariantUnitValueId(varUnitValId);
-                productVariantOptionSubmit.setProductVariantOptionId(pvoId);
                 if (varUnitValId == 0) {
                     productVariantOptionSubmit.setCustomText(optionValue);
                 } else {
