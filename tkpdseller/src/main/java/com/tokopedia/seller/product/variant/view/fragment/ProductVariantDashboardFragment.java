@@ -21,7 +21,7 @@ import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailAc
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantDashboardFragment extends BaseListFragment<BlankPresenter, ProductVariantManageViewModel> implements ProductVariantMainView {
+public class ProductVariantDashboardFragment extends BaseListFragment<BlankPresenter, ProductVariantDashboardViewModel> implements ProductVariantMainView {
 
     private static final int MULTIPLY_START_TEMP_ID = 10000;
 
@@ -122,7 +122,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     }
 
     @Override
-    protected BaseListAdapter<ProductVariantManageViewModel> getNewAdapter() {
+    protected BaseListAdapter<ProductVariantDashboardViewModel> getNewAdapter() {
         return new ProductVariantDashboardAdapter();
     }
 
@@ -132,14 +132,14 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     }
 
     @Override
-    public void onItemClicked(ProductVariantManageViewModel productVariantManageViewModel) {
+    public void onItemClicked(ProductVariantDashboardViewModel productVariantDashboardViewModel) {
         ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
         ProductVariantDetailActivity.start(getContext(), ProductVariantDashboardFragment.this,
-                productVariantManageViewModel.getTemporaryId(),
-                productVariantManageViewModel.getTitle(),
-                ProductVariantUtils.isContainVariantStatusByOptionId(productVariantManageViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList()),
+                productVariantDashboardViewModel.getTemporaryId(),
+                productVariantDashboardViewModel.getTitle(),
+                ProductVariantUtils.isContainVariantStatusByOptionId(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList()),
                 new ArrayList<>(ProductVariantUtils.getProductVariantValueListForVariantDetail(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantDataSubmit.getProductVariantUnitSubmitList(), productVariantByCatModel.getUnitList())),
-                new ArrayList<>(ProductVariantUtils.getSelectedOptionIdList(productVariantManageViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList())));
+                new ArrayList<>(ProductVariantUtils.getSelectedOptionIdList(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList())));
     }
 
     private void pickVariant(int level) {
@@ -180,7 +180,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 checkVariantValidation(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantUnitSubmit);
                 break;
         }
-        updateVariantStatusToDefault();
+        updateVariantCombinationToDefault();
         updateVariantUnitView();
         updateVariantItemListView();
     }
@@ -267,14 +267,14 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         }
     }
 
-    private void updateVariantStatusToDefault() {
+    private void updateVariantCombinationToDefault() {
         if (productVariantDataSubmit == null) {
             productVariantDataSubmit = new ProductVariantDataSubmit();
             productVariantDataSubmit.setProductVariantUnitSubmitList(new ArrayList<ProductVariantUnitSubmit>());
         }
-        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList =
+        List<ProductVariantCombinationSubmit> variantCombinationList =
                 ProductVariantUtils.getGeneratedDefaultVariantCombinationListFromVariantUnitList(productVariantDataSubmit.getProductVariantUnitSubmitList());
-        productVariantDataSubmit.setProductVariantCombinationSubmitList(productVariantCombinationSubmitList);
+        productVariantDataSubmit.setProductVariantCombinationSubmitList(variantCombinationList);
     }
 
     /**
@@ -286,7 +286,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             variantListView.setVisibility(View.GONE);
             return;
         }
-        List<ProductVariantManageViewModel> variantManageViewModelList = ProductVariantUtils.getGeneratedVariantDashboardViewModelListTwoLevel(
+        List<ProductVariantDashboardViewModel> variantManageViewModelList = ProductVariantUtils.getGeneratedVariantDashboardViewModelListTwoLevel(
                 productVariantDataSubmit.getProductVariantUnitSubmitList(),
                 productVariantDataSubmit.getProductVariantCombinationSubmitList(),
                 productVariantByCatModelList);

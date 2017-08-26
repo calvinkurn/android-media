@@ -6,7 +6,7 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
  * Created by nathan on 8/20/17.
  */
 
-public class ProductVariantManageViewModel implements ItemType {
+public class ProductVariantDashboardViewModel implements ItemType {
 
     public final static int TYPE = 123;
 

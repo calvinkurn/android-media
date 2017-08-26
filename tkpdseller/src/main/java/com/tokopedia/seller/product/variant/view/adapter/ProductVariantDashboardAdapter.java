@@ -6,14 +6,14 @@ import android.view.ViewGroup;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDashboardViewHolder;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 /**
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantDashboardAdapter extends BaseListAdapter<ProductVariantManageViewModel> {
+public class ProductVariantDashboardAdapter extends BaseListAdapter<ProductVariantDashboardViewModel> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

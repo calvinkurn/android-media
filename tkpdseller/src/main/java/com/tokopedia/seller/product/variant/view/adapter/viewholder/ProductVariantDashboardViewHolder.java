@@ -9,14 +9,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
 /**
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVariantManageViewModel> {
+public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVariantDashboardViewModel> {
 
     private ImageView imageView;
     private TextView titleTextView;
@@ -30,7 +30,7 @@ public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVar
     }
 
     @Override
-    public void bindObject(final ProductVariantManageViewModel variantManageViewModel) {
+    public void bindObject(final ProductVariantDashboardViewModel variantManageViewModel) {
         if (!TextUtils.isEmpty(variantManageViewModel.getHexCode())) {
             imageView.setBackgroundColor(Color.parseColor(variantManageViewModel.getHexCode()));
             imageView.setImageDrawable(null);

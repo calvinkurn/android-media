@@ -16,7 +16,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVari
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantManageViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +32,22 @@ public class ProductVariantUtils {
     private static final String VARIANT_TITLE_SEPARATOR = ",";
     private static final String SPLIT_DELIMITER = ":"; // this depends on the api.
 
-    public static List<ProductVariantManageViewModel> getProductVariantManageViewModelListOneLevel() {
+    public static List<ProductVariantDashboardViewModel> getProductVariantManageViewModelListOneLevel() {
         return null;
     }
 
-    public static List<ProductVariantManageViewModel> getGeneratedVariantDashboardViewModelListTwoLevel(
+    public static List<ProductVariantDashboardViewModel> getGeneratedVariantDashboardViewModelListTwoLevel(
             List<ProductVariantUnitSubmit> productVariantUnitSubmitList,
             List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList,
             List<ProductVariantByCatModel> productVariantByCatModelList) {
-        List<ProductVariantManageViewModel> productVariantManageViewModelList = new ArrayList<>();
+        List<ProductVariantDashboardViewModel> variantDashboardViewModelList = new ArrayList<>();
         ProductVariantUnitSubmit productVariantUnitSubmit = getVariantUnitSubmitByLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantUnitSubmitList);
         for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
-            ProductVariantManageViewModel productVariantManageViewModel = getGeneratedVariantManageViewModel(
+            ProductVariantDashboardViewModel productVariantDashboardViewModel = getGeneratedVariantManageViewModel(
                     productVariantOptionSubmitLv1, productVariantUnitSubmitList, productVariantCombinationSubmitList, productVariantByCatModelList);
-            productVariantManageViewModelList.add(productVariantManageViewModel);
+            variantDashboardViewModelList.add(productVariantDashboardViewModel);
         }
-        return productVariantManageViewModelList;
+        return variantDashboardViewModelList;
     }
 
     /**
@@ -61,12 +61,12 @@ public class ProductVariantUtils {
      * @param variantByCatModelList
      * @return
      */
-    private static ProductVariantManageViewModel getGeneratedVariantManageViewModel(
+    private static ProductVariantDashboardViewModel getGeneratedVariantManageViewModel(
             ProductVariantOptionSubmit variantOptionLv1,
             List<ProductVariantUnitSubmit> variantUnitList,
             List<ProductVariantCombinationSubmit> variantCombinationList,
             List<ProductVariantByCatModel> variantByCatModelList) {
-        ProductVariantManageViewModel variantManageViewModel = new ProductVariantManageViewModel();
+        ProductVariantDashboardViewModel variantManageViewModel = new ProductVariantDashboardViewModel();
         String title = getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantOptionLv1, variantByCatModelList);
         variantManageViewModel.setTemporaryId(variantOptionLv1.getTemporaryId());
         variantManageViewModel.setTitle(title);
@@ -225,22 +225,22 @@ public class ProductVariantUtils {
         return null;
     }
 
-    public static ProductVariantManageViewModel getProductVariantManageViewModel(
+    public static ProductVariantDashboardViewModel getProductVariantManageViewModel(
             ProductVariantOptionSubmit productVariantOptionSubmit, ProductVariantUnitSubmit productVariantUnitSubmit, List<ProductVariantByCatModel> productVariantByCatModelList) {
-        ProductVariantManageViewModel productVariantManageViewModel = new ProductVariantManageViewModel();
-        productVariantManageViewModel.setTemporaryId(productVariantOptionSubmit.getTemporaryId());
-        productVariantManageViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantOptionSubmit, productVariantByCatModelList));
-        productVariantManageViewModel.setContent(getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantUnitSubmit.getProductVariantOptionSubmitList(), productVariantByCatModelList));
+        ProductVariantDashboardViewModel productVariantDashboardViewModel = new ProductVariantDashboardViewModel();
+        productVariantDashboardViewModel.setTemporaryId(productVariantOptionSubmit.getTemporaryId());
+        productVariantDashboardViewModel.setTitle(getTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantOptionSubmit, productVariantByCatModelList));
+        productVariantDashboardViewModel.setContent(getMultipleVariantOptionTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantUnitSubmit.getProductVariantOptionSubmitList(), productVariantByCatModelList));
         if (TextUtils.isEmpty(productVariantOptionSubmit.getCustomText())) {
             // Check variant option title from server
             ProductVariantOption productVariantOption = getProductVariantByCatModelByVariantId(
                     ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantOptionSubmit.getVariantUnitValueId(), productVariantByCatModelList);
             if (productVariantOption != null) {
-                productVariantManageViewModel.setHexCode(productVariantOption.getHexCode());
-                productVariantManageViewModel.setImageUrl(productVariantOption.getIcon());
+                productVariantDashboardViewModel.setHexCode(productVariantOption.getHexCode());
+                productVariantDashboardViewModel.setImageUrl(productVariantOption.getIcon());
             }
         }
-        return productVariantManageViewModel;
+        return productVariantDashboardViewModel;
     }
 
     private static List<ProductVariantOptionSubmit> getPairingVariantSubmitOptionListBy(
