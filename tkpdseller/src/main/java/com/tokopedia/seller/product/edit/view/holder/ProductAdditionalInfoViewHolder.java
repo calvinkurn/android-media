@@ -35,6 +35,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVari
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
+import com.tokopedia.seller.product.variant.util.ProductVariantViewConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -260,7 +261,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                 ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
                 int position = productVariantUnitSubmit.getPosition();
                 ProductVariantByCatModel productVariantByCatModel =
-                        ProductVariantUtils.getProductVariantByCatModel(position, productVariantByCatModelList);
+                        ProductVariantViewConverter.getProductVariantByCatModel(position, productVariantByCatModelList);
                 if (productVariantByCatModel == null) {
                     continue;
                 }

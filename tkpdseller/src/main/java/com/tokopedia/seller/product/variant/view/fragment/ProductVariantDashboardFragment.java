@@ -18,6 +18,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVari
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
+import com.tokopedia.seller.product.variant.util.ProductVariantViewConverter;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardAdapter;
@@ -93,7 +94,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             return;
         }
         if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
-            ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantByCatModelList);
+            ProductVariantByCatModel productVariantByCatModel = ProductVariantViewConverter.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantByCatModelList);
             if (productVariantByCatModel != null) {
                 variantLevelOneLabelView.setVisibility(View.VISIBLE);
                 variantLevelOneLabelView.setTitle(productVariantByCatModel.getName());
@@ -106,7 +107,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             }
         }
         if (productVariantByCatModelList.size() >= ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE) {
-            ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
+            ProductVariantByCatModel productVariantByCatModel = ProductVariantViewConverter.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
             if (productVariantByCatModel != null) {
                 variantLevelTwoLabelView.setVisibility(View.VISIBLE);
                 variantLevelTwoLabelView.setTitle(productVariantByCatModel.getName());
@@ -137,10 +138,10 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
 
     @Override
     public void onItemClicked(ProductVariantDashboardViewModel productVariantDashboardViewModel) {
-        ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
+        ProductVariantByCatModel productVariantByCatModel = ProductVariantViewConverter.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
         ArrayList<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();
         if (productVariantByCatModel != null) {
-            productVariantDetailViewModelList = new ArrayList<>(ProductVariantUtils.getProductVariantValueListForVariantDetail(
+            productVariantDetailViewModelList = new ArrayList<>(ProductVariantViewConverter.getProductVariantValueListForVariantDetail(
                     ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE,
                     productVariantDataSubmit.getProductVariantUnitSubmitList(),
                     productVariantByCatModel.getUnitList()));
@@ -148,14 +149,14 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         ProductVariantDetailActivity.start(getContext(), ProductVariantDashboardFragment.this,
                 productVariantDashboardViewModel.getTemporaryId(),
                 productVariantDashboardViewModel.getTitle(),
-                ProductVariantUtils.isContainVariantStatusByOptionId(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList()),
+                ProductVariantViewConverter.isContainVariantStatusByOptionId(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList()),
                 productVariantDetailViewModelList,
                 new ArrayList<>(ProductVariantUtils.getSelectedOptionIdList(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList())));
     }
 
     private void pickVariant(int level) {
         Intent intent = new Intent(getActivity(), ProductVariantPickerActivity.class);
-        intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY, ProductVariantUtils.getProductVariantByCatModel(level, productVariantByCatModelList));
+        intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY, ProductVariantViewConverter.getProductVariantByCatModel(level, productVariantByCatModelList));
         intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT, getVariantUnitSubmit(level));
         intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, level * MULTIPLY_START_TEMP_ID);
         startActivityForResult(intent, level);
@@ -310,7 +311,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             variantListView.setVisibility(View.GONE);
             return;
         }
-        List<ProductVariantDashboardViewModel> variantManageViewModelList = ProductVariantUtils.getGeneratedVariantDashboardViewModelList(
+        List<ProductVariantDashboardViewModel> variantManageViewModelList = ProductVariantViewConverter.getGeneratedVariantDashboardViewModelList(
                 productVariantDataSubmit.getProductVariantUnitSubmitList(),
                 productVariantDataSubmit.getProductVariantCombinationSubmitList(),
                 productVariantByCatModelList);
@@ -353,7 +354,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         String title = "";
         ProductVariantUnitSubmit productVariantUnitSubmit = getVariantUnitSubmit(level);
         if (productVariantUnitSubmit != null) {
-            title = ProductVariantUtils.getMultipleVariantOptionTitle(level, productVariantUnitSubmit.getProductVariantOptionSubmitList(), productVariantByCatModelList);
+            title = ProductVariantViewConverter.getMultipleVariantOptionTitle(level, productVariantUnitSubmit.getProductVariantOptionSubmitList(), productVariantByCatModelList);
         }
         if (TextUtils.isEmpty(title)) {
             title = getString(R.string.product_label_choose);
@@ -365,7 +366,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         if (productVariantDataSubmit == null) {
             return null;
         }
-        return ProductVariantUtils.getVariantUnitSubmitByLevel(level, productVariantDataSubmit.getProductVariantUnitSubmitList());
+        return ProductVariantViewConverter.getVariantUnitSubmitByLevel(level, productVariantDataSubmit.getProductVariantUnitSubmitList());
     }
 
     /**
