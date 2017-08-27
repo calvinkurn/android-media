@@ -23,6 +23,7 @@ import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerAc
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,11 +138,18 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     @Override
     public void onItemClicked(ProductVariantDashboardViewModel productVariantDashboardViewModel) {
         ProductVariantByCatModel productVariantByCatModel = ProductVariantUtils.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
+        ArrayList<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();
+        if (productVariantByCatModel != null) {
+            productVariantDetailViewModelList = new ArrayList<>(ProductVariantUtils.getProductVariantValueListForVariantDetail(
+                    ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE,
+                    productVariantDataSubmit.getProductVariantUnitSubmitList(),
+                    productVariantByCatModel.getUnitList()));
+        }
         ProductVariantDetailActivity.start(getContext(), ProductVariantDashboardFragment.this,
                 productVariantDashboardViewModel.getTemporaryId(),
                 productVariantDashboardViewModel.getTitle(),
                 ProductVariantUtils.isContainVariantStatusByOptionId(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList()),
-                new ArrayList<>(ProductVariantUtils.getProductVariantValueListForVariantDetail(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantDataSubmit.getProductVariantUnitSubmitList(), productVariantByCatModel.getUnitList())),
+                productVariantDetailViewModelList,
                 new ArrayList<>(ProductVariantUtils.getSelectedOptionIdList(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList())));
     }
 
