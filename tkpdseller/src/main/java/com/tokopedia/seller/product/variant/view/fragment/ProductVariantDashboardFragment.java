@@ -272,16 +272,15 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         switch (level) {
             case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
                 otherVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
-                oldVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
                 break;
             case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
                 otherVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
-                oldVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
                 break;
         }
         if (otherVariantUnitSubmit != null) {
             otherVariantUnitSubmitList = otherVariantUnitSubmit.getProductVariantOptionSubmitList();
         }
+        oldVariantUnitSubmit = getVariantUnitSubmit(level);
         if (oldVariantUnitSubmit != null) {
             oldProductVariantOptionSubmitList = oldVariantUnitSubmit.getProductVariantOptionSubmitList();
         }

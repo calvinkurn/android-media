@@ -328,7 +328,7 @@ public class ProductVariantUtils {
             List<ProductVariantOptionSubmit> searchFromVariantOptionSubmitList, List<ProductVariantOptionSubmit> compareToVariantOptionSubmitList1) {
         List<ProductVariantOptionSubmit> diffVariantOptionSubmitList = new ArrayList<>();
         for (ProductVariantOptionSubmit productVariantOptionSubmit : searchFromVariantOptionSubmitList) {
-            if (getVariantOptionFromOptionId(productVariantOptionSubmit.getTemporaryId(), compareToVariantOptionSubmitList1) == null) {
+            if (getVariantOptionByOptionId(productVariantOptionSubmit.getTemporaryId(), compareToVariantOptionSubmitList1) == null) {
                 diffVariantOptionSubmitList.add(productVariantOptionSubmit);
             }
         }
@@ -624,6 +624,42 @@ public class ProductVariantUtils {
     }
 
     /**
+     * Get all text from server and custom text
+     *
+     * @param productVariantOptionSubmitList
+     * @param productVariantUnitList
+     * @return
+     */
+    public static List<String> getAllVariantOptionNameList(long unitId, List<ProductVariantOptionSubmit> productVariantOptionSubmitList, List<ProductVariantUnit> productVariantUnitList) {
+        List<String> titleList = getVariantOptionNameList(unitId, productVariantUnitList);
+        List<String> titleCacheList = getVariantOptionNameList(productVariantOptionSubmitList, productVariantUnitList);
+        for (String text : titleCacheList) {
+            if (!titleList.contains(text)) {
+                titleList.add(text);
+            }
+        }
+        return titleList;
+    }
+
+    /**
+     * Get name list of variant option from server
+     *
+     * @param productVariantUnitList
+     * @return
+     */
+    private static List<String> getVariantOptionNameList(long unitId, List<ProductVariantUnit> productVariantUnitList) {
+        List<String> titleList = new ArrayList<>();
+        for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
+            if (productVariantUnit.getUnitId() == unitId) {
+                for (ProductVariantOption productVariantOption : productVariantUnit.getProductVariantOptionList()) {
+                    titleList.add(productVariantOption.getValue());
+                }
+            }
+        }
+        return titleList;
+    }
+
+    /**
      * Get all variant submit option by level
      * eg "variant": [
      * {"v": 2,"vu": 0,"pos": 1,"pv": null,"opt":[{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]},
@@ -768,7 +804,7 @@ public class ProductVariantUtils {
      */
     private static List<ProductVariantUnitSubmit> getRemovedVariantUnitListByOptionId(long optionId, List<ProductVariantUnitSubmit> variantUnitSubmitList) {
         ProductVariantUnitSubmit variantUnitSubmit = getVariantUnitByOptionId(optionId, variantUnitSubmitList);
-        ProductVariantOptionSubmit variantOptionSubmit = getVariantOptionFromOptionId(optionId, variantUnitSubmit.getProductVariantOptionSubmitList());
+        ProductVariantOptionSubmit variantOptionSubmit = getVariantOptionByOptionId(optionId, variantUnitSubmit.getProductVariantOptionSubmitList());
         variantUnitSubmit.getProductVariantOptionSubmitList().remove(variantOptionSubmit);
         return variantUnitSubmitList;
     }
@@ -807,7 +843,7 @@ public class ProductVariantUtils {
      */
     private static ProductVariantUnitSubmit getVariantUnitByOptionId(long optionId, List<ProductVariantUnitSubmit> variantUnitSubmitList) {
         for (ProductVariantUnitSubmit productVariantUnitSubmit : variantUnitSubmitList) {
-            ProductVariantOptionSubmit productVariantOptionSubmit = getVariantOptionFromOptionId(optionId, productVariantUnitSubmit.getProductVariantOptionSubmitList());
+            ProductVariantOptionSubmit productVariantOptionSubmit = getVariantOptionByOptionId(optionId, productVariantUnitSubmit.getProductVariantOptionSubmitList());
             if (productVariantOptionSubmit != null) {
                 return productVariantUnitSubmit;
             }
@@ -824,7 +860,7 @@ public class ProductVariantUtils {
      * @param variantOptionSubmitList
      * @return
      */
-    private static ProductVariantOptionSubmit getVariantOptionFromOptionId(long optionId, List<ProductVariantOptionSubmit> variantOptionSubmitList) {
+    private static ProductVariantOptionSubmit getVariantOptionByOptionId(long optionId, List<ProductVariantOptionSubmit> variantOptionSubmitList) {
         for (ProductVariantOptionSubmit productVariantOptionSubmit : variantOptionSubmitList) {
             if (productVariantOptionSubmit.getTemporaryId() == optionId) {
                 return productVariantOptionSubmit;

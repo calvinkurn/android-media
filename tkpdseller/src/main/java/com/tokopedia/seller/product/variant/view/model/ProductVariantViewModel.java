@@ -13,19 +13,23 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
 
     public final static int TYPE = 123;
 
-    private long id;
+    private long temporaryId;
     private long unitValueId;
     private String hexCode;
     private String title;
     private String imageUrl;
 
-    public void setId(long id) {
-        this.id = id;
+    public void setTemporaryId(long tempId) {
+        this.temporaryId = tempId;
+    }
+
+    public long getTemporaryId() {
+        return temporaryId;
     }
 
     @Override
     public String getId() {
-        return String.valueOf(id);
+        return String.valueOf(temporaryId);
     }
 
     public long getUnitValueId() {
@@ -74,7 +78,7 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
+        dest.writeLong(this.temporaryId);
         dest.writeLong(this.unitValueId);
         dest.writeString(this.hexCode);
         dest.writeString(this.title);
@@ -85,7 +89,7 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
     }
 
     protected ProductVariantViewModel(Parcel in) {
-        this.id = in.readLong();
+        this.temporaryId = in.readLong();
         this.unitValueId = in.readLong();
         this.hexCode = in.readString();
         this.title = in.readString();

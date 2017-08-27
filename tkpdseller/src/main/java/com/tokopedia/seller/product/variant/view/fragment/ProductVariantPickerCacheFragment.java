@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
@@ -11,6 +12,7 @@ import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerIt
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,13 +22,19 @@ import java.util.List;
 public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<ProductVariantViewModel> implements ProductVariantPickerCacheListAdapter.RemoveCallback<ProductVariantViewModel>, ProductVariantPickerItemCacheList<ProductVariantViewModel> {
 
     private int startTempId;
-    private int currentTempId;
+    private long currentTempId;
+
+    /**
+     * Use temporary id to avoid lost value if regenerate (check and uncheck) temporary id
+     */
+    private HashMap<String, Long> temporaryIdMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startTempId = getActivity().getIntent().getIntExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, 0);
         currentTempId = startTempId;
+        temporaryIdMap = new HashMap<>();
     }
 
     @Override
@@ -38,8 +46,13 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
 
     @Override
     public void addItem(ProductVariantViewModel productVariantViewModel) {
-        // Set id as temp id
-        productVariantViewModel.setId(currentTempId++);
+        if (TextUtils.isEmpty(productVariantViewModel.getId()) || productVariantViewModel.getTemporaryId() == 0) {
+            // Set id as temp id
+            productVariantViewModel.setTemporaryId(getTemporaryId(productVariantViewModel.getTitle()));
+        } else {
+            // Existing id, put no map
+            temporaryIdMap.put(productVariantViewModel.getTitle(), productVariantViewModel.getTemporaryId());
+        }
         itemList.add(productVariantViewModel);
         resetPageAndSearch();
     }
@@ -53,7 +66,7 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
 
     @Override
     public void onRemove(ProductVariantViewModel productVariantViewModel) {
-        productVariantViewModel.setId(0);
+        productVariantViewModel.setTemporaryId(0);
         itemList.remove(productVariantViewModel);
         pickerMultipleItem.removeItemFromCache(productVariantViewModel);
         resetPageAndSearch();
@@ -65,8 +78,46 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
         resetPageAndSearch();
     }
 
+    /**
+     * Get temporary id from map or generate new temp id
+     *
+     * @param name
+     * @return
+     */
+    private long getTemporaryId(String name) {
+        Long temporaryId = temporaryIdMap.get(name);
+        if (temporaryId != null) {
+            // Return existing temp id
+            return temporaryId;
+        }
+        // Get available temporary id
+        boolean temporaryIdAvailable = false;
+        while (!temporaryIdAvailable) {
+            currentTempId++;
+            temporaryIdAvailable = isTemporaryIdAvailable(currentTempId);
+        }
+        // Put on map
+        temporaryIdMap.put(name, currentTempId);
+        return currentTempId;
+    }
+
+    /**
+     * Check if temporary id available
+     *
+     * @param tempId
+     * @return
+     */
+    private boolean isTemporaryIdAvailable(long tempId) {
+        for (Long tempIdFromMap : temporaryIdMap.values()) {
+            if (tempIdFromMap == tempId) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private ProductVariantViewModel getVariantByUnitValueId(long unitValueId) {
-        for (ProductVariantViewModel productVariantViewModel: itemList) {
+        for (ProductVariantViewModel productVariantViewModel : itemList) {
             if (productVariantViewModel.getUnitValueId() == unitValueId) {
                 return productVariantViewModel;
             }
@@ -76,9 +127,9 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
 
     public List<ProductVariantOptionSubmit> getVariantSubmitOptionList() {
         List<ProductVariantOptionSubmit> productVariantOptionSubmitList = new ArrayList<>();
-        for (ProductVariantViewModel productVariantViewModel: itemList) {
+        for (ProductVariantViewModel productVariantViewModel : itemList) {
             ProductVariantOptionSubmit productVariantOptionSubmit = new ProductVariantOptionSubmit();
-            productVariantOptionSubmit.setTemporaryId(Long.parseLong(productVariantViewModel.getId()));
+            productVariantOptionSubmit.setTemporaryId(productVariantViewModel.getTemporaryId());
             if (productVariantViewModel.getUnitValueId() > 0) {
                 productVariantOptionSubmit.setVariantUnitValueId(productVariantViewModel.getUnitValueId());
             } else {

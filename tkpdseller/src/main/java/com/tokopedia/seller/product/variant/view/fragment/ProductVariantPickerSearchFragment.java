@@ -48,7 +48,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     private List<ProductVariantOption> filteredProductVariantOptionList;
     private ProductVariantUnitSubmit productVariantUnitSubmit;
 
-    private long currentVariantUnitId;
+    private long selectedVariantUnitId;
     private String unitName;
 
     @Override
@@ -63,12 +63,12 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             unitName = productVariantByCatModel.getName();
             productVariantUnitList = productVariantByCatModel.getUnitList();
             productVariantOptionList = productVariantUnitList.get(0).getProductVariantOptionList();
-            currentVariantUnitId = productVariantUnitList.get(0).getUnitId();
+            selectedVariantUnitId = productVariantUnitList.get(0).getUnitId();
             filteredProductVariantOptionList = productVariantOptionList;
         }
         productVariantUnitSubmit = getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
         if (productVariantUnitSubmit != null) {
-            currentVariantUnitId = productVariantUnitSubmit.getVariantUnitId();
+            selectedVariantUnitId = productVariantUnitSubmit.getVariantUnitId();
         }
     }
 
@@ -102,7 +102,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             public void onItemChanged(int position, String entry, String value) {
                 for (ProductVariantUnit productVariantUnit : productVariantUnitList) {
                     if (value.equalsIgnoreCase(String.valueOf(productVariantUnit.getUnitId()))) {
-                        currentVariantUnitId = productVariantUnit.getUnitId();
+                        selectedVariantUnitId = productVariantUnit.getUnitId();
                         productVariantOptionList = productVariantUnit.getProductVariantOptionList();
                         filteredProductVariantOptionList = productVariantOptionList;
                         pickerMultipleItem.removeAllItemFromSearch();
@@ -125,7 +125,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             unitSpinnerTextView.setEntries(variantUnitTextArray);
             unitSpinnerTextView.setValues(variantUnitValueArray);
             unitSpinnerTextView.setVisibility(View.VISIBLE);
-            unitSpinnerTextView.setSpinnerValue(String.valueOf(currentVariantUnitId));
+            unitSpinnerTextView.setSpinnerValue(String.valueOf(selectedVariantUnitId));
         }
         if (productVariantOptionList != null && productVariantOptionList.size() >= MINIMUM_SHOW_SEARCH_BOX) {
             searchInputView.setVisibility(View.VISIBLE);
@@ -140,18 +140,22 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             return;
         }
         for (ProductVariantOptionSubmit productVariantOptionSubmit : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
+            ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
+            String title = "";
             if (TextUtils.isEmpty(productVariantOptionSubmit.getCustomText())) {
                 ProductVariantOption productVariantOption = ProductVariantUtils.getProductVariantValue(productVariantOptionSubmit.getVariantUnitValueId(), productVariantOptionList);
                 if (productVariantOption != null) {
                     ((BaseMultipleCheckListAdapter<ProductVariantOption>) adapter).setChecked(productVariantOption.getId(), true);
-                    onItemChecked(productVariantOption, true);
+                    title = productVariantOption.getValue();
+                    productVariantViewModel.setHexCode(productVariantOption.getHexCode());
                 }
             } else {
-                ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-                productVariantViewModel.setUnitValueId(productVariantOptionSubmit.getVariantUnitValueId());
-                productVariantViewModel.setTitle(productVariantOptionSubmit.getCustomText());
-                pickerMultipleItem.addItemFromSearch(productVariantViewModel);
+                title = productVariantOptionSubmit.getCustomText();
             }
+            productVariantViewModel.setTemporaryId(productVariantOptionSubmit.getTemporaryId());
+            productVariantViewModel.setUnitValueId(productVariantOptionSubmit.getVariantUnitValueId());
+            productVariantViewModel.setTitle(title);
+            pickerMultipleItem.addItemFromSearch(productVariantViewModel);
         }
     }
 
@@ -251,7 +255,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         filteredProductVariantOptionList = productVariantOptionListTemp;
     }
 
-    public long getCurrentUnitId() {
-        return currentVariantUnitId;
+    public long getSelectedUnitId() {
+        return selectedVariantUnitId;
     }
 }

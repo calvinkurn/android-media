@@ -90,7 +90,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     protected Intent getDefaultIntentResult() {
         ProductVariantUnitSubmit productVariantUnitSubmit = new ProductVariantUnitSubmit();
         productVariantUnitSubmit.setVariantId(productVariantByCatModel.getVariantId());
-        productVariantUnitSubmit.setVariantUnitId(((ProductVariantPickerSearchFragment) getSearchListFragment()).getCurrentUnitId());
+        productVariantUnitSubmit.setVariantUnitId(((ProductVariantPickerSearchFragment) getSearchListFragment()).getSelectedUnitId());
         productVariantUnitSubmit.setPosition(ProductVariantUtils.getVariantPositionByStatus(productVariantByCatModel.getStatus()));
         productVariantUnitSubmit.setProductVariantOptionSubmitList(((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList());
         Intent intent = new Intent();
@@ -160,9 +160,10 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         ProductVariantItemPickerAddDialogFragment dialogFragment = new ProductVariantItemPickerAddDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_TITLE, productVariantByCatModel.getName());
+        long selectedUnitId = ((ProductVariantPickerSearchFragment) getSearchListFragment()).getSelectedUnitId();
         List<ProductVariantOptionSubmit> productVariantOptionSubmitList = ((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList();
         ArrayList<String> titleList = new ArrayList<>();
-        titleList.addAll(ProductVariantUtils.getVariantOptionNameList(productVariantOptionSubmitList, productVariantByCatModel.getUnitList()));
+        titleList.addAll(ProductVariantUtils.getAllVariantOptionNameList(selectedUnitId, productVariantOptionSubmitList, productVariantByCatModel.getUnitList()));
         bundle.putStringArrayList(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_RESERVED_TITLE_LIST, titleList);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);
