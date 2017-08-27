@@ -15,8 +15,8 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVari
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +32,26 @@ public class ProductVariantUtils {
     private static final String VARIANT_TITLE_SEPARATOR = ",";
     private static final String SPLIT_DELIMITER = ":"; // this depends on the api.
 
-    public static List<ProductVariantDashboardViewModel> getProductVariantManageViewModelListOneLevel() {
-        return null;
-    }
-
-    public static List<ProductVariantDashboardViewModel> getGeneratedVariantDashboardViewModelListTwoLevel(
+    /**
+     * Generate variant dashboard view model, converting variant data to dashboard view list
+     *
+     * @param productVariantUnitSubmitList
+     * @param productVariantCombinationSubmitList
+     * @param productVariantByCatModelList
+     * @return
+     */
+    public static List<ProductVariantDashboardViewModel> getGeneratedVariantDashboardViewModelList(
             List<ProductVariantUnitSubmit> productVariantUnitSubmitList,
             List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList,
             List<ProductVariantByCatModel> productVariantByCatModelList) {
         List<ProductVariantDashboardViewModel> variantDashboardViewModelList = new ArrayList<>();
         ProductVariantUnitSubmit productVariantUnitSubmit = getVariantUnitSubmitByLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, productVariantUnitSubmitList);
-        for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
-            ProductVariantDashboardViewModel productVariantDashboardViewModel = getGeneratedVariantManageViewModel(
-                    productVariantOptionSubmitLv1, productVariantUnitSubmitList, productVariantCombinationSubmitList, productVariantByCatModelList);
-            variantDashboardViewModelList.add(productVariantDashboardViewModel);
+        if (productVariantUnitSubmit != null) {
+            for (ProductVariantOptionSubmit productVariantOptionSubmitLv1 : productVariantUnitSubmit.getProductVariantOptionSubmitList()) {
+                ProductVariantDashboardViewModel productVariantDashboardViewModel = getGeneratedVariantManageViewModel(
+                        productVariantOptionSubmitLv1, productVariantUnitSubmitList, productVariantCombinationSubmitList, productVariantByCatModelList);
+                variantDashboardViewModelList.add(productVariantDashboardViewModel);
+            }
         }
         return variantDashboardViewModelList;
     }
@@ -272,6 +278,18 @@ public class ProductVariantUtils {
         return null;
     }
 
+    /**
+     * Update variant combination list value from new variant option list value (new/removed option value from variant option picker)
+     * -Find removed variant option list, remove from combination list
+     * -Find added variant option list, add to combination list based on how many level applied
+     * -Remove unnecessary variant combination level
+     *
+     * @param oldVariantOptionSubmitList
+     * @param newVariantOptionSubmitList
+     * @param variantCombinationSubmitList
+     * @param otherLevelVariantOptionSubmitList
+     * @return
+     */
     public static List<ProductVariantCombinationSubmit> getAddedVariantCombinationList(
             List<ProductVariantOptionSubmit> oldVariantOptionSubmitList, List<ProductVariantOptionSubmit> newVariantOptionSubmitList,
             List<ProductVariantCombinationSubmit> variantCombinationSubmitList,
@@ -318,6 +336,15 @@ public class ProductVariantUtils {
     }
 
 
+    /**
+     * Remove unused variant combination that changed from level 1 to 2 or 2 to 1
+     * eg [{"st":1,"opt":[3,1]},{"st":1,"opt":[4,1]},{"st":1,"opt":[3]},{"st":1,"opt":[4]}]
+     * level = 2, return [{"st":1,"opt":[3,1]},{"st":1,"opt":[4,1]}]
+     *
+     * @param level
+     * @param variantCombinationSubmitList
+     * @return
+     */
     private static List<ProductVariantCombinationSubmit> getRemovedLevelVariantCombination(int level, List<ProductVariantCombinationSubmit> variantCombinationSubmitList) {
         if (variantCombinationSubmitList == null) {
             variantCombinationSubmitList = new ArrayList<>();
@@ -330,23 +357,6 @@ public class ProductVariantUtils {
             }
         }
         return variantCombinationSubmitList;
-    }
-
-    /**
-     * Generate default variant combination from variant unit list
-     *
-     * @param variantUnitSubmitList
-     * @return
-     */
-    public static List<ProductVariantCombinationSubmit> getGeneratedDefaultVariantCombinationListFromVariantUnitList(List<ProductVariantUnitSubmit> variantUnitSubmitList) {
-        ProductVariantUnitSubmit variantUnitLv1 = getVariantUnitSubmitByLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmitList);
-        ProductVariantUnitSubmit variantUnitLv2 = getVariantUnitSubmitByLevel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, variantUnitSubmitList);
-        if (variantUnitLv1 != null && variantUnitLv2 != null) {
-            return getGeneratedVariantCombinationList(variantUnitLv1.getProductVariantOptionSubmitList(), variantUnitLv2.getProductVariantOptionSubmitList());
-        } else if (variantUnitLv1 != null) {
-            return getGeneratedVariantCombinationList(variantUnitLv1.getProductVariantOptionSubmitList());
-        }
-        return new ArrayList<>();
     }
 
     /**
@@ -532,6 +542,59 @@ public class ProductVariantUtils {
     }
 
     /**
+     * Get removed unnecessary variant unit
+     * eg [
+     * {"v":2,"vu":0,"pos":1,"pv":null,"opt":[{"pvo":0,"vuv":22,"t_id":1,"cstm":""},{"pvo":0,"vuv":23,"t_id":2,"cstm":""}]},
+     * {"v":3,"vu":3,"pos":2,"pv":null,"opt":[]}]
+     * return [{"v":2,"vu":0,"pos":1,"pv":null,"opt":[{"pvo":0,"vuv":22,"t_id":1,"cstm":""},{"pvo":0,"vuv":23,"t_id":2,"cstm":""}]}]
+     *
+     * @param variantUnitSubmitList
+     * @return
+     */
+    public static List<ProductVariantUnitSubmit> getValidatedVariantUnitList(List<ProductVariantUnitSubmit> variantUnitSubmitList) {
+        int variantUnitSubmitSize = variantUnitSubmitList.size();
+        for (int i = variantUnitSubmitSize - 1; i >= 0; i--) {
+            ProductVariantUnitSubmit variantUnitSubmit = variantUnitSubmitList.get(i);
+            if (!isVariantUnitValid(variantUnitSubmit)) {
+                variantUnitSubmitList.remove(i);
+            }
+        }
+        return variantUnitSubmitList;
+    }
+
+    /**
+     * Update or add new Variant unit to variant unit list
+     *
+     * @param variantUnitSubmitList
+     * @param productVariantUnitSubmit
+     * @return
+     */
+    public static List<ProductVariantUnitSubmit> getUpdatedVariantUnitListPosition(
+            List<ProductVariantUnitSubmit> variantUnitSubmitList, ProductVariantUnitSubmit productVariantUnitSubmit) {
+        int variantUnitSubmitSize = variantUnitSubmitList.size();
+        for (int i = 0; i < variantUnitSubmitSize; i++) {
+            ProductVariantUnitSubmit productVariantUnitSubmitTemp = variantUnitSubmitList.get(i);
+            if (productVariantUnitSubmitTemp.getPosition() == productVariantUnitSubmit.getPosition()) {
+                variantUnitSubmitList.set(i, productVariantUnitSubmit);
+                return variantUnitSubmitList;
+            }
+        }
+        // Variant unit not found, add it
+        variantUnitSubmitList.add(productVariantUnitSubmit);
+        return variantUnitSubmitList;
+    }
+
+    /**
+     * Check if variant unit is empty or not
+     *
+     * @param productVariantUnitSubmit
+     * @return
+     */
+    private static boolean isVariantUnitValid(ProductVariantUnitSubmit productVariantUnitSubmit) {
+        return productVariantUnitSubmit.getProductVariantOptionSubmitList().size() > 0;
+    }
+
+    /**
      * Get variant name list based on variant option list
      * eg
      * variant option: [{"pvo":0,"vuv":22,"t_id":1,"cstm":""},{"pvo":0,"vuv":23,"t_id":2,"cstm":""}]
@@ -682,7 +745,10 @@ public class ProductVariantUtils {
      * @return
      */
     public static ProductVariantDataSubmit getRemovedVariantDataByOptionId(long optionId, ProductVariantDataSubmit variantData) {
-        variantData.setProductVariantUnitSubmitList(getRemovedVariantUnitListByOptionId(optionId, variantData.getProductVariantUnitSubmitList()));
+        List<ProductVariantUnitSubmit> variantUnitList = variantData.getProductVariantUnitSubmitList();
+        variantUnitList = getRemovedVariantUnitListByOptionId(optionId, variantUnitList);
+        variantUnitList = getValidatedVariantUnitList(variantUnitList);
+        variantData.setProductVariantUnitSubmitList(variantUnitList);
         variantData.setProductVariantCombinationSubmitList(getRemovedVariantCombinationListByOptionId(optionId, variantData.getProductVariantCombinationSubmitList()));
         return variantData;
     }

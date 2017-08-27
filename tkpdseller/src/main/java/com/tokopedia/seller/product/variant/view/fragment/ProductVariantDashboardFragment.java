@@ -183,7 +183,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 break;
         }
         addVariantCombination(level, productVariantUnitSubmit);
-        setVariantLevel(level, productVariantUnitSubmit);
+        updateVariantUnitList(productVariantUnitSubmit);
         checkVariantValidation(level, productVariantUnitSubmit);
         updateVariantUnitView();
         updateVariantItemListView();
@@ -232,17 +232,14 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         updateVariantItemListView();
     }
 
-    private void setVariantLevel(int level, ProductVariantUnitSubmit productVariantUnitSubmit) {
-        int variantUnitSubmitSize = productVariantDataSubmit.getProductVariantUnitSubmitList().size();
-        for (int i = 0; i < variantUnitSubmitSize; i++) {
-            ProductVariantUnitSubmit productVariantUnitSubmitTemp = productVariantDataSubmit.getProductVariantUnitSubmitList().get(i);
-            if (productVariantUnitSubmitTemp.getPosition() == level) {
-                productVariantDataSubmit.getProductVariantUnitSubmitList().set(i, productVariantUnitSubmit);
-                return;
-            }
-        }
-        // Variant unit not found, add it
-        productVariantDataSubmit.getProductVariantUnitSubmitList().add(productVariantUnitSubmit);
+    private void updateVariantUnitList(ProductVariantUnitSubmit productVariantUnitSubmit) {
+        List<ProductVariantUnitSubmit> variantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
+        // Update variant unit list position
+        variantUnitSubmitList = ProductVariantUtils.getUpdatedVariantUnitListPosition(variantUnitSubmitList, productVariantUnitSubmit);
+        // Validate variant unit list
+        variantUnitSubmitList = ProductVariantUtils.getValidatedVariantUnitList(variantUnitSubmitList);
+
+        productVariantDataSubmit.setProductVariantUnitSubmitList(variantUnitSubmitList);
     }
 
     /**
@@ -253,11 +250,12 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
      * @param productVariantUnitSubmit
      */
     private void checkVariantValidation(int level, ProductVariantUnitSubmit productVariantUnitSubmit) {
-        if (productVariantUnitSubmit.getProductVariantOptionSubmitList() != null && productVariantUnitSubmit.getProductVariantOptionSubmitList().size() > 0) {
+        if (productVariantUnitSubmit.getProductVariantOptionSubmitList() != null &&
+                productVariantUnitSubmit.getProductVariantOptionSubmitList().size() > 0) {
             return;
         }
         int variantUnitSubmitSize = productVariantDataSubmit.getProductVariantUnitSubmitList().size();
-        for (int i = 0; i < variantUnitSubmitSize; i++) {
+        for (int i = variantUnitSubmitSize - 1; i >= 0; i--) {
             ProductVariantUnitSubmit productVariantUnitSubmitTemp = productVariantDataSubmit.getProductVariantUnitSubmitList().get(i);
             if (productVariantUnitSubmitTemp.getPosition() > level) {
                 productVariantDataSubmit.getProductVariantUnitSubmitList().remove(i);
@@ -296,16 +294,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         productVariantDataSubmit.setProductVariantCombinationSubmitList(productVariantCombinationSubmitList);
     }
 
-    private void updateVariantCombinationToDefault() {
-        if (productVariantDataSubmit == null) {
-            productVariantDataSubmit = new ProductVariantDataSubmit();
-            productVariantDataSubmit.setProductVariantUnitSubmitList(new ArrayList<ProductVariantUnitSubmit>());
-        }
-        List<ProductVariantCombinationSubmit> variantCombinationList =
-                ProductVariantUtils.getGeneratedDefaultVariantCombinationListFromVariantUnitList(productVariantDataSubmit.getProductVariantUnitSubmitList());
-        productVariantDataSubmit.setProductVariantCombinationSubmitList(variantCombinationList);
-    }
-
     /**
      * Update variant item list view
      */
@@ -315,7 +303,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             variantListView.setVisibility(View.GONE);
             return;
         }
-        List<ProductVariantDashboardViewModel> variantManageViewModelList = ProductVariantUtils.getGeneratedVariantDashboardViewModelListTwoLevel(
+        List<ProductVariantDashboardViewModel> variantManageViewModelList = ProductVariantUtils.getGeneratedVariantDashboardViewModelList(
                 productVariantDataSubmit.getProductVariantUnitSubmitList(),
                 productVariantDataSubmit.getProductVariantCombinationSubmitList(),
                 productVariantByCatModelList);
