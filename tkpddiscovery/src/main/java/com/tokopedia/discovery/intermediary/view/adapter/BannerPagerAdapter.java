@@ -46,7 +46,6 @@ public class BannerPagerAdapter extends PagerAdapter {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO: ask banner name
                     UnifyTracking.eventBannerClickCategory(categoryId,bannerList.get(position).getUrl());
                     Intent intent = new Intent(context, TopPicksWebView.class);
                     intent.putExtra(URL, bannerList.get(position).getUrl());
