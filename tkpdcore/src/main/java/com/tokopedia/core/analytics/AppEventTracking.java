@@ -288,6 +288,8 @@ public interface AppEventTracking {
         String FILTER = "Filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
+
+        String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
     }
 
     interface EventLabel {
@@ -473,8 +475,9 @@ public interface AppEventTracking {
         String TO_APP_ORDER = "To App - Order";
         String TOPADS = "TopAds";
         String SELLER_HOME = "Home - SellerApp";
-
         String EXPAND_SUB_CATEGORY = "Expand Subcategory";
+        String PAYMENT_AND_TOPUP = "Pembayaran dan Top Up";
+        String DIGITAL_TRANSACTION_LIST = "Daftar Transaksi Digital";
     }
 
     interface SOCIAL_MEDIA {
