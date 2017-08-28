@@ -28,9 +28,16 @@
             android:clipToPadding="false" />
     </FrameLayout>
 
-    <Button
-        android:id="@+id/button_save"
-        style="@style/Button.Submit.Green"
-        android:text="@string/label_variant_save"
-        android:layout_marginBottom="@dimen/margin_small"/>
+    <FrameLayout
+        android:id="@+id/layout_footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_picker_multiple_item_footer_height"
+        android:layout_gravity="bottom"
+        android:background="@android:color/white">
+        <Button
+            android:id="@+id/button_save"
+            style="@style/Button.Submit.Green"
+            android:text="@string/label_variant_save"
+            android:layout_marginBottom="@dimen/margin_small"/>
+    </FrameLayout>
 </LinearLayout>
