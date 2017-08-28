@@ -11,9 +11,6 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilter
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
-import static com.tokopedia.core.discovery.model.Filter.TEMPLATE_NAME_PRICE;
-import static com.tokopedia.core.discovery.model.Filter.TITLE_SEPARATOR;
-
 /**
  * Created by henrypriyono on 8/11/17.
  */
@@ -28,10 +25,10 @@ public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
     @Override
     public int type(Filter filter) {
-        if (TITLE_SEPARATOR.equals(filter.getTitle())) {
+        if (filter.isSeparator()) {
             return R.layout.dynamic_filter_item_separator;
         }
-        else if (TEMPLATE_NAME_PRICE.equals(filter.getTemplateName())) {
+        else if (filter.isPriceFilter()) {
             return R.layout.dynamic_filter_item_price;
         } else if (filter.getOptions().size() == 1) {
             return R.layout.dynamic_filter_item_toggle;

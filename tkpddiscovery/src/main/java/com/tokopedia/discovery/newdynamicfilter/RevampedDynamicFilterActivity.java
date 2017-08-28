@@ -126,7 +126,16 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     private void loadFilterItems() {
         List<Filter> filterList = Parcels.unwrap(
                 getIntent().getParcelableExtra(EXTRA_FILTER_LIST));
+        removeFiltersWithEmptyOption(filterList);
         adapter.setFilterList(filterList);
+    }
+
+    private void removeFiltersWithEmptyOption(List<Filter> filterList) {
+        for (Filter filter : filterList) {
+            if (filter.getOptions().isEmpty() && !filter.isSeparator()) {
+                filterList.remove(filter);
+            }
+        }
     }
 
     private void loadLastFilterState(Bundle savedInstanceState) {
@@ -283,7 +292,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     @Override
     public void onExpandableItemClicked(Filter filter) {
         selectedExpandableItemPosition = adapter.getItemPosition(filter);
-        if (FilterDetailActivityRouter.isCategoryFilter(filter)) {
+        if (filter.isCategoryFilter()) {
             FilterDetailActivityRouter
                     .launchCategoryActivity(this, filter, selectedCategoryRootId, selectedCategoryId);
         } else {
@@ -324,7 +333,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     public List<Option> getSelectedOptions(Filter filter) {
         List<Option> selectedOptions = new ArrayList<>();
 
-        if (Filter.TEMPLATE_NAME_CATEGORY.equals(filter.getTemplateName()) && isCategorySelected()) {
+        if (filter.isCategoryFilter() && isCategorySelected()) {
             selectedOptions.add(getSelectedCategoryAsOption());
         } else {
             selectedOptions.addAll(getCheckedOptionList(filter));

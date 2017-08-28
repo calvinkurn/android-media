@@ -16,11 +16,12 @@ import java.util.List;
  */
 public class Filter implements Serializable, Parcelable {
     public static final String TITLE_CATEGORY = "Kategori";
-    public static final String TITLE_SEPARATOR = "Separator";
-    public static final String TITLE_RATING = "Rating";
-    public static final String TEMPLATE_NAME_CATEGORY = "template_category";
-    public static final String TEMPLATE_NAME_COLOR = "template_color";
-    public static final String TEMPLATE_NAME_PRICE = "template_price";
+
+    private static final String TITLE_SEPARATOR = "Separator";
+    private static final String TITLE_RATING = "Rating";
+    private static final String TEMPLATE_NAME_CATEGORY = "template_category";
+    private static final String TEMPLATE_NAME_COLOR = "template_color";
+    private static final String TEMPLATE_NAME_PRICE = "template_price";
 
     @SerializedName("title")
     @Expose
@@ -36,6 +37,26 @@ public class Filter implements Serializable, Parcelable {
     List<Option> options = new ArrayList<>();
 
     public Filter() {
+    }
+
+    public boolean isSeparator() {
+        return TITLE_SEPARATOR.equals(title);
+    }
+
+    public boolean isCategoryFilter() {
+        return TEMPLATE_NAME_CATEGORY.equals(templateName);
+    }
+
+    public boolean isColorFilter() {
+        return TEMPLATE_NAME_COLOR.equals(templateName);
+    }
+
+    public boolean isPriceFilter() {
+        return TEMPLATE_NAME_PRICE.equals(templateName);
+    }
+
+    public boolean isRatingFilter() {
+        return TITLE_RATING.equals(title);
     }
 
     /**

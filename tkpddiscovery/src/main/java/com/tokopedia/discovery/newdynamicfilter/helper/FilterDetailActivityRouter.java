@@ -8,10 +8,6 @@ import com.tokopedia.discovery.newdynamicfilter.DynamicFilterColorActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterRatingActivity;
 
-import static com.tokopedia.core.discovery.model.Filter.TEMPLATE_NAME_CATEGORY;
-import static com.tokopedia.core.discovery.model.Filter.TEMPLATE_NAME_COLOR;
-import static com.tokopedia.core.discovery.model.Filter.TITLE_RATING;
-
 /**
  * Created by henrypriyono on 8/16/17.
  */
@@ -19,7 +15,7 @@ import static com.tokopedia.core.discovery.model.Filter.TITLE_RATING;
 public class FilterDetailActivityRouter {
 
     public static void launchDetailActivity(AppCompatActivity activity, Filter filter) {
-        if (TEMPLATE_NAME_COLOR.equals(filter.getTemplateName())) {
+        if (filter.isColorFilter()) {
             DynamicFilterColorActivity
                     .moveTo(activity,
                             filter.getTitle(),
@@ -27,7 +23,7 @@ public class FilterDetailActivityRouter {
                             filter.getSearch().getSearchable() == 1,
                             filter.getSearch().getPlaceholder());
 
-        } else if (TITLE_RATING.equals(filter.getTitle())) {
+        } else if (filter.isRatingFilter()) {
             DynamicFilterRatingActivity
                     .moveTo(activity,
                             filter.getTitle(),
@@ -54,9 +50,5 @@ public class FilterDetailActivityRouter {
                         filter.getOptions(),
                         defaultCategoryRootId,
                         defaultCategoryId);
-    }
-
-    public static boolean isCategoryFilter(Filter filter) {
-        return TEMPLATE_NAME_CATEGORY.equals(filter.getTemplateName());
     }
 }
