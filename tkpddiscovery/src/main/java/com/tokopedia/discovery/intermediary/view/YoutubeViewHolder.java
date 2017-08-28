@@ -35,14 +35,6 @@ public class YoutubeViewHolder extends RelativeLayout {
         initView(context, videoUrl);
     }
 
-    public YoutubeViewHolder(Context context) {
-        super(context);
-    }
-
-    public YoutubeViewHolder(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
     private void initView(Context context, final String youtubeVideoId) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
