@@ -57,8 +57,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         Intent activityIntent = getActivity().getIntent();
         productVariantByCatModelList = activityIntent.getParcelableArrayListExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
         productVariantDataSubmit = new ProductVariantDataSubmit();
-        productVariantDataSubmit.setProductVariantCombinationSubmitList(new ArrayList<ProductVariantCombinationSubmit>());
-        productVariantDataSubmit.setProductVariantUnitSubmitList(new ArrayList<ProductVariantUnitSubmit>());
         if (savedInstanceState == null) {
             if (activityIntent.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
                 productVariantDataSubmit = activityIntent.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
