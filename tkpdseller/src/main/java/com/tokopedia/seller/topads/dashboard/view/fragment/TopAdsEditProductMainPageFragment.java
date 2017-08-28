@@ -27,6 +27,7 @@ import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductP
 
 public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageFragment<ProductAd> {
 
+    private static final int REQUEST_MANAGE_PRODUCT = 2;
     private LabelView manageGroup;
 
     public static Fragment createInstance(ProductAd ad, String adId) {
@@ -96,8 +97,7 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
             intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), adId,
                     TopAdsGroupManagePromoFragment.NOT_IN_GROUP, "", "");
         }
-        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
-        getActivity().finish();
+        startActivityForResult(intent, REQUEST_MANAGE_PRODUCT);
     }
 
     @Override
@@ -120,6 +120,16 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
             intent = TopAdsEditCostProductActivity.createIntent(getActivity(), adId);
         }
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (intent != null && requestCode == REQUEST_MANAGE_PRODUCT &&
+                intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false)) {
+            setResultAdDetailChanged();
+            getActivity().finish();
+        }
     }
 
     private boolean isHasGroupAd() {
