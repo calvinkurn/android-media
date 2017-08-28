@@ -16,7 +16,7 @@
         android:id="@+id/rating_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:buttonTint="@color/medium_green"
+        app:buttonTint="@color/checkbox_color_state"
         style="@style/CheckBox"/>
 
     <ImageView
