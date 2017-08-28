@@ -27,7 +27,6 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.TagHandlerUtil;
 import com.tokopedia.transaction.opportunity.domain.interactor.CancelReplacementUseCase;
 import com.tokopedia.transaction.opportunity.view.subsriber.CancelReplacementSubscriber;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
@@ -54,7 +53,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     private final TxOrderNetInteractor netInteractor;
     private final CancelReplacementUseCase cancelReplacementUseCase;
     private final SessionHandler sessionHandler;
-
+    private static final int FREE_RETURN = 1;
     public TxListPresenterImpl(TxListViewListener viewListener,
                                CancelReplacementUseCase cancelReplacementUseCase,
                                SessionHandler sessionHandler) {
@@ -383,6 +382,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         netInteractor.unSubscribeObservable();
     }
 
+    
     @Override
     public void cancelReplacement(Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -424,8 +424,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         TextView tvFinishBody = (TextView) dialog.findViewById(R.id.tvFinishBody);
         Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
         Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
-        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle(), null, new TagHandlerUtil()));
-        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg(), null, new TagHandlerUtil()));
+        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle()));
+        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg()));
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -454,8 +454,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
-        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle(), null, new TagHandlerUtil()));
-        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg(), null, new TagHandlerUtil()));
+        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
+        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
 
         llFreeReturn.setVisibility(View.GONE);
         btnBack.setVisibility(View.GONE);
@@ -464,11 +464,13 @@ public class TxListPresenterImpl implements TxListPresenter {
             btnNotReceive.setVisibility(View.VISIBLE);
         else
             btnBack.setVisibility(View.VISIBLE);
-
-        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
-            llFreeReturn.setVisibility(View.VISIBLE);
-            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
-        }
+      
+        //will be used later
+//        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
+//            llFreeReturn.setVisibility(View.VISIBLE);
+//            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+//        }
+  
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -487,17 +489,25 @@ public class TxListPresenterImpl implements TxListPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                LocalCacheHandler cache = new LocalCacheHandler(context,
-                        ConstantOnBoarding.CACHE_FREE_RETURN);
-                if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
-                    viewListener.navigateToActivityRequest(
-                            InboxRouter.getCreateResCenterActivityIntent(
-                                    context, orderData.getOrderDetail().getDetailOrderId()
-                            ), CREATE_RESCENTER_REQUEST_CODE
-                    );
+                if (orderData.getOrderDetail().getDetailFreeReturn() == FREE_RETURN) {
+                    LocalCacheHandler cache = new LocalCacheHandler(context,
+                            ConstantOnBoarding.CACHE_FREE_RETURN);
+                    if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    } else {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    }
                 } else {
                     viewListener.navigateToActivityRequest(
-                            InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                            InboxRouter.getCreateResCenterActivityIntent(
                                     context, orderData.getOrderDetail().getDetailOrderId()
                             ), CREATE_RESCENTER_REQUEST_CODE
                     );
@@ -516,9 +526,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
         TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
         TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
-        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle(), null, new TagHandlerUtil()));
-        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg(), null,
-                new TagHandlerUtil()));
+        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle()));
+        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg()));
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

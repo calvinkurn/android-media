@@ -58,7 +58,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processGetCategoryAndBannerData() {
         String categoryId = view.getCategoryId();
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+        if (GlobalConfig.isSellerApp()) {
+            paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+        }
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
         view.showInitialProgressLoading();
@@ -153,10 +155,11 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processStateDataToReRender() {
         CategoryData categoryData = view.getCategoryDataState();
         List<BannerData> bannerDataList = view.getBannerDataListState();
+        List<BannerData> otherBannerDataList = view.getBannerDataListState();
         HistoryClientNumber historyClientNumber = view.getHistoryClientNumberState();
         if (categoryData != null) {
             renderCategoryDataAndBannerToView(
-                    categoryData, bannerDataList, historyClientNumber
+                    categoryData, bannerDataList, otherBannerDataList, historyClientNumber
             );
             view.renderStateSelectedAllData();
         }
@@ -254,10 +257,11 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 view.hideInitialProgressLoading();
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 List<BannerData> bannerDataList = productDigitalData.getBannerDataList();
+                List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
                 renderCategoryDataAndBannerToView(
-                        categoryData, bannerDataList, historyClientNumber
+                        categoryData, bannerDataList, otherBannerDataList, historyClientNumber
                 );
             }
         };
@@ -266,6 +270,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,
                                                    List<BannerData> bannerDataList,
+                                                   List<BannerData> otherBannerDataList,
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
@@ -292,6 +297,10 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 view.renderBannerListData(
                         categoryData.getName(),
                         bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
+                );
+                view.renderOtherBannerListData(
+                        view.getStringFromResource(R.string.other_promo),
+                        otherBannerDataList != null ? otherBannerDataList : new ArrayList<BannerData>()
                 );
             }
         } else {

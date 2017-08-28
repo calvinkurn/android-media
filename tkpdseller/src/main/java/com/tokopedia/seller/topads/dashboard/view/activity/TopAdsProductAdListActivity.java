@@ -52,7 +52,7 @@ public class TopAdsProductAdListActivity extends TActivity
         }
         final TopAdsProductAdListFragment topAdsProductAdListFragment =
                 (TopAdsProductAdListFragment) getSupportFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
-        if (topAdsProductAdListFragment == null) {
+        if (topAdsProductAdListFragment == null || topAdsProductAdListFragment.getView() == null) {
             return;
         }
 
@@ -85,6 +85,9 @@ public class TopAdsProductAdListActivity extends TActivity
             recyclerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if (topAdsProductAdListFragment.getView() == null) {
+                        return;
+                    }
                     View dateView = topAdsProductAdListFragment.getDateView();
                     if (dateView != null) {
                         dateView.setVisibility(View.VISIBLE);

@@ -31,6 +31,8 @@ public class CartDigitalInfoData implements Parcelable {
 
     private Relationships relationships;
 
+    private boolean forceRenderCart;
+
     public String getType() {
         return type;
     }
@@ -111,6 +113,17 @@ public class CartDigitalInfoData implements Parcelable {
         this.relationships = relationships;
     }
 
+    public boolean isForceRenderCart() {
+        return forceRenderCart;
+    }
+
+    public void setForceRenderCart(boolean forceRenderCart) {
+        this.forceRenderCart = forceRenderCart;
+    }
+
+    public CartDigitalInfoData() {
+    }
+
 
     @Override
     public int describeContents() {
@@ -129,9 +142,7 @@ public class CartDigitalInfoData implements Parcelable {
         dest.writeTypedList(this.mainInfo);
         dest.writeTypedList(this.additionalInfos);
         dest.writeParcelable(this.relationships, flags);
-    }
-
-    public CartDigitalInfoData() {
+        dest.writeByte(this.forceRenderCart ? (byte) 1 : (byte) 0);
     }
 
     protected CartDigitalInfoData(Parcel in) {
@@ -145,18 +156,18 @@ public class CartDigitalInfoData implements Parcelable {
         this.mainInfo = in.createTypedArrayList(CartItemDigital.CREATOR);
         this.additionalInfos = in.createTypedArrayList(CartAdditionalInfo.CREATOR);
         this.relationships = in.readParcelable(Relationships.class.getClassLoader());
+        this.forceRenderCart = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<CartDigitalInfoData> CREATOR =
-            new Parcelable.Creator<CartDigitalInfoData>() {
-                @Override
-                public CartDigitalInfoData createFromParcel(Parcel source) {
-                    return new CartDigitalInfoData(source);
-                }
+    public static final Creator<CartDigitalInfoData> CREATOR = new Creator<CartDigitalInfoData>() {
+        @Override
+        public CartDigitalInfoData createFromParcel(Parcel source) {
+            return new CartDigitalInfoData(source);
+        }
 
-                @Override
-                public CartDigitalInfoData[] newArray(int size) {
-                    return new CartDigitalInfoData[size];
-                }
-            };
+        @Override
+        public CartDigitalInfoData[] newArray(int size) {
+            return new CartDigitalInfoData[size];
+        }
+    };
 }
