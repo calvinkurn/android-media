@@ -983,6 +983,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         productVariant.setProductImageUrl(productData.getProductImages().get(0).getImageSrc300());
         productVariant.setProductPrice(productData.getInfo().getProductPrice());
         this.priceSimulationView.addProductVariant(productVariant);
+        if (variantLevel1 != null) {
+            String variantText = variantLevel1.getValue();
+            if (variantLevel2!=null) {
+                variantText += (", " + variantLevel2.getValue());
+            }
+            priceSimulationView.updateVariant(variantText);
+        }
     }
 
     private void destroyVideoLayout() {
