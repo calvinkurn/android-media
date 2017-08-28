@@ -132,6 +132,10 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
         }
     }
 
+    public int getActivePosition() {
+        return activePosition;
+    }
+
     public interface OnItemClickListener {
         void onChildClicked(com.tokopedia.discovery.categorynav.domain.model.Category category);
     }

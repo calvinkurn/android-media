@@ -46,6 +46,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
     public static final String FILTER_TEXT_PREF = "filter_text";
 
+    private static final String FILTER_SELECTED_CATEGORY_ROOT_ID_PREF = "filter_selected_category_root_id";
     private static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
     private static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
     private static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
@@ -63,6 +64,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     private int selectedExpandableItemPosition;
     private String selectedCategoryId;
     private String selectedCategoryName;
+    private String selectedCategoryRootId;
 
     public static void moveTo(AppCompatActivity activity,
                               List<Filter> filterCategoryList) {
@@ -140,6 +142,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         savedTextInput = Parcels.unwrap(savedInstanceState.getParcelable(FILTER_TEXT_PREF));
         selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
         selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
+        selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
     }
 
     private void loadLastFilterStateFromPreference() {
@@ -150,6 +153,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         savedTextInput = new Gson().fromJson(savedTextInputJson, savedTextInput.getClass());
 
         selectedCategoryId = preferences.getString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        selectedCategoryRootId = preferences.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF, selectedCategoryRootId);
         selectedCategoryName = preferences.getString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
     }
 
@@ -165,6 +169,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         outState.putParcelable(FILTER_CHECKED_STATE_PREF, Parcels.wrap(savedCheckedState));
         outState.putParcelable(FILTER_TEXT_PREF, Parcels.wrap(savedTextInput));
         outState.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        outState.putString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF, selectedCategoryRootId);
         outState.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
     }
 
@@ -194,9 +199,11 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     private void handleResultFromCategoryPage(Intent data) {
         selectedCategoryId
-                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_RESULT_SELECTED_CATEGORY_ID);
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
+        selectedCategoryRootId
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
         selectedCategoryName
-                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_RESULT_SELECTED_CATEGORY_NAME);
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
     }
 
     private void applyFilter() {
@@ -222,6 +229,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     private void writeSelectedCategoryToPreference() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        editor.putString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF, selectedCategoryRootId);
         editor.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
         editor.apply();
     }
@@ -275,8 +283,13 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     @Override
     public void onExpandableItemClicked(Filter filter) {
         selectedExpandableItemPosition = adapter.getItemPosition(filter);
-        enrichWithInputState(filter);
-        FilterDetailActivityRouter.launchDetailActivity(this, filter);
+        if (FilterDetailActivityRouter.isCategoryFilter(filter)) {
+            FilterDetailActivityRouter
+                    .launchCategoryActivity(this, filter, selectedCategoryRootId, selectedCategoryId);
+        } else {
+            enrichWithInputState(filter);
+            FilterDetailActivityRouter.launchDetailActivity(this, filter);
+        }
     }
 
     private void enrichWithInputState(Filter filter) {
@@ -320,7 +333,9 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     }
 
     private boolean isCategorySelected() {
-        return !TextUtils.isEmpty(selectedCategoryId) && !TextUtils.isEmpty(selectedCategoryName);
+        return !TextUtils.isEmpty(selectedCategoryRootId) &&
+                !TextUtils.isEmpty(selectedCategoryId) &&
+                !TextUtils.isEmpty(selectedCategoryName);
     }
 
     private Option getSelectedCategoryAsOption() {
@@ -342,6 +357,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     public void removeSelectedOption(Option option) {
         if (CATEGORY_KEY.equals(option.getKey())) {
             selectedCategoryId = null;
+            selectedCategoryRootId = null;
             selectedCategoryName = null;
         } else {
             saveCheckedState(option, false);

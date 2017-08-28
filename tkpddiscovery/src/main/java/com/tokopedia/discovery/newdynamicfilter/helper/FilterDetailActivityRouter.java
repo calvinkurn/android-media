@@ -27,11 +27,6 @@ public class FilterDetailActivityRouter {
                             filter.getSearch().getSearchable() == 1,
                             filter.getSearch().getPlaceholder());
 
-        } else if (TEMPLATE_NAME_CATEGORY.equals(filter.getTemplateName())) {
-            DynamicFilterCategoryActivity
-                    .moveTo(activity,
-                            filter.getOptions());
-
         } else if (TITLE_RATING.equals(filter.getTitle())) {
             DynamicFilterRatingActivity
                     .moveTo(activity,
@@ -48,5 +43,20 @@ public class FilterDetailActivityRouter {
                             filter.getSearch().getSearchable() == 1,
                             filter.getSearch().getPlaceholder());
         }
+    }
+
+    public static void launchCategoryActivity(AppCompatActivity activity,
+                                              Filter filter,
+                                              String defaultCategoryRootId,
+                                              String defaultCategoryId) {
+        DynamicFilterCategoryActivity
+                .moveTo(activity,
+                        filter.getOptions(),
+                        defaultCategoryRootId,
+                        defaultCategoryId);
+    }
+
+    public static boolean isCategoryFilter(Filter filter) {
+        return TEMPLATE_NAME_CATEGORY.equals(filter.getTemplateName());
     }
 }
