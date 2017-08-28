@@ -325,14 +325,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-//        if(GlobalConfig.isSellerApp()){
-//            verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-//            if(b) UnifyTracking.eventTruecallerImpression();
-//        }else {
-//            verifyTrueCaller.setVisibility(View.GONE);
-//        }
-
-
         Drawable img = MethodChecker.getDrawable(getActivity(), R.drawable.truecaller);
         img.setBounds( 0, 0, 75, 75);
         verifyTrueCaller.setCompoundDrawables( img, null, null, null );

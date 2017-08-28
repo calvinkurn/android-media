@@ -199,7 +199,7 @@
                 android:id="@+id/verify_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
-                android:text="Lanjutkan dengan Truecaller"
+                android:text="@string/truecaller_verif"
                 android:drawableLeft="@drawable/truecaller"
                 android:textColor="@color/white"
                 android:gravity="center"
