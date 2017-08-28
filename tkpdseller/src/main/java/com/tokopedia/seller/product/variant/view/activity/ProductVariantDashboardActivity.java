@@ -20,7 +20,6 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
 
     @Override
     public void onBackPressed() {
-        // TODO hendry to get the variant data and return to the caller
         if (getFragment()!= null && getFragment() instanceof ProductVariantDashboardFragment) {
             Intent intent = new Intent();
             intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION,

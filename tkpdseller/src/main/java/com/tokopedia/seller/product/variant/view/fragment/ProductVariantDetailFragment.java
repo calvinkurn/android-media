@@ -31,6 +31,8 @@ import java.util.List;
 
 public class ProductVariantDetailFragment extends Fragment implements ProductVariantDetailAdapter.OnProductVariantDataAdapterListener {
 
+    public static final String SAVED_HAS_STOCK = "has_stk";
+
     private OnProductVariantDataManageFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
     private View buttonSave;
@@ -51,9 +53,17 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
         super.onCreate(savedInstanceState);
         Intent activityIntent = getActivity().getIntent();
 
-        ArrayList<Long> variantValueIdList = (ArrayList<Long>) activityIntent.getSerializableExtra(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
         ArrayList<ProductVariantDetailViewModel> productVariantValueArrayList = activityIntent.getParcelableArrayListExtra(ProductVariantDetailActivity.EXTRA_VARIANT_VALUE_LIST);
-        variantHasStock = activityIntent.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
+
+        ArrayList<Long> variantValueIdList;
+        if (savedInstanceState == null) {
+            variantValueIdList = (ArrayList<Long>) activityIntent.getSerializableExtra(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
+            variantHasStock = activityIntent.getBooleanExtra(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
+        } else {
+            variantValueIdList = (ArrayList<Long>)
+                    savedInstanceState.getSerializable(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST);
+            variantHasStock = savedInstanceState.getBoolean(ProductVariantDetailActivity.EXTRA_VARIANT_HAS_STOCK, false);
+        }
         if (variantValueIdList == null) {
             variantValueIdList = new ArrayList<>();
         }
@@ -163,5 +173,6 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
         super.onSaveInstanceState(outState);
         outState.putSerializable(ProductVariantDetailActivity.EXTRA_SELECTED_VARIANT_ID_LIST,
                 productVariantDetailAdapter.getVariantValueIdList());
+        outState.putBoolean(SAVED_HAS_STOCK, labelSwitchStatus.isChecked());
     }
 }
