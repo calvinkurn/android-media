@@ -50,7 +50,7 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
                                                     List<TopAdsProductViewModel> topAdsProductViewModelList) {
         List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels = new ArrayList<>();
         for(TopAdsProductViewModel topAdsProductViewModel : topAdsProductViewModelList){
-            TopAdsDetailGroupDomainModel detailGroupDomainModel = topAdsDetailGroupDomainModel;
+            TopAdsDetailGroupDomainModel detailGroupDomainModel = topAdsDetailGroupDomainModel.copy();
             String adId = String.valueOf(topAdsProductViewModel.getAdId());
             String itemId = String.valueOf( topAdsProductViewModel.getId() );
             detailGroupDomainModel.setAdId(adId);
