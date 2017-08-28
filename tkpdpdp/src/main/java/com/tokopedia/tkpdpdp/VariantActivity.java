@@ -115,7 +115,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                         finish();
                         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                     } else {
-                        Intent intent = ProductInfoActivity.createInstance(VariantActivity.this, Integer.toString(variant.getProductId()));
+                        Intent intent = ProductInfoActivity.createInstance(VariantActivity.this, Integer.toString(variantDatumSelected.getProductId()));
                         VariantActivity.this.startActivity(intent);
                         setResult(VariantActivity.KILL_PDP_BACKGROUND, generateExtraSelectedIntent());
                         finish();
