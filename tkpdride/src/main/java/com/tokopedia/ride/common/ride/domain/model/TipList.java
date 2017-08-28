@@ -1,4 +1,4 @@
-package com.tokopedia.ride.completetrip.domain.model;
+package com.tokopedia.ride.common.ride.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -86,7 +86,7 @@ public class TipList implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<TipList> CREATOR = new Parcelable.Creator<TipList>() {
+    public static final Creator<TipList> CREATOR = new Creator<TipList>() {
         @Override
         public TipList createFromParcel(Parcel in) {
             return new TipList(in);

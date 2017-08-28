@@ -15,6 +15,7 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
+import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public interface RideApi {
 
     @POST(RideUrl.UPDATE_REQUEST)
     @FormUrlEncoded
-    Observable<String> updateRequest(@FieldMap TKPDMapParam<String, Object> parameters);
+    Observable<UpdateDestinationEntity> updateRequest(@FieldMap TKPDMapParam<String, Object> parameters);
 
     @POST(RideUrl.SEND_TIP)
     @FormUrlEncoded

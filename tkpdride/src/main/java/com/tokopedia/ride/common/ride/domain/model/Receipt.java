@@ -1,4 +1,4 @@
-package com.tokopedia.ride.completetrip.domain.model;
+package com.tokopedia.ride.common.ride.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

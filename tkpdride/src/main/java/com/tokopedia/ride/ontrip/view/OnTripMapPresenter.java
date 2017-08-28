@@ -48,6 +48,7 @@ import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.UpdateDestination;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
@@ -807,6 +808,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         createRideRequestUseCase.unsubscribe();
         getOverviewPolylineUseCase.unsubscribe();
         getRideRequestMapUseCase.unsubscribe();
+        updateRideRequestUseCase.unsubscribe();
         super.detachView();
     }
 
@@ -1054,7 +1056,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         params.putString(UpdateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(destinationTemp.getLongitude()));
         params.putString(UpdateRideRequestUseCase.PARAM_REQUEST_ID, activeRideRequest.getRequestId());
 
-        updateRideRequestUseCase.execute(params, new Subscriber<String>() {
+        updateRideRequestUseCase.execute(params, new Subscriber<UpdateDestination>() {
             @Override
             public void onCompleted() {
 
@@ -1062,18 +1064,26 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onError(Throwable e) {
-                getView().hideUpdateDestinationLoading();
-                getView().showMessage(e.getMessage());
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().hideUpdateDestinationLoading();
+                    getView().showMessage(e.getMessage());
+                }
             }
 
             @Override
-            public void onNext(String s) {
-                getView().hideUpdateDestinationLoading();
-                getView().setDestination(destinationTemp);
+            public void onNext(UpdateDestination updateDestination) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().hideUpdateDestinationLoading();
+
+                    if (updateDestination != null && updateDestination.getPendingPayment() != null) {
+                        //show topup pending payment interrupt
+                        getView().startTopupTokoCashChangeDestinationActivity(updateDestination.getPendingPayment(), activeRideRequest.getRequestId());
+                    } else {
+                        getView().setDestination(destinationTemp);
+                    }
+                }
             }
         });
-
-        //Toast.makeText(getView().getActivity(), "Updating destination", Toast.LENGTH_LONG).show();
     }
 
     @Override

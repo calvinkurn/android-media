@@ -55,6 +55,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
@@ -72,6 +73,7 @@ import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Location;
+import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
@@ -87,6 +89,7 @@ import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
 import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 import com.tokopedia.ride.ontrip.view.SendCancelReasonActivity;
+import com.tokopedia.ride.ontrip.view.TopupTokoCashChangeDestination;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
@@ -113,6 +116,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_CANCEL_REASON = 1007;
     private static final int REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG = 1008;
     private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1009;
+    private static final int REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION = 1010;
 
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
@@ -124,6 +128,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";
+
 
     @Inject
     OnTripMapPresenter presenter;
@@ -180,6 +185,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private int markerId;
     private ProgressDialog mProgressDialog;
     private MapConfiguration mapConfiguration;
+    private PlacePassViewModel changedDestination;
 
     public static OnTripMapFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
         Bundle bundle = new Bundle();
@@ -560,7 +566,16 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
                     } else {
                         //update destination
+                        changedDestination = destinationTemp;
                         presenter.updateDestination(destinationTemp);
+                    }
+                }
+                break;
+            case REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION:
+                if (resultCode == IDigitalModuleRouter.PAYMENT_SUCCESS) {
+                    //call update request again
+                    if (changedDestination != null) {
+                        presenter.updateDestination(changedDestination);
                     }
                 }
                 break;
@@ -1383,6 +1398,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .rideComponent(component)
                 .build();
         onTripComponent.inject(this);
+    }
+
+    @Override
+    public void startTopupTokoCashChangeDestinationActivity(PendingPayment pendingPayment, String requestId) {
+        Intent topupIntent = TopupTokoCashChangeDestination.getCallingIntent(getActivity(), pendingPayment, requestId);
+        startActivityForResult(topupIntent, REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION);
+
     }
 
 }

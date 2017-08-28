@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
 
 import java.util.ArrayList;
 

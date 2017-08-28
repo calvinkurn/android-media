@@ -23,7 +23,6 @@
         <activity
             android:name=".completetrip.view.CompleteTripActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
-
         <activity android:name=".bookingride.view.activity.TokoCashWebViewActivity" />
         <activity
             android:name=".history.view.RideHistoryActivity"
@@ -56,9 +55,13 @@
         <activity
             android:name=".ontrip.view.SendCancelReasonActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".completetrip.view.PendingFareChooserActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
 
-        <activity android:name=".completetrip.view.PendingFareChooserActivity"
-            android:theme="@style/AppTheme.Ride.NoActionBar"/>
+        <activity
+            android:name=".ontrip.view.TopupTokoCashChangeDestination"
+            android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
     </application>
 
 </manifest>

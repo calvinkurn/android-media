@@ -2,8 +2,8 @@ package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
-import com.tokopedia.ride.completetrip.domain.model.TipList;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.domain.model.TipList;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
