@@ -211,4 +211,11 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             getActivity().finish();
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        presenter.setOnDestroyView();
+        super.onDestroyView();
+    }
+
 }
