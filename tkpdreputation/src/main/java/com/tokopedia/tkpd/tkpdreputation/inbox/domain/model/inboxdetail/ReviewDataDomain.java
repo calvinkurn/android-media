@@ -35,4 +35,44 @@ public class ReviewDataDomain {
         this.reviewAnonymity = reviewAnonymity;
         this.reviewResponse = reviewResponse;
     }
+
+    public int getReviewId() {
+        return reviewId;
+    }
+
+    public int getReputationId() {
+        return reputationId;
+    }
+
+    public String getReviewTitle() {
+        return reviewTitle;
+    }
+
+    public String getReviewMessage() {
+        return reviewMessage;
+    }
+
+    public int getReviewRating() {
+        return reviewRating;
+    }
+
+    public List<ImageAttachmentDomain> getReviewImageUrl() {
+        return reviewImageUrl;
+    }
+
+    public String getReviewCreateTime() {
+        return reviewCreateTime;
+    }
+
+    public String getReviewUpdateTime() {
+        return reviewUpdateTime;
+    }
+
+    public boolean isReviewAnonymity() {
+        return reviewAnonymity;
+    }
+
+    public ReviewResponseDomain getReviewResponse() {
+        return reviewResponse;
+    }
 }

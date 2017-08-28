@@ -58,7 +58,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         ImageHandler.LoadImage(avatar, element.getRevieweePicture());
         setDeadline(element);
 //        setReputation(holder, position);
-        setNotification(element.showBookmark());
+        setNotification(element.getReputationDataViewModel().isShowBookmark());
         setAction(element);
 
         action.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +66,12 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
             public void onClick(View v) {
                 viewListener.onGoToDetail(
                         element.getReputationId(),
+                        element.getInvoice(),
+                        element.getCreateTime(),
+                        element.getRevieweeName(),
+                        element.getRevieweePicture(),
+                        element.getReputationDataViewModel(),
+                        getTextDeadline(element),
                         getAdapterPosition());
             }
         });
@@ -73,7 +79,8 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
 
     private void setAction(InboxReputationItemViewModel inboxReputationItemViewModel) {
-        action.setText(inboxReputationItemViewModel.getActionMessage());
+        action.setText(inboxReputationItemViewModel.getReputationDataViewModel()
+                .getActionMessage());
     }
 
     private void setNotification(boolean showBookmark) {
@@ -88,7 +95,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
     private void setDeadline(InboxReputationItemViewModel element) {
-        if (element.showLockingDeadline()) {
+        if (element.getReputationDataViewModel().isShowLockingDeadline()) {
             deadline.setVisibility(View.VISIBLE);
             textDeadline.setText(getTextDeadline(element));
         } else {
@@ -98,7 +105,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
     private String getTextDeadline(InboxReputationItemViewModel element) {
         return MainApplication.getAppContext().getString(R.string.deadline_prefix)
-                + element.getReputationDaysLeft() + " " +
+                + " " + element.getReputationDaysLeft() + " " +
                 MainApplication.getAppContext().getString(R.string.deadline_suffix);
     }
 }

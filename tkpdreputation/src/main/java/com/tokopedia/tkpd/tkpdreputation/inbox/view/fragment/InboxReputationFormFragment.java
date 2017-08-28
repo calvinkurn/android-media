@@ -30,7 +30,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     public static InboxReputationFormFragment createInstance(String id) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(InboxReputationDetailActivity.ARGS_REPUTATION_ID, id);
+//        bundle.putString(InboxReputationDetailActivity.ARGS_REPUTATION_ID, id);
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -27,7 +27,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/shop_name"
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
@@ -51,46 +51,71 @@
             android:background="@drawable/green_button_rounded"
             android:text="@string/favorite_button"
             android:textAllCaps="false"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 
-    <RelativeLayout
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        />
+
+    <LinearLayout
         android:id="@+id/deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/red_deadline"
-        android:gravity="center"
+        android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ImageView
-            android:id="@+id/icon_deadline"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_vs"
-            android:src="@drawable/ic_red_hourglass"/>
+            android:layout_gravity="center"
+            android:background="@color/red_deadline"
+            android:gravity="center"
+            >
 
-        <TextView
-            android:id="@+id/deadline_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_toRightOf="@id/icon_deadline"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/black_38"
-            android:textSize="@dimen/text_size_xxsmall"
-            android:textStyle="normal"
-            tools:text="Batas memberikan penilaian 3 hari lagi"/>
+            <ImageView
+                android:id="@+id/icon_deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_vs"
+                android:src="@drawable/ic_red_hourglass"/>
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/deadline_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_toRightOf="@id/icon_deadline"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/text_size_xxsmall"
+                android:textStyle="normal"
+                tools:text="Batas memberikan penilaian 3 hari lagi"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"
+            />
+    </LinearLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_activity">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/padding_activity"
+        android:layout_marginRight="@dimen/padding_activity"
+        android:layout_marginTop="@dimen/margin_small">
 
         <TextView
             android:id="@+id/prompt_text"
@@ -107,6 +132,7 @@
             />
 
         <TextView
+            android:id="@+id/change_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -121,9 +147,10 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/smiley"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_activity"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/margin_small"/>
 
     <View
         android:layout_width="match_parent"
@@ -155,14 +182,19 @@
 
         <ImageView
             android:id="@+id/opponent_smiley"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/opponent_smiley"
+            android:layout_height="@dimen/opponent_smiley"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/margin_vs"
             android:layout_toEndOf="@id/opponent_smiley_text"
             android:layout_toRightOf="@id/opponent_smiley_text"
             android:gravity="center_vertical"
-            tools:src="@drawable/ic_red_hourglass"/>
+            tools:src="@drawable/ic_smiley_empty"/>
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        />
 </LinearLayout>

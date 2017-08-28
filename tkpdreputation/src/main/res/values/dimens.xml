@@ -12,5 +12,7 @@
     <dimen name="detail_reputation_avatar">40dp</dimen>
     <dimen name="detail_reputation_product_image">52dp</dimen>
     <dimen name="width_filter">128dp</dimen>
+    <dimen name="smiley_size">28dp</dimen>
+    <dimen name="opponent_smiley">17dp</dimen>
 
 </resources>

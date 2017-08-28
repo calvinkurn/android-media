@@ -19,7 +19,11 @@ public interface InboxReputationDetail {
 
         void onErrorGetInboxDetail(String errorMessage);
 
-        void onSuccessGetInboxDetail(InboxReputationDetailHeaderViewModel model, List<Visitable> list);
+        void onSuccessGetInboxDetail(List<Visitable> list);
+
+        void onEditReview();
+
+        void onSkipReview(String reviewId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

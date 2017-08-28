@@ -22,7 +22,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/right_arrow"
@@ -42,10 +42,9 @@
             android:layout_gravity="center_vertical"
             android:layout_toLeftOf="@id/right_arrow"
             android:gravity="center_vertical"
+            android:text="@string/give_review"
             android:textColor="@color/medium_green"
-            android:textSize="14sp"
-            tools:text="Beri Penilaian dan Balas Ulasan"/>
-
+            android:textSize="@dimen/font_small"/>
 
     </RelativeLayout>
 
@@ -61,4 +60,38 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/grey_300"/>
+
+    <RelativeLayout
+        android:id="@+id/add_reply_review_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/reply_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:src="@drawable/ic_chevron_right_green"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/reply_icon"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:lineSpacingExtra="5sp"
+            android:text="@string/reply"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/text_size_s_medium"
+            android:textStyle="normal"
+            />
+
+    </RelativeLayout>
 </LinearLayout>

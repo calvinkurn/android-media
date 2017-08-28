@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">tkpdreputation</string>
     <string name="title_tab_waiting_review">MENUNGGU DIULAS</string>
-    <string name="title_tab_my_review">ULASAN_SAYA</string>
+    <string name="title_tab_my_review">ULASAN SAYA</string>
     <string name="title_tab_buyer_review">ULASAN PEMBELI</string>
     <string name="empty_inbox_reputation">Reputasi kosong</string>
-    <string name="deadline_prefix">Reputasi akan dikunci dalam</string>
+    <string name="deadline_prefix">Batas memberikan penilaian</string>
     <string name="deadline_suffix">hari lagi</string>
     <string name="title_activity_submit_review">Ulasan Produk</string>
     <string name="product_quality">Kualitas Produk</string>
@@ -27,5 +27,17 @@
     <string name="filter_all">Semua</string>
     <string name="filter_given_reputation">Sudah Dinilai</string>
     <string name="filter_no_reputation">Belum Dinilai</string>
+    <string name="by">Oleh</string>
+    <string name="give_review">Beri Ulasan</string>
+    <string name="menu_edit">Ubah</string>
+    <string name="menu_skip">Lewati</string>
+    <string name="reply">Balas</string>
+    <string name="your_scoring">Penilaian dari Anda</string>
+    <string name="reputation_prompt">Bagaimana pengalaman Anda bertransaksi dengan</string>
+    <string name="smiley_bad">Kecewa</string>
+    <string name="smiley_netral">Netral</string>
+    <string name="smiley_good">Puas</string>
+    <string name="seller_has_not_review">Penjual Belum Menilai</string>
+    <string name="score_from_seller">Penilaian dari Penjual</string>
 
 </resources>

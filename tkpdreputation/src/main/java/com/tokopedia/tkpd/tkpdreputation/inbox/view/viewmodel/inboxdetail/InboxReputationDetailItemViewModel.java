@@ -1,7 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail;
 
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
+
+import java.util.List;
 
 /**
  * @author by nisie on 8/19/17.
@@ -9,6 +15,97 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdet
 
 public class InboxReputationDetailItemViewModel implements
         Visitable<InboxReputationDetailTypeFactory> {
+
+    private final String reviewId;
+    private final boolean reviewHasReviewed;
+    private final boolean reviewIsEditable;
+    private final boolean reviewIsSkippable;
+    String productId;
+    String productName;
+    String productAvatar;
+    String reviewerName;
+    String reviewTime;
+    List<ImageAttachmentViewModel> reviewAttachment;
+    String review;
+    int reviewStar;
+    boolean reviewIsSkipped;
+
+    public InboxReputationDetailItemViewModel(String productId, String productName,
+                                              String productAvatar, String reviewId,
+                                              String reviewerName, String reviewTime,
+                                              List<ImageAttachmentViewModel> reviewAttachment,
+                                              String review, int reviewStar,
+                                              boolean reviewHasReviewed,
+                                              boolean reviewIsEditable,
+                                              boolean reviewIsSkippable,
+                                              boolean reviewIsSkipped) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productAvatar = productAvatar;
+        this.reviewId = reviewId;
+        this.reviewerName = reviewerName;
+        this.reviewTime = reviewTime;
+        this.reviewAttachment = reviewAttachment;
+        this.review = review;
+        this.reviewStar = reviewStar;
+        this.reviewIsSkipped = reviewIsSkipped;
+        this.reviewHasReviewed = reviewHasReviewed;
+        this.reviewIsEditable = reviewIsEditable;
+        this.reviewIsSkippable = reviewIsSkippable;
+    }
+
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getProductAvatar() {
+        return productAvatar;
+    }
+
+    public String getReviewerName() {
+        return reviewerName;
+    }
+
+    public String getReviewTime() {
+        return reviewTime;
+    }
+
+    public List<ImageAttachmentViewModel> getReviewAttachment() {
+        return reviewAttachment;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public int getReviewStar() {
+        return reviewStar;
+    }
+
+    public boolean isReviewSkipped() {
+        return reviewIsSkipped;
+    }
+
+    public boolean isReviewHasReviewed() {
+        return reviewHasReviewed;
+    }
+
+    public boolean isReviewIsEditable() {
+        return reviewIsEditable;
+    }
+
+    public boolean isReviewIsSkippable() {
+        return reviewIsSkippable;
+    }
+
     @Override
     public int type(InboxReputationDetailTypeFactory typeFactory) {
         return typeFactory.type(this);

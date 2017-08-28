@@ -31,6 +31,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.In
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 
 import javax.inject.Inject;
 
@@ -249,14 +251,31 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToDetail(String reputationId, int adapterPosition) {
+    public void onGoToDetail(String reputationId, String invoice, String createTime,
+                             String revieweeName, String revieweeImage,
+                             ReputationDataViewModel reputationDataViewModel, String textDeadline,
+                             int adapterPosition) {
         startActivityForResult(
                 InboxReputationDetailActivity.getCallingIntent(
                         getActivity(),
-                        reputationId,
+                        getInboxReputationDetailPassModel(reputationId, invoice, createTime,
+                                revieweeImage, revieweeName, textDeadline, reputationDataViewModel),
                         adapterPosition,
                         getTab()),
                 REQUEST_OPEN_DETAIL);
+    }
+
+    private InboxReputationDetailPassModel getInboxReputationDetailPassModel(
+            String reputationId,
+            String invoice,
+            String createTime,
+            String revieweeImage,
+            String revieweeName,
+            String textDeadline,
+            ReputationDataViewModel reputationDataViewModel) {
+        return new InboxReputationDetailPassModel(reputationId, revieweeName, revieweeImage,
+                textDeadline, invoice, createTime, reputationDataViewModel);
+
     }
 
     @Override
@@ -293,9 +312,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
-            presenter.refreshItem(
-                    data.getStringExtra(InboxReputationDetailActivity.ARGS_REPUTATION_ID),
-                    getTab());
+//            presenter.refreshItem(
+//                    data.getStringExtra(InboxReputationDetailActivity.ARGS_REPUTATION_ID),
+//                    getTab());
         } else if (requestCode == REQUEST_FILTER
                 && resultCode == Activity.RESULT_OK
                 && data.getStringExtra(

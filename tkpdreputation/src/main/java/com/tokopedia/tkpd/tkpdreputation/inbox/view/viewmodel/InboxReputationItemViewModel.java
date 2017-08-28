@@ -11,26 +11,22 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
     private String revieweeName;
     private String createTime;
     private String revieweePicture;
-    private boolean showLockingDeadline;
     private String reputationDaysLeft;
     private String invoice;
-    private boolean showBookmark;
     private String reputationId;
-    private String actionMessage;
+    private ReputationDataViewModel reputationDataViewModel;
 
     public InboxReputationItemViewModel(String reputationId, String revieweeName, String createTime,
-                                        String revieweePicture, boolean showLockingDeadline,
-                                        String reputationDaysLeft, String invoice,
-                                        boolean showBookmark, String actionMessage) {
+                                        String revieweePicture, String reputationDaysLeft, String invoice,
+                                        ReputationDataViewModel reputationDataViewModel
+                                        ) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.createTime = createTime;
         this.revieweePicture = revieweePicture;
-        this.showLockingDeadline = showLockingDeadline;
         this.reputationDaysLeft = reputationDaysLeft;
         this.invoice = invoice;
-        this.showBookmark = showBookmark;
-        this.actionMessage = actionMessage;
+        this.reputationDataViewModel = reputationDataViewModel;
     }
 
     public String getRevieweeName() {
@@ -45,9 +41,6 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         return revieweePicture;
     }
 
-    public boolean showLockingDeadline() {
-        return showLockingDeadline;
-    }
 
     public String getReputationDaysLeft() {
         return reputationDaysLeft;
@@ -57,24 +50,12 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         return invoice;
     }
 
-    public boolean showBookmark() {
-        return showBookmark;
-    }
-
     public String getReputationId() {
         return reputationId;
     }
 
-    public boolean isShowLockingDeadline() {
-        return showLockingDeadline;
-    }
-
-    public boolean isShowBookmark() {
-        return showBookmark;
-    }
-
-    public String getActionMessage() {
-        return actionMessage;
+    public ReputationDataViewModel getReputationDataViewModel() {
+        return reputationDataViewModel;
     }
 
     @Override

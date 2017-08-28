@@ -1,11 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.Datum;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewInboxDatum;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.UserData;
-
 import java.util.List;
 
 /**

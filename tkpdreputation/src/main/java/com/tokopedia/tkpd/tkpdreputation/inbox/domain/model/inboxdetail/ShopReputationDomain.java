@@ -24,4 +24,28 @@ public class ShopReputationDomain {
         this.reputationBadgeUrl = reputationBadgeUrl;
         this.reputationBadge = reputationBadge;
     }
+
+    public String getTooltip() {
+        return tooltip;
+    }
+
+    public String getReputationScore() {
+        return reputationScore;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getMinBadgeScore() {
+        return minBadgeScore;
+    }
+
+    public String getReputationBadgeUrl() {
+        return reputationBadgeUrl;
+    }
+
+    public ReputationBadgeDomain getReputationBadge() {
+        return reputationBadge;
+    }
 }

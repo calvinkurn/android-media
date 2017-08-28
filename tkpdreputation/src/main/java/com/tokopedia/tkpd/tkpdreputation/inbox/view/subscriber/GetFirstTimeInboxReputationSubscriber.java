@@ -3,9 +3,11 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,13 +62,28 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
                     domain.getRevieweeData().getRevieweeName(),
                     domain.getOrderData().getCreateTimeFmt(),
                     domain.getRevieweeData().getRevieweePicture(),
-                    domain.getReputationData().isShowLockingDeadline(),
                     String.valueOf(domain.getReputationData().getLockingDeadlineDays()),
                     domain.getOrderData().getInvoiceRefNum(),
-                    domain.getReputationData().isShowBookmark(),
-                    domain.getReputationData().getActionMessage()
+                    convertToReputationViewModel(domain.getReputationData())
             ));
         }
         return list;
+    }
+
+    private ReputationDataViewModel convertToReputationViewModel(ReputationDataDomain reputationData) {
+        return new ReputationDataViewModel(reputationData.getRevieweeScore(),
+                reputationData.getRevieweeScoreStatus(),
+                reputationData.isShowRevieweeScore(),
+                reputationData.getReviewerScore(),
+                reputationData.getReviewerScoreStatus(),
+                reputationData.isEditable(),
+                reputationData.isInserted(),
+                reputationData.isLocked(),
+                reputationData.isAutoScored(),
+                reputationData.isCompleted(),
+                reputationData.isShowLockingDeadline(),
+                reputationData.getLockingDeadlineDays(),
+                reputationData.isShowBookmark(),
+                reputationData.getActionMessage());
     }
 }

@@ -24,4 +24,32 @@ public class ShopDataDomain {
         this.logo = logo;
         this.shopReputation = shopReputation;
     }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public int getShopUserId() {
+        return shopUserId;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public String getShopUrl() {
+        return shopUrl;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public ShopReputationDomain getShopReputation() {
+        return shopReputation;
+    }
 }

@@ -19,4 +19,24 @@ public class UserReputationDomain {
         this.positivePercentage = positivePercentage;
         this.noReputation = noReputation;
     }
+
+    public int getPositive() {
+        return positive;
+    }
+
+    public int getNeutral() {
+        return neutral;
+    }
+
+    public int getNegative() {
+        return negative;
+    }
+
+    public String getPositivePercentage() {
+        return positivePercentage;
+    }
+
+    public int getNoReputation() {
+        return noReputation;
+    }
 }

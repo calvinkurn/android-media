@@ -27,4 +27,36 @@ public class UserDataDomain {
         this.userProfilePict = userProfilePict;
         this.userReputation = userReputation;
     }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public int getUserStatus() {
+        return userStatus;
+    }
+
+    public String getUserUrl() {
+        return userUrl;
+    }
+
+    public String getUserLabel() {
+        return userLabel;
+    }
+
+    public String getUserProfilePict() {
+        return userProfilePict;
+    }
+
+    public UserReputationDomain getUserReputation() {
+        return userReputation;
+    }
 }

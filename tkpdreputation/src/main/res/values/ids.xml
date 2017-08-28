@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="menu_edit" type="id">101</item>
+    <item name="menu_skip" type="id">102</item>
+</resources>

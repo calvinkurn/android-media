@@ -15,6 +15,7 @@
         tools:src="@color/black"/>
 
     <TextView
+        android:id="@+id/product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_small"

@@ -27,4 +27,36 @@ public class InboxReputationDetailItemDomain {
         this.reviewIsEditable = reviewIsEditable;
         this.reviewData = reviewData;
     }
+
+    public ProductDataDomain getProductData() {
+        return productData;
+    }
+
+    public int getReviewInboxId() {
+        return reviewInboxId;
+    }
+
+    public int getReviewId() {
+        return reviewId;
+    }
+
+    public boolean isReviewHasReviewed() {
+        return reviewHasReviewed;
+    }
+
+    public boolean isReviewIsSkippable() {
+        return reviewIsSkippable;
+    }
+
+    public boolean isReviewIsSkipped() {
+        return reviewIsSkipped;
+    }
+
+    public boolean isReviewIsEditable() {
+        return reviewIsEditable;
+    }
+
+    public ReviewDataDomain getReviewData() {
+        return reviewData;
+    }
 }

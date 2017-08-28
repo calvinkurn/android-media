@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,15 +55,8 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
         return list.size();
     }
 
-    public void setList(List<Visitable> list) {
-        this.list.clear();
-        this.list.addAll(list);
-        notifyDataSetChanged();
-    }
-
     public void addList(List<Visitable> list) {
         this.list.addAll(list);
-        notifyDataSetChanged();
     }
 
     public void showEmpty() {
@@ -83,5 +77,13 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
 
     public boolean isLoading() {
         return this.list.contains(loadingModel);
+    }
+
+    public void addHeader(InboxReputationDetailHeaderViewModel model) {
+        this.list.add(model);
+    }
+
+    public void clearList() {
+        this.list.clear();
     }
 }

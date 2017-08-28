@@ -21,4 +21,28 @@ public class ProductDataDomain {
         this.shopId = shopId;
         this.productStatus = productStatus;
     }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public String getProductPageUrl() {
+        return productPageUrl;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public int getProductStatus() {
+        return productStatus;
+    }
 }

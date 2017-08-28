@@ -18,11 +18,13 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetailAdapter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ import javax.inject.Inject;
  */
 
 public class InboxReputationDetailFragment extends BaseDaggerFragment
-        implements InboxReputationDetail.View {
+        implements InboxReputationDetail.View, ReputationAdapter.ReputationListener {
 
     RecyclerView listProduct;
     LinearLayoutManager layoutManager;
@@ -42,10 +44,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Inject
     InboxReputationDetailPresenter presenter;
 
-    public static InboxReputationDetailFragment createInstance(String id) {
+    InboxReputationDetailPassModel passModel;
+
+    public static InboxReputationDetailFragment createInstance(InboxReputationDetailPassModel
+                                                                       model) {
         InboxReputationDetailFragment fragment = new InboxReputationDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(InboxReputationDetailActivity.ARGS_REPUTATION_ID, id);
+        bundle.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, model);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -69,6 +74,17 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null && getArguments().getParcelable(InboxReputationDetailActivity
+                .ARGS_PASS_DATA) != null)
+            passModel = getArguments().getParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA);
+        else if (savedInstanceState != null && savedInstanceState.getParcelable
+                (InboxReputationDetailActivity.ARGS_PASS_DATA) != null)
+            passModel = savedInstanceState.getParcelable(InboxReputationDetailActivity
+                    .ARGS_PASS_DATA);
+        else
+            getActivity().finish();
+
         initVar();
     }
 
@@ -119,7 +135,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.getInboxDetail(
-                getArguments().getString(InboxReputationDetailActivity.ARGS_REPUTATION_ID, ""),
+                passModel.getReputationId(),
                 getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
         );
     }
@@ -138,7 +154,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     @Override
                     public void onRetryClicked() {
                         presenter.getInboxDetail(
-                                getArguments().getString(InboxReputationDetailActivity.ARGS_REPUTATION_ID, ""),
+                                passModel.getReputationId(),
                                 getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
                         );
                     }
@@ -151,7 +167,38 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetInboxDetail(InboxReputationDetailHeaderViewModel model, List<Visitable> list) {
+    public void onSuccessGetInboxDetail(List<Visitable> list) {
         finishLoading();
+        adapter.clearList();
+        adapter.addHeader(createHeaderModel(passModel));
+        adapter.addList(list);
+        adapter.notifyDataSetChanged();
+    }
+
+    private InboxReputationDetailHeaderViewModel createHeaderModel(InboxReputationDetailPassModel passModel) {
+        return new InboxReputationDetailHeaderViewModel(passModel.getRevieweeImage(),
+                passModel.getRevieweeName(), passModel.getDeadlineText(),
+                passModel.getReputationDataViewModel());
+    }
+
+    @Override
+    public void onEditReview() {
+
+    }
+
+    @Override
+    public void onSkipReview(String reviewId) {
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
+    }
+
+    @Override
+    public void onReputationSmileyClicked(String value) {
+
     }
 }

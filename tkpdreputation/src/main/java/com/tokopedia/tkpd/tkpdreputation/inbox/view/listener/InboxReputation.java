@@ -4,6 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPass;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 
 import java.util.ArrayList;
 
@@ -31,7 +32,10 @@ public interface InboxReputation {
 
         void showLoadingNext();
 
-        void onGoToDetail(String reputationId, int adapterPosition);
+        void onGoToDetail(String reputationId, String invoice, String createTime,
+                          String revieweeName, String revieweeImage,
+                          ReputationDataViewModel reputationDataViewModel, String textDeadline,
+                          int adapterPosition);
 
         void showRefreshing();
 
