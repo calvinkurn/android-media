@@ -44,7 +44,7 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
     }
 
     @Override
-    public void initResultViewModel(ResultViewModel resultViewModel) {
+    public void initResultViewModel(final ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
         getSolutionUseCase.execute(getSolutionUseCase.getSolutionUseCaseParams(resultViewModel), new Subscriber<SolutionResponseDomain>() {
             @Override
@@ -61,8 +61,13 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
 
             @Override
             public void onNext(SolutionResponseDomain responseDomain) {
-                solutionResponseDomain = responseDomain;
-                mainView.populateDataToView(mappingSolutionResponseViewModel(solutionResponseDomain));
+                if (responseDomain != null) {
+                    solutionResponseDomain = responseDomain;
+                    if (solutionResponseDomain.getRequire() != null) {
+                        resultViewModel.isAttachmentRequired = solutionResponseDomain.getRequire().isAttachment();
+                    }
+                    mainView.populateDataToView(mappingSolutionResponseViewModel(solutionResponseDomain));
+                }
             }
         });
     }
@@ -72,6 +77,8 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
         if (solutionViewModel.getAmount() == null) {
             resultViewModel.solution = solutionViewModel.getId();
             mainView.submitData(resultViewModel);
+        } else {
+            mainView.moveToSolutionDetail(solutionViewModel);
         }
     }
 

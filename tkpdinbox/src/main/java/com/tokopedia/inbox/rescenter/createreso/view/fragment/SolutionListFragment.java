@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapterListener;
@@ -31,6 +32,9 @@ import javax.inject.Inject;
 public class SolutionListFragment extends BaseDaggerFragment implements SolutionListFragmentListener.View, SolutionListAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
+    public static final String SOLUTION_DATA = "solution_data";
+
+    public static final int REQUEST_SOLUTION = 1001;
 
     ResultViewModel resultViewModel;
 
@@ -116,6 +120,14 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     @Override
     public void onItemClicked(SolutionViewModel solutionViewModel) {
         presenter.solutionClicked(solutionViewModel);
+    }
+
+    @Override
+    public void moveToSolutionDetail(SolutionViewModel solutionViewModel) {
+        Intent intent = new Intent(getActivity(), SolutionDetailActivity.class);
+        intent.putExtra(SOLUTION_DATA, solutionViewModel);
+        intent.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        startActivityForResult(intent, REQUEST_SOLUTION);
     }
 
     @Override

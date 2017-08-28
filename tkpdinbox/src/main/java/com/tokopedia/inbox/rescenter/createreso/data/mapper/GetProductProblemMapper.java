@@ -61,12 +61,12 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
 
     private ProductProblemResponseDomain mappingResponse(Response<TkpdResponse> response) {
         try {
-            JSONObject responseObject = new JSONObject(response.body().getStrResponse());
-            Type collectionType = new TypeToken<List<ProductProblemResponse>>(){}.getType();
-            List<ProductProblemResponse> productProblemListResponse = gson.fromJson(responseObject.getJSONArray("data").toString(), collectionType);
-            ProductProblemResponseDomain model = new ProductProblemResponseDomain(mappingProductProblemListDomain(productProblemListResponse));
-//            ProductProblemListResponse productProblemListResponse = response.body().convertDataObj(ProductProblemListResponse.class);
-//            ProductProblemResponseDomain model = new ProductProblemResponseDomain(mappingProductProblemListDomain(productProblemListResponse.getProductProblemResponseList()));
+//            JSONObject responseObject = new JSONObject(response.body().getStrResponse());
+//            Type collectionType = new TypeToken<List<ProductProblemResponse>>(){}.getType();
+//            List<ProductProblemResponse> productProblemListResponse = gson.fromJson(responseObject.getJSONArray("data").toString(), collectionType);
+//            ProductProblemResponseDomain model = new ProductProblemResponseDomain(mappingProductProblemListDomain(productProblemListResponse));
+            ProductProblemListResponse productProblemListResponse = response.body().convertDataObj(ProductProblemListResponse.class);
+            ProductProblemResponseDomain model = new ProductProblemResponseDomain(mappingProductProblemListDomain(productProblemListResponse.getProductProblemResponseList()));
             if (response.isSuccessful()) {
                 if (response.raw().code() == ResponseStatus.SC_OK) {
                     model.setSuccess(true);

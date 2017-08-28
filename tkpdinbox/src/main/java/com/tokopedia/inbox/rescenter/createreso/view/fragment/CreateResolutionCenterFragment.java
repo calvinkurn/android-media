@@ -182,28 +182,39 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void updateView(ResultViewModel resultViewModel) {
 
+        ffSolution.setEnabled(false);
+        ffUploadProve.setEnabled(false);
+        btnCreateResolution.setEnabled(false);
+
         ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
 
+
         if (resultViewModel.problem.size() != 0) {
+            ffSolution.setEnabled(true);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
         } else {
+            ffSolution.setEnabled(false);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
         }
 
         if (resultViewModel.solution != 0) {
+            ffUploadProve.setEnabled(true);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
         } else {
+            ffUploadProve.setEnabled(false);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
         }
 
-        if (resultViewModel.attachmentCount != 0) {
+        if (resultViewModel.isAttachmentRequired) {
+            btnCreateResolution.setEnabled(true);
             ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
         } else {
+            btnCreateResolution.setEnabled(false);
             ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
         }

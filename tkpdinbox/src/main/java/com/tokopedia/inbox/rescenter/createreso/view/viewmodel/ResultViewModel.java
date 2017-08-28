@@ -21,6 +21,7 @@ public class ResultViewModel implements Parcelable {
     public ProblemMessageResult message;
     public int attachmentCount;
     public String orderId;
+    public boolean isAttachmentRequired;
 
     public JSONObject writeToJson() {
         JSONObject object = new JSONObject();

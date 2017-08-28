@@ -3,21 +3,20 @@ package com.tokopedia.inbox.rescenter.createreso.view.listener;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
 /**
  * Created by yoasfs on 24/08/17.
  */
 
-public interface SolutionListFragmentListener {
+public interface SolutionDetailFragmentListener {
 
     interface View extends CustomerView {
-        void populateDataToView(SolutionResponseViewModel solutionResponseViewModel);
+        void populateDataToView(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
 
-        void submitData(ResultViewModel resultViewModel);
+        void updateAmountError(String message);
 
-        void moveToSolutionDetail(SolutionViewModel solutionViewModel);
+        void updateBottomButton(ResultViewModel resultViewModel);
 
         void showSuccessToast();
 
@@ -25,8 +24,8 @@ public interface SolutionListFragmentListener {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void initResultViewModel(ResultViewModel resultViewModel);
+        void initResultViewModel(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
 
-        void solutionClicked(SolutionViewModel solutionViewModel);
+        void onAmountChanged(String amount);
     }
 }
