@@ -46,6 +46,7 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .deviceName(deviceName)
                                 .deviceManufacturer(deviceFabrik)
                                 .model(deviceName)
+
                                 .currentOS(deviceOS)
                                 .jailbreak(isRooted)
                                 .timezone(timezone)
