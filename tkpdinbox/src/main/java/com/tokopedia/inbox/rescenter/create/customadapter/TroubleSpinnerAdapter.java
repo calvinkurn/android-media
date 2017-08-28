@@ -61,7 +61,9 @@ public class TroubleSpinnerAdapter extends ArrayAdapter<CreateResCenterFormData.
         if (position == 0) {
             holderDropDown.textView.setText(getContext().getString(R.string.index_spinner_0_default));
         } else {
-            holderDropDown.textView.setText(getItem(position - 1).getTroubleText());
+            if (getItem(position -1) != null) {
+                holderDropDown.textView.setText(getItem(position - 1).getTroubleText());
+            }
         }
 
         return localView;
