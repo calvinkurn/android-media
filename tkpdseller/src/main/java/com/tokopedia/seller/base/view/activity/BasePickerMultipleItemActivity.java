@@ -175,13 +175,14 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     public void showFooterAndInfo(boolean show) {
         bottomSheetContainerView.setVisibility(show ? View.VISIBLE : View.GONE);
         footerView.setVisibility(show ? View.VISIBLE : View.GONE);
-        int containerBottomMargin = (int) (getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height));
         if (!show) {
-            containerBottomMargin = 0;
+            int containerBottomMargin = 0;
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
+            p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
+            containerListView.requestLayout();
+        } else {
+            showBottomSheetInfo(true);
         }
-        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
-        p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
-        containerListView.requestLayout();
     }
 
     public void showBottomSheetInfo(boolean show) {
@@ -191,6 +192,9 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
             peekHeight += getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height);
             containerBottomMargin += getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_height) -
                     getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_shadow_height);
+        }
+        if (bottomSheetBehavior.getPeekHeight() == peekHeight) {
+            return;
         }
         bottomSheetBehavior.setPeekHeight(peekHeight);
         ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
