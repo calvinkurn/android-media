@@ -3,6 +3,7 @@ package com.tokopedia.seller.base.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.drew.lang.annotations.SuppressWarnings;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
@@ -42,7 +44,6 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     private ImageView arrowImageView;
     private View footerView;
     private View containerListView;
-    private Button submitButton;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -69,7 +70,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         bottomSheetTitleTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_title);
         bottomSheetContentTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_content);
         arrowImageView = (ImageView) findViewById(R.id.image_view_arrow);
-        submitButton = (Button) findViewById(R.id.button_submit);
+        View submitButton = findViewById(R.id.button_submit);
         bottomSheetHeaderView = findViewById(R.id.layout_bottom_sheet_header);
         bottomSheetHeaderView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,19 +140,26 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         return null;
     }
 
+    @CallSuper
     @Override
+    @java.lang.SuppressWarnings("unchecked")
     public void addItemFromSearch(T t) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
         ((BasePickerItemCacheList<T>) fragment).addItem(t);
     }
 
+
+    @CallSuper
     @Override
+    @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromSearch(T t) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
         ((BasePickerItemCacheList<T>) fragment).removeItem(t);
     }
 
+    @CallSuper
     @Override
+    @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromCache(T t) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
         ((BasePickerItemSearchList) fragment).deselectItem(t);
