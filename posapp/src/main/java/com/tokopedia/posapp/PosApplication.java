@@ -1,5 +1,6 @@
 package com.tokopedia.posapp;
 
+import com.facebook.react.ReactNativeHost;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 
@@ -47,5 +48,10 @@ public class PosApplication extends PosRouterApplication {
         TkpdBaseURL.DIGITAL_API_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
         TkpdBaseURL.GRAPHQL_DOMAIN = PosAppBaseUrl.GRAPHQL_DOMAIN;
+    }
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return super.getReactNativeHost();
     }
 }

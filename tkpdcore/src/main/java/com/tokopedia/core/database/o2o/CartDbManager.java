@@ -1,10 +1,8 @@
-package com.tokopedia.posapp.database.manager;
+package com.tokopedia.core.database.o2o;
 
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.tokopedia.posapp.base.data.DbManagerOperation;
 import com.tokopedia.core.database.model.CartDB;
 
 import java.util.List;
@@ -46,8 +44,13 @@ public class CartDbManager implements DbManagerOperation<CartDB, CartDB> {
     }
 
     @Override
-    public List<CartDB> getAllData(ConditionGroup conditions) {
+    public List<CartDB> getListData(ConditionGroup conditions) {
         return SQLite.select().from(CartDB.class).where(conditions).queryList();
+    }
+
+    @Override
+    public List<CartDB> getListData(int offset, int limit) {
+        return SQLite.select().from(CartDB.class).offset(offset).limit(limit).queryList();
     }
 
     @Override

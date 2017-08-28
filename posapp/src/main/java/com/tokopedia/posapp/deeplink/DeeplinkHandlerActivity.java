@@ -3,13 +3,11 @@ package com.tokopedia.posapp.deeplink;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.tokopedia.posapp.deeplink.module.PosDeeplinkModule;
-import com.tokopedia.posapp.deeplink.module.PosDeeplinkModuleLoader;
+import com.tokopedia.posapp.deeplink.PosDeeplinkModuleLoader;
 
 /**
  * Created by okasurya on 8/25/17.

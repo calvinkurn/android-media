@@ -20,6 +20,7 @@ public class CoreReactPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ReactNetworkModule(reactContext));
         modules.add(new ReactNavigationModule(reactContext));
+        modules.add(new ReactCacheModule(reactContext));
         return modules;
     }
 

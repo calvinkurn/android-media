@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.base.data;
+package com.tokopedia.core.database.o2o;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -22,7 +22,9 @@ public interface DbManagerOperation<T extends BaseModel, S>  {
 
     S first();
 
-    List<S> getAllData(ConditionGroup conditions);
+    List<S> getListData(ConditionGroup conditions);
+
+    List<S> getListData(int offset, int limit);
 
     List<S> getAllData();
 

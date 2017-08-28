@@ -46,7 +46,7 @@ import io.fabric.sdk.android.Fabric;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication implements ReactApplication{
+public class MainApplication extends TkpdMultiDexApplication implements ReactApplication {
 
 
 	public static final int DATABASE_VERSION = 7;

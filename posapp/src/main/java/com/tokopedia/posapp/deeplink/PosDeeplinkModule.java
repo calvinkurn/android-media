@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.deeplink.module;
+package com.tokopedia.posapp.deeplink;
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule;
 

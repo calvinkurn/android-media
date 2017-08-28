@@ -151,14 +151,14 @@ public class InboxReputationDetailFragmentPresenterImpl implements
     }
 
     private void showNetworkError(String error, NetworkErrorHelper.RetryClickedListener listener) {
-//        if (viewListener.getAdapter().getList().size() == 0)
+//        if (viewListener.getAdapter().getListData().size() == 0)
 //            viewListener.showErrorSnackbar(error, listener);
 //        else
             viewListener.showSnackbar(error, listener);
     }
 
     private void showNetworkError(NetworkErrorHelper.RetryClickedListener listener) {
-//        if (viewListener.getAdapter().getList().size() == 0)
+//        if (viewListener.getAdapter().getListData().size() == 0)
 //            viewListener.showErrorSnackbar(listener);
 //        else
             viewListener.showSnackbar(listener);
