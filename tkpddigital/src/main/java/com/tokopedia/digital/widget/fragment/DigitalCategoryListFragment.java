@@ -302,7 +302,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
             compositeSubscription.unsubscribe();
     }
 
-
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
         if (itemData.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null

@@ -54,7 +54,7 @@ public interface BrowseApi {
     String WHOLESALE = "wholesale";
     String CONDITION = "condition";
     String Q = "q"; // (keyword) or (query)
-    String H = "h"; // hotlist id
+    String H = "hc"; // hotlist id
     String ID = "id";
     String NEGATIVE = "negative";
     String HIGHLIGHT = "highlight";

@@ -20,7 +20,7 @@ public class ShowCaseDialogFactory {
                 .backgroundContentColorRes(R.color.black)
                 .textSizeRes(R.dimen.fontvs)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .prevStringRes(R.string.back)
+                .prevStringRes(R.string.label_back)
                 .nextStringRes(R.string.next)
                 .finishStringRes(R.string.title_done)
                 .useCircleIndicator(true)

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -28,6 +30,7 @@ import butterknife.ButterKnife;
 
 import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
 import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
+import static com.tokopedia.core.home.presenter.HotList.TOPPICKS_KEY;
 
 /**
  * Created by alifa on 3/30/17.
@@ -107,7 +110,8 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventHotlistIntermediary(categoryId,hotListModel.getTitle());
-                URLParser urlParser = new URLParser(hotListModel.getUrl());
+                String url = hotListModel.getUrl();
+                URLParser urlParser = new URLParser(url);
                 switch (urlParser.getType()) {
                     case HOT_KEY:
                         Bundle bundle = new Bundle();
@@ -119,6 +123,11 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         context.startActivity(
                                 DetailProductRouter.getCatalogDetailActivity(context, urlParser.getHotAlias()));
                         break;
+                    case TOPPICKS_KEY:
+                        if (!TextUtils.isEmpty(url)) {
+                            context.startActivity(TopPicksWebView.newInstance(context, url));
+                        }
+                        break;
                     default:
                         bundle = new Bundle();
                         bundle.putString(BrowseProductRouter.DEPARTMENT_ID,
@@ -127,6 +136,8 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
                                 BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
 
+                        bundle.putSerializable(BrowseProductRouter.EXTRA_FILTER, urlParser.getParamKeyValueMap());
+                        bundle.putString(BrowseProductRouter.EXTRA_TITLE, hotListModel.getTitle());
                         bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
                         bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
                         moveToHotlistActivity(bundle,context);

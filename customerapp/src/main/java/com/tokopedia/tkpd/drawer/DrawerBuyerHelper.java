@@ -33,6 +33,8 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -40,6 +42,9 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 
@@ -110,6 +115,8 @@ public class DrawerBuyerHelper extends DrawerHelper
     private void createDataGuest(ArrayList<DrawerItem> data) {
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home), TkpdState
                 .DrawerPosition.INDEX_HOME, true));
+        data.add(new DrawerItem(context.getString(R.string.title_category),
+                TkpdState.DrawerPosition.CATEGORY_NAVIGATION, true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_login), TkpdState
                 .DrawerPosition.LOGIN, true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_register), TkpdState
@@ -126,6 +133,10 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home),
                 R.drawable.icon_home,
                 TkpdState.DrawerPosition.INDEX_HOME,
+                true));
+        data.add(new DrawerItem(context.getString(R.string.title_category),
+                R.drawable.ic_category_black_bold,
+                TkpdState.DrawerPosition.CATEGORY_NAVIGATION,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_wishlist),
                 R.drawable.icon_wishlist,
@@ -386,6 +397,9 @@ public class DrawerBuyerHelper extends DrawerHelper
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
                     break;
+                case TkpdState.DrawerPosition.CATEGORY_NAVIGATION:
+                    context.startActivity(BrowseProductRouter.getCategoryNavigationIntent(context));
+                    break;
                 case TkpdState.DrawerPosition.WISHLIST:
                     Intent wishList = SimpleHomeRouter
                             .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
@@ -523,13 +537,9 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
-        if (topCashUrl != null && !topCashUrl.equals("")) {
-            String seamlessURL;
-            seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
-            if (context.getApplication() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) context.getApplication())
-                        .goToWallet(context, seamlessURL);
-            }
+        if (context.getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
+            context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
         }
 
     }
@@ -540,6 +550,12 @@ public class DrawerBuyerHelper extends DrawerHelper
             ((TkpdCoreRouter) context.getApplication())
                     .goToWallet(context, topCashUrl);
         }
+    }
+
+    @Override
+    public void onGoToProfileCompletion() {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     private void onGoToCreateShop() {

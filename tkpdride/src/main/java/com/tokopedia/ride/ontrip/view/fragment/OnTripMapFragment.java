@@ -68,12 +68,14 @@ import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
-import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
+import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
+import com.tokopedia.ride.ontrip.di.OnTripComponent;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
@@ -81,11 +83,14 @@ import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
+import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 import com.tokopedia.ride.ontrip.view.SendCancelReasonActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -116,8 +121,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";
 
+    @Inject
+    OnTripMapPresenter presenter;
 
-    OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
     private Marker mDriverMarker;
@@ -248,8 +254,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         // Gets an instance of the NotificationManager service
         mNotifyMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-
-        presenter = OnTripDependencyInjection.createOnTripMapPresenter(getActivity());
         presenter.attachView(this);
 
         //finish activity if fragment is recreated
@@ -1333,11 +1337,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     private boolean checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        return false;
+        return ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -1400,4 +1401,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             mapConfiguration.setDefaultLocation(latitude, longitude);
         }
     }
+
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        OnTripComponent onTripComponent = DaggerOnTripComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        onTripComponent.inject(this);
+    }
+
 }

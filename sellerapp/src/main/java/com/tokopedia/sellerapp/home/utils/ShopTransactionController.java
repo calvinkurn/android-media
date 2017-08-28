@@ -73,7 +73,7 @@ public class ShopTransactionController extends BaseNetworkController {
                         if (response.isSuccessful()) {
                             if(!response.body().isError()) {
                                 String stringData = response.body().getStringData();
-                                Log.d("STUART", "getNewOrder : onNext : "+stringData);
+                                Log.d("STUART", "getNewOrderAndCount : onNext : "+stringData);
                                 OrderShippingData shopModel = gson.fromJson(stringData, OrderShippingData.class);
                                 getNewOrder.onSuccess(shopModel);
                             }else {

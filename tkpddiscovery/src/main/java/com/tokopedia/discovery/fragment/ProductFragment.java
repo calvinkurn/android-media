@@ -206,7 +206,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceResult(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
@@ -218,6 +217,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
             TrackingUtils.eventLocaSearched(browseModel.q);
+            TrackingUtils.sendMoEngageSearchAttempt(browseModel.q, !model.isEmpty());
 
         }
     }
@@ -320,7 +320,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         topAdsRecyclerAdapter.setHasHeader(true);
-        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -617,8 +616,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         new ProductAdapter.CategoryHeaderModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
             }
+
+            TrackingUtils.sendMoEngageOpenCatScreen(
+                    categoryHeader.getName(),
+                    categoryHeader.getId()
+
+            );
         }
-        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {

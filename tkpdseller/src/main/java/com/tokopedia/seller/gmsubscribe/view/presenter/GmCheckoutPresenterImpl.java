@@ -145,7 +145,6 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "Error");
             getView().dismissProgressDialog();
             getView().failedGetCurrentProduct();
         }
@@ -165,7 +164,6 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "Error");
             getView().dismissProgressDialog();
             getView().failedGetAutoSubscribeProduct();
         }
@@ -208,7 +206,6 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "Error");
             if (e instanceof ResponseV4ErrorException){
                 String string = ((ResponseV4ErrorException)e).getErrorList().get(0);
                 getView().showMessageError(string);

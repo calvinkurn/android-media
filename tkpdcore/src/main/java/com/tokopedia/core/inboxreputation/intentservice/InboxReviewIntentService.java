@@ -8,6 +8,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.inboxreputation.InboxReputationConstant;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractorImpl;
@@ -206,6 +207,7 @@ public class InboxReviewIntentService extends IntentService
                             if (result.getIsSuccess() == 1) {
                                 resultData.putParcelable(EXTRA_RESULT, result);
                                 receiver.send(STATUS_SUCCESS, resultData);
+                                TrackingUtils.sendMoEngagePurchaseReview(param.getQualityRate());
                             } else {
                                 resultData.putString(EXTRA_ERROR, "Gagal memberikan ulasan");
                                 receiver.send(STATUS_ERROR, resultData);

@@ -19,9 +19,9 @@ public class PlaceDataRepository implements PlaceRepository {
     private final PlaceDataStoreFactory placeDataStoreFactory;
     private final DirectionEntityMapper directionEntityMapper;
 
-    public PlaceDataRepository(PlaceDataStoreFactory placeDataStoreFactory, DirectionEntityMapper directionEntityMapper) {
+    public PlaceDataRepository(PlaceDataStoreFactory placeDataStoreFactory) {
         this.placeDataStoreFactory = placeDataStoreFactory;
-        this.directionEntityMapper = directionEntityMapper;
+        this.directionEntityMapper = new DirectionEntityMapper();
     }
 
     @Override

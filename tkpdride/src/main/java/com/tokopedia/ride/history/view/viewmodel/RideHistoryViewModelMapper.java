@@ -1,6 +1,7 @@
 package com.tokopedia.ride.history.view.viewmodel;
 
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 
 /**
@@ -22,17 +23,18 @@ public class RideHistoryViewModelMapper {
                 rideHistory.getVehicle().getLicensePlate())
         );
         viewModel.setStatus(rideHistory.getStatus());
-        viewModel.setFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setTotalFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setTotalFare(RideUtils.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setTokoCashCharged(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPaidAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmount(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setCashback(rideHistory.getCashbackAmount());
         viewModel.setDiscount(rideHistory.getDiscountAmount());
         viewModel.setCashbackDisplayFormat(
-                RideHistoryViewModel.formatStringToPriceString(
+                RideUtils.formatStringToPriceString(
                         String.valueOf(Math.round(rideHistory.getCashbackAmount())), rideHistory.getPayment().getCurrency()
                 )
         );
         viewModel.setDiscountDisplayFormat(
-                RideHistoryViewModel.formatStringToPriceString(
+                RideUtils.formatStringToPriceString(
                         String.valueOf(Math.round(rideHistory.getDiscountAmount())), rideHistory.getPayment().getCurrency()
                 )
         );

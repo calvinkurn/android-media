@@ -23,4 +23,6 @@ public interface CategoryRepository {
     Observable<List<String>> fetchCategoryDisplay(long categoryId);
 
     Observable<Boolean> clearCache();
+
+    Observable<String> getCategoryName(long categoryId);
 }

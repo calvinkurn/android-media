@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.common.ride.domain.model.Rating;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 
 import java.text.DecimalFormat;
@@ -26,7 +27,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String requestId;
     private String requestTime;
     private String driverCarDisplay;
-    private String fare;
     private String status;
     private String driverName;
     private String driverPictureUrl;
@@ -44,6 +44,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String helpUrl;
     private String cashbackDisplayFormat;
     private String discountDisplayFormat;
+    private String pendingAmount;
+    private String tokoCashCharged;
 
     public RideHistoryViewModel() {
     }
@@ -52,7 +54,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         requestId = in.readString();
         requestTime = in.readString();
         driverCarDisplay = in.readString();
-        fare = in.readString();
         status = in.readString();
         driverName = in.readString();
         driverPictureUrl = in.readString();
@@ -73,6 +74,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         helpUrl = in.readString();
         cashbackDisplayFormat = in.readString();
         discountDisplayFormat = in.readString();
+        pendingAmount = in.readString();
+        tokoCashCharged = in.readString();
     }
 
     public static final Creator<RideHistoryViewModel> CREATOR = new Creator<RideHistoryViewModel>() {
@@ -106,14 +109,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
     public void setDriverCarDisplay(String driverCarDisplay) {
         this.driverCarDisplay = driverCarDisplay;
-    }
-
-    public String getFare() {
-        return fare;
-    }
-
-    public void setFare(String fare) {
-        this.fare = fare;
     }
 
     public String getStatus() {
@@ -276,6 +271,22 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.discountDisplayFormat = discountDisplayFormat;
     }
 
+    public String getPendingAmount() {
+        return pendingAmount;
+    }
+
+    public void setPendingAmount(String pendingAmount) {
+        this.pendingAmount = pendingAmount;
+    }
+
+    public String getTokoCashCharged() {
+        return tokoCashCharged;
+    }
+
+    public void setTokoCashCharged(String tokoCashCharged) {
+        this.tokoCashCharged = tokoCashCharged;
+    }
+
     public static String transformToDisplayStatus(String status) {
         switch (status) {
             case "arriving":
@@ -331,7 +342,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeString(requestId);
         parcel.writeString(requestTime);
         parcel.writeString(driverCarDisplay);
-        parcel.writeString(fare);
         parcel.writeString(status);
         parcel.writeString(driverName);
         parcel.writeString(driverPictureUrl);
@@ -352,52 +362,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeString(helpUrl);
         parcel.writeString(cashbackDisplayFormat);
         parcel.writeString(discountDisplayFormat);
-    }
-
-    public static String formatStringToPriceString(String numberString, String currency) {
-        try {
-            if (currency.equalsIgnoreCase(IND_CURRENCY) || currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
-                return getStringIdrFormat(Integer.parseInt(numberString));
-            } else {
-                return formaNumberToPriceString(Float.parseFloat(numberString), currency);
-            }
-        } catch (Exception ex) {
-            return currency + " " + numberString;
-        }
-    }
-
-    private static String getStringIdrFormat(int value) {
-        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-        kursIndonesia.setMaximumFractionDigits(0);
-        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
-
-        formatRp.setCurrencySymbol(IND_LOCAL_CURRENCY + " ");
-        formatRp.setGroupingSeparator('.');
-        formatRp.setMonetaryDecimalSeparator('.');
-        formatRp.setDecimalSeparator('.');
-        kursIndonesia.setDecimalFormatSymbols(formatRp);
-
-        return kursIndonesia.format(value);
-    }
-
-    private static String formaNumberToPriceString(float number, String currency) {
-        try {
-            if (currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
-                currency = IND_CURRENCY;
-            }
-
-            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance(currency));
-            String result = "";
-            if (currency.equalsIgnoreCase(IND_CURRENCY) || currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
-                format.setMaximumFractionDigits(0);
-                result = format.format(number).replace(",", ".").replace(IND_CURRENCY, IND_LOCAL_CURRENCY + " ");
-            } else {
-                result = format.format(number);
-            }
-            return result;
-        } catch (Exception ex) {
-            return currency + " " + number;
-        }
+        parcel.writeString(pendingAmount);
+        parcel.writeString(tokoCashCharged);
     }
 }

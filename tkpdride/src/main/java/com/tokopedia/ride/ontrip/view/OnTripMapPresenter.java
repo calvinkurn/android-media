@@ -47,7 +47,6 @@ import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
-import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
@@ -71,6 +70,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -90,7 +91,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private static long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 4000;
 
     private CreateRideRequestUseCase createRideRequestUseCase;
-    private CancelRideRequestUseCase cancelRideRequestUseCase;
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
     private GetRideRequestDetailUseCase getRideRequestUseCase;
@@ -104,15 +104,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private CompositeSubscription subscription;
     private boolean isZoomFitByDriverAndCustomer;
 
+    @Inject
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
-                              CancelRideRequestUseCase cancelRideRequestUseCase,
                               GetOverviewPolylineUseCase getOverviewPolylineUseCase,
                               GetRideRequestMapUseCase getRideRequestMapUseCase,
                               GetRideRequestDetailUseCase getRideRequestUseCase,
                               GetFareEstimateUseCase getFareEstimateUseCase,
                               GetRideProductUseCase getRideProductUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
-        this.cancelRideRequestUseCase = cancelRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
         this.getRideRequestUseCase = getRideRequestUseCase;
@@ -284,41 +283,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 }
             }
         });
-    }
-
-    @Override
-    public void actionCancelRide() {
-        cancelRideRequestUseCase.execute(getView().getCancelParams(), new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    if (e instanceof UnknownHostException) {
-                        getView().showMessage(getView().getActivity().getString(R.string.error_no_connection));
-                    } else if (e instanceof SocketTimeoutException) {
-                        getView().showMessage(getView().getActivity().getString(R.string.error_timeout));
-                    } else {
-                        getView().showMessage(getView().getActivity().getString(R.string.error_default));
-                    }
-                }
-            }
-
-            @Override
-            public void onNext(String s) {
-                if (isViewAttached()) {
-                    getView().onSuccessCancelRideRequest();
-                    getView().clearActiveNotification();
-                    getView().clearSavedActiveRequestId();
-                    getView().clearSavedActiveProductName();
-                }
-            }
-        });
-
     }
 
     @Override
@@ -720,6 +684,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                 });
                             }
                         })
+                        .onBackpressureDrop()
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -834,7 +799,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void detachView() {
-        cancelRideRequestUseCase.unsubscribe();
         createRideRequestUseCase.unsubscribe();
         getOverviewPolylineUseCase.unsubscribe();
         getRideRequestMapUseCase.unsubscribe();

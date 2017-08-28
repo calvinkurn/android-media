@@ -16,6 +16,8 @@ import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModelMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -27,6 +29,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
     private GetRideHistoriesUseCase getRideHistoriesUseCase;
     private GetHistoriesWithPaginationUseCase getHistoriesWithPaginationUseCase;
 
+    @Inject
     public RideHistoryPresenter(GetRideHistoriesUseCase getRideHistoriesUseCase,
                                 GetHistoriesWithPaginationUseCase getHistoriesWithPaginationUseCase) {
         this.getRideHistoriesUseCase = getRideHistoriesUseCase;
@@ -67,14 +70,18 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                     getView().hideMainLoading();
                     ArrayList<Visitable> histories = new ArrayList<>();
                     String mapSize = getView().getMapImageSize();
-                    RideHistoryViewModelMapper mapper = new RideHistoryViewModelMapper(getView().getMapKey());
-                    for (RideHistory rideHistory : rideHistoryWrapper.getHistories()) {
-                        RideHistoryViewModel viewModel = mapper.transform(mapSize, rideHistory);
-                        histories.add(viewModel);
+
+                    if(rideHistoryWrapper != null) {
+                        RideHistoryViewModelMapper mapper = new RideHistoryViewModelMapper(getView().getMapKey());
+                        for (RideHistory rideHistory : rideHistoryWrapper.getHistories()) {
+                            RideHistoryViewModel viewModel = mapper.transform(mapSize, rideHistory);
+                            histories.add(viewModel);
+                        }
+                        getView().enableRefreshLayout();
+                        getView().setRefreshLayoutToFalse();
+                        getView().setPaging(rideHistoryWrapper.getPaging());
                     }
-                    getView().enableRefreshLayout();
-                    getView().setRefreshLayoutToFalse();
-                    getView().setPaging(rideHistoryWrapper.getPaging());
+
                     if (histories.size() > 0) {
                         getView().renderHistoryLists(histories);
                     } else {

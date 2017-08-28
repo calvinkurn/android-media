@@ -9,6 +9,11 @@ public class Product extends BaseAnalyticsModel {
 
     private String price;
     private String type;
+    private String categoryName;
+    private String categoryId;
+    private String url;
+    private String imageUrl;
+    private String shopId;
 
     public String getPrice() {
         return price;
@@ -54,5 +59,45 @@ public class Product extends BaseAnalyticsModel {
     @Override
     public void setExtraAttr(Map<String, String> extraAttr) {
         this.extraAttr = extraAttr;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
     }
 }

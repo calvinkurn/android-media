@@ -30,7 +30,7 @@ public class RawHttpRequestExecutor extends HttpRequestExecutorTemplate{
 	}
 
 	@Override
-	public String executeAsGetRequest() throws MalformedURLException, UnsupportedEncodingException, IOException {
+	public String executeAsGetRequest() throws IOException {
 		String encodedUrl = this.httpRequest.getEncodedUrl();
 		URL requestUrl = new URL(encodedUrl);
 		if(BuildConfig.DEBUG) {
@@ -59,7 +59,7 @@ public class RawHttpRequestExecutor extends HttpRequestExecutorTemplate{
 	}
 
 	@Override
-	public String executeAsPostRequest() throws MalformedURLException, UnsupportedEncodingException,IOException{
+	public String executeAsPostRequest() throws IOException{
 		URL requestUrl = new URL(this.httpRequest.getBaseUrl());
 		if(BuildConfig.DEBUG) {
 			Log.d(TAG, "Making a POST request to : " + this.httpRequest.getBaseUrl());
