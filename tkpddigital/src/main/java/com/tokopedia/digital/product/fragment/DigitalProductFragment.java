@@ -616,7 +616,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
-
         UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
