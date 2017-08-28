@@ -1912,4 +1912,146 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventDrawerSellerHome(){
         eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
     }
+
+    public static void eventTopAds(String category, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.TOP_ADS_SELLER_APP,
+                category,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventTopAdsProduct(String eventLabel){
+        eventTopAds(AppEventTracking.Category.TOP_ADS_PRODUCT, eventLabel);
+    }
+
+    public static void eventTopAdsShop(String eventLabel){
+        eventTopAds(AppEventTracking.Category.TOP_ADS_SHOP, eventLabel);
+    }
+
+    public static void eventTopAdsProductAddBalance(String balanceOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_BALANCE + balanceOption);
+    }
+
+    public static void eventTopAdsProductDatePeriod(String periodOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION + periodOption);
+    }
+    public static void eventTopAdsProductDateCustom(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM_WITHOUT_DASH);
+    }
+    public static void eventTopAdsProductStatisticDashboard(String statisticOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.STATISTIC_DASHBOARD + statisticOption);
+    }
+    public static void eventTopAdsProductStatisticBar(String statisticOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
+    }
+    public static void eventTopAdsProductNewGroup(String groupOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.GROUP + groupOption);
+    }
+    public static void eventTopAdsProductAddGrupStep1(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_1);
+    }
+    public static void eventTopAdsProductAddGrupStep2(String budgetOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_2 + budgetOption);
+    }
+    public static void eventTopAdsProductAddGrupStep3(String showTimeOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_3 + showTimeOption);
+    }
+    public static void eventTopAdsProductGroupsFilter(String groupFilterOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.GROUPS_FILTER + groupFilterOption);
+    }
+    public static void eventTopAdsProductNewProduct(String productOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.PRODUCT + productOption);
+    }
+    public static void eventTopAdsProductAddProductStep1(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_STEP_1);
+    }
+    public static void eventTopAdsProductAddProductStep2(String budgetOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_STEP_2 + budgetOption);
+    }
+    public static void eventTopAdsProductAddProductStep3(String showtimeOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_STEP_3 + showtimeOption);
+    }
+    public static void eventTopAdsProductFilter(String filterOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.PRODUCT + filterOption);
+    }
+    public static void eventTopAdsProductNewKeyword(String keywordTypeOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.KEYWORD_POSITIF + keywordTypeOption);
+    }
+    public static void eventTopAdsProductNewKeywordNegatif(String keywordTypeOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.KEYWORD_NEGATIF + keywordTypeOption);
+    }
+    public static void eventTopAdsProductEditGrupManage(String groupOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_MANAGE_GROUP + groupOption);
+    }
+    public static void eventTopAdsProductEditGrupCost(String budgetOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_COST + budgetOption);
+    }
+    public static void eventTopAdsProductEditGrupSchedule(String showTimeOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_SCHEDULE + showTimeOption);
+    }
+    public static void eventTopAdsProductDeleteGrup(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.DELETE_GROUP);
+    }
+    public static void eventTopAdsShopDatePeriod(String periodOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION + periodOption);
+    }
+    public static void eventTopAdsShopChooseDateCustom(String periodOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM + periodOption);
+    }
+    public static void eventTopAdsShopStatistic(String statisticOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.STATISTIC_WITH_DASH + statisticOption);
+    }
+    public static void eventTopAdsShopStatisticBar(String statisticOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
+    }
+    public static void eventTopAdsShopAddPromoBudget(String budgetOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_SHOP_PROMO_BUDGET + budgetOption);
+    }
+    public static void eventTopAdsShopAddPromoShowTime(String showTimeOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_SHOP_PROMO_SHOWTIME + showTimeOption);
+    }
+
+    public static void eventSellerClickDashboard(String eventCategory, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_DASHBOARD,
+                eventCategory,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+    public static void eventSellerClickFabDashboard(){
+        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD, AppEventTracking.EventLabel.FAB_DASHBOARD);
+    }
+    public static void eventSellerClickAddProductDashboard(){
+        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.ADD_PRODUCT);
+    }
+    public static void eventSellerClickManageProductDashboard(){
+        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.MANAGE_PRODUCT);
+    }
+    public static void eventSellerClickEtalaseDashboard(){
+        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.ETALASE);
+    }
+    public static void eventSellerClickSettingDashboard(){
+        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.SETTING);
+    }
+
+    public static void eventCheckoutGoldMerchant(String eventCategory, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_GOLD_MERCHANT,
+                eventCategory,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+    public static void eventClickSubscribeGoldMerchant(String packageType){
+        eventCheckoutGoldMerchant(AppEventTracking.Category.GOLD_MERCHANT_ATC, packageType);
+    }
+    public static void eventClickChangePackageGoldMerchant(){
+        eventCheckoutGoldMerchant(AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.CHANGE_PACKAGE_GOLD_MERCHANT);
+    }
+    public static void eventClickSubscribeCheckoutGoldMerchant(){
+        eventCheckoutGoldMerchant(AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.GM_CHECKOUT);
+    }
 }

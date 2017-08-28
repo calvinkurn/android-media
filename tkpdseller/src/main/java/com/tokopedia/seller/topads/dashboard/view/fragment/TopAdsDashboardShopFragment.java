@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
@@ -120,6 +122,42 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     public void onLoadAdShopError() {
         showNetworkError();
         hideLoading();
+    }
+
+    @Override
+    protected void onStatisticAverageClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_AVERAGE_CONVERSION);
+        super.onStatisticAverageClicked();
+    }
+
+    @Override
+    protected void onStatisticClickClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CLICK);
+        super.onStatisticClickClicked();
+    }
+
+    @Override
+    protected void onStatisticConversionClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CONVERSION);
+        super.onStatisticConversionClicked();
+    }
+
+    @Override
+    protected void onStatisticCostClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CPC);
+        super.onStatisticCostClicked();
+    }
+
+    @Override
+    protected void onStatisticCtrClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CTR);
+        super.onStatisticCtrClicked();
+    }
+
+    @Override
+    protected void onStatisticImpressionClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_IMPRESSION);
+        super.onStatisticImpressionClicked();
     }
 
     @Override

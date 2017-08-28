@@ -129,6 +129,8 @@ public interface AppEventTracking {
         String CLICK_CANCEL_APP_UPDATE = "clickCancelAppUpdate";
 
         String SELLER_WIDGET = "sellerWidget";
+        String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
+        String CLICK_DASHBOARD = "clickDashboard";
     }
 
     interface Category {
@@ -207,6 +209,12 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT_SOLD = "GM Statistic - Products Sold";
         String APP_UPDATE = "Application Update";
         String SELLER_APP_WIDGET = "Seller App Widget";
+        String TOP_ADS_PRODUCT = "TopAds - Product";
+        String TOP_ADS_SHOP = "TopAds - Shop";
+        String DASHBOARD = "Dashboard";
+        String DASHBOARD_FAB = "Dashboard FAB";
+        String GOLD_MERCHANT_ATC = "Gold Merchant ATC";
+        String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
     }
 
     interface Action {
@@ -465,6 +473,65 @@ public interface AppEventTracking {
         String TO_APP_ORDER = "To App - Order";
         String TOPADS = "TopAds";
         String SELLER_HOME = "Home - SellerApp";
+        String ADD_BALANCE = "Add Balance - ";
+        String BALANCE_OPTION_50_RB = "Rp. 50,000";
+        String BALANCE_OPTION_100_RB = "Rp. 100,000";
+        String BALANCE_OPTION_500_RB = "Rp. 500,000";
+        String BALANCE_OPTION_1_JT = "Rp. 1000,000";
+        String PERIOD_OPTION = "Date Period - ";
+        String PERIOD_OPTION_TODAY = "Hari ini";
+        String PERIOD_OPTION_YESTERDAY = "Kemarin";
+        String PERIOD_OPTION_LAST_7_DAY = "7 Hari Terakhir";
+        String PERIOD_OPTION_LAST_1_MONTH = "30 Hari Terakhir";
+        String PERIOD_OPTION_THIS_MONTH = "Bulan ini";
+        String STATISTIC_BAR = "Statistic Bar -";
+        String STATISTIC_OPTION_IMPRESSION = "Impression";
+        String STATISTIC_OPTION_CLICK = "Click";
+        String STATISTIC_OPTION_CTR = "CTR";
+        String STATISTIC_OPTION_CONVERSION = "Conversion";
+        String STATISTIC_OPTION_AVERAGE_CONVERSION = "Average Conversion";
+        String STATISTIC_OPTION_CPC = "CPC";
+        String GROUP_PRODUCT_OPTION_NEW_GROUP = "Grup Baru";
+        String GROUP_PRODUCT_OPTION_EXISTING_GROUP = "Grup yang Ada";
+        String GROUP_PRODUCT_OPTION_WITHOUT_GROUP = "Tanpa Grup";
+        String GROUP_STATUS_FILTER_ALL = "Semua Status";
+        String GROUP_STATUS_FILTER_ACTIVE = "Aktif";
+        String GROUP_STATUS_FILTER_INACTIVE = "Tidak Terkirim";
+        String GROUP_STATUS_FILTER_NOT_SEND = "Tidak Aktif";
+        String PRODUCT_STATUS_FILTER_ALL_GROUP = "Semua Grup";
+        String PRODUCT_STATUS_FILTER_IN_GROUP = "Ada di Grup";
+        String PRODUCT_STATUS_FILTER_NOT_IN_GROUP= "Tidak Ada di Grup";
+        String BUDGET_NOT_LIMITED = "Anggaran Tidak Dibatasi";
+        String BUDGET_PER_DAY = "Perhari";
+        String SHOWTIME_AUTO = "Otomatis";
+        String SHOWTIME_SETUP = "Atur tanggal mulai dan berhenti";
+        String KEYWORD_TYPE_PHRASE = "Phrase Match";
+        String KEYWORD_TYPE_EXACT = "Exact Match";
+        String DATE_CUSTOM = "Date Custom";
+        String STATISTIC_DASHBOARD = "Statistic (TopAds Dashboard) - ";
+        String GROUP = "Group - ";
+        String ADD_GROUP_STEP_1 = "Add Group Promo Step 1";
+        String ADD_GROUP_STEP_2 = "Add Group Promo Step 2 - ";
+        String ADD_GROUP_STEP_3 = "Add Group Promo Step 3 - ";
+        String GROUPS_FILTER = "Groups Filter - ";
+        String ADD_PRODUCT_STEP_1 = "Add Product Promo Step 1";
+        String ADD_PRODUCT_STEP_2 = "Add Product Promo Step 2- ";
+        String ADD_PRODUCT_STEP_3 = "Add Product Promo Step 3 - ";
+        String KEYWORD_POSITIF = "Keyword - ";
+        String KEYWORD_NEGATIF = "Negatif - ";
+        String EDIT_GROUP_MANAGE_GROUP = "Edit Group Promo - Atur Grup ";
+        String EDIT_GROUP_COST = "Edit Group Promo - Biaya ";
+        String EDIT_GROUP_SCHEDULE = "Edit Group Promo - Jadwal Tampil ";
+        String DELETE_GROUP = "Delete Group Promo";
+        String DATE_CUSTOM_WITHOUT_DASH = "Date Custom";
+        String STATISTIC_WITH_DASH = "Statistic - ";
+        String ADD_SHOP_PROMO_BUDGET = "Add Shop Promo Budget - ";
+        String ADD_SHOP_PROMO_SHOWTIME = "Add Shop Promo Show Time - ";
+        String FAB_DASHBOARD = "FAB Menu";
+        String MANAGE_PRODUCT = "Manage Product";
+        String ETALASE = "Etalase";
+        String CHANGE_PACKAGE_GOLD_MERCHANT = "Change Package";
+        String GM_CHECKOUT = "GM Checkout";
     }
 
     interface SOCIAL_MEDIA {

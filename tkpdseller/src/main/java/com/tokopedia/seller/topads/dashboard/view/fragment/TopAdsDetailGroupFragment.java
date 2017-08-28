@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
@@ -101,6 +102,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void deleteAd() {
         super.deleteAd();
+        UnifyTracking.eventTopAdsProductDeleteGrup();
         presenter.deleteAd(ad.getId());
     }
 

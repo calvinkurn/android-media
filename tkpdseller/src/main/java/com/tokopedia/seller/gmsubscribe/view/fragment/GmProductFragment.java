@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -69,6 +70,7 @@ public abstract class GmProductFragment
 
     void confirmSelection() {
         if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
+            UnifyTracking.eventClickSubscribeGoldMerchant(adapter.getProductSelection());
             listener.finishProductSelection(currentSelectedProductId, returnType);
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.gm_subscribe_no_product_selected));

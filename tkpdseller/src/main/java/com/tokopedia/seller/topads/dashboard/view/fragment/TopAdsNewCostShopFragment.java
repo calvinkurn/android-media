@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
@@ -27,6 +29,7 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
     @Override
     protected void onClickedNext() {
         super.onClickedNext();
+        trackerBudgetShop();
         if(stepperListener != null) {
             if(stepperModel == null){
                 stepperModel = new TopAdsCreatePromoShopModel();
@@ -34,6 +37,14 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
             stepperModel.setDetailShopCostViewModel(detailAd);
             stepperListener.goToNextPage(stepperModel);
             hideLoading();
+        }
+    }
+
+    private void trackerBudgetShop() {
+        if(detailAd.isBudget()) {
+            UnifyTracking.eventTopAdsShopAddPromoBudget(AppEventTracking.EventLabel.BUDGET_PER_DAY);
+        }else{
+            UnifyTracking.eventTopAdsShopAddPromoBudget(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
 

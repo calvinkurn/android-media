@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -19,17 +20,15 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticConversionFragment;
@@ -39,6 +38,8 @@ import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticKlikFr
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticSpentFragment;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticViewListener;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +104,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
             @Override
             public void onPageSelected(int position) {
+                trackingStatisticBar(position);
                 Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
                 if (fragment != null && fragment instanceof TopAdsStatisticViewListener && cells != null) {
                     ((TopAdsStatisticViewListener) fragment).updateDataCell(cells);
@@ -211,4 +213,41 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     }
 
     protected abstract int getTypeStatistic();
+
+    private void trackingStatisticBar(int position) {
+        switch (position) {
+            case 0:
+                onImpressionSelected();
+                break;
+            case 1:
+                onClickSelected();
+                break;
+            case 2:
+                onCtrSelected();
+                break;
+            case 3:
+                onConversionSelected();
+                break;
+            case 4:
+                onAverageConversionSelected();
+                break;
+            case 5:
+                onCostSelected();
+                break;
+            default:
+                break;
+        }
+    }
+
+    protected abstract void onCostSelected();
+
+    protected abstract void onAverageConversionSelected();
+
+    protected abstract void onConversionSelected();
+
+    protected abstract void onCtrSelected();
+
+    protected abstract void onClickSelected();
+
+    protected abstract void onImpressionSelected();
 }

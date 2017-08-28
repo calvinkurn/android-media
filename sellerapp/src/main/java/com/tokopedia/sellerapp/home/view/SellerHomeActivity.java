@@ -798,18 +798,22 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                         Context context = SellerHomeActivity.this;
                         switch (buttonIndex) {
                             case 0:
+                                UnifyTracking.eventSellerClickAddProductDashboard();
                                 ProductAddActivity.start(SellerHomeActivity.this);
                                 break;
                             case 1:
+                                UnifyTracking.eventSellerClickManageProductDashboard();
                                 context.startActivity(new Intent(
                                         context, ManageProductSeller.class
                                 ));
                                 break;
                             case 2:
+                                UnifyTracking.eventSellerClickEtalaseDashboard();
                                 context.startActivity(new Intent(
                                         context, EtalaseShopEditor.class));
                                 break;
                             case 3:
+                                UnifyTracking.eventSellerClickSettingDashboard();
                                 context.startActivity(new Intent(
                                         context, ManageGeneral.class));
                                 break;
@@ -820,6 +824,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 .animator(new BoomMenuButton.AnimatorListener() {
                     @Override
                     public void toShow() {
+                        UnifyTracking.eventSellerClickFabDashboard();
                         hideLayout.setVisibility(View.VISIBLE);
                         hideLayout.setClickable(true);
                         isBoomMenuShown = true;

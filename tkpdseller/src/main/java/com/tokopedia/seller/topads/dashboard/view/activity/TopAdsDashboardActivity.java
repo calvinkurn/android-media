@@ -193,6 +193,12 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             return;
         }
         showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
         showCaseList.add(new ShowCaseObject(

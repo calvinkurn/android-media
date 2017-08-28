@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
@@ -53,11 +55,20 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
     @Override
     protected void onNextClicked() {
         super.onNextClicked();
+        trackerScheduleShop();
         if (stepperModel == null) {
             stepperModel = new TopAdsCreatePromoShopModel();
         }
         stepperModel.setDetailShopScheduleViewModel(detailAd);
         daggerPresenter.saveAd(stepperModel.getTopAdsDetailShopViewModel());
+    }
+
+    private void trackerScheduleShop() {
+        if(detailAd.isScheduled()){
+            UnifyTracking.eventTopAdsShopAddPromoShowTime(AppEventTracking.EventLabel.SHOWTIME_SETUP);
+        }else{
+            UnifyTracking.eventTopAdsShopAddPromoShowTime(AppEventTracking.EventLabel.SHOWTIME_AUTO);
+        }
     }
 
     @Override
