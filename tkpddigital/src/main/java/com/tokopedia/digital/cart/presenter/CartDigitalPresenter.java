@@ -446,6 +446,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setFields(fieldList);
         attributes.setReseller(true);
         attributes.setIdentifier(view.getDigitalIdentifierParam());
+        attributes.setShowSubscribeFlag(true);
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;
