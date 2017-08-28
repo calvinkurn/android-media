@@ -157,7 +157,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
             @Override
             public void onRechargeTextClear() {
                 clearHolder(holderWidgetSpinnerProduct);
-                clearHolder(widgetWrapperBuyView);
+                clearHolder(holderWidgetWrapperBuy);
             }
         };
     }
@@ -322,11 +322,10 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 widgetClientNumberView.setEmptyString();
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.operatorId);
+                widgetClientNumberView.setImgOperatorInvisible();
                 widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(),
                         rechargeOperatorModel.allowAlphanumeric);
                 minLengthDefaultOperator = rechargeOperatorModel.minimumLength;
-                widgetClientNumberView.setImgOperator(rechargeOperatorModel.image);
-                widgetClientNumberView.setImgOperatorVisible();
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.maximumLength);
                 widgetProductChoserView.setTitleProduct(rechargeOperatorModel.nominalText);
                 widgetProductChoserView.setVisibilityProduct(rechargeOperatorModel.showProduct);
