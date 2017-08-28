@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,10 +17,10 @@ public class ProductVariantDataSubmit implements Parcelable {
 
     @SerializedName("variant")
     @Expose
-    private List<ProductVariantUnitSubmit> productVariantUnitSubmitList;
+    private List<ProductVariantUnitSubmit> productVariantUnitSubmitList = new ArrayList<>();
     @SerializedName("product_variant")
     @Expose
-    private List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList;
+    private List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = new ArrayList<>();
 
     /**
      * Summary of the selected variant list. for example. Color and size.

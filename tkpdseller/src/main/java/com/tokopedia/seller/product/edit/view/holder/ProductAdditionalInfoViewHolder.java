@@ -174,7 +174,6 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                 break;
             case REQUEST_CODE_VARIANT:
                 if (resultCode == Activity.RESULT_OK) {
-                    // TODO save the data to variantdata
                     if (data!= null && data.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         setProductVariantDataSubmit((ProductVariantDataSubmit) data.getParcelableExtra(
                                 ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION));

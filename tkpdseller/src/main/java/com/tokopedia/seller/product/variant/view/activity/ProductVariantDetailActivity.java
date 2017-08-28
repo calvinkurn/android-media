@@ -70,14 +70,9 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO hendry for test only
-        if (!getIntent().hasExtra(EXTRA_VARIANT_OPTION_ID)) {
-            variantName = "Norman ganggu";
-            variantId = 10;
-        } else {
-            variantName = getIntent().getStringExtra(EXTRA_VARIANT_NAME);
-            variantId = getIntent().getLongExtra(EXTRA_VARIANT_OPTION_ID, 0L);
-        }
+        Intent intent = getIntent();
+        variantName = intent.getStringExtra(EXTRA_VARIANT_NAME);
+        variantId = intent.getLongExtra(EXTRA_VARIANT_OPTION_ID, 0L);
         toolbar.setTitle(variantName);
     }
 
