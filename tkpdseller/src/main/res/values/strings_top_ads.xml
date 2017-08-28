@@ -18,7 +18,7 @@
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
-    <string name="label_top_ads_ctr">CTR</string>
+    <string name="label_top_ads_ctr">Persentase Klik</string>
     <string name="label_top_ads_conversion">Konversi</string>
     <string name="label_top_ads_average">Rata - Rata</string>
     <string name="label_top_ads_cost">Terpakai</string>
@@ -146,7 +146,7 @@
     <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
     <string name="label_top_ads_info_group_option_exist">Produk akan dimasukkan ke grup promo yang sudah ada.</string>
     <string name="label_top_ads_info_group_option_new">Produk akan dimasukkan ke grup promo baru.</string>
-    <string name="label_top_ads_info_group_option_empty">Produk tidak masuk grup promo, pengaturannya akan dilakukan per promo.</string>
+    <string name="label_top_ads_info_group_option_empty">Pengaturan dilakukan per promo.</string>
     <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
     <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
     <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
@@ -167,7 +167,7 @@
     <string name="error_top_ads_daily_budget_minimal">Biaya per hari minimal %1sx biaya maks per klik</string>
     <string name="error_top_ads_daily_budget_cannot_empyt">Anggaran tidak boleh kosong</string>
 
-    <string name="title_activity_top_ads_list">Tambah Produk</string>
+    <string name="title_activity_top_ads_list">Pilih Produk</string>
     <string name="title_activity_category_picker">Pilih Kategori</string>
     <string name="title_activity_catalog_picker">Pilih Katalog</string>
 

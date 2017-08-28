@@ -370,7 +370,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsEditGroupNameActivity"
-            android:label="@string/label_top_ads_group_name"
+            android:label="@string/label_top_ads_groups"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity"

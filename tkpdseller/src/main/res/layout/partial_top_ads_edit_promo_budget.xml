@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextView.Title.BlackSecondary"
+        style="@style/TextView.Headline.BlackSecondary"
         android:layout_marginBottom="@dimen/margin_small"
         android:text="@string/label_top_ads_budget"/>
 

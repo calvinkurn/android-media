@@ -50,12 +50,13 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
                                                     List<TopAdsProductViewModel> topAdsProductViewModelList) {
         List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels = new ArrayList<>();
         for(TopAdsProductViewModel topAdsProductViewModel : topAdsProductViewModelList){
+            TopAdsDetailGroupDomainModel detailGroupDomainModel = topAdsDetailGroupDomainModel;
             String adId = String.valueOf(topAdsProductViewModel.getAdId());
             String itemId = String.valueOf( topAdsProductViewModel.getId() );
-            topAdsDetailGroupDomainModel.setAdId(adId);
-            topAdsDetailGroupDomainModel.setItemId(itemId);
-            topAdsDetailGroupDomainModel.setAdType(PRODUCT_AD_TYPE);
-            topAdsDetailProductDomainModels.add(topAdsDetailGroupDomainModel);
+            detailGroupDomainModel.setAdId(adId);
+            detailGroupDomainModel.setItemId(itemId);
+            detailGroupDomainModel.setAdType(PRODUCT_AD_TYPE);
+            topAdsDetailProductDomainModels.add(detailGroupDomainModel);
         }
 
         RequestParams params = RequestParams.create();

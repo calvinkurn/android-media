@@ -156,7 +156,11 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
 
     private void updateSelectedProductCount() {
         if (adapter.getDataSize() > 0) {
-            counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product, adapter.getDataSize())));
+            if(adapter.getDataSize() > 9) {
+                counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product, adapter.getDataSize())));
+            }else{
+                counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product_zero, adapter.getDataSize())));
+            }
             addProduct.setText(R.string.label_edit);
             buttonNext.setEnabled(true);
         } else {

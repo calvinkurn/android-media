@@ -18,7 +18,7 @@
 
             <TextView
                 android:id="@+id/header_text"
-                style="@style/TextView.Title.BlackSecondary"
+                style="@style/TextView.Headline.BlackSecondary"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:text="@string/top_ads_label_schedule" />
 

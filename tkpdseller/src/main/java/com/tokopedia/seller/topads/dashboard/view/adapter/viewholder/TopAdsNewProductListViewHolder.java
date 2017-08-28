@@ -29,7 +29,7 @@ public class TopAdsNewProductListViewHolder extends BaseViewHolder<TopAdsProduct
 
     @Override
     public void bindObject(TopAdsProductViewModel topAdsProductViewModel) {
-        ImageHandler.loadImageFitCenter(
+        ImageHandler.loadImageRounded2(
                 image_product.getContext(),
                 image_product,
                 topAdsProductViewModel.getImageUrl()

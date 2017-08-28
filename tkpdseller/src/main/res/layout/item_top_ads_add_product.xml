@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="@dimen/padding_detail">
 
@@ -23,7 +24,6 @@
         android:layout_toRightOf="@+id/image_product" />
 
     <ImageView
-
         android:id="@+id/delete_product"
         android:layout_width="15dp"
         android:layout_height="15dp"
