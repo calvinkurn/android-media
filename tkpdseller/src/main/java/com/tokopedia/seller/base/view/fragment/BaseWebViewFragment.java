@@ -62,7 +62,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 super.onProgressChanged(view, newProgress);
             }
         });
-        webView.loadAuthUrl(getUrl());
+        webView.loadAuthUrlWithFlags(getUrl());
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

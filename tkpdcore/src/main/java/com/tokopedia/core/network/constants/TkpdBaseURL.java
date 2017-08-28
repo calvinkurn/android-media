@@ -809,4 +809,8 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
     }
+
+    public static class FinTech {
+        public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
+    }
 }
