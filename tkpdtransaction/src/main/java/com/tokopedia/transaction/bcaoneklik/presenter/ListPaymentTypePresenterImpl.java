@@ -58,6 +58,7 @@ public class ListPaymentTypePresenterImpl implements ListPaymentTypePresenter {
 
     @Override
     public void onGetPaymentList(Subscriber<PaymentListModel> subscriber) {
+        mainView.showMainDialog();
         TKPDMapParam<String, String> paymentListParam = new TKPDMapParam<>();
         paymentListParam.put(KEY_TOKOPEDIA_USER_ID, SessionHandler.getLoginID(mainView.getContext()));
         paymentListParam.put(KEY_MERCHANT_CODE, VALUE_TOKOPEDIA_MERCHANT_CODE);

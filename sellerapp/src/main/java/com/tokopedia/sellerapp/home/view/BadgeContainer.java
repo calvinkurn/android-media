@@ -73,7 +73,8 @@ public class BadgeContainer extends FrameLayout implements BaseView<BadgeContain
                 @Override
                 public void onLoadFailed(Exception e, Drawable errorDrawable) {
                     super.onLoadFailed(e, errorDrawable);
-                    Log.e(ImageHandler.class.getSimpleName(), e.toString());
+                    if (e != null)
+	                    Log.e(ImageHandler.class.getSimpleName(), e.toString());
                 }
 
                 @Override
