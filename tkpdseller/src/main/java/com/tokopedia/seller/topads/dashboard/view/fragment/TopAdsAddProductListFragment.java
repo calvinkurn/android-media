@@ -574,7 +574,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         int totalSelection = selections!=null? selections.size(): 0;
         if (totalSelection > 0) {
             containerCounterProduct.setVisibility(View.VISIBLE);
-            counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product, totalSelection)));
+            if(totalSelection > 9) {
+                counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product, totalSelection)));
+            }else{
+                counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product_zero, totalSelection)));
+            }
             enableNextButton();
         } else {
             containerCounterProduct.setVisibility(View.GONE);
