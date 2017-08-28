@@ -610,7 +610,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onCategoryChanged(long categoryId) {
         // when category change, check if catalog exists
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
-        productAdditionalInfoViewHolder.onSuccessGetProductVariant(null);
+        if (productInfoViewHolder.getCategoryId() != categoryId) {
+            productAdditionalInfoViewHolder.onSuccessGetProductVariant(null);
+        }
         presenter.fetchProductVariantByCat(categoryId);
         fetchCategory(categoryId);
     }
