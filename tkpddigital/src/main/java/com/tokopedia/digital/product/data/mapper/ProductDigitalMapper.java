@@ -124,6 +124,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
 
         List<Operator> operatorCategoryList = new ArrayList<>();
         List<BannerData> bannerDataList = new ArrayList<>();
+        List<BannerData> otherBannerDataList = new ArrayList<>();
         for (ResponseCategoryDetailIncluded categoryDetailIncluded
                 : responseCategoryDetailIncludedList) {
             if (categoryDetailIncluded.getType().equalsIgnoreCase(Operator.DEFAULT_TYPE_CONTRACT)) {
@@ -223,10 +224,27 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                                 .link(categoryDetailIncluded.getAttributes().getLink())
                                 .build()
                 );
+            } else if (categoryDetailIncluded.getType()
+                    .equalsIgnoreCase(BannerData.OTHER_TYPE_CONTRACT)) {
+                if (categoryDetailIncluded.getAttributes() != null) {
+                    otherBannerDataList.add(
+                            new BannerData.Builder()
+                                    .id(categoryDetailIncluded.getId())
+                                    .type(categoryDetailIncluded.getType())
+                                    .title(categoryDetailIncluded.getAttributes().getTitle())
+                                    .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
+                                    .promocode(categoryDetailIncluded.getAttributes().getPromocode())
+                                    .image(categoryDetailIncluded.getAttributes().getImage())
+                                    .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
+                                    .link(categoryDetailIncluded.getAttributes().getLink())
+                                    .build()
+                    );
+                }
             }
         }
         categoryData.setOperatorList(operatorCategoryList);
         categoryData.setBannerDataListIncluded(bannerDataList);
+        categoryData.setOtherBannerDataListIncluded(otherBannerDataList);
 
         if (responseCategoryDetailData.getAttributes().getTeaser() != null) {
             Teaser categoryTeaser = new Teaser();
@@ -275,5 +293,10 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 .plainBalance(responsePulsaBalance.getAttributes().getBalancePlain())
                 .success(responsePulsaBalance.getAttributes().isSuccess())
                 .expireDate(responsePulsaBalance.getAttributes().getExpireDate()).build();
+    }
+
+    public List<CategoryData> transformCategoryDataList(Object object) throws MapperDataException {
+        List<CategoryData> categoryDataList = new ArrayList<>();
+        return categoryDataList;
     }
 }

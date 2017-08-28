@@ -102,7 +102,6 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     actionListener.onBannerItemClicked(bannerData);
                 }
             });
-
         } else if (type == TYPE_HOLDER_TITLE) {
             BannerTitle bannerTitle = (BannerTitle) dataList.get(position);
             BannerTitleHolder bannerTitleHolder = (BannerTitleHolder) holder;
@@ -136,9 +135,12 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        if (dataList.get(position) instanceof BannerTitle) return TYPE_HOLDER_TITLE;
-        else if (dataList.get(position) instanceof BannerData) return TYPE_HOLDER_BANNER_ITEM;
-        else return super.getItemViewType(position);
+        if (dataList.get(position) instanceof BannerTitle) {
+            return TYPE_HOLDER_TITLE;
+        } else if (dataList.get(position) instanceof BannerData) {
+            return TYPE_HOLDER_BANNER_ITEM;
+        }
+        return super.getItemViewType(position);
     }
 
     @Override

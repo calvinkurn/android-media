@@ -1921,4 +1921,31 @@ public class UnifyTracking extends TrackingUtils {
                 eventLabel
         ).getEvent());
     }
+
+    public static void eventClickPaymentAndTopupOnDrawer() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.PAYMENT_AND_TOPUP
+        ).getEvent());
+    }
+
+    public static void eventClickDigitalTransactionListOnDrawer() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST
+        ).getEvent());
+    }
+
+    public static void eventClickDigitalCategory(String category) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE + category,
+                AppEventTracking.Action.CLICK_ICON_ON_ALL_CATEGORIES,
+                AppEventTracking.EventLabel.PRODUCT + category
+        ).getEvent());
+    }
 }

@@ -46,6 +46,7 @@ public class CategoryData implements Parcelable {
     private List<Operator> operatorList = new ArrayList<>();
 
     private List<BannerData> bannerDataListIncluded = new ArrayList<>();
+    private List<BannerData> otherBannerDataListIncluded = new ArrayList<>();
 
     private CategoryData(Builder builder) {
         setCategoryId(builder.categoryId);
@@ -63,6 +64,7 @@ public class CategoryData implements Parcelable {
         setClientNumberList(builder.clientNumberList);
         setOperatorList(builder.operatorList);
         setBannerDataListIncluded(builder.bannerDataListIncluded);
+        setOtherBannerDataListIncluded(builder.otherBannerDataListIncluded);
     }
 
     public String getName() {
@@ -189,6 +191,14 @@ public class CategoryData implements Parcelable {
         this.bannerDataListIncluded = bannerDataListIncluded;
     }
 
+    public List<BannerData> getOtherBannerDataListIncluded() {
+        return otherBannerDataListIncluded;
+    }
+
+    public void setOtherBannerDataListIncluded(List<BannerData> otherBannerDataListIncluded) {
+        this.otherBannerDataListIncluded = otherBannerDataListIncluded;
+    }
+
     public CategoryData() {
     }
 
@@ -215,6 +225,7 @@ public class CategoryData implements Parcelable {
         dest.writeTypedList(this.clientNumberList);
         dest.writeTypedList(this.operatorList);
         dest.writeTypedList(this.bannerDataListIncluded);
+        dest.writeTypedList(this.otherBannerDataListIncluded);
     }
 
     protected CategoryData(Parcel in) {
@@ -233,6 +244,7 @@ public class CategoryData implements Parcelable {
         this.clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
         this.operatorList = in.createTypedArrayList(Operator.CREATOR);
         this.bannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
+        this.otherBannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
     }
 
     public static final Creator<CategoryData> CREATOR = new Creator<CategoryData>() {
@@ -264,6 +276,7 @@ public class CategoryData implements Parcelable {
         private List<ClientNumber> clientNumberList;
         private List<Operator> operatorList;
         private List<BannerData> bannerDataListIncluded;
+        private List<BannerData> otherBannerDataListIncluded;
 
         public Builder() {
         }
@@ -340,6 +353,11 @@ public class CategoryData implements Parcelable {
 
         public Builder bannerDataListIncluded(List<BannerData> val) {
             bannerDataListIncluded = val;
+            return this;
+        }
+
+        public Builder otherBannerDataListIncluded(List<BannerData> val) {
+            otherBannerDataListIncluded = val;
             return this;
         }
 

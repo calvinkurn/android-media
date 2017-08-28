@@ -101,6 +101,18 @@ public class DeviceUtil {
         return requestBodyIdentifier;
     }
 
+    public static String validatePrefixClientNumber(String phoneNumber) {
+        if (phoneNumber.startsWith("62")) {
+            phoneNumber = phoneNumber.replaceFirst("62", "0");
+        }
+        if (phoneNumber.startsWith("+62")) {
+            phoneNumber = phoneNumber.replace("+62", "0");
+        }
+        phoneNumber = phoneNumber.replace(".", "");
+
+        return phoneNumber.replaceAll("[^0-9]+", "");
+    }
+
     public static String getMobileNumber(Activity context, int simPosition) {
         String phoneNumber = null;
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {

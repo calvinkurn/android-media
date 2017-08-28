@@ -210,6 +210,10 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                 for (BannerData bannerData : categoryData.getBannerDataListIncluded()) {
                     bannerDataList.add(bannerData);
                 }
+                List<BannerData> otherBannerDataList = new ArrayList<>();
+                for (BannerData bannerData : categoryData.getOtherBannerDataListIncluded()) {
+                    otherBannerDataList.add(bannerData);
+                }
                 return new ProductDigitalData.Builder()
                         .historyClientNumber(new HistoryClientNumber.Builder()
                                 .lastOrderClientNumber(orderClientNumber)
@@ -217,6 +221,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                                 .build())
                         .categoryData(categoryData)
                         .bannerDataList(bannerDataList)
+                        .otherBannerDataList(otherBannerDataList)
                         .build();
             }
         };

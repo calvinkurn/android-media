@@ -41,7 +41,11 @@ public interface IProductDigitalMapper {
             ResponseRecentNumberData responseRecentNumberData
     ) throws MapperDataException;
 
+
     PulsaBalance transformPulsaBalance(
-            ResponsePulsaBalance responsePulsaBalance
+            ResponsePulsaBalance responsePulsaBalance);
+
+    List<CategoryData> transformCategoryDataList(
+            Object object
     ) throws MapperDataException;
 }
