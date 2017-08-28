@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
@@ -47,6 +48,7 @@ public class TickerView extends BaseCustomView {
 
 
     public static final float DEFAULT_CORNER_RADIUS = 4.0f;
+    private static final long SLIDE_DELAY = 5000;
     private static final String SAVED = "instance state TickerView.class";
     private static final String SAVED_STATE_VISIBILITY = "saved_state_visibility";
 
@@ -76,6 +78,10 @@ public class TickerView extends BaseCustomView {
     private TickerViewAdapter tickerAdapter;
 
     private int stateVisibility;
+    private int tickerCurrentPosition;
+
+    private Handler tickerHandler;
+    private Runnable tickerRunnable;
 
     public void setStateVisibility(int stateVisibility) {
         this.stateVisibility = stateVisibility;
@@ -167,6 +173,20 @@ public class TickerView extends BaseCustomView {
                 listMessage,
                 onPartialTextClickListener
         );
+
+        tickerHandler = new Handler();
+        tickerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (tickerViewPager != null) {
+                    if (tickerCurrentPosition == tickerViewPager.getAdapter().getCount() - 1) {
+                        tickerCurrentPosition = -1;
+                    }
+                    tickerViewPager.setCurrentItem(tickerCurrentPosition + 1, true);
+                    tickerHandler.postDelayed(this, SLIDE_DELAY);
+                }
+            }
+        };
     }
 
     @Override
@@ -280,25 +300,52 @@ public class TickerView extends BaseCustomView {
         tickerAdapter.setListBackGroundColor(listBackGroundColor);
         tickerAdapter.setListener(onPartialTextClickListener);
         tickerAdapter.notifyDataSetChanged();
+
+        startAutoScrollTicker();
+
         invalidate();
         requestLayout();
+    }
+
+    private void startAutoScrollTicker() {
+        if (tickerHandler != null && tickerRunnable != null) {
+            tickerHandler.postDelayed(tickerRunnable, SLIDE_DELAY);
+        }
+    }
+
+    private void stopAutoScrollTicker() {
+        if (tickerHandler != null && tickerRunnable != null) {
+            tickerHandler.removeCallbacks(tickerRunnable);
+        }
     }
 
     private ViewPager.OnPageChangeListener getOnPageChangeListener(final OnPageChangeListener onPageChangeListener) {
         return new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (onPageChangeListener != null) onPageChangeListener.onScrolled(position, positionOffset, positionOffsetPixels);
+                tickerCurrentPosition = position;
+                if (onPageChangeListener != null) {
+                    onPageChangeListener.onScrolled(position, positionOffset, positionOffsetPixels);
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
-                if (onPageChangeListener != null) onPageChangeListener.onSelected(position);
+                if (onPageChangeListener != null) {
+                    onPageChangeListener.onSelected(position);
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if (onPageChangeListener != null) onPageChangeListener.onScrollStateChanged(state);
+                if (onPageChangeListener != null) {
+                    onPageChangeListener.onScrollStateChanged(state);
+                }
+
+                if (state == ViewPager.SCROLL_STATE_DRAGGING
+                        && (tickerViewPager != null && tickerViewPager.isInTouchMode())) {
+                    stopAutoScrollTicker();
+                }
             }
         };
     }
@@ -316,7 +363,12 @@ public class TickerView extends BaseCustomView {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
             setStateVisibility(bundle.getInt(SAVED_STATE_VISIBILITY));
-            setVisibility(getStateVisibility() == GONE ? GONE : VISIBLE);
+            if (getStateVisibility() != GONE) {
+                setVisibility(VISIBLE);
+                startAutoScrollTicker();
+            } else {
+                setVisibility(GONE);
+            }
             state = bundle.getParcelable(SAVED);
         }
         super.onRestoreInstanceState(state);
