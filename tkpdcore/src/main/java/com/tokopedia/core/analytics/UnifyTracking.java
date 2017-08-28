@@ -102,7 +102,6 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventCategoryDrawer() {
         sendGTMEvent(new EventTracking(
-                //TODO ASK CATEGORY
                 AppEventTracking.Event.DRAWER_CATEGORY,
                 AppEventTracking.Category.CATEGORY_DRAWER,
                 AppEventTracking.Action.CLICK_CATEGORY,
