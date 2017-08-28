@@ -1,9 +1,11 @@
 package com.tokopedia.seller.product.variant.view.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +38,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
 
     private ProductVariantByCatModel productVariantByCatModel;
+    private boolean hasAnyUpdate;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public void removeItemFromSearch(ProductVariantViewModel productVariantViewModel) {
         super.removeItemFromSearch(productVariantViewModel);
         updateBottomSheetInfo();
+        hasAnyUpdate = true;
     }
 
     @Override
@@ -77,6 +81,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public void removeItemFromCache(ProductVariantViewModel productVariantViewModel) {
         super.removeItemFromCache(productVariantViewModel);
         updateBottomSheetInfo();
+        hasAnyUpdate = true;
     }
 
     @Override
@@ -84,6 +89,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
         productVariantViewModel.setTitle(text);
         addItemFromSearch(productVariantViewModel);
+        hasAnyUpdate = true;
         validateFooterAndInfoView();
     }
 
@@ -168,5 +174,28 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         bundle.putStringArrayList(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_RESERVED_TITLE_LIST, titleList);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (hasAnyUpdate) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(R.string.product_variant_dialog_cancel_title))
+                    .setMessage(getString(R.string.product_variant_dialog_cancel_message))
+                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ProductVariantPickerActivity.super.onBackPressed();
+                        }
+                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // no op, just dismiss
+                        }
+                    });
+            AlertDialog dialog = alertDialogBuilder.create();
+            dialog.show();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
