@@ -32,6 +32,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
     public static final String EXTRA_VARIANT_HAS_STOCK = "var_has_stock";
     public static final String EXTRA_VARIANT_VALUE_LIST = "var_lst";
     public static final String EXTRA_SELECTED_VARIANT_ID_LIST = "sel_var_id_lst";
+    public static final String SAVED_HAS_ANY_CHANGES = "any_chg";
 
     public static final String EXTRA_ACTION_DELETE = "del";
     public static final String EXTRA_ACTION_SUBMIT = "sbmt";
@@ -40,6 +41,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
 
     private long variantId;
     private String variantName;
+    private boolean hasAnyChange;
 
     public static void start(Context context, Fragment fragment,
                              long variantId,
@@ -74,6 +76,9 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
         variantName = intent.getStringExtra(EXTRA_VARIANT_NAME);
         variantId = intent.getLongExtra(EXTRA_VARIANT_OPTION_ID, 0L);
         toolbar.setTitle(variantName);
+        if (savedInstanceState!= null) {
+            hasAnyChange = savedInstanceState.getBoolean(SAVED_HAS_ANY_CHANGES);
+        }
     }
 
     @Override
@@ -129,5 +134,39 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
         intent.putExtra(EXTRA_VARIANT_VALUE_LIST,(ArrayList) selectedVariantValueIds);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onDataChange() {
+        hasAnyChange = true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (hasAnyChange) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(R.string.product_variant_dialog_cancel_title))
+                    .setMessage(getString(R.string.product_variant_dialog_cancel_message))
+                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ProductVariantDetailActivity.super.onBackPressed();
+                        }
+                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // no op, just dismiss
+                        }
+                    });
+            AlertDialog dialog = alertDialogBuilder.create();
+            dialog.show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_HAS_ANY_CHANGES, hasAnyChange);
     }
 }

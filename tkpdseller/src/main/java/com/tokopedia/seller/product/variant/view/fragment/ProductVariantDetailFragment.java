@@ -41,6 +41,7 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
 
     public interface OnProductVariantDataManageFragmentListener {
         void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
+        void onDataChange();
     }
 
     public static ProductVariantDetailFragment newInstance() {
@@ -101,6 +102,7 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
                     setStockLabelEmpty();
                     productVariantDetailAdapter.unCheckAllItems();
                 }
+                listener.onDataChange();
             }
         });
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +138,11 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
     public void onCheckAny() {
         labelSwitchStatus.setCheckedNoListener(true);
         setStockLabelAvailable();
+    }
+
+    @Override
+    public void onItemChecked() {
+        listener.onDataChange();
     }
 
     @Override

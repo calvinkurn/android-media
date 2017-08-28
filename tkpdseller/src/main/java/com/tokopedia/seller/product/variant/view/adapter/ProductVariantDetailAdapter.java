@@ -20,8 +20,8 @@ import java.util.ArrayList;
 public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVariantDetailViewHolder> {
 
     public interface OnProductVariantDataAdapterListener {
+        void onItemChecked();
         void onCheckAny();
-
         void onUnCheckAll();
     }
 
@@ -91,6 +91,7 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
                 }
                 notifyItemChanged(holder.getAdapterPosition());
                 if (onProductVariantDataAdapterListener != null) {
+                    onProductVariantDataAdapterListener.onItemChecked();
                     if (variantValueIdList.size() == 0) {
                         onProductVariantDataAdapterListener.onUnCheckAll();
                     } else if (variantValueIdList.size() == 1) {
