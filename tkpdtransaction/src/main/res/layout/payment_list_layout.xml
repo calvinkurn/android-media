@@ -23,6 +23,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_credit_card"
+                    android:textSize="@dimen/text_size_l_medium"/>
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/credit_card_recycler_view"
                     android:layout_width="match_parent"
@@ -37,14 +43,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/quick_payment"
-                        android:textStyle="bold"/>
-
-                    <View
-                        android:layout_width="30dp"
-                        android:layout_height="3dp"
-                        android:background="@color/red_300"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"/>
+                        android:textSize="@dimen/text_size_l_medium"/>
 
                 </LinearLayout>
 
@@ -67,12 +66,6 @@
                         android:padding="@dimen/small_dp"
                         android:orientation="vertical"
                         android:background="@drawable/btn_plain">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/label_color"
-                            android:text="@string/payment_method"/>
 
                         <TextView
                             android:layout_width="match_parent"

@@ -2,7 +2,6 @@ package com.tokopedia.transaction.bcaoneklik.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -30,7 +29,6 @@ import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
 import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModel;
-import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenter;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
@@ -47,7 +45,7 @@ import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CR
  * Created by kris on 8/2/17. Tokopedia
  */
 
-public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTypePresenter>
+public class ListPaymentTypeActivity extends TActivity
         implements ListPaymentTypeView, BcaOneClickDeleteListener, CreditCardRecyclerViewAdapter
         .CreditCardItemListener, DeleteCreditCardDialog.DeleteCreditCardDialogListener{
     public static final int REGISTER_BCA_ONE_CLICK_REQUEST_CODE = 1;
@@ -79,20 +77,12 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     ListPaymentTypePresenterImpl presenter;
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inflateView(R.layout.payment_list_layout);
         initInjector();
         presenter.setViewListener(this);
-
+        initView();
     }
 
     private void initInjector() {
@@ -104,12 +94,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
         component.inject(this);
     }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.payment_list_layout;
-    }
 
-    @Override
     protected void initView() {
         rootView = (RelativeLayout) findViewById(R.id.payment_list_root_view);
         creditCardVaultRecyclerView = (RecyclerView) findViewById(R.id.credit_card_recycler_view);
@@ -164,21 +149,6 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     private void fetchData() {
         presenter.onGetCreditCardList(this);
         presenter.onGetPaymentList(paymentListModelSubscriber());
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

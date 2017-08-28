@@ -20,7 +20,7 @@ import com.tokopedia.transaction.R;
 public class DeleteCreditCardDialog extends DialogFragment{
 
     private static final String TOKEN_ID = "TOKEN_ID";
-    private static final String CARD_ID = "TOKEN_ID";
+    private static final String CARD_ID = "CARD_ID";
 
     private DeleteCreditCardDialogListener listener;
 
