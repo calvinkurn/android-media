@@ -97,6 +97,7 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
                     TopAdsGroupManagePromoFragment.NOT_IN_GROUP, "", "");
         }
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+        getActivity().finish();
     }
 
     @Override
