@@ -813,7 +813,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void checkPromoAds(@NonNull String shopId, @NonNull int itemId,
                               @NonNull String userId, final CheckPromoAdsListener listener) {
         Observable<Response<String>> observable = promoTopAdsService.getApi()
-                .checkPromoAds(NetworkParam.paramCheckAds(shopId, String.valueOf(itemId), userId));
+                .checkPromoAds(NetworkParam.paramCheckAds(shopId, String.valueOf(itemId), userId, "1"));
         Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
             public void onCompleted() {

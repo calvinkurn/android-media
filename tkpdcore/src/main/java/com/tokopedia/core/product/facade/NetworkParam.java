@@ -17,6 +17,7 @@ public class NetworkParam {
     private static final String PARAM_PRODUCT_ID = "product_id";
     private static final String PARAM_ITEM_ID = "item_id";
     private static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_ADS_TYPE = "type";
     private static final String PARAM_DEVICE_ID = "device";
     private static final String PARAM_PRODUCT_KEY = "product_key";
     private static final String PARAM_SHOP_DOMAIN = "shop_domain";
@@ -119,11 +120,12 @@ public class NetworkParam {
         return params;
     }
 
-    public static Map<String, String> paramCheckAds(String shopId, String itemId, String userId){
+    public static Map<String, String> paramCheckAds(String shopId, String itemId, String userId, String adsType){
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_SHOP_ID, shopId);
         params.put(PARAM_ITEM_ID, itemId);
         params.put(PARAM_USER_ID, userId);
+        params.put(PARAM_ADS_TYPE, adsType);
         params.put(PARAM_DEVICE_ID, "android");
         return params;
     }
