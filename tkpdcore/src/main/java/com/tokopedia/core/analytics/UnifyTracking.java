@@ -597,6 +597,9 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.VIEW_RECENT,
                 AppEventTracking.EventLabel.VIEW_ALL_RECENT)
                 .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
     }
 
@@ -607,6 +610,9 @@ public class UnifyTracking extends TrackingUtils {
                 action,
                 label)
                 .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
     }
 
@@ -617,6 +623,9 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 label)
                 .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
                 .getEvent());
     }
 
