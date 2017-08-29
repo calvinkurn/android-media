@@ -41,7 +41,6 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
 
     public interface OnProductVariantDataManageFragmentListener {
         void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
-        void onDataChange();
     }
 
     public static ProductVariantDetailFragment newInstance() {
@@ -102,14 +101,12 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
                     setStockLabelEmpty();
                     productVariantDetailAdapter.unCheckAllItems();
                 }
-                listener.onDataChange();
             }
         });
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSubmitVariant(labelSwitchStatus.isChecked(),
-                        productVariantDetailAdapter.getVariantValueIdListSorted());
+                onSubmitClicked();
             }
         });
         // default value: if all is checked, set label switch summary to tersedia else to kosong
@@ -118,6 +115,11 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
         } else {
             setStockLabelEmpty();
         }
+    }
+
+    public void onSubmitClicked(){
+        listener.onSubmitVariant(labelSwitchStatus.isChecked(),
+                productVariantDetailAdapter.getVariantValueIdListSorted());
     }
 
     private void setStockLabelAvailable() {
@@ -138,11 +140,6 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
     public void onCheckAny() {
         labelSwitchStatus.setCheckedNoListener(true);
         setStockLabelAvailable();
-    }
-
-    @Override
-    public void onItemChecked() {
-        listener.onDataChange();
     }
 
     @Override

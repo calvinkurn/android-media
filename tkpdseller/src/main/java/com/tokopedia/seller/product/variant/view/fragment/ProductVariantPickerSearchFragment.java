@@ -155,7 +155,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             productVariantViewModel.setTemporaryId(productVariantOptionSubmit.getTemporaryId());
             productVariantViewModel.setUnitValueId(productVariantOptionSubmit.getVariantUnitValueId());
             productVariantViewModel.setTitle(title);
-            pickerMultipleItem.addItemFromSearch(productVariantViewModel, false);
+            pickerMultipleItem.addItemFromSearch(productVariantViewModel);
         }
     }
 
@@ -185,7 +185,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         productVariantViewModel.setTitle(productVariantOption.getValue());
         productVariantViewModel.setImageUrl(productVariantOption.getIcon());
         if (checked) {
-            pickerMultipleItem.addItemFromSearch(productVariantViewModel, true);
+            pickerMultipleItem.addItemFromSearch(productVariantViewModel);
         } else {
             pickerMultipleItem.removeItemFromSearch(productVariantViewModel);
         }

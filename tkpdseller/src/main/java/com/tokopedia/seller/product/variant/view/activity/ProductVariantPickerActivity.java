@@ -38,7 +38,6 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
 
     private ProductVariantByCatModel productVariantByCatModel;
-    private boolean hasAnyUpdate;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +61,6 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public void removeItemFromSearch(ProductVariantViewModel productVariantViewModel) {
         super.removeItemFromSearch(productVariantViewModel);
         updateBottomSheetInfo();
-        hasAnyUpdate = true;
     }
 
     @Override
@@ -72,26 +70,22 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     @Override
-    public void addItemFromSearch(ProductVariantViewModel productVariantViewModel, boolean isManual) {
-        super.addItemFromSearch(productVariantViewModel, isManual);
+    public void addItemFromSearch(ProductVariantViewModel productVariantViewModel) {
+        super.addItemFromSearch(productVariantViewModel);
         updateBottomSheetInfo();
-        if (isManual) {
-            hasAnyUpdate = true;
-        }
     }
 
     @Override
     public void removeItemFromCache(ProductVariantViewModel productVariantViewModel) {
         super.removeItemFromCache(productVariantViewModel);
         updateBottomSheetInfo();
-        hasAnyUpdate = true;
     }
 
     @Override
     public void onTextPickerSubmitted(String text) {
         ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
         productVariantViewModel.setTitle(text);
-        addItemFromSearch(productVariantViewModel, true);
+        addItemFromSearch(productVariantViewModel);
         validateFooterAndInfoView();
     }
 
@@ -180,24 +174,6 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     public void onBackPressed() {
-        if (hasAnyUpdate) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.product_variant_dialog_cancel_title))
-                    .setMessage(getString(R.string.product_variant_dialog_cancel_message))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ProductVariantPickerActivity.super.onBackPressed();
-                        }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            // no op, just dismiss
-                        }
-                    });
-            AlertDialog dialog = alertDialogBuilder.create();
-            dialog.show();
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 }

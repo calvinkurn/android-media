@@ -14,13 +14,12 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewM
 import java.util.ArrayList;
 
 /**
- * Created by User on 8/22/2017.
+ * Created by hendry on 8/22/2017.
  */
 
 public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVariantDetailViewHolder> {
 
     public interface OnProductVariantDataAdapterListener {
-        void onItemChecked();
         void onCheckAny();
         void onUnCheckAll();
     }
@@ -91,7 +90,6 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
                 }
                 notifyItemChanged(holder.getAdapterPosition());
                 if (onProductVariantDataAdapterListener != null) {
-                    onProductVariantDataAdapterListener.onItemChecked();
                     if (variantValueIdList.size() == 0) {
                         onProductVariantDataAdapterListener.onUnCheckAll();
                     } else if (variantValueIdList.size() == 1) {
@@ -132,10 +130,6 @@ public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVar
             return null;
         }
         return sortedArrayList;
-    }
-
-    public boolean isCheckAny() {
-        return productVariantValueArrayList.size() > 0;
     }
 
     @Override
