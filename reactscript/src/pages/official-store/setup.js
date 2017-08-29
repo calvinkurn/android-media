@@ -8,7 +8,7 @@ class Root extends Component {
   render() {
     return (
     <Provider store={store}>
-      <App screenProps={this.props.screenProps} />
+      <App Screen={this.props.Screen} />
     </Provider>
     )
   }

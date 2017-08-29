@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import {
   ScrollView,
   View,
+  NetInfo,
   Text,
   Button,
   StyleSheet,
   TouchableHighlight,
+  ActivityIndicator,
   Dimensions,
   DeviceEventEmitter,
   AsyncStorage,
@@ -20,22 +22,24 @@ import BackToTop from '../common/BackToTop/backToTop'
 import Seo from '../components/seo'
 import OfficialStoreIntro from '../components/OfficialStoreIntro'
 import { fetchBanners, fetchCampaigns, fetchBrands, refreshState, reloadState } from '../actions/actions'
+import NotConnect from '../NotConnect'
+
 
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { showBtn: false, refreshing: false, }
+    this.state = { showBtn: false, refreshing: false, statusConnection: '', }
   }
 
   componentWillMount(){
     const { dispatch } = this.props
-    if (this.props.screenProps.Screen === 'official-store'){
-      AsyncStorage.getItem('user_id')
-        .then(uid => {
-          dispatch(reloadState())
-        })  
-    }
+    AsyncStorage.getItem('user_id').then(uid => { dispatch(reloadState()) })
+
+    NetInfo.isConnected.fetch().then(isConnected => {
+      console.log('Status connection is ' + (isConnected ? 'online' : 'offline'));
+      this.setState({ statusConnection: (isConnected ? 'online' : 'offline') })
+    });
   }
 
 
@@ -69,29 +73,39 @@ class App extends Component {
 
 
   render() {
-    return (
-      <View>
-        <ScrollView 
-          ref="scrollView" 
-          onScroll={this.onScroll}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this._onRefresh.bind(this)}
-              colors={['#42b549']} />
-          }>
-          <OfficialStoreIntro />
-          <BannerContainer screenProps={this.props.screenProps} />
-          <CampaignContainer screenProps={this.props.screenProps} />
-          <BrandContainer screenProps={this.props.screenProps} />
-          <Infographic /> 
-          <Seo /> 
-        </ScrollView>
-        {
-          this.state.showBtn ? (<BackToTop onTap={this.onBackToTopTap} />) : null
-        }
-      </View>
-    )
+    if (this.state.statusConnection === 'online'){
+      return (
+        <View>
+          <ScrollView 
+            ref="scrollView" 
+            onScroll={this.onScroll}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh.bind(this)}
+                colors={['#42b549']} />
+            }>
+            <OfficialStoreIntro />
+            <BannerContainer screenProps={this.props.screenProps} />
+            <CampaignContainer screenProps={this.props.screenProps} />
+            <BrandContainer screenProps={this.props.screenProps} />
+            <Infographic /> 
+            <Seo /> 
+          </ScrollView>
+          {
+            this.state.showBtn ? (<BackToTop onTap={this.onBackToTopTap} />) : null
+          }
+        </View>
+      )
+    } else if (this.state.statusConnection === 'offline'){
+      return <NotConnect />
+    } else {
+      return (
+        <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
+          <ActivityIndicator size="large" />
+        </View>
+      )
+    }
   }
 }
 

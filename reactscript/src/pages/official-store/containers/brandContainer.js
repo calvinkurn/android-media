@@ -19,8 +19,12 @@ import BrandList from '../components/brandList'
 class BrandContainer extends Component {
   componentWillMount() {
     const { offset, limit } = this.props.brands.pagination
-    const { User_ID } = this.props.screenProps
-    this.props.loadMore(limit, offset, User_ID)
+    AsyncStorage.getItem('user_id')
+    .then(uid => {
+      this.props.loadMore(limit, offset, uid)
+    })
+    // const { User_ID } = this.props.screenProps
+    // this.props.loadMore(limit, offset, User_ID)
 
     this.addToWishlist = DeviceEventEmitter.addListener('WishlistAdd', (res) => {
       this.props.brandAddWishlistPdp(res)
