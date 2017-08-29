@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -39,15 +38,13 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-
-import javax.inject.Named;
-
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
