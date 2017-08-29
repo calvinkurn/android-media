@@ -684,7 +684,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onAddFavorite(int position, Data dataShop) {
         presenter.favoriteShop(dataShop, position);
-        UnifyTracking.eventFeedClickShop(dataShop.getId(),
+        UnifyTracking.eventFeedClickShop(dataShop.getShop().getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
 
     }
