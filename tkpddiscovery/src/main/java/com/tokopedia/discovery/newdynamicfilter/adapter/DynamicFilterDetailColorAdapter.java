@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterDetailViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
@@ -31,30 +32,26 @@ public class DynamicFilterDetailColorAdapter extends DynamicFilterDetailAdapter 
     }
 
     @Override
-    protected AbstractViewHolder<Option> getViewHolder(View view) {
+    protected DynamicFilterDetailViewHolder getViewHolder(View view) {
         return new ColorItemViewHolder(view, filterDetailView);
     }
 
-    private static class ColorItemViewHolder extends AbstractViewHolder<Option> {
+    private static class ColorItemViewHolder extends DynamicFilterDetailViewHolder {
 
         private ColorSampleView colorIcon;
         private TextView colorTitle;
-        private CheckBox colorCheckBox;
-        private DynamicFilterDetailView filterDetailView;
 
         public ColorItemViewHolder(View itemView, DynamicFilterDetailView filterDetailView) {
-            super(itemView);
-            this.filterDetailView = filterDetailView;
+            super(itemView, filterDetailView);
             colorIcon = (ColorSampleView) itemView.findViewById(R.id.color_icon);
             colorTitle = (TextView) itemView.findViewById(R.id.color_title);
-            colorCheckBox = (CheckBox) itemView.findViewById(R.id.color_checkbox);
         }
 
         @Override
         public void bind(Option option) {
+            super.bind(option);
             colorIcon.setColor(Color.parseColor(option.getHexColor()));
             colorTitle.setText(option.getName());
-            OptionHelper.bindOptionWithCheckbox(option, colorCheckBox, filterDetailView);
         }
     }
 }

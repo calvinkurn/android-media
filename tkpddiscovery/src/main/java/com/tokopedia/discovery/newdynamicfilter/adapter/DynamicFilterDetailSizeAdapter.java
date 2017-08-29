@@ -9,6 +9,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterDetailViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
@@ -23,24 +24,20 @@ public class DynamicFilterDetailSizeAdapter extends DynamicFilterDetailAdapter {
     }
 
     @Override
-    protected AbstractViewHolder<Option> getViewHolder(View view) {
+    protected DynamicFilterDetailViewHolder getViewHolder(View view) {
         return new SizeItemViewHolder(view, filterDetailView);
     }
 
-    private static class SizeItemViewHolder extends AbstractViewHolder<Option> {
-
-        private CheckBox checkBox;
-        private final DynamicFilterDetailView filterDetailView;
+    private static class SizeItemViewHolder extends DynamicFilterDetailViewHolder {
 
         public SizeItemViewHolder(View itemView, DynamicFilterDetailView filterDetailView) {
-            super(itemView);
-            this.filterDetailView = filterDetailView;
-            checkBox = (CheckBox) itemView.findViewById(R.id.filter_detail_item_checkbox);
+            super(itemView, filterDetailView);
         }
 
+        @Override
         public void bind(final Option option) {
+            super.bind(option);
             checkBox.setText(option.getName() + " " + option.getMetric());
-            OptionHelper.bindOptionWithCheckbox(option, checkBox, filterDetailView);
         }
     }
 }

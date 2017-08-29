@@ -13,6 +13,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterDetailViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
@@ -32,29 +33,24 @@ public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter
     }
 
     @Override
-    protected AbstractViewHolder<Option> getViewHolder(View view) {
+    protected DynamicFilterDetailViewHolder getViewHolder(View view) {
         return new RatingItemViewHolder(view, filterDetailView);
     }
 
-    private static class RatingItemViewHolder extends AbstractViewHolder<Option> {
+    private static class RatingItemViewHolder extends DynamicFilterDetailViewHolder {
 
         private ImageView ratingView;
-        private CheckBox checkBox;
-        private DynamicFilterDetailView filterDetailView;
 
         public RatingItemViewHolder(View itemView, DynamicFilterDetailView filterDetailView) {
-            super(itemView);
+            super(itemView, filterDetailView);
             ratingView = (ImageView) itemView.findViewById(R.id.filter_rating_view);
-            checkBox = (CheckBox) itemView.findViewById(R.id.rating_checkbox);
-            this.filterDetailView = filterDetailView;
         }
 
         @Override
         public void bind(final Option option) {
+            super.bind(option);
             int ratingCount = Integer.parseInt(option.getName());
             ratingView.setImageResource(RatingHelper.getRatingDrawable(ratingCount));
-
-            OptionHelper.bindOptionWithCheckbox(option, checkBox, filterDetailView);
         }
     }
 }

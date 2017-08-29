@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterDetailViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by henrypriyono on 8/11/17.
  */
 
-public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractViewHolder<Option>>{
+public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<DynamicFilterDetailViewHolder>{
 
     protected DynamicFilterDetailView filterDetailView;
 
@@ -33,7 +33,7 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
     private List<Option> list = new ArrayList<>();
 
     @Override
-    public AbstractViewHolder<Option> onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DynamicFilterDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(getLayout(), parent, false);
         return getViewHolder(view);
@@ -43,12 +43,12 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
         return R.layout.filter_detail_item;
     }
 
-    protected AbstractViewHolder<Option> getViewHolder(View view) {
+    protected DynamicFilterDetailViewHolder getViewHolder(View view) {
         return new ViewHolder(view, filterDetailView);
     }
 
     @Override
-    public void onBindViewHolder(AbstractViewHolder<Option> holder, int position) {
+    public void onBindViewHolder(DynamicFilterDetailViewHolder holder, int position) {
         holder.bind(list.get(position));
     }
 
@@ -69,20 +69,16 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
         notifyDataSetChanged();
     }
 
-    private static class ViewHolder extends AbstractViewHolder<Option> {
-
-        private CheckBox checkBox;
-        private final DynamicFilterDetailView filterDetailView;
+    private static class ViewHolder extends DynamicFilterDetailViewHolder {
 
         public ViewHolder(View itemView, DynamicFilterDetailView filterDetailView) {
-            super(itemView);
-            checkBox = (CheckBox) itemView.findViewById(R.id.filter_detail_item_checkbox);
-            this.filterDetailView = filterDetailView;
+            super(itemView, filterDetailView);
         }
 
+        @Override
         public void bind(final Option option) {
+            super.bind(option);
             checkBox.setText(option.getName());
-            OptionHelper.bindOptionWithCheckbox(option, checkBox, filterDetailView);
         }
     }
 }

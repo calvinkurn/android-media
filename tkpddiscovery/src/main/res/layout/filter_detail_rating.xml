@@ -13,7 +13,7 @@
     android:paddingBottom="@dimen/dynamic_filter_rating_item_vertical_padding">
 
     <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/rating_checkbox"
+        android:id="@+id/filter_detail_item_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:buttonTint="@color/checkbox_color_state"
