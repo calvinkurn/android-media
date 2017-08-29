@@ -537,6 +537,28 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventR3(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.R3,
+                AppEventTracking.Category.R3USER,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventR3Product(String productId, String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.R3,
+                AppEventTracking.Category.R3USER,
+                action,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
     public static void eventFeedView(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FEED,
@@ -1930,16 +1952,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventR3(String action, String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.R3,
-                AppEventTracking.Category.R3USER,
-                action,
-                label
-        ).getEvent());
-    }
-
-
     public static void eventSwitchRpToDollarAddProduct() {
         eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
     }
@@ -2027,5 +2039,6 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventDrawerSellerHome() {
         eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
     }
+
 
 }

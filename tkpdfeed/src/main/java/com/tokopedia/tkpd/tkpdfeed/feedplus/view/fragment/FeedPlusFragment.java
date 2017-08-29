@@ -370,7 +370,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetailFromInspiration(String productId) {
         goToProductDetail(productId);
-        UnifyTracking.eventR3(AppEventTracking.Action.CLICK,
+        UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,
                 FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
     }
 
