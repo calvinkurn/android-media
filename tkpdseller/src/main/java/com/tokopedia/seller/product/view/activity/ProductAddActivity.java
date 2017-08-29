@@ -36,14 +36,12 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.service.UploadProductService;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,8 +93,9 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         fragment.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
     }
 
+
     @DeepLink(Constants.Applinks.PRODUCT_ADD)
-    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+    public static Intent getCallingApplinkAddProductMainAppIntent(Context context, Bundle extras) {
         Intent intent = null;
         if (!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0")) {
             intent = new Intent(context, ProductAddActivity.class);
@@ -111,6 +110,32 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         return intent
                 .setData(uri.build())
                 .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.SellerApp.PRODUCT_ADD)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            Intent intent = getCallingIntent(context);
+            return intent
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            Intent launchIntent = context.getPackageManager()
+                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+            if (launchIntent == null) {
+                launchIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
+                );
+            } else {
+                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            }
+            return launchIntent;
+        }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, ProductAddActivity.class);
     }
 
     @Override
@@ -144,7 +169,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            ProductAddActivity.super.onBackPressed();
+                            onBackPressActionWithCheckIfCameFromPushNotif();
+
                         }
                     }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -160,7 +186,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                         if (!doSave) {
                             UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
                                     AppEventTracking.EventLabel.SAVE_DRAFT);
-                            ProductAddActivity.super.onBackPressed();
+                            onBackPressActionWithCheckIfCameFromPushNotif();
                         }
                     }
                 });
@@ -169,7 +195,22 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
             dialog.show();
 
         } else {
-            super.onBackPressed();
+            onBackPressActionWithCheckIfCameFromPushNotif();
+        }
+    }
+
+    private void onBackPressActionWithCheckIfCameFromPushNotif() {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            Intent homeIntent = null;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(ProductAddActivity.this);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(ProductAddActivity.this);
+            }
+            startActivity(homeIntent);
+            finish();
+        } else {
+            ProductAddActivity.super.onBackPressed();
         }
     }
 

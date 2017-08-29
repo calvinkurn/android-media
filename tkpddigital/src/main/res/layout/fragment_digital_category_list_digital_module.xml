@@ -1,17 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="wrap_content">
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_digital_category"
+        <LinearLayout
+            android:id="@+id/header_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/digital_padding_10">
 
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+            <com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder
+                android:id="@+id/header_my_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder
+                android:id="@+id/header_subscription"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder
+                android:id="@+id/header_fav_number"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <com.tokopedia.core.customwidget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:visibility="visible">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_digital_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </LinearLayout>
+
+
 </android.support.design.widget.CoordinatorLayout>
