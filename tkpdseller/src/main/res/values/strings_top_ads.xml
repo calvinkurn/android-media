@@ -159,7 +159,8 @@
     <string name="top_ads_label_count_product_group">%1d Produk</string>
     <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
     <string name="top_ads_label_choose_product">Pilih Produk</string>
-    <string name="top_ads_label_choose_product_desc_empty">Pilih Produk yang akan Anda masukkan ke dalam grup promo.</string>
+    <string name="top_ads_label_choose_product_desc_empty">Produk akan dimasukkan ke grup promo baru.</string>
+    <string name="top_ads_label_choose_promo">Pilih Promo</string>
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>

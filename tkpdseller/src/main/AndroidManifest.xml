@@ -351,6 +351,9 @@
             android:name=".topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -11,6 +11,7 @@ import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
@@ -64,7 +65,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         productAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
+                startActivityForResult(TopAdsCreatePromoExistingGroupEditActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
             }
         });
     }

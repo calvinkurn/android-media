@@ -210,7 +210,6 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
         TopAdsEmptyProductListDataBinder topAdsEmptyProductListDataBinder = new TopAdsEmptyProductListDataBinder(adapter);
         topAdsEmptyProductListDataBinder.setDrawableAsset(R.drawable.ic_empty_product_list);
-        topAdsEmptyProductListDataBinder.setEmptyTitleText(getString(R.string.top_ads_label_choose_product));
         topAdsEmptyProductListDataBinder.setEmptyContentText(getString(R.string.top_ads_label_choose_product_desc_empty));
         return topAdsEmptyProductListDataBinder;
     }
