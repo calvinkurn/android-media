@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
@@ -165,6 +166,14 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.line_separator_medium));
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    hideKeyboard();
+                }
+            }
+        });
     }
 
     protected DynamicFilterDetailAdapter getAdapter() {
@@ -174,6 +183,11 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
     @Override
     public void onItemCheckedChanged(Option option, boolean isChecked) {
         option.setInputState(Boolean.toString(isChecked));
+        hideKeyboard();
+    }
+
+    private void hideKeyboard() {
+        KeyboardHandler.hideSoftKeyboard(this);
     }
 
     private void loadFilterItems() {

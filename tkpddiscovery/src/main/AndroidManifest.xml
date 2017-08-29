@@ -30,11 +30,17 @@
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".newdynamicfilter.DynamicFilterSizeActivity"
+            android:label="Ukuran"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
             android:name=".newdynamicfilter.DynamicFilterColorActivity"
             android:label="Warna"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterRatingActivity"
             android:label="Rating"
@@ -46,7 +52,7 @@
             android:label="Filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterCategoryActivity"
             android:label="Kategori"
