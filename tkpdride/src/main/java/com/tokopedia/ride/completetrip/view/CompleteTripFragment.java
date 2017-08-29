@@ -515,13 +515,23 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
-    public void showRatingErrorLayout() {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+    public void showErrorInRating(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.actionSubmitRatingAndDriverTip();
             }
-        });
+        }).showRetrySnackbar();
+    }
+
+    @Override
+    public void showErrorInDriverTipping(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.sendTip(getTipParam());
+            }
+        }).showRetrySnackbar();
     }
 
     @Override

@@ -16,6 +16,8 @@ import rx.Observable;
 public class UpdateRideRequestUseCase extends UseCase<UpdateDestination> {
     public static final String PARAM_END_LATITUDE = "end_latitude";
     public static final String PARAM_END_LONGITUDE = "end_longitude";
+    public static final String PARAM_END_ADD_NAME = "end_address_name";
+    public static final String PARAM_END_ADD = "end_address";
     public static final String PARAM_REQUEST_ID = "request_id";
 
     private BookingRideRepository bookingRideRepository;

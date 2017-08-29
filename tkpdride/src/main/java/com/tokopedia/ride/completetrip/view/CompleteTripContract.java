@@ -35,7 +35,9 @@ public interface CompleteTripContract {
 
         void showRatingSuccessDialog();
 
-        void showRatingErrorLayout();
+        void showErrorInRating(String message);
+
+        void showErrorInDriverTipping(String message);
 
         void hideRatingLayout();
 
@@ -76,5 +78,7 @@ public interface CompleteTripContract {
         void actionSubmitRatingAndDriverTip();
 
         void handleRatingStarClick(float v);
+
+        void sendTip(RequestParams tipParams);
     }
 }

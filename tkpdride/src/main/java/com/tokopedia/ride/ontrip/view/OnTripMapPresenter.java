@@ -1054,6 +1054,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         RequestParams params = RequestParams.create();
         params.putString(UpdateRideRequestUseCase.PARAM_END_LATITUDE, String.valueOf(destinationTemp.getLatitude()));
         params.putString(UpdateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(destinationTemp.getLongitude()));
+        params.putString(UpdateRideRequestUseCase.PARAM_END_ADD_NAME, destinationTemp.getTitle());
+        params.putString(UpdateRideRequestUseCase.PARAM_END_ADD, destinationTemp.getAddress());
         params.putString(UpdateRideRequestUseCase.PARAM_REQUEST_ID, activeRideRequest.getRequestId());
 
         updateRideRequestUseCase.execute(params, new Subscriber<UpdateDestination>() {

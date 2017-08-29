@@ -2,6 +2,7 @@ package com.tokopedia.ride.completetrip.view;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.R;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Receipt;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
@@ -10,6 +11,10 @@ import com.tokopedia.ride.completetrip.domain.SendTipUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import javax.inject.Inject;
 
@@ -138,12 +143,15 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    if (getView().getTipAmount() > 0) {
-                        sendTip(getView().getTipParam());
-                    } else {
-                        getView().hideGetReceiptLoading();
-                        getView().showRatingErrorLayout();
+                    getView().hideGetReceiptLoading();
+                    getView().showReceiptLayout();
+
+                    String message = e.getMessage();
+                    if (e instanceof UnknownHostException || e instanceof ConnectException || e instanceof SocketTimeoutException) {
+                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                     }
+
+                    getView().showErrorInRating(message);
                 }
             }
 
@@ -164,7 +172,8 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
         });
     }
 
-    private void sendTip(RequestParams tipParams) {
+    @Override
+    public void sendTip(RequestParams tipParams) {
         sendTipUseCase.execute(tipParams, new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -176,7 +185,14 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideGetReceiptLoading();
-                    getView().showRatingErrorLayout();
+                    getView().showReceiptLayout();
+
+                    String message = e.getMessage();
+                    if (e instanceof UnknownHostException || e instanceof ConnectException || e instanceof SocketTimeoutException) {
+                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                    }
+
+                    getView().showErrorInDriverTipping(message);
                 }
             }
 
