@@ -14,16 +14,21 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -215,6 +220,32 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             return false;
         }
         return true;
+    }
+
+    @DeepLink(Constants.Applinks.SellerApp.PRODUCT_ADD)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            Intent intent = getCallingIntent(context);
+            return intent
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            Intent launchIntent = context.getPackageManager()
+                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+            if (launchIntent == null) {
+                launchIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
+                );
+            } else {
+                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            }
+            return launchIntent;
+        }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, ProductAddActivity.class);
     }
 
     protected int getCancelMessageRes(){
