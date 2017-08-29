@@ -871,7 +871,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             @Override
             public void onSuccess(String adsId) {
                 if(adsId.equals("0")){
-                    openPromoteAds(context, "sellerapp://topads/product/buy");
+                    openPromoteAds(context, "sellerapp://topads/create?user_id="+userId);
                 } else {
                     openPromoteAds(context, "sellerapp://topads/product/"+adsId+"?user_id="+userId);
                 }

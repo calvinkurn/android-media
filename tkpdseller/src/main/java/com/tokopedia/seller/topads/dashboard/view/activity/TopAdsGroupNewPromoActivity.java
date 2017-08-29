@@ -26,40 +26,26 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
 
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
-        if (GlobalConfig.isSellerApp()) {
-            String userId = extras.getString("user_id", "");
-            if (!TextUtils.isEmpty(userId)) {
-                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
-                    Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-                    return getCallingIntent(context)
-                            .setData(uri.build())
-                            .putExtras(extras);
-                } else {
-                    return TopAdsDashboardActivity.getCallingIntent(context)
-                            .putExtras(extras);
-                }
-            } else {
+        String userId = extras.getString("user_id", "");
+        if (!TextUtils.isEmpty(userId)) {
+            if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                 return getCallingIntent(context)
                         .setData(uri.build())
                         .putExtras(extras);
+            } else {
+                return TopAdsDashboardActivity.getCallingIntent(context)
+                        .putExtras(extras);
             }
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            }
-            return launchIntent;
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return getCallingIntent(context)
+                    .setData(uri.build())
+                    .putExtras(extras);
         }
     }
 
-    public static Intent getCallingIntent(Context context){
+    public static Intent getCallingIntent(Context context) {
         return new Intent(context, TopAdsGroupNewPromoActivity.class);
     }
 
@@ -76,7 +62,7 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                 .commit();
     }
 
-    private void initFromIntent (){
+    private void initFromIntent() {
         Intent intent = getIntent();
         if (intent != null) {
             itemId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
