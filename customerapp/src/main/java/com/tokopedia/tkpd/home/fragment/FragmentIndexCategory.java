@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +34,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -76,7 +76,6 @@ import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
-import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
@@ -145,8 +144,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private static final long TICKER_DELAY = 5000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
-    public static final String PLAYSTORE_STRING = "play.google.com/store/apps";
-    public static final String URL = "url";
 
     private ViewHolder holder;
 
@@ -230,7 +227,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         LinearLayout wrapperLinearLayout;
         TextView seeAllProduct;
         CardView containerRecharge;
-        public TickerView tickerview;
 
         private ViewHolder() {
         }
@@ -304,48 +300,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     } else if (tickersResponse.size() == 1) {
                         tickerAdapter.addItem(tickersResponse);
                     }
-//                    holder.tickerview.setVisibility(View.VISIBLE);
-//                    holder.tickerview.setListMessage(mappingListTickerMessage(tickersResponse));
-//                    holder.tickerview.setHighLightColor(
-//                            Color.parseColor(tickersResponse.get(0).getColor())
-//                    );
-//                    holder.tickerview.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
-//                        @Override
-//                        public void onClick(View view, String messageClick) {
-//                            if (messageClick.contains(PLAYSTORE_STRING)) {
-//                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(messageClick)));
-//                            } else {
-//                                Intent intent = new Intent(getActivity(), BannerWebView.class);
-//                                intent.putExtra(URL, messageClick);
-//                                startActivity(intent);
-//                            }
-//                        }
-//                    });
-//                    holder.tickerview.setOnPageChangeListener(new TickerView.OnPageChangeListener() {
-//                        @Override
-//                        public void onScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onSelected(int position) {
-//                            holder.tickerview.setHighLightColor(
-//                                    Color.parseColor(tickersResponse.get(position).getColor())
-//                            );
-//                        }
-//
-//                        @Override
-//                        public void onScrollStateChanged(int state) {
-//
-//                        }
-//                    });
-//                    holder.tickerview.buildView();
                 }
 
                 @Override
                 public void onError() {
                     holder.tickerContainer.setVisibility(View.GONE);
-//                    holder.tickerview.setVisibility(View.GONE);
                 }
             });
         }
@@ -609,7 +568,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 .MainView.findViewById(R.id.toko_cash_header_layout);
         holder.tokoCashHeaderView.setActionListener(this);
         holder.seeAllProduct = (TextView) holder.MainView.findViewById(R.id.see_all_product);
-//        holder.tickerview = (TickerView) holder.MainView.findViewById(R.id.tickerview);
         holder.seeAllProduct.setOnClickListener(getClickListenerShowAllDigitalProducts());
         initCategoryRecyclerView();
         initTopPicks();
@@ -1159,7 +1117,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onItemClicked() {
         holder.tickerContainer.setVisibility(View.GONE);
-//        holder.tickerview.setVisibility(View.GONE);
         category.closeTicker();
     }
 

@@ -22,15 +22,6 @@
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
-        <!--<com.tokopedia.design.ticker.TickerView-->
-        <!--android:id="@+id/tickerview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="@dimen/padding_vs"-->
-        <!--app:tckv_indicator_on_color="@color/tkpd_main_green"-->
-        <!--app:tckv_indicator_off_color="@color/grey"-->
-        <!--/>-->
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/announcement_ticker"
             android:layout_width="match_parent"

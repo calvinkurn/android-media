@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -62,12 +61,6 @@ public class TickerView extends BaseCustomView {
     private int defaultTextColor;
     private int defaultPageIndicatorOnColor;
     private int defaultPageIndicatorOffColor;
-
-//    private int defaultHighLightColor = DEFAULT_COLOR_HIGHLIGHT_TICKER;
-//    private int defaultBackgroundColor = DEFAULT_COLOR_BACKGROUND_TICKER;
-//    private int defaultTextColor = DEFAULT_COLOR_TEXT_TICKER;
-//    private int defaultPageIndicatorOnColor = DEFAULT_COLOR_INDICATOR_ON;
-//    private int defaultPageIndicatorOffColor = DEFAULT_COLOR_INDICATOR_OFF;
 
     private ArrayList<Integer> listBackGroundColor;
     private ArrayList<Integer> listTextColor;
