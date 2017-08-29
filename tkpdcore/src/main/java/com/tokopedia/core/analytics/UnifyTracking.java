@@ -633,10 +633,10 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventHomeRechargeTab(String label){
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.PULSA,
-                AppEventTracking.Category.PULSA,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CLICKED_TAB + label
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE +label,
+                AppEventTracking.Action.CLICK_WIDGET_BAR,
+                AppEventTracking.EventLabel.PRODUCT + label
         ).getEvent());
     }
 
