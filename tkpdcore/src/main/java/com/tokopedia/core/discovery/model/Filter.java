@@ -19,6 +19,7 @@ public class Filter implements Serializable, Parcelable {
 
     private static final String TITLE_SEPARATOR = "Separator";
     private static final String TITLE_RATING = "Rating";
+    private static final String TITLE_SIZE = "Ukuran";
     private static final String TEMPLATE_NAME_CATEGORY = "template_category";
     private static final String TEMPLATE_NAME_COLOR = "template_color";
     private static final String TEMPLATE_NAME_PRICE = "template_price";
@@ -57,6 +58,10 @@ public class Filter implements Serializable, Parcelable {
 
     public boolean isRatingFilter() {
         return TITLE_RATING.equals(title);
+    }
+
+    public boolean isSizeFilter() {
+        return TITLE_SIZE.equals(title);
     }
 
     /**

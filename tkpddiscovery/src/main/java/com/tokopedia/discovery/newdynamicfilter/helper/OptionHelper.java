@@ -8,6 +8,7 @@ import com.tokopedia.core.discovery.model.LevelThreeCategory;
 import com.tokopedia.core.discovery.model.LevelTwoCategory;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +88,10 @@ public class OptionHelper {
         return uniqueId.substring(separatorPos + 1, uniqueId.length());
     }
 
-    public static void bindOptionWithCheckbox(final Option option, CheckBox checkBox) {
+    public static void bindOptionWithCheckbox(final Option option,
+                                              CheckBox checkBox,
+                                              final DynamicFilterDetailView filterDetailView) {
+
         checkBox.setOnCheckedChangeListener(null);
 
         if (!TextUtils.isEmpty(option.getInputState())) {
@@ -99,7 +103,7 @@ public class OptionHelper {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                option.setInputState(Boolean.toString(isChecked));
+                filterDetailView.onItemCheckedChanged(option, isChecked);
             }
         });
     }

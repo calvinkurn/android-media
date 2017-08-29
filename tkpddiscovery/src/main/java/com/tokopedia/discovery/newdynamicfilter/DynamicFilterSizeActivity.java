@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
-import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailRatingAdapter;
+import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailSizeAdapter;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import org.parceler.Parcels;
@@ -13,14 +13,28 @@ import org.parceler.Parcels;
 import java.util.List;
 
 /**
- * Created by henrypriyono on 8/24/17.
+ * Created by henrypriyono on 8/28/17.
  */
 
-public class DynamicFilterRatingActivity extends DynamicFilterDetailActivity {
-
+public class DynamicFilterSizeActivity extends DynamicFilterDetailActivity {
     @Override
     protected DynamicFilterDetailAdapter getAdapter() {
-        return new DynamicFilterDetailRatingAdapter(this);
+        return new DynamicFilterDetailSizeAdapter(this);
+    }
+
+    @Override
+    public void onItemCheckedChanged(Option option, boolean isChecked) {
+        super.onItemCheckedChanged(option, isChecked);
+        syncOtherItemWithSameValue(option);
+        getAdapter().notifyItemRangeChanged(0, getAdapter().getItemCount());
+    }
+
+    private void syncOtherItemWithSameValue(Option sourceItem) {
+        for (Option otherItem : optionList) {
+            if (otherItem.getValue().equals(sourceItem.getValue())) {
+                otherItem.setInputState(sourceItem.getInputState());
+            }
+        }
     }
 
     public static void moveTo(AppCompatActivity activity,
@@ -30,7 +44,7 @@ public class DynamicFilterRatingActivity extends DynamicFilterDetailActivity {
                               String searchHint) {
 
         if (activity != null) {
-            Intent intent = new Intent(activity, DynamicFilterRatingActivity.class);
+            Intent intent = new Intent(activity, DynamicFilterSizeActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
             intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);

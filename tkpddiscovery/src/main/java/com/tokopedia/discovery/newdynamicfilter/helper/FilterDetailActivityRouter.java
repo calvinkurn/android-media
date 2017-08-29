@@ -7,6 +7,7 @@ import com.tokopedia.discovery.newdynamicfilter.DynamicFilterCategoryActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterColorActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterRatingActivity;
+import com.tokopedia.discovery.newdynamicfilter.DynamicFilterSizeActivity;
 
 /**
  * Created by henrypriyono on 8/16/17.
@@ -25,6 +26,14 @@ public class FilterDetailActivityRouter {
 
         } else if (filter.isRatingFilter()) {
             DynamicFilterRatingActivity
+                    .moveTo(activity,
+                            filter.getTitle(),
+                            filter.getOptions(),
+                            filter.getSearch().getSearchable() == 1,
+                            filter.getSearch().getPlaceholder());
+
+        } else if (filter.isSizeFilter()) {
+            DynamicFilterSizeActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),

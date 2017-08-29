@@ -13,6 +13,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,12 @@ import java.util.List;
  */
 
 public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractViewHolder<Option>>{
+
+    protected DynamicFilterDetailView filterDetailView;
+
+    public DynamicFilterDetailAdapter(DynamicFilterDetailView filterDetailView) {
+        this.filterDetailView = filterDetailView;
+    }
 
     private List<Option> list = new ArrayList<>();
 
@@ -37,7 +44,7 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
     }
 
     protected AbstractViewHolder<Option> getViewHolder(View view) {
-        return new ViewHolder(view);
+        return new ViewHolder(view, filterDetailView);
     }
 
     @Override
@@ -65,15 +72,17 @@ public class DynamicFilterDetailAdapter extends RecyclerView.Adapter<AbstractVie
     private static class ViewHolder extends AbstractViewHolder<Option> {
 
         private CheckBox checkBox;
+        private final DynamicFilterDetailView filterDetailView;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, DynamicFilterDetailView filterDetailView) {
             super(itemView);
             checkBox = (CheckBox) itemView.findViewById(R.id.filter_detail_item_checkbox);
+            this.filterDetailView = filterDetailView;
         }
 
         public void bind(final Option option) {
             checkBox.setText(option.getName());
-            OptionHelper.bindOptionWithCheckbox(option, checkBox);
+            OptionHelper.bindOptionWithCheckbox(option, checkBox, filterDetailView);
         }
     }
 }

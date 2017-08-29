@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailColorAdapter;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import org.parceler.Parcels;
 
@@ -19,7 +20,7 @@ public class DynamicFilterColorActivity extends DynamicFilterDetailActivity {
 
     @Override
     protected DynamicFilterDetailAdapter getAdapter() {
-        return new DynamicFilterDetailColorAdapter();
+        return new DynamicFilterDetailColorAdapter(this);
     }
 
     public static void moveTo(AppCompatActivity activity,

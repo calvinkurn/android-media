@@ -14,12 +14,18 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 /**
  * Created by henrypriyono on 8/24/17.
  */
 
 public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter {
+
+    public DynamicFilterDetailRatingAdapter(DynamicFilterDetailView filterDetailView) {
+        super(filterDetailView);
+    }
+
     @Override
     protected int getLayout() {
         return R.layout.filter_detail_rating;
@@ -27,18 +33,20 @@ public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter
 
     @Override
     protected AbstractViewHolder<Option> getViewHolder(View view) {
-        return new RatingItemViewHolder(view);
+        return new RatingItemViewHolder(view, filterDetailView);
     }
 
     private static class RatingItemViewHolder extends AbstractViewHolder<Option> {
 
         private ImageView ratingView;
         private CheckBox checkBox;
+        private DynamicFilterDetailView filterDetailView;
 
-        public RatingItemViewHolder(View itemView) {
+        public RatingItemViewHolder(View itemView, DynamicFilterDetailView filterDetailView) {
             super(itemView);
             ratingView = (ImageView) itemView.findViewById(R.id.filter_rating_view);
             checkBox = (CheckBox) itemView.findViewById(R.id.rating_checkbox);
+            this.filterDetailView = filterDetailView;
         }
 
         @Override
@@ -46,7 +54,7 @@ public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter
             int ratingCount = Integer.parseInt(option.getName());
             ratingView.setImageResource(RatingHelper.getRatingDrawable(ratingCount));
 
-            OptionHelper.bindOptionWithCheckbox(option, checkBox);
+            OptionHelper.bindOptionWithCheckbox(option, checkBox, filterDetailView);
         }
     }
 }

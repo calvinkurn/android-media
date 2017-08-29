@@ -18,6 +18,7 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import org.parceler.Parcels;
 
@@ -28,7 +29,7 @@ import java.util.List;
  * Created by henrypriyono on 8/16/17.
  */
 
-public class DynamicFilterDetailActivity extends AppCompatActivity {
+public class DynamicFilterDetailActivity extends AppCompatActivity implements DynamicFilterDetailView {
 
     public static final int REQUEST_CODE = 220;
     public static final String EXTRA_RESULT = "EXTRA_RESULT";
@@ -37,12 +38,13 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
     protected static final String EXTRA_IS_SEARCHABLE = "EXTRA_IS_SEARCHABLE";
     protected static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
 
+    protected List<Option> optionList;
+
     private View searchInputContainer;
     private EditText searchInputView;
     private EmptySearchResultView searchResultEmptyView;
     private RecyclerView recyclerView;
     private DynamicFilterDetailAdapter adapter;
-    private List<Option> optionList;
     private OptionSearchFilter searchFilter;
     private TextView buttonApply;
     private TextView buttonReset;
@@ -166,7 +168,12 @@ public class DynamicFilterDetailActivity extends AppCompatActivity {
     }
 
     protected DynamicFilterDetailAdapter getAdapter() {
-        return new DynamicFilterDetailAdapter();
+        return new DynamicFilterDetailAdapter(this);
+    }
+
+    @Override
+    public void onItemCheckedChanged(Option option, boolean isChecked) {
+        option.setInputState(Boolean.toString(isChecked));
     }
 
     private void loadFilterItems() {
