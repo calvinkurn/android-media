@@ -65,6 +65,8 @@ public class ListPaymentTypeActivity extends TActivity
 
     private TextView bcaOneClickRegistrationButton;
 
+    private TextView creditCardTitle;
+
     private TkpdProgressDialog progressDialog;
 
     private TkpdProgressDialog mainProgressDialog;
@@ -102,6 +104,7 @@ public class ListPaymentTypeActivity extends TActivity
         bcaOneClickRecyclerView = (RecyclerView) findViewById(R.id.bca_one_click_recycler_view);
         bcaOneClickRegisterLayout = (LinearLayout) findViewById(R.id.bca_one_click_register_layout);
         bcaOneClickRegistrationButton = (TextView) findViewById(R.id.bca_one_click_register_button);
+        creditCardTitle = (TextView) findViewById(R.id.credit_card_title);
         bcaOneClickRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         bcaOneClickRecyclerView.setNestedScrollingEnabled(false);
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
@@ -114,6 +117,7 @@ public class ListPaymentTypeActivity extends TActivity
                 fetchData();
             }
         });
+        showMainDialog();
         fetchData();
         bcaOneClickRegistrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +167,10 @@ public class ListPaymentTypeActivity extends TActivity
 
     @Override
     public void receivedCreditCardList(CreditCardModel creditCardModel) {
+        creditCardTitle.setVisibility(View.VISIBLE);
         refreshHandler.finishRefresh();
+        creditCardVaultRecyclerView.setVisibility(View.VISIBLE);
+
         creditCardRecyclerViewAdapter = new CreditCardRecyclerViewAdapter(
                 creditCardModel.getCreditCardList(), ListPaymentTypeActivity.this
         );

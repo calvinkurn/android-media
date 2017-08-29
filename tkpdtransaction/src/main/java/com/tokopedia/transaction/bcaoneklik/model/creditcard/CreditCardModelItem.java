@@ -20,6 +20,8 @@ public class CreditCardModelItem {
 
     private String image;
 
+    private String cardTypeImage;
+
     public String getTokenId() {
         return tokenId;
     }
@@ -74,5 +76,13 @@ public class CreditCardModelItem {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getCardTypeImage() {
+        return cardTypeImage;
+    }
+
+    public void setCardTypeImage(String cardTypeImage) {
+        this.cardTypeImage = cardTypeImage;
     }
 }

@@ -44,7 +44,7 @@ public class CreditCardRecyclerViewAdapter extends RecyclerView.Adapter<
         holder.expiryDate.setText(listCreditCard.get(position).getExpiryMonth()
                 + "\\"
                 +listCreditCard.get(position).getExpiryYear());
-        ImageHandler.LoadImage(holder.cardImage, listCreditCard.get(position).getImage());
+        ImageHandler.LoadImage(holder.cardImage, listCreditCard.get(position).getCardTypeImage());
         holder.deleteButton.setOnClickListener(onDeleteClickedListener(
                 listCreditCard.get(position).getTokenId(),
                 listCreditCard.get(position).getMaskedNumber())

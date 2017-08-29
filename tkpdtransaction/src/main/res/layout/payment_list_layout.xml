@@ -24,9 +24,11 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/credit_card_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/title_credit_card"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size_l_medium"/>
 
                 <android.support.v7.widget.RecyclerView
