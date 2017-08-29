@@ -50,16 +50,21 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     @Override
     protected void initView() {
         InboxReputationDetailPassModel model = null;
+        int tab = -1;
         if (getIntent().getExtras().getParcelable
                 (ARGS_PASS_DATA) != null) {
             model = getIntent().getExtras().getParcelable
                     (ARGS_PASS_DATA);
         }
 
+        if(getIntent().getExtras().getInt(ARGS_TAB, -1) != -1){
+            tab = getIntent().getExtras().getInt(ARGS_TAB);
+        }
+
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(InboxReputationDetailFragment
                 .class.getSimpleName());
         if (fragment == null) {
-            fragment = InboxReputationDetailFragment.createInstance(model);
+            fragment = InboxReputationDetailFragment.createInstance(model, tab);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,

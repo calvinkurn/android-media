@@ -27,12 +27,16 @@ public class InboxReputationDetailHeaderViewHolder extends
         AbstractViewHolder<InboxReputationDetailHeaderViewModel> {
 
     private static final int NO_REPUTATION = 0;
+    private static final int SMILEY_BAD = -1;
+    private static final int SMILEY_NEUTRAL = 1;
+    private static final int SMILEY_GOOD = 2;
 
     ImageView userAvatar;
     TextView name;
     ReputationView reputationView;
     View deadlineLayout;
     TextView deadline;
+    View lockedLayout;
     TextView promptMessage;
     Button favoriteButton;
     TextView changeButton;
@@ -40,6 +44,8 @@ public class InboxReputationDetailHeaderViewHolder extends
     TextView opponentSmileyText;
     ImageView opponentSmiley;
     ReputationAdapter adapter;
+    GridLayoutManager gridLayout;
+    LinearLayoutManager linearLayoutManager;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
@@ -53,6 +59,7 @@ public class InboxReputationDetailHeaderViewHolder extends
         reputationView = (ReputationView) itemView.findViewById(R.id.reputation);
         deadline = (TextView) itemView.findViewById(R.id.deadline_text);
         deadlineLayout = itemView.findViewById(R.id.deadline);
+        lockedLayout = itemView.findViewById(R.id.locked);
         promptMessage = (TextView) itemView.findViewById(R.id.prompt_text);
         favoriteButton = (Button) itemView.findViewById(R.id.favorite_button);
         changeButton = (TextView) itemView.findViewById(R.id.change_button);
@@ -60,8 +67,11 @@ public class InboxReputationDetailHeaderViewHolder extends
         opponentSmileyText = (TextView) itemView.findViewById(R.id.opponent_smiley_text);
         opponentSmiley = (ImageView) itemView.findViewById(R.id.opponent_smiley);
         adapter = ReputationAdapter.createInstance(reputationListener);
-        smiley.setLayoutManager(new GridLayoutManager(itemView.getContext(), 3,
-                LinearLayoutManager.VERTICAL, false));
+        gridLayout = new GridLayoutManager(itemView.getContext(), 3,
+                LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager
+                .HORIZONTAL, false);
+        smiley.setLayoutManager(gridLayout);
         smiley.setAdapter(adapter);
     }
 
@@ -79,9 +89,17 @@ public class InboxReputationDetailHeaderViewHolder extends
         }
 
         if (element.getReputationDataViewModel().isInserted()) {
+            lockedLayout.setVisibility(View.GONE);
             promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
+        } else if (element.getReputationDataViewModel().isLocked()) {
+            lockedLayout.setVisibility(View.VISIBLE);
+            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            smiley.setLayoutManager(linearLayoutManager);
+            adapter.showLockedSmiley();
         } else {
+            smiley.setLayoutManager(gridLayout);
             adapter.showAllSmiley();
             promptMessage.setText(getPromptText(element));
         }
@@ -91,19 +109,47 @@ public class InboxReputationDetailHeaderViewHolder extends
         else
             changeButton.setVisibility(View.GONE);
 
-        if(element.getReputationDataViewModel().getReviewerScore() == NO_REPUTATION){
-            opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
-                    .seller_has_not_review));
-            ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_empty);
-        }else{
-            opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
-                    .score_from_seller));
-            ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_good);
+        setSmileyOpponent(element, adapter);
+    }
+
+    private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {
+        switch (element.getReputationDataViewModel().getRevieweeScore()) {
+            case NO_REPUTATION:
+                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_empty);
+                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
+                        .seller_has_not_review));
+                break;
+            case SMILEY_BAD:
+                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_bad);
+                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
+                        .score_from_seller));
+                break;
+            case SMILEY_NEUTRAL:
+                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_netral);
+                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
+                        .score_from_seller));
+                break;
+            case SMILEY_GOOD:
+                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_good);
+                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
+                        .score_from_seller));
+                break;
+
         }
     }
 
     private void setSmiley(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {
-
+        switch (element.getReputationDataViewModel().getReviewerScore()) {
+            case SMILEY_BAD:
+                adapter.showSmileyBad();
+                break;
+            case SMILEY_NEUTRAL:
+                adapter.showSmileyNeutral();
+                break;
+            case SMILEY_GOOD:
+                adapter.showSmileyGood();
+                break;
+        }
     }
 
     private String getPromptText(InboxReputationDetailHeaderViewModel element) {

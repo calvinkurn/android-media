@@ -32,6 +32,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private ReputationView reputation;
     private TextView date;
     private TextView action;
+    private View arrowNext;
 
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
@@ -44,7 +45,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         reputation = (ReputationView) itemView.findViewById(R.id.reputation);
         date = (TextView) itemView.findViewById(R.id.date);
         action = (TextView) itemView.findViewById(R.id.action);
-
+        arrowNext = itemView.findViewById(R.id.right_arrow);
         this.viewListener = viewListener;
 
     }
@@ -62,6 +63,20 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         setAction(element);
 
         action.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToDetail(
+                        element.getReputationId(),
+                        element.getInvoice(),
+                        element.getCreateTime(),
+                        element.getRevieweeName(),
+                        element.getRevieweePicture(),
+                        element.getReputationDataViewModel(),
+                        getTextDeadline(element),
+                        getAdapterPosition());
+            }
+        });
+        arrowNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToDetail(

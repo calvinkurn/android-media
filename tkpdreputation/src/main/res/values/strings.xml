@@ -39,5 +39,6 @@
     <string name="smiley_good">Puas</string>
     <string name="seller_has_not_review">Penjual Belum Menilai</string>
     <string name="score_from_seller">Penilaian dari Penjual</string>
+    <string name="locked_reputation">Ulasan terisi otomatis karena batas waktu pengisian telah habis.</string>
 
 </resources>

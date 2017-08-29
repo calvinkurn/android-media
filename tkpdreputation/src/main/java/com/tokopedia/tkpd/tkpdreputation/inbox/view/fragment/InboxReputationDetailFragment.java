@@ -47,10 +47,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     InboxReputationDetailPassModel passModel;
 
     public static InboxReputationDetailFragment createInstance(InboxReputationDetailPassModel
-                                                                       model) {
+                                                                       model, int tab) {
         InboxReputationDetailFragment fragment = new InboxReputationDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, model);
+        bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab);
         fragment.setArguments(bundle);
         return fragment;
     }

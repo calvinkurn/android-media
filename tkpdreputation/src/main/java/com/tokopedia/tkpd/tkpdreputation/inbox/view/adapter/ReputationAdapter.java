@@ -24,6 +24,14 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     private static final String SMILEY_NEUTRAL = "2";
     private static final String SMILEY_GOOD = "3";
 
+    public ArrayList<SmileyModel> getList() {
+        return list;
+    }
+
+    public void setList(ArrayList<SmileyModel> list) {
+        this.list = list;
+    }
+
     public interface ReputationListener {
         void onReputationSmileyClicked(String value);
     }
@@ -90,4 +98,36 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
                 SMILEY_GOOD));
         notifyDataSetChanged();
     }
+
+    public void showSmileyBad() {
+        this.list.clear();
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
+                MainApplication.getAppContext().getString(R.string.smiley_bad),
+                SMILEY_BAD));
+        notifyDataSetChanged();
+    }
+
+    public void showSmileyNeutral() {
+        this.list.clear();
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
+                MainApplication.getAppContext().getString(R.string.smiley_netral),
+                SMILEY_NEUTRAL));
+        notifyDataSetChanged();
+    }
+
+    public void showSmileyGood() {
+        this.list.clear();
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+                MainApplication.getAppContext().getString(R.string.smiley_good),
+                SMILEY_GOOD));
+        notifyDataSetChanged();
+    }
+
+    public void showLockedSmiley() {
+        this.list.clear();
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_empty,
+                "",
+                ""));
+    }
+
 }
