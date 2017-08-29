@@ -2054,4 +2054,31 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventClickSubscribeCheckoutGoldMerchant(){
         eventCheckoutGoldMerchant(AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.GM_CHECKOUT);
     }
+
+    public static void eventCreateShopSellerApp(String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_CREATE_SHOP,
+                AppEventTracking.Category.CREATE_SHOP,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+    public static void eventLoginCreateShopSellerApp(){
+        eventCreateShopSellerApp(AppEventTracking.EventLabel.ENTER);
+    }
+    public static void eventClickCreateShopOnBoardingSellerApp(){
+        eventCreateShopSellerApp(AppEventTracking.EventLabel.OPEN_SHOP_ONBOARDING);
+    }
+    public static void eventCreateShopFillBiodata(){
+        eventCreateShopSellerApp(AppEventTracking.EventLabel.CONTINUE_SHOP_BIODATA);
+    }
+    public static void eventCreateShopFillBiodataError(){
+        eventCreateShopSellerApp(AppEventTracking.EventLabel.CONTINUE_SHOP_BIODATA_ERROR);
+    }
+    public static void eventCreateShopFillLogistic(){
+        eventCreateShopSellerApp(AppEventTracking.EventLabel.SAVE_LOGISTIC);
+    }
+    public static void eventCreateShopFillLogisticError(){
+        eventCreateShopSellerApp(AppEventTracking.EventLabel.SAVE_LOGISTIC_ERROR);
+    }
 }

@@ -131,6 +131,7 @@ public interface AppEventTracking {
         String SELLER_WIDGET = "sellerWidget";
         String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
         String CLICK_DASHBOARD = "clickDashboard";
+        String CLICK_CREATE_SHOP = "clickCreateShop";
     }
 
     interface Category {
@@ -532,6 +533,12 @@ public interface AppEventTracking {
         String ETALASE = "Etalase";
         String CHANGE_PACKAGE_GOLD_MERCHANT = "Change Package";
         String GM_CHECKOUT = "GM Checkout";
+        String ENTER = "Enter";
+        String OPEN_SHOP_ONBOARDING = "Open Shop - Onboarding";
+        String CONTINUE_SHOP_BIODATA = "Continue Shop Biodata";
+        String CONTINUE_SHOP_BIODATA_ERROR = "Continue Shop Biodata Error";
+        String SAVE_LOGISTIC = "Save Logistic";
+        String SAVE_LOGISTIC_ERROR = "Save Logistic Error";
     }
 
     interface SOCIAL_MEDIA {
