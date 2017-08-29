@@ -198,7 +198,7 @@ public class ListPaymentTypePresenterImpl implements ListPaymentTypePresenter {
             @Override
             public void onNext(CreditCardSuccessDeleteModel creditCardSuccessDeleteModel) {
                 if(creditCardSuccessDeleteModel.isSuccess()) {
-                    mainView.successDeleteCreditCard();
+                    mainView.successDeleteCreditCard(creditCardSuccessDeleteModel.getMessage());
                 }
             }
         };

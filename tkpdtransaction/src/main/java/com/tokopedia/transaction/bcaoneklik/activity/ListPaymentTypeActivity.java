@@ -167,7 +167,8 @@ public class ListPaymentTypeActivity extends TActivity
 
     @Override
     public void receivedCreditCardList(CreditCardModel creditCardModel) {
-        creditCardTitle.setVisibility(View.VISIBLE);
+        if(creditCardModel.getCreditCardList().size()> 0)
+            creditCardTitle.setVisibility(View.VISIBLE);
         refreshHandler.finishRefresh();
         creditCardVaultRecyclerView.setVisibility(View.VISIBLE);
 
@@ -179,13 +180,15 @@ public class ListPaymentTypeActivity extends TActivity
     }
 
     @Override
-    public void successDeleteCreditCard() {
+    public void successDeleteCreditCard(String message) {
+        NetworkErrorHelper.showSnackbar(this, message);
         refreshHandler.finishRefresh();
         presenter.onGetCreditCardList(this);
     }
 
     @Override
     public void onLoadCreditCardError(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
         rootView.setVisibility(View.VISIBLE);
         refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,

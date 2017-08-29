@@ -16,7 +16,7 @@ public interface ListPaymentTypeView {
 
     void receivedCreditCardList(CreditCardModel creditCardModel);
 
-    void successDeleteCreditCard();
+    void successDeleteCreditCard(String message);
 
     void onLoadCreditCardError(String errorMessage);
 

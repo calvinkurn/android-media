@@ -72,7 +72,7 @@ public class CreditCardListRepository implements ICreditCardRepository {
             modelItem.setMaskedNumber(response.getData().get(i).getMaskedNumber());
             modelItem.setTokenId(response.getData().get(i).getTokenId());
             modelItem.setImage(response.getData().get(i).getImage());
-            modelItem.setImage(response.getData().get(i).getCardTypeImage());
+            modelItem.setCardTypeImage(response.getData().get(i).getCardTypeImage());
             creditCardModels.add(modelItem);
         }
         convertedCreditCardModel.setCreditCardList(creditCardModels);
