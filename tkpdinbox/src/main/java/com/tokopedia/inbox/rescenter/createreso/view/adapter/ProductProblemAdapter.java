@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,6 +88,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             }
             if (productProblem.getProblem().getType() == 1) {
                 holder.tvProductName.setText(productProblem.getProblem().getName());
+                holder.ivProduct.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_ongkir));
             } else {
                 if (productProblem.getOrder() != null) {
                     if (productProblem.getOrder().getDetail().getReturnable() == FREE_RETURN) {
