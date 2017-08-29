@@ -96,6 +96,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                         if (productProblem.getOrder().getProduct().getThumb() != null) {
                             Glide.with(context).load(productProblem.getOrder().getProduct().getThumb()).into(holder.ivProduct);
                         }
+                        holder.tvProductNameFreeReturn.setText(productProblem.getOrder().getProduct().getName());
                         holder.tvProductName.setText(productProblem.getOrder().getProduct().getName());
                     }
                 }
@@ -136,13 +137,14 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
         CheckBox checkBox;
         ImageView ivProduct;
         LinearLayout llItem, llFreeReturn;
-        TextView tvProductName, tvTitleSection, tvFreeReturn;
+        TextView tvProductName, tvTitleSection, tvFreeReturn, tvProductNameFreeReturn;
         public ItemHolder(View itemView) {
             super(itemView);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
             ivProduct = (ImageView) itemView.findViewById(R.id.iv_product_image);
             tvProductName = (TextView) itemView.findViewById(R.id.tv_product_name);
             tvTitleSection = (TextView) itemView.findViewById(R.id.tv_title_section);
+            tvProductNameFreeReturn = (TextView) itemView.findViewById(R.id.tv_product_name_free_return);
             tvFreeReturn = (TextView) itemView.findViewById(R.id.tv_free_return);
             llItem = (LinearLayout) itemView.findViewById(R.id.ll_item_view);
             llFreeReturn = (LinearLayout) itemView.findViewById(R.id.ll_free_return);
