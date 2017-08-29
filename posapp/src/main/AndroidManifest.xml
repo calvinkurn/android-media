@@ -17,6 +17,19 @@
             android:name="LOCALYTICS_APP_KEY"
             android:value="@string/key_localytics" />
 
+        <service
+            android:name=".view.service.FetcherService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".view.service.StartUpReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".PosAppSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,10 +58,6 @@
         <activity
             android:name=".view.activity.ProductListActivity"
             android:screenOrientation="portrait" />
-
-        <service
-            android:name=".view.service.FetcherService"
-            android:exported="false"></service>
     </application>
 
 </manifest>

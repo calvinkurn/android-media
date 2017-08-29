@@ -1,11 +1,10 @@
-package com.tokopedia.core.react;
+package com.tokopedia.posapp.react;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.tokopedia.core.react.di.ReactCacheDependencies;
-import com.tokopedia.core.react.domain.ReactCacheRepository;
+import com.tokopedia.posapp.react.di.ReactCacheDependencies;
+import com.tokopedia.posapp.react.domain.ReactCacheRepository;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -14,10 +13,10 @@ import rx.schedulers.Schedulers;
  * Created by okasurya on 8/25/17.
  */
 
-public class ReactCacheModule extends ReactTableChooserModule {
+public class ReactPosCacheModule extends ReactTableChooserModule {
     ReactCacheRepository reactCacheRepository;
 
-    public ReactCacheModule(ReactApplicationContext reactContext) {
+    public ReactPosCacheModule(ReactApplicationContext reactContext) {
         super(reactContext);
         reactCacheRepository = new ReactCacheDependencies(reactContext).provideReactCacheRepository();
     }

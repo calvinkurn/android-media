@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ShopFactory;
+import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
 import com.tokopedia.posapp.data.repository.ShopRepository;
 import com.tokopedia.posapp.data.repository.ShopRepositoryImpl;
@@ -35,8 +36,16 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    ShopFactory provideShopFactory(ShopApi shopApi, GetShopMapper shopMapper) {
-        return new ShopFactory(shopApi, shopMapper);
+    GetProductListMapper provideGetProductListMapper() {
+        return new GetProductListMapper();
+    }
+
+    @ShopScope
+    @Provides
+    ShopFactory provideShopFactory(ShopApi shopApi,
+                                   GetShopMapper shopMapper,
+                                   GetProductListMapper getProductListMapper) {
+        return new ShopFactory(shopApi, shopMapper, getProductListMapper);
     }
 
     @ShopScope

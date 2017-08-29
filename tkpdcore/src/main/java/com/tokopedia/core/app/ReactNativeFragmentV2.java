@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
@@ -47,7 +48,7 @@ public abstract class ReactNativeFragmentV2 extends TkpdBaseV4Fragment
 
     @Override
     public void onDestroy() {
-        ReactUtils.sendDestroyPageEmitter();
+        ReactUtils.init(MainApplication.getInstance()).sendDestroyPageEmitter();
         super.onDestroy();
 
         if (reactInstanceManager != null) {

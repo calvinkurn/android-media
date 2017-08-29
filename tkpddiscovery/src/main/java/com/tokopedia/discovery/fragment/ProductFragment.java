@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.facebook.react.ReactApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -697,12 +698,14 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void actionSuccessRemoveFromWishlist(Integer productId) {
-        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.init(MainApplication.getInstance())
+                .sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
     public void actionSuccessAddToWishlist(Integer productId) {
-        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.init(MainApplication.getInstance())
+                .sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override

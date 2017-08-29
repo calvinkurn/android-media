@@ -3,8 +3,11 @@ package com.tokopedia.posapp.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.factory.ProductFactory;
 import com.tokopedia.posapp.domain.model.product.ProductDomain;
+
+import java.util.List;
 
 import rx.Observable;
 

@@ -1,7 +1,9 @@
 package com.tokopedia.core.react;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.facebook.react.ReactApplication;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
@@ -13,62 +15,74 @@ import com.tokopedia.core.app.MainApplication;
  */
 
 public class ReactUtils {
+    private static ReactUtils instance;
+    private ReactApplication reactApplication;
 
-    public static void sendAddWishlistEmitter(String productId, String userId) {
+    protected ReactUtils(ReactApplication reactApplication) {
+        this.reactApplication = reactApplication;
+    }
+
+    public static ReactUtils init(ReactApplication reactApplication) {
+        if(instance == null) instance = new ReactUtils(reactApplication);
+
+        return instance;
+    }
+
+    public void sendAddWishlistEmitter(String productId, String userId) {
         WritableMap params = Arguments.createMap();
         params.putString("product_id", productId);
         params.putString("user_id", userId);
         sendEmittEvent(
-                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                reactApplication.getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
                 ReactConst.EventEmitter.WISHLIST_ADD,
                 params
         );
     }
 
-    public static void sendRemoveWishlistEmitter(String productId, String userId) {
+    public void sendRemoveWishlistEmitter(String productId, String userId) {
         WritableMap params = Arguments.createMap();
         params.putString("product_id", productId);
         params.putString("user_id", userId);
         sendEmittEvent(
-                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                reactApplication.getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
                 ReactConst.EventEmitter.WISHLIST_REMOVE,
                 params
         );
     }
 
-    public static void sendAddFavoriteEmitter(String shopId, String userId) {
+    public void sendAddFavoriteEmitter(String shopId, String userId) {
         WritableMap params = Arguments.createMap();
         params.putString("shop_id", shopId);
         params.putString("user_id", userId);
         sendEmittEvent(
-                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                reactApplication.getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
                 ReactConst.EventEmitter.FAVORITE_ADD,
                 params
         );
     }
 
-    public static void sendRemoveFavoriteEmitter(String shopId, String userId) {
+    public void sendRemoveFavoriteEmitter(String shopId, String userId) {
         WritableMap params = Arguments.createMap();
         params.putString("shop_id", shopId);
         params.putString("user_id", userId);
         sendEmittEvent(
-                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                reactApplication.getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
                 ReactConst.EventEmitter.FAVORITE_REMOVE,
                 params
         );
     }
 
-    public static void sendLoginEmitter(String userId) {
+    public void sendLoginEmitter(String userId) {
         WritableMap params = Arguments.createMap();
         params.putString("user_id", userId);
         sendEmittEvent(
-                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                reactApplication.getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
                 ReactConst.EventEmitter.LOGIN,
                 params
         );
     }
 
-    private static void sendEmittEvent(ReactContext reactContext,
+    private void sendEmittEvent(ReactContext reactContext,
                                        String eventName,
                                        @Nullable WritableMap params) {
         reactContext
@@ -76,10 +90,10 @@ public class ReactUtils {
                 .emit(eventName, params);
     }
 
-    public static void sendDestroyPageEmitter() {
+    public void sendDestroyPageEmitter() {
         WritableMap params = Arguments.createMap();
         sendEmittEvent(
-                MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
+                reactApplication.getReactNativeHost().getReactInstanceManager().getCurrentReactContext(),
                 ReactConst.EventEmitter.PAGE_DESTROYED,
                 params
         );

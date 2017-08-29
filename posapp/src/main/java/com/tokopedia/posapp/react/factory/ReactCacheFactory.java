@@ -1,11 +1,10 @@
-package com.tokopedia.core.react.data.factory;
+package com.tokopedia.posapp.react.factory;
 
-import com.tokopedia.core.database.o2o.CartDbManager;
 import com.tokopedia.core.react.data.Constants;
-import com.tokopedia.core.react.data.datasource.cache.ReactCacheSource;
-import com.tokopedia.core.react.data.datasource.cache.ReactCartCacheSource;
-import com.tokopedia.core.react.data.datasource.cache.ReactProductCacheSource;
-import com.tokopedia.core.react.data.datasource.cache.TableNotFoundException;
+import com.tokopedia.posapp.react.datasource.cache.ReactCacheSource;
+import com.tokopedia.posapp.react.datasource.cache.ReactCartCacheSource;
+import com.tokopedia.posapp.react.datasource.cache.ReactProductCacheSource;
+import com.tokopedia.posapp.react.exception.TableNotFoundException;
 
 /**
  * Created by okasurya on 8/28/17.
@@ -16,9 +15,9 @@ public class ReactCacheFactory {
 
     public ReactCacheSource createCacheDataSource(String tableName) throws TableNotFoundException {
         switch (tableName) {
-            case Constants.Table.CART:
+            case Constants.CacheTable.CART:
                 return new ReactCartCacheSource();
-            case Constants.Table.PRODUCT:
+            case Constants.CacheTable.PRODUCT:
                 return new ReactProductCacheSource();
             default:
                 throw new TableNotFoundException();

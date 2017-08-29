@@ -3,6 +3,7 @@ package com.tokopedia.posapp;
 import com.facebook.react.ReactNativeHost;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.posapp.react.PosReactNativeHostFactory;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -52,6 +53,6 @@ public class PosApplication extends PosRouterApplication {
 
     @Override
     public ReactNativeHost getReactNativeHost() {
-        return super.getReactNativeHost();
+        return PosReactNativeHostFactory.init(this);
     }
 }

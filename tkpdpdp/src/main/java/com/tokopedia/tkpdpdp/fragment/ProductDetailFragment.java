@@ -28,9 +28,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.facebook.react.ReactApplication;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -877,22 +879,26 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void actionSuccessAddToWishlist(Integer productId) {
-        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.init(MainApplication.getInstance())
+                .sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
     public void actionSuccessRemoveFromWishlist(Integer productId) {
-        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.init(MainApplication.getInstance())
+                .sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
     public void actionSuccessAddFavoriteShop(String shopId) {
         if (productData.getShopInfo().getShopAlreadyFavorited() == 1) {
             productData.getShopInfo().setShopAlreadyFavorited(0);
-            ReactUtils.sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            ReactUtils.init(MainApplication.getInstance())
+                    .sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
         } else {
             productData.getShopInfo().setShopAlreadyFavorited(1);
-            ReactUtils.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            ReactUtils.init(MainApplication.getInstance())
+                    .sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
         }
     }
 

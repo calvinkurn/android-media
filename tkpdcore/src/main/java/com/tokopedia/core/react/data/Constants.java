@@ -5,7 +5,7 @@ package com.tokopedia.core.react.data;
  */
 
 public interface Constants {
-    interface Table {
+    interface CacheTable {
         public static final String PRODUCT = "PRODUCT";
         public static final String CART = "CART";
     }

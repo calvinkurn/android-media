@@ -1,44 +1,32 @@
-package com.tokopedia.core.react;
+package com.tokopedia.posapp.react;
 
 import android.app.Application;
-import android.provider.Settings;
 
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.common.LifecycleState;
 import com.facebook.react.shell.MainReactPackage;
 import com.microsoft.codepush.react.CodePush;
-import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.react.CoreReactPackage;
+import com.tokopedia.core.react.ReactConst;
+import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author ricoharisin .
+ * Created by okasurya on 8/29/17.
  */
 
-public class ReactNativeHostFactory {
-    private static ReactNativeHostFactory instance;
+public class PosReactNativeHostFactory {
+    private static PosReactNativeHostFactory instance;
 
-    protected ReactNativeHostFactory() {}
+    protected PosReactNativeHostFactory() {}
 
     public static ReactNativeHost init(Application application) {
-        if(instance == null) instance = new ReactNativeHostFactory();
-        /*reactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(application)
-                .setBundleAssetName("index.android.bundle")
-                .setJSMainModuleName("reactscript/index.android")
-                .addPackage(new MainReactPackage())
-                .addPackage(new CoreReactPackage())
-                .setUseDeveloperSupport(true)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build();*/
+        if(instance == null) instance = new PosReactNativeHostFactory();
 
         return instance.createReactNativeHostDev(application);
-
     }
 
     private ReactNativeHost createReactNativeHost(final Application application) {
@@ -88,6 +76,7 @@ public class ReactNativeHostFactory {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),
+                new PosReactPackage(),
                 new CodePush(ReactConst.CODE_PUSH_DEPLOYMENT_KEY, application, GlobalConfig.isAllowDebuggingTools())
         );
     }

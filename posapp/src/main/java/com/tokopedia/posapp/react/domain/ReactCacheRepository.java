@@ -1,4 +1,4 @@
-package com.tokopedia.core.react.domain;
+package com.tokopedia.posapp.react.domain;
 
 import rx.Observable;
 

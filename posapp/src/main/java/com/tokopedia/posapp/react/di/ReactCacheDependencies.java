@@ -1,11 +1,10 @@
-package com.tokopedia.core.react.di;
+package com.tokopedia.posapp.react.di;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.o2o.CartDbManager;
-import com.tokopedia.core.react.data.ReactCacheRepositoryImpl;
-import com.tokopedia.core.react.data.factory.ReactCacheFactory;
-import com.tokopedia.core.react.domain.ReactCacheRepository;
+import com.tokopedia.posapp.react.datasource.ReactCacheRepositoryImpl;
+import com.tokopedia.posapp.react.domain.ReactCacheRepository;
+import com.tokopedia.posapp.react.factory.ReactCacheFactory;
 
 /**
  * Created by okasurya on 8/25/17.

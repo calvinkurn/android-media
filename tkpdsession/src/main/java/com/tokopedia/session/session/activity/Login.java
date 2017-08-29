@@ -32,6 +32,7 @@ import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.login.LoginManager;
+import com.facebook.react.ReactApplication;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.tkpd.library.utils.DownloadResultReceiver;
@@ -40,6 +41,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -570,7 +572,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void destroy() {
         if (SessionHandler.isV4Login(this)){
-            ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(this));
+            ReactUtils.init(MainApplication.getInstance())
+                    .sendLoginEmitter(SessionHandler.getLoginID(this));
         }
         Log.d(getClass().getSimpleName(), "destroy");
         this.setResult(RESULT_OK);

@@ -64,7 +64,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
+//    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     private LocationUtils locationUtils;
 
     private DaggerAppComponent.Builder daggerBuilder;
@@ -373,6 +373,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 
     @Override
     public ReactNativeHost getReactNativeHost() {
-        return reactNativeHost;
+        return ReactNativeHostFactory.init(this);
     }
 }

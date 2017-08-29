@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
@@ -47,7 +48,7 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
 
     @Override
     public void onDestroy() {
-        ReactUtils.sendDestroyPageEmitter();
+        ReactUtils.init(MainApplication.getInstance()).sendDestroyPageEmitter();
         super.onDestroy();
         if (reactInstanceManager != null) {
             reactInstanceManager.onHostDestroy(this);

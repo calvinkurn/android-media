@@ -1,8 +1,8 @@
-package com.tokopedia.core.react.data;
+package com.tokopedia.posapp.react.datasource;
 
-import com.tokopedia.core.react.data.datasource.cache.TableNotFoundException;
-import com.tokopedia.core.react.data.factory.ReactCacheFactory;
-import com.tokopedia.core.react.domain.ReactCacheRepository;
+import com.tokopedia.posapp.react.domain.ReactCacheRepository;
+import com.tokopedia.posapp.react.exception.TableNotFoundException;
+import com.tokopedia.posapp.react.factory.ReactCacheFactory;
 
 import rx.Observable;
 

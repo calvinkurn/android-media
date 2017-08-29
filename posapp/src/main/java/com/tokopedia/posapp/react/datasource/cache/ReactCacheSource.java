@@ -1,4 +1,4 @@
-package com.tokopedia.core.react.data.datasource.cache;
+package com.tokopedia.posapp.react.datasource.cache;
 
 import rx.Observable;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.core.react.data.datasource.cache;
+package com.tokopedia.posapp.react.exception;
 
 /**
  * Created by okasurya on 8/28/17.

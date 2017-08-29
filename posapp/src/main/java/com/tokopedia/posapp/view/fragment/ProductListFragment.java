@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.ReactNativeFragmentV2;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.react.ReactConst;
 
 /**
  * Created by okasurya on 8/24/17.
@@ -29,7 +30,7 @@ public class ProductListFragment extends ReactNativeFragmentV2 {
 
     @Override
     public String getReactScreenName() {
-        return "pos";
+        return ReactConst.Screen.POS_O2O;
     }
 
     @Override

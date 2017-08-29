@@ -16,7 +16,6 @@ public interface ReactConst {
     interface Screen {
         String HOTLIST = "HotList";
         String OFFICIAL_STORE = "official-store";
-        String POS_O2O = "pos";
     }
 
     interface EventEmitter{

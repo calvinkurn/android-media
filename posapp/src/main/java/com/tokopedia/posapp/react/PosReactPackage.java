@@ -1,25 +1,25 @@
-package com.tokopedia.core.react;
+package com.tokopedia.posapp.react;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.tokopedia.core.react.ReactNavigationModule;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * @author ricoharisin .
+ * Created by okasurya on 8/29/17.
  */
 
-public class CoreReactPackage implements ReactPackage {
+public class PosReactPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ReactNetworkModule(reactContext));
-        modules.add(new ReactNavigationModule(reactContext));
+        modules.add(new ReactPosCacheModule(reactContext));
         return modules;
     }
 

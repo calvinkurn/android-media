@@ -1,4 +1,4 @@
-package com.tokopedia.core.react.data.datasource.cache;
+package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
