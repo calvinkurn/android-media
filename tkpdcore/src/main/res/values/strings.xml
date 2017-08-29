@@ -834,7 +834,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_manage_shop_address">Pengaturan Alamat Toko</string>
     <string name="title_activity_shop_address_form">Alamat Toko</string>
     <string name="title_activity_people">Profil</string>
-    <string name="title_activity_manage_people">ATUR PROFIL</string>
+    <string name="title_activity_manage_people">Atur Profil</string>
     <string name="title_activity_manage_privacy">Pengaturan Privasi</string>
     <string name="title_activity_manage_notification">Pengaturan Notifikasi</string>
     <string name="title_activity_manage_people_address">Pengaturan Alamat</string>
@@ -842,7 +842,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_people_bank_form">Bank</string>
     <string name="title_activity_manage_people_profile">Pengaturan Profil</string>
     <string name="title_activity_people_favorited_shop">Toko Favorit</string>
-    <string name="title_activity_manage_people_password">Ganti kata sandi</string>
+    <string name="title_activity_manage_people_password">Ganti Kata Sandi</string>
     <string name="title_activity_activation">Aktivasi akun</string>
     <string name="title_manage">Pengaturan</string>
 
