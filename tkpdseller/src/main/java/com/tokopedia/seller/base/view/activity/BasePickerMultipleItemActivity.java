@@ -143,7 +143,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
-    public void addItemFromSearch(T t, boolean isManual) {
+    public void addItemFromSearch(T t) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
         ((BasePickerItemCacheList<T>) fragment).addItem(t);
     }
