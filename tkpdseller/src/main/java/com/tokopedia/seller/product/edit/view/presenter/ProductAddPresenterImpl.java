@@ -38,6 +38,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAddPresenter<T> {
     private static final int TIME_DELAY = 500;
+    private static final int TIME_DELAY_SCORE = 300;
 
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
@@ -200,7 +201,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
                     }
                 };
             }
-        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
+        }).debounce(TIME_DELAY_SCORE, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getSubscriberDebounceProductNameScoring());
     }
