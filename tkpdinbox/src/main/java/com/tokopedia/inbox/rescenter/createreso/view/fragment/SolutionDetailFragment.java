@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -124,6 +126,13 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
             }
         });
+
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onContinueButtonClicked();
+            }
+        });
     }
 
     @Override
@@ -170,5 +179,13 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void showErrorToast(String error) {
 
+    }
+
+    @Override
+    public void submitData(ResultViewModel resultViewModel) {
+        Intent output = new Intent();
+        output.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        getActivity().setResult(Activity.RESULT_OK, output);
+        getActivity().finish();
     }
 }

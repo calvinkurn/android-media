@@ -12,11 +12,14 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
 public interface SolutionDetailFragmentListener {
 
     interface View extends CustomerView {
+
         void populateDataToView(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
 
         void updateAmountError(String message);
 
         void updateBottomButton(ResultViewModel resultViewModel);
+
+        void submitData(ResultViewModel resultViewModel);
 
         void showSuccessToast();
 
@@ -24,8 +27,11 @@ public interface SolutionDetailFragmentListener {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
         void initResultViewModel(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
 
         void onAmountChanged(String amount);
+
+        void onContinueButtonClicked();
     }
 }

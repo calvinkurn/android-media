@@ -26,8 +26,6 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDet
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
-import javax.inject.Inject;
-
 /**
  * Created by yoasfs on 21/08/17.
  */
@@ -236,15 +234,6 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
                 buttonSelected(btnNotArrived);
             }
         }
-//        if (isArrived) {
-//            buttonCanSelected(btnNotArrived);
-//            buttonSelected(btnArrived);
-//        } else {
-//            buttonCanSelected(btnArrived);
-//            buttonSelected(btnNotArrived);
-//        }
-
-
     }
     public void buttonCanSelected(Button button) {
         button.setClickable(true);

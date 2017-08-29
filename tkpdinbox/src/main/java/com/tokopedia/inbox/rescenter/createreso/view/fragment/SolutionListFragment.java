@@ -154,4 +154,14 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
         Toast.makeText(getActivity(), "error : " + error, Toast.LENGTH_SHORT).show();
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SOLUTION) {
+            if (resultCode == Activity.RESULT_OK) {
+                submitData((ResultViewModel) data.getParcelableExtra(RESULT_VIEW_MODEL_DATA));
+            }
+        }
+    }
 }

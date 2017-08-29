@@ -49,4 +49,10 @@ public class SolutionDetailFragmentPresenter extends BaseDaggerPresenter<Solutio
             mainView.updateBottomButton(resultViewModel);
         }
     }
+
+    @Override
+    public void onContinueButtonClicked() {
+        resultViewModel.solution = solutionViewModel.getId();
+        mainView.submitData(resultViewModel);
+    }
 }
