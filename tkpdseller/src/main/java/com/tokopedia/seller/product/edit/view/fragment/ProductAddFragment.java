@@ -318,6 +318,18 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public void onHasVideoChange(boolean hasVideo) {
+        valueIndicatorScoreModel.setHasVideo(hasVideo);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onVariantCountChange(boolean hasActiveVariant) {
+        valueIndicatorScoreModel.setVariantActive(hasActiveVariant);
+        updateProductScoring();
+    }
+
+    @Override
     public void onTotalImageUpdated(int total) {
         valueIndicatorScoreModel.setImageCount(total);
         updateProductScoring();

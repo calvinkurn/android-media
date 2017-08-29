@@ -10,6 +10,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.edit.data.repository.ProductScoreRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ProductScoreDataSource;
 import com.tokopedia.seller.product.edit.data.source.cache.ProductScoreDataSourceCache;
+import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.DataScoringProduct;
+import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.DataScoringProductBuilder;
 import com.tokopedia.seller.product.edit.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenter;
@@ -55,8 +57,14 @@ public class ProductScoringModule {
 
     @ActivityScope
     @Provides
-    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ApplicationContext Context context, Gson gson){
-        return new ProductScoreDataSourceCache(context, gson);
+    ProductScoreDataSourceCache provideProductScoreDataSourceCache(DataScoringProduct dataScoringProduct){
+        return new ProductScoreDataSourceCache(dataScoringProduct);
+    }
+
+    @ActivityScope
+    @Provides
+    DataScoringProduct provideDataScoringProduct(@ApplicationContext Context context, Gson gson){
+        return new DataScoringProductBuilder(context, gson).build();
     }
 
 }

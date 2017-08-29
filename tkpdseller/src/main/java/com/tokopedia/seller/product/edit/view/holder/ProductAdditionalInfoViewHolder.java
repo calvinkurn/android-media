@@ -32,6 +32,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputVie
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
@@ -192,8 +193,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     private void setLabelViewText(List<String> videoIdList) {
         if (CommonUtils.checkCollectionNotNull(videoIdList)) {
+            listener.onHasVideoChange(true);
             labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_video_count, videoIdList.size()));
         } else {
+            listener.onHasVideoChange(false);
             labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_etalase_picker_add_etalase_add_button_dialog));
         }
     }
@@ -250,8 +253,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
                 productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
             variantLabelView.resetContentText();
+            listener.onVariantCountChange(false);
         } else {
             String selectedVariantString = "";
+            boolean hasActiveVariant = false;
             if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
                 selectedVariantString = defaultStringSelection;
             } else {
@@ -274,11 +279,17 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                     }
                     selectedVariantString += optionList.size() + " " + variantName;
                 }
+                List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = productVariantDataSubmit.getProductVariantCombinationSubmitList();
+                if (productVariantCombinationSubmitList != null && productVariantCombinationSubmitList.size() > 0) {
+                    hasActiveVariant = true;
+                }
             }
             if (TextUtils.isEmpty(selectedVariantString)) {
                 variantLabelView.resetContentText();
+                listener.onVariantCountChange(false);
             } else {
                 variantLabelView.setContent(selectedVariantString);
+                listener.onVariantCountChange(hasActiveVariant);
             }
             variantLabelView.setVisibility(View.VISIBLE);
         }
@@ -364,5 +375,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         void onDescriptionTextChanged(String text);
 
         void showDialogMoveToGM(@StringRes int message);
+
+        void onVariantCountChange(boolean hasActiveVariant);
+
+        void onHasVideoChange (boolean hasVideo);
     }
 }

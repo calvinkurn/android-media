@@ -34,6 +34,8 @@ public class ProductScoreDataSourceCache {
     public static final int DESC_INDICATOR = 3;
     public static final int STOK_INDICATOR = 4;
     public static final int FREE_RETURN_INDICATOR = 5;
+    public static final int PRODUCT_VARIANT = 6;
+    public static final int PRODUCT_VIDEO = 7;
 
     private DataScoringProduct dataScoringProduct;
 
@@ -143,6 +145,10 @@ public class ProductScoreDataSourceCache {
                 return calculateScoreStok(indicatorScore, valueIndicatorScoreModel.isStockStatus());
             case FREE_RETURN_INDICATOR:
                 return calculateScoreFreeReturns(indicatorScore, valueIndicatorScoreModel.isFreeReturnStatus());
+            case PRODUCT_VARIANT:
+                return calculateScoreProductVariant(indicatorScore, valueIndicatorScoreModel.isVariantActive());
+            case PRODUCT_VIDEO:
+                return calculateScoreProductVideo(indicatorScore, valueIndicatorScoreModel.isHasVideo());
             default:
                 return 0;
         }
@@ -151,6 +157,20 @@ public class ProductScoreDataSourceCache {
     private int calculateScoreFreeReturns(IndicatorScore indicatorScore, boolean freeReturnStatus) {
         for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
             return calculateScore(valueIndicator, freeReturnStatus ? 1 : 0);
+        }
+        return 0;
+    }
+
+    private int calculateScoreProductVariant(IndicatorScore indicatorScore, boolean hasProductVariant) {
+        for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
+            return calculateScore(valueIndicator, hasProductVariant ? 1 : 0);
+        }
+        return 0;
+    }
+
+    private int calculateScoreProductVideo(IndicatorScore indicatorScore, boolean hasVideo) {
+        for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
+            return calculateScore(valueIndicator, hasVideo ? 1 : 0);
         }
         return 0;
     }
