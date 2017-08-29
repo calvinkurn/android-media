@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;
@@ -10,7 +11,10 @@ import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseC
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -61,5 +65,11 @@ public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftV
                 getView().onSuccessLoadDraftProduct(model);
             }
         };
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        fetchDraftProductUseCase.unsubscribe();
     }
 }

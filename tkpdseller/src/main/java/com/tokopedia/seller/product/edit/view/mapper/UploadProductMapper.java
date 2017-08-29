@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.edit.view.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
@@ -8,6 +10,11 @@ import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputView
 import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
+import com.tokopedia.seller.product.variant.util.ProductVariantViewConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +55,8 @@ public class UploadProductMapper {
         domainModel.setProductStatus(viewModel.getProductStatus());
         domainModel.setProductId(viewModel.getProductId());
         domainModel.setNameEditable(viewModel.getProductNameEditable());
-        domainModel.setSwitchVariant(viewModel.getSwitchVariant());
         domainModel.setProductVariantDataSubmit(viewModel.getProductVariantDataSubmit());
+        domainModel.setVariantStringSelection(viewModel.getVariantStringSelection());
         return domainModel;
     }
 
@@ -122,7 +129,9 @@ public class UploadProductMapper {
         viewModel.setServerId(domainModel.getServerId());
         viewModel.setProductId(domainModel.getProductId());
         viewModel.setSwitchVariant(domainModel.getSwitchVariant());
-        viewModel.setProductVariantData(domainModel.getProductVariantDataSubmit());
+        ProductVariantDataSubmit productVariantDataSubmit = domainModel.getProductVariantDataSubmit();
+        viewModel.setProductVariantData(productVariantDataSubmit);
+        viewModel.setVariantStringSelection(domainModel.getVariantStringSelection());
         return viewModel;
     }
 

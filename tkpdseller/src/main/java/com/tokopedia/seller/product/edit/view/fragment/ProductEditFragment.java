@@ -52,15 +52,10 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
         showLoading();
         presenter.attachView(this);
         fetchProductInfoData(productId);
-        fetchProductVariantData(productId);
     }
 
     private void fetchProductInfoData(String productId){
         presenter.fetchEditProductData(productId);
-    }
-
-    private void fetchProductVariantData(String productId){
-        presenter.fetchProductVariantByPrd(productId);
     }
 
     @Override
@@ -76,12 +71,8 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
     }
 
     @Override
-    public void onErrorFetchProductVariantByPrd(Throwable throwable) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                fetchProductVariantData(productId);
-            }
-        });
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

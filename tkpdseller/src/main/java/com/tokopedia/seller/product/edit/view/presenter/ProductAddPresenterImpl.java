@@ -49,7 +49,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     private Subscription subscriptionDebounceCategoryRecomm;
     private CatalogQueryListener getCatalogListener;
     private Subscription subscriptionDebounceCatalog;
-    private final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
+    protected final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,

@@ -70,8 +70,8 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         domainModel.setProductStatus(draftModel.getProductStatus());
         domainModel.setProductId(draftModel.getProductId());
         domainModel.setNameEditable(draftModel.getProductNameEditable());
-        domainModel.setSwitchVariant(draftModel.getSwitchVariant());
         domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());
+        domainModel.setVariantStringSelection(draftModel.getVariantStringSelection());
         return domainModel;
     }
 
@@ -149,6 +149,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         draftModel.setProductNameEditable(domainModel.getNameEditable());
         draftModel.setSwitchVariant(domainModel.getSwitchVariant());
         draftModel.setProductVariantDataSubmit(domainModel.getProductVariantDataSubmit());
+        draftModel.setVariantStringSelection(domainModel.getVariantStringSelection());
         return draftModel;
     }
 

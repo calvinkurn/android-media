@@ -28,6 +28,7 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
@@ -176,7 +177,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                 if (resultCode == Activity.RESULT_OK) {
                     if (data!= null && data.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         setProductVariantDataSubmit((ProductVariantDataSubmit) data.getParcelableExtra(
-                                ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION));
+                                ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION), null);
                     }
                 }
                 break;
@@ -205,6 +206,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         return productVariantDataSubmit;
     }
 
+    public String getVariantStringSelection(){
+        return variantLabelView.getContent();
+    }
+
     public void setVideoIdList(List<String> videoIdList) {
         this.videoIdList.addAll(videoIdList);
         setLabelViewText(videoIdList);
@@ -226,59 +231,56 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList) {
+    public void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList) {
         this.productVariantByCatModelList = (ArrayList<ProductVariantByCatModel>) productVariantByCatModelList;
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             variantLabelView.setVisibility(View.GONE);
         } else {
             variantLabelView.setVisibility(View.VISIBLE);
         }
-        setUiVariantSelection();
+        setUiVariantSelection(variantLabelView.getContent());
     }
 
-    public void onSuccessGetSelectedProductVariant(ProductVariantByPrdModel productVariantByPrdModel) {
-        if (productVariantByPrdModel == null) {
-            setProductVariantDataSubmit(null);
-            return;
-        }
-        ProductVariantDataSubmit productVariantDataSubmit =
-                ProductVariantUtils.generateProductVariantSubmit(productVariantByPrdModel);
-        setProductVariantDataSubmit(productVariantDataSubmit);
-    }
-
-    public void setProductVariantDataSubmit(ProductVariantDataSubmit productVariantDataSubmit) {
+    public void setProductVariantDataSubmit(ProductVariantDataSubmit productVariantDataSubmit, String defaultStringSelection) {
         this.productVariantDataSubmit = productVariantDataSubmit;
-        setUiVariantSelection();
+        setUiVariantSelection(defaultStringSelection);
     }
 
-    private void setUiVariantSelection() {
+    private void setUiVariantSelection(String defaultStringSelection) {
         if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
-                productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0
-                || productVariantByCatModelList == null
-                || productVariantByCatModelList.size() == 0) {
+                productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
             variantLabelView.resetContentText();
         } else {
             String selectedVariantString = "";
-            List<ProductVariantUnitSubmit> productVariantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
-            for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
-                ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
-                int position = productVariantUnitSubmit.getPosition();
-                ProductVariantByCatModel productVariantByCatModel =
-                        ProductVariantViewConverter.getProductVariantByCatModel(position, productVariantByCatModelList);
-                if (productVariantByCatModel == null) {
-                    continue;
+            if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
+                selectedVariantString = defaultStringSelection;
+            } else {
+                List<ProductVariantUnitSubmit> productVariantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
+                for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
+                    ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
+                    int position = productVariantUnitSubmit.getPosition();
+                    ProductVariantByCatModel productVariantByCatModel =
+                            ProductVariantViewConverter.getProductVariantByCatModel(position, productVariantByCatModelList);
+                    if (productVariantByCatModel == null) {
+                        continue;
+                    }
+                    String variantName = productVariantByCatModel.getName();
+                    List<ProductVariantOptionSubmit> optionList = productVariantUnitSubmit.getProductVariantOptionSubmitList();
+                    if (optionList == null || optionList.size() == 0) {
+                        continue;
+                    }
+                    if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
+                        selectedVariantString += "\n";
+                    }
+                    selectedVariantString += optionList.size() + " " + variantName;
                 }
-                String variantName = productVariantByCatModel.getName();
-                List<ProductVariantOptionSubmit> optionList = productVariantUnitSubmit.getProductVariantOptionSubmitList();
-                if (optionList == null || optionList.size() == 0) {
-                    continue;
-                }
-                if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
-                    selectedVariantString += "\n";
-                }
-                selectedVariantString += optionList.size() + " " + variantName;
             }
-            variantLabelView.setContent(selectedVariantString);
+            if (TextUtils.isEmpty(selectedVariantString)) {
+                variantLabelView.resetContentText();
+            } else {
+                variantLabelView.setContent(selectedVariantString);
+            }
+            variantLabelView.setVisibility(View.VISIBLE);
         }
     }
 

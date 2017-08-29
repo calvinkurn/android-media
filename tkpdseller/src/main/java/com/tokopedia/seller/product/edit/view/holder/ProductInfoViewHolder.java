@@ -47,8 +47,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
         void onCategoryChanged(long categoryId);
 
-        void resetVariant();
-
         void fetchCategory(long categoryId);
     }
 
@@ -148,7 +146,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
                 hideAndClearCatalog();
             }
             if (listener != null) {
-                listener.resetVariant();
                 listener.onCategoryChanged(categoryId);
             }
         }
@@ -238,7 +235,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
                 hideAndClearCatalog();
             }
             if (listener != null) {
-                listener.resetVariant();
                 listener.onCategoryChanged(categoryId);
             }
             // reselect the id if exist on the radio button

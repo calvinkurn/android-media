@@ -100,9 +100,19 @@ public class ProductDraftModel {
     private int switchVariant;
     @SerializedName("variant_data")
     private ProductVariantDataSubmit productVariantDataSubmit;
+    @SerializedName("variant_string_selection")
+    private String variantStringSelection;
 
     public int getSwitchVariant() {
         return switchVariant;
+    }
+
+    public String getVariantStringSelection() {
+        return variantStringSelection;
+    }
+
+    public void setVariantStringSelection(String variantStringSelection) {
+        this.variantStringSelection = variantStringSelection;
     }
 
     public void setSwitchVariant(int switchVariant) {

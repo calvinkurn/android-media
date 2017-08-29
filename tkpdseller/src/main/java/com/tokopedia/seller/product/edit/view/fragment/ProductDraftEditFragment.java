@@ -16,6 +16,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewM
 import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 
 import java.util.ArrayList;
 import java.util.List;
