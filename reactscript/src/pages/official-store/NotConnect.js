@@ -15,18 +15,6 @@ class NoConnection extends Component {
         }
     }
 
-    // clickHandler(){
-    //     NetworkModule.getResponse('http://mojito.tokopedia.com/os/api/v1/brands/list?device=lite&microsite=true&user_id=0&limit=1&offset=0', 'GET', '', true)
-    //         .then(response => {
-    //             console.log('sukses')
-    //             let jsonResponse = JSON.parse(response) 
-    //             this.setState({ isConnected: true })
-    //         })
-    //         .catch(err => {
-    //             console.log('gagal: ', err)
-    //         })
-    // }
-
     render (){
         if (!this.state.isConnected){
             return (
