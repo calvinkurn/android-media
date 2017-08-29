@@ -29,6 +29,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -131,9 +132,11 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
-        for (Filter filter : filterList) {
+        Iterator<Filter> iterator = filterList.iterator();
+        while (iterator.hasNext()) {
+            Filter filter = iterator.next();
             if (filter.getOptions().isEmpty() && !filter.isSeparator()) {
-                filterList.remove(filter);
+                iterator.remove();
             }
         }
     }
