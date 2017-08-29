@@ -16,6 +16,9 @@ public class SolutionResponseResponse {
     @SerializedName("require")
     @Expose
     private RequireResponse require;
+    @SerializedName("freeReturn")
+    @Expose
+    private FreeReturnResponse freeReturn;
 
     public List<SolutionResponse> getSolution() {
         return solution;
@@ -33,11 +36,20 @@ public class SolutionResponseResponse {
         this.require = require;
     }
 
+    public FreeReturnResponse getFreeReturn() {
+        return freeReturn;
+    }
+
+    public void setFreeReturn(FreeReturnResponse freeReturn) {
+        this.freeReturn = freeReturn;
+    }
+
     @Override
     public String toString() {
         return "SolutionResponseResponse{" +
                 "solution='" + solution.toString() + '\'' +
                 "require='" + require.toString() + '\'' +
+                "freeReturn='" + freeReturn.toString() + '\'' +
                 '}';
     }
 }

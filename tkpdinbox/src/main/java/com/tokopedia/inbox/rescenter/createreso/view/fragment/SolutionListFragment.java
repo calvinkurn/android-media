@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -40,6 +43,8 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
 
     RecyclerView rvSolution;
     SolutionListAdapter adapter;
+    LinearLayout llFreeReturn;
+    TextView tvFreeReturn;
 
     @Inject
     SolutionListFragmentPresenter presenter;
@@ -107,6 +112,11 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     @Override
     protected void initView(View view) {
         rvSolution = (RecyclerView) view.findViewById(R.id.rv_solution);
+        llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
+        tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
+
+        llFreeReturn.setVisibility(View.GONE);
+
         rvSolution.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         presenter.initResultViewModel(resultViewModel);
@@ -134,6 +144,10 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     public void populateDataToView(SolutionResponseViewModel solutionResponseViewModel) {
         adapter = new SolutionListAdapter(getActivity(), solutionResponseViewModel.getSolutionViewModelList(), this);
         rvSolution.setAdapter(adapter);
+        if (solutionResponseViewModel.getFreeReturn() != null) {
+            llFreeReturn.setVisibility(View.VISIBLE);
+            tvFreeReturn.setText(Html.fromHtml(solutionResponseViewModel.getFreeReturn().getInfo()));
+        }
     }
 
     @Override

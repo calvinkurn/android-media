@@ -5,10 +5,12 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.FreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.RequireResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
@@ -50,7 +52,8 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
             SolutionResponseResponse solutionResponseResponse = response.body().convertDataObj(SolutionResponseResponse.class);
             SolutionResponseDomain model = new SolutionResponseDomain(
                     solutionResponseResponse.getSolution().size() != 0 ? mappingSolutionDomain(solutionResponseResponse.getSolution()) : new ArrayList<SolutionDomain>(),
-                    mappingRequireDomain(solutionResponseResponse.getRequire()));
+                    mappingRequireDomain(solutionResponseResponse.getRequire()),
+                    solutionResponseResponse.getFreeReturn() != null ? mappingFreeReturnDomain(solutionResponseResponse.getFreeReturn()) : null);
             if (response.isSuccessful()) {
                 if (response.raw().code() == ResponseStatus.SC_OK) {
                     model.setSuccess(true);
@@ -95,6 +98,10 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
     private AmountDomain mappingAmountDomain(AmountResponse response) {
         return new AmountDomain(response.getIdr(),
                 response.getInteger());
+    }
+
+    private FreeReturnDomain mappingFreeReturnDomain(FreeReturnResponse response) {
+        return new FreeReturnDomain(response.getInfo());
     }
 
 }

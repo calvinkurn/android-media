@@ -19,12 +19,15 @@ public class SolutionResponseDomain {
     private RequireDomain require;
 
     @Nullable
+    private FreeReturnDomain freeReturn;
+
+    @Nullable
     private boolean isSuccess;
 
-    public SolutionResponseDomain(@Nullable List<SolutionDomain> solutions,
-                                  @Nullable RequireDomain require) {
+    public SolutionResponseDomain(List<SolutionDomain> solutions, RequireDomain require, FreeReturnDomain freeReturn) {
         this.solutions = solutions;
         this.require = require;
+        this.freeReturn = freeReturn;
     }
 
     @Nullable
@@ -45,6 +48,14 @@ public class SolutionResponseDomain {
         this.require = require;
     }
 
+    @Nullable
+    public FreeReturnDomain getFreeReturn() {
+        return freeReturn;
+    }
+
+    public void setFreeReturn(@Nullable FreeReturnDomain freeReturn) {
+        this.freeReturn = freeReturn;
+    }
 
     @Nullable
     public boolean isSuccess() {

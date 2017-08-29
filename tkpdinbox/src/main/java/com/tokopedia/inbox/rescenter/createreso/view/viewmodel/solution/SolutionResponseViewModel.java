@@ -13,10 +13,20 @@ public class SolutionResponseViewModel implements Parcelable {
 
     private List<SolutionViewModel> solutionViewModelList;
     private RequireViewModel require;
+    private FreeReturnViewModel freeReturn;
 
-    public SolutionResponseViewModel(List<SolutionViewModel> solutionViewModelList, RequireViewModel require) {
+    public SolutionResponseViewModel(List<SolutionViewModel> solutionViewModelList, RequireViewModel require, FreeReturnViewModel freeReturn) {
         this.solutionViewModelList = solutionViewModelList;
         this.require = require;
+        this.freeReturn = freeReturn;
+    }
+
+    public FreeReturnViewModel getFreeReturn() {
+        return freeReturn;
+    }
+
+    public void setFreeReturn(FreeReturnViewModel freeReturn) {
+        this.freeReturn = freeReturn;
     }
 
     public List<SolutionViewModel> getSolutionViewModelList() {
@@ -45,11 +55,13 @@ public class SolutionResponseViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.solutionViewModelList);
         dest.writeParcelable(this.require, flags);
+        dest.writeParcelable(this.freeReturn, flags);
     }
 
     protected SolutionResponseViewModel(Parcel in) {
         this.solutionViewModelList = in.createTypedArrayList(SolutionViewModel.CREATOR);
         this.require = in.readParcelable(RequireViewModel.class.getClassLoader());
+        this.freeReturn = in.readParcelable(FreeReturnViewModel.class.getClassLoader());
     }
 
     public static final Creator<SolutionResponseViewModel> CREATOR = new Creator<SolutionResponseViewModel>() {
