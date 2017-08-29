@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/buyer_reputation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/image_width_s"
+        android:layout_height="@dimen/image_width_s"
+        android:src="@drawable/ic_icon_repsis_smile_active" />
+
+    <TextView
+        android:id="@+id/percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/font_caption" />
+
+</LinearLayout>
