@@ -29,15 +29,14 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
-import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
-import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
@@ -59,6 +58,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
+import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
@@ -610,11 +610,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onCategoryChanged(long categoryId) {
         // when category change, check if catalog exists
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
-        if (productInfoViewHolder.getCategoryId() != categoryId) {
-            productAdditionalInfoViewHolder.onSuccessGetProductVariant(null);
-        }
         presenter.fetchProductVariantByCat(categoryId);
         fetchCategory(categoryId);
+    }
+
+    @Override
+    public void resetVariant() {
+        productAdditionalInfoViewHolder.onSuccessGetProductVariant(null);
+        productAdditionalInfoViewHolder.onSuccessGetSelectedProductVariant(null);
     }
 
     @Override

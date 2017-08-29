@@ -72,9 +72,12 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     @Override
-    public void addItemFromSearch(ProductVariantViewModel productVariantViewModel) {
-        super.addItemFromSearch(productVariantViewModel);
+    public void addItemFromSearch(ProductVariantViewModel productVariantViewModel, boolean isManual) {
+        super.addItemFromSearch(productVariantViewModel, isManual);
         updateBottomSheetInfo();
+        if (isManual) {
+            hasAnyUpdate = true;
+        }
     }
 
     @Override
@@ -88,8 +91,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public void onTextPickerSubmitted(String text) {
         ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
         productVariantViewModel.setTitle(text);
-        addItemFromSearch(productVariantViewModel);
-        hasAnyUpdate = true;
+        addItemFromSearch(productVariantViewModel, true);
         validateFooterAndInfoView();
     }
 

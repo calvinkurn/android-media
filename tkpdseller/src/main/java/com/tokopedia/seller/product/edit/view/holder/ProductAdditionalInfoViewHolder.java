@@ -237,6 +237,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void onSuccessGetSelectedProductVariant(ProductVariantByPrdModel productVariantByPrdModel) {
+        if (productVariantByPrdModel == null) {
+            setProductVariantDataSubmit(null);
+            return;
+        }
         ProductVariantDataSubmit productVariantDataSubmit =
                 ProductVariantUtils.generateProductVariantSubmit(productVariantByPrdModel);
         setProductVariantDataSubmit(productVariantDataSubmit);

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface BasePickerMultipleItem<T extends ItemPickerType> {
 
-    void addItemFromSearch(T itemPickerType);
+    void addItemFromSearch(T itemPickerType, boolean isManual);
 
     void removeItemFromSearch(T itemPickerType);
 
