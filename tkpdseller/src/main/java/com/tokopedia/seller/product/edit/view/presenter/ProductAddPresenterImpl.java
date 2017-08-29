@@ -45,9 +45,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
     private final AddProductShopInfoUseCase addProductShopInfoUseCase;
     private final FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase;
-    private QueryListener getCategoryRecomListener;
+    private QueryListener<String> getCategoryRecomListener;
     private Subscription subscriptionDebounceCategoryRecomm;
-    private CatalogQueryListener getCatalogListener;
+    private Subscription subscriptionDecounceProduceNameScoring;
+    private QueryListener<CatalogQuery> getCatalogListener;
+    private QueryListener<ValueIndicatorScoreModel> getProductNameScoringListener;
     private Subscription subscriptionDebounceCatalog;
     protected final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
 
@@ -165,7 +167,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     @Override
     public void getCategoryRecommendation(String productTitle) {
         if (getCategoryRecomListener != null) {
-            getCategoryRecomListener.getQueryString(productTitle);
+            getCategoryRecomListener.getQuery(productTitle);
         } else {
             createCategoryRecommSubscriber();
         }
@@ -175,9 +177,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         subscriptionDebounceCategoryRecomm = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
-                getCategoryRecomListener = new QueryListener() {
+                getCategoryRecomListener = new QueryListener<String>() {
                     @Override
-                    public void getQueryString(String string) {
+                    public void getQuery(String string) {
                         subscriber.onNext(string);
                     }
                 };
@@ -185,6 +187,22 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getSubscriberDebounceGetCategoryRecomm());
+    }
+
+    private void createProductScoreDebounceSubscriber() {
+        subscriptionDecounceProduceNameScoring = Observable.create(new Observable.OnSubscribe<ValueIndicatorScoreModel>() {
+            @Override
+            public void call(final Subscriber<? super ValueIndicatorScoreModel> subscriber) {
+                getProductNameScoringListener = new QueryListener<ValueIndicatorScoreModel>() {
+                    @Override
+                    public void getQuery(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+                        subscriber.onNext(valueIndicatorScoreModel);
+                    }
+                };
+            }
+        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getSubscriberDebounceProductNameScoring());
     }
 
     @NonNull
@@ -208,6 +226,25 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         };
     }
 
+    @NonNull
+    private Subscriber<ValueIndicatorScoreModel> getSubscriberDebounceProductNameScoring() {
+        return new Subscriber<ValueIndicatorScoreModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+                getProductScoring(valueIndicatorScoreModel);
+            }
+        };
+    }
+
     @Override
     public void fetchCatalogData(String keyword, long departmentId, int start, int rows) {
         if (getCatalogListener != null) {
@@ -221,7 +258,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         subscriptionDebounceCatalog = Observable.create(new Observable.OnSubscribe<CatalogQuery>() {
             @Override
             public void call(final Subscriber<? super CatalogQuery> subscriber) {
-                getCatalogListener = new CatalogQueryListener() {
+                getCatalogListener = new QueryListener<CatalogQuery>() {
 
                     @Override
                     public void getQuery(CatalogQuery catalogQuery) {
@@ -320,6 +357,16 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         productScoringUseCase.execute(requestParams, getSubscriberProductScoring());
     }
 
+    @Override
+    public void getProductScoreDebounce(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+        if (getProductNameScoringListener != null) {
+            getProductNameScoringListener.getQuery(valueIndicatorScoreModel);
+        } else {
+            createProductScoreDebounceSubscriber();
+            getProductNameScoringListener.getQuery(valueIndicatorScoreModel);
+        }
+    }
+
     private Subscriber<DataScoringProductView> getSubscriberProductScoring() {
         return new Subscriber<DataScoringProductView>() {
             @Override
@@ -345,12 +392,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         };
     }
 
-    private interface QueryListener {
-        void getQueryString(String string);
-    }
-
-    private interface CatalogQueryListener {
-        void getQuery(CatalogQuery catalogQuery);
+    private interface QueryListener<T> {
+        void getQuery(T string);
     }
 
     private static class CatalogQuery {
@@ -428,6 +471,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         }
         if (subscriptionDebounceCatalog != null) {
             subscriptionDebounceCatalog.unsubscribe();
+        }
+        if (subscriptionDecounceProduceNameScoring != null) {
+            subscriptionDecounceProduceNameScoring.unsubscribe();
         }
     }
 

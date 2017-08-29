@@ -310,7 +310,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productInfoViewHolder.hideAndClearCatalog();
         checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
         valueIndicatorScoreModel.setLengthProductName(productName.length());
-        updateProductScoring();
+        presenter.getProductScoreDebounce(valueIndicatorScoreModel);
     }
 
     protected void getCategoryRecommendation(String productName) {

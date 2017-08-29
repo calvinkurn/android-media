@@ -28,6 +28,8 @@ import com.tokopedia.seller.product.edit.data.source.ProductScoreDataSource;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cache.ProductScoreDataSourceCache;
 import com.tokopedia.seller.product.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.DataScoringProduct;
+import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.DataScoringProductBuilder;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.MerlinApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
@@ -122,8 +124,14 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductScoreDataSourceCache provideProductScoreDataSourceCache(@ApplicationContext Context context, Gson gson){
-        return new ProductScoreDataSourceCache(context, gson);
+    ProductScoreDataSourceCache provideProductScoreDataSourceCache(DataScoringProduct dataScoringProduct){
+        return new ProductScoreDataSourceCache(dataScoringProduct);
+    }
+
+    @ProductAddScope
+    @Provides
+    DataScoringProduct provideDataScoringProduct(@ApplicationContext Context context, Gson gson){
+        return new DataScoringProductBuilder(context, gson).build();
     }
 
     // FOR SEARCH CATALOG
