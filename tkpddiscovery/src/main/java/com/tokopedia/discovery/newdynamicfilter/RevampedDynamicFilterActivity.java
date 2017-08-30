@@ -287,9 +287,16 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     }
 
     public void resetAllFilter() {
+        resetSelectedCategory();
         savedCheckedState.clear();
         savedTextInput.clear();
         adapter.notifyDataSetChanged();
+    }
+
+    private void resetSelectedCategory() {
+        selectedCategoryId = null;
+        selectedCategoryRootId = null;
+        selectedCategoryName = null;
     }
 
     @Override
@@ -368,9 +375,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     @Override
     public void removeSelectedOption(Option option) {
         if (CATEGORY_KEY.equals(option.getKey())) {
-            selectedCategoryId = null;
-            selectedCategoryRootId = null;
-            selectedCategoryName = null;
+            resetSelectedCategory();
         } else {
             saveCheckedState(option, false);
         }
