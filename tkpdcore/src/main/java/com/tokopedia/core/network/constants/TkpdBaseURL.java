@@ -760,6 +760,7 @@ public class TkpdBaseURL {
         public static final String PATH_TRANSACTION_LIST = "order-list/";
         public static final String PATH_PRODUCT_LIST = "products/";
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
+        public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
     }
 
     public static class HadesCategory {

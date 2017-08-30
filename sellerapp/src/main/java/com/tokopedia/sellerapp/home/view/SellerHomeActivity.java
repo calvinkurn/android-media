@@ -38,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -124,6 +125,9 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.presenter.SellerHomePresenterImpl;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidgetCallback;
+import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.core.gcm.Constants;
 
 import org.json.JSONObject;
 
@@ -378,6 +382,23 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
         presenter = SellerHomeDependencyInjection.getPresenter(this);
         presenter.attachView(this);
+
+        actionCheckAndExecuteIfOpenByApplinkFromMainApp();
+    }
+
+    public void actionCheckAndExecuteIfOpenByApplinkFromMainApp(){
+        if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
+            String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
+            DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
+            if (delegate.supportsUri(applinkUrl)) {
+                Intent intent = getIntent();
+                intent.setData(Uri.parse(applinkUrl));
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+                intent.putExtras(bundle);
+                delegate.dispatchFrom(this, intent);
+            }
+        }
     }
 
     public int pxToDp(int px) {

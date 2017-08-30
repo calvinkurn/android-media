@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -24,22 +25,23 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.service.UploadProductService;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,6 +93,32 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         fragment.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
     }
 
+    @DeepLink(Constants.Applinks.SellerApp.PRODUCT_ADD)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            Intent intent = getCallingIntent(context);
+            return intent
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            Intent launchIntent = context.getPackageManager()
+                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+            if (launchIntent == null) {
+                launchIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
+                );
+            } else {
+                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            }
+            return launchIntent;
+        }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, ProductAddActivity.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,19 +138,20 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         return true;
     }
 
-    protected int getCancelMessageRes(){
+    protected int getCancelMessageRes() {
         return R.string.product_draft_dialog_cancel_message;
     }
 
     @Override
     public void onBackPressed() {
-        if (hasDataAdded()){
+        if (hasDataAdded()) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setMessage(getString(getCancelMessageRes()))
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            ProductAddActivity.super.onBackPressed();
+                            onBackPressActionWithCheckIfCameFromPushNotif();
+
                         }
                     }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -138,7 +167,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                         if (!doSave) {
                             UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
                                     AppEventTracking.EventLabel.SAVE_DRAFT);
-                            ProductAddActivity.super.onBackPressed();
+                            onBackPressActionWithCheckIfCameFromPushNotif();
                         }
                     }
                 });
@@ -147,14 +176,29 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
             dialog.show();
 
         } else {
-            super.onBackPressed();
+            onBackPressActionWithCheckIfCameFromPushNotif();
+        }
+    }
+
+    private void onBackPressActionWithCheckIfCameFromPushNotif() {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            Intent homeIntent = null;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(ProductAddActivity.this);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(ProductAddActivity.this);
+            }
+            startActivity(homeIntent);
+            finish();
+        } else {
+            ProductAddActivity.super.onBackPressed();
         }
     }
 
     protected boolean hasDataAdded() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment!= null && fragment instanceof ProductAddFragment ) {
-            return ((ProductAddFragment)fragment).hasDataAdded();
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            return ((ProductAddFragment) fragment).hasDataAdded();
         }
         return false;
     }
@@ -162,8 +206,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     protected boolean saveProducttoDraft() {
         // save newly added product ToDraft
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
-        if (fragment!= null && fragment instanceof ProductAddFragment ) {
-            ((ProductAddFragment)fragment).saveDraft(false);
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            ((ProductAddFragment) fragment).saveDraft(false);
             return true;
         }
         return false;
@@ -418,7 +462,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     @Override
     public void successSaveDraftToDBWhenBackpressed() {
-        CommonUtils.UniversalToast(this,getString(R.string.product_draft_product_has_been_saved_as_draft));
+        CommonUtils.UniversalToast(this, getString(R.string.product_draft_product_has_been_saved_as_draft));
         finish();
     }
 
