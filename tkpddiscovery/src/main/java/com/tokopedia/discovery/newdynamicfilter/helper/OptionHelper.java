@@ -79,13 +79,13 @@ public class OptionHelper {
     }
 
     public static String parseKeyFromUniqueId(String uniqueId) {
-        int separatorPos = uniqueId.indexOf("_");
+        int separatorPos = uniqueId.indexOf(Option.UID_SEPARATOR_SYMBOL);
         return uniqueId.substring(0, separatorPos);
     }
 
     public static String parseValueFromUniqueId(String uniqueId) {
-        int separatorPos = uniqueId.indexOf("_");
-        return uniqueId.substring(separatorPos + 1, uniqueId.length());
+        int separatorPos = uniqueId.indexOf(Option.UID_SEPARATOR_SYMBOL);
+        return uniqueId.substring(separatorPos + Option.UID_SEPARATOR_SYMBOL.length(), uniqueId.length());
     }
 
     public static void bindOptionWithCheckbox(final Option option,
