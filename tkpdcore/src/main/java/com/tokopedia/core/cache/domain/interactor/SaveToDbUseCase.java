@@ -27,13 +27,10 @@ public class SaveToDbUseCase extends BaseApiCacheInterceptor<Boolean> {
         super(apiCacheRepository);
     }
 
-
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createChildObservable(RequestParams requestParams) {
         Response response = (Response) requestParams.getObject(RESPONSE);
-
-        super.createObservable(requestParams);
-        CacheApiWhitelist inWhiteListRaw = apiCacheRepository.isInWhiteListRaw(cacheApiData.getHost(), cacheApiData.getHost());
+        CacheApiWhitelist inWhiteListRaw = apiCacheRepository.isInWhiteListRaw(cacheApiData.getHost(), cacheApiData.getPath());
         if(inWhiteListRaw != null){
             apiCacheRepository.updateResponse(cacheApiData, inWhiteListRaw, response);
         }

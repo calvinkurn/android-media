@@ -21,7 +21,7 @@ import rx.Observable;
  * Created by User on 8/30/2017.
  */
 
-public class BaseApiCacheInterceptor<E> extends UseCase<E> {
+public abstract class BaseApiCacheInterceptor<E> extends UseCase<E> {
 
     protected final ApiCacheRepository apiCacheRepository;
 
@@ -46,7 +46,7 @@ public class BaseApiCacheInterceptor<E> extends UseCase<E> {
     }
 
     @Override
-    public Observable<E> createObservable(RequestParams requestParams) {
+    public final Observable<E> createObservable(RequestParams requestParams) {
 
         method = requestParams.getString(METHOD, "");
         url = requestParams.getString(FULL_URL, "");
@@ -55,8 +55,10 @@ public class BaseApiCacheInterceptor<E> extends UseCase<E> {
         cacheApiData.setMethod(method); // get method
         cacheApiData = setUrl(cacheApiData, url);
 
-        return null;
+        return createChildObservable(requestParams);
     }
+
+    public abstract Observable<E> createChildObservable(RequestParams requestParams);
 
     /**
      * set host, path and request param to {@link CacheApiData} objet and remove param that is not unique.

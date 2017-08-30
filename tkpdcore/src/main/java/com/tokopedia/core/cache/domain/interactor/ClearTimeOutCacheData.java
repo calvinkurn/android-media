@@ -28,7 +28,7 @@ public class ClearTimeOutCacheData extends BaseApiCacheInterceptor<Boolean> {
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createChildObservable(RequestParams requestParams) {
         apiCacheRepository.clearTimeout();
         return Observable.just(true);
     }

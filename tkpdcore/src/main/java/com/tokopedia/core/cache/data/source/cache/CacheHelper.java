@@ -49,7 +49,7 @@ public class CacheHelper {
         return cacheApiWhitelist;
     }
 
-    public CacheApiWhiteListDomain from2(String host, String path, long expiredTime){
+    public static CacheApiWhiteListDomain from2(String host, String path, long expiredTime){
         CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
         cacheApiWhitelist.setHost(host.replace("https://", "").replace(".com/", ".com"));
         cacheApiWhitelist.setPath(path);

@@ -29,8 +29,7 @@ public class GetCacheDataUseCase extends BaseApiCacheInterceptor<String> {
 
 
     @Override
-    public Observable<String> createObservable(RequestParams requestParams) {
-        super.createObservable(requestParams);
+    public Observable<String> createChildObservable(RequestParams requestParams) {
         if(apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath())){
             tempData = apiCacheRepository.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
             isEmptyData = (tempData == null);
