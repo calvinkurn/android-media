@@ -12,7 +12,7 @@
         android:id="@+id/top_bar_close_button"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:background="@drawable/icon_close_black" />
+        android:background="@drawable/ic_filter_detail_close" />
 
     <TextView
         android:id="@+id/top_bar_title"
