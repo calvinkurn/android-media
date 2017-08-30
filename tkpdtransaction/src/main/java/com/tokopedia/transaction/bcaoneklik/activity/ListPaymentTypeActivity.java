@@ -206,6 +206,7 @@ public class ListPaymentTypeActivity extends TActivity
         NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
                             errorMessage,
                             onLoadListRetryListener());
+        creditCardTitle.setVisibility(View.GONE);
         mainProgressDialog.dismiss();
     }
 
