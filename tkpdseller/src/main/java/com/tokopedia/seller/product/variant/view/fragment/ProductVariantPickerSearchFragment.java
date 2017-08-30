@@ -24,7 +24,6 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVari
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
-import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantItemPickerSearchEmptyDataBinder;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
