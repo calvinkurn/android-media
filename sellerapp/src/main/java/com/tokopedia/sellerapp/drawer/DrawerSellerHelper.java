@@ -26,6 +26,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -411,7 +412,7 @@ public class DrawerSellerHelper extends DrawerHelper
     @Override
     public void onGoToProfile() {
         context.startActivity(
-                PeopleInfoDrawerActivity.createInstance(context, SessionHandler.getLoginID(context))
+                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID(context))
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 

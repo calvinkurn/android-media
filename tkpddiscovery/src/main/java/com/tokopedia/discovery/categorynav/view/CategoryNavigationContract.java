@@ -36,6 +36,7 @@ public interface CategoryNavigationContract {
 
         void getChildren(int level, String departementId);
 
+        void setOnDestroyView();
     }
 
 
