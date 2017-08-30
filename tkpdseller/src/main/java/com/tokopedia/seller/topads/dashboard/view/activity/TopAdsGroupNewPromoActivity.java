@@ -26,22 +26,36 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
 
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
-        String userId = extras.getString("user_id", "");
-        if (!TextUtils.isEmpty(userId)) {
-            if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+        if (GlobalConfig.isSellerApp()) {
+            String userId = extras.getString("user_id", "");
+            if (!TextUtils.isEmpty(userId)) {
+                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                    Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+                    return getCallingIntent(context)
+                            .setData(uri.build())
+                            .putExtras(extras);
+                } else {
+                    return TopAdsDashboardActivity.getCallingIntent(context)
+                            .putExtras(extras);
+                }
+            } else {
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                 return getCallingIntent(context)
                         .setData(uri.build())
                         .putExtras(extras);
-            } else {
-                return TopAdsDashboardActivity.getCallingIntent(context)
-                        .putExtras(extras);
             }
         } else {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            return getCallingIntent(context)
-                    .setData(uri.build())
-                    .putExtras(extras);
+            Intent launchIntent = context.getPackageManager()
+                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+            if (launchIntent == null) {
+                launchIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
+                );
+            } else {
+                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            }
+            return launchIntent;
         }
     }
 

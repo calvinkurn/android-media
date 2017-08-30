@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -26,6 +27,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
@@ -885,19 +887,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     private void openPromoteAds(Context context, String url){
-        String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
-        Intent topadsIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-        if (topadsIntent != null) {
-            Activity activity = (Activity) context;
-            if (((IDigitalModuleRouter) activity.getApplicationContext())
-                    .isSupportedDelegateDeepLink(url)) {
-                ((IDigitalModuleRouter) activity.getApplicationContext())
-                        .actionNavigateByApplinksUrl(activity, url, new Bundle());
-            }
-        } else if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
-            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
+        Intent launchIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+        if (launchIntent == null) {
+            launchIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
+            );
+        } else {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            launchIntent.putExtra(Constants.EXTRA_APPLINK, url);
         }
+        context.startActivity(launchIntent);
     }
 }
