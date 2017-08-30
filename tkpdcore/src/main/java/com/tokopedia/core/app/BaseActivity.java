@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,7 +24,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
@@ -50,8 +48,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -68,25 +64,22 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
+    @Inject
+    protected SessionHandler sessionHandler;
+    @Inject
+    protected GCMHandler gcmHandler;
+
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-
-    @Inject
-    protected SessionHandler sessionHandler;
-
-    @Inject
-    protected GCMHandler gcmHandler;
-
     private CategoryDatabaseManager categoryDatabaseManager;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -391,12 +384,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     public AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication())
-                .getApplicationComponent(getActivityModule());
-    }
-
-
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
+                .getApplicationComponent();
     }
 
     protected void setGoldMerchant(ShopModel shopModel) {

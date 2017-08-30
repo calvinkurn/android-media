@@ -5,7 +5,7 @@ import android.content.Context;
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -93,7 +93,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FeedFactory provideFeedFactory(@ActivityContext Context context,
+    FeedFactory provideFeedFactory(@ApplicationContext Context context,
                                    ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
@@ -156,7 +156,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FavoriteShopFactory provideFavoriteShopFactory(@ActivityContext Context context,
+    FavoriteShopFactory provideFavoriteShopFactory(@ApplicationContext Context context,
                                                    FavoriteShopMapper mapper,
                                                    ActionService service) {
         return new FavoriteShopFactory(context, mapper, service);

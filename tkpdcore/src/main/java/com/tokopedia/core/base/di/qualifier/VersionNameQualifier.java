@@ -3,8 +3,8 @@ package com.tokopedia.core.base.di.qualifier;
 import javax.inject.Qualifier;
 
 /**
- * @author kulomady on 1/9/17.
+ * Created by normansyahputa on 8/14/17.
  */
 @Qualifier
-public @interface ActivityContext {
+public @interface VersionNameQualifier {
 }

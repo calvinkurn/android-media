@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
@@ -25,7 +25,7 @@ public class EditProductFormCloud {
     private final EditProductFormApi api;
 
     @Inject
-    public EditProductFormCloud(@ActivityContext Context context, EditProductFormApi api) {
+    public EditProductFormCloud(@ApplicationContext Context context, EditProductFormApi api) {
         this.context = context;
         this.api = api;
     }

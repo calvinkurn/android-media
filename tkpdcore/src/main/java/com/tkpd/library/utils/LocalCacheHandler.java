@@ -21,6 +21,16 @@ public class LocalCacheHandler {
         editor = sharedPrefs.edit();
     }
 
+    public static void clearCache(Context context, String name) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+        sharedPrefs.edit().clear().apply();
+    }
+
+    public static void clearSingleCacheKey(Context context, String prefName, String keyName) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        sharedPrefs.edit().remove(keyName).apply();
+    }
+
     public void putString(String key, String value) {
         editor.putString(key, value);
     }
@@ -102,7 +112,6 @@ public class LocalCacheHandler {
         }
         editor.putInt(key + "_total", value.size());
     }
-
 
     public void applyEditor() {
         editor.apply();
@@ -188,7 +197,6 @@ public class LocalCacheHandler {
         return value;
     }
 
-
     public void setExpire(int time) {
         putInt("expired_time", time);
         Long curr_time = System.currentTimeMillis() / 1000;
@@ -210,14 +218,8 @@ public class LocalCacheHandler {
         return (int) (interval - (curr_time - time));
     }
 
-    public static void clearCache(Context context, String name) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-        sharedPrefs.edit().clear().apply();
-    }
-
-    public static void clearSingleCacheKey(Context context, String prefName, String keyName) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        sharedPrefs.edit().remove(keyName).apply();
+    public void clearCache(String name) {
+        editor.clear().apply();
     }
 
     public int getSingleArrayListInteger(String key, int index) {
