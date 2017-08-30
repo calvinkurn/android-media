@@ -49,7 +49,7 @@ public class CacheHelper {
         return cacheApiWhitelist;
     }
 
-    public CacheApiWhiteListDomain from2(String host, String path, long expiredTime){
+    public static CacheApiWhiteListDomain from2(String host, String path, long expiredTime){
         CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
         cacheApiWhitelist.setHost(host.replace("https://", "").replace(".com/", ".com"));
         cacheApiWhitelist.setPath(path);
@@ -89,5 +89,15 @@ public class CacheHelper {
         Log.d(TAG, "queryDataFrom : " + and
                 .toString());
         return and.queryList();
+    }
+
+    public void clearTimeout() {
+        long currentTime = System.currentTimeMillis() / 1000L;
+        List<CacheApiData> cacheApiDatas = new Select().from(CacheApiData.class).where(CacheApiData_Table.expiredDate.lessThan(currentTime)).queryList();
+        if (cacheApiDatas != null) {
+            for (int i = 0; i < cacheApiDatas.size(); i++) {
+                cacheApiDatas.get(i).delete();
+            }
+        }
     }
 }

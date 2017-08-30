@@ -4,6 +4,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
+import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
+import com.tokopedia.core.cache.domain.ApiCacheRepository;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -12,28 +15,25 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class SaveToDbUseCase extends UseCase<Boolean> {
+public class SaveToDbUseCase extends BaseApiCacheInterceptor<Boolean> {
 
     public static final String RESPONSE = "RESPONSE";
-    private ApiCacheInterceptorUseCase apiCacheInterceptorUseCase;
 
-    public SaveToDbUseCase(ApiCacheInterceptorUseCase apiCacheInterceptorUseCase) {
-        this.apiCacheInterceptorUseCase = apiCacheInterceptorUseCase;
+    public SaveToDbUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ApiCacheRepository apiCacheRepository) {
+        super(threadExecutor, postExecutionThread, apiCacheRepository);
     }
 
-    public SaveToDbUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ApiCacheInterceptorUseCase apiCacheInterceptorUseCase) {
-        super(threadExecutor, postExecutionThread);
-        this.apiCacheInterceptorUseCase = apiCacheInterceptorUseCase;
+    public SaveToDbUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
+        super(apiCacheRepository);
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createChildObservable(RequestParams requestParams) {
         Response response = (Response) requestParams.getObject(RESPONSE);
-
-        apiCacheInterceptorUseCase.updateResponse(response);
+        CacheApiWhitelist inWhiteListRaw = apiCacheRepository.isInWhiteListRaw(cacheApiData.getHost(), cacheApiData.getPath());
+        if(inWhiteListRaw != null){
+            apiCacheRepository.updateResponse(cacheApiData, inWhiteListRaw, response);
+        }
 
         return Observable.just(true);
     }
