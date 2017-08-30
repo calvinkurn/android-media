@@ -155,7 +155,7 @@ public class DeviceUtil {
                     for (SubscriptionInfo lsuSubscriptionInfo : subscriptionInfos) {
                         if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == simIndex) {
                             if (lsuSubscriptionInfo.getCarrierName() != null) {
-                                operatorName = lsuSubscriptionInfo.getDisplayName().toString();
+                                operatorName = lsuSubscriptionInfo.getCarrierName().toString();
                                 return operatorName;
                             }
                         }
