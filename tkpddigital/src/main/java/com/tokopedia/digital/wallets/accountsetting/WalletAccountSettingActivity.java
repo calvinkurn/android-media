@@ -3,6 +3,7 @@ package com.tokopedia.digital.wallets.accountsetting;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 
 /**
@@ -10,9 +11,13 @@ import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
  */
 
 public class WalletAccountSettingActivity extends BaseDigitalPresenterActivity {
+    private static final String EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA =
+            "EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA";
+    private WalletAccountSettingPassData walletAccountSettingPassData;
+
     @Override
     protected boolean isLightToolbarThemes() {
-        return false;
+        return true;
     }
 
     @Override
@@ -22,7 +27,7 @@ public class WalletAccountSettingActivity extends BaseDigitalPresenterActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        walletAccountSettingPassData = extras.getParcelable(EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA);
     }
 
     @Override
@@ -32,7 +37,7 @@ public class WalletAccountSettingActivity extends BaseDigitalPresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return 0;
+        return R.layout.activity_with_fragment_container_digital_module;
     }
 
     @Override

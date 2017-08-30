@@ -5,4 +5,8 @@ package com.tokopedia.digital.wallets.accountsetting;
  */
 
 public interface IWalletAccountSettingPresenter {
+
+    void processGetWalletAccountData();
+
+    void processDeleteConnectedUser();
 }
