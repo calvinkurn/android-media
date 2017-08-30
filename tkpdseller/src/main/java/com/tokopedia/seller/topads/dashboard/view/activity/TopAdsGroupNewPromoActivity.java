@@ -109,9 +109,14 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
     public void onBackPressed() {
         if (isTaskRoot()) {
             //coming from deeplink
-            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
-            this.startActivity(intent);
-            this.finish();
+            String deepLink = getIntent().getStringExtra(DeepLink.URI);
+            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                this.startActivity(intent);
+                this.finish();
+            }
         } else {
             super.onBackPressed();
         }
