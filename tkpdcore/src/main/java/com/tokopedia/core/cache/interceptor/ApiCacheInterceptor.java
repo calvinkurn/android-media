@@ -4,6 +4,10 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.domain.interactor.ApiCacheInterceptorUseCase;
+import com.tokopedia.core.cache.domain.interactor.CheckWhiteListUseCase;
+import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheData;
+import com.tokopedia.core.cache.domain.interactor.GetCacheDatatUseCase;
+import com.tokopedia.core.cache.domain.interactor.SaveToDbUseCase;
 
 import java.io.IOException;
 
@@ -25,14 +29,24 @@ public class ApiCacheInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        ApiCacheInterceptorUseCase apiCacheInterceptorUseCase = new ApiCacheInterceptorUseCase(
-                request.method(), request.url().toString()
-        );
-        apiCacheInterceptorUseCase.createObservableSync(RequestParams.EMPTY).toBlocking().first();
+        new ClearTimeOutCacheData().createObservableSync(RequestParams.EMPTY).toBlocking().first();
 
-        if (apiCacheInterceptorUseCase.isInWhiteList()) {
+        ApiCacheInterceptorUseCase apiCacheInterceptorUseCase = new ApiCacheInterceptorUseCase();
 
-            if (apiCacheInterceptorUseCase.isEmptyData()) {
+        CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(apiCacheInterceptorUseCase);
+        GetCacheDatatUseCase getCacheDatatUseCase = new GetCacheDatatUseCase(apiCacheInterceptorUseCase);
+        SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(apiCacheInterceptorUseCase);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(ApiCacheInterceptorUseCase.FULL_URL, request.url().toString());
+        requestParams.putString(ApiCacheInterceptorUseCase.METHOD, request.method());
+
+        String cacheData = getCacheDatatUseCase.createObservableSync(requestParams).toBlocking().first();
+        Boolean isInWhiteList = checkWhiteListUseCase.createObservableSync(requestParams).toBlocking().first();
+
+        if (isInWhiteList) {
+
+            if (cacheData == null || cacheData.equals("")) {
                 Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " data is not here !!");
                 Response response;
                 try {
@@ -41,34 +55,19 @@ public class ApiCacheInterceptor implements Interceptor {
                     throw e;
                 }
 
-                apiCacheInterceptorUseCase.updateResponse(response);
+                requestParams.putObject(SaveToDbUseCase.RESPONSE, response);
 
-                return response;
-            }
-
-            if (apiCacheInterceptorUseCase.isExpiredData()) {
-                // delete row
-                Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " is expired time !!");
-
-                Response response;
-                try {
-                    response = chain.proceed(request);
-                } catch (Exception e) {
-                    throw e;
-                }
-
-                apiCacheInterceptorUseCase.updateResponse(response);
+                saveToDbUseCase.createObservableSync(requestParams).toBlocking().first();
 
                 return response;
             } else {
-
                 Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " already in here !!");
                 Response.Builder builder = new Response.Builder();
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);
                 builder.code(200);
                 builder.message("");
-                builder.body(ResponseBody.create(MediaType.parse("application/json"), apiCacheInterceptorUseCase.getTempData().getResponseBody()));
+                builder.body(ResponseBody.create(MediaType.parse("application/json"), cacheData));
                 return builder.build();
             }
         }else{

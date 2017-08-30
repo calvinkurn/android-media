@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Calendar;
 
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -34,6 +35,8 @@ import rx.Observable;
 
 public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
 
+    public static final String METHOD = "METHOD";
+    public static final String FULL_URL = "FULL_URL";
     private static final String TAG = "ApiCacheInterceptorUseC";
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private String method;
@@ -47,18 +50,22 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
     private CacheApiData cacheApiData;
 
 
-    public ApiCacheInterceptorUseCase(String method, String url) {
-        this.method = method;
-        this.url = url;
+    public ApiCacheInterceptorUseCase() {
     }
 
     @Override
     public Observable<CacheApiData> createObservable(RequestParams requestParams) {
+        method = requestParams.getString(METHOD, "");
+        url = requestParams.getString(FULL_URL, "");
+
         cacheApiData = new CacheApiData();
         cacheApiData.setMethod(method); // get method
         cacheApiData = setUrl(cacheApiData, url);
         if (isInWhiteList(cacheApiData)) {
             tempData = cacheHelper.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
+            cacheApiData.setResponseDate(tempData.responseDate);
+            cacheApiData.setExpiredDate(tempData.expiredDate);
+            cacheApiData.setResponseBody(tempData.responseBody);
             isEmptyData = (tempData == null);
 
             if (!isEmptyData) {
@@ -70,18 +77,6 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
 
         }
         return Observable.just(cacheApiData);
-    }
-
-    public CacheApiData getTempData() {
-        return tempData;
-    }
-
-    public boolean isExpiredData() {
-        return isExpiredData;
-    }
-
-    public boolean isEmptyData() {
-        return isEmptyData;
     }
 
     public boolean isInWhiteList(CacheApiData cacheApiData) {
@@ -216,7 +211,10 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
     }
 
     public void updateResponse(Response response) {
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.SECOND, (int) whiteList.getExpiredTime());
         cacheApiData.setResponseDate(System.currentTimeMillis() / 1000L);
+        cacheApiData.setExpiredDate(instance.getTimeInMillis() / 1000L);
 
         try {
             putResponseBody(cacheApiData, response);
