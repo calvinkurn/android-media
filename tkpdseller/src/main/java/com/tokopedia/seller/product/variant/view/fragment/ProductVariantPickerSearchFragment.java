@@ -10,6 +10,7 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
@@ -21,8 +22,8 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListAdapter;
-import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantItemPickerSearchEmptyDataBinder;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
@@ -50,6 +51,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     private long selectedVariantUnitId;
     private String unitName;
+    private ProductVariantByCatModel productVariantByCatModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,8 +59,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (getActivity() instanceof BasePickerMultipleItem) {
             pickerMultipleItem = (ProductVariantPickerMultipleItem<ProductVariantViewModel>) getActivity();
         }
-        ProductVariantByCatModel productVariantByCatModel =
-                getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        productVariantByCatModel = getActivity().getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         if (productVariantByCatModel != null) {
             unitName = productVariantByCatModel.getName();
             productVariantUnitList = productVariantByCatModel.getUnitList();
@@ -84,11 +85,22 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        ProductVariantItemPickerSearchEmptyDataBinder emptyDataBinder = new ProductVariantItemPickerSearchEmptyDataBinder(adapter);
-        emptyDataBinder.setEmptyTitleText(getString(R.string.label_empty_value));
-        emptyDataBinder.setEmptyContentText(null);
-        emptyDataBinder.setEmptyButtonItemText(getString(R.string.label_back));
-        emptyDataBinder.setCallback(this);
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
+        emptyDataBinder.setEmptyTitleText(null);
+        emptyDataBinder.setEmptyContentText(getString(R.string.title_no_result));
+        emptyDataBinder.setEmptyContentItemText(null);
+        emptyDataBinder.setEmptyButtonItemText(getString(R.string.product_variant_add_new_x, productVariantByCatModel.getName()));
+        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                ((ProductVariantPickerActivity)getActivity()).showAddDialog(searchInputView.getSearchText());
+            }
+        });
         return emptyDataBinder;
     }
 

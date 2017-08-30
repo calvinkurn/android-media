@@ -128,5 +128,6 @@
     <string name="product_variant_option_x">Pilihan %1$s</string>
     <string name="product_variant_standard_unit_x">Standar %1$s</string>
     <string name="product_variant_manage_variant">Atur Varian</string>
+    <string name="product_variant_add_new_x">Tambah %1$s baru</string>
 
 </resources>

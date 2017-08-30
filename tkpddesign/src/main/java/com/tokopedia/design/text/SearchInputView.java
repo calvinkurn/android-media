@@ -142,4 +142,8 @@ public class SearchInputView extends BaseCustomView {
         searchTextView.setEnabled(enabled);
         closeImageButton.setEnabled(enabled);
     }
+
+    public String getSearchText() {
+        return searchTextView.getText().toString();
+    }
 }

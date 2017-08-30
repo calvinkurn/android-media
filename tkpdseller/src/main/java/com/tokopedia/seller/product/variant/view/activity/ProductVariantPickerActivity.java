@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -87,6 +88,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         productVariantViewModel.setTitle(text);
         addItemFromSearch(productVariantViewModel);
         validateFooterAndInfoView();
+        expandBottomSheet();
     }
 
     @Override
@@ -159,10 +161,11 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         }
     }
 
-    private void showAddDialog() {
+    public void showAddDialog(String stringToAdd) {
         ProductVariantItemPickerAddDialogFragment dialogFragment = new ProductVariantItemPickerAddDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_TITLE, productVariantByCatModel.getName());
+        bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_STRING_TO_INPUT, stringToAdd);
         long selectedUnitId = ((ProductVariantPickerSearchFragment) getSearchListFragment()).getSelectedUnitId();
         List<ProductVariantOptionSubmit> productVariantOptionSubmitList = ((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList();
         ArrayList<String> titleList = new ArrayList<>();
@@ -170,6 +173,10 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         bundle.putStringArrayList(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_RESERVED_TITLE_LIST, titleList);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);
+    }
+
+    public void showAddDialog(){
+        showAddDialog("");
     }
 
     @Override

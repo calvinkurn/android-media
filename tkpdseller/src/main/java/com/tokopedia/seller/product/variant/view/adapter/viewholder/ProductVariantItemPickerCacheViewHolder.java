@@ -41,7 +41,7 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
             Glide.with(imageView.getContext()).load(productVariantViewModel.getImageUrl())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else { // no hex, no url
-            imageView.setImageResource(R.drawable.circle_grey);
+            imageView.setImageResource(R.drawable.circle_white);
             imageView.clearColorFilter();
         }
         titleTextView.setText(productVariantViewModel.getTitle());
