@@ -175,6 +175,7 @@ public class ListPaymentTypeActivity extends TActivity
     @Override
     public void receivedCreditCardList(CreditCardModel creditCardModel) {
         mainProgressDialog.dismiss();
+        rootView.setVisibility(View.VISIBLE);
         //TODO once there is option to add credit card change the condition
         if(creditCardModel.getCreditCardList().size()> 0) {
             addCreditCardLayout.setVisibility(View.GONE);
