@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;;
@@ -22,12 +23,16 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class ReputationView extends BaseCustomView {
 
+    public final static int ROLE_BUYER = 1;
+    public final static int ROLE_SELLER = 2;
+
     private TextView percent;
     private String defaultText;
     private Drawable defaultIcon;
     private ImageView iconView;
     private String defaultView;
     private int viewType;
+    private LinearLayout layout;
 
     //
     public ReputationView(Context context) {
@@ -66,14 +71,13 @@ public class ReputationView extends BaseCustomView {
             percent = (TextView) view.findViewById(R.id.percent);
         }else {
             view = inflate(getContext(), R.layout.seller_reputation, this);
+            layout = (LinearLayout) view.findViewById(R.id.seller_reputation);
         }
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        setIconDrawable(defaultIcon);
-        setTitleText(defaultText);
         invalidate();
         requestLayout();
     }
@@ -84,13 +88,27 @@ public class ReputationView extends BaseCustomView {
         init();
     }
 
-    public void setIconDrawable(Drawable icon) {
+    public void setBuyer(Drawable icon, String text) {
+        init();
+        viewType = ROLE_BUYER;
+        setIconDrawable(icon);
+        setTitleText(text);
+    }
+
+    public void setSeller(int typeMedal, int levelMedal, String reputationPoints){
+        init();
+        viewType = ROLE_SELLER;
+        ReputationBadgeUtils.setReputationMedals(getContext(), layout, typeMedal, levelMedal, reputationPoints);
+    }
+
+
+    private void setIconDrawable(Drawable icon) {
         if (icon != null && iconView!=null) {
             iconView.setImageDrawable(icon);
         }
     }
 
-    public void setTitleText(String text) {
+    private void setTitleText(String text) {
         if (!TextUtils.isEmpty(text) && percent!=null) {
             percent.setText(text);
         }
