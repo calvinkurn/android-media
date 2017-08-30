@@ -1,7 +1,6 @@
 package com.tokopedia.core.cache.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
@@ -30,7 +29,7 @@ public class GetCacheDataUseCase extends BaseApiCacheInterceptor<String> {
 
     @Override
     public Observable<String> createChildObservable(RequestParams requestParams) {
-        if(apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath())){
+        if (apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath())) {
             tempData = apiCacheRepository.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
             isEmptyData = (tempData == null);
 

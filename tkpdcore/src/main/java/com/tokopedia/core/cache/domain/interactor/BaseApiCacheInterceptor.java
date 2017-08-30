@@ -23,15 +23,13 @@ import rx.Observable;
 
 public abstract class BaseApiCacheInterceptor<E> extends UseCase<E> {
 
-    protected final ApiCacheRepository apiCacheRepository;
-
     public static final String METHOD = "METHOD";
     public static final String FULL_URL = "FULL_URL";
+    private static final String TAG = "BaseApiCacheInterceptor";
+    protected final ApiCacheRepository apiCacheRepository;
     protected String method;
     protected String url;
     protected CacheApiData cacheApiData;
-
-    private static final String TAG = "BaseApiCacheInterceptor";
 
     public BaseApiCacheInterceptor(
             ThreadExecutor threadExecutor,
@@ -41,7 +39,7 @@ public abstract class BaseApiCacheInterceptor<E> extends UseCase<E> {
         this.apiCacheRepository = apiCacheRepository;
     }
 
-    public BaseApiCacheInterceptor( ApiCacheRepositoryImpl apiCacheRepository) {
+    public BaseApiCacheInterceptor(ApiCacheRepositoryImpl apiCacheRepository) {
         this.apiCacheRepository = apiCacheRepository;
     }
 

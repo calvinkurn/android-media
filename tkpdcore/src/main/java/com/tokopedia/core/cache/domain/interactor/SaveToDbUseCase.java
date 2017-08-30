@@ -1,7 +1,6 @@
 package com.tokopedia.core.cache.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
@@ -31,7 +30,7 @@ public class SaveToDbUseCase extends BaseApiCacheInterceptor<Boolean> {
     public Observable<Boolean> createChildObservable(RequestParams requestParams) {
         Response response = (Response) requestParams.getObject(RESPONSE);
         CacheApiWhitelist inWhiteListRaw = apiCacheRepository.isInWhiteListRaw(cacheApiData.getHost(), cacheApiData.getPath());
-        if(inWhiteListRaw != null){
+        if (inWhiteListRaw != null) {
             apiCacheRepository.updateResponse(cacheApiData, inWhiteListRaw, response);
         }
 

@@ -26,6 +26,15 @@ public class CacheHelper {
 
     }
 
+    public static CacheApiWhiteListDomain from2(String host, String path, long expiredTime) {
+        CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
+        cacheApiWhitelist.setHost(host.replace("https://", "").replace(".com/", ".com"));
+        cacheApiWhitelist.setPath(path);
+        cacheApiWhitelist.setExpireTime(expiredTime);
+
+        return cacheApiWhitelist;
+    }
+
     public Observable<Boolean> addWhiteListData(CacheApiWhitelist cacheApiWhitelist) {
         try {
             if (cacheApiWhitelist == null) {
@@ -45,15 +54,6 @@ public class CacheHelper {
         cacheApiWhitelist.setHost(host);
         cacheApiWhitelist.setPath(path);
         cacheApiWhitelist.setExpiredTime(expiredTime);
-
-        return cacheApiWhitelist;
-    }
-
-    public static CacheApiWhiteListDomain from2(String host, String path, long expiredTime){
-        CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
-        cacheApiWhitelist.setHost(host.replace("https://", "").replace(".com/", ".com"));
-        cacheApiWhitelist.setPath(path);
-        cacheApiWhitelist.setExpireTime(expiredTime);
 
         return cacheApiWhitelist;
     }

@@ -62,7 +62,7 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
         this.apiCacheRepository = apiCacheRepository;
     }
 
-    public ApiCacheInterceptorUseCase( ApiCacheRepositoryImpl apiCacheRepository) {
+    public ApiCacheInterceptorUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
         this.apiCacheRepository = apiCacheRepository;
     }
 

@@ -44,11 +44,10 @@ import rx.functions.Func1;
 public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
     private static final String TAG = "ApiCacheRepositoryImpl";
+    private static final Charset UTF8 = Charset.forName("UTF-8");
     private LocalCacheHandler localCacheHandler;
     private String versionName;
     private CacheHelper cacheHelper;
-
-    private static final Charset UTF8 = Charset.forName("UTF-8");
     private long maxContentLength = 250000L;
 
     @Inject
@@ -155,13 +154,13 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
     @Override
     public boolean isInWhiteList(final String host, final String path) {
-        CacheApiWhitelist cacheApiWhitelist = cacheHelper.queryFromRaw(host,path);
-        return cacheApiWhitelist!=null;
+        CacheApiWhitelist cacheApiWhitelist = cacheHelper.queryFromRaw(host, path);
+        return cacheApiWhitelist != null;
     }
 
     @Override
     public CacheApiWhitelist isInWhiteListRaw(final String host, final String path) {
-        CacheApiWhitelist cacheApiWhitelist = cacheHelper.queryFromRaw(host,path);
+        CacheApiWhitelist cacheApiWhitelist = cacheHelper.queryFromRaw(host, path);
         return cacheApiWhitelist;
     }
 

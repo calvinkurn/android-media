@@ -13,12 +13,9 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.cache.CacheHelper;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.interactor.ApiCacheInterceptorUseCase;
 import com.tokopedia.core.cache.domain.interactor.BaseApiCacheInterceptor;
 import com.tokopedia.core.cache.domain.interactor.CheckWhiteListUseCase;
 import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheDataUseCase;
-import com.tokopedia.core.cache.domain.interactor.GetCacheDatatUseCase;
-import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheData;
 import com.tokopedia.core.cache.domain.interactor.GetCacheDataUseCase;
 import com.tokopedia.core.cache.domain.interactor.SaveToDbUseCase;
 import com.tokopedia.core.var.TkpdCache;
@@ -57,7 +54,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 new CacheHelper()
         );
 
-        new ClearTimeOutCacheData(threadExecutor, postExecutionThread, apiCacheRepository).createObservableSync(RequestParams.EMPTY).toBlocking().first();
+        new ClearTimeOutCacheDataUseCase(threadExecutor, postExecutionThread, apiCacheRepository).createObservableSync(RequestParams.EMPTY).toBlocking().first();
 
         CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
         GetCacheDataUseCase getCacheDataUseCase = new GetCacheDataUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
