@@ -11,7 +11,7 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.var.TkpdCache;
@@ -45,7 +45,7 @@ public class CacheModule {
     @Provides
     ApiCacheRepository provideApiCacheRepository(@ApiCacheQualifier LocalCacheHandler localCacheHandler,
                                                  @VersionNameQualifier String versionName,
-                                                 CacheHelper cacheHelper) {
+                                                 ApiCacheDataSource cacheHelper) {
         return new ApiCacheRepositoryImpl(localCacheHandler, versionName, cacheHelper);
     }
 
@@ -58,7 +58,7 @@ public class CacheModule {
     }
 
     @Provides
-    CacheHelper provideCacheHelper(){
-        return new CacheHelper();
+    ApiCacheDataSource provideCacheHelper() {
+        return new ApiCacheDataSource();
     }
 }

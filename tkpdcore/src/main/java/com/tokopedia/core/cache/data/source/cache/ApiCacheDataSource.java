@@ -18,11 +18,11 @@ import rx.Observable;
  * Created by normansyahputa on 8/9/17.
  */
 
-public class CacheHelper {
+public class ApiCacheDataSource {
     private static final String TAG = "CacheHelper";
 
 
-    public CacheHelper() {
+    public ApiCacheDataSource() {
 
     }
 

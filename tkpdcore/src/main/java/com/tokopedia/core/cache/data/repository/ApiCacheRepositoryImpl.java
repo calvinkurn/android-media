@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.base.di.qualifier.VersionNameQualifier;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
@@ -47,11 +47,11 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private LocalCacheHandler localCacheHandler;
     private String versionName;
-    private CacheHelper cacheHelper;
+    private ApiCacheDataSource cacheHelper;
     private long maxContentLength = 250000L;
 
     @Inject
-    public ApiCacheRepositoryImpl(@ApiCacheQualifier LocalCacheHandler localCacheHandler, @VersionNameQualifier String versionName, CacheHelper cacheHelper) {
+    public ApiCacheRepositoryImpl(@ApiCacheQualifier LocalCacheHandler localCacheHandler, @VersionNameQualifier String versionName, ApiCacheDataSource cacheHelper) {
         this.localCacheHandler = localCacheHandler;
         this.versionName = versionName;
         this.cacheHelper = cacheHelper;

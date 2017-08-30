@@ -3,7 +3,7 @@ package com.tokopedia.ride.common.ride.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -27,7 +27,7 @@ public interface RideComponent {
 
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
 
-    CacheHelper cacheHelper();
+    ApiCacheDataSource cacheHelper();
 
     GCMHandler gcmHandler();
 

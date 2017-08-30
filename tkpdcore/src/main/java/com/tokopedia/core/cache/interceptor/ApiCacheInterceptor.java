@@ -11,7 +11,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.interactor.BaseApiCacheInterceptor;
 import com.tokopedia.core.cache.domain.interactor.CheckWhiteListUseCase;
@@ -51,7 +51,7 @@ public class ApiCacheInterceptor implements Interceptor {
         ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(
                 new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API),
                 versionName,
-                new CacheHelper()
+                new ApiCacheDataSource()
         );
 
         new ClearTimeOutCacheDataUseCase(threadExecutor, postExecutionThread, apiCacheRepository).createObservableSync(RequestParams.EMPTY).toBlocking().first();

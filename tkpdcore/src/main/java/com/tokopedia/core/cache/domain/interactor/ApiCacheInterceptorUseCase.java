@@ -10,7 +10,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.UrlEncodedQueryString;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 
@@ -45,7 +45,7 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private String method;
     private String url;
-    private CacheHelper cacheHelper = new CacheHelper();
+    private ApiCacheDataSource cacheHelper = new ApiCacheDataSource();
     private boolean isInWhiteList;
     private CacheApiWhitelist whiteList;
     private boolean isEmptyData, isExpiredData;
