@@ -99,6 +99,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         searchResultEmptyView = (EmptySearchResultView) findViewById(R.id.filter_detail_empty_search_result_view);
         topBarTitle = (TextView) findViewById(R.id.top_bar_title);
         buttonClose = findViewById(R.id.top_bar_close_button);
+        buttonClose.setBackgroundResource(R.drawable.ic_filter_detail_back);
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
