@@ -217,17 +217,14 @@
                             android:id="@+id/tv_driver_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentTop="true"
                             android:layout_marginLeft="@dimen/margin_large"
                             android:layout_marginStart="@dimen/margin_large"
-                            android:ellipsize="end"
                             android:maxLines="2"
                             android:paddingLeft="@dimen/padding_small"
                             android:paddingStart="@dimen/padding_small"
                             android:textColor="@color/black"
-                            tools:text="Your trip with John Your trip with John" />
+                            tools:text="Your trip with John Ferdinand van java de paris" />
                     </RelativeLayout>
 
 
