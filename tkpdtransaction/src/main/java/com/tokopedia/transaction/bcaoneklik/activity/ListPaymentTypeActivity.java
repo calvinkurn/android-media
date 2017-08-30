@@ -63,9 +63,13 @@ public class ListPaymentTypeActivity extends TActivity
 
     private LinearLayout bcaOneClickRegisterLayout;
 
+    private TextView quickPaymentTitle;
+
     private TextView bcaOneClickRegistrationButton;
 
     private TextView creditCardTitle;
+
+    private View addCreditCardLayout;
 
     private TkpdProgressDialog progressDialog;
 
@@ -105,6 +109,8 @@ public class ListPaymentTypeActivity extends TActivity
         bcaOneClickRegisterLayout = (LinearLayout) findViewById(R.id.bca_one_click_register_layout);
         bcaOneClickRegistrationButton = (TextView) findViewById(R.id.bca_one_click_register_button);
         creditCardTitle = (TextView) findViewById(R.id.credit_card_title);
+        quickPaymentTitle = (TextView) findViewById(R.id.quick_payment_title);
+        addCreditCardLayout = findViewById(R.id.add_credit_card_layout);
         bcaOneClickRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         bcaOneClickRecyclerView.setNestedScrollingEnabled(false);
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
@@ -167,8 +173,12 @@ public class ListPaymentTypeActivity extends TActivity
 
     @Override
     public void receivedCreditCardList(CreditCardModel creditCardModel) {
-        if(creditCardModel.getCreditCardList().size()> 0)
-            creditCardTitle.setVisibility(View.VISIBLE);
+        //TODO once there is option to add credit card change the condition
+        if(creditCardModel.getCreditCardList().size()> 0) {
+            addCreditCardLayout.setVisibility(View.GONE);
+        } else {
+            addCreditCardLayout.setVisibility(View.VISIBLE);
+        }
         refreshHandler.finishRefresh();
         creditCardVaultRecyclerView.setVisibility(View.VISIBLE);
 
@@ -239,6 +249,7 @@ public class ListPaymentTypeActivity extends TActivity
                 mainProgressDialog.dismiss();
                 refreshHandler.finishRefresh();
                 if(paymentListModel.getBcaOneClickUserModels() == null) {
+                    quickPaymentTitle.setVisibility(View.GONE);
                     bcaOneClickRecyclerView.setVisibility(View.GONE);
                     bcaOneClickRegisterLayout.setVisibility(View.GONE);
                 } else {

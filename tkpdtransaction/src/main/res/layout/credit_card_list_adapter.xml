@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Type Kartu"
+                android:text="@string/title_card_type"
                 android:textColor="@color/label_color" />
 
             <TextView
@@ -67,7 +67,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Nomor Kartu Kredit"
+                android:text="@string/title_credit_card_number"
                 android:textColor="@color/label_color" />
 
             <TextView
@@ -94,7 +94,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Masa Berlaku"
+                android:text="@string/title_expiry_date"
                 android:textColor="@color/label_color" />
 
             <TextView
@@ -116,7 +116,7 @@
         android:layout_marginTop="@dimen/small_dp"
         android:background="@drawable/btn_plain"
         android:gravity="center"
-        android:text="Hapus"
+        android:text="@string/title_delete"
         android:textColor="@color/grey_800"
         android:textSize="@dimen/text_size_l_medium" />
 
