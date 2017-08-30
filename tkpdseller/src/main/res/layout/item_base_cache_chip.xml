@@ -8,6 +8,7 @@
     android:layout_marginLeft="@dimen/margin_sm"
     android:layout_marginRight="@dimen/margin_sm"
     android:background="@drawable/rounded"
+    android:padding="@dimen/margin_vs"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 

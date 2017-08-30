@@ -157,7 +157,7 @@
     <string name="product_variant_item_picker_add_variant_error_name_empty">Nama varian harus diisi</string>
     <string name="product_variant_item_picker_add_variant_error_name_existed">Nama varian sudah ada</string>
     <string name="product_variant_stock_empty">Stock kosong</string>
-    <string name="product_variant_stock_available">Stock ada</string>
+    <string name="product_variant_stock_available">Tersedia</string>
     <string name="product_variant_dialog_cancel_title">Perubahan tidak akan tersimpan</string>
     <string name="product_variant_dialog_cancel_message">Yakin untuk keluar?</string>
 </resources>

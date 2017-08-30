@@ -77,11 +77,11 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
             public void onClick(View v) {
                 switch (bottomSheetBehavior.getState()) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        expandBottomSheet();
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                     default:
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        collapseBottomSheet();
                         break;
                 }
             }
@@ -116,6 +116,14 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
                 submitButtonClicked();
             }
         });
+    }
+
+    protected void expandBottomSheet(){
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    protected void collapseBottomSheet(){
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     @Override
