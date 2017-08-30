@@ -63,16 +63,17 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
         cacheApiData = setUrl(cacheApiData, url);
         if (isInWhiteList(cacheApiData)) {
             tempData = cacheHelper.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
-            cacheApiData.setResponseDate(tempData.responseDate);
-            cacheApiData.setExpiredDate(tempData.expiredDate);
-            cacheApiData.setResponseBody(tempData.responseBody);
             isEmptyData = (tempData == null);
 
             if (!isEmptyData) {
-                isExpiredData = (System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList.getExpiredTime();
-                if (isExpiredData) {
-                    tempData.delete();
-                }
+//                isExpiredData = (System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList.getExpiredTime();
+//                if (isExpiredData) {
+//                    tempData.delete();
+//                }
+
+                cacheApiData.setResponseDate(tempData.responseDate);
+                cacheApiData.setExpiredDate(tempData.expiredDate);
+                cacheApiData.setResponseBody(tempData.responseBody);
             }
 
         }
