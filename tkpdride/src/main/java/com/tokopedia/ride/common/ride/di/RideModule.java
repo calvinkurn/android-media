@@ -40,6 +40,7 @@ import retrofit2.Retrofit;
 @Module
 public class RideModule {
     private static final int CACHE_SIZE = 10485760;
+
     public RideModule() {
     }
 
@@ -87,13 +88,15 @@ public class RideModule {
     OkHttpClient provideOkHttpClientRide(RideInterceptor rideInterceptor,
                                          OkHttpRetryPolicy okHttpRetryPolicy,
                                          ChuckInterceptor chuckInterceptor,
-                                         DebugInterceptor debugInterceptor) {
+                                         DebugInterceptor debugInterceptor,
+                                         HttpLoggingInterceptor loggingInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientBearerRidehailing(
                 rideInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor
+                debugInterceptor,
+                loggingInterceptor
         );
     }
 

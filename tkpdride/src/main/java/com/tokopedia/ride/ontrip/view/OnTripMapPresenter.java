@@ -41,16 +41,19 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.UpdateDestination;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
+import com.tokopedia.ride.ontrip.domain.UpdateRideRequestUseCase;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -96,6 +99,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GetRideRequestDetailUseCase getRideRequestUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetRideProductUseCase getRideProductUseCase;
+    private UpdateRideRequestUseCase updateRideRequestUseCase;
     private RideRequest activeRideRequest;
 
     private GoogleApiClient googleApiClient;
@@ -110,20 +114,22 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                               GetRideRequestMapUseCase getRideRequestMapUseCase,
                               GetRideRequestDetailUseCase getRideRequestUseCase,
                               GetFareEstimateUseCase getFareEstimateUseCase,
-                              GetRideProductUseCase getRideProductUseCase) {
+                              GetRideProductUseCase getRideProductUseCase,
+                              UpdateRideRequestUseCase updateRideRequestUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
         this.getRideRequestUseCase = getRideRequestUseCase;
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getRideProductUseCase = getRideProductUseCase;
+        this.updateRideRequestUseCase = updateRideRequestUseCase;
         this.subscription = new CompositeSubscription();
     }
 
 
     @Override
     public void initialize() {
-        getView().showRequestLoadingLayout();
+        getView().showBlockTranslucentLayout();
         getView().showLoadingWaitingResponse();
         getView().hideRideRequestStatus();
         getView().hideCancelRequestButton();
@@ -185,7 +191,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
      */
     @Override
     public void actionRideRequest(final RequestParams requestParam) {
-        getView().showRequestLoadingLayout();
+        getView().showBlockTranslucentLayout();
         getFareEstimateUseCase.execute(getView().getFareEstimateParam(), new Subscriber<FareEstimate>() {
             @Override
             public void onCompleted() {
@@ -196,7 +202,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().hideRequestLoadingLayout();
+                    getView().hideBlockTranslucentLayout();
                     String error;
                     if (e instanceof UnknownHostException) {
                         error = getView().getActivity().getString(R.string.error_no_connection);
@@ -239,7 +245,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 e.printStackTrace();
 
                 if (!isViewAttached()) return;
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 if (e instanceof InterruptConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
                         getView().openInterruptConfirmationDialog(
@@ -291,7 +297,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         actionSetAddressInPicker(result);
         switch (result.getStatus()) {
             case RideStatus.NO_DRIVER_AVAILABLE:
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideLoadingWaitingResponse();
                 getView().showNoDriverAvailableDialog();
@@ -316,7 +322,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             case RideStatus.ACCEPTED:
                 getView().saveActiveRequestId(result.getRequestId());
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
@@ -343,7 +349,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             case RideStatus.ARRIVING:
                 getView().saveActiveRequestId(result.getRequestId());
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
@@ -364,7 +370,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             case RideStatus.IN_PROGRESS:
                 getView().saveActiveRequestId(result.getRequestId());
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().hideCancelRequestButton();
@@ -376,7 +382,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 updatePolylineBetweenDriverAndDestination(result);
                 break;
             case RideStatus.DRIVER_CANCELED:
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderDriverCanceledRequest(result);
@@ -384,7 +390,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().clearSavedActiveProductName();
                 break;
             case RideStatus.RIDER_CANCELED:
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderRiderCanceledRequest(result);
@@ -395,7 +401,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 CommonUtils.dumper("proccessGetCurrentRideRequest## Ride Completed");
                 if (result.getPayment() != null && result.getPayment().isReceiptReady()) {
                     CommonUtils.dumper("proccessGetCurrentRideRequest## Ride Completed ReceiptReady");
-                    getView().hideRequestLoadingLayout();
+                    getView().hideBlockTranslucentLayout();
                     getView().hideFindingUberNotification();
                     getView().hideAcceptedNotification();
                     getView().renderCompletedRequest(result);
@@ -802,6 +808,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         createRideRequestUseCase.unsubscribe();
         getOverviewPolylineUseCase.unsubscribe();
         getRideRequestMapUseCase.unsubscribe();
+        updateRideRequestUseCase.unsubscribe();
         super.detachView();
     }
 
@@ -1038,6 +1045,47 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 }
             }.start();
         }
+    }
+
+    @Override
+    public void updateDestination(final PlacePassViewModel destinationTemp) {
+        getView().showUpdateDestinationLoading();
+
+        RequestParams params = RequestParams.create();
+        params.putString(UpdateRideRequestUseCase.PARAM_END_LATITUDE, String.valueOf(destinationTemp.getLatitude()));
+        params.putString(UpdateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(destinationTemp.getLongitude()));
+        params.putString(UpdateRideRequestUseCase.PARAM_END_ADD_NAME, destinationTemp.getTitle());
+        params.putString(UpdateRideRequestUseCase.PARAM_END_ADD, destinationTemp.getAddress());
+        params.putString(UpdateRideRequestUseCase.PARAM_REQUEST_ID, activeRideRequest.getRequestId());
+
+        updateRideRequestUseCase.execute(params, new Subscriber<UpdateDestination>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().hideUpdateDestinationLoading();
+                    getView().showMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(UpdateDestination updateDestination) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().hideUpdateDestinationLoading();
+
+                    if (updateDestination != null && updateDestination.getPendingPayment() != null) {
+                        //show topup pending payment interrupt
+                        getView().startTopupTokoCashChangeDestinationActivity(updateDestination.getPendingPayment(), activeRideRequest.getRequestId());
+                    } else {
+                        getView().setDestination(destinationTemp);
+                    }
+                }
+            }
+        });
     }
 
     @Override

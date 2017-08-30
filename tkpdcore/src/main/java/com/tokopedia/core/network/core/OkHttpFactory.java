@@ -267,13 +267,15 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientBearerRidehailing(RideInterceptor rideInterceptor,
                                                            OkHttpRetryPolicy okHttpRetryPolicy,
                                                            ChuckInterceptor chuckInterceptor,
-                                                           DebugInterceptor debugInterceptor) {
+                                                           DebugInterceptor debugInterceptor,
+                                                           HttpLoggingInterceptor loggingInterceptor) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(rideInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
             tkpdOkHttpBuilder.addInterceptor(chuckInterceptor);
+            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
         }
         return tkpdOkHttpBuilder.build();
     }

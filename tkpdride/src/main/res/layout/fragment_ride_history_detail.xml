@@ -230,7 +230,6 @@
                             tools:text="Your trip with John Your trip with John" />
                     </RelativeLayout>
 
-
                     <RatingBar
                         android:id="@+id/rb_rating_result"
                         style="@style/avgRatingBarSmall"

@@ -95,8 +95,6 @@ public class DriverDetailFragment extends BaseFragment {
         void actionCancelRide();
 
         void actionShareEta();
-
-        void actionContactDriver(String telp);
     }
 
     @Override
