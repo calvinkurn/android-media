@@ -1,17 +1,14 @@
 package com.tokopedia.core.cache.interceptor;
 
-import android.net.Uri;
 import android.util.Log;
 
-import com.tokopedia.core.cache.UrlEncodedQueryString;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.data.source.cache.CacheHelper;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
-import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
+import com.tokopedia.core.cache.domain.interactor.ApiCacheInterceptorUseCase;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
@@ -42,18 +39,15 @@ public class ApiCacheInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        CacheApiData cacheApiData = new CacheApiData();
-        cacheApiData.setMethod(request.method());
-        cacheApiData = setUrl(cacheApiData, request.url().toString());
-        CacheApiWhitelist whiteList_ = cacheHelper.queryFromRaw(cacheApiData.getHost(), cacheApiData.getPath());
-        boolean isInWhiteList = (boolean) (whiteList_ != null);
-//        Log.d(LOG_TAG, "is in path !!"+isInWhiteList);
+        ApiCacheInterceptorUseCase apiCacheInterceptorUseCase = new ApiCacheInterceptorUseCase(
+                request.method(), request.url().toString()
+        );
+        CacheApiData cacheApiData = apiCacheInterceptorUseCase.createObservableSync(RequestParams.EMPTY).toBlocking().first();
 
-        if (isInWhiteList && whiteList_ != null) {
-            CacheApiData tempData = cacheHelper.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
+        if (apiCacheInterceptorUseCase.isInWhiteList()) {
 
-            if (tempData == null) {
-                Log.d(LOG_TAG, whiteList_ + " data is not here !!");
+            if (apiCacheInterceptorUseCase.isEmptyData()) {
+                Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " data is not here !!");
                 Response response;
                 try {
                     response = chain.proceed(request);
@@ -70,11 +64,9 @@ public class ApiCacheInterceptor implements Interceptor {
                 return response;
             }
 
-            if ((System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList_.getExpiredTime()) {
+            if (apiCacheInterceptorUseCase.isExpiredData()) {
                 // delete row
-                Log.d(LOG_TAG, whiteList_ + " is expired time !!");
-                tempData.delete();
-
+                Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " is expired time !!");
 
                 Response response;
                 try {
@@ -92,13 +84,13 @@ public class ApiCacheInterceptor implements Interceptor {
                 return response;
             } else {
 
-                Log.d(LOG_TAG, whiteList_ + " already in here !!");
+                Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " already in here !!");
                 Response.Builder builder = new Response.Builder();
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);
                 builder.code(200);
                 builder.message("");
-                builder.body(ResponseBody.create(MediaType.parse("application/json"), tempData.getResponseBody()));
+                builder.body(ResponseBody.create(MediaType.parse("application/json"), apiCacheInterceptorUseCase.getTempData().getResponseBody()));
                 return builder.build();
             }
         }else{
@@ -202,26 +194,5 @@ public class ApiCacheInterceptor implements Interceptor {
         } else {
             return input;
         }
-    }
-
-    private CacheApiData setUrl(CacheApiData cacheApiData, String url) {
-        Uri uri = Uri.parse(url);
-        cacheApiData.setHost(uri.getHost());
-        cacheApiData.setPath(uri.getPath());
-        cacheApiData.setRequestParam(((uri.getQuery() != null) ? "?" + uri.getQuery().trim() : ""));
-
-        URI uri2 = null;
-        try {
-            uri2 = new URI(url);
-            UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri2);
-            queryString.remove("hash");
-            queryString.remove("device_time");
-            Log.d(LOG_TAG, "sample : "+queryString);
-            cacheApiData.setRequestParam(((queryString != null) ? "?" + queryString.toString().trim() : ""));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        return cacheApiData;
     }
 }
