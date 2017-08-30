@@ -2,9 +2,11 @@ package com.tokopedia.digital.product.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.product.listener.IUssdDigitalView;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.PulsaBalance;
@@ -64,5 +66,27 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
         return view.getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
+    }
+
+    @Override
+    public void storeUssdPhoneNumber(int selectedSim, String number) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
+        if (selectedSim == 0) {
+            localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM1, number);
+        } else if (selectedSim == 1) {
+            localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM2, number);
+        }
+        localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public  String getUssdPhoneNumberFromCache(int selectedSim) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
+        if (selectedSim == 0) {
+            return localCacheHandler.getString(TkpdCache.Key.KEY_USSD_SIM1,null);
+        } else if (selectedSim == 1) {
+            return localCacheHandler.getString(TkpdCache.Key.KEY_USSD_SIM2,null);
+        }
+        return null;
     }
 }

@@ -129,7 +129,6 @@ public interface AppEventTracking {
         String CLICK_CANCEL_APP_UPDATE = "clickCancelAppUpdate";
 
         String SELLER_WIDGET = "sellerWidget";
-        String USSD_CEK_SALDO = "clickCekSaldo";
     }
 
     interface Category {
@@ -208,7 +207,6 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT_SOLD = "GM Statistic - Products Sold";
         String APP_UPDATE = "Application Update";
         String SELLER_APP_WIDGET = "Seller App Widget";
-        String USSD_CEK_SALDO = "USSD";
     }
 
     interface Action {
@@ -282,8 +280,9 @@ public interface AppEventTracking {
         String FILTER = "Filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
-        String CLICK_USSD_CEK_SALDO = "Click Cek Saldo";
-        String CLICK_USSD_BUY_PULSA = "Click Buy Pulsa";
+        String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";
+        String CLICK_USSD_BUY_PULSA = "Click Beli from USSD";
+        String CLICK_USSD_EDIT_NUMBER = "Click Edit Number from USSD";
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
     }
 

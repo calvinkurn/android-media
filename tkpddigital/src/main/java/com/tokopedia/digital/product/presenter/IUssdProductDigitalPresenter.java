@@ -18,4 +18,7 @@ public interface IUssdProductDigitalPresenter {
 
     void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData);
 
+    void storeUssdPhoneNumber(int selectedSim,String number);
+
+    String getUssdPhoneNumberFromCache(int selectedSim);
 }

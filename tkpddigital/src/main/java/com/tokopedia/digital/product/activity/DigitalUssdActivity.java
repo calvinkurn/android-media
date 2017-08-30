@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
@@ -27,15 +29,19 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
     private static final String EXTRA_STATE_CATEGORY_ID = "EXTRA_STATE_CATEGORY_ID";
     private static final String EXTRA_STATE_CATEGORY_NAME = "EXTRA_STATE_CATEGORY_NAME";
     private static final String EXTRA_VALIDATION_LIST_PASS_DATA = "EXTRA_VALIDATION_LIST_PASS_DATA";
+    private static final String ARG_PARAM_EXTRA_SIM_INDEX_DATA = "ARG_PARAM_EXTRA_SIM_INDEX_DATA";
+    private static final String EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA = "EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA";
+
+    private int selectedSimIndex = 0;
     private PulsaBalance pulsaBalance;
     private Operator selectedOperator;
     private String mCategoryId;
     private String mCategoryName;
     private List<Validation> validationList;
-
+    private List<Operator> selectedOperatorList;
 
     public static Intent newInstance(Context context, PulsaBalance passData, Operator passOperatorData ,
-                                     List<Validation> validationListData,String categoryId,String categoryName) {
+                                     List<Validation> validationListData,String categoryId,String categoryName,int selectedSim, List<Operator> selectedOperatorList) {
 
         Intent intent = new Intent(context, DigitalUssdActivity.class);
         intent.putExtra(EXTRA_OPERATOR_PASS_DATA,  passOperatorData);
@@ -44,6 +50,9 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
         intent.putExtra(EXTRA_STATE_CATEGORY_NAME, categoryName);
         intent.putParcelableArrayListExtra(EXTRA_VALIDATION_LIST_PASS_DATA,
                 (ArrayList<? extends Parcelable>) validationListData);
+        intent.putExtra(ARG_PARAM_EXTRA_SIM_INDEX_DATA, selectedSim);
+        intent.putParcelableArrayListExtra(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA,
+                (ArrayList<? extends Parcelable>) selectedOperatorList);
         return intent;
     }
 
@@ -61,6 +70,9 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
         this.pulsaBalance = extras.getParcelable(EXTRA_BALANCE_PASS_DATA);
         this.mCategoryId=extras.getString(EXTRA_STATE_CATEGORY_ID);
         this.mCategoryName=extras.getString(EXTRA_STATE_CATEGORY_NAME);
+        this.selectedSimIndex = extras.getInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, 0);
+        this.selectedOperatorList = extras.getParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA);
+
     }
 
     @Override
@@ -78,7 +90,12 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof DigitalUssdFragment))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    DigitalUssdFragment.newInstance(pulsaBalance, selectedOperator,validationList,mCategoryId,mCategoryName)).commit();
+                    DigitalUssdFragment.newInstance(pulsaBalance, selectedOperator,validationList,mCategoryId,mCategoryName, selectedSimIndex,selectedOperatorList)).commit();
+    }
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
     }
 
     @Override

@@ -20,6 +20,7 @@
             android:paddingEnd="@null"
             android:paddingLeft="@dimen/padding_vvs"
             android:paddingRight="@null"
+            android:visibility="gone"
             android:textStyle="bold"
             android:paddingStart="@dimen/padding_vvs"
             android:text="@string/message_ussd_title"
@@ -35,7 +36,7 @@
             android:paddingRight="@null"
             android:paddingStart="@dimen/padding_vvs"
             android:text="@string/msg_ussd_sim_number"
-            android:textColor="@color/digital_item_sub_title"
+            android:textColor="@color/black"
             android:textSize="@dimen/font_small" />
         <TextView
             android:id="@+id/tv_label_number"
@@ -144,6 +145,7 @@
             android:paddingRight="@null"
             android:paddingStart="@dimen/padding_vvs"
             android:clickable="true"
+            android:visibility="gone"
             android:text="Batal"
             android:textColor="@color/green_btn"
             android:textSize="@dimen/font_medium" />

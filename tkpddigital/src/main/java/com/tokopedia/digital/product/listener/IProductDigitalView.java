@@ -88,9 +88,7 @@ public interface IProductDigitalView extends IBaseView {
     void showPulsaBalanceError(String message);
 
     Activity getActivity();
-
-    void showVerifyUssdOperatorDialogFragment();
-
+    
     void showMessageAlert(String message,String title);
 
 }

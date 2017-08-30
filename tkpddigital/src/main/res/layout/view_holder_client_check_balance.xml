@@ -30,7 +30,7 @@
                 android:focusableInTouchMode="true"
                 android:maxLines="1"
                 android:padding="@dimen/padding_vs"
-                android:text="Cek Saldo"
+                android:text="@string/title_check_credit_balance"
                 android:textSize="@dimen/fonts" />
 
 
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_check_balance"
                 android:padding="@dimen/padding_vs"
-                android:text="@string/title_check_credit_balance" />
+                android:text="" />
 
 
             <TextView

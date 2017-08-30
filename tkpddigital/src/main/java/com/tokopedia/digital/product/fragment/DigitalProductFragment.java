@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
@@ -170,7 +171,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ActionListener actionListener;
 
     private USSDBroadcastReceiver ussdBroadcastReceiver;
-    private int selectedSim = 0;//start from 0
+    private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
 
     public static Fragment newInstance(String categoryId) {
@@ -400,19 +401,27 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
     public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
         holderCheckBalance.removeAllViews();
         for (int i = 0; i < 2; i++) {
-
-            String phoneNumber =presenter.getCurrentMobileNumber(i);
-            if(!isMobileNumberValid(phoneNumber)){
-                phoneNumber="Unknown";
-            }
+            String phoneNumber = presenter.getDeviceMobileNumber(i);
             Operator operator = presenter.getSelectedUssdOperator(i);
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
+            }
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                phoneNumber = "";
+                presenter.storeUssdPhoneNumber(i, phoneNumber);
+            }
             String ussdCode = operator.getUssdCode();
             if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
                 CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
                 checkPulsaBalanceView.setActionListener(this);
-                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber, operator.getName() +" (SIM "+(i+1)+")");
+                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber);
                 holderCheckBalance.addView(checkPulsaBalanceView);
             }
         }
@@ -620,8 +629,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onDestroy() {
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
+
         if (ussdBroadcastReceiver != null)
             getActivity().unregisterReceiver(ussdBroadcastReceiver);
+        presenter.removeUssdTimerCallback();
+
         super.onDestroy();
     }
 
@@ -655,9 +667,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (ussdInProgress) {
             showToastMessage("Please wait...");
         } else {
-            selectedSim = simPosition;
-            if (holderCheckBalance != null && holderCheckBalance.getChildCount() > selectedSim) {
-                selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSim);
+            selectedSimIndex = simPosition;
+            if (holderCheckBalance != null && holderCheckBalance.getChildCount() > selectedSimIndex) {
+                selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSimIndex);
             }
             DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
         }
@@ -811,14 +823,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
                 break;
-            case OperatorVerificationDialog.REQUEST_CODE:
-//                String ussdMobileNumber = data.getStringExtra(OperatorVerificationDialog.ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY);
-//                if (ussdMobileNumber != null) {
-//                    presenter.processToCheckBalance(ussdMobileNumber);
-//                } else {
-//                    showMessageAlert(getActivity().getString(R.string.error_message_ussd_operator_not_matched), getActivity().getString(R.string.message_ussd_title));
-//                }
-                break;
         }
     }
 
@@ -904,7 +908,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
-        UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + "," + presenter.getCurrentMobileNumber(simPosition));
+        UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
     }
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
@@ -964,14 +968,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
         AlertDialog.Builder accessibiltyDialog = new AlertDialog.Builder(getActivity());
         accessibiltyDialog.setMessage(getActivity().getString(R.string.dialog_accessibility_service_on));
-        accessibiltyDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        accessibiltyDialog.setPositiveButton("ALLOW", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                 startActivityForResult(intent, 0);
             }
         });
-        accessibiltyDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        accessibiltyDialog.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -1002,12 +1006,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim) {
-        ussdInProgress=false;
-        if (selectedCheckPulsaBalanceView != null)
+        ussdInProgress = false;
+        String number = "";
+        if (selectedCheckPulsaBalanceView != null) {
             selectedCheckPulsaBalanceView.hideProgressbar();
+            number = selectedCheckPulsaBalanceView.getPhoneNumberText();
+        }
         if (pulsaBalance != null && pulsaBalance.isSuccess()) {
-            pulsaBalance.setMobileNumber(presenter.getCurrentMobileNumber(selectedSim));
-            navigateToActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim), categoryDataState.getClientNumberList().get(0).getValidation(), categoryId, categoryDataState.getName()));
+            pulsaBalance.setMobileNumber(number);
+            startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
+                    categoryDataState.getClientNumberList().get(0).getValidation(),
+                    categoryId, categoryDataState.getName(), selectedSim,presenter.getSelectedUssdOperatorList(selectedSim)));
         } else {
             showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
         }
@@ -1016,23 +1025,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void showPulsaBalanceError(String message) {
-        ussdInProgress=false;
+        ussdInProgress = false;
         if (selectedCheckPulsaBalanceView != null)
             selectedCheckPulsaBalanceView.hideProgressbar();
-        //showToastMessage(message);
         showMessageAlert(message, getActivity().getString(R.string.message_ussd_title));
     }
 
     @Override
-    public void showVerifyUssdOperatorDialogFragment() {
-        OperatorVerificationDialog dialog = OperatorVerificationDialog.newInstance(categoryDataState.getOperatorList(), categoryDataState.getClientNumberList().get(0).getValidation());
-        dialog.setTargetFragment(this, OperatorVerificationDialog.REQUEST_CODE);
-        dialog.show(getFragmentManager(), "operator");
-    }
-
-    @Override
     public void onReceivedUssdData(String result) {
-        presenter.processPulsaBalanceUssdResponse(result, selectedSim);
+        presenter.processPulsaBalanceUssdResponse(result, selectedSimIndex);
     }
 
     @Override
@@ -1040,15 +1041,35 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        restoreUssdData();
+    }
+
+    private void restoreUssdData() {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+
+            if (selectedCheckPulsaBalanceView != null) {
+                Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
+                String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
+
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                    presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
+                } else {
+                    selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
+                }
+            }
+        }
+    }
 
     public interface ActionListener {
         void updateTitleToolbar(String title);
     }
 
-    private boolean isMobileNumberValid(String number){
-        if (number == null || "".equalsIgnoreCase(number.trim()) || "0Unknown".equalsIgnoreCase(number.trim())|| "0unknown".equalsIgnoreCase(number.trim())|| "0".equalsIgnoreCase(number.trim())) {
-            return false;
-        }
-        return true;
-    }
 }

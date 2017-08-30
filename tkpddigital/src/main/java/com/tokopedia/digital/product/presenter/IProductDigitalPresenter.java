@@ -7,6 +7,8 @@ import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.Operator;
 
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 4/26/17.
  */
@@ -30,11 +32,20 @@ public interface IProductDigitalPresenter {
             BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct
     );
 
-    void processToCheckBalance(String ussdMobileNumber,int simPosition,String ussdCode);
+    void processToCheckBalance(String ussdMobileNumber, int simSlot, String ussdCode);
 
     void processPulsaBalanceUssdResponse(String result,int selectedSim);
 
-    String getCurrentMobileNumber(int simPosition);
+    String getDeviceMobileNumber(int selectedSim);
 
-    Operator getSelectedUssdOperator(int simPosition);
+    List<Operator> getSelectedUssdOperatorList(int selectedSim);
+
+    void removeUssdTimerCallback();
+
+    String getUssdPhoneNumberFromCache(int selectedSim);
+
+    void storeUssdPhoneNumber(int selectedSim,String number);
+
+    Operator getSelectedUssdOperator(int selectedSim);
+
 }

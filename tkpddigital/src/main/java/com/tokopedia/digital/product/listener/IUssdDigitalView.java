@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.listener;
 
+import android.app.Activity;
 import android.app.Application;
 
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -20,5 +21,7 @@ public interface IUssdDigitalView extends IBaseView {
     String getVersionInfoApplication();
 
     void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData);
+
+    Activity getActivity();
 
 }

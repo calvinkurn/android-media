@@ -21,7 +21,8 @@ public class USSDAccessibilityService extends AccessibilityService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startFromApp = intent.getBooleanExtra(KEY_START_SERVICE_FROM_APP, false);
+        if (intent != null)
+            startFromApp = intent.getBooleanExtra(KEY_START_SERVICE_FROM_APP, false);
         if (startFromApp)
             setInfo();
         else {
@@ -33,8 +34,6 @@ public class USSDAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.d(TAG, "onAccessibilityEvent" + event.getPackageName());
-
         AccessibilityNodeInfo source = event.getSource();
     /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) {
@@ -82,7 +81,6 @@ public class USSDAccessibilityService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-        Log.d(TAG, "onServiceConnected");
         setInfo();
     }
 

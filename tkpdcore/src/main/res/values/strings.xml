@@ -1283,8 +1283,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_buy_credit_cart">BuyCreditCart</string>
     <!-- End of String Buy Credit -->
     <!-- String USSD balance check -->
-    <string name="title_check_credit_balance">Sisa Pulsa Anda</string>
-    <string name="lable_button_check_balance">Cek Sisa Pulsa</string>
+    <string name="title_check_credit_balance">Cek sisa pulsa</string>
+    <string name="lable_button_check_balance">Cek Pulsa</string>
     <!-- End of String USSD balance check -->
     <!-- strings realted to return policy -->
     <string name="instruction_type_policy">Silakan tulis kebijakan</string>

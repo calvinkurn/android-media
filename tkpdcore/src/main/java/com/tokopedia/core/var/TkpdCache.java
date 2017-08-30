@@ -48,6 +48,7 @@ public class TkpdCache {
     public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
     public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
     public static final String DIGITAL_INSTANT_CHECKOUT_HISTORY = "DIGITAL_INSTANT_CHECKOUT_HISTORY";
+    public static final String DIGITAL_USSD_MOBILE_NUMBER = "DIGITAL_USSD_MOBILE_NUMBER";
 
 
     public static void clearAllCache(Context context) {
@@ -197,6 +198,9 @@ public class TkpdCache {
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+
+        public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
+        public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
     }
 
 }

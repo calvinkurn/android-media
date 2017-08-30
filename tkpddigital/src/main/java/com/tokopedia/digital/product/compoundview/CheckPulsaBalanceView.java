@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.model.ClientNumber;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +42,7 @@ public class CheckPulsaBalanceView extends LinearLayout {
     private ActionListener actionListener;
     private Context context;
 
-    private ClientNumber clientNumber;
+    private String mobileNumber;
 
     public CheckPulsaBalanceView(Context context) {
         super(context);
@@ -88,10 +87,17 @@ public class CheckPulsaBalanceView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderData(int simPosition, String ussdCode, String phoneNumber,String operatorName) {
+    public void renderData(int simPosition, String ussdCode, String phoneNumber) {
         this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
-        tvOperatorName.setText(operatorName);
-        tvPhoneNumber.setText(phoneNumber);
+        if (phoneNumber != null && !"".equalsIgnoreCase(phoneNumber.trim()))
+            tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + phoneNumber);
+        else
+            tvPhoneNumber.setText("SIM" + (simPosition + 1));
+        this.mobileNumber = phoneNumber;
+    }
+
+    public String getPhoneNumberText() {
+        return this.mobileNumber;
     }
 
     @NonNull

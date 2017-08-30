@@ -3,7 +3,6 @@ package com.tokopedia.digital.product.fragment;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -21,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Validation;
@@ -29,7 +27,6 @@ import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -48,22 +45,38 @@ public class OperatorVerificationDialog extends DialogFragment {
     private TextView tvUssdDesc;
     private String selectedOperatorName;
     private ImageView imgOperator;
-    private List<Operator> operatorList;
+    private Operator selectedOperator;
     private List<Validation> validationList;
-    private static final String ARG_PARAM_EXTRA_OPERATOR_LIST_DATA =
-            "ARG_PARAM_EXTRA_OPERATOR_LIST_DATA";
-    private static final String ARG_PARAM_EXTRA_VALIDATION_LIST_DATA =
-            "ARG_PARAM_EXTRA_VALIDATION_LIST_DATA";
+    private List<Operator> selectedOperatorList;
+    private boolean isEdit;
+    private int selectedSimIndex = 0;
     public static final String ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY =
             "ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY";
-    public static final int REQUEST_CODE = 222;
+    public static final String EXTRA_CALLBACK_OPERATOR_DATA =
+            "EXTRA_CALLBACK_OPERATOR_DATA";
+    private static final String ARG_PARAM_EXTRA_OPERATOR_DATA = "ARG_PARAM_EXTRA_OPERATOR_DATA";
+    private static final String ARG_PARAM_EXTRA_VALIDATION_LIST_DATA =
+            "ARG_PARAM_EXTRA_VALIDATION_LIST_DATA";
+    private static final String ARG_PARAM_EXTRA_SIM_INDEX_DATA =
+            "ARG_PARAM_EXTRA_SIM_INDEX_DATA";
 
-    public static OperatorVerificationDialog newInstance(List<Operator> operatorListData, List<Validation> validationListData) {
+    private static final String ARG_PARAM_EXTRA_IS_EDIT_DATA =
+            "ARG_PARAM_EXTRA_IS_EDIT_DATA";
+    private static final String EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA = "EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA";
+
+    public static final int REQUEST_CODE_DIGITAL_USSD_OPERATOR_MATCH = 223;
+
+    public static OperatorVerificationDialog newInstance(Operator operatorData,
+                                                         List<Validation> validationListData, int simPos, boolean isEdit, List<Operator> selectedOperatorList
+    ) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
-                (ArrayList<? extends Parcelable>) operatorListData);
+        bundle.putParcelable(ARG_PARAM_EXTRA_OPERATOR_DATA, operatorData);
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA,
                 (ArrayList<? extends Parcelable>) validationListData);
+        bundle.putInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, simPos);
+        bundle.putBoolean(ARG_PARAM_EXTRA_IS_EDIT_DATA, isEdit);
+        bundle.putParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA,
+                (ArrayList<? extends Parcelable>) selectedOperatorList);
         OperatorVerificationDialog fragment = new OperatorVerificationDialog();
         fragment.setArguments(bundle);
         return fragment;
@@ -71,10 +84,13 @@ public class OperatorVerificationDialog extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(Bundle state) {
-        state.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
-                (ArrayList<? extends Parcelable>) operatorList);
+        state.putParcelable(ARG_PARAM_EXTRA_OPERATOR_DATA, selectedOperator);
         state.putParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA,
                 (ArrayList<? extends Parcelable>) validationList);
+        state.putInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, selectedSimIndex);
+        state.putBoolean(ARG_PARAM_EXTRA_IS_EDIT_DATA, isEdit);
+        state.putParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA,
+                (ArrayList<? extends Parcelable>) selectedOperatorList);
     }
 
 
@@ -87,8 +103,11 @@ public class OperatorVerificationDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            operatorList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
+            selectedOperator = getArguments().getParcelable(ARG_PARAM_EXTRA_OPERATOR_DATA);
             validationList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA);
+            selectedSimIndex = getArguments().getInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, 0);
+            selectedOperatorList = getArguments().getParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA);
+            isEdit = getArguments().getBoolean(ARG_PARAM_EXTRA_IS_EDIT_DATA);
         }
     }
 
@@ -97,7 +116,6 @@ public class OperatorVerificationDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
         return inflater.inflate(R.layout.dialog_fragment_usd_operator_verification, container);
 
     }
@@ -113,14 +131,10 @@ public class OperatorVerificationDialog extends DialogFragment {
         btnOk = (TextView) view.findViewById(R.id.btn_ok);
         tvErrorNumber = (TextView) view.findViewById(R.id.tv_error_number);
         tvUssdDesc = (TextView) view.findViewById(R.id.tv_ussd_desc);
-        String operatorName = DeviceUtil.getOperatorName(getActivity(),0);
-        Resources res = getResources();
-        // String text = String.format(res.getString(R.string.msg_ussd_sim_number),operatorName);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            tvUssdDesc.setText(Html.fromHtml(res.getString(R.string.msg_ussd_sim_number, operatorName), Html.FROM_HTML_MODE_LEGACY));
-
+            tvUssdDesc.setText(Html.fromHtml(getMessageToShow(), Html.FROM_HTML_MODE_LEGACY));
         } else {
-            tvUssdDesc.setText(Html.fromHtml(res.getString(R.string.msg_ussd_sim_number, operatorName)));
+            tvUssdDesc.setText(Html.fromHtml(getMessageToShow()));
 
         }
         final TextWatcher textWatcher = getTextWatcherInput();
@@ -129,8 +143,7 @@ public class OperatorVerificationDialog extends DialogFragment {
         this.btnClear.setOnClickListener(getButtonClearClickListener());
         this.btnCancel.setOnClickListener(getButtonCancelClickListener());
         this.btnOk.setOnClickListener(getButtonOkClickListener());
-        prefilledClientMobileNumber();
-
+        setOkButtonEnable(false);
     }
 
     @Override
@@ -166,36 +179,29 @@ public class OperatorVerificationDialog extends DialogFragment {
                     imgOperator.setVisibility(GONE);
                 }
                 String tempInputTrim = tempInput;
-                if (tempInput.startsWith("+62")) {
-                    tempInputTrim = tempInput.replace("+62", "0");
-                } else if (tempInput.startsWith("62")) {
-                    tempInputTrim = tempInput.replace("62", "0");
+                tempInput = DeviceUtil.validatePrefixClientNumber(tempInput);
+                if (!tempInput.startsWith("0")) {
+                    tempInput = "0" + tempInput;
                 }
                 if (tempInput.isEmpty()) {
-
                     tvErrorNumber.setText("");
                     tvErrorNumber.setVisibility(GONE);
                 } else {
-                    String errorString = null;
-                    for (Validation validation : validationList) {
-                        if (!Pattern.matches(validation.getRegex(), tempInput)) {
-                            errorString = validation.getError();
-                            break;
-                        } else {
-                            errorString = null;
-                        }
-                    }
-
+                    String errorString = DeviceUtil.validateNumber(validationList, tempInput);
                     if (errorString == null) {
                         tvErrorNumber.setText("");
                         tvErrorNumber.setVisibility(GONE);
-                        matchOperator(tempInputTrim);
-                        setOkButtonEnable(true);
+                        if (matchOperator(tempInputTrim)) {
+                            setOkButtonEnable(true);
+                        } else {
+                            tvErrorNumber.setText(getActivity().getString(R.string.error_message_ussd_operator_not_matched));
+                            tvErrorNumber.setVisibility(VISIBLE);
+                            setOkButtonEnable(false);
+                        }
                     } else {
                         if (tempInput.isEmpty()) {
                             tvErrorNumber.setText("");
                             tvErrorNumber.setVisibility(GONE);
-
                         } else {
                             tvErrorNumber.setText(errorString);
                             tvErrorNumber.setVisibility(VISIBLE);
@@ -212,30 +218,19 @@ public class OperatorVerificationDialog extends DialogFragment {
         };
     }
 
-    private void matchOperator(String tempInputTrim) {
-        outerLoop:
-        for (Operator operator : operatorList) {
-            for (String prefix : operator.getPrefixList()) {
-                if (tempInputTrim.startsWith(prefix)) {
-                    enableImageOperator(operator.getImage());
-                    selectedOperatorName = operator.getName();
-                    break outerLoop;
-                }
+    private boolean matchOperator(String tempInputTrim) {
+        for (Operator operator : selectedOperatorList) {
+            if (DeviceUtil.matchOperatorAndNumber(operator, tempInputTrim)) {
+                selectedOperator = operator;
+                enableImageOperator(selectedOperator.getImage());
+                selectedOperatorName = selectedOperator.getName();
+                return true;
             }
         }
+        return false;
     }
 
-    private void prefilledClientMobileNumber() {
-        if (SessionHandler.isV4Login(getActivity())) {
-            if (SessionHandler.getPhoneNumber() != null && !"".equalsIgnoreCase(SessionHandler.getPhoneNumber())) {
-                autoCompleteTextView.setText(SessionHandler.getPhoneNumber());
-            } else {
-                autoCompleteTextView.setText(SessionHandler.getTempPhoneNumber(getActivity()));
-            }
-        }
-    }
-
-    public void resetInputTyped() {
+    private void resetInputTyped() {
         autoCompleteTextView.setText("");
         imgOperator.setVisibility(View.GONE);
         btnClear.setVisibility(View.GONE);
@@ -271,12 +266,11 @@ public class OperatorVerificationDialog extends DialogFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (verifyOperator(0)) {
+                if (verifyOperator()) {
                     sendResult(autoCompleteTextView.getText().toString());
                 } else {
                     sendResult(null);
                 }
-
                 dismiss();
             }
         };
@@ -291,36 +285,28 @@ public class OperatorVerificationDialog extends DialogFragment {
         }
     }
 
-
-    private boolean verifyOperator(int simPosition) {
-        String operatorName = DeviceUtil.getOperatorName(getActivity(),0);
-        if (operatorName != null && !"".equalsIgnoreCase(operatorName.trim())) {
-            operatorName = operatorName.split(" ")[0];
-        } else {
-            return false;
-        }
-        if (selectedOperatorName != null && !"".equalsIgnoreCase(selectedOperatorName.trim())) {
-            selectedOperatorName = selectedOperatorName.split(" ")[0];
-        } else {
-            return false;
-        }
-
-        if ("Tri".equalsIgnoreCase(selectedOperatorName) && "3".equalsIgnoreCase(operatorName)) {
-            return true;
-        }
-
-        if (operatorName.equalsIgnoreCase(selectedOperatorName)) {
-            return true;
-        } else {
-            return false;
-        }
-
+    private boolean verifyOperator() {
+        String operatorName = DeviceUtil.getOperatorName(getActivity(), selectedSimIndex);
+        return DeviceUtil.verifyUssdOperator(operatorName, selectedOperatorName);
     }
 
     private void sendResult(String result) {
         Intent intent = new Intent();
         intent.putExtra(ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY, result);
+        intent.putExtra(EXTRA_CALLBACK_OPERATOR_DATA, selectedOperator);
         getTargetFragment().onActivityResult(
-                getTargetRequestCode(), REQUEST_CODE, intent);
+                getTargetRequestCode(), REQUEST_CODE_DIGITAL_USSD_OPERATOR_MATCH, intent);
+    }
+
+    private String getMessageToShow() {
+        String message;
+        if (isEdit) {
+            message = getActivity().getString(R.string.msg_ussd_sim_number_change, DeviceUtil.getOperatorFirstName(selectedOperator.getName()));
+            btnCancel.setVisibility(View.VISIBLE);
+        } else {
+            message = getActivity().getString(R.string.msg_ussd_sim_number, DeviceUtil.getOperatorFirstName(selectedOperator.getName()));
+            btnCancel.setVisibility(View.GONE);
+        }
+        return message;
     }
 }
