@@ -17,6 +17,9 @@ import javax.inject.Inject;
 
 public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<ProductProblemListFragment.View> implements ProductProblemListFragment.Presenter {
 
+    public static final int RESULT_SAVE = 2001;
+    public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
+
     private ProductProblemListFragment.View mainView;
     List<ProblemResult> problemResultList = new ArrayList<>();
 
@@ -127,6 +130,9 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
             updateResultList(problemResult);
         }
         updateProblemResultList();
+        if (resultStepCode == RESULT_SAVE) {
+            buttonContinueClicked();
+        }
     }
 
     public void addResultList(ProblemResult problemResult) {

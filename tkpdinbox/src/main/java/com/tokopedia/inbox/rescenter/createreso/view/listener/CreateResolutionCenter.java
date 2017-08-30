@@ -29,6 +29,8 @@ public interface CreateResolutionCenter {
 
         void transitionToSolutionPage(ResultViewModel resultViewModel);
 
+        void transitionToUploadProvePage(ResultViewModel resultViewModel);
+
         void showSuccessToast();
 
         void showErrorToast(String error);

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
@@ -256,14 +257,24 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             if (resultCode == Activity.RESULT_OK) {
                 presenter.addResultFromStep2((ResultViewModel) data.getParcelableExtra(RESULT_VIEW_MODEL_DATA));
             }
+        } else if (requestCode == REQUEST_STEP3) {
+            if (resultCode == Activity.RESULT_OK) {
+
+            }
         }
     }
 
     @Override
     public void transitionToSolutionPage(ResultViewModel resultViewModel) {
         Intent intent = new Intent(getActivity(), SolutionListActivity.class);
-        intent.putExtra(KEY_PARAM_PASS_DATA, resultViewModel);
         intent.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
         startActivityForResult(intent, REQUEST_STEP2);
+    }
+
+    @Override
+    public void transitionToUploadProvePage(ResultViewModel resultViewModel) {
+        Intent intent = new Intent(getActivity(), AttachmentActivity.class);
+        intent.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        startActivityForResult(intent, REQUEST_STEP3);
     }
 }

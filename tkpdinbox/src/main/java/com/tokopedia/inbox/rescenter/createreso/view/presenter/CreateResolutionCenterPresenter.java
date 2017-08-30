@@ -103,7 +103,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void uploadProveClicked() {
-
+        mainView.transitionToUploadProvePage(resultViewModel);
     }
 
     @Override

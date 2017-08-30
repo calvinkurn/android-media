@@ -117,6 +117,10 @@
             android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity"
             android:label="@string/title_activity_solution_detail"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity"
+            android:label="@string/title_activity_attachment"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".rescenter.discussion.view.activity.ResCenterDiscussionActivity"
