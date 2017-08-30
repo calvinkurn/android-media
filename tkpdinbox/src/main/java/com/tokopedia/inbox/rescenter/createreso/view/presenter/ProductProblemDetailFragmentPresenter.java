@@ -130,6 +130,11 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     }
 
     @Override
+    public void btnInfoClicked() {
+        mainView.showInfoDialog(productProblemViewModel);
+    }
+
+    @Override
     public void increaseQty() {
         updatePlusMinusView(1);
     }

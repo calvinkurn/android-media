@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -198,6 +199,13 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
                 presenter.btnSaveClicked(true);
             }
         });
+
+        btnInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.btnInfoClicked();
+            }
+        });
     }
 
     @Override
@@ -289,6 +297,32 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         if (currentValue == maxValue) {
             btnPlus.setEnabled(false);
         }
+    }
+
+    @Override
+    public void showInfoDialog(ProductProblemViewModel productProblemViewModel) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_info);
+        Button btnClose = (Button) dialog.findViewById(R.id.btn_close);
+        TextView tvCourierInfo = (TextView) dialog.findViewById(R.id.tv_courier_info);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        String shippingName = productProblemViewModel.getOrder().getShipping().getName() + " " + productProblemViewModel.getOrder().getShipping().getDetail().getName();
+
+        tvCourierInfo.setText("[" + shippingName + "]");
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override

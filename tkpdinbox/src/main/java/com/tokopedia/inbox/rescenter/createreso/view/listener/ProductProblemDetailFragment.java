@@ -27,6 +27,8 @@ public interface ProductProblemDetailFragment {
 
         void updateBottomMainButton(boolean isEnabled);
 
+        void showInfoDialog(ProductProblemViewModel productProblemViewModel);
+
         void updatePlusMinusButton(int currentValue, int maxValue);
 
         void saveData(ProblemResult problemResult, int resultStepCode);
@@ -38,6 +40,8 @@ public interface ProductProblemDetailFragment {
         void btnArrivedClicked();
 
         void btnNotArrivedClicked();
+
+        void btnInfoClicked();
 
         void updateSpinner(boolean isDelivered);
 
