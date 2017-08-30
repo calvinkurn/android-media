@@ -4,6 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
+import com.tokopedia.core.cache.domain.ApiCacheRepository;
 
 import rx.Observable;
 
@@ -11,25 +13,18 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class CheckWhiteListUseCase extends UseCase<Boolean> {
-
-    private ApiCacheInterceptorUseCase apiCacheInterceptorUseCase;
-
-    public CheckWhiteListUseCase(ApiCacheInterceptorUseCase apiCacheInterceptorUseCase) {
-        this.apiCacheInterceptorUseCase = apiCacheInterceptorUseCase;
-    }
+public class CheckWhiteListUseCase extends BaseApiCacheInterceptor<Boolean> {
 
     public CheckWhiteListUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            ApiCacheInterceptorUseCase apiCacheInterceptorUseCase) {
-        super(threadExecutor, postExecutionThread);
-        this.apiCacheInterceptorUseCase = apiCacheInterceptorUseCase;
+            ApiCacheRepository apiCacheRepository) {
+        super(threadExecutor, postExecutionThread, apiCacheRepository);
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        apiCacheInterceptorUseCase.createObservableSync(requestParams);
-        return Observable.just(apiCacheInterceptorUseCase.isInWhiteList());
+        super.createObservable(requestParams);
+        return Observable.just(apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath()));
     }
 }

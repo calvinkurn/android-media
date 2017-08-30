@@ -90,4 +90,14 @@ public class CacheHelper {
                 .toString());
         return and.queryList();
     }
+
+    public void clearTimeout() {
+        long currentTime = System.currentTimeMillis() / 1000L;
+        List<CacheApiData> cacheApiDatas = new Select().from(CacheApiData.class).where(CacheApiData_Table.expiredDate.lessThan(currentTime)).queryList();
+        if (cacheApiDatas != null) {
+            for (int i = 0; i < cacheApiDatas.size(); i++) {
+                cacheApiDatas.get(i).delete();
+            }
+        }
+    }
 }

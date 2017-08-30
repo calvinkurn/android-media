@@ -1,3 +1,4 @@
+
 package com.tokopedia.core.cache.domain.interactor;
 
 import android.net.Uri;
@@ -5,7 +6,10 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.UrlEncodedQueryString;
+import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.cache.CacheHelper;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
@@ -48,9 +52,18 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
     private CacheApiData tempData;
     private long maxContentLength = 250000L;
     private CacheApiData cacheApiData;
+    private ApiCacheRepositoryImpl apiCacheRepository;
 
+    public ApiCacheInterceptorUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ApiCacheRepositoryImpl apiCacheRepository) {
+        super(threadExecutor, postExecutionThread);
+        this.apiCacheRepository = apiCacheRepository;
+    }
 
-    public ApiCacheInterceptorUseCase() {
+    public ApiCacheInterceptorUseCase( ApiCacheRepositoryImpl apiCacheRepository) {
+        this.apiCacheRepository = apiCacheRepository;
     }
 
     @Override
@@ -61,15 +74,11 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
         cacheApiData = new CacheApiData();
         cacheApiData.setMethod(method); // get method
         cacheApiData = setUrl(cacheApiData, url);
-        if (isInWhiteList(cacheApiData)) {
+        if (apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath())) {
             tempData = cacheHelper.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
             isEmptyData = (tempData == null);
 
             if (!isEmptyData) {
-//                isExpiredData = (System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList.getExpiredTime();
-//                if (isExpiredData) {
-//                    tempData.delete();
-//                }
 
                 cacheApiData.setResponseDate(tempData.responseDate);
                 cacheApiData.setExpiredDate(tempData.expiredDate);
@@ -78,11 +87,6 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
 
         }
         return Observable.just(cacheApiData);
-    }
-
-    public boolean isInWhiteList(CacheApiData cacheApiData) {
-        whiteList = cacheHelper.queryFromRaw(cacheApiData.getHost(), cacheApiData.getPath());
-        return isInWhiteList = (whiteList != null);
     }
 
     public boolean isInWhiteList() {
