@@ -66,7 +66,7 @@ public class CreditCardListRepository implements ICreditCardRepository {
         for (int i = 0; i < response.getData().size(); i++) {
             CreditCardModelItem modelItem = new CreditCardModelItem();
             modelItem.setBank(response.getData().get(i).getBank());
-            modelItem.setCardType(response.getData().get(i).getCardType());
+            modelItem.setCardType(response.getData().get(i).getCardTypeName());
             modelItem.setExpiryMonth(response.getData().get(i).getExpiryMonth());
             modelItem.setExpiryYear(response.getData().get(i).getExpiryYear());
             modelItem.setMaskedNumber(response.getData().get(i).getMaskedNumber());

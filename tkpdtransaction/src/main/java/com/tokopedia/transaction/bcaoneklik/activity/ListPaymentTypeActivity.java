@@ -113,6 +113,7 @@ public class ListPaymentTypeActivity extends TActivity
         addCreditCardLayout = findViewById(R.id.add_credit_card_layout);
         bcaOneClickRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         bcaOneClickRecyclerView.setNestedScrollingEnabled(false);
+        creditCardVaultRecyclerView.setNestedScrollingEnabled(false);
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
         mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
@@ -173,6 +174,7 @@ public class ListPaymentTypeActivity extends TActivity
 
     @Override
     public void receivedCreditCardList(CreditCardModel creditCardModel) {
+        mainProgressDialog.dismiss();
         //TODO once there is option to add credit card change the condition
         if(creditCardModel.getCreditCardList().size()> 0) {
             addCreditCardLayout.setVisibility(View.GONE);

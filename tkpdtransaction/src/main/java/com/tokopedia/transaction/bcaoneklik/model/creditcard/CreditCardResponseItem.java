@@ -21,6 +21,8 @@ public class CreditCardResponseItem {
     @SerializedName("card_type")
     @Expose
     private String cardType;
+    @SerializedName("card_type_name")
+    private String cardTypeName;
     @SerializedName("bank")
     @Expose
     private String bank;
@@ -68,6 +70,14 @@ public class CreditCardResponseItem {
 
     public String getCardType() {
         return cardType;
+    }
+
+    public String getCardTypeName() {
+        return cardTypeName;
+    }
+
+    public void setCardTypeName(String cardTypeName) {
+        this.cardTypeName = cardTypeName;
     }
 
     public void setCardType(String cardType) {
