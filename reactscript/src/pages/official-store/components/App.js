@@ -35,11 +35,13 @@ class App extends Component {
   componentWillMount(){
     const { dispatch } = this.props
     AsyncStorage.getItem('user_id').then(uid => { dispatch(reloadState()) })
+    
+    NetInfo.addEventListener('change', (res) => { this.setState({ statusConnection: res }) });
+  }
 
-    NetInfo.isConnected.fetch().then(isConnected => {
-      console.log('Status connection is ' + (isConnected ? 'online' : 'offline'));
-      this.setState({ statusConnection: (isConnected ? 'online' : 'offline') })
-    });
+
+  componentWillUnmount(){
+    NetInfo.removeEventListener('change')
   }
 
 
@@ -73,7 +75,9 @@ class App extends Component {
 
 
   render() {
-    if (this.state.statusConnection === 'online'){
+    const statusConnection = this.state.statusConnection
+    // console.log(statusConnection)
+    if (statusConnection === 'MOBILE' || statusConnection === 'WIFI'){
       return (
         <View>
           <ScrollView 
@@ -97,11 +101,11 @@ class App extends Component {
           }
         </View>
       )
-    } else if (this.state.statusConnection === 'offline'){
+    } else if (statusConnection === 'NONE') {
       return <NotConnect />
     } else {
       return (
-        <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
+        <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
           <ActivityIndicator size="large" />
         </View>
       )

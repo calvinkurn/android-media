@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, Image, TouchableOpacity, NetInfo, Dimensions } from 'react-native'
 import { icons } from '../../icons/index'
 import { NetworkModule } from 'NativeModules'
 import Ostore from './setup'
@@ -15,6 +15,16 @@ class NoConnection extends Component {
         }
     }
 
+    componentDidMount(){
+        NetInfo.addEventListener('change', (res) => {
+            this.setState({ isConnected: true })
+        })
+    }
+
+    componentWillUnmount(){
+        NetInfo.removeEventListener('change')
+    }
+
     render (){
         if (!this.state.isConnected){
             return (
@@ -22,9 +32,7 @@ class NoConnection extends Component {
                     <Image source={ icons.offline } style={{ marginBottom: 15, resizeMode: 'contain', width: 0.4 * width }} />
                     <Text style={{ fontSize: 22, fontWeight:'bold', color: 'black', marginBottom: 10 }}>Terjadi kesalahan koneksi</Text>
                     <Text style={{ fontSize: 16, fontWeight:'600', color: 'grey', marginBottom: 30 }}>Silahkan coba lagi</Text>
-                    <TouchableOpacity 
-                        onPress={() => this.setState({ isConnected: true })}
-                        style={{ marginBottom: 10 }}>
+                    <TouchableOpacity style={{ marginBottom: 10 }}>
                         <Text style={{ fontSize: 18, fontWeight:'bold', color: 'black', color: '#42B549' }}>COBA LAGI</Text>
                     </TouchableOpacity>
                 </View>
