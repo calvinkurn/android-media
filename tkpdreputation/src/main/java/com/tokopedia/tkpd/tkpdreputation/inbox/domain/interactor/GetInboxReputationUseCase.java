@@ -5,12 +5,8 @@ import android.text.TextUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.FilterPass;
-
-import java.util.ArrayList;
 
 import rx.Observable;
 
@@ -40,9 +36,9 @@ public class GetInboxReputationUseCase extends GetFirstTimeInboxReputationUseCas
         params.putInt(PARAM_ROLE, getRole(tab));
         if (!TextUtils.isEmpty(keyword))
             params.putString(PARAM_KEYWORD, keyword);
-        if (!TextUtils.isEmpty(timeFilter)) {
-            params.putString(PARAM_TIME_FILTER, timeFilter);
-        }
+        params.putString(PARAM_TIME_FILTER, !TextUtils.isEmpty(timeFilter) ? timeFilter :
+                DEFAULT_TIME_FILTER);
+
         params.putInt(PARAM_STATUS, getStatus(tab));
         return params;
     }

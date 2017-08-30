@@ -4,6 +4,8 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
 import java.util.List;
 
@@ -19,7 +21,9 @@ public interface InboxReputationDetail {
 
         void onErrorGetInboxDetail(String errorMessage);
 
-        void onSuccessGetInboxDetail(List<Visitable> list);
+        void onSuccessGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+                                     RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
+                                     List<Visitable> list);
 
         void onEditReview();
 

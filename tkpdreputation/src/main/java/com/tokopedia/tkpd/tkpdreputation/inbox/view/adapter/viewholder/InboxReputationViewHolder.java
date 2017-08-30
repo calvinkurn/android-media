@@ -108,9 +108,19 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
     private void setReputation(InboxReputationItemViewModel element) {
-        reputation.setRole(ReputationView.ROLE_BUYER);
-        reputation.setTitleText("100%");
-        reputation.setIconDrawable(MainApplication.getAppContext().getDrawable(R.drawable.ic_smiley_good));
+        if (element.getRole() == InboxReputationItemViewModel.ROLE_BUYER) {
+            reputation.setBuyer(
+                    element.getRevieweeBadgeCustomerViewModel().getPositivePercentage(),
+                    element.getRevieweeBadgeCustomerViewModel().getPositive(),
+                    element.getRevieweeBadgeCustomerViewModel().getNeutral(),
+                    element.getRevieweeBadgeCustomerViewModel().getNegative(),
+                    element.getRevieweeBadgeCustomerViewModel().getNoReputation());
+        } else {
+            reputation.setSeller(
+                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
+                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
+                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
+        }
     }
 
     private void setDeadline(InboxReputationItemViewModel element) {

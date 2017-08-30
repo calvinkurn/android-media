@@ -3,11 +3,17 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationDataDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeCustomerDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeSellerDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReputationBadgeViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +71,39 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
                     String.valueOf(domain.getReputationData().getLockingDeadlineDays()),
                     domain.getOrderData().getInvoiceRefNum(),
                     convertToReputationViewModel(domain.getReputationData()),
-                    domain.getRevieweeData().getRevieweeRole().toLowerCase().equals("seller")? 1 : 2
+                    domain.getRevieweeData().getRevieweeRole().toLowerCase().equals("seller") ?
+                            InboxReputationItemViewModel.ROLE_SELLER
+                            : InboxReputationItemViewModel.ROLE_BUYER,
+                    convertToBuyerReputationViewModel(domain.getRevieweeData()
+                            .getRevieweeBadgeCustomer()),
+                    convertToSellerReputationViewModel(domain.getRevieweeData()
+                            .getRevieweeBadgeSeller())
+
             ));
         }
         return list;
+    }
+
+    private RevieweeBadgeSellerViewModel convertToSellerReputationViewModel(RevieweeBadgeSellerDomain revieweeBadgeSeller) {
+        return new RevieweeBadgeSellerViewModel(revieweeBadgeSeller.getTooltip(),
+                revieweeBadgeSeller.getReputationScore(),
+                revieweeBadgeSeller.getScore(),
+                revieweeBadgeSeller.getMinBadgeScore(),
+                revieweeBadgeSeller.getReputationBadgeUrl(),
+                convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()));
+    }
+
+    private ReputationBadgeViewModel convertToReputationBadgeViewModel(ReputationBadgeDomain reputationBadge) {
+        return new ReputationBadgeViewModel(reputationBadge.getLevel(),
+                reputationBadge.getSet());
+    }
+
+    private RevieweeBadgeCustomerViewModel convertToBuyerReputationViewModel(
+            RevieweeBadgeCustomerDomain revieweeBadgeCustomer) {
+        return new RevieweeBadgeCustomerViewModel(revieweeBadgeCustomer.getPositive(),
+                revieweeBadgeCustomer.getNeutral(), revieweeBadgeCustomer.getNegative(),
+                revieweeBadgeCustomer.getPositivePercentage(),
+                revieweeBadgeCustomer.getNoReputation());
     }
 
     private ReputationDataViewModel convertToReputationViewModel(ReputationDataDomain reputationData) {

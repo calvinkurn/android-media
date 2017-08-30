@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor;
 
-import android.text.TextUtils;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -31,6 +29,7 @@ public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationD
     protected static final int ROLE_BUYER = 1;
     protected static final int ROLE_SELLER = 2;
     protected static final int STATUS_OTHER = 3;
+    protected static final String DEFAULT_TIME_FILTER = "1";
 
     protected ReputationRepository reputationRepository;
 
@@ -51,7 +50,7 @@ public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationD
         params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
         params.putInt(PARAM_PAGE, 1);
         params.putInt(PARAM_ROLE, getRole(tab));
-        params.putInt(PARAM_TIME_FILTER, 1);
+        params.putString(PARAM_TIME_FILTER, DEFAULT_TIME_FILTER);
         params.putInt(PARAM_STATUS, getStatus(tab));
         return params;
     }

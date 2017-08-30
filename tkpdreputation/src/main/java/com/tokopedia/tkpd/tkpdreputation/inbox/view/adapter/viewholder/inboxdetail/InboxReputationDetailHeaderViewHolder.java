@@ -17,6 +17,7 @@ import com.tokopedia.design.card.ReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 
 /**
@@ -86,6 +87,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     public void bind(InboxReputationDetailHeaderViewModel element) {
         ImageHandler.LoadImage(userAvatar, element.getAvatarImage());
         name.setText(element.getName());
+        setReputation(element);
 
         if (!TextUtils.isEmpty(element.getDeadline()) && element.getReputationDataViewModel()
                 .isShowLockingDeadline()) {
@@ -162,5 +164,23 @@ public class InboxReputationDetailHeaderViewHolder extends
     private String getPromptText(InboxReputationDetailHeaderViewModel element) {
         return MainApplication.getAppContext().getString(R.string
                 .reputation_prompt) + " " + element.getName() + "?";
+    }
+
+    public void setReputation(InboxReputationDetailHeaderViewModel element) {
+        if (element.getRole() == InboxReputationItemViewModel.ROLE_BUYER) {
+            reputationView.setBuyer(
+                    element.getRevieweeBadgeCustomerViewModel().getPositivePercentage(),
+                    element.getRevieweeBadgeCustomerViewModel().getPositive(),
+                    element.getRevieweeBadgeCustomerViewModel().getNeutral(),
+                    element.getRevieweeBadgeCustomerViewModel().getNegative(),
+                    element.getRevieweeBadgeCustomerViewModel().getNoReputation());
+        } else {
+            reputationView.setSeller(
+                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
+                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
+                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore())
+            );
+
+        }
     }
 }

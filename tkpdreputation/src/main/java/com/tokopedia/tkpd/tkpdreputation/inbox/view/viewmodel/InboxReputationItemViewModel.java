@@ -2,12 +2,18 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
 /**
  * @author by nisie on 8/15/17.
  */
 
 public class InboxReputationItemViewModel implements Visitable<InboxReputationTypeFactory> {
+    public static final int ROLE_SELLER = 2;
+    public static final int ROLE_BUYER = 1;
+    private final RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel;
+    private final RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel;
     private String revieweeName;
     private String createTime;
     private String revieweePicture;
@@ -17,10 +23,14 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
     private ReputationDataViewModel reputationDataViewModel;
     private int role;
 
-    public InboxReputationItemViewModel(String reputationId, String revieweeName, String createTime,
-                                        String revieweePicture, String reputationDaysLeft, String invoice,
-                                        ReputationDataViewModel reputationDataViewModel,
-                                        int role) {
+    public InboxReputationItemViewModel(
+            String reputationId, String revieweeName, String createTime,
+            String revieweePicture, String reputationDaysLeft,
+            String invoice,
+            ReputationDataViewModel reputationDataViewModel,
+            int role,
+            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.createTime = createTime;
@@ -29,6 +39,8 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         this.invoice = invoice;
         this.reputationDataViewModel = reputationDataViewModel;
         this.role = role;
+        this.revieweeBadgeCustomerViewModel = revieweeBadgeCustomerViewModel;
+        this.revieweeBadgeSellerViewModel = revieweeBadgeSellerViewModel;
     }
 
     public String getRevieweeName() {
@@ -58,6 +70,14 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
 
     public ReputationDataViewModel getReputationDataViewModel() {
         return reputationDataViewModel;
+    }
+
+    public RevieweeBadgeCustomerViewModel getRevieweeBadgeCustomerViewModel() {
+        return revieweeBadgeCustomerViewModel;
+    }
+
+    public RevieweeBadgeSellerViewModel getRevieweeBadgeSellerViewModel() {
+        return revieweeBadgeSellerViewModel;
     }
 
     @Override

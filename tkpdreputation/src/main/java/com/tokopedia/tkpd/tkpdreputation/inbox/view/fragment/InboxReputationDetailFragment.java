@@ -33,6 +33,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
 import java.util.List;
 
@@ -180,18 +182,28 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetInboxDetail(List<Visitable> list) {
+    public void onSuccessGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+                                        RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
+                                        List<Visitable> list) {
         finishLoading();
         adapter.clearList();
-        adapter.addHeader(createHeaderModel(passModel));
+        adapter.addHeader(createHeaderModel(passModel,
+                revieweeBadgeCustomerViewModel, revieweeBadgeSellerViewModel));
         adapter.addList(list);
         adapter.notifyDataSetChanged();
     }
 
-    private InboxReputationDetailHeaderViewModel createHeaderModel(InboxReputationDetailPassModel passModel) {
-        return new InboxReputationDetailHeaderViewModel(passModel.getRevieweeImage(),
+    private InboxReputationDetailHeaderViewModel createHeaderModel(
+            InboxReputationDetailPassModel passModel,
+            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
+        return new InboxReputationDetailHeaderViewModel(
+                passModel.getRevieweeImage(),
                 passModel.getRevieweeName(), passModel.getDeadlineText(),
-                passModel.getReputationDataViewModel());
+                passModel.getReputationDataViewModel(),
+                passModel.getRole(),
+                revieweeBadgeCustomerViewModel,
+                revieweeBadgeSellerViewModel);
     }
 
     @Override

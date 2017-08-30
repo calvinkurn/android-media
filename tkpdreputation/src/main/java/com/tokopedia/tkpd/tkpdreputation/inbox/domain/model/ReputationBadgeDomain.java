@@ -13,4 +13,12 @@ public class ReputationBadgeDomain {
         this.level = level;
         this.set = set;
     }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getSet() {
+        return set;
+    }
 }

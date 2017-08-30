@@ -11,10 +11,13 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;;
+import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+
+;
 
 /**
  * Created by stevenfredian on 8/16/17.
@@ -22,9 +25,8 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class ReputationView extends BaseCustomView {
 
-    public static int ROLE_BUYER = 1;
-    public static int ROLE_SELLER = 2;
-
+    public final static int ROLE_BUYER = 1;
+    public final static int ROLE_SELLER = 2;
 
     private TextView percent;
     private String defaultText;
@@ -32,6 +34,7 @@ public class ReputationView extends BaseCustomView {
     private ImageView iconView;
     private String defaultView;
     private int viewType;
+    private LinearLayout layout;
 
     //
     public ReputationView(Context context) {
@@ -63,39 +66,87 @@ public class ReputationView extends BaseCustomView {
     }
 
     private void init() {
+        removeAllViews();
         View view;
-        if (viewType == ROLE_BUYER) {
+        if (viewType == 1) {
             view = inflate(getContext(), R.layout.buyer_reputation, this);
             iconView = (ImageView) view.findViewById(R.id.icon);
             percent = (TextView) view.findViewById(R.id.percent);
         } else {
             view = inflate(getContext(), R.layout.seller_reputation, this);
+            layout = (LinearLayout) view.findViewById(R.id.seller_reputation);
         }
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        setIconDrawable(defaultIcon);
-        setTitleText(defaultText);
         invalidate();
         requestLayout();
     }
 
-
-    public void setRole(int role) {
-        viewType = role;
+    public void setBuyer(String text, final int positive, final int neutral, final int negative, int noReputation) {
+        viewType = ROLE_BUYER;
         init();
-    }
+        if (noReputation == 1) {
+            setIcon(getResources().getDrawable(R.drawable.ic_smiley_empty));
+            if (percent != null)
+                percent.setVisibility(GONE);
+        } else {
+            setIcon(getResources().getDrawable(R.drawable.ic_smiley_good));
+            setTitleText(text);
+            if (iconView != null)
+                iconView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ToolTipUtils.showToolTip(setViewToolTip(positive, neutral, negative), v);
+                    }
 
-    public void setIconDrawable(Drawable icon) {
-        if (icon != null && iconView != null) {
-            iconView.setImageDrawable(icon);
+                });
+            if (percent != null)
+                percent.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ToolTipUtils.showToolTip(setViewToolTip(positive, neutral, negative), v);
+                    }
+                });
         }
     }
 
-    public void setTitleText(String text) {
+    private View setViewToolTip(final int positive, final int neutral, final int negative) {
+        return ToolTipUtils.setToolTip(getContext(), R.layout.tooltip_reputation,
+                new ToolTipUtils.ToolTipListener() {
+                    @Override
+                    public void setView(View view) {
+                        TextView smile = (TextView) view.findViewById(R.id.text_smile);
+                        TextView netral = (TextView) view.findViewById(R.id.text_netral);
+                        TextView bad = (TextView) view.findViewById(R.id.text_bad);
+                        smile.setText(String.valueOf(positive));
+                        netral.setText(String.valueOf(neutral));
+                        bad.setText(String.valueOf(negative));
+                    }
+
+                    @Override
+                    public void setListener() {
+
+                    }
+                });
+    }
+
+    private void setIcon(Drawable drawable) {
+        if (iconView != null)
+            iconView.setImageDrawable(drawable);
+    }
+
+    public void setSeller(int typeMedal, int levelMedal, String reputationPoints) {
+        viewType = ROLE_SELLER;
+        init();
+        ReputationBadgeUtils.setReputationMedals(getContext(), layout, typeMedal, levelMedal, reputationPoints);
+    }
+
+    private void setTitleText(String text) {
         if (!TextUtils.isEmpty(text) && percent != null) {
+            percent.setVisibility(VISIBLE);
             percent.setText(text);
         }
     }
