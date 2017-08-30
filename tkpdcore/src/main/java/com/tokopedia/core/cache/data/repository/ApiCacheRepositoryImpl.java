@@ -167,7 +167,6 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     @Override
     public void deleteAllCache() {
         deleteAllCacheData();
-        deleteAllWhiteLists();
     }
 
     @Override

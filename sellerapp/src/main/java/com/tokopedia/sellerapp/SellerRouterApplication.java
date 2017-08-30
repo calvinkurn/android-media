@@ -17,6 +17,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -231,6 +232,9 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void onLogout(AppComponent appComponent) {
+        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
+        cacheApiClearAllUseCase.getExecuteObservable(RequestParams.EMPTY).toBlocking().first();
+
         TkpdSellerLogout.onLogOut(appComponent);
     }
 

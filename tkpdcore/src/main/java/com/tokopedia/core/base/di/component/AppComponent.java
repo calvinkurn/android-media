@@ -19,6 +19,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.source.cache.CacheHelper;
 import com.tokopedia.core.cache.di.module.CacheModule;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
+import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
@@ -129,4 +130,6 @@ public interface AppComponent {
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
 
     CacheHelper cacheHelper();
+
+    CacheApiClearAllUseCase cacheApiClearAllUseCase();
 }

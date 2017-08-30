@@ -1,6 +1,5 @@
 package com.tokopedia.core.network.retrofit.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,10 +10,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.var.TkpdCache;
 
 /**
  * @author ricoharisin
@@ -31,7 +27,6 @@ public class DialogForceLogout {
     }
 
     public static AlertDialog create(final Context context, @NotNull final ActionListener listener) {
-        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_API);
         FacebookSdk.sdkInitialize(context);
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setMessage(R.string.title_session_expired);
@@ -39,14 +34,6 @@ public class DialogForceLogout {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        ApiCacheRepositoryImpl.DeleteAllCache();
-                        localCacheHandler.clearCache(TkpdCache.Key.VERSION_NAME_IN_CACHE);
-                        Activity activity = (Activity) context;
-                        if (activity != null && activity.getApplication() instanceof MainApplication) {
-                            ((MainApplication) activity.getApplication()).addToWhiteList();
-                        }
-
                         listener.onDialogClicked();
                         dialog.dismiss();
                         LoginManager.getInstance().logOut();
