@@ -64,7 +64,8 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
                     domain.getRevieweeData().getRevieweePicture(),
                     String.valueOf(domain.getReputationData().getLockingDeadlineDays()),
                     domain.getOrderData().getInvoiceRefNum(),
-                    convertToReputationViewModel(domain.getReputationData())
+                    convertToReputationViewModel(domain.getReputationData()),
+                    domain.getRevieweeData().getRevieweeRole().toLowerCase().equals("seller")? 1 : 2
             ));
         }
         return list;

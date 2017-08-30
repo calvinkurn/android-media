@@ -33,7 +33,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     }
 
     public interface ReputationListener {
-        void onReputationSmileyClicked(String value);
+        void onReputationSmileyClicked(String name, String value);
     }
 
     ArrayList<SmileyModel> list;
@@ -62,7 +62,9 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
             main.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onReputationSmileyClicked(list.get(getAdapterPosition()).getValue());
+                    if (listener != null)
+                        listener.onReputationSmileyClicked(list.get(getAdapterPosition())
+                                .getName(),list.get(getAdapterPosition()).getValue());
                 }
             });
         }
@@ -130,4 +132,20 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
                 ""));
     }
 
+    public void showChangeSmiley() {
+        this.list.clear();
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
+                MainApplication.getAppContext().getString(R.string.smiley_bad),
+                SMILEY_BAD,
+                true));
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
+                MainApplication.getAppContext().getString(R.string.smiley_netral),
+                SMILEY_NEUTRAL,
+                true));
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+                MainApplication.getAppContext().getString(R.string.smiley_good),
+                SMILEY_GOOD,
+                true));
+        notifyDataSetChanged();
+    }
 }

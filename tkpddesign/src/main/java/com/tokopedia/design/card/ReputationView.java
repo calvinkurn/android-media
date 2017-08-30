@@ -22,6 +22,10 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class ReputationView extends BaseCustomView {
 
+    public static int ROLE_BUYER = 1;
+    public static int ROLE_SELLER = 2;
+
+
     private TextView percent;
     private String defaultText;
     private Drawable defaultIcon;
@@ -45,7 +49,7 @@ public class ReputationView extends BaseCustomView {
         init(attrs);
     }
 
-    private void init(AttributeSet attrs){
+    private void init(AttributeSet attrs) {
         init();
 
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ReputationView);
@@ -60,11 +64,11 @@ public class ReputationView extends BaseCustomView {
 
     private void init() {
         View view;
-        if(viewType==1){
+        if (viewType == ROLE_BUYER) {
             view = inflate(getContext(), R.layout.buyer_reputation, this);
             iconView = (ImageView) view.findViewById(R.id.icon);
             percent = (TextView) view.findViewById(R.id.percent);
-        }else {
+        } else {
             view = inflate(getContext(), R.layout.seller_reputation, this);
         }
     }
@@ -85,13 +89,13 @@ public class ReputationView extends BaseCustomView {
     }
 
     public void setIconDrawable(Drawable icon) {
-        if (icon != null && iconView!=null) {
+        if (icon != null && iconView != null) {
             iconView.setImageDrawable(icon);
         }
     }
 
     public void setTitleText(String text) {
-        if (!TextUtils.isEmpty(text) && percent!=null) {
+        if (!TextUtils.isEmpty(text) && percent != null) {
             percent.setText(text);
         }
     }

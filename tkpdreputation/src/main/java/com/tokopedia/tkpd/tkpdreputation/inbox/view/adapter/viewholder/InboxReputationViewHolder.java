@@ -8,8 +8,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.card.ReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.customview.ReputationView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 
@@ -58,7 +58,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         invoice.setText(element.getInvoice());
         ImageHandler.LoadImage(avatar, element.getRevieweePicture());
         setDeadline(element);
-//        setReputation(holder, position);
+        setReputation(element);
         setNotification(element.getReputationDataViewModel().isShowBookmark());
         setAction(element);
 
@@ -73,7 +73,8 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                         element.getRevieweePicture(),
                         element.getReputationDataViewModel(),
                         getTextDeadline(element),
-                        getAdapterPosition());
+                        getAdapterPosition(),
+                        element.getRole());
             }
         });
         arrowNext.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +88,8 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                         element.getRevieweePicture(),
                         element.getReputationDataViewModel(),
                         getTextDeadline(element),
-                        getAdapterPosition());
+                        getAdapterPosition(),
+                        element.getRole());
             }
         });
     }
@@ -105,8 +107,10 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
             notification.setVisibility(View.GONE);
     }
 
-    private void setReputation() {
-
+    private void setReputation(InboxReputationItemViewModel element) {
+        reputation.setRole(ReputationView.ROLE_BUYER);
+        reputation.setTitleText("100%");
+        reputation.setIconDrawable(MainApplication.getAppContext().getDrawable(R.drawable.ic_smiley_good));
     }
 
     private void setDeadline(InboxReputationItemViewModel element) {

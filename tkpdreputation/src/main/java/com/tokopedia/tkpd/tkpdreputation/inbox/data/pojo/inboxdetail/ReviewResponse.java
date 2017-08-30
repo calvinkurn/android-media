@@ -11,7 +11,7 @@ public class ReviewResponse {
     private String responseMessage;
     @SerializedName("response_create_time")
     @Expose
-    private String responseCreateTime;
+    private ResponseCreateTime responseCreateTime;
     @SerializedName("response_by")
     @Expose
     private String responseBy;
@@ -24,11 +24,11 @@ public class ReviewResponse {
         this.responseMessage = responseMessage;
     }
 
-    public String getResponseCreateTime() {
+    public ResponseCreateTime getResponseCreateTime() {
         return responseCreateTime;
     }
 
-    public void setResponseCreateTime(String responseCreateTime) {
+    public void setResponseCreateTime(ResponseCreateTime responseCreateTime) {
         this.responseCreateTime = responseCreateTime;
     }
 

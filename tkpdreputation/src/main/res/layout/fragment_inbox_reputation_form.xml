@@ -54,47 +54,47 @@
 
         </LinearLayout>
 
-        <com.tkpd.library.ui.view.ExpandableTextView
-            android:id="@+id/expand_product_review_tips"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_activity"
-            app:animDuration="200"
-            app:maxCollapsedLines="1">
+        <!--<com.tkpd.library.ui.view.ExpandableTextView-->
+            <!--android:id="@+id/expand_product_review_tips"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="@dimen/margin_small"-->
+            <!--android:background="@color/white"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="@dimen/padding_activity"-->
+            <!--app:animDuration="200"-->
+            <!--app:maxCollapsedLines="1">-->
 
-            <ImageView
-                android:id="@id/iv_expand_collapse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_bulb"
-                />
+            <!--<ImageView-->
+                <!--android:id="@id/iv_expand_collapse"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:layout_marginRight="@dimen/margin_small"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:src="@drawable/ic_bulb"-->
+                <!--/>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
-                android:lineSpacingExtra="7sp"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/fonts"
-                android:textStyle="normal"
-                tools:text="Tips Menulis Produk"
-                />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:fontFamily="sans-serif-medium"-->
+                <!--android:lineSpacingExtra="7sp"-->
+                <!--android:textColor="@color/black_70"-->
+                <!--android:textSize="@dimen/fonts"-->
+                <!--android:textStyle="normal"-->
+                <!--tools:text="Tips Menulis Produk"-->
+                <!--/>-->
 
-            <ImageView
-                android:id="@id/iv_expand_collapse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_green_arrow_down"
-                />
-        </com.tkpd.library.ui.view.ExpandableTextView>
+            <!--<ImageView-->
+                <!--android:id="@id/iv_expand_collapse"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:src="@drawable/ic_green_arrow_down"-->
+                <!--/>-->
+        <!--</com.tkpd.library.ui.view.ExpandableTextView>-->
 
         <TextView
             android:layout_width="match_parent"

@@ -24,6 +24,8 @@ public interface InboxReputationDetail {
         void onEditReview();
 
         void onSkipReview(String reviewId);
+
+        void onGoToGiveReview();
     }
 
     interface Presenter extends CustomerPresenter<View> {

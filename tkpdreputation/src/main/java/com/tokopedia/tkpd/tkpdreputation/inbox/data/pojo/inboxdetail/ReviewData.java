@@ -27,10 +27,10 @@ public class ReviewData {
     private List<Object> reviewImageUrl = null;
     @SerializedName("review_create_time")
     @Expose
-    private String reviewCreateTime;
+    private ReviewCreateTime reviewCreateTime;
     @SerializedName("review_update_time")
     @Expose
-    private String reviewUpdateTime;
+    private ReviewUpdateTime reviewUpdateTime;
     @SerializedName("review_anonymity")
     @Expose
     private boolean reviewAnonymity;
@@ -86,19 +86,19 @@ public class ReviewData {
         this.reviewImageUrl = reviewImageUrl;
     }
 
-    public String getReviewCreateTime() {
+    public ReviewCreateTime getReviewCreateTime() {
         return reviewCreateTime;
     }
 
-    public void setReviewCreateTime(String reviewCreateTime) {
+    public void setReviewCreateTime(ReviewCreateTime reviewCreateTime) {
         this.reviewCreateTime = reviewCreateTime;
     }
 
-    public String getReviewUpdateTime() {
+    public ReviewUpdateTime getReviewUpdateTime() {
         return reviewUpdateTime;
     }
 
-    public void setReviewUpdateTime(String reviewUpdateTime) {
+    public void setReviewUpdateTime(ReviewUpdateTime reviewUpdateTime) {
         this.reviewUpdateTime = reviewUpdateTime;
     }
 

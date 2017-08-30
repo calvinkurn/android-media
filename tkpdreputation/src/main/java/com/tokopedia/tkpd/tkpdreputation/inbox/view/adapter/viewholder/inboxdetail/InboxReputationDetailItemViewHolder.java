@@ -78,6 +78,12 @@ public class InboxReputationDetailItemViewHolder extends
             setOverflowButton(element);
         }
 
+        giveReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToGiveReview();
+            }
+        });
 
     }
 

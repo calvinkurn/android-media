@@ -7,9 +7,12 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.InboxReputationDetailPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ProductData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReputationBadge;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ResponseCreateTime;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewCreateTime;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewInboxDatum;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewResponse;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewUpdateTime;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ShopData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ShopReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.UserData;
@@ -19,8 +22,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAtt
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ProductDataDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ResponseCreateTimeDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewCreateTimeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewResponseDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewUpdateTimeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.UserDataDomain;
@@ -153,11 +159,25 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
                 reviewData.getReviewMessage(),
                 reviewData.getReviewRating(),
                 convertToImageAttachmentDomain(reviewData.getReviewImageUrl()),
-                reviewData.getReviewCreateTime(),
-                reviewData.getReviewUpdateTime(),
+                convertToReviewCreateTime(reviewData.getReviewCreateTime()),
+                convertToReviewUpdateTime(reviewData.getReviewUpdateTime()),
                 reviewData.isReviewAnonymity(),
                 convertToReviewResponseDomain(reviewData.getReviewResponse())
         );
+    }
+
+    private ReviewUpdateTimeDomain convertToReviewUpdateTime(ReviewUpdateTime reviewUpdateTime) {
+        return new ReviewUpdateTimeDomain(reviewUpdateTime.getDateTimeFmt1(),
+                reviewUpdateTime.getUnixTimestamp(),
+                reviewUpdateTime.getDateTimeIos(),
+                reviewUpdateTime.getDateTimeAndroid());
+    }
+
+    private ReviewCreateTimeDomain convertToReviewCreateTime(ReviewCreateTime reviewCreateTime) {
+        return new ReviewCreateTimeDomain(reviewCreateTime.getDateTimeFmt1(),
+                reviewCreateTime.getUnixTimestamp(),
+                reviewCreateTime.getDateTimeIos(),
+                reviewCreateTime.getDateTimeAndroid());
     }
 
     private List<ImageAttachmentDomain> convertToImageAttachmentDomain(List<Object> reviewImageUrl) {
@@ -168,9 +188,16 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
     private ReviewResponseDomain convertToReviewResponseDomain(ReviewResponse reviewResponse) {
         return new ReviewResponseDomain(
                 reviewResponse.getResponseMessage(),
-                reviewResponse.getResponseCreateTime(),
+                convertToResponseCreateTime(reviewResponse.getResponseCreateTime()),
                 reviewResponse.getResponseBy()
         );
+    }
+
+    private ResponseCreateTimeDomain convertToResponseCreateTime(ResponseCreateTime responseCreateTime) {
+        return new ResponseCreateTimeDomain(responseCreateTime.getDateTimeFmt1(),
+                responseCreateTime.getUnixTimestamp(),
+                responseCreateTime.getDateTimeIos(),
+                responseCreateTime.getDateTimeAndroid());
     }
 
     private ProductDataDomain convertToProductDataDomain(ProductData productData) {

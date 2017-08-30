@@ -1,8 +1,11 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -40,7 +43,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
-        String id = getIntent().getExtras().getString(ARGS_REPUTATION_ID);
+//        String id = getIntent().getExtras().getString(ARGS_REPUTATION_ID, "");
+        String id = "";
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (InboxReputationFormFragment.class.getSimpleName());
@@ -72,5 +76,10 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     @Override
     public Object getComponent() {
         return getApplicationComponent();
+    }
+
+    public static Intent getGiveReviewIntent(Context context) {
+        Intent intent = new Intent(context, InboxReputationFormActivity.class);
+        return intent;
     }
 }

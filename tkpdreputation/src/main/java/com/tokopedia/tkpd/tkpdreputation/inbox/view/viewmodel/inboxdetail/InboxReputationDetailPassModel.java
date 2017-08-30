@@ -18,11 +18,13 @@ public class InboxReputationDetailPassModel implements Parcelable{
     String deadlineText;
     String invoice;
     String createTime;
+    int role;
 
     public InboxReputationDetailPassModel(String reputationId, String revieweeName,
                                           String revieweeImage, String deadlineText,
                                           String invoice, String createTime,
-                                          ReputationDataViewModel reputationDataViewModel) {
+                                          ReputationDataViewModel reputationDataViewModel,
+                                          int role) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.revieweeImage = revieweeImage;
@@ -30,6 +32,7 @@ public class InboxReputationDetailPassModel implements Parcelable{
         this.invoice = invoice;
         this.createTime = createTime;
         this.reputationDataViewModel = reputationDataViewModel;
+        this.role = role;
     }
 
     protected InboxReputationDetailPassModel(Parcel in) {
@@ -40,6 +43,7 @@ public class InboxReputationDetailPassModel implements Parcelable{
         deadlineText = in.readString();
         invoice = in.readString();
         createTime = in.readString();
+        role = in.readInt();
     }
 
     public static final Creator<InboxReputationDetailPassModel> CREATOR = new Creator<InboxReputationDetailPassModel>() {
@@ -82,6 +86,11 @@ public class InboxReputationDetailPassModel implements Parcelable{
         return reputationDataViewModel;
     }
 
+    public int getRole() {
+        return role;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,5 +105,6 @@ public class InboxReputationDetailPassModel implements Parcelable{
         dest.writeString(deadlineText);
         dest.writeString(invoice);
         dest.writeString(createTime);
+        dest.writeInt(role);
     }
 }

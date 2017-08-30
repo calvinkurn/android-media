@@ -254,12 +254,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onGoToDetail(String reputationId, String invoice, String createTime,
                              String revieweeName, String revieweeImage,
                              ReputationDataViewModel reputationDataViewModel, String textDeadline,
-                             int adapterPosition) {
+                             int adapterPosition, int role) {
         startActivityForResult(
                 InboxReputationDetailActivity.getCallingIntent(
                         getActivity(),
                         getInboxReputationDetailPassModel(reputationId, invoice, createTime,
-                                revieweeImage, revieweeName, textDeadline, reputationDataViewModel),
+                                revieweeImage, revieweeName, textDeadline,
+                                reputationDataViewModel, role),
                         adapterPosition,
                         getTab()),
                 REQUEST_OPEN_DETAIL);
@@ -272,9 +273,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
             String revieweeImage,
             String revieweeName,
             String textDeadline,
-            ReputationDataViewModel reputationDataViewModel) {
+            ReputationDataViewModel reputationDataViewModel,
+            int role) {
         return new InboxReputationDetailPassModel(reputationId, revieweeName, revieweeImage,
-                textDeadline, invoice, createTime, reputationDataViewModel);
+                textDeadline, invoice, createTime, reputationDataViewModel, role);
 
     }
 

@@ -15,11 +15,12 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
     private String invoice;
     private String reputationId;
     private ReputationDataViewModel reputationDataViewModel;
+    private int role;
 
     public InboxReputationItemViewModel(String reputationId, String revieweeName, String createTime,
                                         String revieweePicture, String reputationDaysLeft, String invoice,
-                                        ReputationDataViewModel reputationDataViewModel
-                                        ) {
+                                        ReputationDataViewModel reputationDataViewModel,
+                                        int role) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.createTime = createTime;
@@ -27,6 +28,7 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         this.reputationDaysLeft = reputationDaysLeft;
         this.invoice = invoice;
         this.reputationDataViewModel = reputationDataViewModel;
+        this.role = role;
     }
 
     public String getRevieweeName() {
@@ -61,5 +63,9 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
     @Override
     public int type(InboxReputationTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public int getRole() {
+        return role;
     }
 }

@@ -40,5 +40,7 @@
     <string name="seller_has_not_review">Penjual Belum Menilai</string>
     <string name="score_from_seller">Penilaian dari Penjual</string>
     <string name="locked_reputation">Ulasan terisi otomatis karena batas waktu pengisian telah habis.</string>
+    <string name="smiley_prompt_prefix">Berikan penilaian</string>
+    <string name="smiley_prompt_suffix_shop">pada toko ini?</string>
 
 </resources>

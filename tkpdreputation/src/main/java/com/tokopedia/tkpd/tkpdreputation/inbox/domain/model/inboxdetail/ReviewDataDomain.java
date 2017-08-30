@@ -1,6 +1,11 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
 
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewCreateTime;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewUpdateTime;
+
 import java.util.List;
 
 /**
@@ -14,15 +19,16 @@ public class ReviewDataDomain {
     private String reviewMessage;
     private int reviewRating;
     private List<ImageAttachmentDomain> reviewImageUrl = null;
-    private String reviewCreateTime;
-    private String reviewUpdateTime;
+    private ReviewCreateTimeDomain reviewCreateTime;
+    private ReviewUpdateTimeDomain reviewUpdateTime;
     private boolean reviewAnonymity;
     private ReviewResponseDomain reviewResponse;
 
     public ReviewDataDomain(int reviewId, int reputationId, String reviewTitle,
                             String reviewMessage, int reviewRating,
                             List<ImageAttachmentDomain> reviewImageUrl,
-                            String reviewCreateTime, String reviewUpdateTime,
+                            ReviewCreateTimeDomain reviewCreateTime,
+                            ReviewUpdateTimeDomain reviewUpdateTime,
                             boolean reviewAnonymity, ReviewResponseDomain reviewResponse) {
         this.reviewId = reviewId;
         this.reputationId = reputationId;
@@ -60,11 +66,11 @@ public class ReviewDataDomain {
         return reviewImageUrl;
     }
 
-    public String getReviewCreateTime() {
+    public ReviewCreateTimeDomain getReviewCreateTime() {
         return reviewCreateTime;
     }
 
-    public String getReviewUpdateTime() {
+    public ReviewUpdateTimeDomain getReviewUpdateTime() {
         return reviewUpdateTime;
     }
 

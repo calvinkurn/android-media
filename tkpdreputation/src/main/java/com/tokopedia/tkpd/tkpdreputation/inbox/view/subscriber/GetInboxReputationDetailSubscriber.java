@@ -67,9 +67,9 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 detailDomain.getProductData().getProductImageUrl(),
                 String.valueOf(detailDomain.getReviewData().getReviewId()),
                 inboxDomain.getUserData().getFullName(),
-                TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime()) ?
-                        detailDomain.getReviewData().getReviewCreateTime() : detailDomain
-                        .getReviewData().getReviewUpdateTime(),
+                TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime().getDateTimeAndroid()) ?
+                        detailDomain.getReviewData().getReviewCreateTime().getDateTimeAndroid() : detailDomain
+                        .getReviewData().getReviewUpdateTime().getDateTimeAndroid(),
                 convertToImageAttachmentViewModel(detailDomain.getReviewData().getReviewImageUrl()),
                 detailDomain.getReviewData().getReviewMessage(),
                 detailDomain.getReviewData().getReviewRating(),

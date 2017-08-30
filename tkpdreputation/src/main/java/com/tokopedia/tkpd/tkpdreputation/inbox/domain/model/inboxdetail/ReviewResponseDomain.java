@@ -6,10 +6,11 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
 
 public class ReviewResponseDomain {
     private String responseMessage;
-    private String responseCreateTime;
+    private ResponseCreateTimeDomain responseCreateTime;
     private String responseBy;
 
-    public ReviewResponseDomain(String responseMessage, String responseCreateTime,
+    public ReviewResponseDomain(String responseMessage,
+                                ResponseCreateTimeDomain responseCreateTime,
                                 String responseBy) {
         this.responseMessage = responseMessage;
         this.responseCreateTime = responseCreateTime;
@@ -20,7 +21,7 @@ public class ReviewResponseDomain {
         return responseMessage;
     }
 
-    public String getResponseCreateTime() {
+    public ResponseCreateTimeDomain getResponseCreateTime() {
         return responseCreateTime;
     }
 

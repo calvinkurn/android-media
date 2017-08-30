@@ -1,13 +1,20 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -17,6 +24,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetailAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
@@ -37,9 +45,11 @@ import javax.inject.Inject;
 public class InboxReputationDetailFragment extends BaseDaggerFragment
         implements InboxReputationDetail.View, ReputationAdapter.ReputationListener {
 
+    private static final int REQUEST_GIVE_REVIEW = 101;
     RecyclerView listProduct;
     LinearLayoutManager layoutManager;
     InboxReputationDetailAdapter adapter;
+    View mainView;
 
     @Inject
     InboxReputationDetailPresenter presenter;
@@ -104,6 +114,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         setRetainInstance(true);
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation_detail, container,
                 false);
+        mainView = parentView.findViewById(R.id.main);
         listProduct = (RecyclerView) parentView.findViewById(R.id.product_list);
         prepareView();
         presenter.attachView(this);
@@ -150,16 +161,17 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetInboxDetail(String errorMessage) {
         finishLoading();
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getInboxDetail(
-                                passModel.getReputationId(),
-                                getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
-                        );
-                    }
-                });
+        if (getActivity() != null && mainView != null)
+            NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.getInboxDetail(
+                                    passModel.getReputationId(),
+                                    getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
+                            );
+                        }
+                    });
     }
 
     private void finishLoading() {
@@ -193,13 +205,57 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToGiveReview() {
+        startActivityForResult(
+                InboxReputationFormActivity.getGiveReviewIntent(getActivity()),
+                REQUEST_GIVE_REVIEW);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
     }
 
     @Override
-    public void onReputationSmileyClicked(String value) {
+    public void onReputationSmileyClicked(String name, String value) {
+        if (!TextUtils.isEmpty(value)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(getReputationSmileyMessage(name));
+            builder.setPositiveButton(getString(R.string.send),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    });
+            builder.setNegativeButton(getString(R.string.title_cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int param) {
+                            dialog.dismiss();
+                        }
+                    });
+            Dialog dialog = builder.create();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.show();
+        }
+    }
+
+    private String getReputationSmileyMessage(String name) {
+        return getString(R.string.smiley_prompt_prefix) + " " + name
+                + " " + getSmileySuffixMessage();
+    }
+
+    private String getSmileySuffixMessage() {
+        return getString(R.string.smiley_prompt_suffix_shop);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
+
+        } else
+            super.onActivityResult(requestCode, resultCode, data);
     }
 }
