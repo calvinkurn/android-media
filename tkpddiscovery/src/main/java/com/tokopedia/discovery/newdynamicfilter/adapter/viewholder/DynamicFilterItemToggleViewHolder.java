@@ -33,6 +33,13 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
         final Option option = filter.getOptions().get(0);
         title.setText(option.getName());
 
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle.setChecked(!toggle.isChecked());
+            }
+        });
+
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener
                 = new CompoundButton.OnCheckedChangeListener() {
                     @Override

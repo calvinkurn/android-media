@@ -88,6 +88,13 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private void bindWholesaleOptionItem(final Option option) {
         wholesaleTitle.setText(option.getName());
 
+        wholesaleTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wholesaleToggle.setChecked(!wholesaleToggle.isChecked());
+            }
+        });
+
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener
                 = new CompoundButton.OnCheckedChangeListener() {
                     @Override
