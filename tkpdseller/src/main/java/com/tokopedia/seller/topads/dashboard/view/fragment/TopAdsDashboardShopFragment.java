@@ -9,6 +9,7 @@ import android.widget.Button;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
@@ -91,6 +92,38 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
                 populateShop();
+            }
+        }
+    }
+
+    @Override
+    public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        super.onDateChoosen(sDate, eDate, lastSelection, selectionType);
+        trackingDateTopAds(lastSelection, selectionType);
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsShopChooseDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
             }
         }
     }

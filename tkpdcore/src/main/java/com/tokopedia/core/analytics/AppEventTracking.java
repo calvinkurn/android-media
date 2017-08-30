@@ -216,6 +216,7 @@ public interface AppEventTracking {
         String DASHBOARD_FAB = "Dashboard FAB";
         String GOLD_MERCHANT_ATC = "Gold Merchant ATC";
         String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
+        String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
     }
 
     interface Action {
@@ -474,7 +475,7 @@ public interface AppEventTracking {
         String TO_APP_ORDER = "To App - Order";
         String TOPADS = "TopAds";
         String SELLER_HOME = "Home - SellerApp";
-        String ADD_BALANCE = "Add Balance - ";
+        String ADD_BALANCE = "Add Balance";
         String BALANCE_OPTION_50_RB = "Rp. 50,000";
         String BALANCE_OPTION_100_RB = "Rp. 100,000";
         String BALANCE_OPTION_500_RB = "Rp. 500,000";
@@ -510,7 +511,7 @@ public interface AppEventTracking {
         String KEYWORD_TYPE_EXACT = "Exact Match";
         String DATE_CUSTOM = "Date Custom";
         String STATISTIC_DASHBOARD = "Statistic (TopAds Dashboard) - ";
-        String GROUP = "Group - ";
+        String GROUP = "Group";
         String ADD_GROUP_STEP_1 = "Add Group Promo Step 1";
         String ADD_GROUP_STEP_2 = "Add Group Promo Step 2 - ";
         String ADD_GROUP_STEP_3 = "Add Group Promo Step 3 - ";
@@ -539,6 +540,26 @@ public interface AppEventTracking {
         String CONTINUE_SHOP_BIODATA_ERROR = "Continue Shop Biodata Error";
         String SAVE_LOGISTIC = "Save Logistic";
         String SAVE_LOGISTIC_ERROR = "Save Logistic Error";
+        String KEYWORD = "Keyword";
+        String PRODUCT_WITHOUT_DASH = "Product";
+        String PERIOD_OPTION_MAIN_PAGE = "Date Period (Main Page) - ";
+        String DATE_CUSTOM_MAIN_PAGE = "Date Custom (Main Page)";
+        String PERIOD_OPTION_STATISTIK = "Date Period (Statistik Page) - ";
+        String DATE_CUSTOM_STATISTIK = "Date Custom (Statistik Page)";
+        String PERIOD_OPTION_GROUP = "Date Period (Group Page) - ";
+        String DATE_CUSTOM_GROUP = "Date Custom (Group Page)";
+        String PERIOD_OPTION_PRODUCT = "Date Period (Product Page) - ";
+        String DATE_CUSTOM_PRODUCT = "Date Custom (Product Page)";
+        String PERIOD_OPTION_GROUP_DETAIL = "Date Period (Detail Group Page) - ";
+        String DATE_CUSTOM_GROUP_DETAIL = "Date Custom (Detail Group Page)";
+        String PERIOD_OPTION_PRODUCT_DETAIL = "Date Period (Detail Product Page) - ";
+        String DATE_CUSTOM_PRODUCT_DETAIL = "Date Custom (Detail Product Page)";
+        String EDIT_GROUP_ADD_PRODUCT = "Edit Group Promo - Tambah Produk";
+        String EDIT_PRODUCT_COST = "Edit Product Promo - Biaya ";
+        String EDIT_PRODUCT_SCHEDULE = "Edit Product Promo - Jadwal Tampil ";
+        String EDIT_GROUP_NAME = "Edit Group Promo - Ganti Nama Grup";
+        String DETAIL_PROMO_PRODUCT_PDP = "Detail Product Promo - PDP";
+        String DETAIL_PROMO_PRODUCT_GROUP = "Detail Product Promo - Detail Group";
     }
 
     interface SOCIAL_MEDIA {

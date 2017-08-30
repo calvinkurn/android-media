@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
@@ -33,7 +35,16 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
     protected void onClickedNext() {
         super.onClickedNext();
         if(detailAd != null){
+            trackingEditCostTopads();
             daggerPresenter.saveAd(detailAd);
+        }
+    }
+
+    private void trackingEditCostTopads() {
+        if(detailAd.isBudget()) {
+            UnifyTracking.eventTopAdsProductEditProductCost(AppEventTracking.EventLabel.BUDGET_PER_DAY);
+        }else{
+            UnifyTracking.eventTopAdsProductEditProductCost(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
 

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
@@ -267,6 +268,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     void goToAddCredit() {
+        UnifyTracking.eventTopAdsProductAddBalance();
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
         startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT);
     }

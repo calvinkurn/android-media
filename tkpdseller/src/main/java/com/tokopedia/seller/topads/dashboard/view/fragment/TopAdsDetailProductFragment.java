@@ -10,9 +10,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
@@ -180,12 +184,14 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     private void onNameClicked() {
+        UnifyTracking.eventTopAdsProductClickDetailProductPDP();
         if (listener != null) {
             listener.goToProductActivity(ad.getProductUri());
         }
     }
 
     private void onPromoGroupClicked() {
+        UnifyTracking.eventTopAdsProductClickDetailGroupPDP();
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getGroupId());
@@ -206,5 +212,37 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     // for show case
     public View getStatusView(){
         return getView().findViewById(R.id.status);
+    }
+
+    @Override
+    public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        super.onDateChoosen(sDate, eDate, lastSelection, selectionType);
+        trackingDateTopAds(lastSelection, selectionType);
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsProductDetailProductPageDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

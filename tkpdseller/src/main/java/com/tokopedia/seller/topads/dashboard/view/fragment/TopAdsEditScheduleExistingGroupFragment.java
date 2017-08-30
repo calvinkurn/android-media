@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.model.StepperModel;
@@ -53,7 +55,16 @@ public class TopAdsEditScheduleExistingGroupFragment extends TopAdsNewScheduleFr
     protected void onNextClicked() {
         super.onNextClicked();
         if(detailAd != null) {
+            trackingEditScheduleTopads();
             daggerPresenter.saveAd(detailAd);
+        }
+    }
+
+    private void trackingEditScheduleTopads() {
+        if(detailAd.isScheduled()) {
+            UnifyTracking.eventTopAdsProductEditGrupSchedule(AppEventTracking.EventLabel.SHOWTIME_SETUP);
+        }else{
+            UnifyTracking.eventTopAdsProductEditGrupSchedule(AppEventTracking.EventLabel.SHOWTIME_AUTO);
         }
     }
 

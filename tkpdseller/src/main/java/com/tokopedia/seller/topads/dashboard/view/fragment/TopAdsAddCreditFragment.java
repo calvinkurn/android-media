@@ -137,7 +137,6 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     private void chooseCredit() {
         if(adapter.getSelectedCredit() != null) {
-            UnifyTracking.eventTopAdsProductAddBalance(adapter.getSelectedCredit().getProductPrice());
             getActivity().setResult(Activity.RESULT_OK);
             Intent intent = new Intent(getActivity(), TopAdsPaymentCreditActivity.class);
             intent.putExtra(TopAdsConstant.EXTRA_CREDIT, adapter.getSelectedCredit());

@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.dashboard.view.activity;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -12,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -20,6 +23,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
@@ -236,6 +240,38 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onDatePickerChoose(int selectionDatePickerType, int selectionDatePeriodIndex) {
+        super.onDatePickerChoose(selectionDatePickerType, selectionDatePeriodIndex);
+        trackingDateTopAds(selectionDatePeriodIndex, selectionDatePickerType);
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsProductStatistikDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsProductStatistikDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsProductStatistikDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsProductStatistikDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsProductStatistikDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsProductStatistikDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

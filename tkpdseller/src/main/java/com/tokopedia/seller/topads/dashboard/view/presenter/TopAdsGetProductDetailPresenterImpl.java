@@ -32,9 +32,7 @@ public class TopAdsGetProductDetailPresenterImpl<T extends TopAdsGetProductDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            // no op
-                        }
+
                     }
 
                     @Override

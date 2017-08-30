@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -78,6 +79,7 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventTopAdsProductEditGroupName();
                 saveAd();
             }
         });

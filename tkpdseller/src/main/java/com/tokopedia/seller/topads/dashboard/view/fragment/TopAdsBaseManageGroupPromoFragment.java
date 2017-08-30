@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
