@@ -10,6 +10,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.product.listener.IUssdDigitalView;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.PulsaBalance;
+import com.tokopedia.digital.utils.DeviceUtil;
 
 /**
  * Created by ashwanityagi on 19/07/17.
@@ -70,6 +71,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
 
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
+        number= DeviceUtil.formatPrefixClientNumber(number);
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM1, number);

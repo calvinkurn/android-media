@@ -178,11 +178,7 @@ public class OperatorVerificationDialog extends DialogFragment {
                 if (tempInput.length() < 4) {
                     imgOperator.setVisibility(GONE);
                 }
-                String tempInputTrim = tempInput;
-                tempInput = DeviceUtil.validatePrefixClientNumber(tempInput);
-                if (!tempInput.startsWith("0")) {
-                    tempInput = "0" + tempInput;
-                }
+                tempInput = DeviceUtil.formatPrefixClientNumber(tempInput);
                 if (tempInput.isEmpty()) {
                     tvErrorNumber.setText("");
                     tvErrorNumber.setVisibility(GONE);
@@ -191,7 +187,7 @@ public class OperatorVerificationDialog extends DialogFragment {
                     if (errorString == null) {
                         tvErrorNumber.setText("");
                         tvErrorNumber.setVisibility(GONE);
-                        if (matchOperator(tempInputTrim)) {
+                        if (matchOperator(tempInput)) {
                             setOkButtonEnable(true);
                         } else {
                             tvErrorNumber.setText(getActivity().getString(R.string.error_message_ussd_operator_not_matched));

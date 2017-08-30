@@ -27,8 +27,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.number;
-
 /**
  * @author anggaprasetiyo on 3/6/17.
  */
@@ -117,6 +115,17 @@ public class DeviceUtil {
         return phoneNumber.replaceAll("[^0-9]+", "");
     }
 
+    public static String formatPrefixClientNumber(String phoneNumber) {
+        if(phoneNumber==null || "".equalsIgnoreCase(phoneNumber.trim())){
+            return phoneNumber;
+        }
+        phoneNumber=validatePrefixClientNumber(phoneNumber);
+        if (!phoneNumber.startsWith("0")) {
+            phoneNumber = "0" + phoneNumber;
+        }
+        return phoneNumber;
+    }
+
     public static String getMobileNumber(Activity context, int simIndex) {
         String phoneNumber = null;
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
@@ -126,6 +135,7 @@ public class DeviceUtil {
                     SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(simIndex);
                     if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == simIndex) {
                         phoneNumber = lsuSubscriptionInfo.getNumber();
+                        phoneNumber= formatPrefixClientNumber(phoneNumber);
                         return phoneNumber;
                     }
                 }
@@ -141,11 +151,11 @@ public class DeviceUtil {
         if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-                if (subscriptionInfos != null){
+                if (subscriptionInfos != null) {
                     for (SubscriptionInfo lsuSubscriptionInfo : subscriptionInfos) {
                         if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == simIndex) {
                             if (lsuSubscriptionInfo.getCarrierName() != null) {
-                                operatorName = lsuSubscriptionInfo.getCarrierName().toString();
+                                operatorName = lsuSubscriptionInfo.getDisplayName().toString();
                                 return operatorName;
                             }
                         }
@@ -174,9 +184,9 @@ public class DeviceUtil {
     }
 
     public static boolean verifyUssdOperator(String simOperatorName, String selectedOperatorName) {
-        simOperatorName=getOperatorFirstName(simOperatorName);
-        selectedOperatorName=getOperatorFirstName(selectedOperatorName);
-        if(simOperatorName==null || selectedOperatorName==null){
+        simOperatorName = getOperatorFirstName(simOperatorName);
+        selectedOperatorName = getOperatorFirstName(selectedOperatorName);
+        if (simOperatorName == null || selectedOperatorName == null) {
             return false;
         }
         if ("Tri".equalsIgnoreCase(selectedOperatorName.trim()) && "3".equalsIgnoreCase(simOperatorName.trim())) {
@@ -231,8 +241,8 @@ public class DeviceUtil {
         return false;
     }
 
-    public static String getOperatorFirstName(String operatorName){
-        if(operatorName!=null && !"".equalsIgnoreCase(operatorName.trim())){
+    public static String getOperatorFirstName(String operatorName) {
+        if (operatorName != null && !"".equalsIgnoreCase(operatorName.trim())) {
             return operatorName.split(" ")[0];
         }
         return null;

@@ -406,7 +406,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             ussdTimeOut = false;
         } else {
             productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(message, selectedSim), getSubscriberCheckPulsaBalance(selectedSim));
-           removeUssdTimerCallback();
+            removeUssdTimerCallback();
         }
     }
 
@@ -421,7 +421,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if(view==null || view.getActivity()==null){
+                if (view == null || view.getActivity() == null) {
                     return;
                 }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -453,7 +453,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             @Override
             public void onNext(PulsaBalance pulsaBalance) {
-                if(view != null && view.getActivity() != null) {
+                if (view != null && view.getActivity() != null) {
                     view.renderPulsaBalance(pulsaBalance, selectedSim);
                 }
             }
@@ -492,12 +492,16 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message, int selectedSim) {
+        String number = getDeviceMobileNumber(selectedSim);
+        if (number == null || "".equalsIgnoreCase(number.trim())) {
+            number = getUssdPhoneNumberFromCache(selectedSim);
+        }
         RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
         requestBodyPulsaBalance.setType("balance");
         Attributes attributes = new Attributes();
         attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator(selectedSim).getOperatorId()));
         attributes.setMessage(message);
-        attributes.setClientNumber(getDeviceMobileNumber(selectedSim));
+        attributes.setClientNumber(number);
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyPulsaBalance.setAttributes(attributes);
@@ -542,14 +546,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public String getDeviceMobileNumber(int selectedSim) {
         String currentMobileNumber = null;
         currentMobileNumber = DeviceUtil.getMobileNumber(view.getActivity(), selectedSim);
-        if (currentMobileNumber == null) {
-            return currentMobileNumber;
-        }
-        currentMobileNumber=DeviceUtil.validatePrefixClientNumber(currentMobileNumber);
-
-        if (!"".equalsIgnoreCase(currentMobileNumber) && !currentMobileNumber.startsWith("0")) {
-            currentMobileNumber = "0" + currentMobileNumber;
-        }
         return currentMobileNumber;
     }
 
@@ -572,7 +568,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             @Override
             public void run() {
                 ussdTimeOut = true;
-                if(view != null && view.getActivity() != null) {
+                if (view != null && view.getActivity() != null) {
                     view.showPulsaBalanceError(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
                 }
             }
@@ -581,8 +577,8 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     @Override
-    public void removeUssdTimerCallback(){
-        if(ussdHandler!=null){
+    public void removeUssdTimerCallback() {
+        if (ussdHandler != null) {
             ussdHandler.removeCallbacksAndMessages(null);
         }
 
@@ -601,6 +597,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
+        number=DeviceUtil.formatPrefixClientNumber(number);
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM1, number);
