@@ -386,8 +386,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
             totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
             pendingFareLayout.setVisibility(View.VISIBLE);
-        } else {
-            ratingLayout.setVisibility(View.VISIBLE);
         }
     }
 
