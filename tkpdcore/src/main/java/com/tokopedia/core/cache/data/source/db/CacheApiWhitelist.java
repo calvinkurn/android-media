@@ -53,9 +53,6 @@ public class CacheApiWhitelist extends BaseModel {
 
     @Override
     public String toString() {
-        return "CacheApiWhitelist{" +
-                "host='" + host + '\'' +
-                ", path='" + path +
-                '}';
+        return host + path;
     }
 }

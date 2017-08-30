@@ -311,6 +311,15 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
+    private ArrayList<String> mappingListTickerMessage(ArrayList<Ticker.Tickers> tickersResponse) {
+        ArrayList<String> strings = new ArrayList<>();
+        for (Ticker.Tickers tickers : tickersResponse) {
+            String str = tickers.getMessage2().replaceAll("<p>(.*?)</p>", "$1");
+            strings.add(str);
+        }
+        return strings;
+    }
+
     private void getPromo() {
         category.fetchBanners(onGetPromoListener());
         category.fetchSlides(onGetPromoListener());

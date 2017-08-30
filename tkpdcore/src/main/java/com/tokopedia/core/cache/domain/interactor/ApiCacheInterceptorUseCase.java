@@ -1,3 +1,4 @@
+
 package com.tokopedia.core.cache.domain.interactor;
 
 import android.net.Uri;
@@ -5,8 +6,11 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.UrlEncodedQueryString;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 
@@ -16,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Calendar;
 
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -34,59 +39,54 @@ import rx.Observable;
 
 public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
 
+    public static final String METHOD = "METHOD";
+    public static final String FULL_URL = "FULL_URL";
     private static final String TAG = "ApiCacheInterceptorUseC";
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private String method;
     private String url;
-    private CacheHelper cacheHelper = new CacheHelper();
+    private ApiCacheDataSource cacheHelper = new ApiCacheDataSource();
     private boolean isInWhiteList;
     private CacheApiWhitelist whiteList;
     private boolean isEmptyData, isExpiredData;
     private CacheApiData tempData;
     private long maxContentLength = 250000L;
     private CacheApiData cacheApiData;
+    private ApiCacheRepositoryImpl apiCacheRepository;
 
+    public ApiCacheInterceptorUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ApiCacheRepositoryImpl apiCacheRepository) {
+        super(threadExecutor, postExecutionThread);
+        this.apiCacheRepository = apiCacheRepository;
+    }
 
-    public ApiCacheInterceptorUseCase(String method, String url) {
-        this.method = method;
-        this.url = url;
+    public ApiCacheInterceptorUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
+        this.apiCacheRepository = apiCacheRepository;
     }
 
     @Override
     public Observable<CacheApiData> createObservable(RequestParams requestParams) {
+        method = requestParams.getString(METHOD, "");
+        url = requestParams.getString(FULL_URL, "");
+
         cacheApiData = new CacheApiData();
         cacheApiData.setMethod(method); // get method
         cacheApiData = setUrl(cacheApiData, url);
-        if (isInWhiteList(cacheApiData)) {
+        if (apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath())) {
             tempData = cacheHelper.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
             isEmptyData = (tempData == null);
 
             if (!isEmptyData) {
-                isExpiredData = (System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList.getExpiredTime();
-                if (isExpiredData) {
-                    tempData.delete();
-                }
+
+                cacheApiData.setResponseDate(tempData.responseDate);
+                cacheApiData.setExpiredDate(tempData.expiredDate);
+                cacheApiData.setResponseBody(tempData.responseBody);
             }
 
         }
         return Observable.just(cacheApiData);
-    }
-
-    public CacheApiData getTempData() {
-        return tempData;
-    }
-
-    public boolean isExpiredData() {
-        return isExpiredData;
-    }
-
-    public boolean isEmptyData() {
-        return isEmptyData;
-    }
-
-    public boolean isInWhiteList(CacheApiData cacheApiData) {
-        whiteList = cacheHelper.queryFromRaw(cacheApiData.getHost(), cacheApiData.getPath());
-        return isInWhiteList = (whiteList != null);
     }
 
     public boolean isInWhiteList() {
@@ -116,7 +116,7 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
             UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri2);
             queryString.remove("hash");
             queryString.remove("device_time");
-            Log.d(TAG, "sample : " + queryString);
+//            Log.d(TAG, "sample : " + queryString);
             cacheApiData.setRequestParam(((queryString != null) ? "?" + queryString.toString().trim() : ""));
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -216,7 +216,10 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
     }
 
     public void updateResponse(Response response) {
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.SECOND, (int) whiteList.getExpiredTime());
         cacheApiData.setResponseDate(System.currentTimeMillis() / 1000L);
+        cacheApiData.setExpiredDate(instance.getTimeInMillis() / 1000L);
 
         try {
             putResponseBody(cacheApiData, response);

@@ -9,6 +9,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -40,7 +41,6 @@ public class DigitalProductActivity extends BasePresenterActivity
     protected void setupURIPass(Uri data) {
 
     }
-
 
     @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.DIGITAL, Constants.Applinks.DIGITAL_PRODUCT})

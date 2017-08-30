@@ -2,6 +2,7 @@ package com.tokopedia.core.gcm;
 
 /**
  * @author by alvarisi on 12/20/16.
+ * this class contain all string used for applink/PN case
  */
 
 public interface Constants {
@@ -29,8 +30,10 @@ public interface Constants {
     int REGISTRATION_STATUS_ERROR = 2;
     String REGISTRATION_MESSAGE_OK = "FCM Sucessfully";
     String REGISTRATION_MESSAGE_ERROR = "FCM Error";
+    String URL_MARKET = "market://details?id=";
     String EXTRA_PLAYSTORE_URL = "market://details?id=com.tokopedia.tkpd";
     String EXTRA_FROM_PUSH = "from_notif";
+    String EXTRA_APPLINK = "applink_url";
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_UNREAD = "unread";
     String EXTRA_PUSH_PERSONALIZATION = "EXTRA_PUSH_PERSONALIZATION";
@@ -63,6 +66,7 @@ public interface Constants {
         String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
         String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
         String PRODUCT_INFO = "tokopedia://product/{product_id}";
+        String PRODUCT_ADD = "tokopedia://product/add";
         String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
         String PURCHASE_ORDER = "tokopedia://buyer/order";
         String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
@@ -93,12 +97,22 @@ public interface Constants {
         String RECENT_VIEW = "tokopedia://recentlyviewed";
         String TOPPICKS = "tokopedia://toppicks";
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
-        String SELLER_APP_HOME = "sellerapp://home";
+
+        interface SellerApp{
+            String PRODUCT_ADD = "sellerapp://product/add";
+            String SALES = "sellerapp://sales";
+            String TOPADS_CREDIT = "sellerapp://topads/buy";
+            String TOPADS_PRODUCT_CREATE = "sellerapp://topads/product/create";
+            String GOLD_MERCHANT = "sellerapp://gold";
+            String SELLER_APP_HOME = "sellerapp://home";
+            String TOPADS_DASHBOARD = "sellerapp://topads";
+            String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
+        }
     }
 
     interface Schemes {
         String HTTP = "http";
-        String HTTPS = HTTP+"s";
+        String HTTPS = HTTP + "s";
         String APPLINKS = "tokopedia";
     }
 

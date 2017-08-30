@@ -1,9 +1,24 @@
 package com.tokopedia.core.cache.interceptor;
 
+import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.domain.interactor.ApiCacheInterceptorUseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
+import com.tokopedia.core.cache.domain.ApiCacheRepository;
+import com.tokopedia.core.cache.domain.interactor.BaseApiCacheInterceptor;
+import com.tokopedia.core.cache.domain.interactor.CheckWhiteListUseCase;
+import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheDataUseCase;
+import com.tokopedia.core.cache.domain.interactor.GetCacheDataUseCase;
+import com.tokopedia.core.cache.domain.interactor.SaveToDbUseCase;
+import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
 
@@ -25,15 +40,36 @@ public class ApiCacheInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        ApiCacheInterceptorUseCase apiCacheInterceptorUseCase = new ApiCacheInterceptorUseCase(
-                request.method(), request.url().toString()
+        ThreadExecutor threadExecutor = new JobExecutor();
+        PostExecutionThread postExecutionThread = new UIThread();
+        String versionName = null;
+        try {
+            versionName = MainApplication.getAppContext().getPackageManager().getPackageInfo(MainApplication.getAppContext().getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+        ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(
+                new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API),
+                versionName,
+                new ApiCacheDataSource()
         );
-        apiCacheInterceptorUseCase.createObservableSync(RequestParams.EMPTY).toBlocking().first();
 
-        if (apiCacheInterceptorUseCase.isInWhiteList()) {
+        new ClearTimeOutCacheDataUseCase(threadExecutor, postExecutionThread, apiCacheRepository).createObservableSync(RequestParams.EMPTY).toBlocking().first();
 
-            if (apiCacheInterceptorUseCase.isEmptyData()) {
-                Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " data is not here !!");
+        CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
+        GetCacheDataUseCase getCacheDataUseCase = new GetCacheDataUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
+        SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(BaseApiCacheInterceptor.FULL_URL, request.url().toString());
+        requestParams.putString(BaseApiCacheInterceptor.METHOD, request.method());
+
+        String cacheData = getCacheDataUseCase.createObservableSync(requestParams).toBlocking().first();
+        Boolean isInWhiteList = checkWhiteListUseCase.createObservableSync(requestParams).toBlocking().first();
+
+        if (isInWhiteList) {
+            if (cacheData == null || cacheData.equals("")) {
+                Log.d(LOG_TAG, request.url().toString() + " data is not here !!");
                 Response response;
                 try {
                     response = chain.proceed(request);
@@ -41,38 +77,23 @@ public class ApiCacheInterceptor implements Interceptor {
                     throw e;
                 }
 
-                apiCacheInterceptorUseCase.updateResponse(response);
+                requestParams.putObject(SaveToDbUseCase.RESPONSE, response);
 
-                return response;
-            }
-
-            if (apiCacheInterceptorUseCase.isExpiredData()) {
-                // delete row
-                Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " is expired time !!");
-
-                Response response;
-                try {
-                    response = chain.proceed(request);
-                } catch (Exception e) {
-                    throw e;
-                }
-
-                apiCacheInterceptorUseCase.updateResponse(response);
+                saveToDbUseCase.createObservableSync(requestParams).toBlocking().first();
 
                 return response;
             } else {
-
-                Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " already in here !!");
+                Log.d(LOG_TAG, request.url().toString() + " already in here !!");
                 Response.Builder builder = new Response.Builder();
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);
                 builder.code(200);
                 builder.message("");
-                builder.body(ResponseBody.create(MediaType.parse("application/json"), apiCacheInterceptorUseCase.getTempData().getResponseBody()));
+                builder.body(ResponseBody.create(MediaType.parse("application/json"), cacheData));
                 return builder.build();
             }
         }else{
-            Log.d(LOG_TAG, "just hit another network !!");
+            Log.d(LOG_TAG, String.format("%s just hit another network !!", request.url().toString()));
             Response response;
             try {
                 response = chain.proceed(request);

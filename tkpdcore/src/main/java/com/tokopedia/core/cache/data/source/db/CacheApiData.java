@@ -24,18 +24,25 @@ public class CacheApiData extends BaseModel {
     @ContainerKey("response_date")
     @Column
     public long responseDate;
-
+    @Column
+    public long expiredDate;
     @PrimaryKey
     @Column
     private String host;
-
     @PrimaryKey
     @Column
     private String path;
-
     @PrimaryKey
     @Column
     private String method;
+
+    public long getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(long expiredDate) {
+        this.expiredDate = expiredDate;
+    }
 
     public String getHost() {
         return host;

@@ -314,6 +314,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             case 3:
                 if (isFromCategory()) {
                     browseView.openCategoryNavigation(browseModel.getDepartmentId());
+                    UnifyTracking.eventBottomCategoryNavigation(browseModel.getParentDepartement(),browseModel.getDepartmentId());
                 } else {
                     String shareUrl = browseView.getShareUrl();
                     if (StringUtils.isNotBlank(shareUrl)) {

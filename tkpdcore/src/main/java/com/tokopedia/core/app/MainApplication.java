@@ -30,7 +30,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.data.source.cache.CacheHelper;
+import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -74,7 +74,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
     @Inject
-    CacheHelper cacheHelper;
+    ApiCacheDataSource cacheHelper;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -299,7 +299,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         locationUtils.initLocationBackground();
         TooLargeTool.startLogging(this);
 
-        cacheHelper = new CacheHelper();
+        cacheHelper = new ApiCacheDataSource();
         addToWhiteList();
     }
 

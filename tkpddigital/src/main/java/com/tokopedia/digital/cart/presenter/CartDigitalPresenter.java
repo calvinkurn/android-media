@@ -421,6 +421,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
+                cartDigitalInfoData.setForceRenderCart(true);
                 view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
         };
