@@ -346,6 +346,10 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void getOverviewPolyline(double sourceLat, double sourceLng, double destinationLat, double destinationLng) {
+        if (getView() == null || getView().getActivity() == null) {
+            return;
+        }
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
                 sourceLat,
