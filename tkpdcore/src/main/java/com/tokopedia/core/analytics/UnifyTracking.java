@@ -2042,36 +2042,48 @@ public class UnifyTracking extends TrackingUtils {
         eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_ADD_PRODUCT);
     }
 
-    public static void eventTopAdsProductNewGroup(String groupOption){
-        eventTopAdsProduct(AppEventTracking.EventLabel.GROUP + groupOption);
+    public static void eventTopAdsProductNewPromo(String promoOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO + promoOption);
     }
 
-    public static void eventTopAdsProductAddGrupStep1(){
+    public static void eventTopAdsProductNewPromoGroup(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_GROUP);
+    }
+
+    public static void eventTopAdsProductNewPromoProduct(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_PRODUCT);
+    }
+
+    public static void eventTopAdsProductNewPromoKeywordPositif(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_KEYWORD_POSITIF);
+    }
+
+    public static void eventTopAdsProductNewPromoKeywordNegatif(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_KEYWORD_NEGATIVE);
+    }
+
+    public static void eventTopAdsProductAddPromoStep1(){
         eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_1);
     }
 
-    public static void eventTopAdsProductAddGrupStep2(String budgetOption){
+    public static void eventTopAdsProductAddPromoStep2(String budgetOption){
         eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_2 + budgetOption);
     }
 
-    public static void eventTopAdsProductAddGrupStep3(String showTimeOption){
+    public static void eventTopAdsProductAddPromoStep3(String showTimeOption){
         eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_3 + showTimeOption);
     }
 
-    public static void eventTopAdsProductNewProduct(String productOption){
-        eventTopAdsProduct(AppEventTracking.EventLabel.PRODUCT + productOption);
+    public static void eventTopAdsProductAddPromoExistingGroupStep1(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_EXISTING_GROUP_STEP_1);
     }
 
-    public static void eventTopAdsProductAddProductStep1(){
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_STEP_1);
+    public static void eventTopAdsProductAddPromoWithoutGroupStep1(){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_WITHOUT_GROUP_STEP_1);
     }
 
-    public static void eventTopAdsProductAddProductStep2(String budgetOption){
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_STEP_2 + budgetOption);
-    }
-
-    public static void eventTopAdsProductAddProductStep3(String showtimeOption){
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_STEP_3 + showtimeOption);
+    public static void eventTopAdsProductAddPromoWithoutGroupStep2(String budgetOption){
+        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_WITHOUT_GROUP_STEP_2 + budgetOption);
     }
 
     public static void eventTopAdsProductFilter(String filterOption){

@@ -33,10 +33,12 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
 
     @Override
     protected void onClickedNext() {
-        super.onClickedNext();
-        if(detailAd != null){
-            trackingEditCostTopads();
-            daggerPresenter.saveAd(detailAd);
+        if(!isError()) {
+            super.onClickedNext();
+            if (detailAd != null) {
+                trackingEditCostTopads();
+                daggerPresenter.saveAd(detailAd);
+            }
         }
     }
 

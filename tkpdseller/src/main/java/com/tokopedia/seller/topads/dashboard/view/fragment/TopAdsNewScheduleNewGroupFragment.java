@@ -1,30 +1,18 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoShopModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailShopViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewShopPresenter;
-import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
-
-import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -69,6 +57,7 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         if (stepperModel == null) {
             stepperModel = new TopAdsCreatePromoNewGroupModel();
         }
+        trackingNewScheduleTopads();
         stepperModel.setDetailGroupScheduleViewModel(detailAd);
         daggerPresenter.saveAdNew(stepperModel.getGroupName(), stepperModel.getDetailAd(), stepperModel.getTopAdsProductViewModels());
     }
@@ -78,6 +67,14 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         super.onSaveAdSuccess(topAdsDetailAdViewModel);
         if(stepperListener != null) {
             stepperListener.finishPage();
+        }
+    }
+
+    private void trackingNewScheduleTopads() {
+        if(detailAd != null && detailAd.isScheduled()) {
+            UnifyTracking.eventTopAdsProductAddPromoStep3(AppEventTracking.EventLabel.SHOWTIME_SETUP);
+        }else{
+            UnifyTracking.eventTopAdsProductAddPromoStep3(AppEventTracking.EventLabel.SHOWTIME_AUTO);
         }
     }
 

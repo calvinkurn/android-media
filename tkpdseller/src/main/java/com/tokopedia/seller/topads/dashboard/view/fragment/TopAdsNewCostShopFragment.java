@@ -28,15 +28,17 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
 
     @Override
     protected void onClickedNext() {
-        super.onClickedNext();
-        trackerBudgetShop();
-        if(stepperListener != null) {
-            if(stepperModel == null){
-                stepperModel = new TopAdsCreatePromoShopModel();
+        if(!isError()) {
+            super.onClickedNext();
+            trackerBudgetShop();
+            if (stepperListener != null) {
+                if (stepperModel == null) {
+                    stepperModel = new TopAdsCreatePromoShopModel();
+                }
+                stepperModel.setDetailShopCostViewModel(detailAd);
+                stepperListener.goToNextPage(stepperModel);
+                hideLoading();
             }
-            stepperModel.setDetailShopCostViewModel(detailAd);
-            stepperListener.goToNextPage(stepperModel);
-            hideLoading();
         }
     }
 

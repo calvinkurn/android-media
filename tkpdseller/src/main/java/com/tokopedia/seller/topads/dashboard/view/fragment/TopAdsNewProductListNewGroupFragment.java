@@ -1,17 +1,10 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.View;
-
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductListStepperModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresenter;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenter;
 
 /**
@@ -38,6 +31,7 @@ public class TopAdsNewProductListNewGroupFragment extends TopAdsNewProductListFr
 
     @Override
     protected void goToNextPage() {
+        UnifyTracking.eventTopAdsProductAddPromoStep1();
         hideLoading();
         stepperListener.goToNextPage(stepperModel);
     }

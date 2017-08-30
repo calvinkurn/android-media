@@ -29,9 +29,11 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
 
     @Override
     protected void onClickedNext() {
-        super.onClickedNext();
-        if(detailAd != null) {
-            daggerPresenter.saveAd(detailAd);
+        if(!isError()) {
+            super.onClickedNext();
+            if (detailAd != null) {
+                daggerPresenter.saveAd(detailAd);
+            }
         }
     }
 

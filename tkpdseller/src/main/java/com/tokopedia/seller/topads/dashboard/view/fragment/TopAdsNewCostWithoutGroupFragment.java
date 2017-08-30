@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -14,7 +16,6 @@ import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
@@ -57,12 +58,14 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void onClickedNext() {
-        super.onClickedNext();
-        if (stepperModel == null) {
-            stepperModel = new TopAdsCreatePromoWithoutGroupModel();
+        if(!isError()) {
+            super.onClickedNext();
+            if (stepperModel == null) {
+                stepperModel = new TopAdsCreatePromoWithoutGroupModel();
+            }
+            stepperModel.setDetailGroupCostViewModel(detailAd);
+            topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()));
         }
-        stepperModel.setDetailGroupCostViewModel(detailAd);
-        topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()));
     }
 
     @Override
@@ -83,8 +86,17 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     @Override
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         if (stepperListener != null) {
+            trackingNewCostTopads();
             hideLoading();
             stepperListener.finishPage();
+        }
+    }
+
+    private void trackingNewCostTopads() {
+        if(detailAd != null && detailAd.isBudget()) {
+            UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep2(AppEventTracking.EventLabel.BUDGET_PER_DAY);
+        }else{
+            UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep2(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
 

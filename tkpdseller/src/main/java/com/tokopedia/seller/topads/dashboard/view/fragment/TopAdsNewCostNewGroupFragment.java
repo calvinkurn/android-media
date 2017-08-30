@@ -1,11 +1,9 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 
@@ -25,19 +23,30 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
 
     @Override
     protected void onClickedNext() {
-        super.onClickedNext();
-        if(stepperListener != null) {
-            if(stepperModel == null){
-                stepperModel = new TopAdsCreatePromoNewGroupModel();
+        if(!isError()) {
+            super.onClickedNext();
+            if (stepperListener != null) {
+                trackingNewCostTopads();
+                if (stepperModel == null) {
+                    stepperModel = new TopAdsCreatePromoNewGroupModel();
+                }
+                stepperModel.setDetailGroupCostViewModel(detailAd);
+                stepperListener.goToNextPage(stepperModel);
+                hideLoading();
             }
-            stepperModel.setDetailGroupCostViewModel(detailAd);
-            stepperListener.goToNextPage(stepperModel);
-            hideLoading();
         }
     }
 
     @Override
     protected TopAdsDetailGroupViewModel initiateDetailAd() {
         return new TopAdsDetailGroupViewModel();
+    }
+
+    private void trackingNewCostTopads() {
+        if(detailAd != null && detailAd.isBudget()) {
+            UnifyTracking.eventTopAdsProductAddPromoStep2(AppEventTracking.EventLabel.BUDGET_PER_DAY);
+        }else{
+            UnifyTracking.eventTopAdsProductAddPromoStep2(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
+        }
     }
 }

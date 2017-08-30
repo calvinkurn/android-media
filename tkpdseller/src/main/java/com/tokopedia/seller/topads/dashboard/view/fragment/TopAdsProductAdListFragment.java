@@ -111,6 +111,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     public void onCreateAd() {
+        UnifyTracking.eventTopAdsProductNewPromoProduct();
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
         this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }

@@ -46,10 +46,14 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     protected V detailAd;
 
-    protected void onClickedNext(){
+    protected void onClickedNext() {
         showLoading();
         populateDataFromFields();
-    };
+    }
+
+    protected boolean isError() {
+        return maxPriceInputLayout.isErrorEnabled() || maxPriceInputLayout.getError() != null;
+    }
 
     protected abstract V initiateDetailAd();
 
@@ -115,7 +119,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetPerDayEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     CommonUtils.hideKeyboard(getActivity(), view);
                 }
             }
@@ -180,7 +184,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     }
 
     protected void loadAd(V detailAd) {
-        if(detailAd != null) {
+        if (detailAd != null) {
             this.detailAd = detailAd;
             maxPriceEditText.setText(String.valueOf(detailAd.getPriceBid()));
             if (detailAd.getPriceDaily() > 0) {
@@ -206,8 +210,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     @Override
     protected void onAttachListener(Context context) {
         super.onAttachListener(context);
-        if(context instanceof StepperListener){
-            this.stepperListener = (StepperListener)context;
+        if (context instanceof StepperListener) {
+            this.stepperListener = (StepperListener) context;
         }
     }
 }

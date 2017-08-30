@@ -517,9 +517,9 @@ public interface AppEventTracking {
         String DATE_CUSTOM = "Date Custom";
         String STATISTIC_DASHBOARD = "Statistic (TopAds Dashboard) - ";
         String GROUP = "Group";
-        String ADD_GROUP_STEP_1 = "Add Group Promo Step 1";
-        String ADD_GROUP_STEP_2 = "Add Group Promo Step 2 - ";
-        String ADD_GROUP_STEP_3 = "Add Group Promo Step 3 - ";
+        String ADD_GROUP_STEP_1 = "New Promo Step 1";
+        String ADD_GROUP_STEP_2 = "New Promo Step 2 - ";
+        String ADD_GROUP_STEP_3 = "New Promo Step 3 - ";
         String GROUPS_FILTER = "Groups Filter - ";
         String ADD_PRODUCT_STEP_1 = "Add Product Promo Step 1";
         String ADD_PRODUCT_STEP_2 = "Add Product Promo Step 2- ";
@@ -565,6 +565,14 @@ public interface AppEventTracking {
         String EDIT_GROUP_NAME = "Edit Group Promo - Ganti Nama Grup";
         String DETAIL_PROMO_PRODUCT_PDP = "Detail Product Promo - PDP";
         String DETAIL_PROMO_PRODUCT_GROUP = "Detail Product Promo - Detail Group";
+        String ADD_PRODUCT_EXISTING_GROUP_STEP_1 = "Avaiable Group Step 1 - Add Product";
+        String ADD_PRODUCT_WITHOUT_GROUP_STEP_1 = "Without Group Step 1- Add Product";
+        String ADD_PRODUCT_WITHOUT_GROUP_STEP_2 = "Without Group Step 2 - ";
+        String ADD_PROMO = "Add Promo - ";
+        String ADD_PROMO_GROUP = "Add Group Promo";
+        String ADD_PROMO_PRODUCT = "Add Produk Promo";
+        String ADD_PROMO_KEYWORD_POSITIF = "Add Positive Keyword";
+        String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
     }
 
     interface SOCIAL_MEDIA {

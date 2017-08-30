@@ -34,12 +34,14 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
 
     @Override
     protected void onClickedNext() {
-        super.onClickedNext();
-        if(detailAd != null) {
-            daggerPresenter.saveAd(detailAd);
-            trackingEditCostTopads();
-        }else{
-            hideLoading();
+        if(!isError()) {
+            super.onClickedNext();
+            if (detailAd != null) {
+                daggerPresenter.saveAd(detailAd);
+                trackingEditCostTopads();
+            } else {
+                hideLoading();
+            }
         }
     }
 
