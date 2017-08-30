@@ -52,6 +52,7 @@ public class UploadProductInputViewModel {
     private int productChangeCatalog;
     private int switchVariant;
     private ProductVariantDataSubmit productVariantDataSubmit;
+    private String variantStringSelection;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -97,14 +98,16 @@ public class UploadProductInputViewModel {
         return productVariantDataSubmit;
     }
 
+    public String getVariantStringSelection() {
+        return variantStringSelection;
+    }
+
+    public void setVariantStringSelection(String variantStringSelection) {
+        this.variantStringSelection = variantStringSelection;
+    }
+
     public void setProductVariantData(ProductVariantDataSubmit productVariantDataSubmit) {
         this.productVariantDataSubmit = productVariantDataSubmit;
-        if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList()==null ||
-                productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
-            this.switchVariant = ProductVariantConstant.SWITCH_VARIANT_NOT_EXIST;
-        } else {
-            this.switchVariant = ProductVariantConstant.SWITCH_VARIANT_EXIST;
-        }
     }
 
     public String getProductName() {

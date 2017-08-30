@@ -73,15 +73,10 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
         showLoading();
         presenter.attachView(this);
         fetchProductInfoData(productId);
-        fetchProductVariantData(productId);
     }
 
     private void fetchProductInfoData(String productId){
         presenter.fetchEditProductData(productId);
-    }
-
-    private void fetchProductVariantData(String productId){
-        presenter.fetchProductVariantByPrd(productId);
     }
 
     @Override
@@ -92,16 +87,6 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
             public void onRetryClicked() {
                 showLoading();
                 fetchInputData();
-            }
-        });
-    }
-
-    @Override
-    public void onErrorFetchProductVariantByPrd(Throwable throwable) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                fetchProductVariantData(productId);
             }
         });
     }

@@ -2,6 +2,8 @@ package com.tokopedia.seller.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
@@ -115,9 +117,12 @@ public class LabelView extends BaseCustomView {
         if (enabled) {
             titleTextView.setTextColor(titleColorValue);
             contentTextView.setTextColor(contentColorValue);
+            arrow.clearColorFilter();
         } else {
             titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
             contentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            arrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_400),
+                    PorterDuff.Mode.SRC_ATOP);
         }
     }
 

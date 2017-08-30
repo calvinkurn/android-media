@@ -7,7 +7,6 @@ import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.Co
 import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.DataScoringProduct;
 import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.IndicatorScore;
 import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.IndicatorScoring;
-import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.JsonScoringProduct;
 import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.Scale;
 import com.tokopedia.seller.product.edit.data.source.cache.model.ProductScore.ValueIndicator;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
@@ -15,8 +14,6 @@ import com.tokopedia.seller.product.edit.view.model.scoringproduct.IndicatorScor
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.TotalScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,41 +34,21 @@ public class ProductScoreDataSourceCache {
     public static final int DESC_INDICATOR = 3;
     public static final int STOK_INDICATOR = 4;
     public static final int FREE_RETURN_INDICATOR = 5;
+    public static final int PRODUCT_VARIANT = 6;
+    public static final int PRODUCT_VIDEO = 7;
 
-    private Context context;
-    private Gson gson;
+    private DataScoringProduct dataScoringProduct;
 
-    public ProductScoreDataSourceCache(Context context, Gson gson) {
-        this.context = context;
-        this.gson = gson;
+    public ProductScoreDataSourceCache(DataScoringProduct dataScoringProduct) {
+        this.dataScoringProduct = dataScoringProduct;
     }
 
     public Observable<DataScoringProductView> getValidationScore(ValueIndicatorScoreModel valueIndicatorScoreModel) {
-        String jsonIndicatorScoreProduct = loadJSONFromAsset();
-        DataScoringProduct dataScoringProduct = gson.fromJson(jsonIndicatorScoreProduct, JsonScoringProduct.class).getDataScoringProduct();
-        DataScoringProductView dataScoringProductView = calculateScoreProduct(dataScoringProduct, valueIndicatorScoreModel);
-
+        DataScoringProductView dataScoringProductView = calculateScoreProduct(valueIndicatorScoreModel);
         return Observable.just(dataScoringProductView);
     }
 
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = context.getAssets().open("indicator_score_product.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-
-    private DataScoringProductView calculateScoreProduct(DataScoringProduct dataScoringProduct, ValueIndicatorScoreModel valueIndicatorScoreModel) {
+    private DataScoringProductView calculateScoreProduct(ValueIndicatorScoreModel valueIndicatorScoreModel) {
         int tempScore = 0;
         List<IndicatorScoreView> indicatorScoreViews = new ArrayList<>();
         for (IndicatorScore indicatorScore : dataScoringProduct.getIndicatorScore()) {
@@ -168,6 +145,10 @@ public class ProductScoreDataSourceCache {
                 return calculateScoreStok(indicatorScore, valueIndicatorScoreModel.isStockStatus());
             case FREE_RETURN_INDICATOR:
                 return calculateScoreFreeReturns(indicatorScore, valueIndicatorScoreModel.isFreeReturnStatus());
+            case PRODUCT_VARIANT:
+                return calculateScoreProductVariant(indicatorScore, valueIndicatorScoreModel.isVariantActive());
+            case PRODUCT_VIDEO:
+                return calculateScoreProductVideo(indicatorScore, valueIndicatorScoreModel.isHasVideo());
             default:
                 return 0;
         }
@@ -176,6 +157,20 @@ public class ProductScoreDataSourceCache {
     private int calculateScoreFreeReturns(IndicatorScore indicatorScore, boolean freeReturnStatus) {
         for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
             return calculateScore(valueIndicator, freeReturnStatus ? 1 : 0);
+        }
+        return 0;
+    }
+
+    private int calculateScoreProductVariant(IndicatorScore indicatorScore, boolean hasProductVariant) {
+        for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
+            return calculateScore(valueIndicator, hasProductVariant ? 1 : 0);
+        }
+        return 0;
+    }
+
+    private int calculateScoreProductVideo(IndicatorScore indicatorScore, boolean hasVideo) {
+        for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
+            return calculateScore(valueIndicator, hasVideo ? 1 : 0);
         }
         return 0;
     }

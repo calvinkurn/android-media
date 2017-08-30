@@ -21,6 +21,9 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.ProductDraftPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductDraftView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,7 +39,6 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
     private TkpdProgressDialog tkpdProgressDialog;
-    private View coordinatorLayout;
 
     private String draftId;
 
@@ -52,7 +54,6 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        coordinatorLayout = view.findViewById(R.id.coordinator_layout);
         presenter.attachView(this);
         fetchInputData();
         return view;
@@ -95,9 +96,9 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
      */
     public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
         hideLoading();
-        productInfoViewHolder.setNameNoWatcher(model.getProductName());
+        productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
-        onCategoryChanged(model.getProductDepartmentId());
+        onCategoryLoaded(model.getProductDepartmentId());
         if (model.getProductCatalogId() > 0) {
             productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
         }
@@ -141,7 +142,8 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
             productAdditionalInfoViewHolder.setPreOrderValue(model.getPoProcessValue());
         }
         if (model.getSwitchVariant() == ProductVariantConstant.SWITCH_VARIANT_EXIST) {
-            productAdditionalInfoViewHolder.setProductVariantDataSubmit(model.getProductVariantDataSubmit());
+            productAdditionalInfoViewHolder.setProductVariantDataSubmit(model.getProductVariantDataSubmit(),
+                    model.getVariantStringSelection());
         }
     }
 
@@ -176,4 +178,9 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         getActivity().finish();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

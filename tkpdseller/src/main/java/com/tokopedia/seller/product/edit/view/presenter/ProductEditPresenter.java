@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.FetchEditProductFormUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.FetchEditProductWithVariantUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryDisplayUseCase;
@@ -12,21 +13,24 @@ import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainMo
 import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByPrdUseCase;
+import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Func2;
 
 /**
  * @author sebastianuskh on 4/21/17.
  */
 
 public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditView> {
-
-    private final FetchEditProductFormUseCase fetchEditProductFormUseCase;
-    private final FetchProductVariantByPrdUseCase fetchProductVariantByPrdUseCase;
+    private final FetchEditProductWithVariantUseCase fetchEditProductWithVariantUseCase;
 
     @Inject
     public ProductEditPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
@@ -34,10 +38,9 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
                                 GetCategoryRecommUseCase getCategoryRecommUseCase,
                                 ProductScoringUseCase productScoringUseCase,
                                 AddProductShopInfoUseCase addProductShopInfoUseCase,
-                                FetchEditProductFormUseCase fetchEditProductFormUseCase,
+                                FetchEditProductWithVariantUseCase fetchEditProductWithVariantUseCase,
                                 FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase,
-                                FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
-                                FetchProductVariantByPrdUseCase fetchProductVariantByPrdUseCase) {
+                                FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
         super(saveDraftProductUseCase,
                 fetchCatalogDataUseCase,
                 getCategoryRecommUseCase,
@@ -45,13 +48,18 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
                 addProductShopInfoUseCase,
                 fetchCategoryDisplayUseCase,
                 fetchProductVariantByCatUseCase);
-        this.fetchEditProductFormUseCase = fetchEditProductFormUseCase;
-        this.fetchProductVariantByPrdUseCase = fetchProductVariantByPrdUseCase;
+        this.fetchEditProductWithVariantUseCase = fetchEditProductWithVariantUseCase;
     }
 
     public void fetchEditProductData(String productId) {
-        RequestParams params = FetchEditProductFormUseCase.createParams(productId);
-        fetchEditProductFormUseCase.execute(params, getFetchEditProductFormSubscriber());
+        RequestParams editParams = FetchEditProductFormUseCase.createParams(productId);
+        fetchEditProductWithVariantUseCase.execute(editParams, getFetchEditProductFormSubscriber());
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        fetchEditProductWithVariantUseCase.unsubscribe();
     }
 
     private Subscriber<UploadProductInputDomainModel> getFetchEditProductFormSubscriber() {
@@ -73,33 +81,6 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
             public void onNext(UploadProductInputDomainModel editProductFormDomainModel) {
                 UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(editProductFormDomainModel);
                 getView().onSuccessLoadDraftProduct(model);
-            }
-        };
-    }
-
-    public void fetchProductVariantByPrd(String productId) {
-        RequestParams params = FetchProductVariantByPrdUseCase.generateParam(Long.parseLong(productId));
-        fetchProductVariantByPrdUseCase.execute(params, getFetchProductVariantbyPrdSubscriber());
-    }
-
-    private Subscriber<ProductVariantByPrdModel> getFetchProductVariantbyPrdSubscriber() {
-        return new Subscriber<ProductVariantByPrdModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (!isViewAttached()) {
-                    return;
-                }
-                getView().onErrorFetchProductVariantByPrd(e);
-            }
-
-            @Override
-            public void onNext(ProductVariantByPrdModel productVariantByPrdModel) {
-                getView().onSuccessFetchProductVariantByPrd(productVariantByPrdModel);
             }
         };
     }

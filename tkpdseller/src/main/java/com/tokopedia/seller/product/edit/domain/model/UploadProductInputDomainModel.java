@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.domain.model;
 import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 
 import java.util.List;
@@ -51,6 +52,16 @@ public class UploadProductInputDomainModel {
     private int productChangeWholesale;
     private int switchVariant;
     private ProductVariantDataSubmit productVariantDataSubmit;
+
+    public String getVariantStringSelection() {
+        return variantStringSelection;
+    }
+
+    public void setVariantStringSelection(String variantStringSelection) {
+        this.variantStringSelection = variantStringSelection;
+    }
+
+    private String variantStringSelection;
 
     public long getId() {
         return id;
@@ -331,9 +342,16 @@ public class UploadProductInputDomainModel {
 
     public void setProductVariantDataSubmit(ProductVariantDataSubmit productVariantDataSubmit) {
         this.productVariantDataSubmit = productVariantDataSubmit;
+        if (productVariantDataSubmit== null
+                || productVariantDataSubmit.getProductVariantUnitSubmitList()== null
+                || productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
+            setSwitchVariant(ProductVariantConstant.SWITCH_VARIANT_NOT_EXIST);
+        } else {
+            setSwitchVariant(ProductVariantConstant.SWITCH_VARIANT_EXIST);
+        }
     }
 
-    public void setSwitchVariant(int switchVariant) {
+    private void setSwitchVariant(int switchVariant) {
         this.switchVariant = switchVariant;
     }
 }

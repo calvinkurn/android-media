@@ -61,7 +61,6 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
@@ -311,11 +310,23 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productInfoViewHolder.hideAndClearCatalog();
         checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
         valueIndicatorScoreModel.setLengthProductName(productName.length());
-        updateProductScoring();
+        presenter.getProductScoreDebounce(valueIndicatorScoreModel);
     }
 
     protected void getCategoryRecommendation(String productName) {
         presenter.getCategoryRecommendation(productName);
+    }
+
+    @Override
+    public void onHasVideoChange(boolean hasVideo) {
+        valueIndicatorScoreModel.setHasVideo(hasVideo);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onVariantCountChange(boolean hasActiveVariant) {
+        valueIndicatorScoreModel.setVariantActive(hasActiveVariant);
+        updateProductScoring();
     }
 
     @Override
@@ -455,12 +466,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList) {
-        productAdditionalInfoViewHolder.onSuccessGetProductVariant(productVariantByCatModelList);
-    }
-
-    @Override
-    public void onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel productVariantByPrdModel) {
-        productAdditionalInfoViewHolder.onSuccessGetSelectedProductVariant(productVariantByPrdModel);
+        productAdditionalInfoViewHolder.onSuccessGetProductVariantCat(productVariantByCatModelList);
     }
 
     @Override
@@ -575,6 +581,15 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
                                             ProductVariantDataSubmit productVariantDataSubmit) {
+        if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.fetchProductVariantByCat(productInfoViewHolder.getCategoryId());
+                }
+            }).showRetrySnackbar();
+            return;
+        }
         Intent intent = new Intent(getActivity(), ProductVariantDashboardActivity.class);
         intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         if (productVariantDataSubmit != null && productVariantDataSubmit.getProductVariantUnitSubmitList()!= null &&
@@ -609,15 +624,19 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onCategoryChanged(long categoryId) {
         // when category change, check if catalog exists
-        checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
-        presenter.fetchProductVariantByCat(categoryId);
-        fetchCategory(categoryId);
+        productAdditionalInfoViewHolder.setProductVariantDataSubmit(null, "");
+        productAdditionalInfoViewHolder.onSuccessGetProductVariantCat(null);
+        onCategoryLoaded(categoryId);
     }
 
-    @Override
-    public void resetVariant() {
-        productAdditionalInfoViewHolder.onSuccessGetProductVariant(null);
-        productAdditionalInfoViewHolder.onSuccessGetSelectedProductVariant(null);
+    /**
+     * when category changed, or category has been fetched
+     * @param categoryId
+     */
+    public void onCategoryLoaded(long categoryId) {
+        presenter.fetchProductVariantByCat(categoryId);
+        checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
+        fetchCategory(categoryId);
     }
 
     @Override
@@ -688,6 +707,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductStatus(getStatusUpload());
         viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
         viewModel.setProductVariantData(productAdditionalInfoViewHolder.getProductVariantDataSubmit());
+        viewModel.setVariantStringSelection(productAdditionalInfoViewHolder.getVariantStringSelection());
         return viewModel;
     }
 
