@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_detail"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_small"
+        android:lineSpacingExtra="5sp"
+        android:text="@string/tokocash_desc_request_otp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/tokocash_phone_number"
+        android:textColor="@color/digital_voucher_notes"
+        android:textSize="@dimen/fontvs" />
+
+    <TextView
+        android:id="@+id/wallet_phone_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:textSize="@dimen/font_medium" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:background="@color/separator_tokocash" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/send_sms_verification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/green_button_rounded_unify"
+            android:paddingBottom="@dimen/digital_padding_12"
+            android:paddingLeft="@dimen/large_dp"
+            android:paddingRight="@dimen/large_dp"
+            android:paddingTop="@dimen/digital_padding_12"
+            android:text="@string/tokocash_send_sms_verification"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_s_medium"
+            android:visibility="visible"/>
+
+        <Button
+            android:id="@+id/repeat_send_sms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/digital_white_grey_button_more_rounded"
+            android:paddingBottom="@dimen/digital_padding_12"
+            android:paddingLeft="@dimen/large_dp"
+            android:paddingRight="@dimen/large_dp"
+            android:paddingTop="@dimen/digital_padding_12"
+            android:textAllCaps="false"
+            android:textColor="@color/digital_voucher"
+            android:textSize="@dimen/text_size_s_medium"
+            android:enabled="false"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/input_otp_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_large"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:gravity="center"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/fonts"
+            android:text="@string/title_otp" />
+
+
+        <com.tkpd.library.ui.widget.PinEntryEditText
+            android:id="@+id/input_otp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_marginLeft="@dimen/margin_vl"
+            android:layout_marginRight="@dimen/margin_vl"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:digits="1234567890"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLength="6"
+            android:paddingBottom="@dimen/margin_small"
+            android:textIsSelectable="false"
+            android:textSize="28sp"
+            app:pinLineColors="@color/pin_line_colors" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/verification_btn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="@dimen/margin_med"
+        android:background="@drawable/digital_grey_button_verifikasi_rounded"
+        android:minHeight="0dp"
+        android:text="@string/tokocash_button_verification"
+        android:textAllCaps="false"
+        android:textColor="@color/text_verifikasi_tokocash"
+        android:textSize="@dimen/fonts"
+        android:enabled="false"/>
+
+</LinearLayout>
