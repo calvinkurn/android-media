@@ -66,10 +66,6 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
             isEmptyData = (tempData == null);
 
             if (!isEmptyData) {
-//                isExpiredData = (System.currentTimeMillis() / 1000L) - tempData.getResponseDate() > whiteList.getExpiredTime();
-//                if (isExpiredData) {
-//                    tempData.delete();
-//                }
 
                 cacheApiData.setResponseDate(tempData.responseDate);
                 cacheApiData.setExpiredDate(tempData.expiredDate);
@@ -112,7 +108,7 @@ public class ApiCacheInterceptorUseCase extends UseCase<CacheApiData> {
             UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri2);
             queryString.remove("hash");
             queryString.remove("device_time");
-            Log.d(TAG, "sample : " + queryString);
+//            Log.d(TAG, "sample : " + queryString);
             cacheApiData.setRequestParam(((queryString != null) ? "?" + queryString.toString().trim() : ""));
         } catch (URISyntaxException e) {
             e.printStackTrace();

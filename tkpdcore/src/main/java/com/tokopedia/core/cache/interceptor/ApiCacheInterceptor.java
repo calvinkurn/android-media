@@ -5,7 +5,7 @@ import android.util.Log;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.domain.interactor.ApiCacheInterceptorUseCase;
 import com.tokopedia.core.cache.domain.interactor.CheckWhiteListUseCase;
-import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheData;
+import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheDataUseCase;
 import com.tokopedia.core.cache.domain.interactor.GetCacheDatatUseCase;
 import com.tokopedia.core.cache.domain.interactor.SaveToDbUseCase;
 
@@ -29,7 +29,7 @@ public class ApiCacheInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        new ClearTimeOutCacheData().createObservableSync(RequestParams.EMPTY).toBlocking().first();
+        new ClearTimeOutCacheDataUseCase().createObservableSync(RequestParams.EMPTY).toBlocking().first();
 
         ApiCacheInterceptorUseCase apiCacheInterceptorUseCase = new ApiCacheInterceptorUseCase();
 
@@ -45,7 +45,6 @@ public class ApiCacheInterceptor implements Interceptor {
         Boolean isInWhiteList = checkWhiteListUseCase.createObservableSync(requestParams).toBlocking().first();
 
         if (isInWhiteList) {
-
             if (cacheData == null || cacheData.equals("")) {
                 Log.d(LOG_TAG, apiCacheInterceptorUseCase.isInWhiteListRaw() + " data is not here !!");
                 Response response;
@@ -71,7 +70,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 return builder.build();
             }
         }else{
-            Log.d(LOG_TAG, "just hit another network !!");
+            Log.d(LOG_TAG, String.format("%s just hit another network !!", request.url().toString()));
             Response response;
             try {
                 response = chain.proceed(request);

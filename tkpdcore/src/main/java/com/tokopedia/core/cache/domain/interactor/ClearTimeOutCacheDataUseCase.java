@@ -14,7 +14,7 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class ClearTimeOutCacheData extends UseCase<Boolean> {
+public class ClearTimeOutCacheDataUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         long currentTime = System.currentTimeMillis() / 1000L;
