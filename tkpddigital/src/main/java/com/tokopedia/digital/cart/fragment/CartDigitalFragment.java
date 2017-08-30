@@ -328,7 +328,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
             );
         }
-        if (passData.getInstantCheckout().equals("1")) {
+        if (passData.getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             pbMainLoading.setVisibility(View.VISIBLE);
             mainContainer.setVisibility(View.GONE);
             presenter.processToInstantCheckout();
@@ -337,7 +337,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
-        sendGTMAnalytics(cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName() + " - " + cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
+        sendGTMAnalytics(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
+                cartDigitalInfoData.getAttributes().getOperatorName()
+                        + " - " + cartDigitalInfoData.getAttributes().getPricePlain(),
+                cartDigitalInfoData.isInstantCheckout()
+        );
 
     }
 
@@ -542,7 +547,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorInstantCheckout(String message) {
-        closeViewWithMessageAlert(message);
+        showToastMessage(message);
+        presenter.processGetCartDataAfterCheckout();
     }
 
     @Override
@@ -624,7 +630,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickButtonNext() {
-        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName() + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain());
+        UnifyTracking.eventClickLanjutCheckoutPage(
+                cartDigitalInfoDataState.getAttributes().getCategoryName(),
+                cartDigitalInfoDataState.getAttributes().getOperatorName()
+                        + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain()
+        );
         presenter.processToCheckout();
     }
 

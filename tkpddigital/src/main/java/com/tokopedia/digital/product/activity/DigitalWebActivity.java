@@ -135,4 +135,17 @@ public class DigitalWebActivity extends BaseDigitalPresenterActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (fragmentGeneralWebView != null && fragmentGeneralWebView.getWebview() != null
+                && fragmentGeneralWebView.getWebview().canGoBack()) {
+            fragmentGeneralWebView.getWebview().goBack();
+        } else if (fragmentGeneralWebView != null && fragmentGeneralWebView.getWebview() != null) {
+            fragmentGeneralWebView.getWebview().stopLoading();
+            finish();
+        } else {
+            finish();
+        }
+    }
 }

@@ -23,6 +23,11 @@ import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 public class DigitalCategoryListActivity extends BaseDigitalPresenterActivity {
 
+    @Override
+    public String getScreenName() {
+        return DigitalCategoryListActivity.class.getSimpleName();
+    }
+
     @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.DIGITAL_CATEGORY})
     public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
