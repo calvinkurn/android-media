@@ -28,6 +28,7 @@ import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalkResult;
 import com.tokopedia.core.shopinfo.presenter.ShopTalkPresenter;
 import com.tokopedia.core.shopinfo.presenter.ShopTalkPresenterImpl;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
+import com.tokopedia.core.util.PagingHandler;
 
 import butterknife.BindView;
 
@@ -279,11 +280,12 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
     @Override
     public void onGetShopTalk(ShopTalkResult result) {
+        adapter.setHaveNext(PagingHandler.CheckHasNext(result.getPaging()));
         adapter.addList(result.getList());
         if (adapter.getList().isEmpty())
-            adapter.showEmpty(true);
+            adapter.showEmptyFull(true);
         else
-            adapter.showEmpty(false);
+            adapter.showEmptyFull(false);
 
     }
 

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;

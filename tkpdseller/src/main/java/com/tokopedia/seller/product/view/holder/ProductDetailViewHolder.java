@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,23 +24,25 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.text.CounterInputView;
+import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.adapter.WholesaleAdapter;
 import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.product.view.widget.CounterInputView;
-import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
-import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
-import com.tokopedia.seller.util.NumberTextWatcher;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -163,9 +166,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
             private void onItemClicked(int position) {
                 if (!goldMerchant && priceSpinnerCounterInputView.getSpinnerValue(position).equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
                     priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
-                    Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
-                            .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
-                            .show();
+                    if (GlobalConfig.isSellerApp()) {
+                        UnifyTracking.eventSwitchRpToDollarAddProduct();
+                        listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_dollar);
+                    } else {
+                        Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                                .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
+                                .show();
+                    }
                     return;
                 }
                 priceSpinnerCounterInputView.setCounterValue(Double.parseDouble(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
@@ -208,7 +216,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(isMinOrderValid()){
+                if (isMinOrderValid()) {
                     minimumOrderCounterInputView.setError(null);
                 }
             }
@@ -367,7 +375,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         int minOrder;
         try {
             minOrder = (int) minimumOrderCounterInputView.getDoubleValue();
-        }catch (Exception e){
+        } catch (Exception e) {
             minOrder = -1;
         }
         return minOrder;
@@ -418,7 +426,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getFreeReturns() {
-        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE) {
+        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE || freeReturnsSpinnerTextView.getSpinnerValue() != null) {
             return Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_inactive));
         } else {
             return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
@@ -659,5 +667,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         void onEtalaseViewClicked(long etalaseId);
 
         void onFreeReturnChecked(boolean checked);
+
+        void showDialogMoveToGM(@StringRes int message);
     }
 }

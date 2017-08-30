@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextView.TopAds.Body.Gray"
+        style="@style/TextView.Body1.BlackSecondary"
         android:text="@string/label_top_ads_show_time"/>
 
     <RadioGroup
@@ -17,13 +17,13 @@
 
         <RadioButton
             android:id="@+id/radio_button_show_time_automatic"
-            style="@style/TopAdsRadioButton"
+            style="@style/RadioButton"
             android:checked="true"
             android:text="@string/label_top_ads_show_time_automatic"/>
 
         <RadioButton
             android:id="@+id/radio_button_show_time_configured"
-            style="@style/TopAdsRadioButton"
+            style="@style/RadioButton"
             android:text="@string/label_top_ads_show_time_configured"/>
 
         <LinearLayout
@@ -39,7 +39,7 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="@dimen/margin_small">
 
-                <com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView
+                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_start_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
                     android:layout_weight="1"
                     app:date_picker_title="@string/label_top_ads_show_time_start"/>
 
-                <com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView
+                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_start_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView
+                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_end_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                     android:layout_weight="1"
                     app:date_picker_title="@string/label_top_ads_show_time_end"/>
 
-                <com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView
+                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_end_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

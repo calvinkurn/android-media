@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.SaveDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.domain.model.CategoryRecommDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
@@ -91,14 +91,18 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void saveDraftAndAdd(UploadProductInputViewModel viewModel) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel);
+    public void saveDraftAndAdd(UploadProductInputViewModel viewModel, boolean isUploading) {
+        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftAndAddSubscriber());
     }
 
-    private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel) {
+    private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
         UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
-        return SaveDraftProductUseCase.generateUploadProductParam(domainModel);
+        return SaveDraftProductUseCase.generateUploadProductParam(domainModel, getProductDraftId(), isUploading);
+    }
+
+    protected long getProductDraftId(){
+        return getView().getProductDraftId();
     }
 
     @Override
@@ -273,9 +277,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void saveDraft(UploadProductInputViewModel viewModel) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel);
-        saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
+    public void saveDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
+        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
+        saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber(isUploading));
     }
 
     @Override
@@ -348,6 +352,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     private class SaveDraftSubscriber extends Subscriber<Long> {
+
+        boolean isUploading;
+        SaveDraftSubscriber(boolean isUploading) {
+            this.isUploading = isUploading;
+        }
         @Override
         public void onCompleted() {
 
@@ -358,13 +367,17 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             if (!isViewAttached()) {
                 return;
             }
-            getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
+            if (isUploading) {
+                getView().onErrorStoreProductToDraftWhenUpload(ViewUtils.getErrorMessage(e));
+            } else {
+                getView().onErrorStoreProductToDraftWhenBackPressed(ViewUtils.getErrorMessage(e));
+            }
         }
 
         @Override
         public void onNext(Long productId) {
             checkViewAttached();
-            getView().onSuccessStoreProductToDraft(productId);
+            getView().onSuccessStoreProductToDraft(productId, isUploading);
         }
     }
 

@@ -13,9 +13,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.di.GmCheckoutDependencyInjection;
 import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
-import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
 import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmCheckoutPresenterImpl;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmAutoSubscribeViewModel;
@@ -145,7 +143,6 @@ public class GmCheckoutFragment
 
     @Override
     protected void setActionVar() {
-        Log.d(TAG, "looking for product with id " + selectedProduct);
         presenter.getCurrentSelectedProduct(selectedProduct);
     }
 
@@ -283,5 +280,9 @@ public class GmCheckoutFragment
         NetworkErrorHelper.showSnackbar(getActivity(), string);
     }
 
+    @Override
+    public void clearCacheShopInfo() {
+        presenter.clearCacheShopInfo();
+    }
 }
 

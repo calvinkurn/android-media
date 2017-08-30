@@ -1,13 +1,16 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,10 +20,10 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsInfoDialog;
+import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheet;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.List;
 
@@ -28,11 +31,13 @@ import java.util.List;
  * @author by errysuprayogi on 4/13/17.
  */
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnClickListener {
+public class
+TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
-
+    private View container;
+    private static final String TAG = TopAdsViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
@@ -54,6 +59,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context);
         itemView.findViewById(R.id.info_topads).setOnClickListener(this);
+        container = itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -68,18 +74,19 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             switchDisplay(list.get(0));
         }
         adapter.setList(list);
+        adapter.setAdapterPosition(getAdapterPosition());
         adapter.setPosition(getAdapterPosition());
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
-            if(clickListener != null){
+            Log.d(TAG, "Adapter Position " + getAdapterPosition());
+            if (clickListener != null) {
                 clickListener.onInfoClicked();
-            }else {
-                TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
-                Activity activity = (Activity) context;
-                infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            } else {
+                TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(context);
+                infoBottomSheet.show();
             }
         }
     }
@@ -88,22 +95,33 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         this.displayMode = displayMode;
     }
 
-    private void switchDisplay(Item item){
+    private void switchDisplay(Item item) {
         switch (displayMode) {
             case FEED:
-                if(item instanceof ShopFeedViewModel){
+                if (item instanceof ShopFeedViewModel) {
                     recyclerView.setLayoutManager(linearLayoutManager);
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
+                TextView textView = (TextView) adsHeader.findViewById(R.id.title_promote);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.getContext().getResources().getDimension(R.dimen.font_small));
+                ImageView imageView = (ImageView) adsHeader.findViewById(R.id.info_topads);
+                imageView.setImageResource(R.drawable.icon_info);
+                imageView.setColorFilter(ContextCompat.getColor(context, R.color.tkpd_dark_gray));
                 textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT));
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+                params.setMargins(0, params.topMargin, 0, 0);
+                container.setLayoutParams(params);
+                recyclerView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
                 break;
             case GRID:
                 recyclerView.setLayoutManager(gridLayoutManager);
+                recyclerView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                 break;
             case LIST:
                 recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                 break;
         }
     }

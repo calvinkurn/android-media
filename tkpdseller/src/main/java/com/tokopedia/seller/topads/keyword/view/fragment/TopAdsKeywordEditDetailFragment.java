@@ -19,17 +19,15 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ViewUtils;
-import com.tokopedia.seller.product.view.widget.SpinnerTextView;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
-import com.tokopedia.seller.topads.view.widget.PrefixEditText;
+import com.tokopedia.seller.topads.dashboard.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -126,7 +124,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
                 String errorMessage =
-                        com.tokopedia.seller.topads.utils.ViewUtils.getClickBudgetError(getActivity(), number);
+                        com.tokopedia.seller.topads.dashboard.utils.ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     textInputLayoutCostPerClick.setError(errorMessage);
                 } else {
@@ -170,12 +168,13 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel) {
         hideLoading();
-        finishAndSetResult();
+        finishAndSetResult(viewModel.getId());
     }
 
-    void finishAndSetResult() {
+    void finishAndSetResult(String id) {
         Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED , true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, id);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -183,7 +182,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     public void showError(Throwable detail) {
         hideLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
     }
 
     @Override

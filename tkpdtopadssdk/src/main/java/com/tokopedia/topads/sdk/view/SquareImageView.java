@@ -1,16 +1,14 @@
 package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
-
-import com.tokopedia.topads.sdk.imageutils.RecyclingImageView;
 
 /**
  * @author by errysuprayogi on 3/27/17.
  */
 
-public class SquareImageView extends RecyclingImageView {
+public class SquareImageView extends AppCompatImageView {
 
     public SquareImageView(Context context) {
         super(context);

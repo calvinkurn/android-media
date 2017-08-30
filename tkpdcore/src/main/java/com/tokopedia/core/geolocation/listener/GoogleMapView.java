@@ -26,11 +26,6 @@ public interface GoogleMapView {
     /**
      *
      */
-    void initGoogleMap();
-
-    /**
-     *
-     */
     void setToolbarMap();
 
     /**
@@ -49,13 +44,11 @@ public interface GoogleMapView {
     void initMapView();
 
     /**
-     *
      * @param latLng
      */
     void moveMap(LatLng latLng);
 
     /**
-     *
      * @param result
      */
     void checkLocationSettings(PendingResult<LocationSettingsResult> result);
@@ -68,7 +61,6 @@ public interface GoogleMapView {
     void prepareDetailDestination(View view);
 
     /**
-     *
      * @param googleApiClient
      * @param latLngBounds
      */
@@ -80,19 +72,16 @@ public interface GoogleMapView {
     void setAutoCompleteAdaoter();
 
     /**
-     *
      * @param s
      */
     void toastMessage(String s);
 
     /**
-     *
      * @param s
      */
     void setValuePointer(String s);
 
     /**
-     *
      * @param bounds
      * @return
      */
@@ -119,13 +108,13 @@ public interface GoogleMapView {
     void hideDetailDestination();
 
     /**
-     *
      * @param view
      */
     void showDetailDestination(View view);
 
     /**
      * show manual address inputted by user
+     *
      * @param s Manual Address
      */
     void setManualDestination(String s);

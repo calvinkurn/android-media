@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.discussion.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadVideoModel;
 import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.CreatePictureModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.ReplySubmitModel;
@@ -10,6 +11,7 @@ import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.Genera
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 
@@ -51,6 +53,26 @@ public class UploadImageRepositoryImpl implements UploadImageRepository {
                         url,
                         params,
                         imageFile);
+    }
+
+    @Override
+    public Observable<UploadImageModel> newUploadImage(String url,
+                                                    Map<String, RequestBody> params,
+                                                    RequestBody imageFile) {
+        return uploadImageSourceFactory
+                .createCloudUploadImageDataStore()
+                .newUploadImage(
+                        url,
+                        params,
+                        imageFile);
+    }
+
+    @Override
+    public Observable<UploadImageModel> uploadVideo(String url,
+                                                    Map<String, RequestBody> params,
+                                                    MultipartBody.Part part) {
+        return uploadImageSourceFactory.createCloudUploadVideoDataStore()
+                .uploadVideo(url, params, part);
     }
 
     @Override

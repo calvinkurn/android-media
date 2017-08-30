@@ -52,7 +52,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     public void setListener(ProductDetailView listener) {
         this.listener = listener;
-
     }
 
     @Override
@@ -105,28 +104,32 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void renderProductCampaign(final ProductCampaign data) {
+    public void renderProductCampaign(ProductCampaign data) {
         if(data != null && data.getOriginalPrice() != null) {
-            textOriginalPrice.setText(String.format(
-                            getContext().getString(R.string.label_price_with_idr),
-                            data.getOriginalPrice()
-            ));
+            textOriginalPrice.setText(data.getOriginalPriceIdr());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
 
             textDiscount.setText(String.format(
-                    getContext().getString(R.string.label_discount),
+                    getContext().getString(R.string.label_discount_percentage),
                     data.getPercentageAmount()
             ));
 
-            try {
-                textDiscount.setVisibility(VISIBLE);
-                textOriginalPrice.setVisibility(VISIBLE);
+            textDiscount.setVisibility(VISIBLE);
+            textOriginalPrice.setVisibility(VISIBLE);
 
-                SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
-                Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-                long delta = sf.parse(data.getEndDate()).getTime() - now.getTimeInMillis();
+            showCountdownTimer(data);
+        }
+    }
+
+    private void showCountdownTimer(final ProductCampaign data) {
+        try {
+            SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
+            Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+            long delta = sf.parse(data.getEndDate()).getTime() - now.getTimeInMillis();
+
+            if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
                 textDiscountTimer.setText(getCountdownText(delta));
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
 
@@ -138,21 +141,21 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
                     @Override
                     public void onFinish() {
-                        hideProductCampaign(data, true);
+                        hideProductCampaign(data);
                     }
                 }.start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                hideProductCampaign(data, false);
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            linearDiscountTimerHolder.setVisibility(GONE);
         }
     }
 
-    private void hideProductCampaign(ProductCampaign data, boolean revertPrice) {
+    private void hideProductCampaign(ProductCampaign data) {
         linearDiscountTimerHolder.setVisibility(GONE);
         textDiscount.setVisibility(GONE);
         textOriginalPrice.setVisibility(GONE);
-        if(revertPrice) tvPrice.setText(data.getOriginalPrice());
+        tvPrice.setText(data.getOriginalPriceIdr());
     }
 
     private String getCountdownText(long millisUntilFinished) {

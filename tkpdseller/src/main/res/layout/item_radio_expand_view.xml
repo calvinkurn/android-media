@@ -3,9 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsCustomRadioButton
+    <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomRadioButton
         android:id="@+id/radio_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TopAdsRadioButton"/>
+        style="@style/RadioButton"/>
 </LinearLayout>

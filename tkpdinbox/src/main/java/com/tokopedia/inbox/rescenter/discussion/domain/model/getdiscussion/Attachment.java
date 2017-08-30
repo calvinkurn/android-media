@@ -7,6 +7,7 @@ package com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion;
 public class Attachment {
     private String url;
     private String imageThumb;
+    private int isVideo;
 
     public void setUrl(String url) {
         this.url = url;
@@ -22,5 +23,13 @@ public class Attachment {
 
     public String getImageThumb() {
         return imageThumb;
+    }
+
+    public void setIsVideo(int isVideo) {
+        this.isVideo = isVideo;
+    }
+
+    public int getIsVideo() {
+        return isVideo;
     }
 }

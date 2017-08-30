@@ -20,6 +20,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
@@ -78,8 +80,10 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
                     .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
             if (launchIntent != null) {
+                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
                 getActivity().startActivity(launchIntent);
             } else if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.EventLabel.OPEN_GM+AppEventTracking.Category.SWITCHER);
                 ((TkpdCoreRouter) getActivity().getApplication()).goToCreateMerchantRedirect(getActivity());
             }
         }

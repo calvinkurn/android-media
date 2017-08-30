@@ -3,12 +3,12 @@ package com.tokopedia.seller.product.view.model.wholesale;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * @author normansyahputa on 4/20/17.
  */
-public class WholesaleModel implements Parcelable, TypeBasedModel {
+public class WholesaleModel implements Parcelable, ItemType {
     public static final int TYPE = 1212834;
     public static final Parcelable.Creator<WholesaleModel> CREATOR = new Parcelable.Creator<WholesaleModel>() {
         @Override

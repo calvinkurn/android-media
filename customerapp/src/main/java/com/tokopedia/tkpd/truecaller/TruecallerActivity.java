@@ -2,6 +2,8 @@ package com.tokopedia.tkpd.truecaller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -40,7 +42,8 @@ public class TruecallerActivity extends Activity implements ITrueCallback{
                 finish();
                 break;
             default:
-                setResult(RESULT_OK, new Intent().putExtra("error", String.format("%s (%s)", getString(R.string.error_fetch_truecaller), getString(R.string.error_code_truecaller, trueError.getErrorType()))));
+                setResult(RESULT_OK, new Intent().putExtra("error", String.format("%s (%s)", getString(R.string.error_fetch_truecaller)
+                        , getString(R.string.error_code_truecaller, trueError.getErrorType()))));
                 finish();
                 break;
         }

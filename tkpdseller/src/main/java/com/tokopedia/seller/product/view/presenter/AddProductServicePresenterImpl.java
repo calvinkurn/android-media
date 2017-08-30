@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.data.exception.UploadProductException;
+import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
@@ -15,9 +16,12 @@ import rx.Subscriber;
 
 public class AddProductServicePresenterImpl extends AddProductServicePresenter implements AddProductNotificationListener {
     private final UploadProductUseCase uploadProductUseCase;
+    private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
 
-    public AddProductServicePresenterImpl(UploadProductUseCase uploadProductUseCase) {
+    public AddProductServicePresenterImpl(UploadProductUseCase uploadProductUseCase,
+                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
         this.uploadProductUseCase = uploadProductUseCase;
+        this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
         uploadProductUseCase.setListener(this);
     }
 
@@ -67,6 +71,22 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             if (!isViewAttached()) {
                 return;
             }
+            updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(productDraftId, false), new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+                    // no op
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    // no op
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    // no op
+                }
+            });
             getView().onFailedAddProduct();
             getView().notificationFailed(e, productDraftId, productStatus);
             getView().sendFailedBroadcast(e);

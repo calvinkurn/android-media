@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.keyword.data.mapper.TopAdsKeywordActionBulkMapperToDomain;
 import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordActionBulkRepository;
 

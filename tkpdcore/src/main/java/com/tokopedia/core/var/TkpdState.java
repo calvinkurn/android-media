@@ -32,7 +32,11 @@ public class TkpdState {
 		public static final int INDEX_HOME = 5;
 		public static final int LOGIN = 6;
 		public static final int MANAGE_PEOPLE = 7;
-		public static final int MANAGE_PRODUCT = 8;
+        public static final int MANAGE_PRODUCT = 8;
+        public static final int MANAGE_PAYMENT_AND_TOPUP = 55;
+        public static final int MANAGE_TRANSACTION_DIGITAL = 56;
+        public static final int MANAGE_PRICE_PRODUCT_DIGITAL = 57;
+        public static final int DRAFT_PRODUCT = 54;
 		public static final int MANAGE_SHOP = 9;
 		public static final int PEOPLE = 10;
 		public static final int PEOPLE_DEPOSIT = 11;
@@ -45,6 +49,7 @@ public class TkpdState {
 		public static final int REGISTER = 19;
 		public static final int DEVELOPER_OPTIONS = 20;
 		public static final int MANAGE_ETALASE = 21;
+        public static final int MANAGE_DRAFT_PRODUCT = 22;
 
         public static final int PEOPLE_PAYMENT_STATUS = 201;
         public static final int PEOPLE_ORDER_STATUS = 202;
@@ -76,11 +81,14 @@ public class TkpdState {
         public static final int SELLER_GM_SUBSCRIBE = 46;
         public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
         public static final int SELLER_PRODUCT_EXTEND = 53;
+        public static final int SELLER_PRODUCT_DIGITAL_EXTEND = 54;
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
         public static final int SHOP_OPPORTUNITY_LIST = 52;
+
+        public static final int CATEGORY_NAVIGATION = 54;
     }
 
     public class Application {
@@ -375,6 +383,8 @@ public class TkpdState {
         public static final int GCM_VERIFICATION = 1008;
         public static final int GCM_TOPADS_BELOW_20K = 1100;
         public static final int GCM_TOPADS_TOPUP_SUCCESS = 1101;
+        public static final int GCM_RIDEHAILING = 1200;
+
     }
 
     public class RecyclerView {

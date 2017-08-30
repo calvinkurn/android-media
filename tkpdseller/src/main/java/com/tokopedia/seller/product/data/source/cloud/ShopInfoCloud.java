@@ -8,7 +8,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 
 import java.util.HashMap;
 import java.util.Map;

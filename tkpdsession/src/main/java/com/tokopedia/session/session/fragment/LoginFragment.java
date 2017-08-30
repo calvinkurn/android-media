@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -94,6 +95,9 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class
 LoginFragment extends Fragment implements LoginView {
+
+    private static final String REGISTER = "Daftar";
+
     // demo only
     int anTestInt = 0;
     Login login;
@@ -104,7 +108,7 @@ LoginFragment extends Fragment implements LoginView {
     @BindView(R2.id.email_auto)
     AutoCompleteTextView mEmailView;
     @BindView(R2.id.password)
-    PasswordView mPasswordView;
+    TextInputEditText mPasswordView;
     @BindView(R2.id.login_form)
     ScrollView mLoginFormView;
     @BindView(R2.id.login_status)
@@ -193,9 +197,9 @@ LoginFragment extends Fragment implements LoginView {
                 loginProvideOnClick(url, name);
             }
         }else {
+
             setSmartLock(SmartLockActivity.RC_READ);
         }
-        accountSignIn.setBackgroundResource(R.drawable.bg_rounded_corners);
         return rootView;
     }
 
@@ -249,7 +253,7 @@ LoginFragment extends Fragment implements LoginView {
     @Override
     public void setListener() {
 
-        String sourceString = "Belum punya akun? " + "Daftar Sekarang";
+        String sourceString = getString(R.string.register_text_login);
 
         Spannable spannable = new SpannableString(sourceString);
 
@@ -261,11 +265,10 @@ LoginFragment extends Fragment implements LoginView {
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
-                , sourceString.indexOf("Daftar")
+                , sourceString.indexOf(REGISTER)
                 , sourceString.length()
                 , 0);
 
@@ -589,7 +592,7 @@ LoginFragment extends Fragment implements LoginView {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            layoutParams.setMargins(0, 20, 0, 0);
+            layoutParams.setMargins(0, 20, 0, 15);
 
             for (int i = 0; i < listProvider.size(); i++) {
                 String color = listProvider.get(i).getColor();
@@ -732,6 +735,7 @@ LoginFragment extends Fragment implements LoginView {
                 break;
         }
         mPasswordView.setText("");
+        setWrapperError(wrapperPassword, null);
     }
 
     private boolean checkEmailHasBeenActive(String text) {

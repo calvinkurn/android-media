@@ -9,7 +9,7 @@ import java.util.List;
 public class SendReplyDiscussionParam {
     String message;
     List<AttachmentViewModel> attachment;
-    private Object resolutionId;
+    private String resolutionId;
     private int flagReceived;
 
     public String getMessage() {
@@ -28,11 +28,11 @@ public class SendReplyDiscussionParam {
         this.attachment = attachment;
     }
 
-    public Object getResolutionId() {
+    public String getResolutionId() {
         return resolutionId;
     }
 
-    public void setResolutionId(Object resolutionId) {
+    public void setResolutionId(String resolutionId) {
         this.resolutionId = resolutionId;
     }
 

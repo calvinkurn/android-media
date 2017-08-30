@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
  */
 
 public abstract class ProductAddPresenter<T extends ProductAddView> extends BaseDaggerPresenter<T>{
-    public abstract void saveDraft(UploadProductInputViewModel viewModel);
+    public abstract void saveDraft(UploadProductInputViewModel viewModel, boolean isUploading);
 
     public abstract void getProductScoring(ValueIndicatorScoreModel valueIndicatorScoreModel);
 
@@ -22,5 +22,5 @@ public abstract class ProductAddPresenter<T extends ProductAddView> extends Base
 
     public abstract void fetchCategory(long categoryId);
 
-    public abstract void saveDraftAndAdd(UploadProductInputViewModel viewModel);
+    public abstract void saveDraftAndAdd(UploadProductInputViewModel viewModel, boolean isUploading);
 }

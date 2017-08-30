@@ -116,8 +116,6 @@ public class ShopInfoActivity extends BaseActivity
         View message;
         View setting;
         View progressBar;
-        View retryButton;
-        View retryMessage;
         View progressView;
         View more;
         View shareBut;
@@ -188,6 +186,13 @@ public class ShopInfoActivity extends BaseActivity
         return bundle;
     }
 
+    public static Intent getCallingIntent(Context context, String shopId) {
+        Bundle bundle = ShopInfoActivity.createBundle(shopId, "");
+        Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @DeepLink(Constants.Applinks.SHOP)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -200,6 +205,7 @@ public class ShopInfoActivity extends BaseActivity
     @DeepLink(Constants.Applinks.SHOP_ETALASE)
     public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_ETALASE)
@@ -313,7 +319,7 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public boolean isOfficialStore() {
-        if(shopModel != null && shopModel.info != null) {
+        if (shopModel != null && shopModel.info != null) {
             return shopModel.info.shopIsOfficial == 1;
         }
 
@@ -393,7 +399,6 @@ public class ShopInfoActivity extends BaseActivity
             public void onFailure() {
                 if (!checkIsShowingInitialData()) {
                     showRetry();
-                    holder.retryButton.setOnClickListener(onRetryClick());
                 } else
                     SnackbarManager
                             .make(
@@ -409,10 +414,7 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean checkIsShowingInitialData() {
-        if (holder.shopName.getText().length() > 0)
-            return true;
-        else
-            return false;
+        return holder.shopName.getText().length() > 0;
     }
 
     private View.OnClickListener onRetryClick() {
@@ -426,14 +428,18 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void showRetry() {
-        holder.retryButton.setVisibility(View.VISIBLE);
-        holder.retryMessage.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(this, holder.progressView, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                showProgress();
+                facadeGetRetrofit.getShopInfo();
+            }
+        });
         holder.progressBar.setVisibility(View.GONE);
     }
 
     private void showProgress() {
-        holder.retryButton.setVisibility(View.GONE);
-        holder.retryMessage.setVisibility(View.GONE);
+        NetworkErrorHelper.removeEmptyState(holder.progressView);
         holder.progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -492,8 +498,6 @@ public class ShopInfoActivity extends BaseActivity
         holder.appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
         holder.progressBar = findViewById(R.id.progress_bar);
         holder.progressView = findViewById(R.id.progress_view);
-        holder.retryButton = findViewById(R.id.retry_button);
-        holder.retryMessage = findViewById(R.id.retry_message);
         holder.infoShop = findViewById(R.id.info_shop);
         holder.more = findViewById(R.id.more);
         holder.shareBut = findViewById(R.id.share_but);
@@ -515,13 +519,10 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean isShopValid() {
-        if (shopModel != null &&
+        return shopModel != null &&
                 shopModel.info != null &&
                 shopModel.info.shopName != null &&
-                !TextUtils.isEmpty(shopModel.info.shopName)) {
-            return true;
-        }
-        return false;
+                !TextUtils.isEmpty(shopModel.info.shopName);
     }
 
     private void initInitialData() {
@@ -560,7 +561,7 @@ public class ShopInfoActivity extends BaseActivity
         if (shopModel.info.shopIsOfficial == 1) {
             adapter.initOfficialShop(shopModel);
         } else {
-            adapter.initRegularShop();
+            adapter.initRegularShop(shopModel);
         }
         for (String title : ShopTabPagerAdapter.TITLES)
             holder.indicator.addTab(holder.indicator.newTab().setText(title));
@@ -599,20 +600,24 @@ public class ShopInfoActivity extends BaseActivity
             actionFirstLaunched(intent.getExtras());
         }
 
+        if (shopModel.info.shopIsOfficial == 1) {
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId, AppScreen.SCREEN_OFFICIAL_STORE);
+        }
+
         // switch to product tab if ETALASE_NAME not empty
-        if(intent.getStringExtra(ETALASE_NAME) != null) {
+        if (intent.getStringExtra(ETALASE_NAME) != null) {
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
 
-        if(intent.getStringExtra(KEYWORD) != null) {
+        if (intent.getStringExtra(KEYWORD) != null) {
             ProductList productListFragment = (ProductList) adapter.getItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0);
             productListFragment.refreshProductListByKeyword(getIntent().getStringExtra(KEYWORD));
 
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
 
-        if(shopModel.info.shopIsOfficial==1){
-            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        if (shopModel.info.shopIsOfficial == 1) {
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId, AppScreen.SCREEN_OFFICIAL_STORE);
         }
     }
 
@@ -966,8 +971,6 @@ public class ShopInfoActivity extends BaseActivity
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(1, true);
                     break;
                 case TAB_POSITION_TALK:
@@ -989,8 +992,6 @@ public class ShopInfoActivity extends BaseActivity
             switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
                 case TAB_POSITION_HOME:
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_TALK:

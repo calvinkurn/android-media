@@ -6,6 +6,31 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/banner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager_intermediary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_revamp_category"/>
+
+        <com.tkpd.library.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/indicator_intermediary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/padding_small"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/image_header_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_revamp_category">
 

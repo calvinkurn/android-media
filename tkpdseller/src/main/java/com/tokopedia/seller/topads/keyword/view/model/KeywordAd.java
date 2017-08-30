@@ -3,14 +3,14 @@ package com.tokopedia.seller.topads.keyword.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.topads.view.model.Ad;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * Created by zulfikarrahman on 5/30/17.
  */
 
-public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
+public class KeywordAd implements Ad, Parcelable, ItemType {
     public static final int TYPE = 192929201;
     private String id;
     private String groupId;

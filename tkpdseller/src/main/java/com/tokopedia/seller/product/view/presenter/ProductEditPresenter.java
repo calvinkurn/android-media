@@ -7,7 +7,7 @@ import com.tokopedia.seller.product.domain.interactor.FetchEditProductFormUseCas
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.SaveDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
@@ -57,14 +57,14 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
             if (!isViewAttached()) {
                 return;
             }
-            getView().onErrorLoadProduct(e);
+            getView().onErrorLoadDraftProduct(e);
         }
 
         @Override
         public void onNext(UploadProductInputDomainModel editProductFormDomainModel) {
             checkViewAttached();
             UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(editProductFormDomainModel);
-            getView().onSuccessLoadProduct(model);
+            getView().onSuccessLoadDraftProduct(model);
         }
     }
 }

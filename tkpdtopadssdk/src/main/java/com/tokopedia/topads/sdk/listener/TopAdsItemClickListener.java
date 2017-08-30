@@ -14,6 +14,6 @@ public interface TopAdsItemClickListener {
 
     void onShopItemClicked(Shop shop);
 
-    void onAddFavorite(Data data);
+    void onAddFavorite(int position, Data data);
 
 }

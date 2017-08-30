@@ -30,6 +30,8 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
     public static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     public static final String IS_PEOPLE_OPENED = "IS_PEOPLE_OPENED";
 
+    public static final String IS_PRODUCT_OPENED = "IS_PRODUCT_OPENED";
+    public static final String IS_PRODUCT_DIGITAL_OPENED = "IS_PRODUCT_OPENED";
     public static final String IS_GM_OPENED = "IS_GM_OPENED";
 
     private DataBinder drawerHeaderDataBinder;
@@ -137,6 +139,12 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
                 break;
             case TkpdState.DrawerPosition.SHOP:
                 drawerCache.putBoolean(IS_SHOP_OPENED, isExpand);
+                break;
+            case TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND:
+                drawerCache.putBoolean(IS_PRODUCT_OPENED, isExpand);
+                break;
+            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
+                drawerCache.putBoolean(IS_GM_OPENED, isExpand);
                 break;
             default:
                 break;

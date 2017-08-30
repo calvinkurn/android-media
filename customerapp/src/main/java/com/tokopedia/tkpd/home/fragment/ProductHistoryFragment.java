@@ -14,11 +14,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tokopedia.tkpd.R;
-
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.WishList;
 import com.tokopedia.tkpd.home.adapter.GridLayoutProductAdapter;
 import com.tokopedia.tkpd.home.presenter.ProductHistory;

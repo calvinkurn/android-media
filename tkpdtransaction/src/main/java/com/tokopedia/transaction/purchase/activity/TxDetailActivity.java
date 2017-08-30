@@ -84,6 +84,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     TextView btnTrackOrder;
     @BindView(R2.id.complain_but)
     TextView btnComplainOrder;
+    @BindView(R2.id.btn_do_complain)
+    TextView btnDoComplain;
     @BindView(R2.id.upload_proof)
     TextView btnUploadProof;
     @BindView(R2.id.btn_request_cancel_order)
@@ -222,10 +224,16 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                         ? View.VISIBLE : View.GONE
         );
 
-        btnRejectOrder.setVisibility(orderData.getOrderButton().getButtonOpenDispute() != null
-                && orderData.getOrderButton().getButtonOpenDispute().equals("1")
-                ? View.VISIBLE : View.GONE);
 
+        btnRejectOrder.setVisibility(View.GONE);
+
+        if (orderData.getOrderButton().getButtonResCenterGoTo().equals("1")) {
+            btnDoComplain.setVisibility(View.GONE);
+        } else {
+            btnDoComplain.setVisibility(orderData.getOrderButton().getButtonComplaintReceived().equals("1")
+                    || orderData.getOrderButton().getButtonComplaintNotReceived().equals("1")
+                    ? View.VISIBLE : View.GONE);
+        }
         btnComplainOrder.setVisibility(orderData.getOrderButton().getButtonResCenterGoTo() != null
                 && orderData.getOrderButton().getButtonResCenterGoTo().equals("1")
                 ? View.VISIBLE : View.GONE);
@@ -329,8 +337,13 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
-        presenter.processConfirmDeliver(this, orderData);
+        presenter.processFinish(this, orderData);
         UnifyTracking.eventReceivedShipping();
+    }
+
+    @OnClick(R2.id.btn_do_complain)
+    void actionComplain() {
+        presenter.processComplain(this, orderData);
     }
 
     @OnClick(R2.id.track_btn)

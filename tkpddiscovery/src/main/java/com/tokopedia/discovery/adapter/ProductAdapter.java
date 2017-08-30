@@ -2,20 +2,19 @@ package com.tokopedia.discovery.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,11 +35,12 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.helper.IndicatorViewHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.Data;
-import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.intermediary.Image;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -48,8 +48,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.Badge;
-import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -57,6 +55,8 @@ import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.fragment.ProductFragment;
+import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
+import com.tokopedia.discovery.intermediary.view.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
 import com.tokopedia.tkpdpdp.customview.RatingView;
@@ -78,11 +78,6 @@ import butterknife.ButterKnife;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
 
-//import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
-//import com.tokopedia.core.product.customview.RatingView;
-//import com.tokopedia.core.product.fragment.ProductDetailFragment;
-
-
 /**
  * Created by m.normansyah on 6/27/16.
  */
@@ -90,8 +85,6 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public static final String DATA_LIST = "DATA_LIST";
     public static final String ADAPTER_PAGING = "ADAPTER_PAGING";
     private static final String TAG = ProductAdapter.class.getSimpleName();
-    public static final int ROWS_OF_PRODUCT = 12;
-    //    private static final int PRODUCT_GRIDVIEW = 151_458;
     PagingHandler.PagingHandlerModel pagingHandlerModel;
     int page = 1;
     private String source = "search";
@@ -282,7 +275,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data data) {
+        public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
 
         }
     }
@@ -384,7 +377,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     private DefaultCategoryHeaderViewHolder onCreateDefaultCategoryHeader(ViewGroup parent) {
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.default_category_header, parent, false);
-        return new DefaultCategoryHeaderViewHolder(inflate);
+        return new DefaultCategoryHeaderViewHolder(parent.getContext(),inflate);
     }
 
     public static class DefaultCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -406,7 +399,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         private DefaultCategoryAdapter categoryAdapter;
 
-        public DefaultCategoryHeaderViewHolder(View itemView) {
+        public DefaultCategoryHeaderViewHolder(Context context, View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -453,17 +446,12 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 totalProduct.setText(categoryHeaderModel.totalProduct + " Produk");
                 totalProduct.setVisibility(View.VISIBLE);
             }
-
-        }
-
-        public interface CategoryHeaderListener {
-            void onExpandClick();
         }
     }
 
     private RevampCategoryHeaderViewHolder onCreateRevampCategoryHeader(ViewGroup parent) {
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.revamp_category_header, parent, false);
-        return new RevampCategoryHeaderViewHolder(inflate);
+        return new RevampCategoryHeaderViewHolder(parent.getContext(), inflate);
     }
 
     public static class RevampCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -486,11 +474,27 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         @BindView(R2.id.total_product)
         TextView totalProduct;
 
+        private static final long SLIDE_DELAY = 8000;
+
+        private final Context context;
+        private RelativeLayout imageHeaderContainer;
+        private RelativeLayout bannerContainer;
+        private ViewPager bannerViewPager;
+        private CirclePageIndicator bannerIndicator;
+        private BannerPagerAdapter bannerPagerAdapter;
+        private Handler bannerHandler;
+        private Runnable incrementPage;
+
         private RevampCategoryAdapter categoryAdapter;
 
-        public RevampCategoryHeaderViewHolder(View itemView) {
+        public RevampCategoryHeaderViewHolder(Context context, View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.context = context;
+            bannerViewPager = (ViewPager) itemView.findViewById(R.id.view_pager_intermediary);
+            bannerIndicator = (CirclePageIndicator) itemView.findViewById(R.id.indicator_intermediary);
+            bannerContainer = (RelativeLayout) itemView.findViewById(R.id.banner_container);
+            imageHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.image_header_container);
         }
 
         public void bind(final CategoryHeaderRevampModel categoryHeaderModel) {
@@ -501,10 +505,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                             GridLayoutManager.VERTICAL, false));
             categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth, categoryHeaderModel.activeChildren, categoryHeaderModel.listener);
             revampCategoriesRecyclerView.setAdapter(categoryAdapter);
-            ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
-                    categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
-            titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
-            titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
+            if ( categoryHeaderModel.categoryHeader.getHeaderImage() != null &&
+                    !categoryHeaderModel.categoryHeader.getHeaderImage().equals("")) {
+                ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
+                        categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
+                titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
+                titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
+            } else {
+                imageHeaderContainer.setVisibility(View.GONE);
+            }
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {
@@ -534,10 +543,85 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 totalProduct.setText(categoryHeaderModel.totalProduct + " Produk");
                 totalProduct.setVisibility(View.VISIBLE);
             }
+            if (categoryHeaderModel.getCategoryHeader().getBanner()!=null
+                    && categoryHeaderModel.getCategoryHeader().getBanner().getImages()!=null) {
+                List<BannerModel> bannerModels = new ArrayList<>();
+                for (Image image: categoryHeaderModel.getCategoryHeader().getBanner().getImages()) {
+                    BannerModel bannerModel = new BannerModel();
+                    bannerModel.setUrl(image.getUrl());
+                    bannerModel.setImageUrl(image.getImageUrl());
+                    bannerModel.setPosition(image.getPosition());
+                    bannerModels.add(bannerModel);
+                }
+                if (bannerModels.size()>0) {
+                    bannerHandler = new Handler();
+                    incrementPage = runnableIncrement();
+                    bannerPagerAdapter = new BannerPagerAdapter(context,bannerModels, categoryHeaderModel.getCategoryHeader().getId());
+                    bannerViewPager.setAdapter(bannerPagerAdapter);
+                    bannerViewPager.addOnPageChangeListener(onBannerChange());
+                    bannerIndicator.setFillColor(ContextCompat.getColor(context, R.color.tkpd_dark_orange));
+                    bannerIndicator.setPageColor(ContextCompat.getColor(context, R.color.white));
+                    bannerIndicator.setViewPager(bannerViewPager);
+                    bannerPagerAdapter.notifyDataSetChanged();
+                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) bannerViewPager.getLayoutParams();
+                    DisplayMetrics metrics = new DisplayMetrics();
+                    bannerViewPager.setLayoutParams(param);
+                    if (bannerModels.size()==1) bannerIndicator.setVisibility(View.GONE);
+                    imageHeaderContainer.setVisibility(View.GONE);
+                    bannerContainer.setVisibility(View.VISIBLE);
+                    startSlide();
+                }
+            }
         }
 
-        public interface CategoryHeaderListener {
-            void onExpandClick();
+        private Runnable runnableIncrement() {
+            return new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int currentItem = bannerViewPager.getCurrentItem();
+                        int maxItems = bannerViewPager.getAdapter().getCount();
+                        if (maxItems != 0) {
+                            bannerViewPager.setCurrentItem((currentItem + 1) % maxItems, true);
+                        } else {
+                            bannerViewPager.setCurrentItem(0, true);
+                        }
+                        bannerHandler.postDelayed(incrementPage, SLIDE_DELAY);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            };
+        }
+
+        private ViewPager.OnPageChangeListener onBannerChange() {
+            return new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    stopSlide();
+                    startSlide();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            };
+        }
+
+
+        private void stopSlide() {
+            if (bannerHandler!=null && incrementPage!=null) bannerHandler.removeCallbacks(incrementPage);
+        }
+
+        private void startSlide() {
+            bannerHandler.removeCallbacks(incrementPage);
+            bannerHandler.postDelayed(incrementPage, SLIDE_DELAY);
         }
 
     }
@@ -868,6 +952,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         ImageView rating;
         @BindView(R2.id.review_count)
         TextView reviewCount;
+        @BindView(R2.id.rating_review_container)
+        LinearLayout ratingReviewContainer;
 
         private Context context;
         private String source = "";
@@ -910,31 +996,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 shopName.setText(MethodChecker.fromHtml(data.shop));
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
-            viewHolder.badgesContainer.removeAllViews();
-            if (data.getBadges() != null) {
-                for (Badge badges : data.getBadges()) {
-                    LuckyShopImage.loadImage(context, badges.getImageUrl(), badgesContainer);
-                }
-            }
-            viewHolder.labelContainer.removeAllViews();
-            if (data.getLabels() != null) {
-                for (Label label : data.getLabels()) {
-                    View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
-                    TextView labelText = (TextView) view.findViewById(R.id.label);
-                    labelText.setText(label.getTitle());
-                    if (!label.getColor().toLowerCase().equals("#ffffff")) {
-                        labelText.setBackgroundResource(R.drawable.bg_label);
-                        labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
-                        ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            labelText.setBackgroundTintList(tint);
-                        } else {
-                            ViewCompat.setBackgroundTintList(labelText, tint);
-                        }
-                    }
-                    labelContainer.addView(view);
-                }
-            }
+
+            IndicatorViewHelper.renderBadgesView(context, viewHolder.badgesContainer, data.getBadges());
+            IndicatorViewHelper.renderLabelsView(context, viewHolder.labelContainer, data.getLabels());
+
             if (data.getIsTopAds()) {
                 wishlistButtonContainer.setVisibility(View.GONE);
             } else {
@@ -959,12 +1024,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             });
 
             if (TextUtils.isEmpty(data.getRating()) || ("0").equals(data.getReviewCount())) {
-                rating.setVisibility(View.GONE);
-                reviewCount.setVisibility(View.GONE);
+                ratingReviewContainer.setVisibility(View.GONE);
             } else {
                 float rateAmount = Float.parseFloat(data.getRating());
-                rating.setVisibility(View.VISIBLE);
-                reviewCount.setVisibility(View.VISIBLE);
+                ratingReviewContainer.setVisibility(View.VISIBLE);
                 rating.setImageResource(
                         RatingView.getRatingDrawable(getStarCount(rateAmount))
                 );

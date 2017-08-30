@@ -36,8 +36,8 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper;
-import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
+import com.tokopedia.seller.reputation.view.helper.GMStatHeaderViewHelper;
+import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
 import com.tokopedia.seller.reputation.data.repository.ReputationReviewRepositoryImpl;
 import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
@@ -53,10 +53,10 @@ import com.tokopedia.seller.reputation.view.adapter.SimpleDividerItemDecoration;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
-import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
+import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
+import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.ArrayList;
@@ -459,12 +459,12 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     }
 
     @Override
-    public void loadData(List<TypeBasedModel> datas) {
+    public void loadData(List<ItemType> datas) {
         renderDatas(datas);
     }
 
     @Override
-    public void loadMore(List<TypeBasedModel> datas) {
+    public void loadMore(List<ItemType> datas) {
         renderDatas(datas);
     }
 
@@ -478,7 +478,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         return adapter.getHeaderModel();
     }
 
-    private void renderDatas(List<TypeBasedModel> datas) {
+    private void renderDatas(List<ItemType> datas) {
         showAppBarLayout();
         setOnClickInfo();
         if (refreshHandler.isRefreshing()) {

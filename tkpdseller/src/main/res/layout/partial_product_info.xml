@@ -7,17 +7,17 @@
     android:orientation="vertical">
 
     <LinearLayout
-        style="@style/LabelLayoutWithoutBorder"
+        style="@style/LabelLayout"
         android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <TextView
-            style="@style/TextView.TopAds.Body.Gray"
+            style="@style/TextView.Body1.BlackSecondary"
             android:text="@string/product_label_product_info" />
 
     </LinearLayout>
 
-    <FrameLayout style="@style/LabelLayoutWithoutBorder">
+    <FrameLayout style="@style/LabelLayout">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/text_input_layout_name"
@@ -46,13 +46,13 @@
 
         <LinearLayout
             android:id="@+id/view_group_category_recomm"
-            style="@style/LabelLayoutWithoutBorder"
+            style="@style/LabelLayout"
             android:orientation="vertical"
             android:visibility="gone">
 
             <TextView
                 android:id="@+id/text_view_shop_title"
-                style="@style/TextView.TopAds.Body.Gray"
+                style="@style/TextView.Body1.BlackSecondary"
                 android:text="@string/product_label_product_recommendation" />
 
             <RadioGroup
@@ -69,7 +69,7 @@
 
         </LinearLayout>
 
-        <com.tokopedia.seller.lib.widget.LabelView
+        <com.tokopedia.seller.common.widget.LabelView
             android:id="@+id/label_view_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             android:focusable="true"/>
     </LinearLayout>
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_view_catalog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

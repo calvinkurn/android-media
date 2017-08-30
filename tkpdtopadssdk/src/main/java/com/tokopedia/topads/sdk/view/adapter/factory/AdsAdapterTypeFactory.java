@@ -7,18 +7,18 @@ import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductFeedViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductGridViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductListViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopFeedViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopGridViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopListViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductListViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopGridViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 /**
  * @author by errysuprayogi on 3/29/17.
@@ -30,7 +30,6 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
 
-    int position;
     public AdsAdapterTypeFactory(Context context) {
         this(context, 0);
     }
@@ -90,7 +89,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         } else if (viewType == ShopListViewHolder.LAYOUT) {
             holder = new ShopListViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopFeedViewHolder.LAYOUT) {
-            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener, clickPosition);
+            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, imageLoader, itemClickListener);
         } else {

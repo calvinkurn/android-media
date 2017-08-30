@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.model;
 
+import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 
 /**
@@ -23,7 +24,10 @@ public class CartItemEditable {
     private String dropShipperPhone;
     private String cartStringForDeliverOption;
     private String cartStringForDropShipperOption;
+    private CartCourierPrices cartCourierPrices;
+    private String keroToken;
     private int errorType;
+    private boolean isUseInsurance;
 
     public CartItemEditable(CartItem data) {
         this.cartItem = data;
@@ -125,5 +129,29 @@ public class CartItemEditable {
 
     public void setCartStringForDropShipperOption(String cartStringForDropShipperOption) {
         this.cartStringForDropShipperOption = cartStringForDropShipperOption;
+    }
+
+    public CartCourierPrices getCartCourierPrices() {
+        return cartCourierPrices;
+    }
+
+    public void setCartCourierPrices(CartCourierPrices cartCourierPrices) {
+        this.cartCourierPrices = cartCourierPrices;
+    }
+
+    public String getKeroToken() {
+        return keroToken;
+    }
+
+    public void setKeroToken(String keroToken) {
+        this.keroToken = keroToken;
+    }
+
+    public boolean isUseInsurance() {
+        return isUseInsurance;
+    }
+
+    public void setUseInsurance(boolean useInsurance) {
+        isUseInsurance = useInsurance;
     }
 }

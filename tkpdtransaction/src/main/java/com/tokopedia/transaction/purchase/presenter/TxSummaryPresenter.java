@@ -11,5 +11,4 @@ public interface TxSummaryPresenter {
     void getNotificationFromNetwork(Context context);
 
     void onDestroyView();
-
 }

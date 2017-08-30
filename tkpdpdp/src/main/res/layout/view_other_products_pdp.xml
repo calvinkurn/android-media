@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:paddingBottom="@dimen/padding_small"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
         android:text="@string/title_other_shop_product"
         android:textColor="@color/black_70"
         android:textStyle="bold" />
@@ -34,7 +34,6 @@
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/margin_small"
-            android:paddingTop="@dimen/margin_med"
             android:visibility="visible">
 
             <include

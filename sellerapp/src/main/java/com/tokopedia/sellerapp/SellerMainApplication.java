@@ -1,28 +1,94 @@
 package com.tokopedia.sellerapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 
+import com.moengage.inapp.InAppManager;
+import com.moengage.inapp.InAppMessage;
+import com.moengage.inapp.InAppTracker;
+import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.sellerapp.daggerModules.AppModule;
+import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication {
+public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction, InAppManager.InAppMessageListener {
 
     public static final int SELLER_APPLICATION = 2;
-    private BaseComponent component;
 
     public static SellerMainApplication get(Context context) {
         return (SellerMainApplication) context.getApplicationContext();
+    }
+
+    @Override
+    public void onInAppShown(InAppMessage message) {
+        InAppTracker.getInstance(this).trackInAppClicked(message);
+    }
+
+    @Override
+    public boolean showInAppMessage(InAppMessage message) {
+        InAppTracker.getInstance(this).trackInAppClicked(message);
+        return false;
+    }
+
+    @Override
+    public void onInAppClosed(InAppMessage message) {
+
+    }
+
+    @Override
+    public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
+        return handleClick(screenName,extras,deepLinkUri);
+    }
+
+    @Override
+    public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
+        return handleClick(screenName,extras,deepLinkUri);
+    }
+
+    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
+
+        CommonUtils.dumper("FCM moengage SELLER clicked "+deepLinkUri.toString());
+
+        if(deepLinkUri!=null){
+
+            if(deepLinkUri.getScheme().equals(Constants.Schemes.HTTP)||deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS))
+            {
+                Intent intent = new Intent(this, DeepLinkActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(deepLinkUri.toString()));
+                startActivity(intent);
+
+            }else if(deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)){
+                Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(deepLinkUri.toString()));
+                startActivity(intent);
+
+            }else{
+                CommonUtils.dumper("FCM entered no one");
+            }
+
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
     @Override
@@ -46,12 +112,13 @@ public class SellerMainApplication extends SellerRouterApplication {
         }
         generateSellerAppBaseUrl();
         super.onCreate();
-        //inject components
-        setComponent();
-        component.inject(this);
+
+        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
+        InAppManager.getInstance().setInAppListener(this);
     }
 
     private void generateSellerAppBaseUrl() {
+        TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = SellerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
         TkpdBaseURL.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.CLOVER_DOMAIN = SellerAppBaseUrl.BASE_CLOVER_DOMAIN;
@@ -66,25 +133,10 @@ public class SellerMainApplication extends SellerRouterApplication {
         TkpdBaseURL.JAHE_DOMAIN = SellerAppBaseUrl.BASE_JAHE_DOMAIN;
         TkpdBaseURL.PULSA_WEB_DOMAIN = SellerAppBaseUrl.BASE_PULSA_WEB_DOMAIN;
         TkpdBaseURL.GOLD_MERCHANT_DOMAIN = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
-        TkpdBaseURL.TOKOPEDIA_CART_DOMAIN  = SellerAppBaseUrl.TOKOPEDIA_CART_DOMAIN;
+        TkpdBaseURL.TOKOPEDIA_CART_DOMAIN = SellerAppBaseUrl.TOKOPEDIA_CART_DOMAIN;
         TkpdBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = SellerAppBaseUrl.BASE_MOBILE_DOMAIN;
         TkpdBaseURL.BASE_CONTACT_US = SellerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
-
-    }
-
-    public void setComponent() {
-        component = DaggerApplicationComponent.builder()
-                .appModule(new AppModule(this))
-                .build();
-    }
-
-    public BaseComponent getComponent() {
-        return component;
-    }
-
-    public void setComponent(BaseComponent component) {
-        this.component = component;
     }
 
     public void initializeDatabase() {

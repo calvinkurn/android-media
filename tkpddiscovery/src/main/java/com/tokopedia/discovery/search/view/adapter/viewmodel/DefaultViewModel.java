@@ -6,6 +6,7 @@ import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class DefaultViewModel implements Visitable<SearchTypeFactory> {
 
     private String id;
     private String searchTerm;
-    private List<SearchItem> searchItems;
+    private List<SearchItem> searchItems = new ArrayList<>();
 
     @Override
     public int type(SearchTypeFactory typeFactory) {

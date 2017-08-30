@@ -2,13 +2,14 @@ package com.tokopedia.tkpd.deeplink.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -28,6 +29,7 @@ import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -40,6 +42,12 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
+
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
@@ -60,15 +68,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
     private Bundle mExtras;
+    private boolean isNeedToUseToolbarWithOptions;
 
-    @DeepLink(Constants.Applinks.WEBVIEW)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, DeepLinkActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_APP_WEB_VIEW, true)
-                .putExtras(extras);
-    }
 
     @Override
     public String getScreenName() {
@@ -78,7 +79,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initDeepLink();
+        startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
     }
 
@@ -131,6 +132,25 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void hideActionBar() {
         getSupportActionBar().hide();
+    }
+
+    @Override
+    public void actionChangeToolbarWithBackToNative() {
+        isNeedToUseToolbarWithOptions = true;
+        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
+        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        setSupportActionBar(toolbar);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isNeedToUseToolbarWithOptions){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -188,12 +208,19 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (id == com.tokopedia.core.R.id.menu_home) {
+            onBackPressed();
+            return true;
+        } else if (id == com.tokopedia.core.R.id.menu_help) {
+            Intent intent = InboxRouter.getContactUsActivityIntent(this);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void catchToWebView(String url) {
+        actionChangeToolbarWithBackToNative();
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_view, FragmentGeneralWebView.createInstance(url))
                 .commit();
@@ -204,9 +231,13 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-            this.startActivity(intent);
-            this.finish();
+            if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, false)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                this.startActivity(intent);
+                this.finish();
+            }
         }
     }
 
@@ -267,6 +298,10 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        CommonUtils.dumper("FCM onNewIntent " + intent.getData());
+        if (intent.getData() != null) {
+            uriData = intent.getData();
+        }
         sendNotifLocalyticsCallback(intent);
     }
 
@@ -320,5 +355,36 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
+    }
+
+    private Observable<Void> startAnalytics() {
+        return Observable.just(true).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, Void>() {
+                    @Override
+                    public Void call(Boolean aBoolean) {
+                        TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
+                        return null;
+                    }
+                });
+    }
+
+    private Observer<Void> getObserver() {
+        return new Observer<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                initDeepLink();
+            }
+        };
     }
 }

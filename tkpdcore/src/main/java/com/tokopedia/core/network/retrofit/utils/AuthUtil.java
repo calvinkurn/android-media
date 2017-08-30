@@ -41,11 +41,12 @@ public class AuthUtil {
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     private static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
-    private static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
+    public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
     private static final String HEADER_PATH = "x-tkpd-path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
+    private static final String HEADER_X_MSISDN = "x-msisdn";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -54,8 +55,14 @@ public class AuthUtil {
     private static final String PARAM_TIMESTAMP = "device_time";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
 
+    public static final String WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app";
+    public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
+    public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
+    public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
 
-
+    public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
+    public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
+    public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
     /**
      * default key is KEY_WSV$
@@ -64,7 +71,7 @@ public class AuthUtil {
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
         public static final String KEY_KEROPPI = "Keroppi";
-        public static final String KEY_HMAC_DIGITAL = "KEY_HMAC_DIGITAL";
+        public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -97,6 +104,39 @@ public class AuthUtil {
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
+
+    public static Map<String, String> generateHeadersWithXUserIdXMsisdn(
+            String path, String method, String authKey, String contentType,
+            String msisdn
+    ) {
+        String date = generateDate(DATE_FORMAT);
+        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+
+        String authString = method
+                + "\n" + ""
+                + "\n" + ""
+                + "\n" + date
+                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
+                + "\n" + HEADER_X_MSISDN + ":" + msisdn
+                + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
+        headerMap.put(HEADER_X_METHOD, method);
+        headerMap.put(HEADER_REQUEST_METHOD, method);
+        headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(HEADER_X_MSISDN, msisdn);
+        headerMap.put(HEADER_USER_ID, userId);
+        headerMap.put(HEADER_X_TKPD_USER_ID, userId);
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        return headerMap;
+    }
+
 
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
@@ -148,6 +188,7 @@ public class AuthUtil {
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
+
     public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
                                                                      String contentType, String authKey, String dateFormat) {
 

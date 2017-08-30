@@ -13,10 +13,9 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -209,16 +208,8 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         return stateTxFilterID;
     }
 
-    @Override
-    protected void initView() {
-        super.initView();
-        if (getIntent().getExtras() != null && getIntent().getExtras()
-                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
-            drawerDataManager.getTokoCash();
-    }
-
     private void setDrawerSidePosition(int position) {
-        if(drawerHelper!=null) {
+        if (drawerHelper != null) {
             switch (position) {
                 case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
                     drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);

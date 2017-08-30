@@ -5,6 +5,9 @@
     <string name="button_gm_subscribe">Buka Browser</string>
     <string name="extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="payment_and_topup">Pembayaran dan Top Up</string>
+    <string name="digital_product">Produk Digital</string>
+    <string name="digital_transaction_list">Daftar Transaksi Digital</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 
@@ -16,14 +19,5 @@
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
-    <string name="drawer_title_home">Beranda</string>
-    <string name="drawer_title_login">Masuk</string>
-    <string name="drawer_title_register">Daftar</string>
-    <string name="drawer_title_report">Laporkan</string>
-    <string name="drawer_title_developer_option">Developer Options</string>
-    <string name="drawer_title_seller">Penjualan</string>
-    <string name="drawer_title_inbox">Kotak Masuk</string>
-    <string name="drawer_title_gold_merchant">Gold Merchant</string>
-    <string name="drawer_title_product">Produk</string>
 
 </resources>

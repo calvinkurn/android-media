@@ -146,7 +146,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         } else {
             holder.date.setTypeface(null, Typeface.NORMAL);
             holder.history.setTypeface(null, Typeface.NORMAL);
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.grey));
+            holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
         }
     }
 

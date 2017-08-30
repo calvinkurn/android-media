@@ -1,7 +1,6 @@
 package com.tokopedia.topads.sdk.utils;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,11 +11,7 @@ import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.imageutils.ImageCache;
 import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
 import com.tokopedia.topads.sdk.imageutils.ImageWorker;
-import com.tokopedia.topads.sdk.network.HttpMethod;
-import com.tokopedia.topads.sdk.network.HttpRequest;
-import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -54,7 +49,7 @@ public class ImageLoader {
                     new ImpresionTask().execute(url);
                 }
             }
-        });
+        }, false);
     }
 
     public void loadBadge(final LinearLayout container, List<Badge> badges) {
@@ -69,23 +64,27 @@ public class ImageLoader {
                         container.addView(view);
                     }
                 }
-            });
+            }, true);
         }
     }
 
-    class ImpresionTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            HttpRequest request = new HttpRequest.HttpRequestBuilder()
-                    .setBaseUrl(params[0])
-                    .setMethod(HttpMethod.GET)
-                    .build();
-            try {
-                return RawHttpRequestExecutor.newInstance(request).executeAsGetRequest();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+    public static int getRatingDrawable(int param) {
+        switch (param) {
+            case 0:
+                return R.drawable.ic_star_none;
+            case 1:
+                return R.drawable.ic_star_one;
+            case 2:
+                return R.drawable.ic_star_two;
+            case 3:
+                return R.drawable.ic_star_three;
+            case 4:
+                return R.drawable.ic_star_four;
+            case 5:
+                return R.drawable.ic_star_five;
+            default:
+                return R.drawable.ic_star_none;
         }
     }
+
 }

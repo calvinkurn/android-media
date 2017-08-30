@@ -204,7 +204,7 @@ public class ListViewShopTxDetailProdListV2 extends BaseAdapter{
         if(CommonUtils.checkNullForZeroJson(model.Message)){
             holder.Message.setText(model.Message);
         }else {
-            holder.Message.setText("Tidak ada keterangan");
+            holder.Message.setText("-");
         }
     }
 

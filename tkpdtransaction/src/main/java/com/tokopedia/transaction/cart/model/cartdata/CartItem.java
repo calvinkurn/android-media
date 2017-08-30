@@ -79,7 +79,7 @@ public class CartItem implements Parcelable {
     private String cartLogisticFee;
     @SerializedName("cart_total_error")
     @Expose
-    private String cartTotalError;
+    private Integer cartTotalError = 0;
     @SerializedName("cart_total_product_price")
     @Expose
     private String cartTotalProductPrice;
@@ -110,6 +110,12 @@ public class CartItem implements Parcelable {
     @SerializedName("cart_string")
     @Expose
     private String cartString;
+    @SerializedName("cart_rates_string")
+    @Expose
+    private String cartRatesString;
+    @SerializedName("cart_cat_id")
+    @Expose
+    private String cartCatId;
 
     public String getCartTotalLogisticFeeIdr() {
         return cartTotalLogisticFeeIdr;
@@ -240,7 +246,8 @@ public class CartItem implements Parcelable {
     }
 
     public String getCartErrorMessage2() {
-        return cartErrorMessage2;
+        if(cartErrorMessage2 == null) return "";
+        else return cartErrorMessage2;
     }
 
     public void setCartErrorMessage2(String cartErrorMessage2) {
@@ -256,7 +263,8 @@ public class CartItem implements Parcelable {
     }
 
     public String getCartErrorMessage1() {
-        return cartErrorMessage1;
+        if(cartErrorMessage1 == null) return "";
+        else return cartErrorMessage1;
     }
 
     public void setCartErrorMessage1(String cartErrorMessage1) {
@@ -287,11 +295,11 @@ public class CartItem implements Parcelable {
         this.cartLogisticFee = cartLogisticFee;
     }
 
-    public String getCartTotalError() {
+    public Integer getCartTotalError() {
         return cartTotalError;
     }
 
-    public void setCartTotalError(String cartTotalError) {
+    public void setCartTotalError(Integer cartTotalError) {
         this.cartTotalError = cartTotalError;
     }
 
@@ -375,6 +383,21 @@ public class CartItem implements Parcelable {
         this.cartString = cartString;
     }
 
+    public String getCartCatId() {
+        return cartCatId;
+    }
+
+    public void setCartCatId(String cartCatId) {
+        this.cartCatId = cartCatId;
+    }
+
+    public String getCartRatesString() {
+        return cartRatesString;
+    }
+
+    public void setCartRatesString(String cartRatesString) {
+        this.cartRatesString = cartRatesString;
+    }
 
     public CartItem() {
     }
@@ -408,7 +431,7 @@ public class CartItem implements Parcelable {
         dest.writeParcelable(this.cartShop, flags);
         dest.writeString(this.cartTotalAmountIdr);
         dest.writeString(this.cartLogisticFee);
-        dest.writeString(this.cartTotalError);
+        dest.writeInt(this.cartTotalError);
         dest.writeString(this.cartTotalProductPrice);
         dest.writeTypedList(this.cartProducts);
         dest.writeValue(this.cartCustomerId);
@@ -419,6 +442,8 @@ public class CartItem implements Parcelable {
         dest.writeParcelable(this.cartShipments, flags);
         dest.writeString(this.cartTotalCartCount);
         dest.writeString(this.cartString);
+        dest.writeString(this.cartRatesString);
+        dest.writeString(this.cartCatId);
     }
 
     protected CartItem(Parcel in) {
@@ -444,7 +469,7 @@ public class CartItem implements Parcelable {
         this.cartShop = in.readParcelable(CartShop.class.getClassLoader());
         this.cartTotalAmountIdr = in.readString();
         this.cartLogisticFee = in.readString();
-        this.cartTotalError = in.readString();
+        this.cartTotalError = in.readInt();
         this.cartTotalProductPrice = in.readString();
         this.cartProducts = in.createTypedArrayList(CartProduct.CREATOR);
         this.cartCustomerId = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -455,6 +480,8 @@ public class CartItem implements Parcelable {
         this.cartShipments = in.readParcelable(CartShipments.class.getClassLoader());
         this.cartTotalCartCount = in.readString();
         this.cartString = in.readString();
+        this.cartRatesString = in.readString();
+        this.cartCatId = in.readString();
     }
 
     public static final Creator<CartItem> CREATOR = new Creator<CartItem>() {

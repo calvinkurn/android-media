@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     private TextView errorProductSubitle;
 
     private ImagePagerAdapter imagePagerAdapter;
+    private String urlTemporary;
 
     public PictureView(Context context) {
         super(context);
@@ -81,7 +83,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>());
+        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>(), urlTemporary);
         vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
@@ -109,7 +111,8 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             }
             listener.onProductStatusError();
         } else if (data.getInfo().getProductStatus().equals("3") &
-                data.getShopInfo().getShopStatus() == 1 && data.getInfo().getProductStatusTitle().length()>1) {
+                data.getShopInfo().getShopStatus() == 1 &&
+                !TextUtils.isEmpty(data.getInfo().getProductStatusTitle())) {
             errorProductContainer.setVisibility(VISIBLE);
             errorProductTitle.setText(data.getInfo().getProductStatusTitle());
             errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
@@ -134,8 +137,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
         productImage.setImageSrc300(productPass.getProductImage());
         productImage.setImageSrc(productPass.getProductImage());
         productImage.setImageDescription("");
-        imagePagerAdapter.add(productImage);
+        imagePagerAdapter.addFirst(productImage);
         indicator.notifyDataSetChanged();
+        urlTemporary = productPass.getProductImage();
     }
 
     private class PagerAdapterAction implements ImagePagerAdapter.OnActionListener {

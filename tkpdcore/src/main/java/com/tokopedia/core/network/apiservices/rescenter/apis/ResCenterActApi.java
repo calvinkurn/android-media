@@ -2,9 +2,11 @@ package com.tokopedia.core.network.apiservices.rescenter.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
@@ -137,9 +139,19 @@ public interface ResCenterActApi {
 
     @Multipart
     @POST("")
+    Observable<Response<TkpdResponse>> uploadVideo(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params,
+                                                   @Part MultipartBody.Part file);
+
+    @Multipart
+    @POST("")
     Observable<Response<TkpdResponse>> createImage(@Url String url,
                                                    @PartMap Map<String, RequestBody> params);
 
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_GENERATE_TOKEN_HOST)
+    Observable<Response<TkpdResponse>> generateTokenHost(@FieldMap TKPDMapParam<String, Object> params);
 
 }
 

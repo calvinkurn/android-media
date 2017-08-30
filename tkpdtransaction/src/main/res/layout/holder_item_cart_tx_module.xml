@@ -263,142 +263,122 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/margin_small">
+                android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:text="@string/title_total_item"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/font_small"/>
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/margin_small">
 
-                <TextView
-                    android:id="@+id/tv_weight"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:text="@string/title_total_item"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/tv_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small"
+                        tools:text="1 Kg" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small"
-                    tools:text="1 Kg"/>
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:text="@string/title_sub_total"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_sub_total"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small"
+                        tools:text="Rp 20.000,-" />
 
-                <TextView
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:text="@string/title_sub_total"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/font_small"/>
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tv_sub_total"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:text="@string/title_shipping_cost"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/tv_shipping_cost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small"
+                        tools:text="Rp 20.000,-" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small"
-                    tools:text="Rp 20.000,-"/>
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:text="@string/title_additional_cost"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_additional_cost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small"
+                        tools:text="Rp 20.000,-" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:text="@string/title_shipping_cost"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/font_small"/>
-
-                <TextView
-                    android:id="@+id/tv_shipping_cost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small"
-                    tools:text="Rp 20.000,-"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:text="@string/title_insurance_cost"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/font_small"/>
-
-                <TextView
-                    android:id="@+id/tv_insurance_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small"
-                    tools:text="Rp 20.000,-"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:text="@string/title_additional_cost"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/font_small"/>
-
-                <TextView
-                    android:id="@+id/tv_additional_cost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small"
-                    tools:text="Rp 20.000,-"/>
             </LinearLayout>
 
         </LinearLayout>
     </com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout>
 
-
     <LinearLayout
+        android:id="@+id/total_price_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/margin_vs"
@@ -414,6 +394,11 @@
             android:textSize="@dimen/font_small"
             android:textStyle="bold"/>
 
+        <ProgressBar
+            android:id="@+id/total_price_progress_bar"
+            android:layout_width="@dimen/img_thumb_bit_small"
+            android:layout_height="@dimen/img_thumb_bit_small" />
+
         <TextView
             android:id="@+id/tv_total_price"
             android:layout_width="match_parent"
@@ -423,7 +408,8 @@
             android:textColor="@color/black"
             android:textSize="@dimen/font_small"
             android:textStyle="bold"
-            tools:text="Rp 20.000,-"/>
+            tools:text="Rp 20.000,-"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout

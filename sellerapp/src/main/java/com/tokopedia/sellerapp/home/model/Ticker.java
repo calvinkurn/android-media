@@ -167,6 +167,10 @@ public class Ticker {
             return MethodChecker.fromHtml(message);
         }
 
+        public String getBasicMessage() {
+            return message;
+        }
+
         public void setMessage(String message) {
             this.message = message;
         }

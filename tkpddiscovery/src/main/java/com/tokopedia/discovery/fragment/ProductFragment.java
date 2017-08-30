@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,9 +20,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
@@ -64,7 +61,6 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
@@ -138,7 +134,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         if (topAdsRecyclerAdapter == null) {
             initTopAdsRecyclerAdapter();
         }
-        
+
         this.gridType = gridType;
         switch (gridType) {
             case GRID_1: //List
@@ -210,7 +206,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceResult(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
@@ -222,6 +217,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
             TrackingUtils.eventLocaSearched(browseModel.q);
+            TrackingUtils.sendMoEngageSearchAttempt(browseModel.q, !model.isEmpty());
 
         }
     }
@@ -314,7 +310,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
-        productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
+        if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
+            productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
+        }
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
         productAdapter.incrementPage();
     }
@@ -322,7 +320,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         topAdsRecyclerAdapter.setHasHeader(true);
-        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -343,6 +340,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
         productAdapter.setTopAdsListener(this);
+        productAdapter.setIsLoading(false);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -417,11 +415,18 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                if (productAdapter.getPagingHandlerModel() != null) {
+                if (productAdapter.getPagingHandlerModel() != null &&
+                        !TextUtils.isEmpty(productAdapter.getPagingHandlerModel().getUriNext())) {
                     presenter.loadMore(getActivity());
                     if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
                             && productAdapter.getPagingHandlerModel().getUriNext() !=null
                             && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
+                } else {
+                    topAdsRecyclerAdapter.hideLoading();
+                    topAdsRecyclerAdapter.unsetEndlessScrollListener();
+                    if (getActivity() instanceof  BrowseProductActivity) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }
@@ -470,7 +475,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data shop) {
+    public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data shop) {
 
     }
 
@@ -611,8 +616,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         new ProductAdapter.CategoryHeaderModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
             }
+
+            TrackingUtils.sendMoEngageOpenCatScreen(
+                    categoryHeader.getName(),
+                    categoryHeader.getId()
+
+            );
         }
-        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {
@@ -685,7 +695,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void displayEmptyResult() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         productAdapter.setSearchNotFound();
-        productAdapter.setIsLoading(false);
+        productAdapter.notifyItemInserted(1);
+        setLoading(false);
+        ((BrowseProductActivity) getActivity()).showLoading(false);
     }
 
     @Override

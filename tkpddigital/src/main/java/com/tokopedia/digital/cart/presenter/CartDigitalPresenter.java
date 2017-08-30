@@ -3,11 +3,13 @@ package com.tokopedia.digital.cart.presenter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -419,6 +421,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
+                cartDigitalInfoData.setForceRenderCart(true);
                 view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
         };
@@ -443,6 +446,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setUserId(Integer.parseInt(view.getUserId()));
         attributes.setProductId(view.getProductId());
         attributes.setFields(fieldList);
+        if (GlobalConfig.isSellerApp()) {
+            attributes.setReseller(true);
+        }
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
@@ -460,6 +466,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(view.getDigitalIdentifierParam());
+        attributes.setClientId(TrackingUtils.getClientID());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

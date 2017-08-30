@@ -25,4 +25,6 @@ public interface HomeCatMenuView {
     void renderHomeCatMenu(ArrayList<CategoryMenuModel> categoryMenuModels);
 
     void showGetCatMenuFromDbErrorMessage(int stringId);
+
+    String getUserId();
 }

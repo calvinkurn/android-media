@@ -20,11 +20,14 @@ public class InboxTicketParam {
     private static final String PARAM_KEYWORD = "keyword";
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_STATUS = "status";
+    private static final String PARAM_RATING = "rating";
 
     private static final String PARAM_TICKET_INBOX_ID = "ticket_inbox_id";
 
     private static final String PARAM_RATE = "rate";
+    private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_TICKET_ID = "ticket_id";
+    private static final String PARAM_COMMENT_ID = "comment_id";
     private static final String PARAM_FILE_UPLOADED = "file_uploaded";
     private static final String PARAM_REPLY_MESSAGE = "ticket_reply_message";
     private static final String PARAM_HAS_PHOTO = "p_photo";
@@ -34,6 +37,12 @@ public class InboxTicketParam {
     private static final String PARAM_POST_KEY = "post_key";
     private static final String PARAM_IS_TEMP = "is_temp";
 
+    public final static String YES_HELPFUL = "YES";
+    public final static String NO_HELPFUL = "NO";
+
+    private String rating;
+    private String commentId;
+    private String userId;
     private String filter;
     private String keyword;
     private String page;
@@ -54,6 +63,29 @@ public class InboxTicketParam {
 
     }
 
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getFilter() {
         return filter;
@@ -170,6 +202,14 @@ public class InboxTicketParam {
         HashMap<String, String> param = new HashMap<>();
         param.put(PARAM_TICKET_ID, getTicketId());
         param.put(PARAM_PAGE, getPage());
+        return param;
+    }
+
+    public Map<String, String> getCommentRatingParam() {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(PARAM_COMMENT_ID, getCommentId());
+        param.put(PARAM_RATING, getRating());
+        param.put(PARAM_USER_ID, getUserId());
         return param;
     }
 

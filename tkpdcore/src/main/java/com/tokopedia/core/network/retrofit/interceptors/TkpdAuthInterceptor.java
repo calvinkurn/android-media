@@ -1,8 +1,12 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 
 import org.json.JSONArray;
@@ -12,6 +16,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -35,6 +41,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         this.authKey = AuthUtil.KEY.KEY_WSV4;
     }
 
+    private Lock lock = new ReentrantLock();
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         final Request originRequest = chain.request();
@@ -54,7 +62,25 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throwChainProcessCauseHttpError(response);
         }
 
+        if(isUnauthorized(finalRequest, response)){
+            refreshToken();
+            Request newest = recreateRequestWithNewAccessToken(chain);
+            Response response1 = chain.proceed(newest);
+            if(isUnauthorized(newest, response1)){
+                showForceLogoutDialog();
+                sendForceLogoutAnalytics(response1);
+            }
+            return response1;
+        }
+
         String bodyResponse = response.body().string();
+        checkResponse(bodyResponse, response);
+
+        return createNewResponse(response, bodyResponse);
+    }
+
+    private void checkResponse(String string, Response response) {
+        String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
         } else if (isRequestDenied(bodyResponse)) {
@@ -67,8 +93,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
         }
-
-        return createNewResponse(response, bodyResponse);
     }
 
 
@@ -77,11 +101,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
 
-    private boolean isTimezoneNotAutomatic() {
+    protected boolean isTimezoneNotAutomatic() {
         return MethodChecker.isTimezoneNotAutomatic();
     }
 
-    private boolean isForbiddenRequest(String bodyResponse, int code) {
+    protected boolean isForbiddenRequest(String bodyResponse, int code) {
 
         JSONObject json;
         try {
@@ -163,7 +187,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return query != null ? query : "";
     }
 
-    private boolean isMaintenance(String response) {
+    protected boolean isMaintenance(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -175,7 +199,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private boolean isHasErrorMessage(String response) {
+    protected boolean isHasErrorMessage(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -187,7 +211,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private boolean isRequestDenied(String response) {
+    protected boolean isRequestDenied(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -214,11 +238,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return false;
     }
 
-    private boolean isServerError(int code) {
+    protected boolean isServerError(int code) {
         return code >= 500;
     }
 
-    private Response createNewResponse(Response oldResponse, String oldBodyResponse) {
+    protected Response createNewResponse(Response oldResponse, String oldBodyResponse) {
         ResponseBody body = ResponseBody.create(oldResponse.body().contentType(), oldBodyResponse);
 
         Response.Builder builder = new Response.Builder();
@@ -241,7 +265,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showTimezoneErrorSnackbar()} instead.
      */
     @Deprecated
-    private void showTimezoneErrorSnackbar() {
+    protected void showTimezoneErrorSnackbar() {
         ServerErrorHandler.showTimezoneErrorSnackbar();
     }
 
@@ -249,7 +273,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showMaintenancePage()} instead.
      */
     @Deprecated
-    private void showMaintenancePage() {
+    protected void showMaintenancePage() {
         ServerErrorHandler.showMaintenancePage();
     }
 
@@ -257,7 +281,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showForceLogoutDialog()} instead.
      */
     @Deprecated
-    private void showForceLogoutDialog() {
+    protected void showForceLogoutDialog() {
         ServerErrorHandler.showForceLogoutDialog();
     }
 
@@ -265,7 +289,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#sendForceLogoutAnalytics(String)} instead.
      */
     @Deprecated
-    private void sendForceLogoutAnalytics(Response response) {
+    protected void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
@@ -273,7 +297,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showServerErrorSnackbar()} instead.
      */
     @Deprecated
-    private void showServerErrorSnackbar() {
+    protected void showServerErrorSnackbar() {
         ServerErrorHandler.showServerErrorSnackbar();
     }
 
@@ -281,13 +305,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#sendErrorNetworkAnalytics(String, int)} instead.
      */
     @Deprecated
-    private void sendErrorNetworkAnalytics(Response response) {
+    protected void sendErrorNetworkAnalytics(Response response) {
         ServerErrorHandler.sendErrorNetworkAnalytics(
                 response.request().url().toString(), response.code()
         );
     }
 
-    private Boolean isNeedRelogin(Response response) {
+    protected Boolean isNeedRelogin(Response response) {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
@@ -299,12 +323,39 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private void doRelogin() {
+    protected boolean isUnauthorized(Request request, Response response) {
+        try {
+            //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
+            String responseString = response.peekBody(512).string();
+            return responseString.contains("invalid_request") && request.header("authorization").contains("Bearer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    protected void doRelogin() {
         SessionRefresh sessionRefresh = new SessionRefresh();
         try {
             sessionRefresh.refreshLogin();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void refreshToken() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            accessTokenRefresh.refreshToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Request recreateRequestWithNewAccessToken(Chain chain) {
+        String freshAccessToken = SessionHandler.getAccessToken();
+        return chain.request().newBuilder()
+                .header("authorization", "Bearer " + freshAccessToken)
+                .build();
     }
 }

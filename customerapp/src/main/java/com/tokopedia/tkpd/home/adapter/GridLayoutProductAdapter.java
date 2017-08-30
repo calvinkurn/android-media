@@ -235,7 +235,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
         if (product.getIsWishlist()) {
             viewHolder.wishlistContent.setVisibility(View.VISIBLE);
-            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId()));
+            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId(), position));
 
             if (product.getIsAvailable()) {
                 setBuyButtonAvailable(viewHolder.buyWishlistBut);
@@ -370,12 +370,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return (position + 1) % 2 == 0;
     }
 
-    private View.OnClickListener onDeleteWishlistClicked(final String productId) {
+    private View.OnClickListener onDeleteWishlistClicked(final String productId, final int position) {
         return new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId);
+                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId, position);
             }
         };
     }

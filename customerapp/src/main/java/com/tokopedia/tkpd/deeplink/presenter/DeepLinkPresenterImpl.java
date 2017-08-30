@@ -41,15 +41,12 @@ import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -323,8 +320,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openWebView(Uri encodedUri, boolean allowingOverriding) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(encodedUri.toString(), allowingOverriding);
+        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString()), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
+        viewListener.actionChangeToolbarWithBackToNative();
     }
 
     private String getUrl(String data) {
@@ -427,15 +425,21 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openCategory(List<String> linkSegment) {
         String departmentId = "0";
-        String iden = linkSegment.get(1);
+        StringBuilder iden = new StringBuilder(linkSegment.get(1));
+        for (int i = 2; i < linkSegment.size(); i++) {
+            iden.append("_").append(linkSegment.get(i));
+        }
         CategoryDB dep =
-                DbManagerImpl.getInstance().getCategoryDb(iden);
+                DbManagerImpl.getInstance().getCategoryDb(iden.toString());
         if (dep != null) {
             departmentId = dep.getDepartmentId() + "";
         }
+
+        String headerTitle = linkSegment.get(linkSegment.size() - 1);
         IntermediaryActivity.moveTo(
                 context,
-                departmentId
+                departmentId,
+                headerTitle
         );
         context.finish();
     }

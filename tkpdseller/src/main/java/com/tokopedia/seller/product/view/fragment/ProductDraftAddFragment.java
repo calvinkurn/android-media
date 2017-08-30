@@ -3,11 +3,13 @@ package com.tokopedia.seller.product.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -86,7 +88,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
-    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+    public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
         hideLoading();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
@@ -129,14 +131,34 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
-    public void onErrorLoadProduct(Throwable throwable) {
+    public boolean hasDataAdded() {
+        // this is to enable always save to draft
+        return true;
+    }
+
+    protected void saveDefaultModel(){
+        // in draft and edit mode, no need to save default model.
+        // no op;
+    }
+
+    @Override
+    public long getProductDraftId() {
+        if (TextUtils.isEmpty(draftId)) {
+            return 0;
+        }
+        try {
+            return Long.valueOf(draftId);
+        }
+        catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    @Override
+    public void onErrorLoadDraftProduct(Throwable throwable) {
         hideLoading();
-        NetworkErrorHelper.showEmptyState(getActivity(), coordinatorLayout, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                fetchInputData();
-            }
-        });
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.product_draft_error_cannot_load_draft));
+        getActivity().finish();
     }
 
 }

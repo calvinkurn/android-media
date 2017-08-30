@@ -32,7 +32,6 @@ public class GeolocationPresenterImpl implements GeolocationPresenter {
         LocationPass locationPass = null;
         if (bundle != null) {
             locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-
         }
         return locationPass;
     }

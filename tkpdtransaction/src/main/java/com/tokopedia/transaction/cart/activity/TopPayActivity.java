@@ -51,8 +51,11 @@ import butterknife.BindView;
 
 /**
  * @author anggaprasetiyo on 12/8/16.
+ *         Do not use!
+ *         Please
+ * @see com.tokopedia.payment.activity.TopPayActivity
  */
-
+@Deprecated
 public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> implements ITopPayView,
         TopPayBroadcastReceiver.ActionTopPayThanksListener {
     private static final String TAG = TopPayActivity.class.getSimpleName();

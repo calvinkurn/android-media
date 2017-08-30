@@ -3,9 +3,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/provider_layout"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="@dimen/btn_height"
     android:layout_gravity="center"
-    android:layout_margin="4dp"
+    android:layout_margin="2dp"
     android:gravity="center"
     android:orientation="horizontal"
     android:weightSum="6"
@@ -36,8 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="4"
         tools:text="masuk dengan facebook"
-        android:textColor="#AA000000"
-        android:textStyle="bold"
+        android:textColor="@color/black_70"
+        android:fontFamily="sans-serif-medium"
         />
     <Space
         android:layout_width="0dp"

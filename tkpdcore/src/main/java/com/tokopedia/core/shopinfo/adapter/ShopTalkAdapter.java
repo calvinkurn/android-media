@@ -34,6 +34,7 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
     private static final int VIEW_TALK = 100;
     private boolean actionsEnabled;
+    private boolean isHaveNext;
 
     public void setActionsEnabled(boolean actionsEnabled) {
         this.actionsEnabled = actionsEnabled;
@@ -93,6 +94,9 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
         @BindView(R2.id.main_view)
         View mainView;
 
+        @BindView(R2.id.empty_view)
+        View emptyView;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -141,28 +145,35 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindShopTalk(ViewHolder holder, final int position) {
-        list.get(position).setPosition(position);
-        ImageHandler.LoadImage(holder.productImage, list.get(position).getTalkProductImage());
-        holder.userName.setText(list.get(position).getTalkUserName());
-        holder.productName.setText(list.get(position).getTalkProductName());
-        holder.message.setText(list.get(position).getTalkMessage());
-        holder.createTime.setText(list.get(position).getTalkCreateTimeFmt());
-        holder.totalComment.setText(list.get(position).getTalkTotalComment());
-        if (list.get(position).getTalkUserReputation().getNoReputation() == 0) {
-            holder.reputationRating.setText(list.get(position).getTalkUserReputation().getPositivePercentage() + "%");
-            holder.reputationRating.setVisibility(View.VISIBLE);
-            holder.reputationIcon.setImageResource(R.drawable.ic_icon_repsis_smile_active);
+        if (!isHaveNext && position == list.size()) {
+            holder.emptyView.setVisibility(View.VISIBLE);
+            holder.mainView.setVisibility(View.GONE);
         } else {
-            holder.reputationRating.setVisibility(View.INVISIBLE);
-            holder.reputationIcon.setImageResource(R.drawable.ic_icon_repsis_smile);
+            holder.emptyView.setVisibility(View.GONE);
+            holder.mainView.setVisibility(View.VISIBLE);
+            list.get(position).setPosition(position);
+            ImageHandler.LoadImage(holder.productImage, list.get(position).getTalkProductImage());
+            holder.userName.setText(list.get(position).getTalkUserName());
+            holder.productName.setText(list.get(position).getTalkProductName());
+            holder.message.setText(list.get(position).getTalkMessage());
+            holder.createTime.setText(list.get(position).getTalkCreateTimeFmt());
+            holder.totalComment.setText(list.get(position).getTalkTotalComment());
+            if (list.get(position).getTalkUserReputation().getNoReputation() == 0) {
+                holder.reputationRating.setText(list.get(position).getTalkUserReputation().getPositivePercentage() + "%");
+                holder.reputationRating.setVisibility(View.VISIBLE);
+                holder.reputationIcon.setImageResource(R.drawable.ic_icon_repsis_smile_active);
+            } else {
+                holder.reputationRating.setVisibility(View.INVISIBLE);
+                holder.reputationIcon.setImageResource(R.drawable.ic_icon_repsis_smile);
+            }
+
+            if (!SessionHandler.isV4Login(context))
+                holder.overflowButton.setVisibility(View.GONE);
+            else
+                holder.overflowButton.setVisibility(View.VISIBLE);
+
+            setListener(list.get(position), holder);
         }
-
-        if (!SessionHandler.isV4Login(context))
-            holder.overflowButton.setVisibility(View.GONE);
-        else
-            holder.overflowButton.setVisibility(View.VISIBLE);
-
-        setListener(list.get(position), holder);
     }
 
     private void setListener(final ShopTalk shopTalk, ViewHolder holder) {
@@ -290,13 +301,19 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
     }
 
+    public void setHaveNext(boolean haveNext) {
+        isHaveNext = haveNext;
+        notifyDataSetChanged();
+    }
+
     private boolean isLastItemPosition(int position) {
-        return position == list.size();
+        return position == list.size() + ((!isHaveNext && !list.isEmpty())? 1 : 0);
     }
 
     @Override
     public int getItemCount() {
-        return list.size() + super.getItemCount();
+        int count = list.size() + super.getItemCount() + ((!isHaveNext && !list.isEmpty())? 1 : 0);
+        return count;
     }
 
     public ArrayList<ShopTalk> getList() {

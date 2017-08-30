@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.tokopedia.core.R;
@@ -22,10 +23,13 @@ public class RequestPermissionUtil {
     public static void onPermissionDenied(Context context, List<String> listPermission) {
         String allPermission = "";
         for (int i = 0; i < listPermission.size(); i++) {
-            if (i == listPermission.size() - 1)
-                allPermission += getPermissionName(context, listPermission.get(i));
-            else
-                allPermission += getPermissionName(context, listPermission.get(i)) + ", ";
+            String permission = getPermissionName(context, listPermission.get(i));
+            if (!TextUtils.isEmpty(permission)) {
+                if (i == listPermission.size() - 1)
+                    allPermission += permission;
+                else
+                    allPermission += String.format("%s, ", permission);
+            }
         }
         if (!allPermission.equals(""))
             Toast.makeText(context, context.getString(R.string.permission_multi_denied) + " untuk " + allPermission, Toast.LENGTH_LONG).show();
@@ -45,6 +49,8 @@ public class RequestPermissionUtil {
             case Manifest.permission.READ_CONTACTS:
                 return context.getString(R.string.permission_contacts);
             case Manifest.permission.ACCESS_FINE_LOCATION:
+                return context.getString(R.string.permission_location);
+            case Manifest.permission.ACCESS_COARSE_LOCATION:
                 return context.getString(R.string.permission_location);
             case Manifest.permission.GET_ACCOUNTS:
                 return context.getString(R.string.permission_accounts);

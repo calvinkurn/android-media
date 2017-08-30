@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,18 +10,18 @@ import android.view.View;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDetailStatisticFragment;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
-import com.tokopedia.seller.topads.view.fragment.TopAdsDetailStatisticFragment;
-import com.tokopedia.seller.topads.view.model.Ad;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 
 import javax.inject.Inject;
 
@@ -33,8 +34,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     private LabelView keywordLabelView;
     private LabelView promoGroupLabelView;
 
-    protected KeywordAd keywordAd;
-
+    OnKeywordDetailListener onKeywordDetailListener;
+    public interface OnKeywordDetailListener{
+        void startShowCase();
+    }
     @Inject
     TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
 
@@ -81,20 +84,20 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void refreshAd() {
-        if (keywordAd != null) {
+        if (adFromIntent != null) {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), keywordAd.getId(), getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
+                    getDatePickerPresenter().getEndDate(), adFromIntent.getId(), getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
         } else {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
                     getDatePickerPresenter().getEndDate(), adId, getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
@@ -102,28 +105,30 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
+    public void onAdLoaded(Ad ad) {
+        super.onAdLoaded(ad);
+        if (onKeywordDetailListener!= null) {
+            onKeywordDetailListener.startShowCase();
+        }
+    }
+
+    @Override
     protected void editAd() {
-        startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), keywordAd), REQUEST_CODE_AD_EDIT);
+        startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ((KeywordAd)ad)), REQUEST_CODE_AD_EDIT);
     }
 
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        topadsKeywordDetailPresenter.deleteAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
-    }
-
-    @Override
-    public void onAdLoaded(Ad ad) {
-        keywordAd = (KeywordAd) ad;
-        super.onAdLoaded(ad);
+        topadsKeywordDetailPresenter.deleteAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void updateMainView(Ad ad) {
         super.updateMainView(ad);
-        keywordLabelView.setContent(keywordAd.getKeywordTag());
-        promoGroupLabelView.setContent(keywordAd.getGroupName());
-        name.setContent(keywordAd.getkeywordTypeDesc());
+        keywordLabelView.setContent(((KeywordAd)ad).getKeywordTag());
+        promoGroupLabelView.setContent(((KeywordAd)ad).getGroupName());
+        name.setContent(((KeywordAd)ad).getkeywordTypeDesc());
     }
 
     protected int getKeywordTypeValue() {
@@ -137,7 +142,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     private void onPromoGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, keywordAd.getGroupId());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ((KeywordAd)ad).getGroupId());
         startActivity(intent);
     }
 
@@ -154,5 +159,18 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     public void onDestroy() {
         super.onDestroy();
         topadsKeywordDetailPresenter.unSubscribe();
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
+    }
+
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if (context instanceof OnKeywordDetailListener) {
+            onKeywordDetailListener = (OnKeywordDetailListener) context;
+        }
     }
 }

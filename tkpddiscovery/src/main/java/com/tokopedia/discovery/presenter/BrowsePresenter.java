@@ -25,11 +25,12 @@ public interface BrowsePresenter {
 
     void fetchHotListHeader(String alias);
 
-    void sendQuery(String query, String depId);
+    boolean sendQuery(String query, String depId);
     void sendHotlist(String selected, String keyword);
 
     void resetBrowseProductActivityModel();
     BrowseProductActivityModel getBrowseProductActivityModel();
+    boolean isFromCategory();
 
     void setFilterAttribute(DataValue filterAttribute, int activeTab);
     boolean checkHasFilterAttributeIsNull(int activeTab);

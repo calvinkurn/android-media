@@ -105,7 +105,6 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void setDistricts(List<District> districts) {
-                Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName() + " -> " + districts);
                 isFetchProvinceDone = true;
                 if (IsNewForm) {
                     chooseDistrict(districts);
@@ -116,7 +115,6 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void setCities(List<City> cities) {
-                Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName() + " -> " + cities);
                 if (IsNewForm) {
                     chooseCity(cities);
                 } else {
@@ -126,7 +124,6 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void setProvinces(List<Province> provinces) {
-                Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName() + " -> " + provinces);
                 if (IsNewForm) {
                     initProvince(provinces);
                 } else {
@@ -424,8 +421,6 @@ public class ShopAddressForm extends TActivity {
     }
 
     private void initProvince(List<Province> provinces, String province) {
-        Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName()
-                + " provinsi -> " + province);
         initProvince(provinces);
 
         for (int i = 0; i < ProvinceID.size(); i++) {

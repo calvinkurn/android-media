@@ -35,6 +35,18 @@ public class Product implements Parcelable {
     @SerializedName("ut")
     @Expose
     private String ut;
+    @SerializedName("insurance_price")
+    @Expose
+    private Integer insurancePrice;
+    @SerializedName("insurance_type")
+    @Expose
+    private Integer insuranceMode;
+    @SerializedName("max_hours_id")
+    @Expose
+    private String maxHoursId;
+    @SerializedName("desc_hours_id")
+    @Expose
+    private String descHoursId;
 
     public Product() {
     }
@@ -151,6 +163,38 @@ public class Product implements Parcelable {
         this.ut = ut;
     }
 
+    public String getMaxHoursId() {
+        return maxHoursId;
+    }
+
+    public void setMaxHoursId(String maxHoursId) {
+        this.maxHoursId = maxHoursId;
+    }
+
+    public String getDescHoursId() {
+        return descHoursId;
+    }
+
+    public void setDescHoursId(String descHoursId) {
+        this.descHoursId = descHoursId;
+    }
+
+    public Integer getInsurancePrice() {
+        return insurancePrice;
+    }
+
+    public void setInsurancePrice(Integer insurancePrice) {
+        this.insurancePrice = insurancePrice;
+    }
+
+    public Integer getInsuranceMode() {
+        return insuranceMode;
+    }
+
+    public void setInsuranceMode(Integer insuranceMode) {
+        this.insuranceMode = insuranceMode;
+    }
+
     @Override
     public String toString() {
         return getShipperProductName();
@@ -175,6 +219,10 @@ public class Product implements Parcelable {
         formattedPrice = in.readString();
         checkSum = in.readString();
         ut = in.readString();
+        maxHoursId = in.readString();
+        descHoursId = in.readString();
+        insurancePrice = in.readByte() == 0x00 ? null : in.readInt();
+        insuranceMode = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     @Override
@@ -202,6 +250,20 @@ public class Product implements Parcelable {
         dest.writeString(formattedPrice);
         dest.writeString(checkSum);
         dest.writeString(ut);
+        dest.writeString(maxHoursId);
+        dest.writeString(descHoursId);
+        if (insurancePrice == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(insurancePrice);
+        }
+        if (insuranceMode == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(insuranceMode);
+        }
     }
 
     @SuppressWarnings("unused")

@@ -1,16 +1,13 @@
 package com.tokopedia.tkpdpdp.presenter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -35,7 +32,6 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
-import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -531,9 +527,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     menuCart.setVisible(false);
                     menuCart.setEnabled(false);
                 } else {
+                    menuCart.setVisible(true);
+                    menuCart.setEnabled(true);
                     if (SessionHandler.isV4Login(context)) {
-                        menuCart.setVisible(true);
-                        menuCart.setEnabled(true);
                         LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
                         int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
                         if (CartCache > 0 && menuCart!=null) {
@@ -541,8 +537,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     }
                 }
-                report.setVisible(true);
-                report.setEnabled(true);
+
+                if (productData.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
+                    report.setVisible(false);
+                    report.setEnabled(false);
+                } else {
+                    report.setVisible(true);
+                    report.setEnabled(true);
+                }
+
                 warehouse.setVisible(false);
                 warehouse.setEnabled(false);
                 etalase.setVisible(false);

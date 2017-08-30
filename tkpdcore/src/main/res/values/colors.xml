@@ -18,7 +18,12 @@
     <color name="greyish_brown_70">#b2515151</color>
     <color name="greyish_bg">#ededed</color>
     <color name="black">#000000</color>
-    <color name="black_70">#b2000000</color>
+    <color name="black_12">#1e000000</color>
+    <color name="black_36">#5b000000</color>
+    <color name="black_38">#61000000</color>
+    <color name="black_54">#8a000000</color>
+    <color name="black_70">#b3000000</color>
+    <color name="black_70b">#b3000000</color>
     <color name="black_twenty_percent">#1F000000</color>
     <color name="greyish_brown_two">#4b4b4b</color>
     <color name="tkpd_green_onboarding">#53BA51</color>
@@ -83,11 +88,17 @@
 
     <color name="checkbox_text">#61000000</color>
     <color name="white_grey">#fbfbfb</color>
-    <color name="black_38">#61000000</color>
-    <color name="black_54">#8B000000</color>
+
     <color name="medium_green">#42b549</color>
     <color name="medium_green_70">#b242b549</color>
     <color name="bright_red">#eb3c0d</color>
-    <color name="black_36">#5C000000</color>
     <color name="price_pdp">#ff5722</color>
+    <color name="grey_hint">#e0e0e0</color>
+
+    <color name="color_complain_header">#c0000000</color>
+    <color name="color_complain_body">#8a000000</color>
+
+
+    <color name="color_free_return_stroke">#bce8f1</color>
+    <color name="color_free_return">#d5f9ff</color>
 </resources>

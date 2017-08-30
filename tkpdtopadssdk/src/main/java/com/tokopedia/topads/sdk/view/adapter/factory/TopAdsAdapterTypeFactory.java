@@ -9,9 +9,9 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.LoadingViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.TopAdsViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.LoadingViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.LoadingViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 
 /**
  * @author by errysuprayogi on 4/13/17.
@@ -19,13 +19,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
 public class TopAdsAdapterTypeFactory implements TopAdsTypeFactory {
 
-    private ImageLoader imageLoader;
     private LocalAdsClickListener itemClickListener;
     public static int CLIENT_ADAPTER_VIEW_TYPE = -7238;
-
-    public TopAdsAdapterTypeFactory(Context context) {
-        imageLoader = new ImageLoader(context);
-    }
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;

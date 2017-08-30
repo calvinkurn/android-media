@@ -10,7 +10,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.reputation.data.model.request.SellerReputationRequest;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationUseCase;
@@ -20,9 +20,9 @@ import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
+import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
+import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.ArrayList;
@@ -219,11 +219,11 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                     getView().dismissSnackbar();
                                     getView().setLoadMoreFlag(
                                             sellerReputationDomain.getLinks().getNext() == null);
-                                    List<TypeBasedModel> typeBasedModels = convertTo(sellerReputationDomain.getList());
+                                    List<ItemType> itemTypes = convertTo(sellerReputationDomain.getList());
 
                                     EmptyListModel emptyListModel = null;
-                                    if (typeBasedModels.isEmpty()) {
-                                        typeBasedModels.add(emptyListModel = new EmptyListModel());
+                                    if (itemTypes.isEmpty()) {
+                                        itemTypes.add(emptyListModel = new EmptyListModel());
                                         emptyListModel.setEmptyShop(isEmptyShop);
                                     }
 
@@ -237,15 +237,15 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                                 formatDate(sellerReputationRequest.geteDate()));
                                         setDateHeaderModel.seteDate(sellerReputationRequest.geteDate());
 
-                                        typeBasedModels.add(0, setDateHeaderModel);
+                                        itemTypes.add(0, setDateHeaderModel);
                                         if (emptyListModel != null)
                                             emptyListModel.setSetDateHeaderModel(setDateHeaderModel);
                                     } else {
-                                        typeBasedModels.add(0, headerModel);
+                                        itemTypes.add(0, headerModel);
                                         if (emptyListModel != null)
                                             emptyListModel.setSetDateHeaderModel(headerModel);
                                     }
-                                    getView().loadMore(typeBasedModels);
+                                    getView().loadMore(itemTypes);
                                 }
                             }
                         }
@@ -316,8 +316,8 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         }
     }
 
-    private List<TypeBasedModel> convertTo(List<SellerReputationDomain.Data> datas) {
-        List<TypeBasedModel> reputationReviewModels =
+    private List<ItemType> convertTo(List<SellerReputationDomain.Data> datas) {
+        List<ItemType> reputationReviewModels =
                 new ArrayList<>();
 
         for (SellerReputationDomain.Data data : datas) {

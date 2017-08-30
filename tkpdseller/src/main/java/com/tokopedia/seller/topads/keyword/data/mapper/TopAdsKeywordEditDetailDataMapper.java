@@ -1,13 +1,12 @@
 package com.tokopedia.seller.topads.keyword.data.mapper;
 
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
 import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.inject.Inject;

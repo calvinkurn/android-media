@@ -1,17 +1,20 @@
 package com.tokopedia.core.home.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -23,10 +26,15 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.var.TkpdState;
 
 import java.net.URL;
 
@@ -40,6 +48,10 @@ public class FragmentBannerWebView extends Fragment {
     private TkpdWebView webview;
     private static final String EXTRA_URL = "url";
     private static final String EXTRA_OVERRIDE_URL = "override_url";
+    private static final String LOGIN_TYPE = "login_type";
+    private static final String QUERY_PARAM_PLUS = "plus";
+    private static final int LOGIN_GPLUS = 123453;
+
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -97,16 +109,27 @@ public class FragmentBannerWebView extends Fragment {
     public static FragmentBannerWebView createInstance(String url) {
         FragmentBannerWebView fragment = new FragmentBannerWebView();
         Bundle args = new Bundle();
-        args.putString(EXTRA_URL, url);
-        Uri uri = Uri.parse(url);
-        if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
-            args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+        if (!TextUtils.isEmpty(url)) {
+            args.putString(EXTRA_URL, url);
+            Uri uri = Uri.parse(url);
+            if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
+                args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+            }
         }
         fragment.setArguments(args);
         return fragment;
     }
 
     private boolean overrideUrl(String url) {
+        if (getActivity() != null && getActivity().getApplication() != null)
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                if (((IDigitalModuleRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(url)) {
+                    ((IDigitalModuleRouter) getActivity().getApplication())
+                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                    return true;
+                }
+            }
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
 
@@ -142,7 +165,31 @@ public class FragmentBannerWebView extends Fragment {
                 return false;
             }
         } else {
+            String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
+            if (query != null && query.equals(QUERY_PARAM_PLUS)) {
+                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+                intent.putExtra("login", DownloadService.GOOGLE);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                startActivityForResult(intent, LOGIN_GPLUS);
+                return true;
+            }
             return false;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_GPLUS) {
+            String historyUrl = "";
+            WebBackForwardList mWebBackForwardList = webview.copyBackForwardList();
+            if (mWebBackForwardList.getCurrentIndex() > 0)
+                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex() - 1).getUrl();
+            if (!historyUrl.contains(SEAMLESS))
+                webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(historyUrl, getActivity()));
+            else {
+                webview.loadAuthUrl(historyUrl);
+            }
         }
     }
 

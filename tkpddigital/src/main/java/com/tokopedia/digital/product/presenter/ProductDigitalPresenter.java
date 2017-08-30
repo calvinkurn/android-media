@@ -16,6 +16,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
@@ -45,6 +46,8 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
 
+    private final String PARAM_IS_RESELLER = "is_reseller";
+
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
         this.view = view;
@@ -55,6 +58,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processGetCategoryAndBannerData() {
         String categoryId = view.getCategoryId();
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
+        if (GlobalConfig.isSellerApp()) {
+            paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+        }
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
         view.showInitialProgressLoading();
@@ -149,15 +155,15 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processStateDataToReRender() {
         CategoryData categoryData = view.getCategoryDataState();
         List<BannerData> bannerDataList = view.getBannerDataListState();
+        List<BannerData> otherBannerDataList = view.getBannerDataListState();
         HistoryClientNumber historyClientNumber = view.getHistoryClientNumberState();
         if (categoryData != null) {
             renderCategoryDataAndBannerToView(
-                    categoryData, bannerDataList, historyClientNumber
+                    categoryData, bannerDataList, otherBannerDataList, historyClientNumber
             );
             view.renderStateSelectedAllData();
         }
     }
-
 
     @Override
     public void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData) {
@@ -251,10 +257,11 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 view.hideInitialProgressLoading();
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 List<BannerData> bannerDataList = productDigitalData.getBannerDataList();
+                List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
                 renderCategoryDataAndBannerToView(
-                        categoryData, bannerDataList, historyClientNumber
+                        categoryData, bannerDataList, otherBannerDataList, historyClientNumber
                 );
             }
         };
@@ -263,6 +270,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,
                                                    List<BannerData> bannerDataList,
+                                                   List<BannerData> otherBannerDataList,
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
@@ -285,10 +293,16 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                     );
                     break;
             }
-            view.renderBannerListData(
-                    "Promo " + categoryData.getName(),
-                    bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
-            );
+            if (!GlobalConfig.isSellerApp()) {
+                view.renderBannerListData(
+                        categoryData.getName(),
+                        bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
+                );
+                view.renderOtherBannerListData(
+                        view.getStringFromResource(R.string.other_promo),
+                        otherBannerDataList != null ? otherBannerDataList : new ArrayList<BannerData>()
+                );
+            }
         } else {
             view.renderErrorStyleNotSupportedProductDigitalData(
                     view.getStringFromResource(

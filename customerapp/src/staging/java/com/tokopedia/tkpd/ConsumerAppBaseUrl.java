@@ -7,6 +7,7 @@ package com.tokopedia.tkpd;
 @SuppressWarnings("WeakerAccess")
 public class ConsumerAppBaseUrl {
 
+    public static final String BASE_TOKOPEDIA_WEBSITE = "https://staging.tokopedia.com/";
     public static final String BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace-staging.tokopedia.com/";
     public static final String BASE_TOME_DOMAIN = "https://tome-staging.tokopedia.com/";
@@ -21,9 +22,14 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_KERO_DOMAIN = "https://kero-staging.tokopedia.com/";
     public static final String BASE_JAHE_DOMAIN = "https://jahe-staging.tokopedia.com/";
     public static final String BASE_PULSA_WEB_DOMAIN = "https://pulsa-staging.tokopedia.com";
-    public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
+    public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant-staging.tokopedia.com";
     public static final String BASE_WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m-staging.tokopedia.com/";
-
+    public static final String BASE_RIDE_DOMAIN = "https://ride-staging.tokopedia.com/";
+    public static final String BASE_TOKO_CASH_DOMAIN = "https://wallet-staging.tokopedia.id/";
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
+    public static final String BASE_DIGITAL_WEBSITE_DOMAIN = "https://pulsa-staging.tokopedia.com/";
+    public static final String BASE_PAYMENT_URL_DOMAIN = "https://pay-staging.tokopedia.com";
+    public static final String GRAPHQL_DOMAIN = "http://2-feature-m-staging.tokopedia.com/graphql";
+    public static final String SCROOGE_DOMAIN = "https://pay-staging.tokopedia.com/";
 }

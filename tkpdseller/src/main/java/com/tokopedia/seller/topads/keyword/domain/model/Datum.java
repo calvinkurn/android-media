@@ -1,13 +1,10 @@
 package com.tokopedia.seller.topads.keyword.domain.model;
 
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
-
 /**
  * Created by normansyahputa on 5/18/17.
  */
 
-public class Datum implements TypeBasedModel {
-    public static final int TYPE = 292912;
+public class Datum {
 
     private int keywordId;// 1
     private String keywordTag;// 2
@@ -179,10 +176,5 @@ public class Datum implements TypeBasedModel {
 
     public void setLabelOf(String labelOf) {
         this.labelOf = labelOf;
-    }
-
-    @Override
-    public int getType() {
-        return TYPE;
     }
 }

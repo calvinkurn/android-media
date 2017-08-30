@@ -33,7 +33,7 @@ public class TopAdsKeywordEditDetailNegativeFragment extends TopAdsKeywordEditDe
     @Override
     protected void settingTopAdsKeywordType(View view) {
         super.settingTopAdsKeywordType(view);
-        topAdsKeywordType.setEntries(getResources().getStringArray(R.array.top_ads_keyword_type_list_names));
+        topAdsKeywordType.setEntries(getResources().getStringArray(R.array.top_ads_keyword_type_list_entries));
         topAdsKeywordType.setValues(getResources().getStringArray(R.array.top_ads_keyword_type_negative_list_values));
     }
 

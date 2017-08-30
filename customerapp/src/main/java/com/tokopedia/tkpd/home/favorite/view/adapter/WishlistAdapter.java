@@ -84,10 +84,10 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     }
 
     private void setBadges(WishlistAdapter.ViewHolder holder, List<String> stringList) {
-        if (holder.badgesContainer.getChildCount() == 0)
-            for (String bagdeUrl : stringList) {
-                LuckyShopImage.loadImage(holder.getContext(), bagdeUrl, holder.badgesContainer);
-            }
+        holder.badgesContainer.removeAllViews();
+        for (String bagdeUrl : stringList) {
+            LuckyShopImage.loadImage(holder.getContext(), bagdeUrl, holder.badgesContainer);
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

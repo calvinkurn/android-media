@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
+public class TopAdsKeywordAddActivity extends BaseSimpleActivity
         implements HasComponent<AppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
@@ -75,19 +76,14 @@ public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
     }
 
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         String groupId = getIntent().getStringExtra(EXTRA_GROUP_ID);
         String groupName = getIntent().getStringExtra(EXTRA_GROUP_NAME);
         int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
         int serverCount = getIntent().getIntExtra(EXTRA_SERVER_COUNT, 0);
-        int maxWords = getIntent().getIntExtra(EXTRA_MAX_WORDS, getResources().getInteger(R.integer.topads_max_keyword_in_group));
+        int maxWords = getIntent().getIntExtra(EXTRA_MAX_WORDS, getResources().getInteger(R.integer.top_ads_keyword_max_in_group));
         ArrayList<String> localWords = getIntent().getStringArrayListExtra(EXTRA_LOCAL_WORDS);
         return TopAdsKeywordAddFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords);
-    }
-
-    @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordAddFragment.TAG;
     }
 
     @Override
@@ -114,17 +110,16 @@ public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
     public void onBackPressed() {
         // check if user already make a changes by adding or deleting
         // if so, when backpressed, show dialog if user really want to delete the change or save the changes
-        TopAdsKeywordAddFragment fragment = (TopAdsKeywordAddFragment) getSupportFragmentManager().findFragmentByTag(TopAdsKeywordAddFragment.TAG);
+        TopAdsKeywordAddFragment fragment = (TopAdsKeywordAddFragment) getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if (fragment!= null && fragment.isButtonSaveEnabled()) {
             AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.product_dialog_cancel_title))
-                    .setMessage(getString(R.string.product_dialog_cancel_message))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                    .setMessage(getString(R.string.topads_keyword_add_cancel_dialog))
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             TopAdsKeywordAddActivity.super.onBackPressed();
                         }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
 
                         }
@@ -133,5 +128,10 @@ public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

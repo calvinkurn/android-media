@@ -3,7 +3,9 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,14 +14,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.response.Error;
+import com.tokopedia.core.network.retrofit.response.TextErrorObject;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
@@ -51,10 +59,13 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     public static final String EXTRA_SERVER_COUNT = "server_cnt";
     public static final String EXTRA_MAX_WORDS = "max_words";
     public static final String EXTRA_LOCAL_WORDS = "lcl_wrds";
+    public static final String EXTRA_ERROR_WORDS = "err_wrds";
 
     public static final int MIN_WORDS = 5;
 
     OnSuccessSaveKeywordListener onSuccessSaveListener;
+    private ArrayList<String> errorStringList = new ArrayList<>();
+
     public interface OnSuccessSaveKeywordListener {
         void onSuccessSave(ArrayList<String> keyWordsList);
     }
@@ -102,6 +113,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
             localWords = args.getStringArrayList(EXTRA_LOCAL_WORDS);
         } else {
             localWords = savedInstanceState.getStringArrayList(EXTRA_LOCAL_WORDS);
+            errorStringList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS);
         }
     }
 
@@ -138,7 +150,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
                 String keyword = editable.toString();
                 if (!hasInvalidChar(keyword)) {
                     String validKeyword = StringUtils.omitPunctuationAndDoubleSpace(keyword).toLowerCase();
-                    if (!TextUtils.isEmpty(validKeyword) && isValidateWordAndCheckLocalSuccess(validKeyword)){
+                    if (!TextUtils.isEmpty(validKeyword) && isValidateWordAndCheckLocalSuccess(validKeyword)) {
                         textInputKeyword.setErrorEnabled(false);
                     }
                 }
@@ -180,9 +192,9 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         return v;
     }
 
-    private void onButtonSaveClicked(){
+    private void onButtonSaveClicked() {
         showLoading();
-        topAdsKeywordAddPresenter.addKeyword(groupId,keywordType, keywordRecyclerView.getKeywordList());
+        topAdsKeywordAddPresenter.addKeyword(groupId, keywordType, keywordRecyclerView.getKeywordList());
     }
 
     @Override
@@ -209,25 +221,49 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     @Override
     public void onFailedSaveKeyword(Throwable e) {
         hideLoading();
-        CommonUtils.UniversalToast(getActivity(), ViewUtils.getErrorMessage(getContext(), e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(),
+                ViewUtils.getErrorMessage(getActivity(), e));
+        if (e instanceof ResponseErrorException) {
+            List<Error> errorList = ((ResponseErrorException) e).getErrorList();
+            errorStringList = convertResponseErrorToErrorStringList(errorList);
+            keywordRecyclerView.setErrorKeywordList(errorStringList);
+        }
     }
 
-    private void hideLoading(){
-        if (progressDialog!= null) {
+    private ArrayList<String> convertResponseErrorToErrorStringList(List<Error> errorList) {
+        ArrayList<String> tempErrorStringList = new ArrayList<>();
+        if (errorList == null || errorList.size() == 0) {
+            return tempErrorStringList;
+        }
+        for (int i = 0, sizei = errorList.size(); i < sizei; i++) {
+            TextErrorObject textErrorObject = errorList.get(i).getObjectParse(TextErrorObject.class);
+            if (textErrorObject != null) {
+                List<String> textList = textErrorObject.getTextList();
+                if ( textList != null && textList.size() > 0) {
+                    tempErrorStringList.addAll(textList);
+                }
+            }
+        }
+        return tempErrorStringList;
+    }
+
+    private void hideLoading() {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
-    private void showLoading(){
-        if (progressDialog==null) {
+
+    private void showLoading() {
+        if (progressDialog == null) {
             progressDialog = new TkpdProgressDialog(getActivity(),
                     TkpdProgressDialog.NORMAL_PROGRESS);
         }
         progressDialog.showDialog();
     }
 
-    private void onButtonAddClicked(){
+    private void onButtonAddClicked() {
         // check if max words has been reached
-        if (getLocalKeyWordSize()  == maxKeyword) {
+        if (getLocalKeyWordSize() == maxKeyword) {
             textInputKeyword.setError(getString(R.string.top_ads_keyword_per_group_reach_limit));
             return;
         }
@@ -240,12 +276,12 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         }
 
         String validKeyword = StringUtils.omitPunctuationAndDoubleSpace(keyword);
-        if (TextUtils.isEmpty(validKeyword)){
+        if (TextUtils.isEmpty(validKeyword)) {
             textInputKeyword.setError(getString(R.string.top_ads_keyword_must_be_filled));
             return;
         }
 
-        if (!isValidateWordAndCheckLocalSuccess(validKeyword)){
+        if (!isValidateWordAndCheckLocalSuccess(validKeyword)) {
             return;
         }
 
@@ -254,7 +290,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         // add to recyclerview
         keywordRecyclerView.addKeyword(validKeyword);
         editTextKeyword.setText("");
-        if (! buttonSave.isEnabled()) {
+        if (!buttonSave.isEnabled()) {
             buttonSave.setEnabled(true);
         }
         setCurrentMaxKeyword();
@@ -264,7 +300,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     // START VALIDATOR
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private boolean isValidateWordAndCheckLocalSuccess(String validKeyword){
+    private boolean isValidateWordAndCheckLocalSuccess(String validKeyword) {
         // validate no more 5 words
         if (!hasValidWordLength(validKeyword)) {
             return false;
@@ -277,7 +313,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         return true;
     }
 
-    private boolean hasInvalidChar(String keyword){
+    private boolean hasInvalidChar(String keyword) {
         // check if contain alphanumeric
         if (StringUtils.containNonSpaceAlphaNumeric(keyword)) {
             textInputKeyword.setError(getString(R.string.top_ads_keyword_must_only_letter_or_digit));
@@ -286,7 +322,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         return false;
     }
 
-    private boolean hasValidWordLength(String validKeyword){
+    private boolean hasValidWordLength(String validKeyword) {
         String words[] = validKeyword.split("\\s|\\n", MIN_WORDS + 1);
         if (words.length > MIN_WORDS) {
             textInputKeyword.setError(getString(R.string.top_ads_keyword_cannot_more_than_5));
@@ -295,10 +331,10 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         return true;
     }
 
-    private boolean keywordAlreadyInLocal(String validKeyword){
+    private boolean keywordAlreadyInLocal(String validKeyword) {
         List<String> keywordList = keywordRecyclerView.getKeywordList();
         boolean hasInputtedInLocal = false;
-        for (int i=0, sizei = keywordList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = keywordList.size(); i < sizei; i++) {
             if (validKeyword.equalsIgnoreCase(keywordList.get(i))) {
                 hasInputtedInLocal = true;
                 break;
@@ -320,43 +356,44 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         keywordRecyclerView.setKeywordList(localWords);
+        keywordRecyclerView.setErrorKeywordList(errorStringList);
         setCurrentMaxKeyword();
         setServerKeyword();
         checkAddButtonEnabled();
     }
 
-    private void setCurrentMaxKeyword(){
+    private void setCurrentMaxKeyword() {
         textViewKeywordCurrentMax.setText(getString(R.string.top_ads_keywords_total_current_and_max,
                 getLocalKeyWordSize(),
                 maxKeyword));
     }
 
-    private void setServerKeyword(){
+    private void setServerKeyword() {
         textViewTotalKeyworGroup.setText(getString(R.string.top_ads_keywords_in_groups, serverCount));
     }
 
-    private int getLocalKeyWordSize(){
+    private int getLocalKeyWordSize() {
         return keywordRecyclerView.getKeywordList().size();
     }
 
     @Override
     public void onKeywordRemoved() {
-        if (getLocalKeyWordSize() == 0 ) {
+        if (getLocalKeyWordSize() == 0) {
             buttonSave.setEnabled(false);
         }
         setCurrentMaxKeyword();
     }
 
-    private void checkAddButtonEnabled(){
+    private void checkAddButtonEnabled() {
         String currentKeywordString = editTextKeyword.getText().toString();
         if (TextUtils.isEmpty(currentKeywordString) && buttonAddKeyword.isEnabled()) {
-            buttonAddKeyword.setEnabled (false);
+            buttonAddKeyword.setEnabled(false);
         } else if (!TextUtils.isEmpty(currentKeywordString) && !buttonAddKeyword.isEnabled()) {
-            buttonAddKeyword.setEnabled (true);
+            buttonAddKeyword.setEnabled(true);
         }
     }
 
-    public boolean isButtonSaveEnabled(){
+    public boolean isButtonSaveEnabled() {
         return buttonSave.isEnabled();
     }
 
@@ -364,6 +401,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(EXTRA_LOCAL_WORDS, keywordRecyclerView.getKeywordList());
+        outState.putStringArrayList(EXTRA_ERROR_WORDS, errorStringList);
     }
 
     @Override

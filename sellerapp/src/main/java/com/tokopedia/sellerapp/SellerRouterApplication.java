@@ -3,41 +3,72 @@ package com.tokopedia.sellerapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
-import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
+import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
+import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.goldmerchant.common.di.component.DaggerGoldMerchantComponent;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
+import com.tokopedia.seller.goldmerchant.common.di.module.GoldMerchantModule;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.logout.TkpdSellerLogout;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
-import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+
+import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -47,9 +78,31 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter {
+        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
+        IPaymentModuleRouter, IDigitalModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
+
+    private DaggerGoldMerchantComponent.Builder daggerGoldMerchantBuilder;
+    private GoldMerchantComponent goldMerchantComponent;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initializeDagger();
+    }
+
+    private void initializeDagger() {
+        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder()
+                .goldMerchantModule(new GoldMerchantModule());
+    }
+
+    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
+        if (goldMerchantComponent == null) {
+            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent(activityModule)).build();
+        }
+        return goldMerchantComponent;
+    }
 
     @Override
     public void startInstopedActivity(Context context) {
@@ -57,8 +110,8 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
 
     @Override
@@ -68,7 +121,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProduct.class);
+        Intent intent = new Intent(context, ManageProductSeller.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -97,7 +150,7 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToWallet(Context context, Bundle bundle) {
+    public void goToWallet(Context context, String url) {
         //no route to wallet on seller, go to default
         goToDefaultRoute(context);
     }
@@ -109,17 +162,54 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionAppLink(Context context, String linkUrl) {
+
+    }
+
+    @Override
     public void goToCreateMerchantRedirect(Context context) {
         //no route to merchant redirect on seller, go to default
         goToDefaultRoute(context);
     }
 
     @Override
+    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
+        Bundle bundle = new Bundle();
+        SessionHandler sessionHandler = new SessionHandler(this);
+        String authKey = sessionHandler.getAccessToken(this);
+        authKey = sessionHandler.getTokenType(this) + " " + authKey;
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
+
+        AccountsService accountsService = new AccountsService(bundle);
+
+        ProfileSourceFactory profileSourceFactory =
+                new ProfileSourceFactory(
+                        this,
+                        accountsService,
+                        new GetUserInfoMapper(),
+                        null
+                );
+
+        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                new ProfileRepositoryImpl(profileSourceFactory)
+        );
+
+        getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
+        Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            return new Intent(context, SellerHomeActivity.class);
+            if(SessionHandler.isUserSeller(context)){
+                return new Intent(context, SellerHomeActivity.class);
+            }else{
+                return intent;
+            }
         } else {
-            return new Intent(context, WelcomeActivity.class);
+            return intent;
         }
     }
 
@@ -143,6 +233,30 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public void goToRegister(Context context) {
+        Intent intent = Login.getSellerRegisterIntent(context);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public Intent getLoginIntent(Context context) {
+        Intent intent = Login.getCallingIntent(context);
+        return intent;
+    }
+
+    @Override
+    public Intent getRegisterIntent(Context context) {
+        Intent intent = Login.getSellerRegisterIntent(context);
+        return intent;
+    }
+
+    @Override
+    public void goToProfileCompletion(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
@@ -201,15 +315,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setRedirectUrl(url);
-        paymentPassData.setQueryString(parameter);
-        paymentPassData.setCallbackSuccessUrl(callbackUrl);
-        paymentPassData.setPaymentId(String.valueOf(paymentId));
-        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
-        context.startActivity(intent);
-
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition, int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     private void goToDefaultRoute(Context context) {
@@ -225,5 +335,105 @@ public class SellerRouterApplication extends MainApplication
                 context.getString(R.string.header_review_reputation),
                 SellerReputationFragment.TAG,
                 SellerReputationFragment.createInstance());
+    }
+
+    @Override
+    public String getSchemeAppLinkCancelPayment() {
+        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
+        return CartDigitalActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
+        return CartDigitalActivity.newInstance(this, bundle);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
+        return DigitalProductActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalCategoryList() {
+        return DigitalCategoryListActivity.newInstance(this);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalWeb(String url) {
+        return DigitalWebActivity.newInstance(this, url);
+    }
+
+    @Override
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLinks);
+    }
+
+    @Override
+    public Intent getIntentDeepLinkHandlerActivity() {
+        return new Intent(this, DeepLinkHandlerActivity.class);
+    }
+
+    @Override
+    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtras(bundle);
+        intent.setData(Uri.parse(applinks));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
+    public Intent instanceIntentTokoCashActivation() {
+        return ActivateTokoCashActivity.newInstance(this);
+    }
+
+    @Override
+    public String getBaseUrlDomainPayment() {
+        return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+    }
+
+    @Override
+    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
+        Uri originUri = Uri.parse(originUrl);
+        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+            );
+        }
+        return uriBuilder.build().toString().trim();
+    }
+
+    @Override
+    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
+        String urlQuery = Uri.parse(originUrl).getQuery();
+        return AuthUtil.generateHeaders(
+                Uri.parse(originUrl).getPath(),
+                urlQuery != null ? urlQuery : "",
+                "GET",
+                AuthUtil.KEY.KEY_WSV4);
     }
 }

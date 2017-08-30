@@ -3,12 +3,10 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.ProductInfo;
 import com.tokopedia.core.product.model.productdetail.ReturnInfo;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
@@ -18,7 +16,6 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
  */
 public class TransactionDetailView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    private LinearLayout noFreeReturnView;
     private FreeReturnView freeReturnView;
 
     private TextView textSold;
@@ -58,7 +55,6 @@ public class TransactionDetailView extends BaseView<ProductDetailData, ProductDe
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        noFreeReturnView = (LinearLayout) findViewById(R.id.view_no_free_return);
         freeReturnView = (FreeReturnView) findViewById(R.id.view_free_return);
         textSold = (TextView) findViewById(R.id.text_sold);
         textSeen = (TextView) findViewById(R.id.text_view);
@@ -77,11 +73,9 @@ public class TransactionDetailView extends BaseView<ProductDetailData, ProductDe
             textSold.setText(data.getStatistic().getProductSoldCount());
             ReturnInfo returnInfo = data.getInfo().getReturnInfo();
             if ("".equals(returnInfo.getContent())) {
-                noFreeReturnView.setVisibility(VISIBLE);
                 freeReturnView.setVisibility(GONE);
             } else {
                 freeReturnView.setVisibility(VISIBLE);
-                noFreeReturnView.setVisibility(GONE);
                 freeReturnView.renderData(data);
             }
         }

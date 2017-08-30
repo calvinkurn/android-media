@@ -24,4 +24,9 @@ public interface PdpRouter {
     void goToAddProductDetail(Context context);
 
     Fragment getProductDetailInstanceDeeplink(Context context, @NonNull ProductPass productPass);
+
+    void goToProductDetailForResult(Fragment fragment,
+                                    String productId,
+                                    int adapterPosition,
+                                    int requestCode);
 }

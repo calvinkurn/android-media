@@ -31,6 +31,6 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center"
-        android:button="@drawable/top_ads_set_date_radio_button" />
+        android:button="@drawable/bg_radio_button" />
 
 </LinearLayout>

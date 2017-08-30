@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -53,7 +53,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         GoogleMapView,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<LocationSettingsResult> {
+        ResultCallback<LocationSettingsResult>, OnMapReadyCallback {
 
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static final String TAG = GoogleMapFragment.class.getSimpleName();
@@ -173,10 +173,6 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         autoComplete.setAdapter(adapter);
     }
 
-    @Override
-    public void initGoogleMap() {
-        googleMap = mapView.getMap();
-    }
 
     @Override
     public void setToolbarMap() {
@@ -215,9 +211,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         } else {
             final Bundle mapViewSaveState = savedInstanceState != null ? savedInstanceState.getBundle(STATE_MAPVIEW_SAVE_STATE) : null;
             mapView.onCreate(mapViewSaveState);
-            initMapView();
-            initMapListener();
-            presenter.initDefaultLocation();
+            mapView.getMapAsync(this);
             presenter.connectGoogleApi();
         }
     }
@@ -253,7 +247,6 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     public void initMapView() {
-        initGoogleMap();
         setToolbarMap();
         setMyLocButton();
         MapsInitializer.initialize(getActivity());
@@ -436,5 +429,14 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         if (destination != null) {
             destination.setText(MethodChecker.fromHtml(s).toString());
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        initMapView();
+        initMapListener();
+        presenter.initDefaultLocation();
+        presenter.onMapReady();
     }
 }

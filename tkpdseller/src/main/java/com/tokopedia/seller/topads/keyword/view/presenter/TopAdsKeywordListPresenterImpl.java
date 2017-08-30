@@ -4,20 +4,20 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywodDashboardViewModel;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,8 @@ import rx.Subscriber;
  * @author normansyahputa on 5/17/17.
  */
 
-public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<TopAdsListViewListener> implements TopAdsAdListPresenter<GroupAd> {
+public class TopAdsKeywordListPresenterImpl extends
+        TopAdsKeywordListPresenter<BaseListViewListener> implements TopAdsAdListPresenter<GroupAd> {
 
     public static final String KEYWORD_DATE_FORMAT = "yyyy-MM-dd";
     private static final String TAG = "TopAdsKeywordListPresen";
@@ -50,16 +51,15 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 if (!isViewAttached()) {
                     return;
                 }
-                getView().onLoadSearchError();
+                getView().onLoadSearchError(t);
             }
 
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchKeyword " + keywordDashboardDomain);
                 revealData(getKeywordAds(keywordDashboardDomain, baseKeywordParam.isPositive));
             }
         });

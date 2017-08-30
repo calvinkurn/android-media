@@ -2,8 +2,8 @@ package com.tokopedia.seller.gmsubscribe.view.presenter;
 
 import android.util.Log;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
@@ -20,6 +20,8 @@ import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmAutoSubscribeViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmVoucherViewModel;
+import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.domain.interactor.DeleteShopInfoUseCase;
 
 import javax.inject.Inject;
 
@@ -37,18 +39,21 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
     private final CheckGmSubscribeVoucherUseCase checkGmSubscribeVoucherUseCase;
     private final CheckoutGmSubscribeUseCase checkoutGmSubscribeUseCase;
     private final CheckoutGmSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase;
+    private final DeleteShopInfoUseCase deleteShopInfoUseCase;
 
     @Inject
     public GmCheckoutPresenterImpl(GetGmCurrentSelectedProductUseCase getCurrentSelectedProduct,
                                    GetGmAutoSubscribeSelectedProductUseCase getGmAutoSubscribeSelectedProductUseCase,
                                    CheckGmSubscribeVoucherUseCase checkGmSubscribeVoucherUseCase,
                                    CheckoutGmSubscribeUseCase checkoutGmSubscribeUseCase,
-                                   CheckoutGmSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase) {
+                                   CheckoutGmSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase,
+                                   DeleteShopInfoUseCase deleteShopInfoUseCase) {
         this.getCurrentSelectedProduct = getCurrentSelectedProduct;
         this.getGmAutoSubscribeSelectedProductUseCase = getGmAutoSubscribeSelectedProductUseCase;
         this.checkGmSubscribeVoucherUseCase = checkGmSubscribeVoucherUseCase;
         this.checkoutGmSubscribeUseCase = checkoutGmSubscribeUseCase;
         this.checkoutGMSubscribeWithVoucherCheckUseCase = checkoutGMSubscribeWithVoucherCheckUseCase;
+        this.deleteShopInfoUseCase = deleteShopInfoUseCase;
     }
 
 
@@ -99,6 +104,30 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
     }
 
     @Override
+    public void clearCacheShopInfo() {
+        deleteShopInfoUseCase.execute(RequestParams.create(), getSubscriberClearCacheShopInfo());
+    }
+
+    private Subscriber<Boolean> getSubscriberClearCacheShopInfo() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+
+            }
+        };
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         getCurrentSelectedProduct.unsubscribe();
@@ -116,7 +145,6 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "Error");
             getView().dismissProgressDialog();
             getView().failedGetCurrentProduct();
         }
@@ -136,7 +164,6 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "Error");
             getView().dismissProgressDialog();
             getView().failedGetAutoSubscribeProduct();
         }
@@ -179,7 +206,6 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "Error");
             if (e instanceof ResponseV4ErrorException){
                 String string = ((ResponseV4ErrorException)e).getErrorList().get(0);
                 getView().showMessageError(string);

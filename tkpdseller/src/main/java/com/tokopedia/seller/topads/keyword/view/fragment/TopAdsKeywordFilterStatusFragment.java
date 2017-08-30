@@ -1,14 +1,13 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.SparseArrayCompat;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 
 /**
  * Created by Nathaniel on 1/31/2017.
@@ -39,7 +38,7 @@ public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragmen
     }
 
     public String[] getStatusNameList() {
-        return getResources().getStringArray(R.array.top_ads_keyword_filter_status_list_names);
+        return getResources().getStringArray(R.array.top_ads_keyword_filter_status_list_entries);
     }
 
     @Override
@@ -48,27 +47,12 @@ public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragmen
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
 
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
     protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
 
     }
 

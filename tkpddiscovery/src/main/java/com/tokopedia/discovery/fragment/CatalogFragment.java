@@ -11,22 +11,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
-import com.tokopedia.core.network.v4.NetworkHandler;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -38,7 +36,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseCatalogAdapter;
-import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.BrowseView;
@@ -232,7 +229,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
-    public void onAddFavorite(Data data) {
+    public void onAddFavorite(int position, Data data) {
 
     }
 
@@ -257,7 +254,17 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                presenter.loadMore(getActivity());
+                if (browseCatalogAdapter.getPagingHandlerModel() != null &&
+                        !TextUtils.isEmpty(browseCatalogAdapter.getPagingHandlerModel().getUriNext())) {
+                    presenter.loadMore(getActivity());
+                } else {
+                    topAdsRecyclerAdapter.shouldLoadAds(false);
+                    topAdsRecyclerAdapter.hideLoading();
+                    topAdsRecyclerAdapter.unsetEndlessScrollListener();
+                    if (getActivity() instanceof  BrowseProductActivity) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
+                }
             }
         });
         list_catalog.setAdapter(topAdsRecyclerAdapter);
@@ -407,4 +414,5 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         }
         return defaultColumnNumber;
     }
+
 }

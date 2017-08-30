@@ -262,7 +262,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Override
     public void onConnectionResponse(List<InboxTalk> list, int page,
                                      int isUnread) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
         if (page == 1) {
             refresh.finishRefresh();
@@ -285,7 +285,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onTimeoutResponse(String error, int page) {
-        floatingActionButton.setEnabled(false);
+        floatingActionButton.hide();
         isRequest = false;
         if (page == 1) {
             refresh.finishRefresh();
@@ -346,7 +346,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onStateResponse(List<RecyclerViewItem> list, int position, int page, boolean hasNext, String filterString) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
 //        if (pagingHandler.getPage() == 1) {
 //            refresh.finishRefresh();
@@ -360,7 +360,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onCacheResponse(List<InboxTalk> list, int isUnread) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
         items.addAll(list);
         adapter.notifyDataSetChanged();
@@ -373,21 +373,21 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     }
 
     private void request() {
-        floatingActionButton.setEnabled(false);
+        floatingActionButton.hide();
         isRequest = true;
         presenter.getInboxTalk(getActivity(), getParam());
     }
 
 
     private void firstRequest() {
-        floatingActionButton.setEnabled(false);
+        floatingActionButton.hide();
         isRequest = true;
         presenter.refreshInboxTalk(getActivity(), getParam());
     }
 
     @Override
     public void cancelRequest() {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
     }
 

@@ -11,11 +11,10 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.BaseCustomView;
+import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 

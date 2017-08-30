@@ -44,8 +44,8 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
     }
 
     @Override
-    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
-        super.onSuccessLoadProduct(model);
+    public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
+        super.onSuccessLoadDraftProduct(model);
         productNameBeforeCopy = model.getProductName();
     }
 

@@ -1,18 +1,12 @@
 package com.tokopedia.tkpd.home.interactor;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
-import com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +34,10 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
 
 
     @Override
-    public void fetchHomeCategoryMenuFromNetwork(
-            Subscriber<Response<String>> networksubscriber) {
-
-        subscription.add(mojitoService.getApi().getHomeCategoryMenu().subscribeOn(Schedulers.io())
+    public void fetchHomeCategoryMenuFromNetwork(String userId,
+                                                 Subscriber<Response<String>> networksubscriber) {
+        subscription.add(mojitoService.getApi().getHomeCategoryMenu(userId,
+                GlobalConfig.getPackageApplicationName()).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(
@@ -80,12 +74,12 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
     }
 
     @Override
-    public void fetchBrands(String param, Subscriber<Response<Brands>> brandsSubscriber) {
-        subscription.add(mojitoService.getApi().getBrands(param)
+    public void fetchBrands(Subscriber<Response<Brands>> brandsSubscriber) {
+        subscription.add(mojitoService.getApi().getBrands()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(brandsSubscriber)
-                );
+        );
     }
 }

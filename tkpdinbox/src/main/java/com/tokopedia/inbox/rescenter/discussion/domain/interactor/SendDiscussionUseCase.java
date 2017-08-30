@@ -1,22 +1,19 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.CreatePictureModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.reply.ReplyDiscussionDomainData;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.AttachmentData;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.ReplySubmitData;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.ReplySubmitModel;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionData;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
@@ -136,6 +133,16 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
 
                     }
                 });
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        this.generateHostUseCase.unsubscribe();
+        this.replyDiscussionValidationUseCase.unsubscribe();
+        this.uploadImageUseCase.unsubscribe();
+        this.createPictureUseCase.unsubscribe();
+        this.replyDiscussionSubmitUseCase.unsubscribe();
     }
 
     private Observable<RequestParams> createResolutionPicture(RequestParams createPictureParam,
@@ -291,7 +298,7 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                 });
     }
 
-    private DiscussionItemViewModel mappingValidationViewModel(ReplyDiscussionData replyDiscussionData) {
+    private DiscussionItemViewModel mappingValidationViewModel(ReplyDiscussionDomainData replyDiscussionData) {
         DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
         viewModel.setMessageCreateBy(SessionHandler.getLoginID(MainApplication.getAppContext()));
         viewModel.setMessage(replyDiscussionData.getRemarkStr());

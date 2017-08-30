@@ -10,9 +10,9 @@
         android:layout_height="wrap_content"
         app:elevation="0dp"
         android:background="@android:color/white">
-        <com.tokopedia.seller.lib.widget.DateLabelView
+        <com.tokopedia.seller.common.widget.DateLabelView
             android:id="@+id/date_label_view"
-            style="@style/LabelLayoutWithBorderBottom"
+            style="@style/LabelLayout.BorderBottom"
             app:layout_scrollFlags="scroll|snap|enterAlways" />
     </android.support.design.widget.AppBarLayout>
 
@@ -35,14 +35,14 @@
                 android:orientation="vertical">
 
                 <include
-                    layout="@layout/include_topads_keyword_header_detail"
+                    layout="@layout/partial_top_ads_keyword_header_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/topads_detail_padding_item" />
 
-                <include layout="@layout/include_layout_grup_labelview" />
+                <include layout="@layout/partial_top_ads_grup_labelview" />
 
-                <include layout="@layout/include_topads_content_keyword_detail" />
+                <include layout="@layout/partial_top_ads_content_keyword_detail" />
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

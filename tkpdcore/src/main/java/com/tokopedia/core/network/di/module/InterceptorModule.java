@@ -12,6 +12,7 @@ import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -113,4 +114,9 @@ public class InterceptorModule {
         return new TkpdErrorResponseInterceptor(TopAdsResponseError.class);
     }
 
+    @ApplicationScope
+    @Provides
+    public ResolutionInterceptor provideResolutionInterceptor() {
+        return new ResolutionInterceptor();
+    }
 }

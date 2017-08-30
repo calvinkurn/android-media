@@ -4,7 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 import java.util.List;
 
@@ -54,9 +54,9 @@ public interface SellerReputationView extends CustomerView {
      */
     void setLoadMoreFlag(boolean loadmoreflag);
 
-    void loadData(List<TypeBasedModel> datas);
+    void loadData(List<ItemType> datas);
 
-    void loadMore(List<TypeBasedModel> datas);
+    void loadMore(List<ItemType> datas);
 
     void loadShopInfo(ShopModel shopModel);
 

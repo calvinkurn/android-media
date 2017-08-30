@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractor;
@@ -79,23 +81,26 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
                 .build();
         this.isAllowGenerateAddress = true;
         this.locationPass = locationPass;
+        if(locationPass!=null)
+        {
+            Location location = new Location(LocationManager.NETWORK_PROVIDER);
+            location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
+            location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
+            LocationCache.saveLocation(location);
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
+        LocationCache.saveLocation(location);
         removeLocationUpdate();
     }
 
     @Override
     public void onGoogleApiConnected(Bundle bundle) {
         Log.d(TAG, "onGoogleApiConnected");
-        if (locationPass == null) {
-            getNewLocation();
-        } else {
-            getExistingLocation();
-        }
     }
 
     private void getNewLocation() {
@@ -103,6 +108,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void getExistingLocation() {
+        checkLocationSettings();
         setExistingLocationState(true);
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
@@ -112,13 +118,14 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void checkLocationSettings() {
-        LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
-                .build();
+        LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        locationSettingsRequest.setAlwaysShow(true);
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi
-                        .checkLocationSettings(googleApiClient, locationSettingsRequest);
+                        .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
 
         view.checkLocationSettings(result);
     }
@@ -157,6 +164,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                LocationCache.saveLocation(location);
                 return new LatLng(location.getLatitude(), location.getLongitude());
             } else {
                 return DEFAULT_LATLNG_JAKARTA;
@@ -283,8 +291,8 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     private void saveLatLng(LatLng target) {
         LocalCacheHandler cache = new LocalCacheHandler(context, CACHE_LATITUDE_LONGITUDE);
         cache.putString(CACHE_LATITUDE, String.valueOf(target.latitude));
-                cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
-                cache.applyEditor();
+        cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
+        cache.applyEditor();
     }
 
     @Override
@@ -304,6 +312,15 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             }
         } else {
             view.hideDetailDestination();
+        }
+    }
+
+    @Override
+    public void onMapReady() {
+        if (locationPass == null) {
+            getNewLocation();
+        } else {
+            getExistingLocation();
         }
     }
 

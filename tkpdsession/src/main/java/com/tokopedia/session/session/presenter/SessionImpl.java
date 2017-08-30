@@ -49,7 +49,7 @@ public class SessionImpl implements Session {
 
     @Override
     public void finishTo() {
-        switch (finishTo){
+         switch (finishTo){
             case SessionView.MOVE_TO_CART_TYPE:
             case SessionView.HOME:
             case SessionView.SELLER_HOME:

@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextView.TopAds.Body.Gray"
+        style="@style/TextView.Body1.BlackSecondary"
         android:text="@string/label_top_ads_budget"/>
 
     <RadioGroup
@@ -17,13 +17,13 @@
 
         <RadioButton
             android:id="@+id/radio_button_budget_life_time"
-            style="@style/TopAdsRadioButton"
+            style="@style/RadioButton"
             android:checked="true"
             android:text="@string/label_top_ads_budget_lifetime"/>
 
         <RadioButton
             android:id="@+id/radio_button_budget_per_day"
-            style="@style/TopAdsRadioButton"
+            style="@style/RadioButton"
             android:text="@string/label_top_ads_budget_per_day"/>
         <LinearLayout
             android:orientation="vertical"

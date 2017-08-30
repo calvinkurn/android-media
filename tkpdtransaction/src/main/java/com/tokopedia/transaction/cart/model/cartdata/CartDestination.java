@@ -14,6 +14,9 @@ public class CartDestination implements Parcelable {
     @SerializedName("address_district")
     @Expose
     private String addressDistrict;
+    @SerializedName("address_district_id")
+    @Expose
+    private String addressDistrictId;
     @SerializedName("address_id")
     @Expose
     private String addressId;
@@ -59,6 +62,14 @@ public class CartDestination implements Parcelable {
 
     public void setAddressDistrict(String addressDistrict) {
         this.addressDistrict = addressDistrict;
+    }
+
+    public String getAddressDistrictId() {
+        return addressDistrictId;
+    }
+
+    public void setAddressDistrictId(String addressDistrictId) {
+        this.addressDistrictId = addressDistrictId;
     }
 
     public String getAddressId() {
@@ -151,6 +162,7 @@ public class CartDestination implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.addressPostal);
         dest.writeString(this.addressDistrict);
+        dest.writeString(this.addressDistrictId);
         dest.writeString(this.addressId);
         dest.writeString(this.addressName);
         dest.writeString(this.addressProvince);
@@ -169,6 +181,7 @@ public class CartDestination implements Parcelable {
     protected CartDestination(Parcel in) {
         this.addressPostal = in.readString();
         this.addressDistrict = in.readString();
+        this.addressDistrictId = in.readString();
         this.addressId = in.readString();
         this.addressName = in.readString();
         this.addressProvince = in.readString();

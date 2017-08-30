@@ -6,6 +6,8 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.loadmore.LoadMoreModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
@@ -14,6 +16,9 @@ import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressD
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -137,5 +142,26 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     public Observable<ReplyDiscussionValidationModel> replyConversationValidation(TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
                 .replyConversationValidation(parameters);
+    }
+
+    @Override
+    public Observable<NewReplyDiscussionModel> replyResolution(String resolutionID, TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .replyResolution(resolutionID, parameters);
+    }
+
+    @Override
+    public Observable<NewReplyDiscussionModel> replyResolutionSubmit(String resolutionID, TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .replyResolutionSubmit(resolutionID, parameters);
+    }
+
+    @Override
+    public Observable<GenerateHostModel> generateToken(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudActionResCenterDataStore()
+                .generateTokenHost(parameters);
     }
 }

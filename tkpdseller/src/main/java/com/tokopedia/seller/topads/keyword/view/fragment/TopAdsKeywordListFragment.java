@@ -1,15 +1,26 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
@@ -21,10 +32,6 @@ import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.seller.topads.view.model.Ad;
 
 import java.util.List;
 
@@ -33,27 +40,36 @@ import javax.inject.Inject;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl>
+public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl, Ad>
         implements TopAdsEmptyAdDataBinder.Callback {
 
     protected int filterStatus;
     protected GroupAd groupAd;
     protected int selectedPosition;
-    private boolean hasData;
-
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
+    private boolean hasData;
     private KeywordListListener.Listener keywordAdListener;
+    private GroupTopAdsListener groupTopAdsListener;
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        super.initialListener(activity);
-        if (activity != null && activity instanceof KeywordListListener.Listener) {
-            keywordAdListener = (KeywordListListener.Listener) activity;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
+    }
+
+    @Override
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if (context != null && context instanceof KeywordListListener.Listener) {
+            keywordAdListener = (KeywordListListener.Listener) context;
+        }
+        if (context != null && context instanceof GroupTopAdsListener) {
+            groupTopAdsListener = (GroupTopAdsListener) context;
         }
     }
 
@@ -80,12 +96,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter) {
-            @Override
-            protected int getEmptyLayout() {
-                return R.layout.listview_top_ads_empty_keyword_list;
-            }
-        };
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
@@ -95,23 +106,22 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    protected void searchAd() {
-        super.searchAd();
+    protected void searchForPage(int page) {
         BaseKeywordParam baseKeywordParam = topAdsKeywordListPresenter.generateParam(keyword, page,
                 isPositive(), startDate.getTime(), endDate.getTime());
         if (groupAd != null) {
             baseKeywordParam.groupId = Integer.parseInt(groupAd.getId());
         }
         baseKeywordParam.keywordStatus = filterStatus;
-        searchAd(baseKeywordParam);
+        searchData(baseKeywordParam);
     }
 
-    protected void searchAd(BaseKeywordParam baseKeywordParam) {
+    protected void searchData(BaseKeywordParam baseKeywordParam) {
         topAdsKeywordListPresenter.fetchKeyword(baseKeywordParam);
     }
 
     @Override
-    protected TopAdsBaseListAdapter<KeywordAd> getNewAdapter() {
+    protected BaseListAdapter<KeywordAd> getNewAdapter() {
         return new TopAdsKeywordAdapter();
     }
 
@@ -126,7 +136,19 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
             selectedPosition = intent.getIntExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
-            searchAd(START_PAGE);
+            setAndSearchForPage(START_PAGE);
+        }
+
+        if (requestCode == TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS) {
+            if (resultCode == Activity.RESULT_OK) {
+                // top ads new groups/edit existing group/promo not in group has been success
+                boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+                if (adStatusChanged) {
+                    if (groupTopAdsListener != null) {
+                        groupTopAdsListener.setGroupTopAdsSize(1);// force to notify that group already added
+                    }
+                }
+            }
         }
     }
 
@@ -164,11 +186,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         super.onDestroy();
         topAdsKeywordListPresenter.detachView();
     }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
   
     public void onEmptyContentItemTextClicked() {
         // Do nothing
@@ -176,7 +193,34 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     public void onEmptyButtonClicked() {
-        onCreateAd();
+        if (groupTopAdsListener != null && groupTopAdsListener.getGroupTopAdsSize() <= 0) {
+            showExitDialog();
+        } else {
+            onCreateAd();
+        }
+    }
+
+    private void showExitDialog() {
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity()
+                , R.style.AppCompatAlertDialogStyle);
+        myAlertDialog.setMessage(getString(R.string.top_ads_keyword_add_group_promo_desc));
+
+        myAlertDialog.setPositiveButton(getString(R.string.top_ads_keyword_add_group_promo_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
+                TopAdsKeywordListFragment.this.startActivityForResult(intent, TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS);
+            }
+        });
+
+        myAlertDialog.setNegativeButton(getString(R.string.top_ads_keyword_add_group_promo_no), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+        Dialog dialog = myAlertDialog.create();
+        dialog.setTitle(R.string.top_ads_keyword_add_group_promo);
+        dialog.show();
     }
 
     @Override
@@ -196,8 +240,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    public void onLoadSearchError() {
-        super.onLoadSearchError();
+    public void onLoadSearchError(Throwable t) {
+        super.onLoadSearchError(t);
         hasData = false;
         if (keywordAdListener != null) {
             keywordAdListener.validateMenuItem();
@@ -214,6 +258,16 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     public boolean hasDataFromServer() {
         return hasData;
+    }
+
+    public RecyclerView getRecyclerView(){
+        return recyclerView;
+    }
+
+    public interface GroupTopAdsListener {
+        int getGroupTopAdsSize();
+
+        void setGroupTopAdsSize(int size);
     }
 
 }

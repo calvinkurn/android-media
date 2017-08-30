@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.holder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,16 +15,18 @@ import android.widget.EditText;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelSwitch;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelSwitch;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
-import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
-import com.tokopedia.seller.util.NumberTextWatcher;
+import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private SpinnerCounterInputView preOrderSpinnerCounterInputView;
     private LabelSwitch shareLabelSwitch;
     private Listener listener;
+    private boolean goldMerchant;
     /**
      * this prevent duplication at videoIdList;
      */
@@ -76,7 +80,12 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             @Override
             public void onClick(View v) {
                 if (CommonUtils.checkNotNull(listener)) {
-                    listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
+                    if (!goldMerchant && GlobalConfig.isSellerApp()) {
+                        UnifyTracking.eventClickVideoAddProduct();
+                        listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_video);
+                    } else {
+                        listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
+                    }
                 }
             }
         });
@@ -110,7 +119,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void updateViewGoldMerchant(boolean isShown) {
-        if (isShown) {
+        goldMerchant = isShown;
+        if (isShown || GlobalConfig.isSellerApp()) {
             labelAddVideoView.setVisibility(View.VISIBLE);
         } else {
             videoIdList.clear();
@@ -168,9 +178,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public int getPreOrderUnit() {
-        if(preOrderExpandableOptionSwitch.isExpanded()) {
+        if (preOrderExpandableOptionSwitch.isExpanded()) {
             return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
-        }else{
+        } else {
             return INACTIVE_PREORDER;
         }
     }
@@ -180,9 +190,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public int getPreOrderValue() {
-        if(preOrderExpandableOptionSwitch.isExpanded()) {
+        if (preOrderExpandableOptionSwitch.isExpanded()) {
             return (int) preOrderSpinnerCounterInputView.getCounterValue();
-        }else{
+        } else {
             return INACTIVE_PREORDER;
         }
     }
@@ -253,5 +263,6 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
         void onDescriptionTextChanged(String text);
 
+        void showDialogMoveToGM(@StringRes int message);
     }
 }

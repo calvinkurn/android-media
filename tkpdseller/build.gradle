@@ -19,6 +19,16 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+}
+
+def getTkpdPayment() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -100,6 +110,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile getTkpdCore()
+    compile getTkpdDesign()
+    compile getTkpdPayment()
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -118,6 +130,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.gson
     compile rootProject.ext.miscDependencies.chips
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
+    compile rootProject.ext.miscDependencies.loaderviewlibrary
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
@@ -134,8 +147,8 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    testCompile 'junit:junit:4.12'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    testCompile rootProject.ext.testDependencies.junit
 }

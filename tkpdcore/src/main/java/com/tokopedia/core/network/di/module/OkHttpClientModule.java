@@ -11,12 +11,14 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Auth;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -29,7 +31,6 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
 /**
@@ -194,4 +195,19 @@ public class OkHttpClientModule {
                 debugInterceptor);
     }
 
+    @UploadWsV4Auth
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientUploadWsV4Auth(FingerprintInterceptor fingerprintInterceptor,
+                                                          ResolutionInterceptor resolutionInterceptor,
+                                                          OkHttpRetryPolicy okHttpRetryPolicy,
+                                                          ChuckInterceptor chuckInterceptor,
+                                                          DebugInterceptor debugInterceptor) {
+
+        return OkHttpFactory.create().buildDaggerClientResolutionAuth(fingerprintInterceptor,
+                resolutionInterceptor,
+                okHttpRetryPolicy,
+                chuckInterceptor,
+                debugInterceptor);
+    }
 }

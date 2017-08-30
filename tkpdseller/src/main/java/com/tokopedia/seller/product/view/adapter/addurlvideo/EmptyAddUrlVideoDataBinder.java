@@ -9,7 +9,7 @@ import android.widget.Button;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 /**
  * @author normansyahputa on 4/27/17.
@@ -28,7 +28,7 @@ public class EmptyAddUrlVideoDataBinder extends NoResultDataBinder {
 
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_add_product_video_empty, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_video_empty, null);
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {

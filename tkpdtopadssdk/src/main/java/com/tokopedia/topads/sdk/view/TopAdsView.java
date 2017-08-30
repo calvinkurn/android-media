@@ -1,6 +1,5 @@
 package com.tokopedia.topads.sdk.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
@@ -8,7 +7,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,7 +15,6 @@ import android.widget.RelativeLayout;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -27,6 +24,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.List;
 
@@ -90,13 +90,12 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
-            TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
-            Activity activity = (Activity) getContext();
-            infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getContext());
+            infoBottomSheet.show();
         }
     }
 
-    public void setConfig(Config config){
+    public void setConfig(Config config) {
         presenter.setConfig(config);
     }
 
@@ -149,9 +148,15 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
                 itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false));
+                recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
                 break;
             case LIST:
+                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
+                break;
             case FEED:
+            case FEED_EMPTY:
                 itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 break;
@@ -162,7 +167,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void displayAds(List<Item> list) {
+    public void displayAds(List<Item> list, int position) {
         if (list.size() > 0) {
             adsHeader.setVisibility(VISIBLE);
         }
@@ -185,7 +190,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     @Override
     public void onAddFavorite(int position, Data dataShop) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(dataShop);
+            adsItemClickListener.onAddFavorite(position, dataShop);
         }
     }
 
@@ -210,4 +215,17 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         }
     }
 
+    public void setFavoritedShop(int position, boolean b) {
+        Item item = adapter.getItem(position);
+        if (item instanceof ShopFeedViewModel) {
+            ((ShopFeedViewModel) item).getData().setFavorit(b);
+        }
+        if (item instanceof ShopGridViewModel) {
+            ((ShopGridViewModel) item).getData().setFavorit(b);
+        }
+        if (item instanceof ShopListViewModel) {
+            ((ShopListViewModel) item).getData().setFavorit(b);
+        }
+        adapter.notifyItemChanged(position);
+    }
 }

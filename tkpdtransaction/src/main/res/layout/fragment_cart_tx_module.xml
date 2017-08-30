@@ -97,25 +97,37 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_vs"
-                            android:layout_marginTop="@dimen/margin_small">
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                                 android:text="@string/label_transaction_total_payment"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/font_large"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:layout_weight="1" />
 
                             <TextView
                                 android:id="@+id/tv_total_payment"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:gravity="end"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/font_large"
                                 android:textStyle="bold"
+                                android:layout_weight="1"
                                 tools:text="Rp 200.000,-" />
+
+                            <ProgressBar
+                                android:id="@+id/total_payment_loading"
+                                android:layout_width="@dimen/img_thumb_bit_small"
+                                android:layout_height="@dimen/img_thumb_bit_small"
+                                android:layout_gravity="end"
+                                android:layout_weight="0.2"
+                                android:visibility="gone" />
+
                         </LinearLayout>
 
                         <LinearLayout
@@ -341,6 +353,39 @@
                                 tools:text="Total bolo bolo" />
 
                         </RelativeLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/instant_promo_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_small"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="2dp"
+                    app:contentPadding="@dimen/padding_small"
+                    tools:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/instant_insert_voucher_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/instant_insert_voucher_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="Ini tes kode Promo instant"/>
+
+                        <TextView
+                            android:id="@+id/instant_insert_voucher_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="Gunakan Sekarang"/>
 
                     </LinearLayout>
 

@@ -1,163 +1,14 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
-    <string name="title_activity_gmstat">Statistik</string>
-    <string name="action_settings">Settings</string>
+    <string name="label_empty_value">-</string>
+    <string name="label_back">Kembali</string>
+    <string name="title_date_setting">Atur Tanggal</string>
+
     <string name="set_date">Atur Tanggal</string>
-    <string name="title_transaction_success">Transaksi Berhasil</string>
-    <string name="no_data">Tidak ada data</string>
-    <string name="data_product_title">Data Produk</string>
-    <string name="popular_product_title">Produk terlaris</string>
-    <string name="number_of_selled">x Terjual</string>
     <string name="yesterday">Kemarin</string>
     <string name="seven_days_ago">7 hari terakhir</string>
     <string name="thirty_days_ago">30 hari terakhir</string>
-
-    <string name="back">Kembali</string>
-
-    <!-- untuk tanggal gmstat -->
-    <string-array name="month_names_abrev">
-        <item>Jan</item>
-        <item>Feb</item>
-        <item>Mar</item>
-        <item>Apr</item>
-        <item>Mei</item>
-        <item>Jun</item>
-        <item>Jul</item>
-        <item>Agu</item>
-        <item>Sep</item>
-        <item>Okt</item>
-        <item>Nov</item>
-        <item>Des</item>
-    </string-array>
-
-    <string-array name="gender">
-        <item>Pria</item>
-        <item>Wanita</item>
-    </string-array>
-
-    <string name="try_again">COBA KEMBALI</string>
-    <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
-    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
-    <string name="default_exception_description">Kesalahan tidak diketahui</string>
-    <string name="prefix_footer_market_insight">Kata kunci ini berdasarkan kategori dari </string>
-    <string name="last_thirty_days_ago">Data dalam 30 hari terakhir</string>
-
-
-
-    <string name="title_top_ads_dashboard">TopAds</string>
-    <string name="title_top_ads_product">Produk</string>
-    <string name="title_top_ads_store">Toko</string>
-    <string name="title_top_ads_promo_group">Grup</string>
-    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
-    <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Promo</string>
-    <string name="title_top_ads_new_promo_product">Tambah Promo Produk</string>
-    <string name="title_top_ads_filter">Filter</string>
-    <string name="title_date_picker">Atur Tanggal</string>
-    <string name="title_top_ads_manage_promo_product">Atur Grup</string>
-    <string name="title_top_ads_add_promo_product">Tambah Promo Produk</string>
-    <string name="title_top_ads_edit_promo_product">Ubah Promo Produk</string>
-    <string name="title_top_ads_keyword_add_detail">Tambah Kata Kunci</string>
-
-    <string name="label_top_ads_impression">Tampil</string>
-    <string name="label_top_ads_click">Klik</string>
-    <string name="label_top_ads_ctr">CTR</string>
-    <string name="label_top_ads_conversion">Konversi</string>
-    <string name="label_top_ads_average">Rata - Rata</string>
-    <string name="label_top_ads_cost">Terpakai</string>
-    <string name="label_top_ads_groups">Grup</string>
-    <string name="label_top_ads_items">Produk</string>
-    <string name="label_top_ads_keyword">Kata Kunci</string>
-    <string name="label_top_ads_choose_credit">Pilih</string>
-    <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
-    <string name="label_top_ads_next">Selanjutnya</string>
-    <string name="label_top_ads_save">Simpan</string>
-
-    <string name="menu_top_ads_add_promo_shop">Tambah Promo Toko</string>
-    <string name="menu_top_ads_add_promo_group">Tambah Grup Promo</string>
-    <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
-
-    <string name="top_ads_statistic_info_default_value">-</string>
-    <string name="top_ads_range_date_text">%1$s - %2$s</string>
-    <string name="top_ads_delete_product_alert">Apakah anda yakin untuk menghapus produk ini?</string>
-    <string name="top_ads_delete_group_alert">Apakah anda yakin untuk menghapus grup ini?</string>
-
-    <string name="action_filter_date">Filter Tanggal</string>
-    <string name="label_manage_group">Atur Grup</string>
-    <string name="label_edit">Ubah</string>
-    <string name="label_delete">Hapus</string>
-    <string name="title_product_ad_detail">Detil Promo Produk</string>
-    <string name="title_shop_ad_detail">Detil Promo Toko</string>
-    <string name="title_group_ad_detail">Detil Promo Grup</string>
-    <string name="title_group_ad_edit">Ubah Promo Grup</string>
-    <string name="title_delete_promo">Hapus promo</string>
-    <string name="title_delete_group">Hapus grup</string>
-    <string name="title_edit_shop_ad">Ubah Promo Toko</string>
-
-    <!-- Top Ads ad list -->
-    <string name="label_top_ads_daily_spend">Anggaran Harian</string>
-    <string name="top_ads_bid_format_text">%1$s %2$s</string>
-    <string name="top_ads_group_name_format_text">%1$s: %2$s</string>
-    <string name="top_ads_spent_separator">/</string>
-    <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
-    <string name="top_ads_empty_shop_content_text">Promosikan toko Anda untuk menambah banyak pengunjung dan mendapatkan banyak favorit.</string>
-    <string name="top_ads_empty_promo_not_found_title_empty_text">Hasil tidak ditemukan</string>
-    <string name="top_ads_empty_promo_not_found_content_empty_text">Silahkan coba lagi atau ganti kata kunci</string>
-    <string name="top_ads_empty_group_title_promo_text">Grup Promo Anda Kosong</string>
-    <string name="top_ads_empty_product_title_promo_text">Promo Produk Anda Kosong</string>
-    <string name="top_ads_empty_group_promo_content_text">Gunakan Grup Promo dan nikmati kemudahan mengatur Promo Anda dalam sekali pengaturan.</string>
-    <string name="top_ads_empty_product_promo_content_text">Promosikan produk Anda agar lebih mudah ditemukan pembeli untuk mendapatkan lebih banyak pengunjung dan meningkatkan penjualan.</string>
-    <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
-    <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
-
-    <!-- Top Ads Edit Promo -->
-    <string name="label_top_ads_add_product">Tambah Produk</string>
-    <string name="label_top_ads_total_selected_product">%02d / 50 Terpilih</string>
-    <string name="label_top_ads_total_selected_product_zero">%1$d / 50 Terpilih</string>
-    <string name="label_top_ads_max_price_hint">Biaya Maks</string>
-    <string name="label_top_ads_max_price_description">Sesuaikan biaya dengan anggaran promo Anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik.</string>
-    <string name="label_top_ads_limit_price_description">Batas anggaran dihitung dari akumulasi biaya promo jika dalam satu grup promo.</string>
-    <string name="label_top_ads_icon">Icon TopAds</string>
-
-    <!-- Top Ads Edit Promo Budget-->
-    <string name="label_top_ads_budget">Anggaran</string>
-    <string name="label_top_ads_budget_lifetime">Anggaran tidak dibatasi</string>
-    <string name="label_top_ads_budget_per_day">Per Hari</string>
-    <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
-
-    <!-- Top Ads Edit Promo Show Time-->
-    <string name="label_top_ads_show_time">Waktu Tampil</string>
-    <string name="label_top_ads_show_time_automatic">Otomatis</string>
-    <string name="label_top_ads_show_time_configured">Atur tanggal mulai dan berhenti</string>
-    <string name="label_top_ads_show_time_start">Mulai</string>
-    <string name="label_top_ads_show_time_end">Selesai</string>
-
-    <!-- Top Ads Add product-->
-    <string name="label_top_ads_promoted">Promoted</string>
-
-    <!-- Top Ads Detail product-->
-    <string name="label_top_ads_all_status">Semua Status</string>
-    <string name="label_top_ads_active">Aktif</string>
-    <string name="label_top_ads_not_sent">Tidak Terkirim</string>
-    <string name="label_top_ads_not_active">Tidak Aktif</string>
-    <string name="label_top_ads_all_product">Semua Produk</string>
-    <string name="label_top_ads_inside_group">Di Dalam Grup</string>
-    <string name="label_top_ads_outside_group">Di Luar Grup</string>
-    <string name="label_top_ads_not_promoted_yet">Belum di Promo</string>
-    <string name="label_top_ads_name">Name</string>
-    <string name="label_top_ads_status">Status</string>
-    <string name="label_top_ads_etalase">Etalase</string>
-    <string name="label_top_ads_max_bid">Biaya Maks</string>
-    <string name="label_top_ads_avg_cost">Rata-rata</string>
-    <string name="label_top_ads_start">Mulai</string>
-    <string name="label_top_ads_end">Selesai</string>
-    <string name="label_top_ads_daily_budget">Anggaran Harian</string>
-    <string name="label_top_ads_sent">Terpakai</string>
-    <string name="label_top_ads_favorite">Terjual</string>
-    <string name="label_topads_price_and_schedule">Biaya &amp; Jadwal</string>
-    <string name="topads_title_review_statistic">Ringkasan Statistik</string>
-    <string name="topads_format_daily_budget">%1$s / %2$s</string>
-    <string name="topads_label_title_price_promo">Biaya Promo</string>
 
     <string name="label_today">Hari Ini</string>
     <string name="label_this_month">Bulan Ini</string>
@@ -168,67 +19,8 @@
     <string name="label_date_picker_end_date">Tanggal Selesai</string>
     <string name="date_picker_date_range_format_text">%1$s - %2$s</string>
 
-    <!-- Top Ads Statistic-->
-    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat promo anda.</string>
-    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang anda bayarkan untuk setiap klik.</string>
-    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari promo anda.</string>
-    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat promo anda dengan jumlah klik pada promo tersebut.</string>
-    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada promo anda.</string>
-    <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
-    <string name="title_activity_statistic">Statistik</string>
-
-    <string name="label_top_ads_empty_group">Tanpa Grup</string>
-    <string name="label_top_ads_favorit">Favorit</string>
     <string name="save_date">Simpan</string>
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
-
-
-    <string name="gm_home_title">Gold Merchant</string>
-    <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
-    <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
-
-    <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
-    <string name="gmsubscribe_feature_gold_badge_desc">Tampilan produk dan toko akan terlihat beda serta lebih terpercaya</string>
-    <string name="gmsubscribe_feature_topads">TopAds</string>
-    <string name="gmsubscribe_feature_topads_desc">Promosi produk dan toko jadi lebih efektif dan efisien</string>
-    <string name="gmsubscribe_feature_statistic">Statistik Toko</string>
-    <string name="gmsubscribe_feature_statistic_desc">Pantau perkembangan toko hingga detail penjualan jadi lebih mudah</string>
-    <string name="gmsubscribe_feature_ticket">Gold Ticket</string>
-    <string name="gmsubscribe_feature_ticket_desc">Tiket kendala yang Anda kirim jadi prioritas Tim Customer Care kami</string>
-    <string name="gmsubscribe_feature_cover">Sampul Toko</string>
-    <string name="gmsubscribe_feature_cover_desc">Jadikan halaman toko Anda lebih menarik dengan upload kreasi sampul foto Anda sendiri</string>
-
-    <string name="gmsubscribe_subfeature_title">Fitur-fitur Gold Merchant ini juga dapat\nmembantu memaksimalkan penjualanmu</string>
-    <string name="gmsubscribe_subfeature_etalase">Tambahan\n150 Etalase</string>
-    <string name="gmsubscribe_feature_admin">Gratis\n1 Admin Toko</string>
-    <string name="gmsubscribe_feature_cashback">Cashback TopPoints</string>
-    <string name="gmsubscribe_feature_video">Tambah\nVideo Produk</string>
-    <string name="gmsubscribe_feature_pantaupasar">Pantau\nPermintaan Pasar</string>
-    <string name="gmsubscribe_feature_kurs">Atur Harga\nKurs Dollar</string>
-
-    <string name="gmsubscribe_current_product_selector">Paket Berlangganan</string>
-    <string name="gmsubscribe_extend_product_selector">Paket Perpanjang Otomatis</string>
-    <string name="gmsubscribe_product_button_subscribe">Berlangganan</string>
-    <string name="gmsubscribe_product_button_change">Ubah</string>
-    <string name="gmsubscribe_product_button_activate">Aktifkan</string>
-
-    <string name="gmsubscribe_checkout_title">Gold Checkout</string>
-    <string name="gmsubscribe_continue_checkout">Berlangganan</string>
-    <string name="gmsubscribe_button_change">Ubah</string>
-
-    <string name="gmsubscribe_auto_subscribe_title">Aktifkan Perpanjangan Otomatis</string>
-    <string name="gmsubscribe_auto_subscribe_subtitle">Keanggotaan Gold Merchant Anda dapat diperpanjang secara otomatis menggunakan Saldo Tokopedia</string>
-
-    <string name="gmsubscribe_auto_package_title">Paket Perpanjangan Otomatis</string>
-    <string name="gmsubscribe_auto_package_price">Harga</string>
-    <string name="gmsubscribe_auto_package_next_subscribe">Tanggal Tagihan Berikutnya</string>
-    <string name="gmsubscribe_auto_package_payment_method">Metode Pembayaran</string>
-    <string name="gmsubscribe_change_auto">Ubah</string>
-    <string name="gmsubscribe_voucher_code_title">Gunakan Voucher Tokopedia</string>
-    <string name="gmsubscribe_voucher_hint">Kode Voucher</string>
-    <string name="gmsubscribe_voucher_code_check_button">Cek</string>
-    <string name="gm_subscribe_no_product_selected">Silahkan Pilih Produk Terlebih Dahulu</string>
-
 
     <string name="exit">Keluar</string>
     <string name="cancel">Batal</string>
@@ -252,51 +44,7 @@
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
     <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
 
-    <!-- Top Ads New Promo -->
-    <string name="label_top_ads_shop_name">Nama Toko</string>
-    <string name="label_top_ads_group_name">Nama Grup</string>
-    <string name="label_top_ads_product_name">Nama Product</string>
-    <string name="label_top_ads_choose_group">Pilih Grup</string>
-    <string name="label_top_ads_create_promo_new_group">Grup Baru</string>
-    <string name="label_top_ads_create_promo_from_exist_group">Grup yang Ada</string>
-    <string name="label_top_ads_create_promo_not_in_group">Tanpa Grup</string>
-    <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
-    <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
-    <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
-    <string name="label_top_ads_info_group_option_exist">Pengaturan biaya dan jadwal akan mengikuti dari grup promo.</string>
-    <string name="label_top_ads_info_group_option_new">Pengaturan biaya dan jadwal akan mengikuti dari produk promo.</string>
-    <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
-    <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
-    <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
-    <string name="top_ads_detail_edit_default_currency_value">0</string>
-    <string name="top_ads_detail_edit_default_max_price_currency_value">50</string>
-    <string name="top_ads_detail_edit_default_lifetime_currency_value">5000</string>
-    <string name="top_ads_per_click_detail">%1s Per Klik</string>
-
-    <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
-    <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
-    <string name="error_top_ads_click_budget_multiple_by">Biaya harus kelipatan Rp %1s</string>
-    <string name="error_top_ads_daily_budget_minimal">Biaya per hari minimal %1sx biaya maks per klik</string>
-    <string name="error_top_ads_daily_budget_cannot_empyt">Anggaran tidak boleh kosong</string>
-
-    <string name="title_activity_top_ads_list">Tambah Produk</string>
-    <string name="title_activity_category_picker">Pilih Kategori</string>
-    <string name="title_activity_catalog_picker">Pilih Katalog</string>
-
-    <string name="search_product">Cari Produk</string>
-    <string name="filter_top_ads">Filter Top Ads</string>
-
-    <!-- Top Ads add promo -->
-    <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
-    <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
-    <string name="promoted">Promoted</string>
-    <string name="next">Selanjutnya</string>
-    <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
-    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
-
-    <!-- Top Ads Keyword -->
-    <string name="top_ads_title_keyword_add_keyword">Tambah Kata Kunci</string>
-    <string name="top_ads_keyword_total_keyword_in_group">Kata kunci dalam grup (%1s)</string>
+    <string name="list_sold_product_text">Daftar Produk Terjual</string>
 
     <!-- reputation history -->
     <string name="your_shop_reputation">Reputasi Toko Anda</string>
@@ -309,314 +57,9 @@
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
     <string name="best_deal">BEST DEAL!</string>
+    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
+    <string name="try_again">COBA KEMBALI</string>
 
-    <!-- TOP ADS HOME -->
-    <string name="topads_showcase_home_title_1">TopAds Produk</string>
-    <string name="topads_showcase_home_desc_1">Kumpulan promo produk di toko Anda. Anda dapat melihat performa dari promo produk Anda di bawah ini.</string>
-    <string name="topads_showcase_home_title_2">TopAds Toko</string>
-    <string name="topads_showcase_home_desc_2">Promosikan toko Anda agar semakin banyak yang memfavoritkan toko Anda.</string>
-    <string name="topads_showcase_home_title_3">Tambah Kredit</string>
-    <string name="topads_showcase_home_desc_3">Tambah Kredit TopAds Anda untuk dapat melakukan promo.</string>
-    <string name="topads_showcase_home_title_4">Tanggal Statistik</string>
-    <string name="topads_showcase_home_desc_4">Pilih tanggal untuk atur tampilan statistik promo Anda.</string>
-    <string name="topads_showcase_home_title_5">Statistik Promo</string>
-    <string name="topads_showcase_home_desc_5">Pantau performa promo Anda pada tampilan statistik ini.</string>
-    <string name="topads_showcase_home_title_6">Tambah Promo</string>
-    <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan promo Anda.</string>
-
-    <!-- TOP ADS STATISTIK -->
-    <string name="topads_showcase_statistics_title_1">Atur Periode</string>
-    <string name="topads_showcase_statistics_desc_1">Atur tampilan statistik berdasarkan periode yang dipilih.</string>
-    <string name="topads_showcase_statistics_title_2">Statistik</string>
-    <string name="topads_showcase_statistics_desc_2">Lihat performa toko Anda, geser layar untuk melihat data statistik lain.</string>
-
-    <!-- TOP ADS GROUP LIST -->
-    <string name="topads_showcase_group_list_title_1">Pencarian</string>
-    <string name="topads_showcase_group_list_desc_1">Memudahkan Anda dalam mencari nama grup.</string>
-    <string name="topads_showcase_group_list_title_2">Filter</string>
-    <string name="topads_showcase_group_list_desc_2">Atur daftar tampilan berdasarkan filter.</string>
-    <string name="topads_showcase_group_list_title_3">Atur periode</string>
-    <string name="topads_showcase_group_list_desc_3">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
-    <string name="topads_showcase_group_list_title_4">Daftar Grup Promo</string>
-    <string name="topads_showcase_group_list_desc_4">Informasi singkat promo yang telah Anda buat.</string>
-
-    <!-- TOP ADS GROUP DETAIL -->
-    <string name="topads_showcase_detail_group_title_1">Pengaturan</string>
-    <string name="topads_showcase_detail_group_desc_1">Untuk mengubah atau menghapus promo.</string>
-    <string name="topads_showcase_detail_group_title_2">Pengaturan Status</string>
-    <string name="topads_showcase_detail_group_desc_2">Mengubah status aktif dan tidak aktif promo.</string>
-    <string name="topads_showcase_detail_group_title_3">Info Produk</string>
-    <string name="topads_showcase_detail_group_desc_3">Untuk melihat daftar produk yang ada pada grup promo.</string>
-
-    <!-- TOP ADS PRODUCT LIST -->
-    <string name="topads_showcase_product_list_title_1">Pencarian</string>
-    <string name="topads_showcase_product_list_desc_1">Memudahkan Anda dalam mencari nama produk.</string>
-    <string name="topads_showcase_product_list_title_2">Filter</string>
-    <string name="topads_showcase_product_list_desc_2">Atur daftar tampilan berdasarkan filter.</string>
-    <string name="topads_showcase_product_list_title_3">Atur Periode</string>
-    <string name="topads_showcase_product_list_desc_3">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
-    <string name="topads_showcase_product_list_title_4">Daftar Promo</string>
-    <string name="topads_showcase_product_list_desc_4">Informasi singkat promo yang telah Anda buat.</string>
-
-    <!-- TOP ADS PRODUCT DETAIL -->
-    <string name="topads_showcase_detail_promo_title_1">Pengaturan</string>
-    <string name="topads_showcase_detail_promo_desc_1">Untuk mengubah atau menghapus promo.</string>
-    <string name="topads_showcase_detail_promo_title_2">Pengaturan Status</string>
-    <string name="topads_showcase_detail_promo_desc_2">Mengubah status aktif dan tidak aktif promo.</string>
-
-    <!-- Product -->
-    <string name="product_label_product_info">Info Produk</string>
-    <string name="product_label_name">Nama Produk</string>
-    <string name="product_label_catalog">Katalog</string>
-    <string name="product_label_category">Kategori</string>
-    <string name="product_label_shop_window">Etalase</string>
-    <string name="product_label_choose">Pilih</string>
-    <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
-    <string name="product_label_product_about">Tentang Produk</string>
-    <string name="product_label_product_price">Harga Produk</string>
-    <string name="product_label_wholesale_price">Harga Grosir</string>
-    <string name="product_label_product_weight">Berat Produk</string>
-    <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>
-    <string name="product_label_time_process">Waktu Proses</string>
-    <string name="product_label_minimum_buy">Minimal Pembelian</string>
-    <string name="product_label_minimum_whole_sale">Jumlah Minimal</string>
-    <string name="product_label_price_whole_sale">Harga Produk</string>
-    <string name="product_label_maximum_whole_sale">Jumlah Maximal</string>
-    <string name="product_label_manage_stock">Pengaturan Stok</string>
-    <string name="product_stock_available_value">1</string>
-    <string name="product_stock_not_available_value">2</string>
-    <string name="product_label_stock_total">Jumlah Stok</string>
-    <string name="product_label_status">Status</string>
-    <string name="product_label_condition">Kondisi</string>
-    <string name="product_label_insurance">Asuransi</string>
-    <string name="product_label_free_returns">Free Returns</string>
-    <string name="product_label_product_description">Deskripsi Produk</string>
-    <string name="product_label_save_and_add">Simpan dan Tambah</string>
-    <string name="product_label_save">Simpan</string>
-    <string name="product_default_counter_text">0</string>
-    <string name="product_default_counter_minimum_order_text">1</string>
-    <string name="product_label_preorder">Preorder</string>
-    <string name="product_label_share">Bagikan</string>
-    <string name="product_title_activity_etalase_picker">Pilih Etalase</string>
-    <string name="product_upload_product_image">Upload Gambar Produk</string>
-
-    <string name="product_etalase_picker_add_etalase_title_dialog">Tambah Etalase</string>
-    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
-    <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
-    <string name="product_etalase_picker_add_etalase_name_hint">Nama Etalase</string>
-    <string name="product_etalase_picker_add_etalase_name_empty">Nama etalase harus diisi</string>
-
-    <!-- product score -->
-    <string name="product_title_activity_product_score">Skor Produk</string>
-    <string name="product_score_label_indicator_title">Indikator Skor Produk</string>
-    <string name="product_score_label_title_score">Skor Produk Anda \u0020</string>
-    <string name="product_score_label_minus">Kurang</string>
-    <string name="product_score_label_desc_detail">Sempurnakan informasi produk Anda. Semakin detail informasi produk, pembeli akan semakin yakin untuk berbelanja di toko Anda.</string>
-    <string name="product_score_label_error_count">Terjadi kesalahan penghitungan skor</string>
-
-    <string name="product_currency_value_idr">1</string>
-    <string name="product_currency_value_usd">2</string>
-    <string-array name="product_currency_entries">
-        <item>Rp</item>
-        <item>$</item>
-    </string-array>
-    <string-array name="product_currency_values">
-        <item>@string/product_currency_value_idr</item>
-        <item>@string/product_currency_value_usd</item>
-    </string-array>
-
-    <string name="product_weight_value_gram">1</string>
-    <string name="product_weight_value_kg">2</string>
-    <string-array name="product_weight_entries">
-        <item>Gram</item>
-        <item>Kg</item>
-    </string-array>
-    <string-array name="product_weight_values">
-        <item>@string/product_weight_value_gram</item>
-        <item>@string/product_weight_value_kg</item>
-    </string-array>
-
-    <string-array name="product_stock_status_entries">
-        <item>Stock Tersedia</item>
-        <item>Stock Kosong</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_type_entries">
-        <item>@string/top_ads_keyword_phrase_match</item>
-        <item>@string/top_ads_keyword_exact_match</item>
-    </string-array>
-    <string-array name="top_ads_keyword_type_values">
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-    <string-array name="product_stock_status_values">
-        <item>@string/product_stock_available_value</item>
-        <item>@string/product_stock_not_available_value</item>
-    </string-array>
-
-    <string-array name="product_condition_entries">
-        <item>Baru</item>
-        <item>Bekas</item>
-    </string-array>
-    <string-array name="product_condition_values">
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="product_insurance_entries">
-        <item>Opsional</item>
-        <item>Ya</item>
-    </string-array>
-    <string-array name="product_insurance_values">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
-    <string-array name="product_free_returns_entries">
-        <item>Ya</item>
-        <item>Tidak</item>
-    </string-array>
-    <string-array name="product_free_returns_values">
-        <item>@string/product_free_return_values_active</item>
-        <item>@string/product_free_return_values_inactive</item>
-    </string-array>
-
-    <string name="product_pre_order_value_day">1</string>
-    <string name="product_pre_order_value_week">2</string>
-    <string-array name="product_pre_order_entries">
-        <item>Hari</item>
-        <item>Minggu</item>
-    </string-array>
-    <string-array name="product_pre_order_values">
-        <item>@string/product_pre_order_value_day</item>
-        <item>@string/product_pre_order_value_week</item>
-    </string-array>
-
-    <string name="product_dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
-    <string name="product_dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
-
-    <string name="product_free_return_values_active">3</string>
-    <string name="product_free_return_values_inactive">0</string>
-    <string name="product_error_product_name_empty">Nama produk harus diisi</string>
-    <string name="product_error_product_category_empty">Kategori harus diisi</string>
-    <string name="product_minimum_price_rp">100</string>
-    <string name="product_maximum_price_rp">100,000,000</string>
-    <string name="product_minimum_price_usd">1</string>
-    <string name="product_maximum_price_usd">7,500</string>
-    <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_minimum_weight_gram">1</string>
-    <string name="product_maximum_weight_gram">100,000</string>
-    <string name="product_minimum_weight_kg">1</string>
-    <string name="product_maximum_weight_kg">100</string>
-    <string name="product_minimum_order">1</string>
-    <string name="product_maximum_order">10,000</string>
-    <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_error_product_minimum_order_not_valid">Minimum order harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_error_product_etalase_empty">Etalase harus diisi</string>
-    <string name="product_error_product_picture_empty">Gambar harus diisi</string>
-    <string name="product_minimum_pre_order_day">1</string>
-    <string name="product_maximum_pre_order_day">30</string>
-    <string name="product_minimum_pre_order_week">1</string>
-    <string name="product_maximum_pre_order_week">4</string>
-    <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
-    <string name="product_minimum_total_stock">1</string>
-    <string name="product_maximum_total_stock">10,000</string>
-    <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_title_confirmation_change_wholesale_price">Apakah Anda ingin mengubah harga?</string>
-    <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus saat harga diubah.</string>
-    <string name="product_confirmation_delete_video">Anda akan menghapus Video ini, lanjutkan?</string>
-    <string name="product_title_confirmation_delete_video">Hapus Video</string>
-
-    <string name="product_add_image">Tambah Gambar</string>
-
-    <string name="product_video_not_found">Video tidak ditemukan</string>
-    <string name="product_invalid_video_url">URL video tidak benar</string>
-    <string name="product_video_adult_warn">Video ini mengandung unsur konten dewasa</string>
-    <string name="product_video_same_warn">Anda sudah menambahkan video ini</string>
-    <string name="product_add_url_video">Tambah URL Video</string>
-    <string name="product_url_video">URL Video</string>
-    <string name="product_error_no_video_url_name">Url Video harus diisi</string>
-    <string name="product_youtube_add_url_title">Tambah URL Video</string>
-    <string name="product_label_video">Video Produk</string>
-    <string name="product_video_count">%1d Video</string>
-    <string name="product_title_notification_upload_product">Mengunggah</string>
-    <string name="product_group_notification">com.tokopedia</string>
-    <string name="product_notification_start_upload_product">Mulai mengunggah produk</string>
-    <string name="product_notification_progress_upload_product">Sedang mengunggah produk</string>
-    <string name="product_notification_complete_upload_product">Sukses Mengunggah Produk</string>
-    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
-    <string name="product_add_whole_sale_title">Tambah Harga Grosir</string>
-    <string name="product_price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
-    <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
-    <string name="product_quantity_range_is_not_valid">Kelompok Jumlah tidak valid.</string>
-    <string name="product_wholesale_range_format">%1$s - %2$s buah</string>
-    <string name="product_from_to_video">%1$d dari %2$d Video</string>
-    <string name="product_add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
-    <string name="product_add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
-    <string name="product_prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
-    <string name="product_prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
-    <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
-    <string name="product_could_not_add_videos">tidak dapat menambahkan video</string>
-    <string name="product_error_product_name_copy_duplicate">Nama produk harus diganti</string>
-    <string name="product_etalase_picker_add_etalase_name_too_short">Nama etalase minimal 3 karakter</string>
-
-    <string name="top_ads_keyword_add">Tambah</string>
-    <string name="top_ads_keyword_save">Simpan</string>
-    <string name="top_ads_keywords_total_current_and_max">Total Kata Kunci (%1$d/%2$d)</string>
-    <string name="top_ads_keywords_total_current_and_max_summary">Total Kata Kunci ditambahkan (%1$d/%2$d)</string>
-    <string name="top_ads_keywords_in_groups">Kata Kunci dalam grup (%1$d)</string>
-    <string name="top_ads_keywords_groups_format">Grup: %1$s</string>
-    <string name="top_ads_keywords_groups_format_without">Grup %1$s</string>
-    <string name="top_ads_keyword_must_be_filled">Kata kunci harus diisi.</string>
-    <string name="top_ads_keyword_must_only_letter_or_digit">Kata kunci hanya boleh huruf dan angka.</string>
-    <string name="top_ads_keyword_cannot_more_than_5">Kata kunci tidak boleh lebih dari 5 kata.</string>
-    <string name="top_ads_keyword_has_existed">Kata Kunci telah ada.</string>
-    <string name="top_ads_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
-    <string name="top_ads_keyword_title">Kata Kunci</string>
-    <string name="top_ads_keyword_title_negative">Negatif</string>
-    <string name="top_ads_keyword_search_group">Cari Grup</string>
-    <string name="top_ads_keyword_title_add">Tambah Kata Kunci</string>
-    <string name="top_ads_keyword_broad_match">Broad Match</string>
-    <string name="top_ads_keyword_phrase_match">Phrase Match</string>
-    <string name="top_ads_keyword_exact_match">Exact Match</string>
-    <string name="top_ads_keyword_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
-    <string name="top_ads_keyword_phrase_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci.</string>
-    <string name="top_ads_keyword_exact_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci yang sama persis.</string>
-    <string name="top_ads_keyword_phrase_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif.</string>
-    <string name="top_ads_keyword_exact_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif yang sama persis.</string>
-    <string name="top_ads_keyword_type_hint">Kata Kunci</string>
-    <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
-    <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
-    <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
-
-    <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
-    <string name="top_ads_keyword_title_delete">Hapus kata kunci</string>
-    <string name="top_ads_keyword_confirmation_delete">Apakah anda yakin untuk menghapus kata kunci ini?</string>
-
-    <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
-    <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
-    <string name="top_ads_keyword_title_detail">Detail Kata Kunci</string>
-    <string name="top_ads_keyword_phrase_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
-                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]>, <![CDATA[<i><b>Trend</b></i>]]> Pakaian Wanita</string>
-    <string name="top_ads_keyword_exact_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i> <br />]]>\n
-                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita</string>
-    <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
-    <string name="top_ads_keyword__all_group">Semua Grup</string>
-    <string name="top_ads_keyword_delete">Hapus</string>
-    <string name="top_ads_label_currency_rupiah_editext">Rp \u0020</string>
-    <string name="top_ads_label_price_desc">Sesuaikan biaya dengan anggaran promo Anda.</string>
-
-    <!-- tooltip statistic topads -->
-    <string name="top_ads_tooltip_statistic_use">Rp %1s</string>
-    <string name="top_ads_tooltip_statistic_avg">Rp %1s</string>
-    <string name="title_top_ads_keyword">Kata Kunci</string>
-    <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
-    <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
-    <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
-    <string name="top_ads_keyword_please_use">Gunakan Kata kunci agar promo Anda dapat tampil  pada pencarian yang sesuai</string>
-    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai</string>
-    <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
-    <string name="top_ads_keyword_group_title">Grup</string>
 
     <!-- SHOP SETTING-->
     <string name="title_activity_payment_editor">Pembayaran</string>
@@ -647,5 +90,30 @@
     <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
     <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
+
+
+    <string name="product_no_have_product_name_yet">Belum ada nama produk</string>
+    <string name="product_draft_item_percent_complete">%1$d%% complete</string>
+
+    <!-- Add Product Alert Gold Merchant -->
+    <string name="add_product_title_alert_dialog_dollar">Saat ini Anda belum menjadi Gold Merchant!</string>
+    <string name="add_product_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+    <string name="add_product_label_alert_dialog_video">Fitur upload video hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+    <string name="add_product_label_alert_save_as_draft_dollar_and_video">%s Jika ya, produk akan disimpan sebagai Draft</string>
+    <string name="product_draft_product_has_been_saved_as_draft">Produk berhasil disimpan dalam draft</string>
+
+    <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
+    <string name="product_draft_draft_product_empty">Draft Produk Anda kosong</string>
+    <string name="product_draft_add_product">Tambah Produk</string>
+    <string name="product_draft_save_as_draft">Simpan Draft</string>
+
+    <string name="app_widget_title_new_order">Order</string>
+    <string name="app_widget_new_order_wording_empty">Belum ada data</string>
+    <string name="app_widget_label_today">Hari ini</string>
+    <string name="app_widget_label_tomorrow">Besok</string>
+    <string name="app_widget_label_left_day">%d Hari Lagi</string>
 
 </resources>

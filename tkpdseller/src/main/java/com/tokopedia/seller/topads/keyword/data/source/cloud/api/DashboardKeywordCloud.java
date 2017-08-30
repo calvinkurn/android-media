@@ -1,9 +1,9 @@
 package com.tokopedia.seller.topads.keyword.data.source.cloud.api;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
-import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
 import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
 import com.tokopedia.seller.topads.keyword.data.mapper.KeywordAddDomainDataMapper;

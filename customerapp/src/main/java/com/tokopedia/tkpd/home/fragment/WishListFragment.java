@@ -125,7 +125,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onAddFavorite(Data data) {
+    public void onAddFavorite(int position, Data data) {
         Shop shop = data.getShop();
         Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
         intent.putExtra(
@@ -260,7 +260,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void displayDeleteWishlistDialog(final String productId) {
+    public void displayDeleteWishlistDialog(final String productId, final int position) {
         if (!isDeleteDialogShown) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -268,7 +268,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    wishList.deleteWishlist(getActivity(), productId);
+                    wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
             });
@@ -308,17 +308,14 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onSuccessDeleteWishlist(String searchTerm) {
+    public void onSuccessDeleteWishlist(String searchTerm, int position) {
         SnackbarManager.make(getActivity(),
                 MainApplication.getAppContext().getString(R.string.msg_delete_wishlist_success),
                 Snackbar.LENGTH_SHORT)
                 .show();
         displayPull(false);
-        if (searchTerm.isEmpty()) {
-            wishList.refreshData(getActivity());
-        } else {
-            wishList.refreshDataOnSearch(searchTerm);
-        }
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
     }
 
     @Override

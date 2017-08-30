@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_vs"
             android:text="@string/template_awb_additional_text"
-            android:textColor="@color/grey"
+            android:textColor="@color/label_text_color"
             android:textSize="@dimen/fontvs"
             />
 

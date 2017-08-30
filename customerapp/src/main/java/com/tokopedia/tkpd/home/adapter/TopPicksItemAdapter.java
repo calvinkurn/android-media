@@ -2,16 +2,13 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.tkpd.R;

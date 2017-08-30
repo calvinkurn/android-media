@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="ft_avd_toarrow"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportHeight="512"
+    android:viewportWidth="512">
+    <group>
+        <path
+            android:name="path_0"
+            android:fillAlpha="0"
+            android:pathData="@string/path_circle_new" />
+
+        <path
+            android:name="path_1"
+            android:fillAlpha="0"
+            android:pathData="@string/path_circle_new"
+            android:strokeColor="@color/white"
+            android:strokeWidth="20" />
+
+        <path
+            android:name="path_2"
+            android:fillAlpha="0"
+            android:pathData="@string/path_circle_new"
+            android:strokeColor="@color/white"
+            android:strokeWidth="20" />
+    </group>
+</vector>

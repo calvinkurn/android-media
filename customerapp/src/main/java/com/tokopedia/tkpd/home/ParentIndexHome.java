@@ -1,21 +1,25 @@
 package com.tokopedia.tkpd.home;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -27,9 +31,14 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.core.appupdate.ApplicationUpdate;
+import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
@@ -54,17 +63,18 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
-//import com.tokopedia.tkpd.home.fragment.DaggerFragmentProductFeed;
 
 /**
  * Created by Nisie on 1/07/15.
@@ -72,7 +82,8 @@ import rx.subscriptions.CompositeSubscription;
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  */
-public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener, GetUserInfoListener, HasComponent {
+public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
+        GetUserInfoListener, HasComponent {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -95,6 +106,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private GetFingerprintUseCase getFingerprintUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -106,6 +118,24 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.HOME_FEED)
+    public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.HOME_CATEGORY)
+    public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME)
                 .setData(uri.build())
                 .putExtras(extras);
     }
@@ -220,6 +250,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
         cacheHandler = new AnalyticsCacheHandler();
+
+        checkAppUpdate();
     }
 
     @Override
@@ -258,6 +290,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         });
         toolbar.addView(view);
         setSupportActionBar(toolbar);
+
     }
 
     private void setMoengageUserAttributes() {
@@ -280,23 +313,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-            indicator.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    mViewPager.setCurrentItem(tab.getPosition());
-                    sendGTMButtonEvent(tab.getPosition());
-                }
 
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-
-                }
-            });
             // indicator.setupWithViewPager(mViewPager);
             // int fragment = getIntent().getIntExtra("fragment", 1);
             switch (initStateFragment) {
@@ -376,12 +393,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onDestroy();
     }
 
-    @Override
-    public int getDrawerPosition() {
-        return TkpdState.DrawerPosition.INDEX_HOME;
-    }
-
     protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
         public PagerAdapter(android.support.v4.app.FragmentManager fm) {
             super(fm);
         }
@@ -391,26 +405,38 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             if (SessionHandler.isV4Login(ParentIndexHome.this)) {
 
                 if (getPageTitle(position).equals(content.get(0))) {
-                    return FragmentIndexCategory.newInstance();
+                    Fragment fragment = FragmentIndexCategory.newInstance();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
 
                 if (getPageTitle(position).equals(content.get(1))) {
-                    return new FragmentProductFeed();
+                    Fragment fragment = new FeedPlusFragment();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
 
                 if (getPageTitle(position).equals(content.get(2))) {
-                    return new FragmentFavorite();
+                    Fragment fragment = new FragmentFavorite();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
 
                 if (getPageTitle(position).equals(content.get(3))) {
-                    return new FragmentHotListV2();
+                    Fragment fragment = new FragmentHotListV2();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
             } else {
                 switch (position) {
                     case 0:
-                        return FragmentIndexCategory.newInstance();
+                        Fragment fragment = FragmentIndexCategory.newInstance();
+                        registeredFragments.put(position, fragment);
+                        return fragment;
                     case 1:
-                        return new FragmentHotListV2();
+                        fragment = new FragmentHotListV2();
+                        registeredFragments.put(position, fragment);
+                        return fragment;
                 }
             }
             return null;
@@ -430,6 +456,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         public int getCount() {
             return ParentIndexHome.this.content.size();
         }
+
+        public
+        @Nullable
+        Fragment getFragmentForPosition(int position) {
+            return registeredFragments.get(position);
+        }
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.INDEX_HOME;
     }
 
     @Override
@@ -518,6 +555,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             adapter.notifyDataSetChanged();
         }
 
+        setScrollFeedListener();
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
         super.onResume();
@@ -525,6 +563,33 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         sendNotifLocalyticsCallback();
 
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
+    }
+
+    private void setScrollFeedListener() {
+        if (sessionHandler != null
+                && sessionHandler.isV4Login()
+                && indicator != null) {
+            indicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    mViewPager.setCurrentItem(tab.getPosition());
+                    sendGTMButtonEvent(tab.getPosition());
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                    Fragment fragment = adapter.getFragmentForPosition(tab.getPosition());
+                    if (fragment != null && fragment instanceof FeedPlusFragment) {
+                        ((FeedPlusFragment) fragment).scrollToTop();
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -561,13 +626,37 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK) {
-            Intent intent = SessionRouter.getLoginActivityIntent(this);
-            intent.putExtras(data.getExtras());
-            startActivity(intent);
-            finish();
+        if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getExtras() != null) {
+            if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
+                    .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.LOGIN) {
+                Intent intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
+                intent.putExtras(data.getExtras());
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                        (this);
+                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivities(new Intent[]
+                        {
+                                intentHome,
+                                intent
+                        });
+                finish();
+            } else if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
+                    .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.REGISTER) {
+                Intent intent = ((TkpdCoreRouter) getApplication()).getRegisterIntent
+                        (this);
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                        (this);
+                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivities(new Intent[]
+                        {
+                                intentHome,
+                                intent
+                        });
+                finish();
+            }
         }
-        if(requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(3);
         }
     }
@@ -637,6 +726,23 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     public interface ChangeTabListener {
         void onChangeTab(int i);
+    }
+
+    private void checkAppUpdate() {
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(DetailUpdate detail) {
+                new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
+                        .getAlertDialog().show();
+                UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 }

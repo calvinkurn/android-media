@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/product_margin_cards"
                 android:text="@string/product_label_save_and_add"
-                android:textColor="@color/black_fifty_four_percent" />
+                android:textColor="@color/font_black_secondary_54" />
 
             <Button
                 android:id="@+id/button_save"

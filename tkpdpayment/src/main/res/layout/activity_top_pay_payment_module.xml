@@ -50,7 +50,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/holder_top">
 
-        <com.tokopedia.payment.webview.ScroogeWebView
+        <WebView
             android:id="@+id/scrooge_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

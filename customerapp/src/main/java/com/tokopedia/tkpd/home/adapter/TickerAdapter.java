@@ -18,11 +18,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.entity.home.Ticker;
-import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.core.home.BannerWebView;
 
 import java.util.ArrayList;
 
@@ -61,9 +60,6 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
         @BindView(R.id.announcement_ticker_container)
         RelativeLayout announcementContainer;
 
-        @BindView(R.id.ticker_title)
-        TextView title;
-
         @BindView(R.id.ticker_message)
         TextView message;
 
@@ -84,12 +80,6 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        if (tickers.get(position).getTitle() != null && tickers.get(position).getTitle().length() == 0) {
-            holder.title.setVisibility(View.GONE);
-        } else {
-            holder.title.setVisibility(View.VISIBLE);
-            holder.title.setText(tickers.get(position).getTitle());
-        }
         holder.message.setText(tickers.get(position).getMessage());
         holder.message.setMovementMethod(new SelectableSpannedMovementMethod());
 

@@ -24,21 +24,27 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
@@ -54,6 +60,7 @@ import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle3View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle4View;
+import com.tokopedia.digital.product.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
@@ -112,12 +119,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
-    private static final String URL_TRANSACTION_LIST_DIGITAL =
-            "https://pulsa.tokopedia.com/order-list/";
-    private static final String URL_PRODUCT_LIST_DIGITAL =
-            "https://pulsa.tokopedia.com/products/";
-    private static final String URL_SUBSCRIPTIONS_DIGITAL =
-            "https://pulsa.tokopedia.com/subscribe/";
 
 
     private Operator operatorSelectedState;
@@ -125,6 +126,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String clientNumberState;
     private CategoryData categoryDataState;
     private List<BannerData> bannerDataListState;
+    private List<BannerData> otherBannerDataListState;
     private HistoryClientNumber historyClientNumberState;
     private String voucherCodeCopiedState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
@@ -149,6 +151,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             > digitalProductView;
 
     private LocalCacheHandler cacheHandlerLastInputClientNumber;
+    private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     private ActionListener actionListener;
 
@@ -253,6 +256,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected void initView(View view) {
         rvBanner.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
+        mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        mainHolderContainer.setFocusable(true);
+        mainHolderContainer.setFocusableInTouchMode(true);
+        mainHolderContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (view instanceof ClientNumberInputView) {
+                    view.requestFocusFromTouch();
+                } else {
+                    view.clearFocus();
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -279,8 +296,25 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
-        this.bannerDataListState = bannerDataList;
-        bannerAdapter.addBannerDataListAndTitle(bannerDataList, title);
+        String formattedTitle = getResources().getString(R.string.promo_category, title);
+        this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
+        bannerAdapter.addBannerDataListAndTitle(bannerDataList, formattedTitle);
+    }
+
+    @Override
+    public void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList) {
+        String formattedTitle = getResources().getString(R.string.promo_category, title);
+        this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
+        bannerAdapter.addBannerDataListAndTitle(otherBannerDataList, formattedTitle);
+    }
+
+    private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
+        for (int i = bannerDataList.size() - 1; i >= 0; i--) {
+            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
+                bannerDataList.remove(bannerDataList.get(i));
+            }
+        }
+        return bannerDataList;
     }
 
     @Override
@@ -380,10 +414,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public List<BannerData> getOtherBannerDataListState() {
+        return otherBannerDataListState;
+    }
+
+    @Override
     public HistoryClientNumber getHistoryClientNumberState() {
         return historyClientNumberState;
     }
-
 
     @Override
     public String getVersionInfoApplication() {
@@ -566,6 +604,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -576,6 +616,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -586,9 +628,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
+        UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser
+                        getActivity(), operatorListData, titleChooser,categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
@@ -596,6 +640,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -617,6 +663,29 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onProductDetailLinkClicked(String url) {
         startActivity(DigitalWebActivity.newInstance(getActivity(), url));
+    }
+
+    @Override
+    public boolean isRecentInstantCheckoutUsed(String categoryId) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
+        );
+    }
+
+    @Override
+    public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        cacheHandlerRecentInstantCheckoutUsed.putBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
+        );
+        cacheHandlerRecentInstantCheckoutUsed.applyEditor();
     }
 
     @Override
@@ -687,30 +756,39 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_digital_product_detail, menu);
+        if (GlobalConfig.isSellerApp()) {
+            menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
+            menu.findItem(R.id.action_menu_product_list_digital).setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
             navigateToActivity(
                     DigitalWebActivity.newInstance(
-                            getActivity(), URL_PRODUCT_LIST_DIGITAL
+                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
                     )
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
             navigateToActivity(
                     DigitalWebActivity.newInstance(
-                            getActivity(), URL_SUBSCRIPTIONS_DIGITAL
+                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
                     )
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
+
+            UnifyTracking.eventClickDaftarTransaksiEvent(categoryDataState.getName(), categoryDataState.getName());
+
             navigateToActivity(
                     DigitalWebActivity.newInstance(
-                            getActivity(), URL_TRANSACTION_LIST_DIGITAL
+                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
                     )
             );
             return true;

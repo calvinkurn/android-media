@@ -5,8 +5,10 @@ import android.support.annotation.NonNull;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
+import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 
@@ -35,7 +37,7 @@ public interface ICartView extends IBaseView {
 
     void renderInvisibleLoyaltyBalance();
 
-    void renderCartListData(List<CartItem> cartList);
+    void renderCartListData(String token, String ut, List<CartItem> cartList);
 
     void renderCheckoutCartDepositAmount(String depositAmount);
 
@@ -47,9 +49,11 @@ public interface ICartView extends IBaseView {
 
     void renderInvisibleErrorPaymentCart();
 
-    void renderSuccessCheckVoucher(String descVoucher);
+    void renderSuccessCheckVoucher(String descVoucher, int instantVoucher);
 
     void renderErrorCheckVoucher(String message);
+
+    void renderErrorFromInstantVoucher(int instantVoucher);
 
     void renderErrorEmptyCart();
 
@@ -100,4 +104,17 @@ public interface ICartView extends IBaseView {
     void trackingCartCancelEvent();
 
     LocalCacheHandler getLocalCacheHandlerNotificationData();
+
+    void setCartSubTotal(CartCourierPrices cartCourierPrices);
+
+    void setCartError(int cartIndex);
+
+    void showRatesCompletion();
+
+    void setCartNoGrandTotal();
+
+    void refreshCartList();
+
+    void renderInstantPromo(CartPromo cartPromo);
+
 }

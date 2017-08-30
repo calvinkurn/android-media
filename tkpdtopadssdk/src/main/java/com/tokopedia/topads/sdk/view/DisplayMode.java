@@ -6,11 +6,14 @@ package com.tokopedia.topads.sdk.view;
 
 public enum DisplayMode {
 
-    GRID(0), LIST(1), FEED(3);
+    GRID(0),
+    LIST(1),
+    FEED(3), //Condition if TopAds shop will display 1 item only
+    FEED_EMPTY(4);
 
     private int value;
 
-    private DisplayMode(int value) {
+    DisplayMode(int value) {
         this.value = value;
     }
 

@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -20,7 +21,11 @@ import android.widget.ImageView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -38,8 +43,11 @@ import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussi
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -68,6 +76,8 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     private static final String PARAM_FLAG_ALLOW_REPLY = "PARAM_FLAG_ALLOW_REPLY";
     private static final String PARAM_IS_ERROR = "PARAM_IS_ERROR";
     private static final String PARAM_STRING_ERROR = "PARAM_STRING_ERROR";
+    private static final int REQUEST_CODE_GALLERY = 1243;
+    private static final int MAXIMAL_VIDEO_CONTENT_ALLOW = 1;
     private ResCenterDiscussionAdapter adapter;
     private AttachmentAdapter attachmentAdapter;
     private RecyclerView discussionList;
@@ -86,6 +96,9 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Inject
     ResCenterDiscussionPresenterImpl presenter;
+    private String[] extensions = {
+            "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
+    };
 
     public static Fragment createInstance(String resolutionID, boolean flagReceived, boolean flagAllowReply) {
         Fragment fragment = new ResCenterDiscussionFragment();
@@ -240,7 +253,11 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
                 presenter.setAttachment(attachmentAdapter.getList());
                 presenter.setResolutionId(getResolutionID());
                 presenter.setFlagReceived(getFlagReceived());
-                presenter.sendReply();
+                if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
+                    presenter.sendReplySupportVideo();
+                } else {
+                    presenter.sendReply();
+                }
             }
         });
 
@@ -301,7 +318,14 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
-        uploadImageDialog.actionImagePicker();
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
+            startActivityForResult(
+                    GalleryActivity.createIntent(getActivity()),
+                    REQUEST_CODE_GALLERY
+            );
+        } else {
+            uploadImageDialog.actionImagePicker();
+        }
     }
 
     private void addTemporaryMessage() {
@@ -446,23 +470,105 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ImageUploadHandler.REQUEST_CODE) {
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                        onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    } else {
-                        onFailedAddAttachment();
-                    }
-                    break;
-                case Activity.RESULT_OK:
-                    if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                        onAddImageAttachment(uploadImageDialog.getCameraFileloc());
-                    } else {
-                        onFailedAddAttachment();
-                    }
-                    break;
+        switch (requestCode) {
+            case ImageUploadHandler.REQUEST_CODE:
+                handleDefaultOldUploadImageHandlerResult(resultCode, data);
+                break;
+            case REQUEST_CODE_GALLERY:
+                handleNewGalleryResult(resultCode, data);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleNewGalleryResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
+                MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
+                if (checkAttachmentValidation(item)) {
+                    onAddImageAttachment(item.getRealPath(), getTypeFile(item));
+                }
+            } else {
+                onFailedAddAttachment();
             }
+        }
+    }
+
+    private boolean checkAttachmentValidation(MediaItem item) {
+        boolean isExtensionAllow = false;
+        for (String extension : extensions) {
+            String path = item.getRealPath();
+            if (path != null && path.toLowerCase(Locale.US).endsWith(extension)) {
+                Log.d("hangnadi validation", "checkAttachmentValidation: " + extension + "\npath : " + path);
+                isExtensionAllow = true;
+            }
+        }
+        if (!isExtensionAllow) {
+            NetworkErrorHelper.showSnackbar(
+                    getActivity(),
+                    getActivity().getString(R.string.error_reply_discussion_resolution_file_not_allowed)
+            );
+            return false;
+        }
+
+        int countVideoAlreadyAdded = 0;
+        if (item.isVideo()) {
+            for (AttachmentViewModel model :attachmentAdapter.getList()) {
+                if (model.isVideo()) {
+                    countVideoAlreadyAdded++;
+                }
+            }
+        }
+        if (countVideoAlreadyAdded == MAXIMAL_VIDEO_CONTENT_ALLOW) {
+            NetworkErrorHelper.showSnackbar(
+                    getActivity(),
+                    getActivity().getString(R.string.error_reply_discussion_resolution_reach_max)
+            );
+            return false;
+        }
+
+        if (item.isVideo()) {
+            File file = new File(item.getRealPath());
+            long length = file.length() / 1024;
+            if (length >= 20000) {
+                NetworkErrorHelper.showSnackbar(
+                        getActivity(),
+                        getActivity().getString(R.string.error_reply_discussion_resolution_reach_max_size)
+                );
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
+        switch (resultCode) {
+            case GalleryBrowser.RESULT_CODE:
+                if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
+                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL), AttachmentViewModel.FILE_IMAGE);
+                } else {
+                    onFailedAddAttachment();
+                }
+                break;
+            case Activity.RESULT_OK:
+                if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
+                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(), AttachmentViewModel.FILE_IMAGE);
+                } else {
+                    onFailedAddAttachment();
+                }
+                break;
+        }
+    }
+
+    private int getTypeFile(MediaItem item) {
+        if (item.isVideo()) {
+            return AttachmentViewModel.FILE_VIDEO;
+        } else if (item.isImage()) {
+            return AttachmentViewModel.FILE_IMAGE;
+        } else {
+            return AttachmentViewModel.UNKNOWN;
         }
     }
 
@@ -470,10 +576,11 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.failed_upload_image));
     }
 
-    private void onAddImageAttachment(String fileLoc) {
+    private void onAddImageAttachment(String fileLoc, int typeFile) {
         attachmentList.setVisibility(View.VISIBLE);
         AttachmentViewModel attachment = new AttachmentViewModel();
         attachment.setFileLoc(fileLoc);
+        attachment.setFileType(typeFile);
         attachmentAdapter.addImage(attachment);
     }
 
