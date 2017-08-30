@@ -247,6 +247,8 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
         String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
         String UPLOAD_SUCCESS = "Success Upload";
+        String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
+        String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
@@ -274,6 +276,8 @@ public interface AppEventTracking {
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
+        String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";
+        String CLICK_DAFTAR_TX = "Click Daftar Transaksi";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
@@ -282,6 +286,8 @@ public interface AppEventTracking {
         String REMOVE = "Remove";
 
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
+        String VOUCHER_SUCCESS = "Voucher Success - ";
+        String VOUCHER_ERROR = "Voucher Error - ";
     }
 
     interface EventLabel {

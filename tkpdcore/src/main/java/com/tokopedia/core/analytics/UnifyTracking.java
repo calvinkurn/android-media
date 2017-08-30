@@ -1633,6 +1633,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickVoucher(String ec,String ea, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_USE_VOUCHER+ea,
+                AppEventTracking.EventLabel.PRODUCT+el
+        ).getEvent());
+    }
+
+    public static void eventClickCancelVoucher(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_CANCEL_VOUCHER,
+                AppEventTracking.EventLabel.PRODUCT+el
+        ).getEvent());
+    }
+
     public static void eventSelectProduct(String ec, String el){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
@@ -1822,6 +1840,43 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 action,
                 label
+        ).getEvent());
+    }
+
+    public static void eventVoucherError(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE,
+                AppEventTracking.Action.VOUCHER_ERROR+action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventVoucherSuccess(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE,
+                AppEventTracking.Action.VOUCHER_SUCCESS+action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickPhoneIcon(String category, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+category,
+                AppEventTracking.Action.CLICK_PHONEBOOK_ICON,
+                AppEventTracking.EventLabel.PRODUCT+label
+        ).getEvent());
+    }
+
+
+    public static void eventClickDaftarTransaksiEvent(String category, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+category,
+                AppEventTracking.Action.CLICK_DAFTAR_TX,
+                AppEventTracking.EventLabel.PRODUCT+label
         ).getEvent());
     }
 
