@@ -53,9 +53,6 @@ public class TkpdBaseURL {
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
-    public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
-    public static final String FLAG_APP = "?flag_app=1";
-    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
     public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
 
     public static class Product {
