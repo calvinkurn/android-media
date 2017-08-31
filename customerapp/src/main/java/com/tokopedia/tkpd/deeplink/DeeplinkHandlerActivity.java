@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.SessionApplinkModule;
+import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
