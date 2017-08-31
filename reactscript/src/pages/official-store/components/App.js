@@ -36,7 +36,12 @@ class App extends Component {
     const { dispatch } = this.props
     AsyncStorage.getItem('user_id').then(uid => { dispatch(reloadState()) })
     
-    NetInfo.addEventListener('change', (res) => { this.setState({ statusConnection: res }) });
+    NetInfo.fetch().then((reach) => {
+      this.setState({ statusConnection: reach })
+    })
+    NetInfo.addEventListener('change', (res) => {
+      this.setState({ statusConnection: res }) 
+    });
   }
 
 
@@ -76,7 +81,6 @@ class App extends Component {
 
   render() {
     const statusConnection = this.state.statusConnection
-    // console.log(statusConnection)
     if (statusConnection === 'MOBILE' || statusConnection === 'WIFI'){
       return (
         <View>
