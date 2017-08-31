@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -40,6 +41,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static android.os.Build.VERSION_CODES.M;
+
 /**
  * @author by nisie on 8/19/17.
  */
@@ -52,6 +55,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     LinearLayoutManager layoutManager;
     InboxReputationDetailAdapter adapter;
     View mainView;
+
+    TkpdProgressDialog progressDialog;
 
     @Inject
     InboxReputationDetailPresenter presenter;
@@ -224,13 +229,40 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onErrorSendSmiley(String errorMessage) {
+        if (getActivity() != null)
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessSendSmiley() {
+
+    }
+
+    @Override
+    public void showLoadingDialog() {
+        if (progressDialog == null && getActivity() != null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+
+        if (progressDialog != null)
+            progressDialog.showDialog();
+    }
+
+    @Override
+    public void finishLoadingDialog() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
     }
 
     @Override
-    public void onReputationSmileyClicked(String name, String value) {
+    public void onReputationSmileyClicked(String name, final String value) {
         if (!TextUtils.isEmpty(value)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(getReputationSmileyMessage(name));
@@ -238,7 +270,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            presenter.sendSmiley(value);
                         }
                     });
             builder.setNegativeButton(getString(R.string.title_cancel),
@@ -269,5 +301,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
         } else
             super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }

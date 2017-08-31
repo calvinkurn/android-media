@@ -4,8 +4,10 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendSmileySubscriber;
 
 import javax.inject.Inject;
 
@@ -19,14 +21,17 @@ public class InboxReputationDetailPresenter
 
     private final GetInboxReputationDetailUseCase getInboxReputationDetailUseCase;
     private final SessionHandler sessionHandler;
+    private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
     private InboxReputationDetail.View viewListener;
     private PagingHandler pagingHandler;
 
     @Inject
-    InboxReputationDetailPresenter(GetInboxReputationDetailUseCase
-                                           getInboxReputationDetailUseCase,
-                                   SessionHandler sessionHandler) {
+    InboxReputationDetailPresenter(
+            GetInboxReputationDetailUseCase getInboxReputationDetailUseCase,
+            SendSmileyReputationUseCase sendSmileyReputationUseCase,
+            SessionHandler sessionHandler) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
+        this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
         this.pagingHandler = new PagingHandler();
         this.sessionHandler = sessionHandler;
     }
@@ -37,6 +42,12 @@ public class InboxReputationDetailPresenter
         this.viewListener = view;
     }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        getInboxReputationDetailUseCase.unsubscribe();
+        sendSmileyReputationUseCase.unsubscribe();
+    }
 
     @Override
     public void getInboxDetail(String id, int tab) {
@@ -51,5 +62,12 @@ public class InboxReputationDetailPresenter
     @Override
     public void getNextPage(int lastItemPosition, int visibleItem) {
 
+    }
+
+    @Override
+    public void sendSmiley(String value) {
+        viewListener.showLoadingDialog();
+        sendSmileyReputationUseCase.execute(SendSmileyReputationUseCase.getParam(value),
+                new SendSmileySubscriber(viewListener));
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 
 import rx.Observable;
 
@@ -36,5 +37,12 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudInboxReputationDetailDataSource()
                 .getInboxReputationDetail(requestParams);
+    }
+
+    @Override
+    public Observable<SendSmileyReputationDomain> sendSmiley(RequestParams requestParams) {
+        return reputationFactory.
+                createCloudSendSmileyReputationDataSource()
+                .sendSmiley(requestParams);
     }
 }

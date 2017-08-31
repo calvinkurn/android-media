@@ -6,7 +6,9 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -21,5 +23,8 @@ public interface ReputationApi {
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_DETAIL_INBOX_REPUTATION)
     Observable<Response<TkpdResponse>> getInboxDetail(@QueryMap Map<String, Object> params);
+
+    @POST(TkpdBaseURL.Reputation.PATH_SEND_REPUTATION_SMILEY)
+    Observable<Response<TkpdResponse>> sendSmiley(@FieldMap Map<String, Object> params);
 
 }

@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 
 import rx.Observable;
 
@@ -17,4 +18,6 @@ public interface ReputationRepository {
     Observable<InboxReputationDomain> getInboxReputationFromLocal();
 
     Observable<InboxReputationDetailDomain> getInboxReputationDetailFromCloud(RequestParams requestParams);
+
+    Observable<SendSmileyReputationDomain> sendSmiley(RequestParams requestParams);
 }

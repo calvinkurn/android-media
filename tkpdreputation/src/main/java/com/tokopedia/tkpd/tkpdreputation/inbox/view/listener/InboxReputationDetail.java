@@ -30,6 +30,14 @@ public interface InboxReputationDetail {
         void onSkipReview(String reviewId);
 
         void onGoToGiveReview();
+
+        void onErrorSendSmiley(String errorMessage);
+
+        void onSuccessSendSmiley();
+
+        void showLoadingDialog();
+
+        void finishLoadingDialog();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -37,5 +45,7 @@ public interface InboxReputationDetail {
         void getInboxDetail(String id, int anInt);
 
         void getNextPage(int lastItemPosition, int visibleItem);
+
+        void sendSmiley(String value);
     }
 }

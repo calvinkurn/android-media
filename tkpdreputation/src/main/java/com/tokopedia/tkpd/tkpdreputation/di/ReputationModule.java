@@ -9,9 +9,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -61,13 +63,14 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationFactory provideReputationFactory(ReputationService reputationService,
-                                               InboxReputationMapper inboxReputationMapper,
-                                               InboxReputationDetailMapper
-                                                       inboxReputationDetailMapper,
-                                               GlobalCacheManager globalCacheManager) {
+    ReputationFactory provideReputationFactory(
+            ReputationService reputationService,
+            InboxReputationMapper inboxReputationMapper,
+            InboxReputationDetailMapper inboxReputationDetailMapper,
+            SendSmileyReputationMapper sendSmileyReputationMapper,
+            GlobalCacheManager globalCacheManager) {
         return new ReputationFactory(reputationService, inboxReputationMapper,
-                inboxReputationDetailMapper, globalCacheManager);
+                inboxReputationDetailMapper, sendSmileyReputationMapper, globalCacheManager);
     }
 
     @ReputationScope
@@ -99,4 +102,24 @@ public class ReputationModule {
                 postExecutionThread,
                 reputationRepository);
     }
+
+    @ReputationScope
+    @Provides
+    SendSmileyReputationMapper provideSendSmileyReputationMapper() {
+        return new SendSmileyReputationMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    SendSmileyReputationUseCase
+    provideSendSmileyReputationUseCase(ThreadExecutor threadExecutor,
+                                           PostExecutionThread postExecutionThread,
+                                           ReputationRepository reputationRepository) {
+        return new SendSmileyReputationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                reputationRepository);
+    }
+
+
 }

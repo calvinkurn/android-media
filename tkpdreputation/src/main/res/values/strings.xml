@@ -42,5 +42,13 @@
     <string name="locked_reputation">Ulasan terisi otomatis karena batas waktu pengisian telah habis.</string>
     <string name="smiley_prompt_prefix">Berikan penilaian</string>
     <string name="smiley_prompt_suffix_shop">pada toko ini?</string>
-
+    <string name="upload_product_image">Upload Gambar Produk</string>
+    <string name="upload_product_info">Anda dapat mengupload 5 gambar dengan format .JPG, .JPEG, .PNG. Maksimal ukuran gambar 10 MB</string>
+    <string name="review">Ulasan</string>
+    <string name="rating_title_0">Belum ada nilai</string>
+    <string name="rating_title_1">Sangat Buruk</string>
+    <string name="rating_title_2">Buruk</string>
+    <string name="rating_title_3">Cukup</string>
+    <string name="rating_title_4">Baik</string>
+    <string name="rating_title_5">Sangat Baik</string>
 </resources>

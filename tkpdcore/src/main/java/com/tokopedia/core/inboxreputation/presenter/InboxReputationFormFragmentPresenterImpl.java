@@ -134,20 +134,21 @@ public class InboxReputationFormFragmentPresenterImpl
 
     @Override
     public int getRatingDescription(float rating) {
-        switch (String.valueOf(rating)) {
-            case "1.0":
-                return R.string.rating_title_1;
-            case "2.0":
-                return R.string.rating_title_2;
-            case "3.0":
-                return R.string.rating_title_3;
-            case "4.0":
-                return R.string.rating_title_4;
-            case "5.0":
-                return R.string.rating_title_5;
-            default:
-                return R.string.rating_title_0;
-        }
+//        switch (String.valueOf(rating)) {
+//            case "1.0":
+//                return R.string.rating_title_1;
+//            case "2.0":
+//                return R.string.rating_title_2;
+//            case "3.0":
+//                return R.string.rating_title_3;
+//            case "4.0":
+//                return R.string.rating_title_4;
+//            case "5.0":
+//                return R.string.rating_title_5;
+//            default:
+//                return R.string.rating_title_0;
+//        }
+        return 0;
     }
 
     @Override
