@@ -47,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/filter_detail_search_container"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/filter_detail_sidebar_margin_right"
             android:visibility="gone"/>
 
