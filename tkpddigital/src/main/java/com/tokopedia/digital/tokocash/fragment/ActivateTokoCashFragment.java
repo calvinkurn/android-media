@@ -21,7 +21,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.domain.ActivateTokoCashRepository;
+import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.ActivateTokoCashInteractor;
 import com.tokopedia.digital.tokocash.listener.ActivateTokoCashView;
 import com.tokopedia.digital.tokocash.presenter.ActivateTokoCashPresenter;
@@ -82,7 +82,7 @@ public class ActivateTokoCashFragment extends BasePresenterFragment<IActivateTok
         String acessToken = sessionHandler.getAccessToken(MainApplication.getAppContext());
         TokoCashService tokoCashService = new TokoCashService(acessToken);
         ActivateTokoCashInteractor interactor = new ActivateTokoCashInteractor
-                (new ActivateTokoCashRepository(tokoCashService));
+                (new TokoCashRepository(tokoCashService));
         presenter = new ActivateTokoCashPresenter(interactor, this);
     }
 
