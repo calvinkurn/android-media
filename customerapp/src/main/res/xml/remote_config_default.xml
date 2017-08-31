@@ -27,7 +27,7 @@
     </entry>
     <entry>
         <key>toko_cash_top_up</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>toko_cash_label</key>
