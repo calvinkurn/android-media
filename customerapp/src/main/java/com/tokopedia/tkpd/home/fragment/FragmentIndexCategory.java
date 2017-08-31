@@ -1144,17 +1144,20 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onReceivedTokoCashData(final DrawerTokoCash tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
         final FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
+        config.setDefaults(R.xml.remote_config_default);
         config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
+                if(task.isSuccessful()) {
                     config.activateFetched();
-                holder.tokoCashHeaderView.renderData(tokoCashData, config
-                        .getBoolean("toko_cash_top_up"));
-                FragmentIndexCategory.this.tokoCashData = tokoCashData;
+                    holder.tokoCashHeaderView.renderData(tokoCashData, config
+                            .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
+                    FragmentIndexCategory.this.tokoCashData = tokoCashData;
+                }
             }
         });
-        holder.tokoCashHeaderView.renderData(tokoCashData, true);
+        holder.tokoCashHeaderView.renderData(tokoCashData, false, getActivity()
+                .getString(R.string.tokocash));
         this.tokoCashData = tokoCashData;
     }
 

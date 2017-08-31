@@ -29,4 +29,8 @@
         <key>toko_cash_top_up</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>toko_cash_label</key>
+        <value>TokoCash</value>
+    </entry>
 </defaultsMap>
