@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -37,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,9 +46,11 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -65,6 +69,7 @@ import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
@@ -86,6 +91,7 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
@@ -93,8 +99,9 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.home.view.ReputationView;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;
@@ -122,9 +129,13 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.presenter.SellerHomePresenterImpl;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidgetCallback;
+import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.core.gcm.Constants;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
@@ -142,12 +153,13 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         DrawerDataListener {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
+    private static final String TAG = "SellerHomeActivity";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
     ImageHandler imageHandler;
     ShopController shopController;
 
-    @BindView(R.id.announcement_ticker)
-    LinearLayout announcementTicker;
+    @BindView(R.id.tickerview)
+    TickerView tickerView;
 
     @BindView(R.id.seller_home_transaction_view)
     TransactionView sellerHomeTransactionView;
@@ -372,10 +384,27 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 mojitoController
                 , gson);
         shopController.subscribe();
-
+        shopController.getTicker(getTicker());
 
         presenter = SellerHomeDependencyInjection.getPresenter(this);
         presenter.attachView(this);
+
+        actionCheckAndExecuteIfOpenByApplinkFromMainApp();
+    }
+
+    public void actionCheckAndExecuteIfOpenByApplinkFromMainApp(){
+        if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
+            String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
+            DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
+            if (delegate.supportsUri(applinkUrl)) {
+                Intent intent = getIntent();
+                intent.setData(Uri.parse(applinkUrl));
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+                intent.putExtras(bundle);
+                delegate.dispatchFrom(this, intent);
+            }
+        }
     }
 
     public int pxToDp(int px) {
@@ -424,14 +453,13 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
         shopController.getDeposit(userId, gcmId, getDeposit());
 
-        shopController.getTicker(getTicker());
     }
 
     protected MojitoController.ListenerGetTicker getTicker() {
         return new MojitoController.ListenerGetTicker() {
             @Override
             public void onError(Throwable e) {
-                announcementTicker.setVisibility(View.GONE);
+                tickerView.setVisibility(View.GONE);
             }
 
             @Override
@@ -449,42 +477,23 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     private void generateTicker(Ticker.Tickers[] tickers) {
-        announcementTicker.removeAllViews();
-        announcementTicker.setVisibility(View.VISIBLE);
-        for (int position = 0; position < tickers.length; position++) {
-
-            View view = getLayoutInflater().inflate(R.layout.layout_ticker_announcement, null);
-
-            TextView title = ButterKnife.findById(view, R.id.ticker_title);
-            TextView message = ButterKnife.findById(view, R.id.ticker_message);
-
-            if (tickers[position].getTitle() != null && tickers[position].getTitle().length() == 0) {
-                title.setVisibility(View.GONE);
-            } else {
-                title.setVisibility(View.VISIBLE);
-                title.setText(tickers[position].getTitle());
-            }
-            message.setText(tickers[position].getMessage());
-            message.setMovementMethod(new SelectableSpannedMovementMethod());
-
-            Spannable sp = (Spannable) message.getText();
-            URLSpan[] urls = sp.getSpans(0, message.getText().length(), URLSpan.class);
-            SpannableStringBuilder style = new SpannableStringBuilder(message.getText());
-            style.clearSpans();
-            for (final URLSpan url : urls) {
-                style.setSpan(new ClickableSpan() {
-                    @Override
-                    public void onClick(View widget) {
-                        Intent intent = new Intent(SellerHomeActivity.this, BannerWebView.class);
-                        intent.putExtra("url", url.getURL());
-                        startActivity(intent);
-                    }
-                }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            message.setText(style);
-
-            announcementTicker.addView(view);
+        tickerView.setVisibility(View.VISIBLE);
+        ArrayList<String> messages = new ArrayList<>();
+        for (Ticker.Tickers ticker : tickers) {
+            messages.add(ticker.getBasicMessage());
         }
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(this, R.color.tkpd_yellow_status));
+        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
+            @Override
+            public void onClick(View view, String messageClick) {
+                Intent intent = new Intent(SellerHomeActivity.this, BannerWebView.class);
+                intent.putExtra("url", messageClick);
+                startActivity(intent);
+            }
+        });
+        tickerView.buildView();
+
     }
 
     @NonNull
@@ -509,6 +518,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     protected void showMessageError(Throwable e) {
+        Log.i(TAG, e + "");
         if (snackbarRetryUndefinite != null) {
             snackbarRetryUndefinite.showRetrySnackbar();
         }
@@ -761,29 +771,22 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
         Drawable[] drawables = new Drawable[4];
         int[] drawablesResource = new int[]{
+                R.drawable.ic_add_product_home_seller,
                 R.drawable.ic_atur_produk,
-                R.drawable.ic_ulasan,
                 R.drawable.ic_etalase,
                 R.drawable.ic_settings
         };
         for (int i = 0; i < drawables.length; i++)
-            drawables[i] = AppCompatDrawableManager.get().getDrawable(this, drawablesResource[i]);
+            drawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
 
-        String[] STRINGS = new String[]{
-                "Atur Produk",
-                "Ulasan",
-                "Etalase",
-                "Pengaturan"
-        };
+        String[] titleMenus = getResources().getStringArray(R.array.title_menu_home);
         String[] strings = new String[drawables.length];
         for (int i = 0; i < drawables.length; i++)
-            strings[i] = STRINGS[i];
-
-        String color = "#ffffff";
+            strings[i] = titleMenus[i];
 
         int[][] colors = new int[drawables.length][2];
         for (int i = 0; i < drawables.length; i++) {
-            colors[i][1] = Color.parseColor(color);
+            colors[i][1] = ContextCompat.getColor(this, R.color.white);
             colors[i][0] = Util.getInstance().getPressedColor(colors[i][1]);
         }
 
@@ -803,19 +806,22 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                         Context context = SellerHomeActivity.this;
                         switch (buttonIndex) {
                             case 0:
+                                UnifyTracking.eventSellerClickAddProductDashboard();
+                                ProductAddActivity.start(SellerHomeActivity.this);
+                                break;
+                            case 1:
+                                UnifyTracking.eventSellerClickManageProductDashboard();
                                 context.startActivity(new Intent(
                                         context, ManageProductSeller.class
                                 ));
                                 break;
-                            case 1:
-                                context.startActivity(new Intent(
-                                        context, InboxReputationActivity.class));
-                                break;
                             case 2:
+                                UnifyTracking.eventSellerClickEtalaseDashboard();
                                 context.startActivity(new Intent(
                                         context, EtalaseShopEditor.class));
                                 break;
                             case 3:
+                                UnifyTracking.eventSellerClickSettingDashboard();
                                 context.startActivity(new Intent(
                                         context, ManageGeneral.class));
                                 break;
@@ -826,6 +832,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 .animator(new BoomMenuButton.AnimatorListener() {
                     @Override
                     public void toShow() {
+                        UnifyTracking.eventSellerClickFabDashboard();
                         hideLayout.setVisibility(View.VISIBLE);
                         hideLayout.setClickable(true);
                         isBoomMenuShown = true;

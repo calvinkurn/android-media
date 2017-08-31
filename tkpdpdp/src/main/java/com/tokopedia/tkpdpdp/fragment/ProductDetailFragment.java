@@ -770,6 +770,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             presenter.startIndexingApp(appIndexHandler, productData);
             this.newShopView.renderData(productData);
             refreshMenu();
+            updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
         }
     }
 
@@ -918,7 +919,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 } else {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    fabWishlist.show();
+                    if (productData!=null && productData.getInfo().getProductAlreadyWishlist()!=null) {
+                        fabWishlist.show();
+                    }
                 }
             }
         };

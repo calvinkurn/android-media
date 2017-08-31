@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.view.di.DaggerReloginComponent;
@@ -50,11 +49,7 @@ public class ReloginActivity extends AppCompatActivity
     @Override
     public AppComponent getComponent() {
         return ((MainApplication) getApplication())
-                .getApplicationComponent(getActivityModule());
-    }
-
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
+                .getApplicationComponent();
     }
 
     @Override

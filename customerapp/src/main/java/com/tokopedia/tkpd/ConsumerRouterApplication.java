@@ -8,15 +8,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -33,7 +34,6 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -49,10 +49,10 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
@@ -68,7 +68,6 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
@@ -88,9 +87,9 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
-
-    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
-        throw new RuntimeException("method used in sellerapp only");
+    @Override
+    public GoldMerchantComponent getGoldMerchantComponent() {
+        return null;
     }
 
     @Override
@@ -195,23 +194,32 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
-        return Uri.parse(originUrl).buildUpon()
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-                )
-                .build().toString();
+        Uri originUri = Uri.parse(originUrl);
+        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+            );
+        }
+        return uriBuilder.build().toString().trim();
     }
 
     @Override
@@ -346,6 +354,9 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public void onLogout(AppComponent appComponent) {
+        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
+        cacheApiClearAllUseCase.execute(RequestParams.EMPTY, new TkpdSellerLogout.EmptySubscriber());
+
         TkpdSellerLogout.onLogOut(appComponent);
     }
 

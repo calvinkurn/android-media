@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -72,6 +73,8 @@ public class RetrofitUtils {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             client.interceptors().add(logging);
         }
+
+        client.addInterceptor(new ApiCacheInterceptor());
         if (checkNotNull(urlProxy))
             client.proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(urlProxy, port)));
 
@@ -96,6 +99,16 @@ public class RetrofitUtils {
 
     public static boolean isSessionInvalid(String errorMessage) {
         return errorMessage.contains(NETWORK_FORBIDDEN_ERROR);
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
     }
 
     public static class DefaultErrorHandler extends ErrorHandler {
@@ -138,16 +151,6 @@ public class RetrofitUtils {
         }
 
 
-    }
-
-    public static boolean isConnected(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
     }
 
 }

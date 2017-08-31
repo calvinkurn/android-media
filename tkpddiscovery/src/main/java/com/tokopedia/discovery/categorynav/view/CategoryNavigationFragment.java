@@ -33,6 +33,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
     private static final int DEFAULT_OFFSET = 170;
+    private static final String PARAM_CATEGORY_ID = "param_category_id";
     private String categoryId = "";
     private String rootCategoryId = "";
     private CategoryNavDomainModel categoryNavDomainModel;
@@ -42,7 +43,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     private RecyclerView categoryChildRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private CategoryParentAdapter categoryParentAdapter;
-    private CategoryChildAdapter categoryChildAdapter;
+    private CategoryChildAdapter categoryChildAdapter = new CategoryChildAdapter(this);
 
     @Override
     protected String getScreenName() {
@@ -56,8 +57,26 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     public static CategoryNavigationFragment createInstance(String departmentId) {
         CategoryNavigationFragment categoryNavigationFragment = new CategoryNavigationFragment();
-        categoryNavigationFragment.categoryId = departmentId;
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_CATEGORY_ID, departmentId);
+        categoryNavigationFragment.setArguments(bundle);
         return categoryNavigationFragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            categoryId = getArguments().getString(PARAM_CATEGORY_ID, "0");
+        } else {
+            categoryId = savedInstanceState.getString(PARAM_CATEGORY_ID, "0");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(PARAM_CATEGORY_ID, categoryId);
     }
 
     @Nullable
@@ -95,34 +114,43 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void renderRootCategory(CategoryNavDomainModel domainModel) {
-        categoryNavDomainModel = domainModel;
-        Category rootCategory = new Category();
-        for (Category category: categoryNavDomainModel.getCategories()) {
-            if (category.getChildren()!=null && category.getChildren().size()>0) {
-                rootCategoryId = category.getId();
-                rootCategory = category;
-                break;
+        if (domainModel.getCategories()!=null && domainModel.getCategories().size()>0) {
+            categoryNavDomainModel = domainModel;
+            Category rootCategory = new Category();
+            for (Category category: categoryNavDomainModel.getCategories()) {
+                if (category.getChildren()!=null && category.getChildren().size()>0) {
+                    rootCategoryId = category.getId();
+                    rootCategory = category;
+                    break;
+                }
             }
-        }
-        categoryParentAdapter = new CategoryParentAdapter(this,rootCategoryId);
-        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        categoryRootRecyclerView.setLayoutManager(linearLayoutManager);
-        categoryRootRecyclerView.setAdapter(categoryParentAdapter);
-        categoryParentAdapter.setDataList(categoryNavDomainModel.getCategories());
+            if (TextUtils.isEmpty(rootCategoryId)) {
+                rootCategoryId = categoryNavDomainModel.getCategories().get(0).getId();
+                rootCategory = categoryNavDomainModel.getCategories().get(0);
+            }
+            categoryParentAdapter = new CategoryParentAdapter(this,rootCategoryId);
+            linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            categoryRootRecyclerView.setLayoutManager(linearLayoutManager);
+            categoryRootRecyclerView.setAdapter(categoryParentAdapter);
+            categoryParentAdapter.setDataList(categoryNavDomainModel.getCategories());
 
-        if (!TextUtils.isEmpty(rootCategoryId)) {
+
             LinearLayoutManager linearLayoutManagerChild = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             categoryChildRecyclerView.setLayoutManager(linearLayoutManagerChild);
-            categoryChildAdapter = new CategoryChildAdapter(this);
             categoryChildRecyclerView.setAdapter(categoryChildAdapter);
             if (rootCategory!=null && rootCategory.getChildren().size()>0) {
                 categoryChildAdapter.clear();
                 categoryChildAdapter.addAll(rootCategory.getChildren());
                 categoryParentAdapter.notifyDataSetChanged();
                 if (!rootCategoryId.equals(categoryId)) categoryChildAdapter.toggleSelectedChildbyId(categoryId);
+                linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), DEFAULT_OFFSET);
+            } else {
+                presenter.getChildren(2,rootCategory.getId());
             }
+        } else {
+            showErrorEmptyState();
         }
-        linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), DEFAULT_OFFSET);
+
     }
 
     @Override
@@ -160,7 +188,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.getRootCategory(rootCategoryId);
+                        presenter.getRootCategory(!TextUtils.isEmpty(rootCategoryId)?rootCategoryId:"0");
                     }
                 });
     }
@@ -202,4 +230,11 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             getActivity().finish();
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        presenter.setOnDestroyView();
+        super.onDestroyView();
+    }
+
 }

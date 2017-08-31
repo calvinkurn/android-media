@@ -48,17 +48,17 @@ public class TopAdsKeywordDetailNegativeFragment extends TopAdsKeywordDetailFrag
     }
 
     @Override
-    protected void updateCostView(Ad ad) {
+    protected void updateCostView(KeywordAd ad) {
         // Do nothing
     }
 
     @Override
-    protected void updateDailyBudgetView(Ad ad) {
+    protected void updateDailyBudgetView(KeywordAd ad) {
         // Do nothing
     }
 
     @Override
-    protected void updateStatisticView(Ad ad) {
+    protected void updateStatisticView(KeywordAd ad) {
         // Do nothing
     }
 

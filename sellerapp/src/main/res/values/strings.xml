@@ -5,7 +5,9 @@
     <string name="button_gm_subscribe">Buka Browser</string>
     <string name="extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
-    <string name="pembayaran_dan_topup">Pembayaran dan Top Up</string>
+    <string name="payment_and_topup">Pembayaran dan Top Up</string>
+    <string name="digital_product">Produk Digital</string>
+    <string name="digital_transaction_list">Daftar Transaksi Digital</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 
@@ -17,5 +19,9 @@
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
+    <string name="home_seller_manage_product">Atur Produk</string>
+    <string name="home_seller_add_product">Tambah Produk</string>
+    <string name="home_seller_etalase">Etalase</string>
+    <string name="home_seller_setting">Pengaturan</string>
 
 </resources>

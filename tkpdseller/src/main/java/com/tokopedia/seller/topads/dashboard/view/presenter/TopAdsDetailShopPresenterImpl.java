@@ -2,26 +2,26 @@ package com.tokopedia.seller.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractor;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.dashboard.data.model.request.ShopRequest;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractor;
+import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailListener;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 import java.util.Date;
 
 /**
- * Created by zulfikarrahman on 1/3/17.
+ * Created by zulfikarrahman on 8/14/17.
  */
-public class TopAdsDetailShopPresenterImpl extends TopAdsDetailProductPresenterImpl {
 
-    private final TopAdsShopAdInteractor shopAdInteractor;
+public class TopAdsDetailShopPresenterImpl extends TopAdsDetailPresenterImpl<ShopAd> implements TopAdsDetailPresenter {
+    private TopAdsShopAdInteractor topAdsShopAdInteractor;
 
-    public TopAdsDetailShopPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener, TopAdsProductAdInteractor productAdInteractor, TopAdsShopAdInteractor shopAdInteractor) {
-        super(context, topAdsDetailViewListener, productAdInteractor);
-        this.shopAdInteractor = shopAdInteractor;
+    public TopAdsDetailShopPresenterImpl(Context context, TopAdsDetailListener<ShopAd> topAdsDetailListener, TopAdsShopAdInteractor topAdsShopAdInteractor) {
+        super(context, topAdsDetailListener);
+        this.topAdsShopAdInteractor = topAdsShopAdInteractor;
     }
 
     @Override
@@ -32,24 +32,23 @@ public class TopAdsDetailShopPresenterImpl extends TopAdsDetailProductPresenterI
         request.setShopId(getShopId());
         request.setStartDate(startDate);
         request.setEndDate(endDate);
-        shopAdInteractor.getShopAd(request, new ListenerInteractor<ShopAd>() {
+        topAdsShopAdInteractor.getShopAd(request, new ListenerInteractor<ShopAd>() {
             @Override
             public void onSuccess(ShopAd shopAd) {
-                topAdsDetailViewListener.onAdLoaded(shopAd);
+                topAdsDetailListener.onAdLoaded(shopAd);
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onLoadAdError();
+                topAdsDetailListener.onLoadAdError();
             }
         });
     }
 
     @Override
     public void unSubscribe() {
-        super.unSubscribe();
-        if (shopAdInteractor != null) {
-            shopAdInteractor.unSubscribe();
+        if (topAdsShopAdInteractor != null) {
+            topAdsShopAdInteractor.unSubscribe();
         }
     }
 }

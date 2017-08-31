@@ -37,6 +37,8 @@
     <dimen name="gm_percentage_margin_left_size">3dp</dimen>
     <dimen name="gm_static_height_period_date">200dp</dimen>
 
+    <dimen name="no_margin">0dp</dimen>
+
     <!-- Product -->
     <dimen name="product_margin_cards">@dimen/top_ads_dashboard_margin_cards</dimen>
     <dimen name="product_inner_expandable_padding">7dp</dimen>

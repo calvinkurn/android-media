@@ -9,12 +9,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.digital.R;
 
@@ -43,10 +44,13 @@ public class DigitalWebActivity extends BasePresenterActivity
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (parentView != null) {
+                    parentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
                 window.setStatusBarColor(getResources().getColor(R.color.white, null));
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    window.setStatusBarColor(getResources().getColor(R.color.white));
+                    window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
                 }
             }
         }
@@ -142,11 +146,27 @@ public class DigitalWebActivity extends BasePresenterActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == com.tokopedia.core.R.id.menu_home) {
-            startActivity(HomeRouter.getHomeActivity(this));
+            if (getApplication() instanceof TkpdCoreRouter) {
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+                if (intentHome != null) startActivity(intentHome);
+            }
         } else if (item.getItemId() == com.tokopedia.core.R.id.menu_help) {
             startActivity(InboxRouter.getContactUsActivityIntent(this));
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (fragmentGeneralWebView != null && fragmentGeneralWebView.getWebview() != null
+                && fragmentGeneralWebView.getWebview().canGoBack()) {
+            fragmentGeneralWebView.getWebview().goBack();
+        } else if (fragmentGeneralWebView != null && fragmentGeneralWebView.getWebview() != null) {
+            fragmentGeneralWebView.getWebview().stopLoading();
+            finish();
+        } else {
+            finish();
+        }
+    }
 }
