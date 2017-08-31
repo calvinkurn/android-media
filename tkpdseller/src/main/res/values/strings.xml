@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
+    <string name="label_add">Tambah</string>
     <string name="label_empty_value">-</string>
     <string name="label_back">Kembali</string>
     <string name="title_date_setting">Atur Tanggal</string>
@@ -115,5 +116,20 @@
     <string name="app_widget_label_today">Hari ini</string>
     <string name="app_widget_label_tomorrow">Besok</string>
     <string name="app_widget_label_left_day">%d Hari Lagi</string>
+    <string name="product_instagram_draft_error_save_unknown">Terjadi kesalahan ketika mengupload draft instagram.</string>
+    <string name="product_instagram_draft_error_save_resolution">Gambar instagram ke-%1$d memiliki resolusi di bawah 300 pixel.</string>
+    <string name="product_draft_instagram_save_success">%1$d Produk Instagram Anda berhasil ditambahkan di draft.</string>
+    <string name="delete_this_variant">Hapus Variant untuk <![CDATA[<b>%1$s</b>]]>?</string>
+    <string name="label_variant_save">Simpan</string>
+    <string name="product_variant_status">Status Produk</string>
+    <string name="product_variant_status_available">Tersedia</string>
+    <string name="product_variant_status_not_available">Kosong</string>
+    <string name="product_label_variant">Varian</string>
+    <string name="product_variant_option_x">Pilihan %1$s</string>
+    <string name="product_variant_standard_unit_x">Standar %1$s</string>
+    <string name="product_variant_manage_variant">Atur Varian</string>
+    <string name="product_variant_add_new_x">Tambah %1$s baru</string>
+    <string name="product_variant_max_limit">%1$d batas maksimum varian</string>
+    <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
 
 </resources>

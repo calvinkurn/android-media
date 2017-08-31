@@ -2,9 +2,9 @@ package com.tokopedia.inbox.rescenter.detailv2.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;

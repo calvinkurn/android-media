@@ -61,7 +61,7 @@ import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;

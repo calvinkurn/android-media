@@ -3,6 +3,7 @@ package com.tokopedia.core.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -27,9 +28,13 @@ public interface TkpdCoreRouter {
 
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
 
+    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
+
     void removeInstopedToken();
 
     void goToManageProduct(Context context);
+
+    void goToDraftProductList(Context context);
 
     void goToManageEtalase(Context context);
 

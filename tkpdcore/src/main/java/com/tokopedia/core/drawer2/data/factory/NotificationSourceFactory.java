@@ -23,9 +23,9 @@ public class NotificationSourceFactory {
 
     @Inject
     public NotificationSourceFactory(@ApplicationContext Context context,
-                                     NotificationService notificationService,
-                                     NotificationMapper notificationMapper,
-                                     LocalCacheHandler drawerCache) {
+                                NotificationService notificationService,
+                                NotificationMapper notificationMapper,
+                                LocalCacheHandler drawerCache) {
         this.context = context;
         this.notificationService = notificationService;
         this.notificationMapper = notificationMapper;

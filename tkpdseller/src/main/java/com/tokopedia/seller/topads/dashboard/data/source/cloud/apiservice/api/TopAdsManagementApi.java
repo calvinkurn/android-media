@@ -16,7 +16,7 @@ import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
 
 import java.util.List;
