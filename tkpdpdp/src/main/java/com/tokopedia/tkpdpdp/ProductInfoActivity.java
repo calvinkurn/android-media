@@ -17,7 +17,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -30,8 +29,6 @@ import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
-
-import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
 
 public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements
         ProductInfoView,
@@ -68,17 +65,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent createInstanceWithVariant(Context context, @NonNull String productId,
-                                                   Option level1Selected, Option level2Selected) {
-        Intent intent = new Intent(context, ProductInfoActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
-        bundle.putParcelable(KEY_LEVEL1_SELECTED,level1Selected);
-        if (level1Selected!=null)  bundle.putParcelable(KEY_LEVEL1_SELECTED,level2Selected);
         intent.putExtras(bundle);
         return intent;
     }

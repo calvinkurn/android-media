@@ -3,7 +3,6 @@ package com.tokopedia.tkpdpdp.listener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
