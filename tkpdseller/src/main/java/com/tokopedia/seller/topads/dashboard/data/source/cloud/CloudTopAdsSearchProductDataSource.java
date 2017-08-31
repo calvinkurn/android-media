@@ -2,11 +2,11 @@ package com.tokopedia.seller.topads.dashboard.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
-import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.data.source.TopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
@@ -42,7 +42,7 @@ public class CloudTopAdsSearchProductDataSource implements TopAdsSearchProductDa
     private List<ProductDomain> tempProducts;
 
     @Inject
-    public CloudTopAdsSearchProductDataSource(@ActivityContext Context context,
+    public CloudTopAdsSearchProductDataSource(@ApplicationContext Context context,
                                               TopAdsManagementService topAdsSearchProductService,
                                               SearchProductEOFMapper searchProductMapper) {
         this.context = context;
