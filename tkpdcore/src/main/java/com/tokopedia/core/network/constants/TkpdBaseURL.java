@@ -9,9 +9,7 @@ public class TkpdBaseURL {
     public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     public static String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
-    public static String
-
-            BASE_DOMAIN = LIVE_DOMAIN;
+    public static String BASE_DOMAIN = LIVE_DOMAIN;
     public static String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
     public static String ACE_DOMAIN = "https://ace.tokopedia.com/";
     public static String TOME_DOMAIN = "https://tome.tokopedia.com/";
