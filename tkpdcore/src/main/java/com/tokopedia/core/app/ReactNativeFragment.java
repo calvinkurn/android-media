@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,12 +10,13 @@ import android.view.ViewGroup;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.tokopedia.core.react.ReactUtils;
 
 /**
  * @author ricoharisin .
  */
 
-public abstract class ReactNativeFragment extends TkpdBaseV4Fragment implements DefaultHardwareBackBtnHandler {
+public abstract class ReactNativeFragment extends Fragment implements DefaultHardwareBackBtnHandler {
 
     protected ReactRootView reactRootView;
     protected ReactInstanceManager reactInstanceManager;
@@ -41,6 +43,7 @@ public abstract class ReactNativeFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onDestroy() {
+        ReactUtils.sendDestroyPageEmitter();
         super.onDestroy();
 
         if (reactInstanceManager != null) {
@@ -63,8 +66,10 @@ public abstract class ReactNativeFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        reactRootView.startReactApplication(reactInstanceManager, getModuleName(), null);
+        reactRootView.startReactApplication(reactInstanceManager, getModuleName(), getInitialBundle());
     }
+
+    protected abstract Bundle getInitialBundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
