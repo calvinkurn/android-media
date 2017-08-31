@@ -894,7 +894,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
             );
         } else {
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            launchIntent = new Intent(Intent.ACTION_VIEW);
+            launchIntent.setData(Uri.parse(url));
             launchIntent.putExtra(Constants.EXTRA_APPLINK, url);
         }
         context.startActivity(launchIntent);
