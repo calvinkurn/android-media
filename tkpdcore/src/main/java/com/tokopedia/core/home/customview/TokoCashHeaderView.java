@@ -53,7 +53,7 @@ public class TokoCashHeaderView extends RelativeLayout {
         initView(context);
     }
 
-    public void renderData(final DrawerTokoCash tokoCashData) {
+    public void renderData(final DrawerTokoCash tokoCashData, boolean showTopUpButton) {
         String tokoCashRedirectUrl = tokoCashData.getRedirectUrl();
         final String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData
                 .getDrawerTokoCashAction());
