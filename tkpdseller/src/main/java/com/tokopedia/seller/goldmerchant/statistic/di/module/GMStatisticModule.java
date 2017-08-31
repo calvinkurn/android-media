@@ -3,7 +3,6 @@ package com.tokopedia.seller.goldmerchant.statistic.di.module;
 import android.content.Context;
 import android.content.res.AssetManager;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
@@ -71,7 +70,7 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource) {
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 

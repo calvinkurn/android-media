@@ -69,6 +69,7 @@ import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
@@ -90,6 +91,7 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
@@ -97,8 +99,9 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.home.view.ReputationView;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;
@@ -150,6 +153,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         DrawerDataListener {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
+    private static final String TAG = "SellerHomeActivity";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
     ImageHandler imageHandler;
     ShopController shopController;
@@ -514,6 +518,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     protected void showMessageError(Throwable e) {
+        Log.i(TAG, e + "");
         if (snackbarRetryUndefinite != null) {
             snackbarRetryUndefinite.showRetrySnackbar();
         }
