@@ -7,10 +7,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.UrlEncodedQueryString;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
+import com.tokopedia.core.cache.util.UrlEncodedQueryString;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -12,19 +12,18 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class ClearTimeOutCacheDataUseCaseUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
+public class ClearTimeOutCache extends BaseApiCacheInterceptorUseCase<Boolean> {
 
-    public ClearTimeOutCacheDataUseCaseUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ApiCacheRepository apiCacheRepository) {
+    public ClearTimeOutCache(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ApiCacheRepository apiCacheRepository) {
         super(threadExecutor, postExecutionThread, apiCacheRepository);
     }
 
-    public ClearTimeOutCacheDataUseCaseUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
+    public ClearTimeOutCache(ApiCacheRepositoryImpl apiCacheRepository) {
         super(apiCacheRepository);
     }
 
     @Override
     public Observable<Boolean> createChildObservable(RequestParams requestParams) {
-        apiCacheRepository.clearTimeout();
-        return Observable.just(true);
+        return apiCacheRepository.clearTimeout();
     }
 }

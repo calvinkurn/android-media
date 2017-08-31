@@ -1,4 +1,4 @@
-package com.tokopedia.core.cache.data.source.cache;
+package com.tokopedia.core.cache.data.source;
 
 import android.util.Log;
 
@@ -34,6 +34,7 @@ import rx.Observable;
  */
 
 public class ApiCacheDataSource {
+    public static final long DIVIDE_FOR_SECONDS = 1000L;
     private static final String TAG = "CacheHelper";
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private long maxContentLength = 250000L;
@@ -82,8 +83,8 @@ public class ApiCacheDataSource {
     public CacheApiWhitelist queryFromRaw(String host, String path) {
         return new Select()
                 .from(CacheApiWhitelist.class)
-                .where(CacheApiWhitelist_Table.host.like("%" + host + "%"))
-                .and(CacheApiWhitelist_Table.path.like("%" + path + "%"))
+                .where(CacheApiWhitelist_Table.host.eq(host))
+                .and(CacheApiWhitelist_Table.path.eq(path))
                 .querySingle();
     }
 
@@ -95,9 +96,9 @@ public class ApiCacheDataSource {
     public CacheApiData queryDataFrom(String host, String path, String param) {
         Where<CacheApiData> and = new Select()
                 .from(CacheApiData.class)
-                .where(CacheApiData_Table.host.like("%" + host + "%"))
-                .and(CacheApiData_Table.path.like("%" + path + "%"))
-                .and(CacheApiData_Table.requestParam.like("%" + param + "%"));
+                .where(CacheApiData_Table.host.eq(host))
+                .and(CacheApiData_Table.path.eq(path))
+                .and(CacheApiData_Table.requestParam.eq(param));
         Log.d(TAG, "queryDataFrom : "+and
                 .toString());
         return and.querySingle();
@@ -106,15 +107,15 @@ public class ApiCacheDataSource {
     public List<CacheApiData> queryDataFrom(String host, String path) {
         Where<CacheApiData> and = new Select()
                 .from(CacheApiData.class)
-                .where(CacheApiData_Table.host.like("%" + host + "%"))
-                .and(CacheApiData_Table.path.like("%" + path + "%"));
+                .where(CacheApiData_Table.host.eq(host))
+                .and(CacheApiData_Table.path.eq(path));
         Log.d(TAG, "queryDataFrom : " + and
                 .toString());
         return and.queryList();
     }
 
     public void clearTimeout() {
-        long currentTime = System.currentTimeMillis() / 1000L;
+        long currentTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
         List<CacheApiData> cacheApiDatas = new Select().from(CacheApiData.class).where(CacheApiData_Table.expiredDate.lessThan(currentTime)).queryList();
         if (cacheApiDatas != null) {
             for (int i = 0; i < cacheApiDatas.size(); i++) {
@@ -126,8 +127,8 @@ public class ApiCacheDataSource {
     public void updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
         Calendar instance = Calendar.getInstance();
         instance.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
-        cacheApiData.setResponseDate(System.currentTimeMillis() / 1000L);
-        cacheApiData.setExpiredDate(instance.getTimeInMillis() / 1000L);
+        cacheApiData.setResponseDate(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
+        cacheApiData.setExpiredDate(instance.getTimeInMillis() / DIVIDE_FOR_SECONDS);
 
         try {
             putResponseBody(cacheApiData, response);

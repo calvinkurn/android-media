@@ -1,4 +1,4 @@
-package com.tokopedia.core.cache;
+package com.tokopedia.core.cache.util;
 
 //Copyright (c) 2009, Richard Kennard
 //All rights reserved.
@@ -132,64 +132,31 @@ public class UrlEncodedQueryString {
     //
 
     /**
-     * Enumeration of recommended www-form-urlencoded separators.
+     * Separators to honour when parsing query strings.
      * <p>
-     * Recommended separators are defined by <a
-     * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
-     * Specification: application/x-www-form-urlencoded</a> and <a
-     * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
-     * Ampersands in URI attribute values</a>.
-     * <p>
-     * <em>All</em> separators are recognised when parsing query strings. <em>One</em> separator may
-     * be passed to <code>toString</code> and <code>apply</code> when outputting query strings.
+     * <em>All</em> Separators are recognized when parsing parameters, regardless of what the user
+     * later nominates as their <code>toString</code> output parameter.
      */
 
-    public static enum Separator {
-        /**
-         * An ampersand <code>&amp;</code> - the separator recommended by <a
-         * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
-         * Specification: application/x-www-form-urlencoded</a>.
-         */
+    private static final String PARSE_PARAMETER_SEPARATORS = String.valueOf(Separator.AMPERSAND) + Separator.SEMICOLON;
+    /**
+     * Map of query parameters.
+     */
 
-        AMPERSAND {
+    // Note: we initialize this Map upon object creation because, realistically, it
+    // is always going to be needed (eg. there is little point lazy-initializing it)
+    private final Map<String, List<String>> queryMap = new LinkedHashMap<String, List<String>>();
 
-            /**
-             * Returns a String representation of this Separator.
-             * <p>
-             * The String representation matches that defined by the <a
-             * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
-             * Specification: application/x-www-form-urlencoded</a>.
-             */
+    /**
+     * Private constructor.
+     * <p>
+     * Clients should use one of the <code>create</code> or <code>parse</code> methods to create a
+     * <code>UrlEncodedQueryString</code>.
+     */
 
-            @Override
-            public String toString() {
+    private UrlEncodedQueryString() {
 
-                return "&";
-            }
-        },
-
-        /**
-         * A semicolon <code>;</code> - the separator recommended by <a
-         * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
-         * Ampersands in URI attribute values</a>.
-         */
-
-        SEMICOLON {
-
-            /**
-             * Returns a String representation of this Separator.
-             * <p>
-             * The String representation matches that defined by the <a
-             * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01
-             * Specification: Ampersands in URI attribute values</a>.
-             */
-
-            @Override
-            public String toString() {
-
-                return ";";
-            }
-        };
+        // Can never be called
     }
 
     /**
@@ -225,6 +192,10 @@ public class UrlEncodedQueryString {
         return queryString;
     }
 
+    //
+    // Private statics
+    //
+
     /**
      * Creates a UrlEncodedQueryString by parsing the given query string.
      * <p>
@@ -252,6 +223,10 @@ public class UrlEncodedQueryString {
         return queryString;
     }
 
+    //
+    // Private members
+    //
+
     /**
      * Creates a UrlEncodedQueryString by extracting and parsing the query component from the given
      * URI.
@@ -273,31 +248,6 @@ public class UrlEncodedQueryString {
 
         return parse( uri.getRawQuery() );
     }
-
-    //
-    // Private statics
-    //
-
-    /**
-     * Separators to honour when parsing query strings.
-     * <p>
-     * <em>All</em> Separators are recognized when parsing parameters, regardless of what the user
-     * later nominates as their <code>toString</code> output parameter.
-     */
-
-    private static final String PARSE_PARAMETER_SEPARATORS	= String.valueOf( Separator.AMPERSAND ) + Separator.SEMICOLON;
-
-    //
-    // Private members
-    //
-
-    /**
-     * Map of query parameters.
-     */
-
-    // Note: we initialize this Map upon object creation because, realistically, it
-    // is always going to be needed (eg. there is little point lazy-initializing it)
-    private final Map<String, List<String>> queryMap					= new LinkedHashMap<String, List<String>>();
 
     //
     // Public methods
@@ -786,18 +736,6 @@ public class UrlEncodedQueryString {
     //
 
     /**
-     * Private constructor.
-     * <p>
-     * Clients should use one of the <code>create</code> or <code>parse</code> methods to create a
-     * <code>UrlEncodedQueryString</code>.
-     */
-
-    private UrlEncodedQueryString() {
-
-        // Can never be called
-    }
-
-    /**
      * Helper method for append and set
      *
      * @param name
@@ -843,7 +781,6 @@ public class UrlEncodedQueryString {
 
         this.queryMap.put( name, listValues );
     }
-
 
     private void appendOrSet(final CharSequence parameters, final boolean append ) {
 
@@ -910,5 +847,65 @@ public class UrlEncodedQueryString {
                 throw new RuntimeException( e );
             }
         }
+    }
+
+
+    /**
+     * Enumeration of recommended www-form-urlencoded separators.
+     * <p>
+     * Recommended separators are defined by <a
+     * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
+     * Specification: application/x-www-form-urlencoded</a> and <a
+     * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
+     * Ampersands in URI attribute values</a>.
+     * <p>
+     * <em>All</em> separators are recognised when parsing query strings. <em>One</em> separator may
+     * be passed to <code>toString</code> and <code>apply</code> when outputting query strings.
+     */
+
+    public static enum Separator {
+        /**
+         * An ampersand <code>&amp;</code> - the separator recommended by <a
+         * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
+         * Specification: application/x-www-form-urlencoded</a>.
+         */
+
+        AMPERSAND {
+            /**
+             * Returns a String representation of this Separator.
+             * <p>
+             * The String representation matches that defined by the <a
+             * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
+             * Specification: application/x-www-form-urlencoded</a>.
+             */
+
+            @Override
+            public String toString() {
+
+                return "&";
+            }
+        },
+
+        /**
+         * A semicolon <code>;</code> - the separator recommended by <a
+         * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
+         * Ampersands in URI attribute values</a>.
+         */
+
+        SEMICOLON {
+            /**
+             * Returns a String representation of this Separator.
+             * <p>
+             * The String representation matches that defined by the <a
+             * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01
+             * Specification: Ampersands in URI attribute values</a>.
+             */
+
+            @Override
+            public String toString() {
+
+                return ";";
+            }
+        };
     }
 }

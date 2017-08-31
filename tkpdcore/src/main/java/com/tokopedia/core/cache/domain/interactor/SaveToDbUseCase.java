@@ -9,6 +9,7 @@ import com.tokopedia.core.cache.domain.ApiCacheRepository;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 8/30/17.
@@ -28,12 +29,17 @@ public class SaveToDbUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createChildObservable(RequestParams requestParams) {
-        Response response = (Response) requestParams.getObject(RESPONSE);
-        CacheApiWhitelist inWhiteListRaw = apiCacheRepository.isInWhiteListRaw(paramsCacheApiData.getHost(), paramsCacheApiData.getPath());
-        if (inWhiteListRaw != null) {
-            apiCacheRepository.updateResponse(paramsCacheApiData, inWhiteListRaw, response);
-        }
+        final Response response = (Response) requestParams.getObject(RESPONSE);
 
-        return Observable.just(true);
+        return apiCacheRepository.isInWhiteListRaw(paramsCacheApiData.getHost(), paramsCacheApiData.getPath()).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
+                if (cacheApiWhitelist != null) {
+                    return apiCacheRepository.updateResponse(paramsCacheApiData, cacheApiWhitelist, response);
+                } else {
+                    return null;
+                }
+            }
+        });
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 8/30/17.
@@ -26,16 +27,27 @@ public class GetCacheDataUseCaseUseCase extends BaseApiCacheInterceptorUseCase<S
 
     @Override
     public Observable<String> createChildObservable(RequestParams requestParams) {
-        if (apiCacheRepository.isInWhiteList(paramsCacheApiData.getHost(), paramsCacheApiData.getPath())) {
-            CacheApiData tempData = apiCacheRepository.queryDataFrom(paramsCacheApiData.getHost(), paramsCacheApiData.getPath(), paramsCacheApiData.getRequestParam());
-
-            if (tempData != null) {
-
-                paramsCacheApiData.setResponseDate(tempData.responseDate);
-                paramsCacheApiData.setExpiredDate(tempData.expiredDate);
-                paramsCacheApiData.setResponseBody(tempData.responseBody);
+        return apiCacheRepository.isInWhiteList(paramsCacheApiData.getHost(), paramsCacheApiData.getPath()).filter(new Func1<Boolean, Boolean>() {
+            @Override
+            public Boolean call(Boolean aBoolean) {
+                return aBoolean;
             }
-        }
-        return Observable.just(paramsCacheApiData.getResponseBody());
+        }).flatMap(new Func1<Boolean, Observable<CacheApiData>>() {
+            @Override
+            public Observable<CacheApiData> call(Boolean aBoolean) {
+                return apiCacheRepository.queryDataFrom(paramsCacheApiData.getHost(), paramsCacheApiData.getPath(), paramsCacheApiData.getRequestParam());
+            }
+        }).map(new Func1<CacheApiData, String>() {
+            @Override
+            public String call(CacheApiData cacheApiData) {
+                if (cacheApiData != null) {
+
+                    paramsCacheApiData.setResponseDate(cacheApiData.responseDate);
+                    paramsCacheApiData.setExpiredDate(cacheApiData.expiredDate);
+                    paramsCacheApiData.setResponseBody(cacheApiData.responseBody);
+                }
+                return paramsCacheApiData.getResponseBody();
+            }
+        });
     }
 }

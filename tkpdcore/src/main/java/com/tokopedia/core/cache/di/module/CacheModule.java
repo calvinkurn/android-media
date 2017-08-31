@@ -4,14 +4,14 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.base.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
-import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
+import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
+import com.tokopedia.core.cache.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.var.TkpdCache;

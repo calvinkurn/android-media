@@ -4,11 +4,11 @@ import android.support.annotation.Nullable;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.base.di.qualifier.ApiCacheQualifier;
-import com.tokopedia.core.base.di.qualifier.VersionNameQualifier;
-import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
+import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
+import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
+import com.tokopedia.core.cache.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
@@ -110,34 +110,36 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public boolean isInWhiteList(final String host, final String path) {
-        return apiCacheDataSource.isInWhiteList(host, path);
+    public Observable<Boolean> isInWhiteList(final String host, final String path) {
+        return Observable.just(apiCacheDataSource.isInWhiteList(host, path));
     }
 
     @Override
-    public CacheApiWhitelist isInWhiteListRaw(final String host, final String path) {
-        return apiCacheDataSource.queryFromRaw(host, path);
+    public Observable<CacheApiWhitelist> isInWhiteListRaw(final String host, final String path) {
+        return Observable.just(apiCacheDataSource.queryFromRaw(host, path));
     }
 
     @Override
-    public void deleteAllCache() {
+    public Observable<Boolean> deleteAllCache() {
         deleteAllCacheData();
+        return Observable.just(true);
     }
 
     @Override
-    public void clearTimeout() {
+    public Observable<Boolean> clearTimeout() {
         apiCacheDataSource.clearTimeout();
+        return Observable.just(true);
     }
 
     @Override
-    public CacheApiData queryDataFrom(String host, String path, String requestParam) {
-        return apiCacheDataSource.queryDataFrom(host, path, requestParam);
+    public Observable<CacheApiData> queryDataFrom(String host, String path, String requestParam) {
+        return Observable.just(apiCacheDataSource.queryDataFrom(host, path, requestParam));
     }
 
     @Override
-    public void updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
+    public Observable<Boolean> updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
         apiCacheDataSource.updateResponse(cacheApiData, cacheApiWhitelist, response);
-
+        return Observable.just(true);
     }
 
 

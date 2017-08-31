@@ -51,15 +51,15 @@ public interface ApiCacheRepository {
      */
     Observable<Boolean> singleDataDelete(@Nullable CacheApiDataDomain cacheApiDataDomain);
 
-    boolean isInWhiteList(String url, String method);
+    Observable<Boolean> isInWhiteList(String url, String method);
 
-    void deleteAllCache();
+    Observable<Boolean> deleteAllCache();
 
-    void clearTimeout();
+    Observable<Boolean> clearTimeout();
 
-    CacheApiData queryDataFrom(String host, String path, String requestParam);
+    Observable<CacheApiData> queryDataFrom(String host, String path, String requestParam);
 
-    void updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response);
+    Observable<Boolean> updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response);
 
-    CacheApiWhitelist isInWhiteListRaw(final String host, final String path);
+    Observable<CacheApiWhitelist> isInWhiteListRaw(final String host, final String path);
 }

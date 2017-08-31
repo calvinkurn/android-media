@@ -31,11 +31,11 @@ public class CacheApiClearAllUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         return Observable.just(true)
-                .map(new Func1<Boolean, Boolean>() {
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                          @Override
-                         public Boolean call(Boolean aBoolean) {
+                         public Observable<Boolean> call(Boolean aBoolean) {
                              apiCacheRepository.deleteAllCache();
-                             return true;
+                             return Observable.just(true);
                          }
                      }
                 );
