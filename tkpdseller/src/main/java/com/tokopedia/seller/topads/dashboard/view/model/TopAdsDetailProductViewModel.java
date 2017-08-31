@@ -1,10 +1,13 @@
 package com.tokopedia.seller.topads.dashboard.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Nathaniel on 2/23/2017.
  */
 
-public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel {
+public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Parcelable {
 
     private long id;
     private int type;
@@ -182,4 +185,67 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeInt(this.type);
+        dest.writeLong(this.groupId);
+        dest.writeLong(this.shopId);
+        dest.writeLong(this.itemId);
+        dest.writeInt(this.status);
+        dest.writeFloat(this.priceBid);
+        dest.writeByte(this.budget ? (byte) 1 : (byte) 0);
+        dest.writeFloat(this.priceDaily);
+        dest.writeInt(this.stickerId);
+        dest.writeByte(this.scheduled ? (byte) 1 : (byte) 0);
+        dest.writeString(this.startDate);
+        dest.writeString(this.startTime);
+        dest.writeString(this.endDate);
+        dest.writeString(this.endTime);
+        dest.writeString(this.image);
+        dest.writeString(this.title);
+        dest.writeByte(this.toggled ? (byte) 1 : (byte) 0);
+    }
+
+    public TopAdsDetailProductViewModel() {
+    }
+
+    protected TopAdsDetailProductViewModel(Parcel in) {
+        this.id = in.readLong();
+        this.type = in.readInt();
+        this.groupId = in.readLong();
+        this.shopId = in.readLong();
+        this.itemId = in.readLong();
+        this.status = in.readInt();
+        this.priceBid = in.readFloat();
+        this.budget = in.readByte() != 0;
+        this.priceDaily = in.readFloat();
+        this.stickerId = in.readInt();
+        this.scheduled = in.readByte() != 0;
+        this.startDate = in.readString();
+        this.startTime = in.readString();
+        this.endDate = in.readString();
+        this.endTime = in.readString();
+        this.image = in.readString();
+        this.title = in.readString();
+        this.toggled = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<TopAdsDetailProductViewModel> CREATOR = new Parcelable.Creator<TopAdsDetailProductViewModel>() {
+        @Override
+        public TopAdsDetailProductViewModel createFromParcel(Parcel source) {
+            return new TopAdsDetailProductViewModel(source);
+        }
+
+        @Override
+        public TopAdsDetailProductViewModel[] newArray(int size) {
+            return new TopAdsDetailProductViewModel[size];
+        }
+    };
 }

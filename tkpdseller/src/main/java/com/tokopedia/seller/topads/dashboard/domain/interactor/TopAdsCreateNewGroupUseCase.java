@@ -18,6 +18,8 @@ import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -34,6 +36,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
 
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
+    @Inject
     public TopAdsCreateNewGroupUseCase(ThreadExecutor threadExecutor,
                                        PostExecutionThread postExecutionThread,
                                        TopAdsGroupAdsRepository topAdsGroupAdsRepository) {

@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
@@ -135,11 +136,13 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
     }
 
     private void chooseCredit() {
-        getActivity().setResult(Activity.RESULT_OK);
-        Intent intent = new Intent(getActivity(), TopAdsPaymentCreditActivity.class);
-        intent.putExtra(TopAdsConstant.EXTRA_CREDIT, adapter.getSelectedCredit());
-        startActivity(intent);
-        getActivity().finish();
+        if(adapter.getSelectedCredit() != null) {
+            getActivity().setResult(Activity.RESULT_OK);
+            Intent intent = new Intent(getActivity(), TopAdsPaymentCreditActivity.class);
+            intent.putExtra(TopAdsConstant.EXTRA_CREDIT, adapter.getSelectedCredit());
+            startActivity(intent);
+            getActivity().finish();
+        }
     }
 
     @Override
