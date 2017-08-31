@@ -729,12 +729,12 @@ public class TkpdBaseURL {
         public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
     }
 
-    public static class TopCash {
+    public static class TokoCash {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
-        public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
-        public static final String PATH_WALLET = "balance";
-        public static final String PATH_REQUEST_OTP_WALLET = "otp/request";
-        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "link";
+        public static final String PATH_WALLET = "api/v1/wallet/balance";
+        public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
+        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "api/v1/wallet/link";
+        public static final String GET_HISTORY = "api/v1/me/history";
     }
 
     public static class Truecaller {
