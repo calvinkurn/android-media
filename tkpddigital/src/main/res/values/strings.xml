@@ -53,6 +53,7 @@
     <string name="error_message_product_out_of_stock_digital_module">Stok product kosong</string>
 
     <string name="promo_category">Promo %1$s</string>
+    <string name="other_promo">lainnya</string>
 
     <string name="benefit_tokocash_title">Kemudahan Bertransaksi \ndengan TokoCash</string>
     <string name="benefit_tokocash_title_item_1">Mudah melakukan Pembayaran Online</string>
@@ -78,4 +79,7 @@
     <string name="tokocash_toolbar_activate">Aktivasi TokoCash</string>
     <string name="tokocash_toolbar_verification">Verifikasi Nomor Handphone</string>
     <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
+    <string name="title_header_menu_digital_categories_transaction_list_digital_module">Transaksi Saya</string>
+    <string name="title_header_menu_digital_categories_favorite_number_digital_module">Nomor Favorit</string>
+    <string name="title_header_menu_digital_categories_subscription_digital_module">Langganan</string>
 </resources>

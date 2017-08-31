@@ -1,7 +1,9 @@
 package com.tokopedia.seller.topads.dashboard.view.activity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAddCreditFragment;
+
+import java.util.List;
 
 /**
  * Created by Nathaniel on 11/22/2016.
@@ -32,6 +36,16 @@ public class TopAdsAddCreditActivity extends BaseSimpleActivity {
                     .setData(uri.build())
                     .putExtras(extras);
         } else {
+//            Intent intent = new Intent("com.tokopedia.tkpd.APPLINK");
+//            intent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+//
+//            PackageManager packageManager = context.getPackageManager();
+//            List activities = packageManager.queryIntentActivities(intent,
+//                    PackageManager.MATCH_DEFAULT_ONLY);
+//            boolean isIntentSafe = activities.size() > 0;
+//            if (isIntentSafe) {
+//                return intent;
+//            }
             Intent launchIntent = context.getPackageManager()
                     .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
             if (launchIntent == null) {
@@ -39,6 +53,8 @@ public class TopAdsAddCreditActivity extends BaseSimpleActivity {
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
+                launchIntent = new Intent(Intent.ACTION_VIEW);
+                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
                 launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             }
             return launchIntent;

@@ -411,6 +411,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onButtonContactClicked() {
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
+        UnifyTracking.eventClickPhoneIcon(category.getAttributes().getName(), selectedOperator == null ? "" : selectedOperator.name);
     }
 
     @OnClick(R.id.btn_buy)

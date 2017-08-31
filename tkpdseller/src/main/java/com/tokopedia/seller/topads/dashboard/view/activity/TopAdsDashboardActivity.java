@@ -72,6 +72,8 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
+                launchIntent = new Intent(Intent.ACTION_VIEW);
+                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
                 launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             }
             return launchIntent;
@@ -234,6 +236,12 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             return;
         }
         showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
         showCaseList.add(new ShowCaseObject(

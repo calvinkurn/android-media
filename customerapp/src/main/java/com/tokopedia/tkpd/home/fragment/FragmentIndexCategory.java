@@ -171,7 +171,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private BannerPagerAdapter bannerPagerAdapter;
     private int currentPosition;
     private ArrayList<ImageView> indicatorItems = new ArrayList<>();
-    private Subscription subscription;
+    private Runnable runnableScrollBanner;
+    private Handler bannerHandler;
 
 
     @Override
@@ -310,6 +311,15 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
+    private ArrayList<String> mappingListTickerMessage(ArrayList<Ticker.Tickers> tickersResponse) {
+        ArrayList<String> strings = new ArrayList<>();
+        for (Ticker.Tickers tickers : tickersResponse) {
+            String str = tickers.getMessage2().replaceAll("<p>(.*?)</p>", "$1");
+            strings.add(str);
+        }
+        return strings;
+    }
+
     private void getPromo() {
         category.fetchBanners(onGetPromoListener());
         category.fetchSlides(onGetPromoListener());
@@ -378,9 +388,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (newState == RecyclerView.SCROLL_STATE_DRAGGING && recyclerView.isInTouchMode()) {
-                        if (subscription != null && !subscription.isUnsubscribed()) {
-                            subscription.unsubscribe();
-                        }
+                        stopAutoScrollBanner();
                     }
                 }
 
@@ -393,30 +401,35 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             PagerSnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(holder.bannerPager);
 
-//            startAutoScrollBanner();
+            bannerHandler = new Handler();
+            runnableScrollBanner = new Runnable() {
+                @Override
+                public void run() {
+                    if (holder.bannerPager != null) {
+                        if (currentPosition == holder.bannerPager.getAdapter().getItemCount() - 1) {
+                            currentPosition = -1;
+                        }
+                        holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
+                        bannerHandler.postDelayed(this, SLIDE_DELAY);
+                    }
+                }
+            };
+
+            startAutoScrollBanner();
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
         }
     }
 
     private void startAutoScrollBanner() {
+        if (bannerHandler != null && runnableScrollBanner != null) {
+            bannerHandler.postDelayed(runnableScrollBanner, SLIDE_DELAY);
+        }
+    }
 
-        if (subscription == null || subscription.isUnsubscribed()) {
-            subscription = Observable.interval(5000L, TimeUnit.MILLISECONDS)
-                    .timeInterval()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<TimeInterval<Long>>() {
-                        @Override
-                        public void call(TimeInterval<Long> longTimeInterval) {
-                            if (holder.bannerPager != null) {
-                                if (currentPosition == holder.bannerPager.getAdapter().getItemCount() - 1) {
-                                    currentPosition = -1;
-                                }
-                                holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
-                            }
-                        }
-                    });
+    private void stopAutoScrollBanner() {
+        if (bannerHandler != null && runnableScrollBanner != null) {
+            bannerHandler.removeCallbacks(runnableScrollBanner);
         }
     }
 
@@ -899,7 +912,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
-//            startAutoScrollBanner();
+            stopAutoScrollBanner();
+            startAutoScrollBanner();
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();
@@ -919,13 +933,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         category.unSubscribe();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
         tokoCashPresenter.onDestroy();
+        stopAutoScrollBanner();
         getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 

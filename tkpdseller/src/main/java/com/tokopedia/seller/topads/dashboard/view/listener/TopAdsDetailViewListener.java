@@ -6,13 +6,7 @@ import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 /**
  * Created by zulfikarrahman on 12/30/16.
  */
-public interface TopAdsDetailViewListener extends CustomerView {
-
-    void onAdLoaded(Ad ad);
-
-    void onAdEmpty();
-
-    void onLoadAdError();
+public interface TopAdsDetailViewListener<V extends Ad> extends TopAdsDetailListener<V> {
 
     void onTurnOnAdSuccess();
 
