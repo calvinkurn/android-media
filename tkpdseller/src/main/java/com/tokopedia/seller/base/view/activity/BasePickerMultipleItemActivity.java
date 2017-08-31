@@ -61,6 +61,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         return getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
     }
 
+    @CallSuper
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
