@@ -43,7 +43,7 @@
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsGroupAdListActivity"
-            android:label="@string/title_top_ads_promo_group"
+            android:label="@string/topads_title_promo_grup_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
@@ -99,36 +99,6 @@
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsDetailGroupActivity"
             android:label="@string/title_group_ad_detail"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".topads.dashboard.view.activity.TopAdsDetailNewShopActivity"
-            android:label="@string/title_top_ads_new_promo_shop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".topads.dashboard.view.activity.TopAdsDetailNewProductActivity"
-            android:label="@string/title_top_ads_add_promo_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".topads.dashboard.view.activity.TopAdsDetailNewGroupActivity"
-            android:label="@string/title_top_ads_add_promo_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".topads.dashboard.view.activity.TopAdsDetailEditShopActivity"
-            android:label="@string/title_edit_shop_ad"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".topads.dashboard.view.activity.TopAdsDetailEditProductActivity"
-            android:label="@string/title_top_ads_edit_promo_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".topads.dashboard.view.activity.TopAdsDetailEditGroupActivity"
-            android:label="@string/title_group_ad_edit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
@@ -373,6 +343,61 @@
         <activity
             android:name=".shopsettings.etalase.activity.EtalaseShopEditor"
             android:label="@string/title_activity_etalase_shop_editor"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsCreatePromoShopActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity"
+            android:label="@string/title_group_ad_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditProductMainPageActivity"
+            android:label="@string/title_product_ad_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditShopMainPageActivity"
+            android:label="@string/title_edit_shop_ad"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditGroupNameActivity"
+            android:label="@string/label_top_ads_groups"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditCostProductActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditScheduleProductActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditCostShopActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.dashboard.view.activity.TopAdsEditScheduleShopActivity"
+            android:label="@string/top_ads_label_schedule"
             android:screenOrientation="portrait" />
         <activity
             android:name=".shopsettings.shipping.EditShippingActivity"

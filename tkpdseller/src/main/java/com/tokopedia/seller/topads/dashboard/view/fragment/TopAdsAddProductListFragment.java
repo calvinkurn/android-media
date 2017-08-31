@@ -1,39 +1,41 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsSearchProductRepositoryImpl;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.dashboard.exception.AddProductListException;
 import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.dashboard.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.dashboard.view.TopAdsSearchProductView;
@@ -41,66 +43,63 @@ import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsFilterProductPr
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAddProductListAdapter;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.listener.AddProductListInterface;
-import com.tokopedia.seller.topads.dashboard.view.listener.FragmentItemSelection;
+import com.tokopedia.seller.topads.dashboard.view.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * @author normansyahputa on 2/13/17.
  */
 public class TopAdsAddProductListFragment extends BasePresenterFragment
-        implements FragmentItemSelection, SearchView.OnQueryTextListener, TopAdsSearchProductView,
+        implements AdapterSelectionListener<TopAdsProductViewModel>, SearchView.OnQueryTextListener, TopAdsSearchProductView,
         DefaultErrorSubscriber.ErrorNetworkListener {
+
     public static final String TAG = "TAAddPrductListFragment";
     public static final int FILTER_REQ_CODE = 100;
-    protected int totalItem;
-    TopAdsManagementService topAdsSearchProductService;
+    int RESULT_CODE = 9912;
 
-    SessionHandler sessionHandler;
-
-    TopAdsProductListUseCase topAdsProductListUseCase;
-    private AddProductListInterface addProductListInterface;
-    private ImageHandler imageHandler;
     private RecyclerView topAdsAddProductList;
     private TopAdsAddProductListAdapter topAdsProductListAdapter;
     private SwipeToRefresh swipeToRefresh;
     private RefreshHandler refreshHandler;
-    private SearchView searchView;
     private TopAdsNetworkErrorHelper gmNetworkErrorHelper;
     private View rootView;
+    private Button buttonNext;
+    private TextView counterProduct;
+    private View containerCounterProduct;
+
     private TopAdsAddProductListPresenter topAdsAddProductListPresenter;
     private RecyclerView.OnScrollListener onScrollListener;
     private LinearLayoutManager layoutManager;
-    private SearchProductEOFMapper searchProductMapper;
-    private CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource;
-    private TopAdsSearchProductRepository topAdsSeachProductRepository;
+    private HashSet<TopAdsProductViewModel> selections = new HashSet<>();
+
     private boolean isFirstTime = true;
     private boolean isEndOfFile = true;
     private int maxNumberChoosen;
+    private boolean isExistingGroup;
+    private boolean isHideEtalase;
 
-    public static Fragment newInstance() {
-        return new TopAdsAddProductListFragment();
-    }
-
-    public static Fragment newInstance(int maxNumberChoosen) {
+    public static Fragment newInstance(int maxNumberSelection, ArrayList<TopAdsProductViewModel> selectionParcel, boolean isExistingGroup, boolean isHideEtalase) {
         Bundle bundle = new Bundle();
-        bundle.putInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, maxNumberChoosen);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, maxNumberSelection);
+        bundle.putBoolean(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, isExistingGroup);
+        bundle.putBoolean(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, isHideEtalase);
+        bundle.putParcelableArrayList(TopAdsExtraConstant.EXTRA_SELECTIONS, selectionParcel);
 
-        Fragment fragment = newInstance();
+        Fragment fragment = new TopAdsAddProductListFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
         inject();
-        topAdsAddProductListPresenter.setSessionHandler(sessionHandler);
-        topAdsAddProductListPresenter.setTopAdsProductListUseCase(topAdsProductListUseCase);
-        topAdsAddProductListPresenter.setErrorNetworkListener(this);
         gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
         setupRecyclerView();
         fetchData();
@@ -131,26 +130,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
 
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-    }
-
-    @Override
     public void onRestoreState(Bundle savedState) {
-    }
 
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
     }
 
     @Override
@@ -160,17 +146,19 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        if (activity != null && activity instanceof AddProductListInterface) {
-            addProductListInterface = (AddProductListInterface) activity;
-        } else {
-            throw new AddProductListException();
-        }
-    }
-
-    @Override
     protected void setupArguments(Bundle arguments) {
-        maxNumberChoosen = arguments.getInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION);
+        ArrayList<TopAdsProductViewModel> selectionParcel = arguments.getParcelableArrayList(
+                TopAdsExtraConstant.EXTRA_SELECTIONS);
+
+        if (selectionParcel != null) {
+            for (TopAdsProductViewModel topAdsProductViewModel : selectionParcel) {
+                selections.add(topAdsProductViewModel);
+            }
+        }
+
+        isExistingGroup = arguments.getBoolean(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
+        isHideEtalase = arguments.getBoolean(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
+        maxNumberChoosen = arguments.getInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, 50);
     }
 
     @Override
@@ -181,6 +169,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     @Override
     protected void initView(View view) {
         this.rootView = view;
+        setHasOptionsMenu(true);
+        counterProduct = (TextView) view.findViewById(R.id.counter_product);
+        containerCounterProduct = view.findViewById(R.id.container_counter_selection);
+        buttonNext = (Button) view.findViewById(R.id.top_ads_btn_next_);
         topAdsAddProductList = (RecyclerView) view.findViewById(R.id.top_ads_add_product_recycler_view);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.top_ads_add_product_refresh);
         refreshHandler = new RefreshHandler(swipeToRefresh, new RefreshHandler.OnRefreshHandlerListener() {
@@ -203,16 +195,28 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 searchProductNetworkCall();
             }
         });
+        updateSelectedProductCount();
     }
 
     @Override
     protected void setViewListener() {
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                returnSelections();
+            }
+        });
+    }
 
+    private void returnSelections() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<>(selections));
+        getActivity().setResult(RESULT_CODE, intent);
+        getActivity().finish();
     }
 
     @Override
     protected void initialVar() {
-        totalItem = Integer.MAX_VALUE;
         topAdsProductListAdapter = new TopAdsAddProductListAdapter();
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(topAdsProductListAdapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
@@ -258,6 +262,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
+                int totalItem = Integer.MAX_VALUE;
                 if (lastItemPosition == visibleItem
                         && topAdsProductListAdapter.getDataSize() < totalItem) {
                     topAdsAddProductListPresenter.incrementPage();
@@ -268,10 +273,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 }
             }
         };
-        imageHandler = addProductListInterface.imageHandler();
-        topAdsProductListAdapter.setImageHandler(imageHandler);
-        topAdsProductListAdapter.setFragmentItemSelection(this);
-        if(isFirstTime) {
+        topAdsProductListAdapter.setImageHandler(new ImageHandler(getActivity()));
+        topAdsProductListAdapter.setListener(this);
+        if (isFirstTime) {
             layoutManager = new LinearLayoutManager(getActivity());
             this.topAdsAddProductList.setLayoutManager(layoutManager);
             this.topAdsAddProductList.setAdapter(topAdsProductListAdapter);
@@ -286,9 +290,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     protected void loadMoreNetworkCall() {
-        if (addProductListInterface != null) {
-            addProductListInterface.showNextButton();
-        }
         topAdsAddProductListPresenter.loadMore();
     }
 
@@ -298,42 +299,47 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     private void inject() {
         //[START] This is for dependent component
-        topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
-        sessionHandler = new SessionHandler(getActivity());
-        searchProductMapper = new SearchProductEOFMapper();
-        cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
+        TopAdsManagementService topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity()));
+        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        SearchProductEOFMapper searchProductMapper = new SearchProductEOFMapper();
+        CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
                 getActivity(),
                 topAdsSearchProductService,
                 searchProductMapper
         );
-        topAdsSeachProductRepository = new TopAdsSearchProductRepositoryImpl(getActivity(), cloudTopAdsSeachProductDataSource);
-        topAdsProductListUseCase = new TopAdsProductListUseCase(
+        TopAdsSearchProductRepositoryImpl topAdsSeachProductRepository = new TopAdsSearchProductRepositoryImpl(getActivity(), cloudTopAdsSeachProductDataSource);
+        TopAdsProductListUseCase topAdsProductListUseCase = new TopAdsProductListUseCase(
                 new JobExecutor(), new UIThread(), topAdsSeachProductRepository
         );
+
+        topAdsAddProductListPresenter.setSessionHandler(sessionHandler);
+        topAdsAddProductListPresenter.setTopAdsProductListUseCase(topAdsProductListUseCase);
+        topAdsAddProductListPresenter.setErrorNetworkListener(this);
         //[END] This is for dependent component
     }
 
     @Override
     public void onChecked(int position, TopAdsProductViewModel data) {
-        if (addProductListInterface.selections().size() == maxNumberChoosen) {
+        if (selections.size() == maxNumberChoosen) {
             return;
         }
 
-        addProductListInterface.addSelection(data);
-        addProductListInterface.onChecked(position, data);
+        addSelection(data);
         topAdsProductListAdapter.notifyItemChanged(position);
     }
 
     @Override
     public void onUnChecked(int position, TopAdsProductViewModel data) {
-        addProductListInterface.removeSelection(data);
-        addProductListInterface.onUnChecked(position, data);
+        removeSelection(data);
         topAdsProductListAdapter.notifyItemChanged(position);
     }
 
     @Override
     public boolean isSelected(TopAdsProductViewModel data) {
-        return addProductListInterface.isSelected(data);
+        if (selections == null)
+            return false;
+        
+        return selections.contains(data);
     }
 
     @Override
@@ -342,7 +348,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             return;
 
         inflater.inflate(R.menu.menu_top_ads_product_list, menu);
-        searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint(getString(R.string.search_product));
@@ -360,15 +366,15 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_filter){
-            if(topAdsAddProductListPresenter != null) {
+        if (itemId == R.id.menu_filter) {
+            if (topAdsAddProductListPresenter != null) {
                 TopAdsFilterProductPromoActivity.start(
                         this,
                         getActivity(),
                         FILTER_REQ_CODE,
                         topAdsAddProductListPresenter.getSelectedFilterStatus(),
                         topAdsAddProductListPresenter.getSelectedFilterEtalaseId(),
-                        addProductListInterface.isExistingGroup());
+                        isExistingGroup);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -465,9 +471,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 topAdsProductListAdapter.showLoading(true);
             } else {
                 topAdsProductListAdapter.showLoading(false);
-                if (addProductListInterface.isSelectionViewShown()) {
-                    addProductListInterface.showFooterViewHolder();
-                }
             }
             topAdsProductListAdapter.notifyDataSetChanged();
         }
@@ -526,20 +529,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                                     }, getActivity());
                             break;
                     }
-
-                    // hide bottom sheet helper
-                    addProductListInterface.hideBottom();
-
-                    if (topAdsProductListAdapter != null
-                            && topAdsProductListAdapter.getDataSize() <= 0) {
-                        if (addProductListInterface != null) {
-                            addProductListInterface.dismissNextButton();
-                        }
-                    } else {
-                        if (addProductListInterface != null) {
-                            addProductListInterface.showNextButton();
-                        }
-                    }
                 }
             }
         }, 100);
@@ -552,28 +541,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void notifyUnchecked(TopAdsProductViewModel topAdsProductViewModel) {
-        topAdsProductListAdapter.notifyUnCheck(topAdsProductViewModel);
-    }
-
-    @Override
     public boolean isExistingGroup() {
-        if(addProductListInterface != null){
-            return addProductListInterface.isExistingGroup();
-        }
-        return false;
-    }
-
-    @Override
-    public void hideFooterViewHolder() {
-        if (isEndOfFile)
-            topAdsProductListAdapter.removeEmptyFooter();
-    }
-
-    @Override
-    public void showFooterViewHolder() {
-        if (isEndOfFile)
-            topAdsProductListAdapter.insertEmptyFooter();
+        return isExistingGroup;
     }
 
     @Override
@@ -588,7 +557,43 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void showBottom() {
-        addProductListInterface.showNextButton();
-        addProductListInterface.showBottom();
+        // do nothing
+    }
+
+    public void removeSelection(TopAdsProductViewModel data) {
+        selections.remove(data);
+        updateSelectedProductCount();
+    }
+
+    public void addSelection(TopAdsProductViewModel data) {
+        selections.add(data);
+        updateSelectedProductCount();
+    }
+
+    private void updateSelectedProductCount() {
+        int totalSelection = selections!=null? selections.size(): 0;
+        if (totalSelection > 0) {
+            containerCounterProduct.setVisibility(View.VISIBLE);
+            if(totalSelection > 9) {
+                counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product, totalSelection)));
+            }else{
+                counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product_zero, totalSelection)));
+            }
+            enableNextButton();
+        } else {
+            containerCounterProduct.setVisibility(View.GONE);
+            counterProduct.setText(MethodChecker.fromHtml(getString(R.string.top_ads_label_total_selected_product_zero, totalSelection)));
+            disableNextButton();
+        }
+    }
+
+    public void disableNextButton() {
+        buttonNext.setEnabled(false);
+        buttonNext.setTextColor(ContextCompat.getColor(getActivity(), R.color.font_black_disabled_38));
+    }
+
+    public void enableNextButton() {
+        buttonNext.setEnabled(true);
+        buttonNext.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
     }
 }
