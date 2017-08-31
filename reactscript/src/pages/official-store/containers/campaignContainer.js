@@ -12,8 +12,6 @@ class CampaignContainer extends Component {
         AsyncStorage.getItem('user_id').then(uid => {
             dispatch(fetchCampaigns(uid))
         })
-        // const User_ID = this.props.screenProps.User_ID
-        // dispatch(fetchCampaigns(User_ID))
         
         this.addToWishlist = DeviceEventEmitter.addListener("WishlistAdd", (res) => {
             dispatch(addWishlistFromPdp(res))
