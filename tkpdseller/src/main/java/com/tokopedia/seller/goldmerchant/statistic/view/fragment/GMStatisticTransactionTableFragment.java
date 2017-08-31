@@ -194,13 +194,10 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                 int previousSortBy = sortBy;
                 switch (sortByIndexSelection = GMStatisticUtil.findSelection(gmStatSortBy, item.getTitle().toString())) {
                     case 0:
-                        sortBy = GMTransactionTableSortBy.ORDER_SUM;
-                        break;
-                    case 1:
                         sortBy = GMTransactionTableSortBy.TRANS_SUM;
                         break;
                     default:
-                    case 2:
+                    case 1:
                         sortBy = GMTransactionTableSortBy.DELIVERED_AMT;
                         break;
                 }

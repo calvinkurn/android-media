@@ -207,6 +207,7 @@ public class ShopInfoActivity extends BaseActivity
     @DeepLink(Constants.Applinks.SHOP_ETALASE)
     public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_ETALASE)
@@ -984,8 +985,6 @@ public class ShopInfoActivity extends BaseActivity
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(1, true);
                     break;
                 case TAB_POSITION_TALK:
@@ -1007,8 +1006,6 @@ public class ShopInfoActivity extends BaseActivity
             switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
                 case TAB_POSITION_HOME:
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_TALK:

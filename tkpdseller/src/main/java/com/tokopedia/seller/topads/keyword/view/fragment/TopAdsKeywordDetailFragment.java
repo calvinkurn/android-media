@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 5/26/17.
  */
 
-public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter> {
+public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter, KeywordAd> {
 
     private LabelView keywordLabelView;
     private LabelView promoGroupLabelView;
@@ -84,13 +84,13 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
-    public void onAdLoaded(Ad ad) {
+    public void onAdLoaded(KeywordAd ad) {
         super.onAdLoaded(ad);
         if (onKeywordDetailListener!= null) {
             onKeywordDetailListener.startShowCase();
@@ -114,21 +114,21 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     protected void editAd() {
-        startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ((KeywordAd)ad)), REQUEST_CODE_AD_EDIT);
+        startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ad), REQUEST_CODE_AD_EDIT);
     }
 
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        topadsKeywordDetailPresenter.deleteAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.deleteAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
-    protected void updateMainView(Ad ad) {
+    protected void updateMainView(KeywordAd ad) {
         super.updateMainView(ad);
-        keywordLabelView.setContent(((KeywordAd)ad).getKeywordTag());
-        promoGroupLabelView.setContent(((KeywordAd)ad).getGroupName());
-        name.setContent(((KeywordAd)ad).getkeywordTypeDesc());
+        keywordLabelView.setContent(ad.getKeywordTag());
+        promoGroupLabelView.setContent(ad.getGroupName());
+        name.setContent(ad.getkeywordTypeDesc());
     }
 
     protected int getKeywordTypeValue() {
@@ -136,7 +136,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
-    protected void updateDailyBudgetView(Ad ad) {
+    protected void updateDailyBudgetView(KeywordAd ad) {
         // Empty daily budget
     }
 

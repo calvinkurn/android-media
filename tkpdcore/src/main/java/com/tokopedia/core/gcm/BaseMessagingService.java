@@ -22,12 +22,21 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         super.onMessageReceived(remoteMessage);
         Bundle data = convertMap(remoteMessage);
         CommonUtils.dumper("FCM "+data.toString());
-        IAppNotificationReceiver appNotificationReceiver = null;
+        IAppNotificationReceiver appNotificationReceiver;
         if (GlobalConfig.isSellerApp()) {
             appNotificationReceiver = SellerAppRouter.getAppNotificationReceiver();
+
+            CommonUtils.dumper("FCM get moengage NOTIFS");
+
             if (appNotificationReceiver != null) {
                 appNotificationReceiver.init(getApplication());
-                appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
+
+                if(MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()))
+                {
+                    appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
+                }else{
+                    appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
+                }
             }
         } else {
             appNotificationReceiver = HomeRouter.getAppNotificationReceiver();

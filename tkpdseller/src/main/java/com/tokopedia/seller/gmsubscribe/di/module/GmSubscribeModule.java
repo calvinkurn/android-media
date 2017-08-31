@@ -1,9 +1,8 @@
 package com.tokopedia.seller.gmsubscribe.di.module;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
@@ -20,7 +19,6 @@ import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductReposit
 import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 
 import dagger.Module;
@@ -36,7 +34,7 @@ public class GmSubscribeModule {
 
     @GmSubscribeScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource){
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 

@@ -26,10 +26,10 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -58,7 +58,6 @@ public class DrawerSellerHelper extends DrawerHelper
     private View footerShadow;
 
     private SessionHandler sessionHandler;
-
 
     public DrawerSellerHelper(Activity activity,
                               SessionHandler sessionHandler,
@@ -185,20 +184,17 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerItem getPaymentAndTopupMenu() {
-        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.pembayaran_dan_topup),
-                R.drawable.pembayaran_topup,
+        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.digital_product),
+                R.drawable.payment_and_topup,
                 TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
                 0);
 
-        sellerMenu.add(new DrawerItem("Daftar Produk Digital",
-                TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL,
+        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.payment_and_topup),
+                TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP,
                 true));
-        sellerMenu.add(new DrawerItem("Daftar Transaksi Digital",
+        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.digital_transaction_list),
                 TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
-                true));
-        sellerMenu.add(new DrawerItem("Daftar Harga Produk Digital",
-                TkpdState.DrawerPosition.MANAGE_PRICE_PRODUCT_DIGITAL,
                 true));
 
         return sellerMenu;
@@ -365,19 +361,16 @@ public class DrawerSellerHelper extends DrawerHelper
                         ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
                     }
                     break;
-                case TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL:
+                case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalCategoryList());
+                    UnifyTracking.eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                     + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
-                    break;
-                case TkpdState.DrawerPosition.MANAGE_PRICE_PRODUCT_DIGITAL:
-                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST));
+                    UnifyTracking.eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
                     UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DRAFT_PRODUCT);
@@ -419,7 +412,7 @@ public class DrawerSellerHelper extends DrawerHelper
     @Override
     public void onGoToProfile() {
         context.startActivity(
-                PeopleInfoDrawerActivity.createInstance(context, SessionHandler.getLoginID(context))
+                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID(context))
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 

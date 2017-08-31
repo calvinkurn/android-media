@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -21,7 +21,7 @@ import okhttp3.RequestBody;
 public abstract class BaseImageUploadSourceCloud {
     protected final Context context;
 
-    public BaseImageUploadSourceCloud(@ActivityContext Context context) {
+    public BaseImageUploadSourceCloud(@ApplicationContext Context context) {
         this.context = context;
     }
 

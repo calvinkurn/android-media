@@ -49,6 +49,12 @@ public class InstallReceiver extends BroadcastReceiver {
                     }
                 })
                 .unsubscribeOn(Schedulers.newThread())
+                .onErrorResumeNext(new Func1<Throwable, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Throwable throwable) {
+                        return Observable.just(true);
+                    }
+                })
                 .subscribe();
 	}
 

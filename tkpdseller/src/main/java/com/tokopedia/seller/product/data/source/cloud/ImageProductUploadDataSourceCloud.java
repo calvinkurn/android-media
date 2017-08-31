@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.product.constant.ProductNetworkConstant;
@@ -30,7 +30,7 @@ public class ImageProductUploadDataSourceCloud extends BaseImageUploadSourceClou
     private final Retrofit.Builder retrofitBuilder;
 
     @Inject
-    public ImageProductUploadDataSourceCloud(@ActivityContext Context context,
+    public ImageProductUploadDataSourceCloud(@ApplicationContext Context context,
                                              @DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
                                              ImageProductUploadMapper imageProductUploadMapper,
                                              Retrofit.Builder retrofitBuilder) {

@@ -3,20 +3,21 @@ package com.tokopedia.seller.topads.dashboard.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailListener;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
-public abstract class TopAdsDetailPresenterImpl implements TopAdsDetailPresenter {
+public abstract class TopAdsDetailPresenterImpl<V extends Ad> implements TopAdsDetailPresenter {
 
-    protected final TopAdsDetailViewListener topAdsDetailViewListener;
+    protected final TopAdsDetailListener<V> topAdsDetailListener;
 
     private Context context;
 
-    public TopAdsDetailPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener) {
+    public TopAdsDetailPresenterImpl(Context context, TopAdsDetailListener<V> topAdsDetailListener) {
         this.context = context;
-        this.topAdsDetailViewListener = topAdsDetailViewListener;
+        this.topAdsDetailListener = topAdsDetailListener;
     }
 
     protected String getShopId() {

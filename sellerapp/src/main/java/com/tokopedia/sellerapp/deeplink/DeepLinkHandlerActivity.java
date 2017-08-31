@@ -10,19 +10,23 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
+import com.tokopedia.seller.applink.SellerApplinkModule;
+import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 
 /**
  * @author rizkyfadillah on 26/07/17.
  */
 @DeepLinkHandler({
-        DigitalApplinkModule.class
+        DigitalApplinkModule.class,
+        SellerApplinkModule.class
 })
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
-                new DigitalApplinkModuleLoader()
+                new DigitalApplinkModuleLoader(),
+                new SellerApplinkModuleLoader()
         );
     }
 

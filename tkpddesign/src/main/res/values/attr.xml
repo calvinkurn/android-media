@@ -95,4 +95,13 @@
         <attr name="eccv_content_text" format="string" />
         <attr name="eccv_action_text" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="TickerView">
+        <attr name="tckv_text_color" format="color" />
+        <attr name="tckv_highlight_color" format="color" />
+        <attr name="tckv_background_color" format="color" />
+        <attr name="tckv_indicator_on_color" format="color" />
+        <attr name="tckv_indicator_off_color" format="color" />
+    </declare-styleable>
+
 </resources>

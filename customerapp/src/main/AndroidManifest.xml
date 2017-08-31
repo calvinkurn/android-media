@@ -24,7 +24,8 @@
             android:value="@string/key_sender_id" />
         <meta-data
             android:name="SKIP_GCM_REGISTRATION"
-            android:value="true" />
+            android:value="true"/>
+        <meta-data android:name="AF_PRE_INSTALL_PATH" android:value="/data/local/tmp/pre_install.appsflyer" />
 
         <activity
             android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
@@ -122,7 +123,7 @@
             android:value="@string/key_appsflyer" />
         <meta-data
             android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="750vPeaf1a90a7d184daab0bdc49b1a0cee70" />
+            android:value="@string/key_truecaller_main_app"/>
 
         <activity
             android:name=".home.ParentIndexHome"
