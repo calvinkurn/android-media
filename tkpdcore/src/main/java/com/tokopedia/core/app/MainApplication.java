@@ -271,10 +271,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         super.onCreate();
         instance = this;
         MainApplication.context = getApplicationContext();
-        //Track.setDebugMode(true);
-        //Feature.enableDebug(true);
         init();
-//		initImageLoader();
         initFacebook();
         initCrashlytics();
         initializeAnalytics();
