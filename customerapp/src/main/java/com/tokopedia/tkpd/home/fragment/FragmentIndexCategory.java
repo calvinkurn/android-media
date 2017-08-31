@@ -34,14 +34,12 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.ReactNativeActivity;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.RechargeEditText;
@@ -88,6 +86,7 @@ import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.BannerPagerAdapter;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
@@ -737,8 +736,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 }
 
                 openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);*/
-                getActivity().startActivity(ReactNativeActivity.createReactNativeActivity(getActivity(),
-                        ReactConst.Screen.OFFICIAL_STORE, SessionHandler.getLoginID(getActivity())));
+                getActivity().startActivity(
+                        ReactNativeOfficialStoresActivity.createReactNativeActivity(
+                                getActivity(), ReactConst.Screen.OFFICIAL_STORE,
+                                SessionHandler.getLoginID(getActivity()),
+                                getString(R.string.react_native_banner_official_title)
+                        )
+                );
             }
         };
     }
