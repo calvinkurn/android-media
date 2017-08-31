@@ -5,7 +5,7 @@
     style="@style/LabelLayout"
     android:layout_marginTop="@dimen/product_margin_cards">
 
-    <com.tokopedia.seller.product.view.widget.ImagesSelectView
+    <com.tokopedia.seller.product.edit.view.widget.ImagesSelectView
         android:id="@+id/image_select_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/image_select_view_height"

@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Nathaniel on 1/20/2017.
  */
-
+@Deprecated
 public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<T> {
 
     protected Date startDate;
@@ -82,12 +82,17 @@ public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<
             long endDateTime = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
             int selectionDatePickerType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, 0);
             int selectionDatePeriodIndex = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 0);
+            onDatePickerChoose(selectionDatePickerType, selectionDatePeriodIndex);
             if (startDateTime > 0 && endDateTime > 0) {
                 datePickerPresenter.saveDate(new Date(startDateTime), new Date(endDateTime));
                 datePickerPresenter.saveSelectionDatePicker(selectionDatePickerType, selectionDatePeriodIndex);
             }
         }
     }
+
+    protected void onDatePickerChoose(int selectionDatePickerType, int selectionDatePeriodIndex){
+
+    };
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(this, startDate, endDate);

@@ -9,5 +9,10 @@
         android:id="@+id/view_radio_not_in_group"
         style="@style/TopAdsRadioExpandView"
         app:radio_id="@+id/radio_promo_not_in_group"
-        app:title_radio="@string/label_top_ads_create_promo_not_in_group"/>
+        app:title_radio="@string/label_top_ads_create_promo_not_in_group">
+        <TextView
+            android:text="@string/label_top_ads_info_group_option_empty"
+            android:id="@+id/view_info_radio_not_in_group"
+            style="@style/TextView.infoInputType"/>
+    </com.tokopedia.seller.topads.dashboard.view.widget.TopAdsRadioExpandView>
 </merge>

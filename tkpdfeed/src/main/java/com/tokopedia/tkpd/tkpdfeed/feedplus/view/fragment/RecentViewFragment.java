@@ -140,13 +140,14 @@ public class RecentViewFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetRecentView(String errorMessage) {
         adapter.dismissLoading();
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(),
-                errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getRecentViewProduct();
-                    }
-                });
+        if (getActivity() != null && getView() != null && presenter != null)
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(),
+                    errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.getRecentViewProduct();
+                        }
+                    });
     }
 
     @Override

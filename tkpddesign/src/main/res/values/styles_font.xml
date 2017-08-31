@@ -33,12 +33,18 @@
     <style name="TextView.Headline.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
     </style>
+    <style name="TextView.Headline.BlackSecondary">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
 
     <style name="TextView.Title">
         <item name="android:textSize">@dimen/font_title</item>
     </style>
     <style name="TextView.Title.Bold">
         <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextView.Title.BlackSecondary">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
     <style name="TextView.Title.Bold.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>

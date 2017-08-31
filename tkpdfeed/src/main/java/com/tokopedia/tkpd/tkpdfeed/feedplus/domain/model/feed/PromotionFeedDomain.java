@@ -89,4 +89,9 @@ public class PromotionFeedDomain {
     public String getMinTranscation() {
         return minTranscation;
     }
+
+    @Nonnull
+    public String getId() {
+        return id;
+    }
 }

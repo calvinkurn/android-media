@@ -28,7 +28,7 @@ import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GmStatisticEmptyTransactionDataBinder;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
@@ -160,7 +160,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
+        EmptyDataBinder emptyTransactionDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_transaction_table_empty);
         emptyTransactionDataBinder.setEmptyTitleText(null);
         emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
         emptyTransactionDataBinder.setEmptyContentItemText(null);
@@ -169,7 +169,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
-        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
+        EmptyDataBinder emptyTransactionDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_transaction_table_empty);
         emptyTransactionDataBinder.setEmptyTitleText(null);
         emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
         emptyTransactionDataBinder.setEmptyContentItemText(null);

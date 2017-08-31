@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
@@ -31,6 +32,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +53,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
+    private static final String TYPE_TOPPICKS = "toppick";
+    private final int page;
 
-    public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener) {
+
+    public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener, int page) {
         this.viewListener = viewListener;
+        this.page = page;
     }
 
     @Override
@@ -88,8 +95,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             viewListener.onShowEmpty(checkCanShowTopads(feedResult.getDataSource()));
 
 
-        if (hasFeed(feedDomain))
+        if (hasFeed(feedDomain)) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
+            viewListener.setFirstCursor(feedDomain.getListFeed().get(0).getCursor());
+        }
 
         if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.finishLoading();
@@ -132,8 +141,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && !feedDomain.getListFeed().isEmpty()
                 && feedDomain.getListFeed().get(0) != null
                 && feedDomain.getListFeed().get(0).getContent() != null
-                && feedDomain.getListFeed().get(0).getContent().getType() != null
-                && feedDomain.getListFeed().get(0).getContent().getType().equals(TYPE_NEW_PRODUCT);
+                && feedDomain.getListFeed().get(0).getContent().getType() != null;
     }
 
     private boolean hasRecentView(FeedDomain feedDomain) {
@@ -192,7 +200,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
         if (listFeedDomain != null)
-
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
                     case TYPE_OS_CAMPAIGN:
@@ -214,18 +221,45 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_NEW_PRODUCT:
                         ActivityCardViewModel model = convertToActivityViewModel(domain);
-                        if (model.getListProduct() != null && model.getListProduct().size() > 0)
+                        if (model.getListProduct() != null && !model.getListProduct().isEmpty())
                             listFeedView.add(model);
                         break;
                     case TYPE_PROMOTION:
                         PromoCardViewModel promo = convertToPromoViewModel(domain);
-                        if (promo.getListPromo() != null && promo.getListPromo().size() > 0)
+                        if (promo.getListPromo() != null && !promo.getListPromo().isEmpty())
                             listFeedView.add(promo);
                         break;
+                    case TYPE_TOPPICKS:
+                        ToppicksViewModel toppicks = convertToToppicksViewModel(domain);
+                        if (toppicks.getList() != null && !toppicks.getList().isEmpty())
+                            listFeedView.add(toppicks);
                     default:
                         break;
                 }
             }
+    }
+
+    private ToppicksViewModel convertToToppicksViewModel(DataFeedDomain domain) {
+        return new ToppicksViewModel(convertToListTopPicks(domain));
+    }
+
+    private ArrayList<ToppicksItemViewModel> convertToListTopPicks(DataFeedDomain domain) {
+        ArrayList<ToppicksItemViewModel> list = new ArrayList<>();
+        if (domain != null
+                && domain.getContent() != null
+                && domain.getContent().getTopPicksDomains() != null
+                && !domain.getContent().getTopPicksDomains().isEmpty())
+            for (TopPicksDomain topPicksDomain : domain.getContent().getTopPicksDomains()) {
+                list.add(convertToToppicksProduct(topPicksDomain));
+            }
+        return list;
+    }
+
+    private ToppicksItemViewModel convertToToppicksProduct(TopPicksDomain topPicksDomain) {
+        return new ToppicksItemViewModel(
+                topPicksDomain.getName(),
+                topPicksDomain.getImageUrl(),
+                topPicksDomain.getUrl());
     }
 
     private OfficialStoreCampaignViewModel convertToOfficialStoreCampaign(DataFeedDomain domain) {
@@ -234,7 +268,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 domain.getContent().getOfficialStores().get(0).getRedirect_url_app(),
                 domain.getContent().getOfficialStores().get(0).getFeed_hexa_color(),
                 domain.getContent().getOfficialStores().get(0).getTitle(),
-                convertToOfficialStoreProducts(domain.getContent().getOfficialStores().get(0))
+                convertToOfficialStoreProducts(domain.getContent().getOfficialStores().get(0)),
+                page
         );
     }
 
@@ -286,7 +321,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private OfficialStoreBrandsViewModel convertToBrandsViewModel(DataFeedDomain domain) {
         return new OfficialStoreBrandsViewModel(
                 convertToListBrands(
-                        domain.getContent().getOfficialStores()));
+                        domain.getContent().getOfficialStores()),
+                page
+        );
     }
 
     private ArrayList<OfficialStoreViewModel> convertToListBrands(
@@ -304,7 +341,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 officialStoreDomain.getShop_id(),
                 officialStoreDomain.getShop_apps_url(),
                 officialStoreDomain.getShop_name(),
-                officialStoreDomain.getLogo_url(),
+                officialStoreDomain.getMicrosite_url(),
                 officialStoreDomain.getIs_new()
         );
     }
@@ -343,7 +380,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 domain.getContent().getStatusActivity(),
                 domain.getId(),
                 domain.getContent().getTotalProduct(),
-                domain.getCursor());
+                domain.getCursor(),
+                page);
     }
 
     protected ProductCardHeaderViewModel convertToProductCardHeaderViewModel(DataFeedDomain domain) {
@@ -372,7 +410,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             domain.getUrl(),
                             dataFeedDomain.getSource().getShop().getName(),
                             dataFeedDomain.getSource().getShop().getAvatar(),
-                            domain.getWishlist()));
+                            domain.getWishlist(),
+                            page));
         }
         return listProduct;
     }
@@ -386,12 +425,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         for (PromotionFeedDomain domain : dataFeedDomain.getContent().getPromotions()) {
             listPromo.add(
                     new PromoViewModel(
+                            domain.getId(),
                             domain.getDescription(),
                             domain.getPeriode(),
                             domain.getCode(),
                             domain.getThumbnail(),
                             domain.getUrl(),
-                            domain.getName()));
+                            domain.getName(),
+                            page));
         }
         addSeeMorePromo(dataFeedDomain, listPromo);
 
@@ -400,7 +441,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {
         if (dataFeedDomain.getContent().getPromotions().size() > 1) {
-            listPromo.add(new PromoViewModel());
+            listPromo.add(new PromoViewModel(page));
         }
     }
 
