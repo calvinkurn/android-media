@@ -35,6 +35,9 @@ import rx.Observable;
 
 public class ApiCacheDataSource {
     public static final long DIVIDE_FOR_SECONDS = 1000L;
+    public static final String HTTPS = "https://";
+    public static final String COM_WITH_SLASH = ".com/";
+    public static final String COM1 = ".com";
     private static final String TAG = "CacheHelper";
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private long maxContentLength = 250000L;
@@ -46,7 +49,7 @@ public class ApiCacheDataSource {
 
     public static CacheApiWhiteListDomain from2(String host, String path, long expiredTime) {
         CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
-        cacheApiWhitelist.setHost(host.replace("https://", "").replace(".com/", ".com"));
+        cacheApiWhitelist.setHost(host.replace(HTTPS, "").replace(COM_WITH_SLASH, COM1));
         cacheApiWhitelist.setPath(path);
         cacheApiWhitelist.setExpireTime(expiredTime);
 

@@ -73,8 +73,6 @@ public class MainApplication extends TkpdMultiDexApplication {
     private static IntentService RunningService;
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
-    @Inject
-    ApiCacheDataSource cacheHelper;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -285,7 +283,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         locationUtils.initLocationBackground();
         TooLargeTool.startLogging(this);
 
-        cacheHelper = new ApiCacheDataSource();
         addToWhiteList();
     }
 
@@ -313,9 +310,9 @@ public class MainApplication extends TkpdMultiDexApplication {
 
     protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
-        cacheApiWhitelists.add(cacheHelper.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
         return cacheApiWhitelists;
     }
 
