@@ -36,12 +36,15 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
         if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
             imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
             imageView.setImageResource(R.drawable.circle_white);
+            imageView.setBackground(null);
         } else if (!TextUtils.isEmpty(productVariantViewModel.getImageUrl())) {
             imageView.clearColorFilter();
+            imageView.setBackground(null);
             Glide.with(imageView.getContext()).load(productVariantViewModel.getImageUrl())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else { // no hex, no url
-            imageView.setImageResource(R.drawable.circle_white);
+            imageView.setImageResource(R.drawable.ic_circle_no);
+            imageView.setBackgroundResource(R.drawable.circle_white);
             imageView.clearColorFilter();
         }
         titleTextView.setText(productVariantViewModel.getTitle());
