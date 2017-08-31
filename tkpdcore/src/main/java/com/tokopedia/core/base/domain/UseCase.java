@@ -35,7 +35,7 @@ public abstract class UseCase<T> implements Interactor<T> {
     public abstract Observable<T> createObservable(RequestParams requestParams);
 
     public final Observable<T> createObservableSync(RequestParams requestParams) {
-        return Observable.just(createObservable(requestParams).toBlocking().first());
+        return Observable.just(createObservable(requestParams).defaultIfEmpty(null).toBlocking().first());
     }
 
     public final void execute(RequestParams requestParams, Subscriber<T> subscriber) {

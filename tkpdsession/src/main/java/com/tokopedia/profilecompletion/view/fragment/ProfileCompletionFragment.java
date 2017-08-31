@@ -23,7 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
@@ -55,20 +56,16 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     ViewPager viewPager;
     TextView percentText;
     TextView proceed;
+    View progress;
+    View main;
+    View loading;
+    FragmentTransaction transaction;
+    @Inject
+    ProfileCompletionPresenter presenter;
     private ProgressBarAnimation animation;
     private ProfileCompletionViewModel data;
     private String filled;
     private View skip;
-    View progress;
-
-    View main;
-    View loading;
-
-    FragmentTransaction transaction;
-
-    @Inject
-    ProfileCompletionPresenter presenter;
-
     private Unbinder unbinder;
     private Pair<Integer, Integer> pair;
     private NetworkErrorHelper.RetryClickedListener retryAction;
@@ -325,9 +322,12 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
+                .appModule(new AppModule(getContext()))
+                .build();
         DaggerProfileCompletionComponent daggerProfileCompletionComponent
                 = (DaggerProfileCompletionComponent) DaggerProfileCompletionComponent.builder()
-                .appComponent(((MainApplication)getActivity().getApplication()).getAppComponent())
+                .appComponent(daggerAppComponent)
                 .build();
         daggerProfileCompletionComponent.inject(this);
     }

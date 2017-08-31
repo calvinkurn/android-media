@@ -64,25 +64,22 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
+    @Inject
+    protected SessionHandler sessionHandler;
+    @Inject
+    protected GCMHandler gcmHandler;
+
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-
-    @Inject
-    protected SessionHandler sessionHandler;
-
-    @Inject
-    protected GCMHandler gcmHandler;
-
     private CategoryDatabaseManager categoryDatabaseManager;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

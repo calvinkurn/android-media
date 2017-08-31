@@ -73,16 +73,48 @@ import static android.view.View.GONE;
 public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragment
         implements ProfileCompletionPhoneVerificationContract.View, IncomingSmsReceiver.ReceiveSMSListener {
 
-    private static final String TOKOCASH = "TokoCash";
     public static final String TAG = "verif";
+    protected static final String FORMAT = "%02d";
+    protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    private static final String TOKOCASH = "TokoCash";
+    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
+    private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
+    private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
+    protected TextView verifyButton;
+    protected TextView skipButton;
+    protected TextView phoneNumberEditText;
+    protected TextView changePhoneNumberButton;
+    protected TextView requestOtpButton;
+    protected TextView countdownText;
+    protected TextView requestOtpCallButton;
+    protected View inputOtpView;
+    protected EditText otpEditText;
+    protected TextView tokocashText;
+    protected CountDownTimer countDownTimer;
+    protected IncomingSmsReceiver smsReceiver;
+    protected TkpdProgressDialog progressDialog;
+    protected LocalCacheHandler cacheHandler;
+    @Inject
+    ProfileCompletionPhoneVerificationPresenter presenter;
     private Unbinder unbinder;
     private ProfileCompletionViewModel data;
     private ProfileCompletionContract.View parentView;
     private ProfileCompletionContract.Presenter parentPresenter;
     private View instruction;
 
-    @Inject
-    ProfileCompletionPhoneVerificationPresenter presenter;
+    public ProfileCompletionPhoneVerificationFragment(ProfileCompletionContract.View view) {
+        this.parentView = view;
+    }
+
+    public ProfileCompletionPhoneVerificationFragment() {
+
+    }
+
+    public static ProfileCompletionPhoneVerificationFragment createInstance
+            (ProfileCompletionContract.View view) {
+        return new
+                ProfileCompletionPhoneVerificationFragment(view);
+    }
 
     @Override
     protected String getScreenName() {
@@ -98,38 +130,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         daggerPhoneVerifComponent.inject(this);
     }
 
-    protected static final String FORMAT = "%02d";
-    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
-    private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
-    private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
-    protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
-
-    protected TextView verifyButton;
-    protected TextView skipButton;
-    protected TextView phoneNumberEditText;
-    protected TextView changePhoneNumberButton;
-    protected TextView requestOtpButton;
-    protected TextView countdownText;
-    protected TextView requestOtpCallButton;
-    protected View inputOtpView;
-    protected EditText otpEditText;
-    protected TextView tokocashText;
-
-    protected CountDownTimer countDownTimer;
-    protected IncomingSmsReceiver smsReceiver;
-    protected TkpdProgressDialog progressDialog;
-    protected LocalCacheHandler cacheHandler;
-
-    public static ProfileCompletionPhoneVerificationFragment createInstance
-            (ProfileCompletionContract.View view) {
-        return new
-                ProfileCompletionPhoneVerificationFragment(view);
-    }
-
-    public ProfileCompletionPhoneVerificationFragment(ProfileCompletionContract.View view) {
-        this.parentView = view;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -141,10 +141,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         setViewListener();
         presenter.attachView(this);
         return parentView;
-    }
-
-    public ProfileCompletionPhoneVerificationFragment() {
-
     }
 
     protected void findView(View view) {
@@ -176,35 +172,35 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     @RequiresApi(api = Build.VERSION_CODES.M)
     @TargetApi(Build.VERSION_CODES.M)
     private void showCheckSMSPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
-                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-            new android.support.v7.app.AlertDialog.Builder(getActivity())
-                    .setMessage(
-                            RequestPermissionUtil
-                                    .getNeedPermissionMessage(Manifest.permission.READ_SMS)
-                    )
-                    .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
-                                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                    && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+                new android.support.v7.app.AlertDialog.Builder(getActivity())
+                        .setMessage(
+                                RequestPermissionUtil
+                                        .getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                        )
+                        .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                                        .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
 
-                        }
-                    })
-                    .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            RequestPermissionUtil.onPermissionDenied(MainApplication.getAppContext(),
-                                    Manifest.permission.READ_SMS);
-                        }
-                    })
-                    .show();
-        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
-                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
-        }
+                            }
+                        })
+                        .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                RequestPermissionUtil.onPermissionDenied(MainApplication.getAppContext(),
+                                        Manifest.permission.READ_SMS);
+                            }
+                        })
+                        .show();
+            } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+                ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                        .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+            }
     }
 
     @Override

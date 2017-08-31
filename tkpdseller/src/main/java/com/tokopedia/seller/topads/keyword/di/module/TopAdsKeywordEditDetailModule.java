@@ -59,7 +59,7 @@ public class TopAdsKeywordEditDetailModule {
 
     @TopAdsKeywordScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 
