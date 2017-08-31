@@ -53,6 +53,7 @@ public class SolutionDetailFragmentPresenter extends BaseDaggerPresenter<Solutio
     @Override
     public void onContinueButtonClicked() {
         resultViewModel.solution = solutionViewModel.getId();
+        resultViewModel.solutionName = solutionViewModel.getName();
         mainView.submitData(resultViewModel);
     }
 }

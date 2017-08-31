@@ -17,6 +17,7 @@ import java.util.List;
 public class ResultViewModel implements Parcelable {
     public List<ProblemResult> problem = new ArrayList<>();
     public int solution;
+    public String solutionName;
     public int refundAmount;
     public ProblemMessageResult message;
     public int attachmentCount;
@@ -72,19 +73,23 @@ public class ResultViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.problem);
         dest.writeInt(this.solution);
+        dest.writeString(this.solutionName);
         dest.writeInt(this.refundAmount);
         dest.writeParcelable(this.message, flags);
         dest.writeInt(this.attachmentCount);
         dest.writeString(this.orderId);
+        dest.writeByte(this.isAttachmentRequired ? (byte) 1 : (byte) 0);
     }
 
     protected ResultViewModel(Parcel in) {
         this.problem = in.createTypedArrayList(ProblemResult.CREATOR);
         this.solution = in.readInt();
+        this.solutionName = in.readString();
         this.refundAmount = in.readInt();
         this.message = in.readParcelable(ProblemMessageResult.class.getClassLoader());
         this.attachmentCount = in.readInt();
         this.orderId = in.readString();
+        this.isAttachmentRequired = in.readByte() != 0;
     }
 
     public static final Creator<ResultViewModel> CREATOR = new Creator<ResultViewModel>() {

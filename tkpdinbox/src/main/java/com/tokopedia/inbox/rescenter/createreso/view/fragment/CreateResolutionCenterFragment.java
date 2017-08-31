@@ -26,8 +26,10 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -193,6 +195,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             ffSolution.setEnabled(true);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
+            updateProductProblemString(resultViewModel.problem);
         } else {
             ffSolution.setEnabled(false);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
@@ -203,6 +206,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             ffUploadProve.setEnabled(true);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
+            updateSolutionString(resultViewModel);
         } else {
             ffUploadProve.setEnabled(false);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
@@ -220,6 +224,27 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         }
     }
 
+    public void updateProductProblemString(List<ProblemResult> problemResultList) {
+        String problemResultString = "";
+        boolean isType1Selected = false;
+        for (ProblemResult problemResult : problemResultList) {
+            if (problemResult.type == 1) {
+                isType1Selected = true;
+            }
+        }
+        if (isType1Selected) {
+            problemResultString += "Selisih Ongkos Kirim ";
+            if (problemResultList.size() > 1) {
+                problemResultString += "& ";
+            }
+        }
+        problemResultString += (isType1Selected ? problemResultList.size() - 1 : problemResultList.size()) + " Barang Bermasalah";
+        tvChooseProductProblem.setText(problemResultString);
+    }
+
+    public void updateSolutionString(ResultViewModel resultViewModel) {
+        tvSolution.setText(resultViewModel.refundAmount != 0 ? "Kembalikan Rp " + resultViewModel.refundAmount + " ke Pembeli" : resultViewModel.solutionName);
+    }
     @Override
     public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel,
                                                         ArrayList<ProblemResult> problemResults) {

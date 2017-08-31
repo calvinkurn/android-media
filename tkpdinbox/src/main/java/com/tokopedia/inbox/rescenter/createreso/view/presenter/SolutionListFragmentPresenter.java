@@ -78,6 +78,8 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
     public void solutionClicked(SolutionViewModel solutionViewModel) {
         if (solutionViewModel.getAmount() == null) {
             resultViewModel.solution = solutionViewModel.getId();
+            resultViewModel.solutionName = solutionViewModel.getName();
+            resultViewModel.refundAmount = 0;
             mainView.submitData(resultViewModel);
         } else {
             mainView.moveToSolutionDetail(solutionViewModel);
