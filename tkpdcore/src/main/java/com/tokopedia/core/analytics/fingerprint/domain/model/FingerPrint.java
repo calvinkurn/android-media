@@ -27,6 +27,7 @@ public class FingerPrint {
         device_model = fingerPrintBuilder.deviceModel;
         device_name = fingerPrintBuilder.deviceName;
         device_manufacturer = fingerPrintBuilder.deviceManufacturer;
+        device_system = fingerPrintBuilder.deviceSystem;
         current_os = fingerPrintBuilder.currentOS;
         is_jailbroken_rooted = fingerPrintBuilder.isJailBreak;
         timezone = fingerPrintBuilder.timezone;
@@ -173,6 +174,7 @@ public class FingerPrint {
         private String deviceName;
         private String deviceModel;
         private String deviceManufacturer;
+        private String deviceSystem;
         private String currentOS;
         private boolean isJailBreak;
         private String timezone;
@@ -188,6 +190,11 @@ public class FingerPrint {
 
         public FingerPrintBuilder() {
 
+        }
+
+        public FingerPrintBuilder system(String deviceSystem) {
+            this.deviceSystem = deviceSystem;
+            return this;
         }
 
         public FingerPrintBuilder carrier(String carrier) {

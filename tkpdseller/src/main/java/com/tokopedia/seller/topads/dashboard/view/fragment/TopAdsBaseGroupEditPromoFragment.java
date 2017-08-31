@@ -56,26 +56,6 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
     }
 
     @Override
-    protected String getTextInfoChooseGroupOption() {
-        return getString(R.string.label_top_ads_info_group_option_exist);
-    }
-
-    @Override
-    protected String getTextInfoNewGroupOption() {
-        return getString(R.string.label_top_ads_info_group_option_new);
-    }
-
-    @Override
-    protected boolean getVisibleInfoChooseGroupOption() {
-        return true;
-    }
-
-    @Override
-    protected boolean getVisibleInfoNewGroupOption() {
-        return true;
-    }
-
-    @Override
     public void showErrorSnackBar(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }

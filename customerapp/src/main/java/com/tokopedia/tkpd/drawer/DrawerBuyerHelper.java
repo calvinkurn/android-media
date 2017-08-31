@@ -31,7 +31,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -398,6 +398,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.CATEGORY_NAVIGATION:
+                    UnifyTracking.eventCategoryDrawer();
                     context.startActivity(BrowseProductRouter.getCategoryNavigationIntent(context));
                     break;
                 case TkpdState.DrawerPosition.WISHLIST:
@@ -517,7 +518,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onGoToProfile() {
         context.startActivity(
-                PeopleInfoDrawerActivity.createInstance(context, sessionHandler.getLoginID())
+                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID())
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
@@ -559,15 +560,11 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void onGoToCreateShop() {
-        Intent launchIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-        if (launchIntent != null) {
-            UnifyTracking.eventOpenShopSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
-            context.startActivity(launchIntent);
-        } else if (context.getApplication() instanceof TkpdCoreRouter) {
-            UnifyTracking.eventOpenShopSwitcher(AppEventTracking.EventLabel.OPEN_OPENSHOP+AppEventTracking.Category.SWITCHER);
-            ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
-        }
+        Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        context.startActivity(intent);
+        sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }
 
     private void onGoToShop() {

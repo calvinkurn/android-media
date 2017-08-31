@@ -13,6 +13,8 @@ import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,6 +34,7 @@ public class TopAdsProductListUseCase extends UseCase<ProductListDomain> {
 
     private TopAdsSearchProductRepository topAdsSearchProductRepository;
 
+    @Inject
     public TopAdsProductListUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,

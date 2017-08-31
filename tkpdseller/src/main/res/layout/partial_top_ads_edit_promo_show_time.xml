@@ -6,10 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/TextView.Body1.BlackSecondary"
-        android:text="@string/label_top_ads_show_time"/>
-
     <RadioGroup
         android:id="@+id/radio_group_show_time"
         android:layout_width="match_parent"

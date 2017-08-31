@@ -14,7 +14,7 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> extends TopAdsGetProductDetailPresenter<T> implements TopAdsDetailEditGroupPresenter<T> {
+public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> extends TopAdsGetProductDetailPresenterImpl<T> implements TopAdsDetailEditGroupPresenter<T> {
 
     protected TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     protected TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase;
