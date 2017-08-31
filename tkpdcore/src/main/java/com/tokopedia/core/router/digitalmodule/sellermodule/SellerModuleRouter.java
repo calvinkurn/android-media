@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,4 +23,7 @@ public interface SellerModuleRouter {
                           int datePickerSelection, int datePickerType);
 
     String getRangeDateFormatted(Context context, long startDate, long endDate);
+
+    void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
+
 }
