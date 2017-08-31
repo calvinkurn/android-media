@@ -29,7 +29,7 @@ public class DynamicFilterDetailBrandActivity extends AbstractDynamicFilterDetai
                               String searchHint) {
 
         if (activity != null) {
-            Intent intent = new Intent(activity, DynamicFilterDetailGeneralActivity.class);
+            Intent intent = new Intent(activity, DynamicFilterDetailBrandActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
             intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
