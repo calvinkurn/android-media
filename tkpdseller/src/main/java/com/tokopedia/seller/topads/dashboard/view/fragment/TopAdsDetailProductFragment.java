@@ -10,33 +10,33 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailEditProductActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditProductMainPageActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenterImpl;
-
-import org.parceler.Parcels;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductViewPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter> {
-
-    public static final String PRODUCT_AD_PARCELABLE = "PRODUCT_AD_PARCELABLE";
+public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter, ProductAd> {
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
@@ -44,10 +44,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     private LabelView promoGroupLabelView;
-
     private LabelView priceAndSchedule;
 
-    private ProductAd productAd;
     private TopAdsDetailProductFragmentListener listener;
 
     public static Fragment createInstance(ProductAd productAd, String adId) {
@@ -73,6 +71,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
         priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
 
+        initNameAndLabelView();
+    }
+
+    protected void initNameAndLabelView() {
         name.setTitle(getString(R.string.top_ads_title_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         name.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +94,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailProductPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
+        presenter = new TopAdsDetailProductViewPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
                 new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
                 new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())));
     }
@@ -105,19 +107,19 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(productAd.getId());
+        presenter.turnOnAds(ad.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(productAd.getId());
+        presenter.turnOffAds(ad.getId());
     }
 
     @Override
     protected void refreshAd() {
-        if (productAd != null) {
-            presenter.refreshAd(startDate, endDate, productAd.getId());
+        if (ad != null) {
+            presenter.refreshAd(startDate, endDate, ad.getId());
         } else {
             presenter.refreshAd(startDate, endDate, adId);
         }
@@ -127,13 +129,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     protected void editAd() {
         if (isHasGroupAd()) {
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
-                    productAd.getId(), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
-                    String.valueOf(productAd.getGroupId()));
+                    ad.getId(), TopAdsGroupEditPromoFragment.EXIST_GROUP, ad.getGroupName(),
+                    String.valueOf(ad.getGroupId()));
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
-        } else if (productAd != null) {
-            Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, String.valueOf(productAd.getName()));
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getId());
+        } else if (ad != null) {
+            Intent intent = TopAdsEditProductMainPageActivity.createIntent(getActivity(), ad, ad.getId());
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
     }
@@ -141,12 +141,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        presenter.deleteAd(productAd.getId());
+        presenter.deleteAd(ad.getId());
     }
 
     @Override
-    public void onAdLoaded(Ad ad) {
-        productAd = (ProductAd) ad;
+    public void onAdLoaded(ProductAd ad) {
         super.onAdLoaded(ad);
         if (listener!= null) {
             listener.startShowCase();
@@ -154,9 +153,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
-    protected void updateMainView(Ad ad) {
+    protected void updateMainView(ProductAd ad) {
         super.updateMainView(ad);
-        String groupName = productAd.getGroupName();
+        String groupName = ad.getGroupName();
         if (isHasGroupAd()) {
             priceAndSchedule.setTitle(getString(R.string.topads_label_title_price_promo));
             promoGroupLabelView.setContent(groupName);
@@ -178,69 +177,72 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     private boolean isHasGroupAd() {
-        if (productAd == null) {
+        if (ad == null) {
             return false;
         }
-        return !TextUtils.isEmpty(productAd.getGroupName()) && productAd.getGroupId() > 0;
+        return !TextUtils.isEmpty(ad.getGroupName()) && ad.getGroupId() > 0;
     }
 
     private void onNameClicked() {
+        UnifyTracking.eventTopAdsProductClickDetailProductPDP();
         if (listener != null) {
-            listener.goToProductActivity(productAd.getProductUri());
+            listener.goToProductActivity(ad.getProductUri());
         }
     }
 
     private void onPromoGroupClicked() {
+        UnifyTracking.eventTopAdsProductClickDetailGroupPDP();
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getGroupId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getGroupId());
             startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
-        if (manageGroupMenuItem != null) {
-            manageGroupMenuItem.setVisible(!isHasGroupAd());
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_manage_group) {
-            manageGroup();
-            return true;
-        } else if (item.getItemId() == R.id.menu_delete) {
+        if (itemId == R.id.menu_delete) {
             showDeleteConfirmation(getString(R.string.title_delete_promo), getString(R.string.top_ads_delete_product_alert));
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void manageGroup() {
-        Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
-                TopAdsGroupManagePromoFragment.NOT_IN_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
-        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(PRODUCT_AD_PARCELABLE, Parcels.wrap(productAd));
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedInstanceState) {
-        super.onRestoreState(savedInstanceState);
-        productAd = Parcels.unwrap(savedInstanceState.getParcelable(PRODUCT_AD_PARCELABLE));
-        onAdLoaded(productAd);
-    }
-
     // for show case
     public View getStatusView(){
         return getView().findViewById(R.id.status);
+    }
+
+    @Override
+    public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        super.onDateChoosen(sDate, eDate, lastSelection, selectionType);
+        trackingDateTopAds(lastSelection, selectionType);
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsProductDetailProductPageDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

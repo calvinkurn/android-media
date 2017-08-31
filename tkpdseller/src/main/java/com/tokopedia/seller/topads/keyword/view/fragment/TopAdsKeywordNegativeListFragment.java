@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
@@ -53,6 +54,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
 
     @Override
     public void onCreateAd() {
+        UnifyTracking.eventTopAdsProductNewPromoKeywordNegatif();
         TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 

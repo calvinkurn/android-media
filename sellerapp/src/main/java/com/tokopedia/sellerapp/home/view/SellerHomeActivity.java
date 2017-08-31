@@ -50,6 +50,7 @@ import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -764,29 +765,22 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
         Drawable[] drawables = new Drawable[4];
         int[] drawablesResource = new int[]{
+                R.drawable.ic_add_product_home_seller,
                 R.drawable.ic_atur_produk,
-                R.drawable.ic_ulasan,
                 R.drawable.ic_etalase,
                 R.drawable.ic_settings
         };
         for (int i = 0; i < drawables.length; i++)
-            drawables[i] = AppCompatDrawableManager.get().getDrawable(this, drawablesResource[i]);
+            drawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
 
-        String[] STRINGS = new String[]{
-                "Atur Produk",
-                "Ulasan",
-                "Etalase",
-                "Pengaturan"
-        };
+        String[] titleMenus = getResources().getStringArray(R.array.title_menu_home);
         String[] strings = new String[drawables.length];
         for (int i = 0; i < drawables.length; i++)
-            strings[i] = STRINGS[i];
-
-        String color = "#ffffff";
+            strings[i] = titleMenus[i];
 
         int[][] colors = new int[drawables.length][2];
         for (int i = 0; i < drawables.length; i++) {
-            colors[i][1] = Color.parseColor(color);
+            colors[i][1] = ContextCompat.getColor(this, R.color.white);
             colors[i][0] = Util.getInstance().getPressedColor(colors[i][1]);
         }
 
@@ -806,19 +800,22 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                         Context context = SellerHomeActivity.this;
                         switch (buttonIndex) {
                             case 0:
+                                UnifyTracking.eventSellerClickAddProductDashboard();
+                                ProductAddActivity.start(SellerHomeActivity.this);
+                                break;
+                            case 1:
+                                UnifyTracking.eventSellerClickManageProductDashboard();
                                 context.startActivity(new Intent(
                                         context, ManageProductSeller.class
                                 ));
                                 break;
-                            case 1:
-                                context.startActivity(new Intent(
-                                        context, InboxReputationActivity.class));
-                                break;
                             case 2:
+                                UnifyTracking.eventSellerClickEtalaseDashboard();
                                 context.startActivity(new Intent(
                                         context, EtalaseShopEditor.class));
                                 break;
                             case 3:
+                                UnifyTracking.eventSellerClickSettingDashboard();
                                 context.startActivity(new Intent(
                                         context, ManageGeneral.class));
                                 break;
@@ -829,6 +826,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 .animator(new BoomMenuButton.AnimatorListener() {
                     @Override
                     public void toShow() {
+                        UnifyTracking.eventSellerClickFabDashboard();
                         hideLayout.setVisibility(View.VISIBLE);
                         hideLayout.setClickable(true);
                         isBoomMenuShown = true;

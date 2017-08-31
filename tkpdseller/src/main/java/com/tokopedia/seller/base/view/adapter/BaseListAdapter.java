@@ -16,6 +16,11 @@ import java.util.List;
  */
 public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecyclerViewAdapter {
 
+
+    public List<T> getData() {
+        return data;
+    }
+
     public interface Callback<T> {
 
         void onItemClicked(T t);

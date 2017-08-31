@@ -97,6 +97,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
 
     private void setupRecyclerView(View view) {
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
+        categoryRecyclerView.setMotionEventSplittingEnabled(false);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CategoryPickerLevelAdapter(this);
         RetryDataBinder topAdsRetryDataBinder = new BaseRetryDataBinder(adapter);
