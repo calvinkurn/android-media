@@ -3,13 +3,11 @@ package com.tokopedia.seller.transaction.neworder.di;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
-import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.transaction.neworder.data.NewOrderApi;
 import com.tokopedia.seller.transaction.neworder.data.repository.GetNewOrderRepositoryImpl;
@@ -22,8 +20,6 @@ import com.tokopedia.seller.transaction.neworder.view.presenter.GetNewOrderPrese
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 /**
  * Created by zulfikarrahman on 7/12/17.

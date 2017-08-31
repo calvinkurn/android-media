@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.product.edit.constant.ProductNetworkConstant;
@@ -12,8 +12,6 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductPictu
 import com.tokopedia.seller.product.edit.data.source.cloud.model.ResultUploadImage;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 

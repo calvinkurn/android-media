@@ -3,7 +3,6 @@ package com.tokopedia.seller.goldmerchant.statistic.di.module;
 import android.content.Context;
 import android.content.res.AssetManager;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
@@ -29,14 +28,14 @@ import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTra
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
 import com.tokopedia.seller.product.category.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.category.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.category.data.source.FetchCategoryDataSource;
-import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.category.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.category.domain.CategoryRepository;
+import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
