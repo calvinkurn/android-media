@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
+    width: '90%'
   },
   textContainer: {
     flexDirection: 'column',
