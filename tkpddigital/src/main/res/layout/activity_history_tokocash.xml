@@ -1,17 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include
-        layout="@layout/view_tokocash_date_label"
+    <RelativeLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/filter_history_tokocash"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <include
+            layout="@layout/view_tokocash_date_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/filter_history_tokocash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/date_label_view"
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/history_tokocash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/filter_history_tokocash" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/filter_history_tokocash">
+
+            <ProgressBar
+                android:id="@+id/loading_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <include
+            layout="@layout/view_tokocash_no_history_category"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/filter_history_tokocash" />
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_main_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_item_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_detail"
+        android:paddingRight="@dimen/padding_detail"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small">
+
+        <ImageView
+            android:id="@+id/icon_item_history"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="@dimen/padding_detail"
+            android:src="@drawable/ic_tokocash_icon" />
+
+        <TextView
+            android:id="@+id/title_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/icon_item_history"
+            android:layout_alignTop="@+id/icon_item_history"
+            android:layout_toRightOf="@+id/icon_item_history"
+            android:gravity="center_vertical"
+            android:text="Admin Fee"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/fonts" />
+
+        <TextView
+            android:id="@+id/price_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/icon_item_history"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/icon_item_history"
+            android:layout_marginLeft="@dimen/padding_detail"
+            android:gravity="center_vertical"
+            android:text="- Rp 150.000"
+            android:textColor="@color/red_500"
+            android:textSize="@dimen/fonts"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/desc_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/title_item_history"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_toLeftOf="@+id/price_item_history"
+            android:layout_toStartOf="@+id/price_item_history"
+            android:text="Transfer to Bank is charged as much as 4% of the total transfer amount Rp 150.000."
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/date_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/desc_item_history"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:text="20 Agustus 2017"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/fontvs" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
+
+
+</LinearLayout>
