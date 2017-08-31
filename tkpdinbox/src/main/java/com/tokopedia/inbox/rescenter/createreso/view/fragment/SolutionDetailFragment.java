@@ -104,7 +104,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
         presenter.initResultViewModel(resultViewModel, solutionViewModel);
 
-        tilAmount.setHint("Jumlah uang yang ingin dikembalikan");
+        tilAmount.setHint(context.getResources().getString(R.string.string_money_amount_returned));
 
     }
 
@@ -160,15 +160,15 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     public void buttonSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-        button.setTextColor(Color.parseColor("#ffffff"));
+        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_enable));
+        button.setTextColor(ContextCompat.getColor(context, R.color.white));
     }
 
     public void buttonDisabled(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_70));
+        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disable));
+        button.setTextColor(ContextCompat.getColor(context, R.color.black_70));
     }
 
     @Override

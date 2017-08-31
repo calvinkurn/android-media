@@ -51,7 +51,7 @@ public class AttachmentActivity  extends BasePresenterActivity<AttachmentActivit
 
     @Override
     protected void initView() {
-
+        presenter.initFragment(resultViewModel);
     }
 
     @Override

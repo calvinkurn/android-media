@@ -58,4 +58,36 @@
     <string name="error_reply_discussion_resolution_file_not_allowed">Maaf, file Extension tidak disupport</string>
     <string name="error_reply_discussion_resolution_reach_max_size">Maksimum ukuran file adalah 20mb</string>
 
+    <!--new create reso-->
+    <string name="string_product_problem">1. Barang &amp; Masalah</string>
+    <string name="string_choose_product_problem">Pilih Barang &amp; Masalah</string>
+    <string name="string_solution">2. Solusi</string>
+    <string name="string_choose_solution">Pilih Solusi</string>
+    <string name="string_prove_information">3. Bukti &amp; Keterangan</string>
+    <string name="string_upload_prove_information">Unggah Bukti &amp; Keterangan</string>
+    <string name="string_button_create_complain">Buat Komplain</string>
+
+    <!--step 1-->
+    <string name="string_button_save_choose">Simpan dan Pilih Barang Lain</string>
+    <string name="string_product_status">Status Barang</string>
+    <string name="string_product_arrived">Sudah Sampai</string>
+    <string name="string_product_not_arrived">Belum Sampai</string>
+    <string name="string_choose_problem">Pilih Masalah</string>
+    <string name="string_complain_reason">Alasan Komplain</string>
+    <string name="string_product_qty">Jumlah Barang</string>
+    <string name="string_button_save">Simpan</string>
+    <string name="string_button_cancel">Batal</string>
+    <string name="string_support_free_return">Produk Ini Didukung Free Returns</string>
+    <string name="string_continue">Lanjut</string>
+
+    <!--step 2-->
+    <string name="string_money_amount_returned">Jumlah uang yang ingin dikembalikan</string>
+
+    <!--step 3-->
+    <string name="string_upload_prove">Unggah Bukti</string>
+    <string name="string_information_container">Isi keterangan</string>
+    <string name="string_button_upload_proof">Upload Bukti &amp; Keterangan</string>
+    <string name="string_information">Keterangan</string>
+    <string name="string_min_30_char">Minimal 30 karakter</string>
+
 </resources>

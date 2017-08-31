@@ -18,7 +18,6 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCe
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ButtonState;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.OrderDetailViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.OrderProductViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.OrderViewModel;

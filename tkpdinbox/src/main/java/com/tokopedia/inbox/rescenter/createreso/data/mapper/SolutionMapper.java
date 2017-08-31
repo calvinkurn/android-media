@@ -47,8 +47,6 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
 
     private SolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
         try {
-//            JSONObject responseObject = new JSONObject(response.body().getStrResponse());
-//            SolutionResponseResponse solutionResponseResponse = gson.fromJson(responseObject.getJSONObject("data").toString(), SolutionResponseResponse.class);
             SolutionResponseResponse solutionResponseResponse = response.body().convertDataObj(SolutionResponseResponse.class);
             SolutionResponseDomain model = new SolutionResponseDomain(
                     solutionResponseResponse.getSolution().size() != 0 ? mappingSolutionDomain(solutionResponseResponse.getSolution()) : new ArrayList<SolutionDomain>(),
