@@ -156,9 +156,9 @@ public class FeedPlusPresenter
 
     @Override
     public void checkNewFeed(String firstCursor) {
-        checkNewFeedUseCase.execute(
-                CheckNewFeedUseCase.getParam(sessionHandler, firstCursor),
-                new CheckNewFeedSubscriber(viewListener));
+//        checkNewFeedUseCase.execute(
+//                CheckNewFeedUseCase.getParam(sessionHandler, firstCursor),
+//                new CheckNewFeedSubscriber(viewListener));
     }
 
 
