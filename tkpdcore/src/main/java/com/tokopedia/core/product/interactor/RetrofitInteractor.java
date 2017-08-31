@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.entity.variant.ProductVariant;
-import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
@@ -18,8 +17,6 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 /**
  * RetrofitInteractor
@@ -73,11 +70,11 @@ public interface RetrofitInteractor {
     void getMostHelpfulReview(@NonNull Context context, @NonNull String productId,
                             @NonNull MostHelpfulListener listener);
 
-    void getProductDiscussion(@Nonnull Context context, @Nonnull String productId, @Nonnull String shopId,
-                              @Nonnull DiscussionListener listener);
+    void getProductDiscussion(@NonNull Context context, @NonNull String productId, @NonNull String shopId,
+                              @NonNull DiscussionListener listener);
 
-    void getProductTalkComment(@Nonnull Context context, @Nonnull String talkId, @Nonnull String shopId,
-                              @Nonnull DiscussionListener listener);
+    void getProductTalkComment(@NonNull Context context, @NonNull String talkId, @NonNull String shopId,
+                              @NonNull DiscussionListener listener);
 
     interface ProductDetailListener {
 

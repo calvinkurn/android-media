@@ -1,17 +1,22 @@
 
 package com.tokopedia.core.product.model.productdetail.mosthelpful;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Review {
+import java.util.ArrayList;
+
+public class Review implements Parcelable {
 
     @SerializedName("review_id")
     @Expose
-    private Integer reviewId;
+    private int reviewId;
     @SerializedName("reputation_id")
     @Expose
-    private Integer reputationId;
+    private int reputationId;
     @SerializedName("review_title")
     @Expose
     private String reviewTitle;
@@ -20,7 +25,7 @@ public class Review {
     private String reviewMessage;
     @SerializedName("product_rating")
     @Expose
-    private Integer productRating;
+    private int productRating;
     @SerializedName("product_rating_description")
     @Expose
     private String productRatingDescription;
@@ -35,7 +40,7 @@ public class Review {
     private java.util.List<Object> reviewImageAttachment = null;
     @SerializedName("review_anonymous")
     @Expose
-    private Integer reviewAnonymous;
+    private int reviewAnonymous;
     @SerializedName("review_response")
     @Expose
     private ReviewResponse reviewResponse;
@@ -43,19 +48,19 @@ public class Review {
     @Expose
     private User user;
 
-    public Integer getReviewId() {
+    public int getReviewId() {
         return reviewId;
     }
 
-    public void setReviewId(Integer reviewId) {
+    public void setReviewId(int reviewId) {
         this.reviewId = reviewId;
     }
 
-    public Integer getReputationId() {
+    public int getReputationId() {
         return reputationId;
     }
 
-    public void setReputationId(Integer reputationId) {
+    public void setReputationId(int reputationId) {
         this.reputationId = reputationId;
     }
 
@@ -75,11 +80,11 @@ public class Review {
         this.reviewMessage = reviewMessage;
     }
 
-    public Integer getProductRating() {
+    public int getProductRating() {
         return productRating;
     }
 
-    public void setProductRating(Integer productRating) {
+    public void setProductRating(int productRating) {
         this.productRating = productRating;
     }
 
@@ -115,11 +120,11 @@ public class Review {
         this.reviewImageAttachment = reviewImageAttachment;
     }
 
-    public Integer getReviewAnonymous() {
+    public int getReviewAnonymous() {
         return reviewAnonymous;
     }
 
-    public void setReviewAnonymous(Integer reviewAnonymous) {
+    public void setReviewAnonymous(int reviewAnonymous) {
         this.reviewAnonymous = reviewAnonymous;
     }
 
@@ -139,4 +144,55 @@ public class Review {
         this.user = user;
     }
 
+    public Review() {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.reviewId);
+        dest.writeInt(this.reputationId);
+        dest.writeString(this.reviewTitle);
+        dest.writeString(this.reviewMessage);
+        dest.writeInt(this.productRating);
+        dest.writeString(this.productRatingDescription);
+        dest.writeParcelable(this.reviewCreateTime, flags);
+        dest.writeParcelable(this.reviewUpdateTime, flags);
+        dest.writeList(this.reviewImageAttachment);
+        dest.writeInt(this.reviewAnonymous);
+        dest.writeParcelable(this.reviewResponse, flags);
+        dest.writeParcelable(this.user, flags);
+    }
+
+    protected Review(Parcel in) {
+        this.reviewId = in.readInt();
+        this.reputationId = in.readInt();
+        this.reviewTitle = in.readString();
+        this.reviewMessage = in.readString();
+        this.productRating = in.readInt();
+        this.productRatingDescription = in.readString();
+        this.reviewCreateTime = in.readParcelable(ReviewCreateTime.class.getClassLoader());
+        this.reviewUpdateTime = in.readParcelable(ReviewUpdateTime.class.getClassLoader());
+        this.reviewImageAttachment = new ArrayList<Object>();
+        in.readList(this.reviewImageAttachment, Object.class.getClassLoader());
+        this.reviewAnonymous = in.readInt();
+        this.reviewResponse = in.readParcelable(ReviewResponse.class.getClassLoader());
+        this.user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Creator<Review> CREATOR = new Creator<Review>() {
+        @Override
+        public Review createFromParcel(Parcel source) {
+            return new Review(source);
+        }
+
+        @Override
+        public Review[] newArray(int size) {
+            return new Review[size];
+        }
+    };
 }

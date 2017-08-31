@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class ProductDetailData implements Parcelable{
      * but because this pojo used in the view
      */
     private LatestTalkViewModel latestTalkViewModel;
+    private List<Review> reviewList;
 
     public ProductDetailData() {
     }
@@ -132,6 +134,14 @@ public class ProductDetailData implements Parcelable{
 
     public LatestTalkViewModel getLatestTalkViewModel() {
         return latestTalkViewModel;
+    }
+
+    public List<Review> getReviewList() {
+        return reviewList;
+    }
+
+    public void setReviewList(List<Review> reviewList) {
+        this.reviewList = reviewList;
     }
 
     public static class Builder {
@@ -226,6 +236,7 @@ public class ProductDetailData implements Parcelable{
         dest.writeParcelable(this.cashBack, flags);
         dest.writeTypedList(this.productImages);
         dest.writeParcelable(this.latestTalkViewModel, flags);
+        dest.writeTypedList(this.reviewList);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -239,6 +250,7 @@ public class ProductDetailData implements Parcelable{
         this.cashBack = in.readParcelable(ProductCashback.class.getClassLoader());
         this.productImages = in.createTypedArrayList(ProductImage.CREATOR);
         this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
+        this.reviewList = in.createTypedArrayList(Review.CREATOR);
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {

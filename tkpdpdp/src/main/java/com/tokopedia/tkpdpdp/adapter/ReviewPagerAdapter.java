@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
@@ -27,11 +29,13 @@ public class ReviewPagerAdapter extends PagerAdapter{
     private Context context;
     private List<Review> reviews = new ArrayList<>();
     private final ProductDetailView listener;
+    private final ProductDetailData data;
 
-    public ReviewPagerAdapter(Context context, List<Review> reviews, ProductDetailView listener) {
+    public ReviewPagerAdapter(Context context, ProductDetailView listener, ProductDetailData data) {
         this.context = context;
-        this.reviews = reviews;
+        this.reviews = data.getReviewList();
         this.listener = listener;
+        this.data = data;
     }
 
     @Override
@@ -67,7 +71,11 @@ public class ReviewPagerAdapter extends PagerAdapter{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onProductReviewClicked();
+                Bundle bundle = new Bundle();
+                bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
+                bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
+                bundle.putString("prod_name", data.getInfo().getProductName());
+                listener.onProductReviewClicked(bundle);
             }
         });
 

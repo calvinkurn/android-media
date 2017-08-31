@@ -17,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
@@ -36,8 +35,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.variant.Option;
-import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -56,17 +53,16 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
@@ -98,15 +94,12 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
-import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
-import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 
 /**
  * ProductDetailFragment
  * Created by Angga.Prasetiyo on 22/10/2015.
  * Edited by alifa, rohmadi, henry for v2
  */
-@SuppressWarnings("all")
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPresenter>
         implements ProductDetailView {
@@ -114,18 +107,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
     public static final int REQUEST_CODE_EDIT_PRODUCT = 2;
     public static final int REQUEST_CODE_LOGIN = 561;
-    public static final int REQUEST_VARIANT = 99;
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
-    public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
-    public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
-    public static final String STATE_VIDEO = "STATE_VIDEO";
-    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
+
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
+    public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
+    public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
+    public static final String STATE_VIDEO = "STATE_VIDEO";
+    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -145,10 +138,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private LatestTalkView latestTalkView;
     private ProgressBar progressBar;
 
-    private Toolbar toolbar;
-    private AppBarLayout appBarLayout;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-    private FloatingActionButton fabWishlist;
+    Toolbar toolbar;
+    AppBarLayout appBarLayout;
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    FloatingActionButton fabWishlist;
+
     private TextView tvTickerGTM;
 
     private ProductPass productPass;
@@ -158,16 +152,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductCampaign productCampaign;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
-    private ProductVariant productVariant;
-    private Option variantLevel1;
-    private Option variantLevel2;
 
     private DetailFragmentInteractionListener interactionListener;
     private DeepLinkWebViewHandleListener webViewHandleListener;
     private Menu menu;
 
-    private ReportProductDialogFragment fragment;
-    private Bundle recentBundle;
+    ReportProductDialogFragment fragment;
+
+    Bundle recentBundle;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -218,21 +210,23 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     protected void initView(View view) {
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
         tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
-        headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
-        pictureView = (PictureView) view.findViewById(R.id.view_picture);
-        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
-        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
-        newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
         videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
-        mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
+        headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
+        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
+        pictureView = (PictureView) view.findViewById(R.id.view_picture);
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
+        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
+        newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
+        mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
         latestTalkView = (LatestTalkView) view.findViewById(R.id.view_latest_discussion);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
+
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
+
         collapsingToolbarLayout
                 = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         transactionDetailView
@@ -240,6 +234,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         priceSimulationView
                 = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
+
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -313,11 +308,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onProductReviewClicked() {
-        Bundle bundle = new Bundle();
-        bundle.putString("product_id", String.valueOf(productData.getInfo().getProductId()));
-        bundle.putString("shop_id", String.valueOf(productData.getShopInfo().getShopId()));
-        bundle.putString("prod_name", productData.getInfo().getProductName());
+    public void onProductReviewClicked(@NonNull Bundle bundle) {
         presenter.processToReputation(context, bundle);
     }
 
@@ -390,21 +381,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onVariantClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, VariantActivity.class);
-        intent.putExtras(bundle);
-        intent.putExtra(VariantActivity.KEY_VARIANT_DATA, productVariant);
-        intent.putExtra(KEY_LEVEL1_SELECTED,variantLevel1);
-        intent.putExtra(KEY_LEVEL2_SELECTED,variantLevel2);
-        if (productData.getShopInfo().getShopIsOwner() == 1
-                || (productData.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
-            intent.putExtra(VariantActivity.KEY_SELLER_MODE, true);
-        }
-        startActivityForResult(intent,REQUEST_VARIANT);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
-    }
-
-    @Override
     public void onDescriptionClicked(@NonNull Bundle bundle) {
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
@@ -437,26 +413,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
-        if (productVariant!=null && productVariant.getVariantOption()!=null
-                && productVariant.getVariantOption().size()>0 && productVariant.getVariantData()!=null
-                && productVariant.getVariantData().size()>0 && variantLevel1==null) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(VariantActivity.KEY_BUY_MODE, true);
-            if (productData.getShopInfo().getShopIsOwner() == 1
-                    || (productData.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
-                bundle.putBoolean(VariantActivity.KEY_SELLER_MODE, true);
-            }
-            onVariantClicked(bundle);
-
-        } else {
-            if (variantLevel1!=null) {
-                String variantText = variantLevel1.getValue();
-                if (variantLevel2!=null) variantText += (", "+variantLevel2.getValue());
-                data.setNotes(variantText);
-            }
-            presenter.processToCart(context, data);
-        }
-
+        presenter.processToCart(context, data);
     }
 
     @Override
@@ -493,7 +450,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
         this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
-        renderIfAlreadyHaveVariant();
     }
 
     @Override
@@ -813,48 +769,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 videoDescriptionLayout.refreshVideo();
                 presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;
-            case REQUEST_VARIANT:
-                if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT) {
-                    if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-                        variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
-                        String variantText = variantLevel1.getValue();
-                        if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
-                        {
-                            variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
-                            variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
-                        }
-                        priceSimulationView.updateVariant(variantText);
-                    }
-                } else if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
-                    if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-                        variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
-                        String variantText = variantLevel1.getValue();
-                        if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
-                        {
-                            variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
-                            variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
-                        }
-                        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                                .setImageUri(productData.getProductImages().get(0).getImageSrc300())
-                                .setMinOrder(Integer.parseInt(productData.getInfo().getProductMinOrder()))
-                                .setProductId(String.valueOf(productData.getInfo().getProductId()))
-                                .setProductName(productData.getInfo().getProductName())
-                                .setWeight(productData.getInfo().getProductWeight())
-                                .setShopId(productData.getShopInfo().getShopId())
-                                .setPrice(productData.getInfo().getProductPrice())
-                                .build();
-                        if (!productData.getBreadcrumb().isEmpty()) pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
-                        pass.setNotes(variantText);
-                        presenter.processToCart(context, pass);
-                    }
-                } else if (resultCode==VariantActivity.KILL_PDP_BACKGROUND) {
-                    getActivity().finish();
-                }
-                break;
             default:
                 break;
         }
-
     }
 
     @Override
@@ -972,8 +889,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showMostHelpfulReview(List<Review> reviews) {
-        this.mostHelpfulReviewView.renderData(reviews);
-        this.mostHelpfulReviewView.updateTotalReviews(productData.getStatistic().getProductReviewCount());
+        this.productData.setReviewList(reviews);
+        this.mostHelpfulReviewView.renderData(this.productData);
         this.mostHelpfulReviewView.setVisibility(View.VISIBLE);
     }
 
@@ -1100,19 +1017,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             bundle.putBoolean("is_edit", true);
             bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
             onProductManageEditClicked(bundle);
-        }
-    }
-
-    public void renderIfAlreadyHaveVariant() {
-        if (getActivity().getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED)!=null
-                && getActivity().getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-            variantLevel1 = getActivity().getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
-            String variantText = variantLevel1.getValue();
-            if (getActivity().getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && getActivity().getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
-            {
-                variantLevel2 = getActivity().getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
-                variantText+= (", "+variantLevel2.getValue());
-            }
         }
     }
 

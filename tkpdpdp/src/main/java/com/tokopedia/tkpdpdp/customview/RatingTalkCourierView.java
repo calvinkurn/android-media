@@ -159,7 +159,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
             bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
             bundle.putString("prod_name", data.getInfo().getProductName());
-            listener.onProductReviewClicked();
+            listener.onProductReviewClicked(bundle);
             if(data != null) {
                 TrackingUtils.sendMoEngageClickUlasan(data);
             }
