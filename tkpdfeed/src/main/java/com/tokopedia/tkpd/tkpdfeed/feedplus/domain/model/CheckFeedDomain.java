@@ -5,13 +5,13 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model;
  */
 
 public class CheckFeedDomain {
-    private final int totalData;
+    private final String totalData;
 
-    public CheckFeedDomain(int totalData) {
+    public CheckFeedDomain(String totalData) {
         this.totalData = totalData;
     }
 
-    public int getTotalData() {
+    public String getTotalData() {
         return totalData;
     }
 }

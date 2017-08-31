@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.CheckFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 
@@ -29,7 +31,8 @@ public class CheckNewFeedSubscriber extends Subscriber<CheckFeedDomain> {
 
     @Override
     public void onNext(CheckFeedDomain checkFeedDomain) {
-        if (checkFeedDomain.getTotalData() > 0) {
+        if (!TextUtils.isEmpty(checkFeedDomain.getTotalData())
+                && !checkFeedDomain.getTotalData().equals("0")) {
             viewListener.onShowNewFeed(checkFeedDomain.getTotalData());
         } else {
             viewListener.onHideNewFeed();

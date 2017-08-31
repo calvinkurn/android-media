@@ -530,7 +530,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowNewFeed(int totalData) {
+    public void onShowNewFeed(String totalData) {
         newFeed.setVisibility(View.VISIBLE);
     }
 

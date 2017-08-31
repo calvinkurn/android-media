@@ -14,10 +14,9 @@ public class CheckNewFeedMapper implements Func1<FeedCheck.Data, CheckFeedDomain
     public CheckFeedDomain call(FeedCheck.Data data) {
         if (data != null
                 && data.checkFeed() != null
-                && data.checkFeed().meta() != null
-                && data.checkFeed().meta().total_data() != null)
-            return new CheckFeedDomain(data.checkFeed().meta().total_data());
+                && data.checkFeed().data() != null)
+            return new CheckFeedDomain(data.checkFeed().data());
         else
-            return new CheckFeedDomain(0);
+            return new CheckFeedDomain("0");
     }
 }

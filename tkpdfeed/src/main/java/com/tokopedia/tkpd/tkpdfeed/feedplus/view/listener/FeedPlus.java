@@ -108,7 +108,7 @@ public interface FeedPlus{
 
         void unsetEndlessScroll();
 
-        void onShowNewFeed(int totalData);
+        void onShowNewFeed(String totalData);
 
         void onGoToPromoPageFromHeader();
 
