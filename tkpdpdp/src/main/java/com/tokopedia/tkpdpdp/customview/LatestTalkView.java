@@ -84,30 +84,35 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
 
     @Override
     public void renderData(@NonNull ProductDetailData productDetailData) {
-        setVisibility(VISIBLE);
+
         LatestTalkViewModel data = productDetailData.getLatestTalkViewModel();
+        if (data != null) {
+            setVisibility(VISIBLE);
 
-        ImageHandler.loadImageCircle2(getContext(), avatarTalk, data.getTalkUserAvatar());
-        textTalkName.setText(data.getTalkUsername());
-        textTalkDate.setText(data.getTalkDate());
-        textTalkMessage.setText(data.getTalkMessage());
+            ImageHandler.loadImageCircle2(getContext(), avatarTalk, data.getTalkUserAvatar());
+            textTalkName.setText(data.getTalkUsername());
+            textTalkDate.setText(data.getTalkDate());
+            textTalkMessage.setText(data.getTalkMessage());
 
-        if (data.getCommentId() != null) {
-            layoutComment.setVisibility(VISIBLE);
-            ImageHandler.loadImageRounded2(getContext(), avatarComment, data.getCommentUserAvatar());
-            textCommentName.setText(data.getCommentUserName());
-            textCommentDate.setText(data.getCommentDate());
-            textCommentMessage.setText(data.getCommentMessage());
-            LabelUtils label = LabelUtils.getInstance(getContext(), textCommentDate);
-            label.giveSquareLabel(data.getCommentUserLabel());
+            if (data.getCommentId() != null) {
+                layoutComment.setVisibility(VISIBLE);
+                ImageHandler.loadImageRounded2(getContext(), avatarComment, data.getCommentUserAvatar());
+                textCommentName.setText(data.getCommentUserName());
+                textCommentDate.setText(data.getCommentDate());
+                textCommentMessage.setText(data.getCommentMessage());
+                LabelUtils label = LabelUtils.getInstance(getContext(), textCommentDate);
+                label.giveSquareLabel(data.getCommentUserLabel());
+            }
+
+            String button = textAllDiscussion.getText().toString();
+            String buttonFormat = button + String.format(Locale.getDefault(), " (%s)", productDetailData.getStatistic().getProductTalkCount());
+            textAllDiscussion.setText(buttonFormat);
+
+            textAllDiscussion.setOnClickListener(new DiscussionClick(productDetailData));
+            iconAllDiscussion.setOnClickListener(new DiscussionClick(productDetailData));
+        } else {
+            setVisibility(GONE);
         }
-
-        String button = textAllDiscussion.getText().toString();
-        String buttonFormat = button + String.format(Locale.getDefault(), " (%s)", productDetailData.getStatistic().getProductTalkCount());
-        textAllDiscussion.setText(buttonFormat);
-
-        textAllDiscussion.setOnClickListener(new DiscussionClick(productDetailData));
-        iconAllDiscussion.setOnClickListener(new DiscussionClick(productDetailData));
     }
 
     private class DiscussionClick implements View.OnClickListener {

@@ -70,24 +70,29 @@ public class MostHelpfulReviewView extends BaseView<ProductDetailData, ProductDe
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        reviewPagerAdapter = new ReviewPagerAdapter(getContext(), listener, data);
-        vpImage.setAdapter(reviewPagerAdapter);
-        vpImage.setAdapter(reviewPagerAdapter);
-        circlePageIndicator.setViewPager(vpImage);
-        reviewPagerAdapter.notifyDataSetChanged();
-        circlePageIndicator.notifyDataSetChanged();
+        if (data.getReviewList() != null && !data.getReviewList().isEmpty()) {
+            setVisibility(VISIBLE);
+            reviewPagerAdapter = new ReviewPagerAdapter(getContext(), listener, data);
+            vpImage.setAdapter(reviewPagerAdapter);
+            vpImage.setAdapter(reviewPagerAdapter);
+            circlePageIndicator.setViewPager(vpImage);
+            reviewPagerAdapter.notifyDataSetChanged();
+            circlePageIndicator.notifyDataSetChanged();
 
-        textAllReview.setText(getResources().getString(R.string.title_all_reviews)+" ("+ data.getStatistic().getProductReviewCount() +")");
-        textAllReview.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
-                bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
-                bundle.putString("prod_name", data.getInfo().getProductName());
-                listener.onProductReviewClicked(bundle);
-            }
-        });
+            textAllReview.setText(getResources().getString(R.string.title_all_reviews)+" ("+ data.getStatistic().getProductReviewCount() +")");
+            textAllReview.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
+                    bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
+                    bundle.putString("prod_name", data.getInfo().getProductName());
+                    listener.onProductReviewClicked(bundle);
+                }
+            });
+        } else {
+            setVisibility(GONE);
+        }
     }
 
 }
