@@ -48,8 +48,14 @@
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".newdynamicfilter.DynamicFilterDetailActivity"
+            android:name=".newdynamicfilter.DynamicFilterDetailGeneralActivity"
             android:label="Filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
+            android:name=".newdynamicfilter.DynamicFilterDetailBrandActivity"
+            android:label="Brand"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />

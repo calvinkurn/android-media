@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterCategoryActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterColorActivity;
-import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailActivity;
+import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
+import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailBrandActivity;
+import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailGeneralActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterRatingActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterSizeActivity;
 
@@ -40,8 +42,16 @@ public class FilterDetailActivityRouter {
                             filter.getSearch().getSearchable() == 1,
                             filter.getSearch().getPlaceholder());
 
+        } else if (filter.isBrandFilter()) {
+            DynamicFilterDetailBrandActivity
+                    .moveTo(activity,
+                            filter.getTitle(),
+                            filter.getOptions(),
+                            filter.getSearch().getSearchable() == 1,
+                            filter.getSearch().getPlaceholder());
+
         } else {
-            DynamicFilterDetailActivity
+            DynamicFilterDetailGeneralActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),

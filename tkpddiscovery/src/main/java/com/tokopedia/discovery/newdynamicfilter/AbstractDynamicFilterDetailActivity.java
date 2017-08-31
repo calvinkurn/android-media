@@ -18,7 +18,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import org.parceler.Parcels;
@@ -30,7 +29,8 @@ import java.util.List;
  * Created by henrypriyono on 8/16/17.
  */
 
-public class DynamicFilterDetailActivity extends AppCompatActivity implements DynamicFilterDetailView {
+public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView.Adapter>
+        extends AppCompatActivity implements DynamicFilterDetailView {
 
     public static final int REQUEST_CODE = 220;
     public static final String EXTRA_RESULT = "EXTRA_RESULT";
@@ -40,12 +40,12 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
     protected static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
 
     protected List<Option> optionList;
+    protected T adapter;
+    protected RecyclerView recyclerView;
 
     private View searchInputContainer;
     private EditText searchInputView;
     private EmptySearchResultView searchResultEmptyView;
-    private RecyclerView recyclerView;
-    private DynamicFilterDetailAdapter adapter;
     private OptionSearchFilter searchFilter;
     private TextView buttonApply;
     private TextView buttonReset;
@@ -56,22 +56,6 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
     private String searchHint;
     private String pageTitle;
 
-    public static void moveTo(AppCompatActivity activity,
-                              String pageTitle,
-                              List<Option> optionList,
-                              boolean isSearchable,
-                              String searchHint) {
-
-        if (activity != null) {
-            Intent intent = new Intent(activity, DynamicFilterDetailActivity.class);
-            intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
-            intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
-            intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
-            intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
-            activity.startActivityForResult(intent, REQUEST_CODE);
-        }
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +64,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         bindView();
         initTopBar();
         initRecyclerView();
-        loadFilterItems();
+        loadFilterItems(optionList);
         initSearchView();
     }
 
@@ -92,7 +76,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);
     }
 
-    private void bindView() {
+    protected void bindView() {
         recyclerView = (RecyclerView) findViewById(R.id.filter_detail_recycler_view);
         searchInputView = (EditText) findViewById(R.id.filter_detail_search);
         searchInputContainer = findViewById(R.id.filter_detail_search_container);
@@ -159,7 +143,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         return searchFilter;
     }
 
-    private void initRecyclerView() {
+    protected void initRecyclerView() {
         adapter = getAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration
@@ -177,9 +161,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         });
     }
 
-    protected DynamicFilterDetailAdapter getAdapter() {
-        return new DynamicFilterDetailAdapter(this);
-    }
+    protected abstract T getAdapter();
 
     @Override
     public void onItemCheckedChanged(Option option, boolean isChecked) {
@@ -191,9 +173,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         KeyboardHandler.hideSoftKeyboard(this);
     }
 
-    private void loadFilterItems() {
-        adapter.setOptionList(optionList);
-    }
+    protected abstract void loadFilterItems(List<Option> options);
 
     private void applyFilter() {
         Intent intent = new Intent();
@@ -202,9 +182,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
         finish();
     }
 
-    private void resetFilter() {
-        adapter.resetAllOptionsInputState();
-    }
+    protected abstract void resetFilter();
 
     public class OptionSearchFilter extends android.widget.Filter {
         private ArrayList<Option> sourceData;
@@ -260,7 +238,7 @@ public class DynamicFilterDetailActivity extends AppCompatActivity implements Dy
                 buttonApply.setVisibility(View.VISIBLE);
             }
 
-            adapter.setOptionList(resultList);
+            loadFilterItems(resultList);
         }
     }
 }

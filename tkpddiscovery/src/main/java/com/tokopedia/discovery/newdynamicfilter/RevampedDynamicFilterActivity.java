@@ -190,7 +190,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case DynamicFilterDetailActivity.REQUEST_CODE:
+                case AbstractDynamicFilterDetailActivity.REQUEST_CODE:
                     handleResultFromDetailPage(data);
                     break;
                 case DynamicFilterCategoryActivity.REQUEST_CODE:
@@ -203,7 +203,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     private void handleResultFromDetailPage(Intent data) {
         List<Option> optionList
-                = Parcels.unwrap(data.getParcelableExtra(DynamicFilterDetailActivity.EXTRA_RESULT));
+                = Parcels.unwrap(data.getParcelableExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT));
         for (Option option : optionList) {
             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
         }

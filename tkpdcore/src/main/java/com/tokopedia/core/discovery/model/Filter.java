@@ -23,6 +23,7 @@ public class Filter implements Serializable, Parcelable {
     private static final String TEMPLATE_NAME_CATEGORY = "template_category";
     private static final String TEMPLATE_NAME_COLOR = "template_color";
     private static final String TEMPLATE_NAME_PRICE = "template_price";
+    private static final String TEMPLATE_NAME_BRAND = "template_brand";
 
     @SerializedName("title")
     @Expose
@@ -62,6 +63,10 @@ public class Filter implements Serializable, Parcelable {
 
     public boolean isSizeFilter() {
         return TITLE_SIZE.equals(title);
+    }
+
+    public boolean isBrandFilter() {
+        return TEMPLATE_NAME_BRAND.equals(templateName);
     }
 
     /**

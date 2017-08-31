@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailRatingAdapter;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import org.parceler.Parcels;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by henrypriyono on 8/24/17.
  */
 
-public class DynamicFilterRatingActivity extends DynamicFilterDetailActivity {
+public class DynamicFilterRatingActivity extends DynamicFilterDetailGeneralActivity {
 
     @Override
     protected DynamicFilterDetailAdapter getAdapter() {

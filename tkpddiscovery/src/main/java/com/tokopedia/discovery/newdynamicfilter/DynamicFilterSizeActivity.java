@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailSizeAdapter;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import org.parceler.Parcels;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by henrypriyono on 8/28/17.
  */
 
-public class DynamicFilterSizeActivity extends DynamicFilterDetailActivity {
+public class DynamicFilterSizeActivity extends DynamicFilterDetailGeneralActivity {
     @Override
     protected DynamicFilterDetailAdapter getAdapter() {
         return new DynamicFilterDetailSizeAdapter(this);

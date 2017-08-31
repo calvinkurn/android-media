@@ -2,25 +2,21 @@ package com.tokopedia.discovery.newdynamicfilter;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
-import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailColorAdapter;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
 /**
- * Created by henrypriyono on 8/16/17.
+ * Created by henrypriyono on 8/31/17.
  */
 
-public class DynamicFilterColorActivity extends DynamicFilterDetailGeneralActivity {
-
-    @Override
-    protected DynamicFilterDetailAdapter getAdapter() {
-        return new DynamicFilterDetailColorAdapter(this);
-    }
+public class DynamicFilterDetailGeneralActivity
+        extends AbstractDynamicFilterDetailActivity<DynamicFilterDetailAdapter> {
 
     public static void moveTo(AppCompatActivity activity,
                               String pageTitle,
@@ -29,12 +25,27 @@ public class DynamicFilterColorActivity extends DynamicFilterDetailGeneralActivi
                               String searchHint) {
 
         if (activity != null) {
-            Intent intent = new Intent(activity, DynamicFilterColorActivity.class);
+            Intent intent = new Intent(activity, DynamicFilterDetailGeneralActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
             intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
+    }
+
+    @Override
+    protected DynamicFilterDetailAdapter getAdapter() {
+        return new DynamicFilterDetailAdapter(this);
+    }
+
+    @Override
+    protected void loadFilterItems(List<Option> options) {
+        adapter.setOptionList(options);
+    }
+
+    @Override
+    protected void resetFilter() {
+        adapter.resetAllOptionsInputState();
     }
 }
