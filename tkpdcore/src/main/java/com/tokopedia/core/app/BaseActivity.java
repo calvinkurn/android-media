@@ -30,6 +30,7 @@ import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
@@ -154,6 +155,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
+        Log.v("tes 1", getIntent().toString());
+        Log.v("tes 2", String.valueOf(getIntent().getStringExtra(Constants.EXTRA_APPLINK)));
     }
 
     private void sendScreenAnalytics() {

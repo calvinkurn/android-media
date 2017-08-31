@@ -66,7 +66,8 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
-                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                launchIntent = new Intent(Intent.ACTION_VIEW);
+                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
                 launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             }
             return launchIntent;

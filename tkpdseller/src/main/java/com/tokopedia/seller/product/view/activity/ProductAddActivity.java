@@ -128,6 +128,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
+                launchIntent = new Intent(Intent.ACTION_VIEW);
+                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
                 launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             }
             return launchIntent;
