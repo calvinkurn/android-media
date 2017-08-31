@@ -217,7 +217,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         if(orderData.getDriverInfo() != null
                 && !orderData.getDriverInfo().getDriverName().isEmpty()) {
             instantCourierDriverLayout.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(driverPhoto, orderData.getDriverInfo().getDriverPhoto());
+            ImageHandler.loadImageCircle2(this, driverPhoto, orderData.getDriverInfo().getDriverPhoto());
             driverName.setText(orderData.getDriverInfo().getDriverName());
             driverPhoneAndLicense.setText(orderData.getDriverInfo().getDriverPhone()
                     + " | "
