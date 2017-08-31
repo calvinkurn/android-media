@@ -855,8 +855,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
-
-            UnifyTracking.eventClickDaftarTransaksiEvent(categoryDataState.getName(), categoryDataState.getName());
+            if (categoryDataState != null) {
+                UnifyTracking.eventClickDaftarTransaksiEvent(categoryDataState.getName(), categoryDataState.getName());
+            }
 
             navigateToActivity(
                     DigitalWebActivity.newInstance(

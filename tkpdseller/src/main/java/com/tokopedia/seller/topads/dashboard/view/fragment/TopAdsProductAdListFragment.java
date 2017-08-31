@@ -54,7 +54,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     protected void searchForPage(int page) {
-        presenter.searchAd(startDate, endDate, keyword, status, groupId, page);
+        presenter.searchAd(startDate, endDate, keyword, status, groupId, getCurrentPage());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
             groupId = intent.getLongExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
-            setAndSearchForPage(START_PAGE);
+            resetPageAndSearch();
         }
     }
 

@@ -43,8 +43,8 @@ public class DatePickerActivity extends BaseTabActivity {
     }
 
     @Override
-    protected void setupLayout() {
-        super.setupLayout();
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
         DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
         tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));

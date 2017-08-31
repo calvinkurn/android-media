@@ -40,16 +40,16 @@ public class TkpdCache {
     public static final String APP_INFO = "APP_INFO";
     public static final String ALLOW_REFRESH = "ALLOW_REFRESH";
     public static final String EXCLUSION = "EXCLUSION";
-    public static String LAST_BCA = "LAST_BCA";
-    public static String LAST_MANDIRI = "LAST_MANDIRI";
-    public static String LAST_BRI = "LAST_BRI";
-    public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
     public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
     public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
     public static final String DIGITAL_INSTANT_CHECKOUT_HISTORY = "DIGITAL_INSTANT_CHECKOUT_HISTORY";
     public static final String DIGITAL_USSD_MOBILE_NUMBER = "DIGITAL_USSD_MOBILE_NUMBER";
-
+    public static final String CACHE_API = "CACHE_API";
+    public static String LAST_BCA = "LAST_BCA";
+    public static String LAST_MANDIRI = "LAST_MANDIRI";
+    public static String LAST_BRI = "LAST_BRI";
+    public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -201,6 +201,8 @@ public class TkpdCache {
 
         public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
+
+        public static final String VERSION_NAME_IN_CACHE = "VERSION_NAME_IN_CACHE";
     }
 
 }

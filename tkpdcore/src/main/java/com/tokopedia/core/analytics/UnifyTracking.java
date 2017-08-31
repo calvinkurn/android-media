@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.R.attr.action;
+
 /**
  * @author by Herdi_WORK on 25.10.16.
  *         modified by Alvarisi
@@ -589,22 +591,79 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventR3(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.R3,
+                AppEventTracking.Category.R3USER,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventR3Product(String productId, String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.R3,
+                AppEventTracking.Category.R3USER,
+                action,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
     public static void eventFeedView(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW,
-                label
-        ).getEvent());
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
     }
 
-    public static void eventFeedView(String action, String label) {
+    public static void eventFeedViewShop(String shopId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.VIEW,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, shopId)
+                .getEvent());
+    }
+
+    public static void eventFeedViewProduct(String productId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.VIEW,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
+    public static void eventFeedViewProduct(String productId, String action, String
+            label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 action,
-                label
-        ).getEvent());
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
     }
 
     public static void eventFeedViewAll() {
@@ -612,8 +671,91 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW_RECENT,
-                AppEventTracking.EventLabel.VIEW_ALL_RECENT
-        ).getEvent());
+                AppEventTracking.EventLabel.VIEW_ALL_RECENT)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
+    public static void eventFeedClick(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                action,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
+    public static void eventFeedClick(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.CLICK,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
+
+    public static void eventFeedClickProduct(String productId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.CLICK,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
+    public static void eventFeedClickPromo(String promoId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.CLICK,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, promoId)
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
+    public static void eventFeedClickPromo(String promoId, String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                action,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, promoId)
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
+
+    public static void eventFeedClickShop(String shopId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.CLICK,
+                label)
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, shopId)
+                .getEvent());
     }
 
     public static void eventCampaign(String label) {
@@ -1879,33 +2021,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.SWITCHER,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.DOWNLOAD_APP
-        ).getEvent());
-    }
-
-    public static void eventFeedClick(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.FEED,
-                AppEventTracking.Category.FEED,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventR3(String action, String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.R3,
-                AppEventTracking.Category.R3USER,
-                action,
-                label
-        ).getEvent());
-    }
-
-    public static void eventFeedClick(String action, String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.FEED,
-                AppEventTracking.Category.FEED,
-                action,
-                label
         ).getEvent());
     }
 

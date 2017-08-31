@@ -5,11 +5,10 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 /**
  * @author normansyahputa on 5/19/17.
@@ -60,7 +59,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     }
 
     @Override
-    public void onItemClicked(Ad ad) {
-        startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_CHANGE);
+    public void onItemClicked(KeywordAd ad) {
+        startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), ad, ""), REQUEST_CODE_AD_CHANGE);
     }
 }

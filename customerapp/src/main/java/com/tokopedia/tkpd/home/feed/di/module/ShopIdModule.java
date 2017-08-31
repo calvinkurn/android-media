@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.feed.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.common.service.ServiceV4;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.HomeDataSourceFactory;
 import com.tokopedia.tkpd.home.feed.data.mapper.GetShopIdMapper;
@@ -30,7 +30,7 @@ public class ShopIdModule {
 
     @DataFeedScope
     @Provides
-    HomeDataSourceFactory provideHomeDataStoreFactory(@ActivityContext Context context,
+    HomeDataSourceFactory provideHomeDataStoreFactory(@ApplicationContext Context context,
                                                       ServiceV4 serviceV4,
                                                       GetShopIdMapper shopIdMapper) {
 
