@@ -48,8 +48,9 @@
 
         <activity android:name=".tokocash.activity.TopUpTokoCashActivity"
             android:screenOrientation="portrait" />
-
         <activity android:name=".tokocash.activity.HistoryTokocashActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".tokocash.activity.DetailTransactionActivity"
             android:screenOrientation="portrait" />
 
         <service

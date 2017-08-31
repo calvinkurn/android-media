@@ -12,9 +12,13 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.tokocash.model.HeaderColor;
 import com.tokopedia.digital.tokocash.model.HeaderHistory;
+import com.tokopedia.digital.tokocash.model.HeaderItemColor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,12 +29,20 @@ import butterknife.ButterKnife;
 
 public class FilterTokoCashAdapter extends RecyclerView.Adapter {
 
-    private List<HeaderHistory> headerHistoryList;
-    private Context context;
-    private FilterTokoCashListener listener;
+    private static final String ALL_TRANSACTION_TYPE = "all";
 
-    public FilterTokoCashAdapter(List<HeaderHistory> headerHistoryList) {
-        this.headerHistoryList = headerHistoryList;
+    private List<HeaderItemColor> headerItemColorList;
+    private List<HeaderItemColor> headerHistoryList;
+    private List<HeaderColor> headerColorList;
+    private FilterTokoCashListener listener;
+    private Random randomGenerator;
+    private Context context;
+
+    public FilterTokoCashAdapter() {
+        this.headerHistoryList = new ArrayList<>();
+        headerItemColorList = new ArrayList<>();
+        addColorFilter();
+        randomGenerator = new Random();
     }
 
     public void setListener(FilterTokoCashListener listener) {
@@ -56,8 +68,18 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
     }
 
     public void addFilterTokoCashList(List<HeaderHistory> headerHistoryList) {
+        headerItemColorList.clear();
+        for (int i = headerHistoryList.size() - 1; i > -1; i--) {
+            if (headerHistoryList.get(i).getType().equals(ALL_TRANSACTION_TYPE)) {
+                headerHistoryList.remove(headerHistoryList.get(i));
+            } else {
+                int index = randomGenerator.nextInt(headerColorList.size());
+                headerItemColorList.add(new HeaderItemColor(headerHistoryList.get(i),
+                        headerColorList.get(index)));
+            }
+        }
         this.headerHistoryList.clear();
-        this.headerHistoryList.addAll(headerHistoryList);
+        this.headerHistoryList.addAll(headerItemColorList);
         notifyDataSetChanged();
     }
 
@@ -75,31 +97,39 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
             ButterKnife.bind(this, itemView);
         }
 
-        private void bindView(final HeaderHistory headerHistory) {
-            filterName.setText(headerHistory.getName());
-            handleViewFilter(headerHistory.isSelected());
+        private void bindView(final HeaderItemColor headerHistory) {
+            filterName.setText(headerHistory.getHeaderHistory().getName());
+            handleViewFilter(headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
             layoutFilterTokocash.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (headerHistory.isSelected()) {
+                    if (headerHistory.getHeaderHistory().isSelected()) {
                         listener.clearFilter();
-                        headerHistory.setSelected(false);
+                        headerHistory.getHeaderHistory().setSelected(false);
                     } else {
-                        listener.selectFilter(headerHistory.getType());
-                        headerHistory.setSelected(true);
+                        listener.selectFilter(headerHistory.getHeaderHistory().getType());
+                        headerHistory.getHeaderHistory().setSelected(true);
                     }
-                    handleViewFilter(headerHistory.isSelected());
+                    handleViewFilter(headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
                 }
             });
         }
 
-        private void handleViewFilter(boolean selected) {
+        private void handleViewFilter(boolean selected, HeaderColor headerColor) {
             layoutFilterTokocash.setBackground(ContextCompat.getDrawable(context, selected ?
-                    R.color.filter_tokocash_selected : R.drawable.digital_white_grey_button_more_rounded));
+                    headerColor.getColor() : headerColor.getBackground()));
             filterName.setTextColor(ContextCompat.getColor(context, selected ? R.color.white :
                     R.color.black_70));
             clearFilter.setVisibility(selected ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void addColorFilter() {
+        headerColorList = new ArrayList<>();
+        headerColorList.add(new HeaderColor(R.color.filter_inside_blue, R.drawable.digital_white_filter_blue));
+        headerColorList.add(new HeaderColor(R.color.filter_inside_green, R.drawable.digital_white_filter_green));
+        headerColorList.add(new HeaderColor(R.color.filter_inside_orange, R.drawable.digital_white_filter_orange));
+        headerColorList.add(new HeaderColor(R.color.filter_inside_green_medium, R.drawable.digital_white_filter_green_medium));
     }
 
     public interface FilterTokoCashListener {
