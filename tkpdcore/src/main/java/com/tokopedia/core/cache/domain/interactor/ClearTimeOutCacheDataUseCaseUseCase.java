@@ -12,13 +12,13 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class ClearTimeOutCacheDataUseCase extends BaseApiCacheInterceptor<Boolean> {
+public class ClearTimeOutCacheDataUseCaseUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
 
-    public ClearTimeOutCacheDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ApiCacheRepository apiCacheRepository) {
+    public ClearTimeOutCacheDataUseCaseUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ApiCacheRepository apiCacheRepository) {
         super(threadExecutor, postExecutionThread, apiCacheRepository);
     }
 
-    public ClearTimeOutCacheDataUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
+    public ClearTimeOutCacheDataUseCaseUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
         super(apiCacheRepository);
     }
 

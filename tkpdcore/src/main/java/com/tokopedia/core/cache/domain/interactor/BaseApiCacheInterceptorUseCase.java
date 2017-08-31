@@ -21,7 +21,7 @@ import rx.Observable;
  * Created by User on 8/30/2017.
  */
 
-public abstract class BaseApiCacheInterceptor<E> extends UseCase<E> {
+public abstract class BaseApiCacheInterceptorUseCase<E> extends UseCase<E> {
 
     public static final String METHOD = "METHOD";
     public static final String FULL_URL = "FULL_URL";
@@ -29,9 +29,9 @@ public abstract class BaseApiCacheInterceptor<E> extends UseCase<E> {
     protected final ApiCacheRepository apiCacheRepository;
     protected String method;
     protected String url;
-    protected CacheApiData cacheApiData;
+    protected CacheApiData paramsCacheApiData;
 
-    public BaseApiCacheInterceptor(
+    public BaseApiCacheInterceptorUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             ApiCacheRepository apiCacheRepository) {
@@ -39,7 +39,7 @@ public abstract class BaseApiCacheInterceptor<E> extends UseCase<E> {
         this.apiCacheRepository = apiCacheRepository;
     }
 
-    public BaseApiCacheInterceptor(ApiCacheRepositoryImpl apiCacheRepository) {
+    public BaseApiCacheInterceptorUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
         this.apiCacheRepository = apiCacheRepository;
     }
 
@@ -49,9 +49,9 @@ public abstract class BaseApiCacheInterceptor<E> extends UseCase<E> {
         method = requestParams.getString(METHOD, "");
         url = requestParams.getString(FULL_URL, "");
 
-        cacheApiData = new CacheApiData();
-        cacheApiData.setMethod(method); // get method
-        cacheApiData = setUrl(cacheApiData, url);
+        paramsCacheApiData = new CacheApiData();
+        paramsCacheApiData.setMethod(method); // get method
+        paramsCacheApiData = setUrl(paramsCacheApiData, url);
 
         return createChildObservable(requestParams);
     }

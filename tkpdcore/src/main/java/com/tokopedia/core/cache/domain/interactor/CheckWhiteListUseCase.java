@@ -11,7 +11,7 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class CheckWhiteListUseCase extends BaseApiCacheInterceptor<Boolean> {
+public class CheckWhiteListUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
 
     public CheckWhiteListUseCase(
             ThreadExecutor threadExecutor,
@@ -22,6 +22,6 @@ public class CheckWhiteListUseCase extends BaseApiCacheInterceptor<Boolean> {
 
     @Override
     public Observable<Boolean> createChildObservable(RequestParams requestParams) {
-        return Observable.just(apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath()));
+        return Observable.just(apiCacheRepository.isInWhiteList(paramsCacheApiData.getHost(), paramsCacheApiData.getPath()));
     }
 }

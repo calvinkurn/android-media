@@ -13,10 +13,10 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.cache.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.interactor.BaseApiCacheInterceptor;
+import com.tokopedia.core.cache.domain.interactor.BaseApiCacheInterceptorUseCase;
 import com.tokopedia.core.cache.domain.interactor.CheckWhiteListUseCase;
-import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheDataUseCase;
-import com.tokopedia.core.cache.domain.interactor.GetCacheDataUseCase;
+import com.tokopedia.core.cache.domain.interactor.ClearTimeOutCacheDataUseCaseUseCase;
+import com.tokopedia.core.cache.domain.interactor.GetCacheDataUseCaseUseCase;
 import com.tokopedia.core.cache.domain.interactor.SaveToDbUseCase;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -54,15 +54,15 @@ public class ApiCacheInterceptor implements Interceptor {
                 new ApiCacheDataSource()
         );
 
-        new ClearTimeOutCacheDataUseCase(threadExecutor, postExecutionThread, apiCacheRepository).createObservableSync(RequestParams.EMPTY).toBlocking().first();
+        new ClearTimeOutCacheDataUseCaseUseCase(threadExecutor, postExecutionThread, apiCacheRepository).createObservableSync(RequestParams.EMPTY).toBlocking().first();
 
         CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
-        GetCacheDataUseCase getCacheDataUseCase = new GetCacheDataUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
+        GetCacheDataUseCaseUseCase getCacheDataUseCase = new GetCacheDataUseCaseUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
         SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BaseApiCacheInterceptor.FULL_URL, request.url().toString());
-        requestParams.putString(BaseApiCacheInterceptor.METHOD, request.method());
+        requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, request.url().toString());
+        requestParams.putString(BaseApiCacheInterceptorUseCase.METHOD, request.method());
 
         String cacheData = getCacheDataUseCase.createObservableSync(requestParams).toBlocking().first();
         Boolean isInWhiteList = checkWhiteListUseCase.createObservableSync(requestParams).toBlocking().first();

@@ -14,7 +14,7 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class SaveToDbUseCase extends BaseApiCacheInterceptor<Boolean> {
+public class SaveToDbUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
 
     public static final String RESPONSE = "RESPONSE";
 
@@ -29,9 +29,9 @@ public class SaveToDbUseCase extends BaseApiCacheInterceptor<Boolean> {
     @Override
     public Observable<Boolean> createChildObservable(RequestParams requestParams) {
         Response response = (Response) requestParams.getObject(RESPONSE);
-        CacheApiWhitelist inWhiteListRaw = apiCacheRepository.isInWhiteListRaw(cacheApiData.getHost(), cacheApiData.getPath());
+        CacheApiWhitelist inWhiteListRaw = apiCacheRepository.isInWhiteListRaw(paramsCacheApiData.getHost(), paramsCacheApiData.getPath());
         if (inWhiteListRaw != null) {
-            apiCacheRepository.updateResponse(cacheApiData, inWhiteListRaw, response);
+            apiCacheRepository.updateResponse(paramsCacheApiData, inWhiteListRaw, response);
         }
 
         return Observable.just(true);
