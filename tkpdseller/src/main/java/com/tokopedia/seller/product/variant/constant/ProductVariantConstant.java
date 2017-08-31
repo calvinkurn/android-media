@@ -25,4 +25,6 @@ public class ProductVariantConstant {
 
     public static final int VARIANT_COMBINATION_STATUS_AVAILABLE = 1;
     public static final long NOT_AVAILABLE_OPTION_ID = Long.MIN_VALUE;
+
+    public static final long MAX_LIMIT_VARIANT = 15;
 }

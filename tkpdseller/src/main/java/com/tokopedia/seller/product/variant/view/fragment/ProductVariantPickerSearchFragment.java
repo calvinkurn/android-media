@@ -191,16 +191,27 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     public void onItemChecked(ProductVariantOption productVariantOption, boolean checked) {
+        if (checked) {
+            if (pickerMultipleItem.allowAddItem()) {
+                ProductVariantViewModel productVariantViewModel = generateProductVariantViewModel(productVariantOption);
+                pickerMultipleItem.addItemFromSearch(productVariantViewModel);
+            } else {
+                ((ProductVariantPickerSearchListAdapter)adapter).setChecked(productVariantOption.getId(), false);
+                adapter.notifyDataSetChanged();
+            }
+        } else {
+            ProductVariantViewModel productVariantViewModel = generateProductVariantViewModel(productVariantOption);
+            pickerMultipleItem.removeItemFromSearch(productVariantViewModel);
+        }
+    }
+
+    private ProductVariantViewModel generateProductVariantViewModel(ProductVariantOption productVariantOption){
         ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
         productVariantViewModel.setUnitValueId(Long.parseLong(productVariantOption.getId()));
         productVariantViewModel.setHexCode(productVariantOption.getHexCode());
         productVariantViewModel.setTitle(productVariantOption.getValue());
         productVariantViewModel.setImageUrl(productVariantOption.getIcon());
-        if (checked) {
-            pickerMultipleItem.addItemFromSearch(productVariantViewModel);
-        } else {
-            pickerMultipleItem.removeItemFromSearch(productVariantViewModel);
-        }
+        return productVariantViewModel;
     }
 
     @Override

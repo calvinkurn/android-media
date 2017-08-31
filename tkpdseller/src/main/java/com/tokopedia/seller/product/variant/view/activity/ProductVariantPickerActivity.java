@@ -11,7 +11,9 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
@@ -103,6 +105,13 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         return intent;
     }
 
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        bottomSheetContentTextView.setText(getString(R.string.product_variant_max_limit, ProductVariantConstant.MAX_LIMIT_VARIANT));
+        bottomSheetContentTextView.setVisibility(View.VISIBLE);
+    }
+
     private void updateBottomSheetInfo() {
         String variantCategoryName = "";
         if (productVariantByCatModel != null && !TextUtils.isEmpty(productVariantByCatModel.getName())) {
@@ -145,6 +154,15 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     @Override
+    public boolean allowAddItem() {
+        if (isMaxVariantReached()) {
+            showMaxVariantReachedMessage();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_product_variant_item_picker, menu);
@@ -161,7 +179,20 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         }
     }
 
+    private boolean isMaxVariantReached(){
+        return ((ProductVariantPickerCacheFragment) getCacheListFragment()).getItemList().size()
+                >= ProductVariantConstant.MAX_LIMIT_VARIANT;
+    }
+
+    private void showMaxVariantReachedMessage(){
+        NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_variant_max_variant_has_been_reached));
+    }
+
     public void showAddDialog(String stringToAdd) {
+        if (isMaxVariantReached()) {
+            showMaxVariantReachedMessage();
+            return;
+        }
         ProductVariantItemPickerAddDialogFragment dialogFragment = new ProductVariantItemPickerAddDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_TITLE, productVariantByCatModel.getName());

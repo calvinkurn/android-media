@@ -12,4 +12,6 @@ public interface ProductVariantPickerMultipleItem<T extends ItemPickerType> exte
     void removeAllItemFromSearch();
 
     void validateFooterAndInfoView();
+
+    boolean allowAddItem();
 }

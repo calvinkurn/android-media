@@ -2,6 +2,7 @@ package com.tokopedia.seller.base.view.activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +37,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
         setupFragment(savedInstanceState);
     }
 
+    @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
