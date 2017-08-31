@@ -525,9 +525,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                     case R.id.action_camera:
                         onAddGallery();
                         break;
-                    case R.id.action_instagram:
-                        FragmentProductFeedPermissionsDispatcher.onInstagramClickedWithCheck(FragmentProductFeed.this);
-                        break;
                 }
                 return false;
             }

@@ -19,7 +19,6 @@ import okhttp3.Response;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.core.database.model.InboxTalkModelDB_Table.json;
 
 /**
  * Created by ricoharisin on 3/10/17.

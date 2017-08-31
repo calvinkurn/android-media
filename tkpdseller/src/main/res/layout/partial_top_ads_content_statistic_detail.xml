@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:lv_font_size="@dimen/font_body1"
-        app:title="@string/label_top_ads_ctr" />
+        app:title="@string/topads_label_title_percentation_detail" />
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/favorite"

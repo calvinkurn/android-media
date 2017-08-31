@@ -712,10 +712,12 @@ public class TkpdBaseURL {
     }
 
     public static class ContactUs {
+        public static final String URL_BASE = BASE_DOMAIN + "contact-us/";
         public static final String PATH_GET_SOLUTION = "ajax/solution/{id}";
         public static final String PATH_CREATE_STEP_1 = "ajax/create/step/1";
         public static final String PATH_CREATE_STEP_2 = "ajax/create/step/2";
         public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
+        public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
     }
 
     public static class TopCash {
@@ -760,6 +762,7 @@ public class TkpdBaseURL {
         public static final String PATH_TRANSACTION_LIST = "order-list/";
         public static final String PATH_PRODUCT_LIST = "products/";
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
+        public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
     }
 
     public static class HadesCategory {
@@ -808,5 +811,9 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
+    }
+
+    public static class FinTech {
+        public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
     }
 }

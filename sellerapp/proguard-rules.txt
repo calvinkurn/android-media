@@ -337,6 +337,7 @@
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
 
-
+# Fingerprint
+-keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
 

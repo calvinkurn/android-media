@@ -10,11 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.drew.lang.annotations.SuppressWarnings;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
@@ -34,6 +32,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
 
     public static final String EXTRA_INTENT_PICKER_ITEM_LIST = "EXTRA_INTENT_PICKER_ITEM_LIST";
     public static final String EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST = "EXTRA_INTENT_PICKER_ITEM_SELECTED_LIST";
+    public static final String EXTRA_INTENT_PICKER_ITEM_MAX_SELECTION = "EXTRA_INTENT_PICKER_ITEM_MAX_SELECTION";
 
     protected View bottomSheetHeaderView;
     protected TextView bottomSheetTitleTextView;
@@ -44,6 +43,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     private ImageView arrowImageView;
     private View footerView;
     private View containerListView;
+    private int maxItemSelection;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -62,6 +62,12 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     }
 
     @CallSuper
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        maxItemSelection = getIntent().getIntExtra(EXTRA_INTENT_PICKER_ITEM_MAX_SELECTION, Integer.MIN_VALUE);
+    }
+
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
@@ -119,11 +125,11 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         });
     }
 
-    protected void expandBottomSheet(){
+    protected void expandBottomSheet() {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    protected void collapseBottomSheet(){
+    protected void collapseBottomSheet() {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -142,6 +148,11 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_base_picker_multiple_item;
+    }
+
+    @Override
+    public int getMaxItemSelection() {
+        return maxItemSelection;
     }
 
     @Override

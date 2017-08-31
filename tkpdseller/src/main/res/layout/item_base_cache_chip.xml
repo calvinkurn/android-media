@@ -15,7 +15,7 @@
     <FrameLayout
         android:layout_width="@dimen/base_picker_multiple_item_cache_image_height"
         android:layout_height="@dimen/base_picker_multiple_item_cache_image_height"
-        android:padding="@dimen/margin_vvs">
+        android:padding="@dimen/padding_vs">
         <ImageView
             android:id="@+id/image_view"
             android:layout_width="match_parent"

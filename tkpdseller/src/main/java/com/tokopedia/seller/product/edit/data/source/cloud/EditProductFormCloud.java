@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
@@ -13,8 +13,6 @@ import com.tokopedia.seller.shopscore.data.common.GetData;
 import javax.inject.Inject;
 
 import rx.Observable;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 /**
  * @author sebastianuskh on 4/21/17.
  */

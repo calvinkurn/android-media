@@ -22,6 +22,7 @@ public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDia
     public static final String EXTRA_VARIANT_TITLE = "EXTRA_VARIANT_TITLE";
     public static final String EXTRA_STRING_TO_INPUT = "EXTRA_DEFAULT_INPUT";
     public static final String EXTRA_VARIANT_RESERVED_TITLE_LIST = "EXTRA_VARIANT_RESERVED_TITLE_LIST";
+    private static final int MAX_VARIANT_NAME_LENGTH = 15;
 
     private String variantTitle;
     private ArrayList<String> reservedTitleList;
@@ -59,7 +60,11 @@ public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDia
             textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_empty));
             return;
         }
-        for (String reservedTitle: reservedTitleList) {
+        if (text.length() > MAX_VARIANT_NAME_LENGTH) {
+            textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_length_to_long, MAX_VARIANT_NAME_LENGTH));
+            return;
+        }
+        for (String reservedTitle : reservedTitleList) {
             if (reservedTitle.equalsIgnoreCase(text.trim())) {
                 textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_existed));
                 return;

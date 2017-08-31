@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.dashboard.view.adapter.viewholder;
 
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -60,6 +61,13 @@ public class TopAdsPromotedViewHolder extends BaseTopAdsAddProductListViewHolder
     @Override
     public void bind(PromotedTopAdsAddProductModel model) {
         setDescriptionText(model.description);
-        setSnippet(promoted);
+
+        if (model.getSnippet() == null && model.getProductDomain().isPromoted()) {
+            setSnippet(promoted);
+        } else if (model.getSnippet() != null && !TextUtils.isEmpty(model.getSnippet())) {
+            setSnippet(model.snippet);
+        } else {
+            setSnippet(promoted);
+        }
     }
 }

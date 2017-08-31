@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.edit.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -16,8 +16,6 @@ import com.tokopedia.seller.product.edit.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductScoringDetailPresenterImpl;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import dagger.Module;
 import dagger.Provides;

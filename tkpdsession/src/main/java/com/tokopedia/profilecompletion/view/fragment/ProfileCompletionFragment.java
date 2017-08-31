@@ -276,7 +276,10 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     private String findChildTag() {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.fragment_container);
-        return fragment.getTag();
+        if(fragment != null) {
+            return fragment.getTag();
+        }
+        return "";
     }
 
 

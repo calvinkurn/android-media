@@ -3,7 +3,9 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,11 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
@@ -26,6 +32,7 @@ import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordAddModule;
 import com.tokopedia.seller.topads.keyword.view.adapter.KeywordAdapter;
@@ -189,8 +196,27 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     }
 
     private void onButtonSaveClicked() {
+        trackingSaveKeyword();
         showLoading();
         topAdsKeywordAddPresenter.addKeyword(groupId, keywordType, keywordRecyclerView.getKeywordList());
+    }
+
+    private void trackingSaveKeyword() {
+
+        switch (keywordType){
+            case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT:
+                UnifyTracking.eventTopAdsProductNewKeyword(AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
+                break;
+            case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE:
+                UnifyTracking.eventTopAdsProductNewKeyword(AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
+                break;
+            case KeywordTypeDef.KEYWORD_TYPE_EXACT:
+                UnifyTracking.eventTopAdsProductNewKeywordNegatif(AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
+                break;
+            case KeywordTypeDef.KEYWORD_TYPE_PHRASE:
+                UnifyTracking.eventTopAdsProductNewKeywordNegatif(AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
+                break;
+        }
     }
 
     @Override

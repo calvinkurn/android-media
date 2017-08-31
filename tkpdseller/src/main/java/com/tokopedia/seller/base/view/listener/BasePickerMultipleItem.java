@@ -15,4 +15,6 @@ public interface BasePickerMultipleItem<T extends ItemPickerType> {
     void removeItemFromSearch(T itemPickerType);
 
     void removeItemFromCache(T itemPickerType);
+
+    int getMaxItemSelection();
 }
