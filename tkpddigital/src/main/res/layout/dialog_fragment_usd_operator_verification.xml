@@ -63,8 +63,7 @@
         <RelativeLayout
             android:id="@+id/fl_input_number"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:layout_height="wrap_content">
 
             <AutoCompleteTextView
                 android:id="@+id/ac_number"
@@ -122,7 +121,7 @@
         android:paddingStart="@dimen/padding_vvs"
         android:textColor="@color/red_600"
         android:textSize="@dimen/fontvs"
-        android:visibility="visible" />
+         />
 
     <LinearLayout
         android:id="@+id/ll_buttons"
@@ -146,7 +145,7 @@
             android:paddingStart="@dimen/padding_vvs"
             android:clickable="true"
             android:visibility="gone"
-            android:text="Batal"
+            android:text="@string/ussd_batal"
             android:textColor="@color/green_btn"
             android:textSize="@dimen/font_medium" />
 
@@ -158,7 +157,7 @@
             android:paddingLeft="@dimen/padding_vvs"
             android:paddingRight="@null"
             android:clickable="true"
-            android:text="Ok"
+            android:text="@string/ok"
             android:textColor="@color/green_btn"
             android:textSize="@dimen/font_medium" />
     </LinearLayout>

@@ -665,7 +665,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onButtonCheckBalanceClicked(int simPosition, String ussdCode) {
         if (ussdInProgress) {
-            showToastMessage("Please wait...");
+            showToastMessage(getString(R.string.msg_ussd_please_wait));
         } else {
             selectedSimIndex = simPosition;
             if (holderCheckBalance != null && holderCheckBalance.getChildCount() > selectedSimIndex) {

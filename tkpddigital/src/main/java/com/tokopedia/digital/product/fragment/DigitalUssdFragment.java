@@ -108,7 +108,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     private List<Validation> validationList;
     private int selectedSimIndex = 0;
 
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -487,7 +486,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         if (pulsaBalance.getMobileNumber() == null || "".equalsIgnoreCase(pulsaBalance.getMobileNumber().trim())) {
             tvUnknownNumber.setVisibility(View.VISIBLE);
             tvPhoneNumber.setTextColor(getResources().getColor(R.color.green_800));
-            tvPhoneNumber.setText("UNKNOWN");
+            tvPhoneNumber.setText(getResources().getString(R.string.label_ussd_unknown));
             showVerifyUssdOperatorDialogFragment(false);
         } else if (!DeviceUtil.validateNumberAndMatchOperator(validationList, selectedOperator, pulsaBalance.getMobileNumber())) {
             tvUnknownNumber.setVisibility(View.VISIBLE);
@@ -495,7 +494,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
             tvUnknownNumber.setVisibility(View.VISIBLE);
         } else {
             tvUnknownNumber.setVisibility(View.GONE);
-            // isOperaorVerified=true;
         }
     }
 

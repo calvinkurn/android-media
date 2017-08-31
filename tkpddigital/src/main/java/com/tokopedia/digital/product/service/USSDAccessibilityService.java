@@ -5,7 +5,6 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -17,7 +16,8 @@ import java.util.List;
 public class USSDAccessibilityService extends AccessibilityService {
     private final String TAG = USSDAccessibilityService.class.getSimpleName();
     public static final String KEY_START_SERVICE_FROM_APP = "STARTFROMAPP";
-    private boolean startFromApp = false;
+    private boolean startFromApp;
+    private static final int MIN_MESSAGE_LENGTH = 15;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -35,7 +35,6 @@ public class USSDAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         AccessibilityNodeInfo source = event.getSource();
-    /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) {
             return;
         }
@@ -55,15 +54,11 @@ public class USSDAccessibilityService extends AccessibilityService {
         }
 
         String result = processUSSDText(eventText);
-        //  String result = fetchResponse(source);
-
-        if (TextUtils.isEmpty(result)) return;
-        Log.d(TAG, result);
+        if (TextUtils.isEmpty(result))
+            return;
         sendResultToBroadcast(result);
         closeSystemDialog(source);
-        // fetchResponse(source);
 
-//
         Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         sendBroadcast(closeDialog);
 
@@ -86,13 +81,11 @@ public class USSDAccessibilityService extends AccessibilityService {
 
     private String processUSSDText(List<CharSequence> eventText) {
         for (CharSequence s : eventText) {
-            if (s.length() >= 15) {
+            if (s.length() >= MIN_MESSAGE_LENGTH) {
                 String text = String.valueOf(s);
                 return text;
             }
-
         }
-
         return null;
     }
 
@@ -120,7 +113,6 @@ public class USSDAccessibilityService extends AccessibilityService {
         for (AccessibilityNodeInfo node : list) {
             node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             isClosed = true;
-
         }
         if (!isClosed) {
             list = source

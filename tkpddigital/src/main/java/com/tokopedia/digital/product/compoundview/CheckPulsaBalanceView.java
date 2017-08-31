@@ -21,16 +21,12 @@ import butterknife.ButterKnife;
  */
 public class CheckPulsaBalanceView extends LinearLayout {
 
-
     @BindView(R2.id.btn_check_client_balance)
     TextView btnCheckBalance;
-
     @BindView(R2.id.tv_check_balance)
     TextView tvOperatorName;
-
     @BindView(R2.id.tv_label_check_credit)
     TextView tvPhoneNumber;
-
     @BindView(R2.id.rl_holder_check_balance)
     RelativeLayout checkBalanceLayout;
     @BindView(R2.id.ll_holder_check_balance_wait)
@@ -38,10 +34,8 @@ public class CheckPulsaBalanceView extends LinearLayout {
     @BindView(R2.id.check_balance_progressbar)
     ProgressBar checkBalanceProgressbar;
 
-
     private ActionListener actionListener;
     private Context context;
-
     private String mobileNumber;
 
     public CheckPulsaBalanceView(Context context) {
@@ -66,18 +60,12 @@ public class CheckPulsaBalanceView extends LinearLayout {
 
     }
 
-    //    public void setText(String text) {
-//        tvBalance.setText(text);
-//
-//    }
     public void hideProgressbar() {
-        //checkBalanceProgressbar.setVisibility(View.GONE);
         checkBalanceLayout.setVisibility(View.VISIBLE);
         checkBalanceWaitLayout.setVisibility(View.INVISIBLE);
     }
 
     public void showCheckBalanceProgressbar() {
-        //checkBalanceProgressbar.setVisibility(View.VISIBLE);
         checkBalanceLayout.setVisibility(View.INVISIBLE);
         checkBalanceWaitLayout.setVisibility(View.VISIBLE);
 
@@ -109,7 +97,6 @@ public class CheckPulsaBalanceView extends LinearLayout {
             }
         };
     }
-
 
     public interface ActionListener {
         void onButtonCheckBalanceClicked(int simPosition, String ussdCode);
