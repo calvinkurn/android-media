@@ -29,7 +29,7 @@ public class CustomPhoneNumberUtil {
         if(phoneRawString.startsWith("62")){
             phoneRawString = phoneRawString.replaceFirst("62","0");
         }else if(phoneRawString.startsWith("+62")) {
-            phoneRawString = phoneRawString.replaceFirst("+62","0");
+            phoneRawString = phoneRawString.replaceFirst("\\+62","0");
         }
         return phoneRawString;
     }

@@ -50,7 +50,7 @@ public class OfficialStoreCampaignProductViewModel {
         this.shopAva = shopAva;
         this.shopUrl = shopUrl;
         this.labels = labels;
-        this.isFreeReturn=isFreeReturn;
+        this.isFreeReturn = isFreeReturn;
     }
 
     public int getProductId() {

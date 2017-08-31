@@ -48,9 +48,9 @@ import com.tokopedia.seller.myproduct.model.EditPriceParam;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.view.activity.ProductDuplicateActivity;
-import com.tokopedia.seller.product.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

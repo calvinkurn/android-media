@@ -5,7 +5,5 @@ package com.tokopedia.seller.topads.dashboard.view.listener;
  */
 
 public interface ChipsTopAdsSelectionListener extends FragmentItemSelection {
-    void hideRecyclerView();
 
-    void showRecyclerView();
 }

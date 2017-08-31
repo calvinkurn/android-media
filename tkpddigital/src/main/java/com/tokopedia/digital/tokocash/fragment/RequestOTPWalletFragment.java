@@ -286,17 +286,23 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
                 COUNTDOWN_INTERVAL_SECOND) {
             @Override
             public void onTick(long millisForFinished) {
-                inputOtpView.setVisibility(View.VISIBLE);
-                sendSmsVerification.setVisibility(View.GONE);
-                repeatSendSms.setVisibility(View.VISIBLE);
-                repeatSendSms.setText(String.format(getString(R.string.repeat_sms_verification),
-                        String.format(FORMAT, TimeUnit.MILLISECONDS.toSeconds(millisForFinished))));
+                if (inputOtpView != null)
+                    inputOtpView.setVisibility(View.VISIBLE);
+                if (sendSmsVerification != null)
+                    sendSmsVerification.setVisibility(View.GONE);
+                if (repeatSendSms != null) {
+                    repeatSendSms.setVisibility(View.VISIBLE);
+                    repeatSendSms.setText(String.format(getString(R.string.repeat_sms_verification),
+                            String.format(FORMAT, TimeUnit.MILLISECONDS.toSeconds(millisForFinished))));
+                }
             }
 
             @Override
             public void onFinish() {
-                sendSmsVerification.setVisibility(View.VISIBLE);
-                repeatSendSms.setVisibility(View.GONE);
+                if (sendSmsVerification != null)
+                    sendSmsVerification.setVisibility(View.VISIBLE);
+                if (repeatSendSms != null)
+                    repeatSendSms.setVisibility(View.GONE);
             }
         }.start();
         inputOtp.requestFocus();

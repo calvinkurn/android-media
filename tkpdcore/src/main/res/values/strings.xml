@@ -548,6 +548,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_available_amount">Saldo Tersedia</string>
     <string name="title_total_withdrawal">Total Penarikan</string>
     <string name="title_account_number">Nomor Kartu</string>
+    <string name="title_account_number_saldo">Nomor Rekening</string>
     <string name="title_account_name">Nama Akun</string>
     <string name="dialog_delete_fav_shop">Apakah Anda ingin menghapus Toko Favorit ini ?</string>
     <string name="dialog_delete_address">Apakah Anda ingin menghapus Alamat ini?</string>
@@ -1981,10 +1982,12 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_gold_merchant">Gold Merchant</string>
     <string name="drawer_title_setting">Pengaturan</string>
     <string name="drawer_title_statistic">Statistik</string>
+    <string name="drawer_title_mitra_toppers">Mitra Toppers</string>
     <string name="drawer_title_logout">Keluar</string>
     <string name="drawer_title_confirm_shipping">Konfirmasi Pengiriman</string>
     <string name="drawer_title_list_selling">Daftar Penjualan</string>
     <string name="drawer_title_opportunity">Peluang</string>
+    <string name="drawer_title_add_product">Tambah Produk</string>
     <string name="drawer_title_product_list">Daftar Produk</string>
     <string name="drawer_title_draft_list">Draft Produk</string>
     <string name="drawer_title_etalase_list">Etalase Toko</string>
