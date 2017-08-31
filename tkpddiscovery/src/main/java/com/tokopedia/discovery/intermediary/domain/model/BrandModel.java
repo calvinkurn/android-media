@@ -8,6 +8,7 @@ public class BrandModel {
 
     private String imageUrl="";
     private String id="";
+    private String brandName="";
 
     public String getImageUrl() {
         return imageUrl;
@@ -23,5 +24,13 @@ public class BrandModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 }

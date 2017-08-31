@@ -21,6 +21,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderBannerListData(String title, List<BannerData> bannerDataList);
 
+    void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList);
+
     void renderStateSelectedAllData();
 
     void renderCategoryProductDataStyle1(CategoryData categoryData,
@@ -50,6 +52,8 @@ public interface IProductDigitalView extends IBaseView {
     CategoryData getCategoryDataState();
 
     List<BannerData> getBannerDataListState();
+
+    List<BannerData> getOtherBannerDataListState();
 
     HistoryClientNumber getHistoryClientNumberState();
 

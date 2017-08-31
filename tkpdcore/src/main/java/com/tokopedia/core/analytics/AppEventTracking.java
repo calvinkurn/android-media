@@ -112,6 +112,7 @@ public interface AppEventTracking {
         String CLICK_DRAFT_PRODUCT = "clickDraftProduct";
         String CATEGORY_PAGE = "clickKategori";
         String INTERMEDIARY_PAGE = "clickIntermediary";
+        String DRAWER_CATEGORY = "clickDrawer";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
@@ -187,7 +188,8 @@ public interface AppEventTracking {
         String MANAGE_PRODUCT = "Manage Product";
         String DRAFT_PRODUCT = "Draft Product";
         String CATEGORY_PAGE = "Category Page";
-        String INTERMEDIAR_PAGE = "IntermediaryPage";
+        String INTERMEDIARY_PAGE = "IntermediaryPage";
+        String CATEGORY_DRAWER = "Category Drawer";
         String CATEGORY_PRODUCT = "Kategori";
         String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
@@ -247,7 +249,15 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
         String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
         String UPLOAD_SUCCESS = "Success Upload";
+        String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
+        String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
 
+        String CLICK_CATEGORY = "Click Category";
+        String NAVIGATION_CLICK = "Navigation";
+        String BANNER_CLICK = "Banner Click";
+        String OFFICIAL_STORE_CLICK = "Official Store";
+        String INTERMEDIARY_VIDEO_CLICK = "Video Click";
+        String BOTTOM_NAVIGATION_CATEGORY = "Bottom Navigation - Category";
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
         String CURATED = "Curated";
@@ -265,6 +275,7 @@ public interface AppEventTracking {
         String SELECT_PRODUCT = "Select Product";
         String SELECT_OPERATOR = "Select Operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
+        String CLICK_WIDGET_BAR = "Click Widget Bar";
         String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
         String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
@@ -274,12 +285,18 @@ public interface AppEventTracking {
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
+        String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";
+        String CLICK_DAFTAR_TX = "Click Daftar Transaksi";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
         String FILTER = "Filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
+
+        String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
+        String VOUCHER_SUCCESS = "Voucher Success - ";
+        String VOUCHER_ERROR = "Voucher Error - ";
     }
 
     interface EventLabel {
@@ -465,6 +482,9 @@ public interface AppEventTracking {
         String TO_APP_ORDER = "To App - Order";
         String TOPADS = "TopAds";
         String SELLER_HOME = "Home - SellerApp";
+        String EXPAND_SUB_CATEGORY = "Expand Subcategory";
+        String PAYMENT_AND_TOPUP = "Pembayaran dan Top Up";
+        String DIGITAL_TRANSACTION_LIST = "Daftar Transaksi Digital";
     }
 
     interface SOCIAL_MEDIA {

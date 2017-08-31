@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -113,6 +114,13 @@ public class ProductList extends V2BaseFragment {
         if (adapter != null) {
             int etalaseIndex = indexOfEtalase(etalaseId);
             adapter.setSelectedEtalasePos(etalaseIndex);
+        } else {
+            initModels();
+            initAdapter();
+            int etalaseIndex = indexOfEtalase(etalaseId);
+            if (etalaseIndex != -1) {
+                adapter.setSelectedEtalasePos(etalaseIndex);
+            }
         }
     }
 
@@ -491,7 +499,7 @@ public class ProductList extends V2BaseFragment {
         if (productShopParam.getSelectedEtalase() != pos) {
             productShopParam.setEtalaseId(etalaseList.get(pos).getEtalaseId());
             productShopParam.setSelectedEtalase(pos);
-            if(getArguments().getInt(EXTRA_USE_ACE) == 1) {
+            if (getArguments().getInt(EXTRA_USE_ACE) == 1) {
                 productShopParam.setUseAce(etalaseList.get(pos).isUseAce());
             }
             refreshProductList();
@@ -654,6 +662,15 @@ public class ProductList extends V2BaseFragment {
                         if (etalaseList.get(i).getEtalaseName().equalsIgnoreCase(
                                 removeDash(getActivity().getIntent().getExtras().getString(ETALASE_NAME))
                         )) {
+                            index = i;
+                            break;
+                        }
+                    }
+                } else if (getActivity().getIntent().getExtras() != null &&
+                        !TextUtils.isEmpty(getActivity().getIntent().getExtras().getString(ETALASE_ID, ""))){
+                    String etalaseId = getActivity().getIntent().getExtras().getString(ETALASE_ID);
+                    for (int i = 0; i < etalaseList.size(); i++) {
+                        if (etalaseList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
                             index = i;
                             break;
                         }
