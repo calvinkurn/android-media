@@ -93,6 +93,24 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         fragment.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
     }
 
+    @DeepLink(Constants.Applinks.PRODUCT_ADD)
+    public static Intent getCallingApplinkAddProductMainAppIntent(Context context, Bundle extras) {
+        Intent intent = null;
+        if (!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0")) {
+            intent = new Intent(context, ProductAddActivity.class);
+        } else {
+            if (GlobalConfig.isSellerApp()) {
+                intent = SellerAppRouter.getSellerHomeActivity(context);
+            } else {
+                intent = HomeRouter.getHomeActivity(context);
+            }
+        }
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return intent
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlFromExternal() {

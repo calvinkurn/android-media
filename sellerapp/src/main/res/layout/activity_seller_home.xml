@@ -23,15 +23,17 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/announcement_ticker"
+                <com.tokopedia.design.ticker.TickerView
+                    android:id="@+id/tickerview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:layout_marginTop="@dimen/margin_top_ticker"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                </LinearLayout>
+                    android:layout_marginLeft="@dimen/card_container_margin"
+                    android:layout_marginRight="@dimen/card_container_margin"
+                    app:tckv_indicator_on_color="@color/tkpd_main_green"
+                    app:tckv_indicator_off_color="@color/grey"
+                    android:visibility="gone"
+                    />
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/container_seller_home_shop_score"

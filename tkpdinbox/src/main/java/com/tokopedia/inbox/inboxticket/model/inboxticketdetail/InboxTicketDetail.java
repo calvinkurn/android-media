@@ -6,12 +6,23 @@ import com.google.gson.annotations.SerializedName;
 
 public class InboxTicketDetail {
 
+    @SerializedName("show_rating")
+    @Expose
+    private boolean showRating;
     @SerializedName("ticket_reply")
     @Expose
     private TicketReply ticketReply;
     @SerializedName("ticket")
     @Expose
     private Ticket ticket;
+
+    public boolean isShowRating() {
+        return showRating;
+    }
+
+    public void setShowRating(boolean showRating) {
+        this.showRating = showRating;
+    }
 
     /**
      * 
