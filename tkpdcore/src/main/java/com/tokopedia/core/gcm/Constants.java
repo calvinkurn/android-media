@@ -95,6 +95,7 @@ public interface Constants {
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
         String SELLER_APP_HOME = "sellerapp://home";
         String LOGIN = "tokopedia://login";
+        String OFFICIAL_STORES = "tokopedia://official-stores";
     }
 
     interface Schemes {

@@ -16,14 +16,26 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.react.ReactConst;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 
 public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
+    @DeepLink({Constants.Applinks.OFFICIAL_STORES})
+    public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
+        return ReactNativeOfficialStoresActivity.createReactNativeActivity(
+                context, ReactConst.Screen.OFFICIAL_STORE,
+                SessionHandler.getLoginID(context),
+                context.getString(com.tokopedia.tkpd.R.string.react_native_banner_official_title)
+        ).putExtras(bundle);
+    }
 
     public static Intent createReactNativeActivity(Context context,
                                                    String reactScreenName,
@@ -84,7 +96,7 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
                 .getColor(R.color.white)));
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        if (getIntent() != null && getIntent().getExtras() != null){
+        if (getIntent() != null && getIntent().getExtras() != null) {
             String title = getIntent().getExtras().getString(EXTRA_TITLE);
             if (!TextUtils.isEmpty(title)) {
                 toolbar.setTitle(title);
