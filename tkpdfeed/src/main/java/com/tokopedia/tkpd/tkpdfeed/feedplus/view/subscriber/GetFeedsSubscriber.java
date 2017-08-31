@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 
-    public GetFeedsSubscriber(FeedPlus.View viewListener) {
-        super(viewListener);
+    public GetFeedsSubscriber(FeedPlus.View viewListener, int page) {
+        super(viewListener, page);
     }
 
     @Override
