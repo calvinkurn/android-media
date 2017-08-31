@@ -12,6 +12,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -97,6 +98,8 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
             textCommentName.setText(data.getCommentUserName());
             textCommentDate.setText(data.getCommentDate());
             textCommentMessage.setText(data.getCommentMessage());
+            LabelUtils label = LabelUtils.getInstance(getContext(), textCommentDate);
+            label.giveSquareLabel(data.getCommentUserLabel());
         }
 
         String button = textAllDiscussion.getText().toString();
