@@ -2,7 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -10,7 +10,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.GetProductCategoryNameUseCase;
+import com.tokopedia.seller.product.category.domain.interactor.GetProductCategoryNameUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import rx.functions.Func3;
  * Created by normansyahputa on 8/1/17.
  */
 
-public class GMStatMarketInsightUseCase extends CompositeUseCase<KeywordModel> {
+public class GMStatMarketInsightUseCase extends UseCase<KeywordModel> {
     public static final int MAXIMUM_CATEGORY = 1;
     private GMStatGetShopCategoryUseCase categoryUseCase;
     private GetProductCategoryNameUseCase categoryNameUseCase;

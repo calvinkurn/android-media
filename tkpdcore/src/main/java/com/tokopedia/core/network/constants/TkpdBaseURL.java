@@ -808,6 +808,10 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
     }
 
+    public static class FinTech {
+        public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
+
+    }
     public class TkpdCart {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";

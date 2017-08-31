@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.dashboard.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.TopAdsShopAdsDataSource;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
@@ -19,7 +19,7 @@ public class TopAdsShopAdFactory {
     private final TopAdsDetailShopMapper topAdsSearchGroupMapper;
 
     @Inject
-    public TopAdsShopAdFactory(@ActivityContext Context context, TopAdsManagementApi topAdsManagementApi,
+    public TopAdsShopAdFactory(@ApplicationContext Context context, TopAdsManagementApi topAdsManagementApi,
                                TopAdsDetailShopMapper topAdsDetailProductMapper) {
         this.context = context;
         this.topAdsManagementApi = topAdsManagementApi;

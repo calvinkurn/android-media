@@ -3,6 +3,7 @@ package com.tokopedia.seller.common.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -23,6 +24,7 @@ public class LabelSwitch extends BaseCustomView {
     private CompoundButton.OnCheckedChangeListener listener;
     private String titleText;
     private boolean switchEnable;
+    private TextView summaryTextView;
 
     public LabelSwitch(Context context) {
         super(context);
@@ -63,6 +65,13 @@ public class LabelSwitch extends BaseCustomView {
                 }
             }
         });
+        this.getRootView().setClickable(true);
+        this.getRootView().setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchStatus.setChecked(!switchStatus.isChecked());
+            }
+        });
         invalidate();
         requestLayout();
     }
@@ -70,6 +79,7 @@ public class LabelSwitch extends BaseCustomView {
     private void init() {
         View view = inflate(getContext(), R.layout.item_detail_topads_switch_layout, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
+        summaryTextView = (TextView) view.findViewById(R.id.summary_text_view);
         switchTextView = (TextView) view.findViewById(R.id.switch_text_view);
         switchStatus = (SwitchCompat) view.findViewById(R.id.switch_status);
     }
@@ -78,6 +88,15 @@ public class LabelSwitch extends BaseCustomView {
         titleTextView.setText(textTitle);
         invalidate();
         requestLayout();
+    }
+
+    public void setSummary(String summaryText) {
+        if (TextUtils.isEmpty(summaryText)) {
+            summaryTextView.setVisibility(View.GONE);
+        } else {
+            summaryTextView.setText(summaryText);
+            summaryTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     public String getTitle() {
@@ -96,6 +115,15 @@ public class LabelSwitch extends BaseCustomView {
 
     public void setChecked(boolean isChecked) {
         switchStatus.setChecked(isChecked);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setCheckedNoListener(boolean isChecked) {
+        CompoundButton.OnCheckedChangeListener tempListener = this.listener;
+        this.listener = null;
+        switchStatus.setChecked(isChecked);
+        this.listener = tempListener;
         invalidate();
         requestLayout();
     }

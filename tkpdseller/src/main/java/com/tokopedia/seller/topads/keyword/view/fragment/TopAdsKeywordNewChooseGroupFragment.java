@@ -20,7 +20,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.design.text.TkpdTextInputLayout;
-import com.tokopedia.seller.product.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;

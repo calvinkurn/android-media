@@ -377,16 +377,14 @@ public class MainApplication extends TkpdMultiDexApplication {
         //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 
-    /**
-     * prevent recreation of app component.
-     *
-     * @return {@link AppComponent} object.
-     */
     public AppComponent getApplicationComponent() {
-        return appComponent == null ? appComponent = daggerBuilder.build() : appComponent;
+        return getAppComponent();
     }
 
     public AppComponent getAppComponent(){
+        if (appComponent == null) {
+            appComponent = daggerBuilder.build();
+        }
         return appComponent;
     }
 

@@ -23,8 +23,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -58,7 +57,11 @@ import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
-import com.tokopedia.seller.product.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.common.di.module.ProductModule;
+import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -68,6 +71,7 @@ import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -83,6 +87,9 @@ public class SellerRouterApplication extends MainApplication
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
+    private DaggerProductComponent.Builder daggerProductBuilder;
+    private ProductComponent productComponent;
+
     private DaggerGoldMerchantComponent.Builder daggerGoldMerchantBuilder;
     private GoldMerchantComponent goldMerchantComponent;
 
@@ -93,8 +100,16 @@ public class SellerRouterApplication extends MainApplication
     }
 
     private void initializeDagger() {
-        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder()
-                .goldMerchantModule(new GoldMerchantModule());
+        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder().goldMerchantModule(new GoldMerchantModule());
+        daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
+    }
+
+    @Override
+    public ProductComponent getProductComponent() {
+        if (productComponent == null) {
+            productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return productComponent;
     }
 
     public GoldMerchantComponent getGoldMerchantComponent() {
@@ -115,6 +130,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
+    }
+
+    @Override
     public void removeInstopedToken() {
         InstagramMediaPresenterImpl.removeToken();
     }
@@ -129,6 +149,13 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageEtalase(Context context) {
         Intent intent = new Intent(context, EtalaseShopEditor.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void goToDraftProductList(Context context) {
+        Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -278,6 +305,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
+    public void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
+        ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
     }
 
     @Override
