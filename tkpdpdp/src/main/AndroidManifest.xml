@@ -31,7 +31,6 @@
         <activity
             android:name=".DescriptionActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".VariantActivity"></activity>
     </application>
 
 </manifest>
