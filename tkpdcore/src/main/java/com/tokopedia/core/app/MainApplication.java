@@ -238,17 +238,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         });
     }
 
-//	private void initImageLoader() {
-//		File cacheDir = StorageUtils.getCacheDirectory(context);
-//		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-//				.discCache(new UnlimitedDiscCache(cacheDir)) // default
-//				.memoryCache(new UsingFreqLimitedMemoryCache(20000))
-//				.threadPoolSize(5)
-//				.denyCacheImageMultipleSizesInMemory()
-//				.build();// default
-//		ImageLoader.getInstance().init(config);
-//	}
-
     public static void unbindHudService() {
         hudIntent.printMessage("Unbinded from MainApplication");
         HUDIntent.unbindService(context, hudConnection);
