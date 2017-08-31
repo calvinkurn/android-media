@@ -17,6 +17,7 @@ class CategoryLevelPickerViewHolder extends RecyclerView.ViewHolder {
     public CategoryLevelPickerViewHolder(View view, CategoryPickerAdapterListener listener) {
         super(view);
         RecyclerView levelRecyclerView = (RecyclerView) view.findViewById(R.id.level_recycler_view);
+        levelRecyclerView.setMotionEventSplittingEnabled(false);
         levelRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         adapter = new CategoryPickerAdapter(listener);
         levelRecyclerView.setAdapter(adapter);

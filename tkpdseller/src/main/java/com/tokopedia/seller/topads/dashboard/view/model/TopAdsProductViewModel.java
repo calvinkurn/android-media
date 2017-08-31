@@ -2,11 +2,13 @@ package com.tokopedia.seller.topads.dashboard.view.model;
 
 import android.os.Parcel;
 
+import com.tokopedia.seller.base.view.adapter.ItemType;
+
 /**
  * @author normansyahputa on 2/20/17.
  */
 
-public class TopAdsProductViewModel extends GenericClass implements Comparable<TopAdsProductViewModel> {
+public class TopAdsProductViewModel extends GenericClass implements Comparable<TopAdsProductViewModel>, ItemType {
     public static final Creator<TopAdsProductViewModel> CREATOR = new Creator<TopAdsProductViewModel>() {
         @Override
         public TopAdsProductViewModel createFromParcel(Parcel source) {
@@ -18,6 +20,7 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
             return new TopAdsProductViewModel[size];
         }
     };
+    public static final int TYPE = 1;
     private int id;
     private String name;
     private String imageUrl;
@@ -135,5 +138,10 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
     @Override
     public int compareTo(TopAdsProductViewModel o) {
         return getId() - o.getId();
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }
