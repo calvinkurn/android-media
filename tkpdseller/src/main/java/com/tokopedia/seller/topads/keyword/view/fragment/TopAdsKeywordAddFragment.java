@@ -31,7 +31,7 @@ import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordAddModule;

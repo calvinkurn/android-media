@@ -2,7 +2,6 @@ package com.tokopedia.seller.gmsubscribe.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
@@ -16,10 +15,12 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMercha
 import com.tokopedia.seller.gmsubscribe.di.scope.GmSubscribeScope;
 import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
-import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,7 +35,7 @@ public class GmSubscribeModule {
 
     @GmSubscribeScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
+    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 

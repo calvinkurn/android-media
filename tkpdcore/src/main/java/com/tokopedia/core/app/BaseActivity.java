@@ -384,8 +384,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     public AppComponent getApplicationComponent() {
-        return ((MainApplication) getApplication())
-                .getApplicationComponent();
+        return ((MainApplication) getApplication()).getAppComponent();
     }
 
     protected void setGoldMerchant(ShopModel shopModel) {

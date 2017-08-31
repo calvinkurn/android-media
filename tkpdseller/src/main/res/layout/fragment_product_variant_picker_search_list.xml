@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_apps"
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+    <com.tokopedia.design.text.SearchInputView
+        android:id="@+id/search_input_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.tokopedia.design.text.SpinnerTextView
+        android:id="@+id/spinner_text_view_variant_unit"
+        style="@style/LabelLayout"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_med"
+        android:paddingBottom="@dimen/margin_ms"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

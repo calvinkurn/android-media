@@ -7,6 +7,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 
 /**
@@ -14,6 +15,9 @@ import rx.subscriptions.Subscriptions;
  */
 
 public abstract class UseCase<T> implements Interactor<T> {
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     protected ThreadExecutor threadExecutor;
     protected PostExecutionThread postExecutionThread;
     protected Subscription subscription = Subscriptions.empty();
@@ -34,11 +38,23 @@ public abstract class UseCase<T> implements Interactor<T> {
         return Observable.just(createObservable(requestParams).defaultIfEmpty(null).toBlocking().first());
     }
 
-    public void execute(RequestParams requestParams, Subscriber<T> subscriber) {
-        this.subscription = createObservable(requestParams)
+    public final void execute(RequestParams requestParams, Subscriber<T> subscriber) {
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
+        subscription = createObservable(requestParams)
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.getScheduler())
                 .subscribe(subscriber);
+        compositeSubscription.add(subscription);
+    }
+
+    public final void executeSync(RequestParams requestParams, Subscriber<T> subscriber) {
+        subscription = createObservableSync(requestParams)
+                .subscribeOn(Schedulers.from(threadExecutor))
+                .observeOn(postExecutionThread.getScheduler())
+                .subscribe(subscriber);
+        compositeSubscription.add(subscription);
     }
 
     public final Observable<T> execute(RequestParams requestParams){
@@ -46,8 +62,8 @@ public abstract class UseCase<T> implements Interactor<T> {
     }
 
     public void unsubscribe() {
-        if (!this.subscription.isUnsubscribed()) {
-            this.subscription.unsubscribe();
+        if (!compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
         }
     }
 

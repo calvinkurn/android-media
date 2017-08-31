@@ -31,6 +31,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -71,6 +72,9 @@ public interface AppComponent {
 
     @MerlinQualifier
     Retrofit merlinRetrofit();
+
+    @TomeQualifier
+    Retrofit tomeRetrofit();
 
     @MojitoQualifier
     Retrofit mojitoRetrofit();

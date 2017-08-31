@@ -8,7 +8,7 @@ import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourc
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 
 import retrofit2.Response;

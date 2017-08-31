@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
@@ -25,9 +26,10 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     protected Toolbar toolbar;
 
-    protected abstract void setupFragment(Bundle savedinstancestate);
+    protected abstract void setupFragment(Bundle savedInstanceState);
 
-    protected abstract @LayoutRes int getLayoutRes();
+    @LayoutRes
+    protected abstract int getLayoutRes();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +37,9 @@ abstract class BaseToolbarActivity extends BaseActivity {
         setTheme(getThemeActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.green_600));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
         }
-        setupLayout();
+        setupLayout(savedInstanceState);
         setupFragment(savedInstanceState);
         if(isToolbarWhite()){
             setToolbarColorWhite();
@@ -75,7 +77,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
         }
     }
 
-    protected void setupLayout() {
+    @CallSuper
+    protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
