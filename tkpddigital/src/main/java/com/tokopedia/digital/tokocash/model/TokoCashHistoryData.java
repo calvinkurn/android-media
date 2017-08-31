@@ -8,17 +8,17 @@ import java.util.List;
 
 public class TokoCashHistoryData {
 
-    private HeaderHistory headerHistory;
+    private List<HeaderHistory> headerHistory;
 
     private List<ItemHistory> itemHistoryList;
 
     private boolean next_uri;
 
-    public HeaderHistory getHeaderHistory() {
+    public List<HeaderHistory> getHeaderHistory() {
         return headerHistory;
     }
 
-    public void setHeaderHistory(HeaderHistory headerHistory) {
+    public void setHeaderHistory(List<HeaderHistory> headerHistory) {
         this.headerHistory = headerHistory;
     }
 
