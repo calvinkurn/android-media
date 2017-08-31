@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import retrofit2.http.HEAD;
-
 /**
  * @author by Herdi_WORK on 25.10.16.
  *         modified by Alvarisi
