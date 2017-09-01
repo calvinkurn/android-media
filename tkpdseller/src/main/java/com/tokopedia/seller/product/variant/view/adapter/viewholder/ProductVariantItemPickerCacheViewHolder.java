@@ -23,9 +23,11 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
     private ImageView imageView;
     private TextView titleTextView;
     private ImageButton closeImageButton;
+    private boolean hasColor;
 
-    public ProductVariantItemPickerCacheViewHolder(View itemView) {
+    public ProductVariantItemPickerCacheViewHolder(boolean hasColor, View itemView) {
         super(itemView);
+        this.hasColor = hasColor;
         imageView = (ImageView) itemView.findViewById(R.id.image_view);
         titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
         closeImageButton = (ImageButton) itemView.findViewById(R.id.image_button_close);
@@ -33,20 +35,27 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
 
     @Override
     public void bindObject(final ProductVariantViewModel productVariantViewModel) {
-        if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
-            imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
-            imageView.setImageResource(R.drawable.circle_white);
-            imageView.setBackground(null);
-        } else if (!TextUtils.isEmpty(productVariantViewModel.getImageUrl())) {
-            imageView.clearColorFilter();
-            imageView.setBackground(null);
-            Glide.with(imageView.getContext()).load(productVariantViewModel.getImageUrl())
-                    .transform(new CircleTransform(imageView.getContext())).into(imageView);
-        } else { // no hex, no url
-            imageView.setImageResource(R.drawable.ic_circle_no);
-            imageView.setBackgroundResource(R.drawable.circle_white);
-            imageView.clearColorFilter();
+        if (hasColor) {
+            if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
+                imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
+                imageView.setImageResource(R.drawable.circle_white);
+                imageView.setVisibility(View.VISIBLE);
+            } else { // no hex
+                imageView.setImageResource(R.drawable.circle_white_strike);
+                imageView.clearColorFilter();
+                imageView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (!TextUtils.isEmpty(productVariantViewModel.getImageUrl())) {
+                imageView.clearColorFilter();
+                Glide.with(imageView.getContext()).load(productVariantViewModel.getImageUrl())
+                        .transform(new CircleTransform(imageView.getContext())).into(imageView);
+                imageView.setVisibility(View.VISIBLE);
+            } else { // no url
+                imageView.setVisibility(View.GONE);
+            }
         }
+
         titleTextView.setText(productVariantViewModel.getTitle());
         closeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override

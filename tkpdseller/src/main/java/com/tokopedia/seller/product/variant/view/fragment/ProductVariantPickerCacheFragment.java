@@ -21,6 +21,7 @@ import java.util.List;
 
 public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<ProductVariantViewModel> implements ProductVariantPickerCacheListAdapter.RemoveCallback<ProductVariantViewModel>, ProductVariantPickerItemCacheList<ProductVariantViewModel> {
 
+    public static final String ARGS_IDENTIFIER = "id";
     private int startTempId;
     private long currentTempId;
 
@@ -28,18 +29,28 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
      * Use temporary id to avoid lost value if regenerate (check and uncheck) temporary id
      */
     private HashMap<String, Long> temporaryIdMap;
+    private int identifier;
 
+    public static ProductVariantPickerCacheFragment newInstance(int identifier) {
+
+        Bundle args = new Bundle();
+        args.putInt(ARGS_IDENTIFIER, identifier);
+        ProductVariantPickerCacheFragment fragment = new ProductVariantPickerCacheFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startTempId = getActivity().getIntent().getIntExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, 0);
+        identifier = getArguments().getInt(ARGS_IDENTIFIER);
         currentTempId = startTempId;
         temporaryIdMap = new HashMap<>();
     }
 
     @Override
     protected BaseListAdapter<ProductVariantViewModel> getNewAdapter() {
-        ProductVariantPickerCacheListAdapter productVariantPickerCacheListAdapter = new ProductVariantPickerCacheListAdapter();
+        ProductVariantPickerCacheListAdapter productVariantPickerCacheListAdapter = new ProductVariantPickerCacheListAdapter(identifier);
         productVariantPickerCacheListAdapter.setRemoveCallback(this);
         return productVariantPickerCacheListAdapter;
     }

@@ -44,9 +44,12 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         productVariantByCatModel = getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+
+        super.onCreate(savedInstanceState);
+
         toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()) );
+        toolbar.setNavigationIcon(R.drawable.ic_close_24dp);
         updateBottomSheetInfo();
     }
 
@@ -57,7 +60,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     protected Fragment getInitialCacheListFragment() {
-        return new ProductVariantPickerCacheFragment();
+        return ProductVariantPickerCacheFragment.newInstance(productVariantByCatModel.getVariantId());
     }
 
     @Override
