@@ -82,9 +82,11 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
         public void bindData(Category category) {
             this.categoryName.setText(category.getName());
             if (category.getChildren()!=null && category.getChildren().size()>0 && !category.isGroup()) {
+                categoryName.setTextColor(colorTextNormal);
                 dropdown.setImageResource(R.drawable.carret_up);
                 dropdown.setVisibility(View.VISIBLE);
             } else if (category.getHasChild() ) {
+                categoryName.setTextColor(colorTextNormal);
                 dropdown.setImageResource(R.drawable.carret_down);
                 dropdown.setVisibility(View.VISIBLE);
             } else {
