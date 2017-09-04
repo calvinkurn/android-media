@@ -4,7 +4,6 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Filter;
@@ -33,8 +32,8 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
             @Override
             public void onValueChanged(int minValue, int maxValue) {
-                dynamicFilterView.saveTextInput(Option.PRICE_MIN_KEY, String.valueOf(minValue));
-                dynamicFilterView.saveTextInput(Option.PRICE_MAX_KEY, String.valueOf(maxValue));
+                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MIN, String.valueOf(minValue));
+                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MAX, String.valueOf(maxValue));
             }
         });
     }
@@ -47,25 +46,25 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         String minLabel = "";
 
         for (Option option : filter.getOptions()) {
-            if (Option.PRICE_MIN_MAX_RANGE_KEY.equals(option.getKey())) {
+            if (Option.KEY_PRICE_MIN_MAX_RANGE.equals(option.getKey())) {
                 minBound = Integer.parseInt(option.getValMin());
                 maxBound = Integer.parseInt(option.getValMax());
             }
 
-            if (Option.PRICE_MIN_KEY.equals(option.getKey())) {
+            if (Option.KEY_PRICE_MIN.equals(option.getKey())) {
                 minLabel = option.getName();
             }
 
-            if (Option.PRICE_MAX_KEY.equals(option.getKey())) {
+            if (Option.KEY_PRICE_MAX.equals(option.getKey())) {
                 maxLabel = option.getName();
             }
 
-            if (Option.PRICE_WHOLESALE_KEY.equals(option.getKey())) {
+            if (Option.KEY_PRICE_WHOLESALE.equals(option.getKey())) {
                 bindWholesaleOptionItem(option);
             }
         }
 
-        String savedMinValue = dynamicFilterView.loadLastTextInput(Option.PRICE_MIN_KEY);
+        String savedMinValue = dynamicFilterView.loadLastTextInput(Option.KEY_PRICE_MIN);
         int defaultMinValue;
         if (TextUtils.isEmpty(savedMinValue)) {
             defaultMinValue = minBound;
@@ -73,7 +72,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             defaultMinValue = Integer.parseInt(savedMinValue);
         }
 
-        String savedMaxValue = dynamicFilterView.loadLastTextInput(Option.PRICE_MAX_KEY);
+        String savedMaxValue = dynamicFilterView.loadLastTextInput(Option.KEY_PRICE_MAX);
         int defaultMaxValue;
         if (TextUtils.isEmpty(savedMaxValue)) {
             defaultMaxValue = maxBound;

@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.RatingHelper;
 import com.tokopedia.core.discovery.model.Option;
@@ -60,7 +59,7 @@ public class ExpandableItemSelectedListAdapter extends
         }
 
         public void bind(final Option option, final int position) {
-            if (Option.RATING_KEY.equals(option.getKey())) {
+            if (Option.KEY_RATING.equals(option.getKey())) {
                 int ratingCount = Integer.parseInt(option.getName());
                 selectedItem.setItemDrawable(RatingHelper.getRatingDrawable(ratingCount));
             } else {

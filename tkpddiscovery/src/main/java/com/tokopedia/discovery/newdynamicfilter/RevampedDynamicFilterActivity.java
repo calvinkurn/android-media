@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.core.discovery.model.Option.CATEGORY_KEY;
+import static com.tokopedia.core.discovery.model.Option.KEY_CATEGORY;
 import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
 
 /**
@@ -301,7 +301,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         HashMap<String, String> selectedFilterMap = new HashMap<>();
 
         if (!TextUtils.isEmpty(selectedCategoryId)) {
-            selectedFilterMap.put(CATEGORY_KEY, selectedCategoryId);
+            selectedFilterMap.put(KEY_CATEGORY, selectedCategoryId);
         }
 
         selectedFilterMap.putAll(savedTextInput);
@@ -415,7 +415,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     @Override
     public void removeSelectedOption(Option option) {
-        if (CATEGORY_KEY.equals(option.getKey())) {
+        if (KEY_CATEGORY.equals(option.getKey())) {
             resetSelectedCategory();
         } else {
             saveCheckedState(option, false);

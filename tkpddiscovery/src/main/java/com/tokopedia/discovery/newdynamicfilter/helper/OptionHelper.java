@@ -195,7 +195,7 @@ public class OptionHelper {
     public static Option generateOptionFromCategory(String categoryId, String categoryName) {
         Option option = new Option();
         option.setName(categoryName);
-        option.setKey(Option.CATEGORY_KEY);
+        option.setKey(Option.KEY_CATEGORY);
         option.setValue(categoryId);
         return option;
     }

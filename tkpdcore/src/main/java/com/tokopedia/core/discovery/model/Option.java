@@ -15,12 +15,12 @@ import java.util.List;
  */
 public class Option implements Serializable, Parcelable {
 
-    public static final String PRICE_MIN_KEY = "pmin";
-    public static final String PRICE_MAX_KEY = "pmax";
-    public static final String PRICE_MIN_MAX_RANGE_KEY = "pmin-pmax";
-    public static final String PRICE_WHOLESALE_KEY = "wholesale";
-    public static final String CATEGORY_KEY = "sc";
-    public static final String RATING_KEY = "rt";
+    public static final String KEY_PRICE_MIN = "pmin";
+    public static final String KEY_PRICE_MAX = "pmax";
+    public static final String KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax";
+    public static final String KEY_PRICE_WHOLESALE = "wholesale";
+    public static final String KEY_CATEGORY = "sc";
+    public static final String KEY_RATING = "rt";
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
