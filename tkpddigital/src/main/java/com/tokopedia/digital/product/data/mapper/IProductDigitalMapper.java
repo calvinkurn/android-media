@@ -38,4 +38,8 @@ public interface IProductDigitalMapper {
     OrderClientNumber transformOrderClientNumber(
             ResponseRecentNumberData responseRecentNumberData
     ) throws MapperDataException;
+
+    List<CategoryData> transformCategoryDataList(
+            Object object
+    ) throws MapperDataException;
 }

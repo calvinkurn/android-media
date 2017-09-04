@@ -21,6 +21,6 @@ public class GMStatisticTransactionActivity extends BaseSimpleActivity implement
 
     @Override
     public GoldMerchantComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent();
     }
 }

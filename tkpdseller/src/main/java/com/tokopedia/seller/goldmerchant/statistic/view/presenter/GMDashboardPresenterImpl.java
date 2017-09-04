@@ -13,8 +13,8 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPr
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 
 import java.util.Calendar;
 import java.util.List;

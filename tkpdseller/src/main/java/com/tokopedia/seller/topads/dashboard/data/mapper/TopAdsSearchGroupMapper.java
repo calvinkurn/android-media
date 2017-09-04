@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.dashboard.data.mapper;
 
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 
 import java.util.Collections;
 import java.util.List;

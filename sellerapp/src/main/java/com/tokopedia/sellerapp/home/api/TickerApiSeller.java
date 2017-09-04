@@ -19,7 +19,7 @@ public interface TickerApiSeller {
     String HEADER_USER_ID = "Tkpd-UserId";
     String PAGE_SIZE = "page[size]";
     String FILTER_DEVICE = "filter[device]";
-    String FILTER_SELLERAPP_ANDROID_DEVICE = "sellerapp-android";
+    String FILTER_SELLERAPP_ANDROID_DEVICE = "sellerapp";
 
     @GET(TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER)
     Observable<Response<Ticker>> getTickers(

@@ -27,7 +27,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:visibility="gone"
+                android:text="@string/label_top_ads_info_group_option_exist"
                 android:id="@+id/view_info_radio_choose_group"
                 style="@style/TextView.infoInputType"/>
         </LinearLayout>

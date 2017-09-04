@@ -7,11 +7,4 @@ import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
  */
 
 public interface FragmentItemSelection extends AdapterSelectionListener<TopAdsProductViewModel> {
-    void notifyUnchecked(TopAdsProductViewModel topAdsProductViewModel);
-
-    boolean isExistingGroup();
-
-    void hideFooterViewHolder();
-
-    void showFooterViewHolder();
 }

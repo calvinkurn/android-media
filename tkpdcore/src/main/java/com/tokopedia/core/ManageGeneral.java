@@ -60,7 +60,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
         String[] content;
         GeneralFragmentAdapter adapter = new GeneralFragmentAdapter(getFragmentManager());
         if (isUserDoesntHaveShop()) {
-            content = new String[]{getString(R.string.title_activity_manage_people),
+            content = new String[]{getString(R.string.title_activity_manage_people).toUpperCase(),
                     getString(R.string.title_activity_manage_general_desc),
                     getString(R.string.title_activity_manage_general_about)};
             adapter.addFragment(FragmentSettingPeople.newInstance());

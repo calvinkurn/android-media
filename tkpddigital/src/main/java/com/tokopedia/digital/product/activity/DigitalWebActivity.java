@@ -156,4 +156,17 @@ public class DigitalWebActivity extends BasePresenterActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (fragmentGeneralWebView != null && fragmentGeneralWebView.getWebview() != null
+                && fragmentGeneralWebView.getWebview().canGoBack()) {
+            fragmentGeneralWebView.getWebview().goBack();
+        } else if (fragmentGeneralWebView != null && fragmentGeneralWebView.getWebview() != null) {
+            fragmentGeneralWebView.getWebview().stopLoading();
+            finish();
+        } else {
+            finish();
+        }
+    }
 }

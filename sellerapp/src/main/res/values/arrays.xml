@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="title_menu_home">
+        <item>@string/home_seller_add_product</item>
+        <item>@string/home_seller_manage_product</item>
+        <item>@string/home_seller_etalase</item>
+        <item>@string/home_seller_setting</item>
+    </string-array>
+</resources>
