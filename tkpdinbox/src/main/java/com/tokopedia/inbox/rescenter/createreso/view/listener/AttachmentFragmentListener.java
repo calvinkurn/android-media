@@ -17,11 +17,15 @@ public interface AttachmentFragmentListener {
         void populateDataToView();
 
         void updateView(Attachment attachment);
+
+        void submitData(ResultViewModel resultViewModel);
     }
 
     interface Presenter extends CustomerPresenter<AttachmentFragmentListener.View> {
         void initResultViewModel(ResultViewModel resultViewModel);
 
         void onInformationStringChanged(String information);
+
+        void btnContinueClicked();
     }
 }

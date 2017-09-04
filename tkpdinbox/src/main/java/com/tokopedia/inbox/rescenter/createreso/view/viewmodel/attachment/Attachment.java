@@ -7,6 +7,6 @@ import java.util.List;
  */
 
 public class Attachment {
-    public List<String> imageUrl;
+    public List<AttachmentImage> imageUrl;
     public String information;
 }

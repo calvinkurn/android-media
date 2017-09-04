@@ -25,6 +25,14 @@
                 android:text="@string/string_upload_prove"
                 />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_attachment"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_height="100dp">
+
+            </android.support.v7.widget.RecyclerView>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

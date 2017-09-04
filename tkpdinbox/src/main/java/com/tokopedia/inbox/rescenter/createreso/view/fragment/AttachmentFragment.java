@@ -1,7 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -13,6 +17,8 @@ import android.widget.EditText;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.adapter.AttachmentAdapter;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentAdapterListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.AttachmentFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
@@ -22,16 +28,18 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attach
  * Created by yoasfs on 30/08/17.
  */
 
-public class AttachmentFragment extends BaseDaggerFragment implements AttachmentFragmentListener.View {
+public class AttachmentFragment extends BaseDaggerFragment implements AttachmentFragmentListener.View, AttachmentAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
 
-    TkpdTextInputLayout tilInformation;
-    EditText etInformation;
-    Button btnContinue;
+    private TkpdTextInputLayout tilInformation;
+    private EditText etInformation;
+    private Button btnContinue;
+    private RecyclerView rvAttachment;
 
     private ResultViewModel resultViewModel;
     private AttachmentFragmentPresenter presenter;
+    private AttachmentAdapter adapter;
 
     public static AttachmentFragment newInstance(ResultViewModel resultViewModel) {
         AttachmentFragment fragment = new AttachmentFragment();
@@ -93,9 +101,12 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         tilInformation = (TkpdTextInputLayout) view.findViewById(R.id.til_information);
         etInformation = (EditText) view.findViewById(R.id.et_information);
         btnContinue = (Button) view.findViewById(R.id.btn_upload);
+        rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
+        adapter = new AttachmentAdapter(context, this);
 
+        rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        rvAttachment.setAdapter(adapter);
         tilInformation.setHint(context.getResources().getString(R.string.string_information));
-
         presenter.initResultViewModel(resultViewModel);
 
     }
@@ -155,5 +166,25 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
             }
         });
+
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onAddAttachmentClicked() {
+
+    }
+
+    @Override
+    public void submitData(ResultViewModel resultViewModel) {
+        Intent output = new Intent();
+        output.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        getActivity().setResult(Activity.RESULT_OK, output);
+        getActivity().finish();
     }
 }

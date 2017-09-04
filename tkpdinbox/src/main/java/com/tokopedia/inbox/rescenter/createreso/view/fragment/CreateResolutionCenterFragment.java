@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -10,12 +11,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
@@ -51,6 +55,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     TextView tvChooseProductProblem, tvChooseProductProblemTitle, tvSolution, tvSolutionTitle, tvUploadProve, tvUploadProveTitle;
     ImageView ivChooseProductProblem, ivSolution, ivUploadProve;
     Button btnCreateResolution;
+    ProgressBar progressBar;
 
     String orderId = "";
 
@@ -145,6 +150,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         btnCreateResolution = (Button) view.findViewById(R.id.btn_create_resolution);
 
+        progressBar = new ProgressBar(context);
+
         updateView(new ResultViewModel());
         presenter.loadProductProblem(orderId);
     }
@@ -183,7 +190,6 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void updateView(ResultViewModel resultViewModel) {
-
         ffSolution.setEnabled(false);
         ffUploadProve.setEnabled(false);
         btnCreateResolution.setEnabled(false);
@@ -203,9 +209,15 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         }
 
         if (resultViewModel.solution != 0) {
-            ffUploadProve.setEnabled(true);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
+            if (!resultViewModel.isAttachmentRequired) {
+                ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
+                ffUploadProve.setEnabled(false);
+            } else {
+                ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
+                ffUploadProve.setEnabled(true);
+            }
             updateSolutionString(resultViewModel);
         } else {
             ffUploadProve.setEnabled(false);
@@ -213,14 +225,18 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
         }
 
-        if (resultViewModel.isAttachmentRequired) {
-            btnCreateResolution.setEnabled(true);
-            ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
-            btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-        } else {
-            btnCreateResolution.setEnabled(false);
-            ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
-            btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        btnCreateResolution.setEnabled(false);
+        btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        if (resultViewModel.problem.size() != 0 && resultViewModel.solution != 0) {
+            if (resultViewModel.isAttachmentRequired) {
+                if (!resultViewModel.message.remark.equals("")) {
+                    btnCreateResolution.setEnabled(true);
+                    btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+                }
+            } else {
+                btnCreateResolution.setEnabled(true);
+                btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+            }
         }
     }
 
@@ -245,14 +261,6 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     public void updateSolutionString(ResultViewModel resultViewModel) {
         tvSolution.setText(resultViewModel.refundAmount != 0 ? "Kembalikan Rp " + resultViewModel.refundAmount + " ke Pembeli" : resultViewModel.solutionName);
     }
-    @Override
-    public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel,
-                                                        ArrayList<ProblemResult> problemResults) {
-        Intent intent = new Intent(getActivity(), ProductProblemListActivity.class);
-        intent.putExtra(KEY_PARAM_PASS_DATA, productProblemListViewModel);
-        intent.putParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA, problemResults);
-        startActivityForResult(intent, REQUEST_STEP1);
-    }
 
     @Override
     public void showCreateResoResponse(boolean isSuccess, String message) {
@@ -271,22 +279,46 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         Toast.makeText(getActivity(), "error : " + error, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_STEP1) {
-            if (resultCode == Activity.RESULT_OK) {
-                presenter.addResultFromStep1(data.<ProblemResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
-            }
-        } else if (requestCode == REQUEST_STEP2) {
-            if (resultCode == Activity.RESULT_OK) {
-                presenter.addResultFromStep2((ResultViewModel) data.getParcelableExtra(RESULT_VIEW_MODEL_DATA));
-            }
-        } else if (requestCode == REQUEST_STEP3) {
-            if (resultCode == Activity.RESULT_OK) {
-
-            }
+    public void showProgressBar() {
+        if (progressBar.getVisibility() == View.GONE) {
+            progressBar.setVisibility(View.VISIBLE);
         }
+    }
+    public void dismissProgressBar() {
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressBar();
+    }
+
+    @Override
+    public void successLoadProductProblemData(ProductProblemResponseDomain responseDomain) {
+        dismissProgressBar();
+        presenter.updateProductProblemResponseDomain(responseDomain);
+    }
+
+    @Override
+    public void errorLoadProductProblemData(String error) {
+        dismissProgressBar();
+        NetworkErrorHelper.showEmptyState(context, getView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.loadProductProblem(orderId);
+            }
+        });
+    }
+
+    @Override
+    public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel,
+                                                        ArrayList<ProblemResult> problemResults) {
+        Intent intent = new Intent(getActivity(), ProductProblemListActivity.class);
+        intent.putExtra(KEY_PARAM_PASS_DATA, productProblemListViewModel);
+        intent.putParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA, problemResults);
+        startActivityForResult(intent, REQUEST_STEP1);
     }
 
     @Override
@@ -301,5 +333,24 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         Intent intent = new Intent(getActivity(), AttachmentActivity.class);
         intent.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
         startActivityForResult(intent, REQUEST_STEP3);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_STEP1) {
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.addResultFromStep1(data.<ProblemResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
+            }
+        } else if (requestCode == REQUEST_STEP2) {
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.addResultFromStep2((ResultViewModel) data.getParcelableExtra(RESULT_VIEW_MODEL_DATA));
+            }
+        } else if (requestCode == REQUEST_STEP3) {
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.addResultFromStep3((ResultViewModel) data.getParcelableExtra(RESULT_VIEW_MODEL_DATA));
+            }
+        }
     }
 }

@@ -35,4 +35,10 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
         attachment.information = information.length() < 30 ? "" : information;
         mainView.updateView(attachment);
     }
+
+    @Override
+    public void btnContinueClicked() {
+        resultViewModel.message.remark = attachment.information;
+        mainView.submitData(resultViewModel);
+    }
 }

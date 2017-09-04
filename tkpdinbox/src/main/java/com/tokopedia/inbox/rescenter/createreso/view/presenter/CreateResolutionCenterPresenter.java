@@ -15,6 +15,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Stat
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
@@ -62,27 +63,14 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void loadProductProblem(String orderId) {
+        mainView.showLoading();
         resultViewModel.orderId = orderId;
-        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId), new Subscriber<ProductProblemResponseDomain>() {
-            @Override
-            public void onCompleted() {
+        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId), new LoadProductSubscriber(mainView));
+    }
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                mainView.showErrorToast(e.getLocalizedMessage());
-            }
-
-            @Override
-            public void onNext(ProductProblemResponseDomain responseDomain) {
-                if (responseDomain != null) {
-                    productProblemResponseDomain = responseDomain;
-                    mainView.showSuccessToast();
-                }
-            }
-        });
+    @Override
+    public void updateProductProblemResponseDomain(ProductProblemResponseDomain productProblemResponseDomain) {
+        this.productProblemResponseDomain = productProblemResponseDomain;
     }
 
     @Override
@@ -113,6 +101,12 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void addResultFromStep2(ResultViewModel resultViewModel) {
+        this.resultViewModel = resultViewModel;
+        mainView.updateView(resultViewModel);
+    }
+
+    @Override
+    public void addResultFromStep3(ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
         mainView.updateView(resultViewModel);
     }

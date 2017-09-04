@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
@@ -30,6 +31,13 @@ public interface CreateResolutionCenter {
         void showSuccessToast();
 
         void showErrorToast(String error);
+
+        void showLoading();
+
+        void successLoadProductProblemData(ProductProblemResponseDomain responseDomain);
+
+        void errorLoadProductProblemData(String error);
+
     }
 
 
@@ -37,6 +45,8 @@ public interface CreateResolutionCenter {
     interface Presenter extends CustomerPresenter<View> {
 
         void chooseProductProblemClicked();
+
+        void updateProductProblemResponseDomain(ProductProblemResponseDomain productProblemResponseDomain);
 
         void solutionClicked();
 
@@ -49,5 +59,7 @@ public interface CreateResolutionCenter {
         void addResultFromStep1(ArrayList<ProblemResult> problemResultList);
 
         void addResultFromStep2(ResultViewModel resultViewModel);
+
+        void addResultFromStep3(ResultViewModel resultViewModel);
     }
 }
