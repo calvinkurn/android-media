@@ -36,6 +36,10 @@ public class TokenModel implements Parcelable {
     @Expose
     private String refreshToken;
 
+    @SerializedName("scope")
+    @Expose
+    private String scope;
+
 
     public String getAccessToken() {
         return accessToken;
@@ -69,6 +73,13 @@ public class TokenModel implements Parcelable {
         this.refreshToken = refreshToken;
     }
 
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 
     @Override
     public int describeContents() {
@@ -81,6 +92,7 @@ public class TokenModel implements Parcelable {
         dest.writeString(this.tokenType);
         dest.writeInt(this.expiresIn);
         dest.writeString(this.refreshToken);
+        dest.writeString(this.scope);
     }
 
     public TokenModel() {
@@ -91,6 +103,7 @@ public class TokenModel implements Parcelable {
         this.tokenType = in.readString();
         this.expiresIn = in.readInt();
         this.refreshToken = in.readString();
+        this.scope = in.readString();
     }
 
     public static final Parcelable.Creator<TokenModel> CREATOR = new Parcelable.Creator<TokenModel>() {

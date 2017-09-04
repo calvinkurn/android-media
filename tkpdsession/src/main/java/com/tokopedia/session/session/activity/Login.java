@@ -35,6 +35,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.react.ReactApplication;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -764,6 +765,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         int type = resultData.getInt(DownloadService.TYPE, DownloadService.INVALID_TYPE);
 
         Fragment fragment = findFragment(type);
+
+        CommonUtils.dumper("o2o receive result "+resultCode+" type "+type);
 
         if (fragment != null && fragment instanceof BaseView && type != DownloadService.INVALID_TYPE) {
             switch (resultCode) {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
@@ -328,7 +329,13 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                             sessionHandler.setToken(tokenModel.getAccessToken(),
                                     tokenModel.getTokenType()
                             );
+
+                            if(!TextUtils.isEmpty(accountsParameter.getTokenModel().getScope())){
+                                sessionHandler.setScope(accountsParameter.getTokenModel().getScope());
+                            }
+
                         }
+
                         return Observable.just(accountsParameter);
                     }
                 })
@@ -415,7 +422,26 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());
                             result.putBoolean(LOGIN_ACTIVATION_RESENT, accountsParameter.isActivationResent());
-                            receiver.send(DownloadService.STATUS_FINISHED, result);
+
+                            CommonUtils.dumper("o2o scope cached "+sessionHandler.getUserScope());
+                            if (GlobalConfig.isPosApp()) {
+                                if(TextUtils.isEmpty(sessionHandler.getUserScope())){
+                                    CommonUtils.dumper("o2o scope cached empty");
+                                    result.putString(MESSAGE_ERROR_FLAG, "unauthorized");
+                                    result.putInt(TYPE, typeAccess);
+                                    receiver.send(DownloadService.STATUS_ERROR, result);
+                                }else if(!TextUtils.isEmpty(sessionHandler.getUserScope())){
+                                    if(sessionHandler.getUserScope().contains(Login.GRANT_020)){
+                                        receiver.send(DownloadService.STATUS_FINISHED, result);
+                                    }else{
+                                        CommonUtils.dumper("o2o scope cached denied");
+                                        result.putString(MESSAGE_ERROR_FLAG, "unauthorized");
+                                        result.putInt(TYPE, typeAccess);
+                                        receiver.send(DownloadService.STATUS_ERROR, result);
+                                    }
+                                }
+                            } else
+                                receiver.send(DownloadService.STATUS_FINISHED, result);
                         }
                         //showing error
                         else if (accountsParameter.getErrorModel() != null) {

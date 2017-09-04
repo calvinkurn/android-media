@@ -69,6 +69,7 @@ public class SessionHandler {
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
+    private static final String USER_SCOPE = "USER_SCOPE";
     private static final String IS_FIRST_TIME_STORAGE = "IS_FIRST_TIME_STORAGE";
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
     private static final String UUID_KEY = "uuid";
@@ -129,6 +130,7 @@ public class SessionHandler {
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(USER_DATA, null);
+        editor.putString(USER_SCOPE, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -568,6 +570,18 @@ public class SessionHandler {
         Editor editor = sharedPrefs.edit();
         editor.putString(TEMP_NAME, userPhone);
         editor.apply();
+    }
+
+    public void setScope(String scopeName) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, USER_SCOPE, scopeName);
+        editor.apply();
+    }
+
+    public static String getUserScope() {
+        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(USER_SCOPE, "");
     }
 
     public void setToken(String accessToken, String tokenType) {
