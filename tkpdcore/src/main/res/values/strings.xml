@@ -1283,6 +1283,10 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_credit_price">Harga Pulsa</string>
     <string name="title_activity_buy_credit_cart">BuyCreditCart</string>
     <!-- End of String Buy Credit -->
+    <!-- String USSD balance check -->
+    <string name="title_check_credit_balance">Cek sisa pulsa</string>
+    <string name="lable_button_check_balance">Cek Pulsa</string>
+    <!-- End of String USSD balance check -->
     <!-- strings realted to return policy -->
     <string name="instruction_type_policy">Silakan tulis kebijakan</string>
     <string name="table_policy_option">Terima Pengembalian</string>
@@ -1814,6 +1818,8 @@ di Tokopedia Sekarang!</string>
     <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
     <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan?</string>
     <string name="need_permission_SMS">Aplikasi ini membutuhkan izin membaca SMS Verifikasi untuk mempermudah verifikasi. Perbolehkan?</string>
+    <string name="need_permission_Phone">need to add message for USSD call</string>
+
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
     <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
@@ -1822,6 +1828,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
     <string name="permission_get_accounts_denied">Anda tidak memberikan izin akses untuk mengambil akun.</string>
     <string name="permission_sms_denied">Anda tidak memberikan izin akses untuk membaca sms.</string>
+    <string name="permission_phone_denied">Anda tidak memberikan izin akses untuk telepon.</string>
+
 
     <string name="permission_camera_neverask">Anda tidak memberikan izin akses untuk Kamera. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_storage_neverask">Anda tidak memberikan izin akses untuk Media Penyimpanan. Anda bisa memberikan izin melalui Pengaturan.</string>
@@ -1830,6 +1838,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_get_accounts_neverask">Anda tidak memberikan izin akses untuk mengambil akun. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_sms_neverask">Anda tidak memberikan izin akses untuk membaca sms. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_phone_neverask">Anda tidak memberikan izin akses untuk telepon. Anda bisa memberikan izin melalui Pengaturan.</string>
+
 
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
@@ -1841,6 +1851,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_contacts">Kontak</string>
     <string name="permission_location">Lokasi</string>
     <string name="permission_accounts">Akun</string>
+    <string name="permission_phone">Telepon</string>
+
 
     <string name="preorder">PO</string>
     <string name="grosir">Grosir</string>
