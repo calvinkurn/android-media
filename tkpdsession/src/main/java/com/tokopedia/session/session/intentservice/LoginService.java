@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
@@ -30,6 +31,7 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.session.model.LoginEmailModel;
@@ -148,6 +150,9 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         Bundle bundle = new Bundle();
         AccountsParameter data = new AccountsParameter();
         AccountsService accountsService;
+
+        if(GlobalConfig.isPosApp())
+            data.setScope(Login.GRANT_020);
 
         running.putInt(TYPE, type);
         running.putBoolean(LOGIN_SHOW_DIALOG, true);
@@ -442,6 +447,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
             case Login.GRANT_PASSWORD:
                 params.put(Login.USER_NAME, accountsParameter.getEmail());
                 params.put(Login.PASSWORD, accountsParameter.getPassword());
+                if(GlobalConfig.isPosApp()) {
+                    CommonUtils.dumper("o2o grant password scope o2o "+accountsParameter.getScope());
+                    params.put(Login.SCOPE, accountsParameter.getScope());
+                }
                 break;
             case Login.GRANT_SDK:
                 params.put(Login.SOCIAL_TYPE, String.valueOf(accountsParameter.getSocialType()));
@@ -480,6 +489,9 @@ public class LoginService extends IntentService implements DownloadServiceConsta
             @Override
             public AccountsParameter call(AccountsParameter accountsParameter, Response<String> stringResponse) {
                 String response = String.valueOf(stringResponse.body());
+
+                CommonUtils.dumper("o2o Response "+response);
+
                 ErrorModel errorModel = new GsonBuilder().create().fromJson(response, ErrorModel.class);
                 if (errorModel.getError() == null) {
                     TokenModel model = new GsonBuilder().create().fromJson(response, TokenModel.class);
