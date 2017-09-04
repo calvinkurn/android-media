@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 
 import java.util.Collections;
@@ -108,7 +109,7 @@ public class USSDAccessibilityService extends AccessibilityService {
 
     private void closeSystemDialog(AccessibilityNodeInfo source) {
         List<AccessibilityNodeInfo> list = source
-                .findAccessibilityNodeInfosByText("Cancel");
+                .findAccessibilityNodeInfosByText(getString(R.string.label_cancel));
         boolean isClosed = false;
         for (AccessibilityNodeInfo node : list) {
             node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -116,7 +117,7 @@ public class USSDAccessibilityService extends AccessibilityService {
         }
         if (!isClosed) {
             list = source
-                    .findAccessibilityNodeInfosByText("OK");
+                    .findAccessibilityNodeInfosByText(getString(R.string.ok));
             for (AccessibilityNodeInfo node : list) {
                 node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 isClosed = true;
