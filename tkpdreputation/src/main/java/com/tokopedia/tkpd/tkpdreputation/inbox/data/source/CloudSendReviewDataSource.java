@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReviewValidateDomain;
 
@@ -25,7 +27,8 @@ public class CloudSendReviewDataSource {
     public Observable<SendReviewValidateDomain> sendReviewValidation(RequestParams requestParams) {
         return reputationService
                 .getApi()
-                .sendReviewValidate(requestParams.getParameters())
+                .sendReviewValidate(AuthUtil.generateParamsNetwork2(
+                        MainApplication.getAppContext(), requestParams.getParameters()))
                 .map(sendReviewValidateMapper);
     }
 }

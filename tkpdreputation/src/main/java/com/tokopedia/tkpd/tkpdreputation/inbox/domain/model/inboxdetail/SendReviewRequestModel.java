@@ -5,4 +5,13 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
  */
 
 public class SendReviewRequestModel {
+    boolean isValidateSuccess;
+
+    public boolean isValidateSuccess() {
+        return isValidateSuccess;
+    }
+
+    public void setValidateSuccess(boolean validateSuccess) {
+        isValidateSuccess = validateSuccess;
+    }
 }

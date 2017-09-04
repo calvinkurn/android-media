@@ -8,6 +8,7 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
@@ -26,8 +27,10 @@ public interface ReputationApi {
     Observable<Response<TkpdResponse>> getInboxDetail(@QueryMap Map<String, Object> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REPUTATION_SMILEY)
+    @FormUrlEncoded
     Observable<Response<TkpdResponse>> sendSmiley(@FieldMap Map<String, Object> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_VALIDATE)
+    @FormUrlEncoded
     Observable<Response<TkpdResponse>> sendReviewValidate(@FieldMap Map<String, Object> params);
 }

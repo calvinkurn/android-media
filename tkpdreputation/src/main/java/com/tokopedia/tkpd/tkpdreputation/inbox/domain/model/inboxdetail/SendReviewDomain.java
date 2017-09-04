@@ -5,4 +5,13 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
  */
 
 public class SendReviewDomain {
+    boolean isSuccess;
+
+    public SendReviewDomain(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
 }

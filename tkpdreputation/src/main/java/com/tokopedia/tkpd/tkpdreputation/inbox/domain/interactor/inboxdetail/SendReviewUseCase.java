@@ -23,7 +23,9 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
     private static final String PARAM_SHOP_ID = "shop_id";
     private static final String PARAM_PRODUCT_ID = "product_id";
     private static final String PARAM_REVIEW_MESSAGE = "review_message";
-    private static final String PARAM_RATING = "rating";
+    private static final String PARAM_RATING = "rate_quality";
+    private static final String PARAM_RATING_2 = "rate_accuracy";
+
 
     private static final String PARAM_HAS_PRODUCT_REVIEW_PHOTO = "has_product_review_photo";
     private static final String PARAM_REVIEW_PHOTO_ALL = "product_review_photo_all";
@@ -45,24 +47,28 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
     public Observable<SendReviewDomain> createObservable(RequestParams requestParams) {
         final SendReviewRequestModel sendReviewRequestModel = new
                 SendReviewRequestModel();
-        return getObservableValidateReview(requestParams)
+        return getObservableValidateReview(requestParams, sendReviewRequestModel)
                 .flatMap(new Func1<SendReviewRequestModel, Observable<SendReviewDomain>>() {
                     @Override
                     public Observable<SendReviewDomain> call(
                             SendReviewRequestModel sendReviewRequestModel) {
-                        return null;
+                        SendReviewDomain sendReviewDomain =
+                                new SendReviewDomain(sendReviewRequestModel.isValidateSuccess());
+                        return Observable.just(sendReviewDomain);
                     }
                 });
     }
 
     private Observable<SendReviewRequestModel> getObservableValidateReview(
-            RequestParams requestParams) {
+            RequestParams requestParams, final SendReviewRequestModel sendReviewRequestModel) {
         return sendReviewValidateUseCase.getExecuteObservable(requestParams)
                 .flatMap(new Func1<SendReviewValidateDomain, Observable<SendReviewRequestModel>>() {
                     @Override
                     public Observable<SendReviewRequestModel> call(
                             SendReviewValidateDomain sendReviewValidateDomain) {
-                        return null;
+                        sendReviewRequestModel.setValidateSuccess(
+                                sendReviewValidateDomain.getIsSuccess() == 1);
+                        return Observable.just(sendReviewRequestModel);
                     }
                 });
     }
@@ -79,6 +85,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         params.putString(PARAM_REPUTATION_ID, reputationId);
         params.putString(PARAM_SHOP_ID, shopId);
         params.putString(PARAM_RATING, rating);
+        params.putString(PARAM_RATING_2, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
 
 //        params.putString(PARAM_TOKEN, reviewMessage);
