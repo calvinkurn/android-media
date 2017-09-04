@@ -9,13 +9,14 @@ import {
   Dimensions,
 } from 'react-native'
 import PropTypes from 'prop-types'
+import { NavigationModule, NetworkModule } from 'NativeModules'
 
 class Product extends PureComponent {
   render() {
     const product = this.props.product
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => Linking.openURL(`tokopedia://product/${product.id}`)}>
+        <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(`tokopedia://product/${product.id}`, '')}>
           <View>
             <View style={styles.productImageWrapper}>
               <Image source={{ uri: product.image_url }} style={styles.productImage} />
