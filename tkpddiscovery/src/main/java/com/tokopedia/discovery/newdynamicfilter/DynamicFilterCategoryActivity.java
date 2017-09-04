@@ -109,6 +109,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
         rootLayoutManager.scrollToPositionWithOffset(defaultRootPosition, DEFAULT_OFFSET);
 
         categoryChildAdapter = new CategoryChildAdapter(this);
+        categoryChildAdapter.setLastSelectedCategoryId(defaultCategoryId);
         categoryChildAdapter.clear();
         categoryChildAdapter.addAll(categoryList.get(defaultRootPosition).getChildren());
 
