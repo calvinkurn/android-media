@@ -33,7 +33,8 @@ public class TkpdState {
 		public static final int LOGIN = 6;
 		public static final int MANAGE_PEOPLE = 7;
         public static final int MANAGE_PRODUCT = 8;
-        public static final int MANAGE_PRODUCT_DIGITAL = 55;
+        public static final int ADD_PRODUCT = 1001;
+        public static final int MANAGE_PAYMENT_AND_TOPUP = 55;
         public static final int MANAGE_TRANSACTION_DIGITAL = 56;
         public static final int MANAGE_PRICE_PRODUCT_DIGITAL = 57;
         public static final int DRAFT_PRODUCT = 54;
@@ -84,6 +85,7 @@ public class TkpdState {
         public static final int SELLER_PRODUCT_DIGITAL_EXTEND = 54;
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
+        public static final int SELLER_MITRA_TOPPERS = 101;
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
         public static final int SHOP_OPPORTUNITY_LIST = 52;

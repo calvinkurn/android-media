@@ -404,12 +404,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         : getResources().getString(R.string.title_buy)
         );
 
-        UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(), selectedOperator.name, isChecked);
+        UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(),
+                selectedOperator == null ? "" : selectedOperator.name, isChecked);
     }
 
     @Override
     public void onButtonContactClicked() {
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
+        UnifyTracking.eventClickPhoneIcon(category.getAttributes().getName(), selectedOperator == null ? "" : selectedOperator.name);
     }
 
     @OnClick(R.id.btn_buy)
@@ -509,7 +511,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if(motionEvent.getAction()== MotionEvent.ACTION_UP)
                     {
-                        UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(), selectedOperator.name);
+                        UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                                selectedOperator == null ? "" : selectedOperator.name);
                     }
                     return false;
                 }
@@ -1120,7 +1123,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(), selectedOperator==null ? "" : selectedOperator.name);
+            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                    selectedOperator == null ? "" : selectedOperator.name);
             setParentToScroolToTop();
         }
     }

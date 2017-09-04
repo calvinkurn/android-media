@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, StyleSheet, TouchableWithoutFeedback , Linking} from 'react-native'
+import { View, Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { NetworkModule, NavigationModule } from 'NativeModules';
 import PropTypes from 'prop-types'
 import LoadMoreButton from './loadBtn'
@@ -25,7 +25,6 @@ const getCellContent = (data) => {
   if (data) {
     return (
       <TouchableWithoutFeedback onPress={() => {
-        console.log('Brand shop: ', data.shop_apps_url)
         NavigationModule.navigate(data.shop_apps_url, '')
         }}>
       <View style={styles.cellWrapper}>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,11 +47,13 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout linearLayout;
         ImageView bannerImage;
         CardView cardView;
 
         public BannerViewHolder(View itemView) {
             super(itemView);
+            linearLayout = (LinearLayout) itemView.findViewById(R.id.linearlayout_slider_banner_category);
             bannerImage = (ImageView) itemView.findViewById(R.id.image);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
@@ -85,6 +88,14 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         layoutParams.width = width320dp;
         holder.bannerImage.setLayoutParams(layoutParams);
         holder.bannerImage.requestLayout();
+
+        if (bannerList.size() == 1) {
+            holder.linearLayout.setLayoutParams(
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            );
+            holder.linearLayout.requestLayout();
+            holder.linearLayout.setGravity(Gravity.CENTER);
+        }
 
         ImageHandler.LoadImage(
                 holder.bannerImage,

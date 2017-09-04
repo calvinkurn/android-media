@@ -44,6 +44,7 @@ import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
@@ -59,6 +60,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -632,18 +634,33 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         } else if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE) {
             switch (resultCode) {
                 case RESULT_OK:
-                    SparseArray<InstagramMediaModel> instagramMediaModelSparseArray
-                            = Parcels.unwrap(data.getParcelableExtra(PRODUCT_SOC_MED_DATA));
+                    List<InstagramMediaModel> images = data.getParcelableArrayListExtra(PRODUCT_SOC_MED_DATA);
 
-                    //[START] convert instagram model to new models
-                    List<InstagramMediaModel> images = new ArrayList<>();
-                    images.addAll(fromSparseArray(instagramMediaModelSparseArray));
-                    ArrayList<String> paths = new ArrayList<>();
+                    ArrayList<String> standardResoImageUrlList = new ArrayList<>();
                     for (int i = 0; i < images.size(); i++) {
-                        paths.add(images.get(i).standardResolution);
+                        standardResoImageUrlList.add(images.get(i).standardResolution);
                     }
+                    showProgressDialog();
+                    ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
+                    imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, false,
+                            new ImageDownloadHelper.OnImageDownloadListener() {
+                                @Override
+                                public void onError(Throwable e) {
+                                    hideProgressDialog();
+                                    CommonUtils.UniversalToast(GalleryActivity.this,
+                                            ErrorHandler.getErrorMessage(e, GalleryActivity.this));
+                                }
 
-                    convertHttpPathToLocalPath(paths);
+                                @Override
+                                public void onSuccess(ArrayList<String> resultLocalPaths) {
+                                    hideProgressDialog();
+                                    Intent intent = new Intent();
+                                    intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, resultLocalPaths);
+                                    intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
+                                    setResult(GalleryActivity.RESULT_CODE, intent);
+                                    finish();
+                                }
+                            });
                     break;
                 default:
                     // no op
@@ -652,99 +669,20 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-    private Observable<List<File>> downloadImages(final List<String> urls) {
-        return Observable.from(urls)
-                .flatMap(new Func1<String, Observable<File>>() {
-                    @Override
-                    public Observable<File> call(String url) {
-                        return downloadObservable(url);
-                    }
-                }).toList();
-    }
-
-    @NonNull
-    private Observable<File> downloadObservable(String url) {
-        return Observable.just(url)
-                .map(new Func1<String, File>() {
-                    @Override
-                    public File call(String url) {
-                        FutureTarget<File> future = Glide.with(GalleryActivity.this)
-                                .load(url)
-                                .downloadOnly(WIDTH_DOWNLOAD, WIDTH_DOWNLOAD);
-                        try {
-                            File cacheFile = future.get();
-                            String cacheFilePath = cacheFile.getAbsolutePath();
-                            if (compressToTkpd) {
-                                String fileNameToMove = FileUtils.generateUniqueFileName(cacheFilePath);
-                                File photo = FileUtils.writeImageToTkpdPath(
-                                        FileUtils.compressImage(cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                                        fileNameToMove);
-                                if (photo != null) {
-                                    return photo;
-                                }
-                            } else {
-                                return writeImageToTkpdPath(cacheFile);
-                            }
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e.getMessage());
-                        }
-                        return null;
-                    }
-                });
-    }
-
-    public void convertHttpPathToLocalPath(List<String> urls) {
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        progressDialog.setCancelable(false);
-        progressDialog.showDialog();
-
-        downloadImages(urls)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(
-                        new Subscriber<List<File>>() {
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                if (progressDialog != null && progressDialog.isProgress()) {
-                                    progressDialog.dismiss();
-                                }
-                                CommonUtils.UniversalToast(GalleryActivity.this,
-                                        ErrorHandler.getErrorMessage(e, GalleryActivity.this));
-                            }
-
-                            @Override
-                            public void onNext(List<File> files) {
-                                if (progressDialog != null && progressDialog.isProgress()) {
-                                    progressDialog.dismiss();
-                                }
-                                Intent intent = new Intent();
-                                ArrayList<String> localPaths = new ArrayList<>();
-                                for (int i = 0, sizei = files.size(); i < sizei; i++) {
-                                    localPaths.add(files.get(i).getAbsolutePath());
-                                }
-                                intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, localPaths);
-                                intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-                                setResult(GalleryActivity.RESULT_CODE, intent);
-                                finish();
-                            }
-                        }
-                );
-    }
-
-    private List<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data) {
-        List<InstagramMediaModel> modelList = new ArrayList<>();
-        for (int i = 0; i < data.size(); i++) {
-            InstagramMediaModel rawData = data.get(
-                    data.keyAt(i));
-            modelList.add(rawData);
+    private void showProgressDialog(){
+        if (progressDialog == null) {
+            progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog.setCancelable(false);
         }
-        return modelList;
+        if (! progressDialog.isProgress()) {
+            progressDialog.showDialog();
+        }
+    }
+
+    private void hideProgressDialog(){
+        if (progressDialog != null && progressDialog.isProgress()) {
+            progressDialog.dismiss();
+        }
     }
 
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})

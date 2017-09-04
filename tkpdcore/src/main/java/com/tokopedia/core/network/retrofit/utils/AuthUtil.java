@@ -42,7 +42,7 @@ public class AuthUtil {
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     private static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
-    private static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
+    public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
     private static final String HEADER_PATH = "x-tkpd-path";
@@ -60,6 +60,7 @@ public class AuthUtil {
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
     public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
     public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
+    public static final String WEBVIEW_FLAG_PARAM_OS_VERSION = "os_version";
 
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
@@ -73,6 +74,7 @@ public class AuthUtil {
         public static final String KEY_MOJITO = "mojito_api_v1";
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
+        public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(

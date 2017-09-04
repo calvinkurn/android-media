@@ -30,6 +30,7 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     cardioVersion = '5.5.1'
+    reactNativeVersion = '0.46.4'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -137,7 +138,9 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0"
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0",
+            reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
+            codePushReactNative   : "com.microsoft.codepush:react-native-codepush:1.0@aar"
     ]
 
     testDependencies = [

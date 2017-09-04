@@ -8,13 +8,16 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
+import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.product.model.PulsaBalance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +39,21 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     private final IDigitalCategoryRepository categoryRepository;
     private final ILastOrderNumberRepository lastOrderNumberRepository;
     private final LocalCacheHandler localCacheHandler;
+    private final IUssdCheckBalanceRepository ussdCheckBalanceRepository;
 
     public ProductDigitalInteractor(CompositeSubscription compositeSubscription,
                                     IDigitalCategoryRepository categoryRepository,
                                     ILastOrderNumberRepository lastOrderNumberRepository,
-                                    LocalCacheHandler localCacheHandler) {
+                                    LocalCacheHandler localCacheHandler,
+                                    IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
         this.compositeSubscription = compositeSubscription;
         this.categoryRepository = categoryRepository;
         this.lastOrderNumberRepository = lastOrderNumberRepository;
         this.localCacheHandler = localCacheHandler;
+        this.ussdCheckBalanceRepository = ussdCheckBalanceRepository;
+
     }
+
 
     @Override
     public void getCategoryAndBanner(
@@ -202,6 +210,10 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                 for (BannerData bannerData : categoryData.getBannerDataListIncluded()) {
                     bannerDataList.add(bannerData);
                 }
+                List<BannerData> otherBannerDataList = new ArrayList<>();
+                for (BannerData bannerData : categoryData.getOtherBannerDataListIncluded()) {
+                    otherBannerDataList.add(bannerData);
+                }
                 return new ProductDigitalData.Builder()
                         .historyClientNumber(new HistoryClientNumber.Builder()
                                 .lastOrderClientNumber(orderClientNumber)
@@ -209,8 +221,19 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                                 .build())
                         .categoryData(categoryData)
                         .bannerDataList(bannerDataList)
+                        .otherBannerDataList(otherBannerDataList)
                         .build();
             }
         };
+    }
+
+    @Override
+    public void porcessPulsaUssdResponse(RequestBodyPulsaBalance requestBodyPulsaBalance, Subscriber<PulsaBalance> subscriber) {
+        ussdCheckBalanceRepository.processPulsaBalanceUssdResponse(requestBodyPulsaBalance)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber);
+
     }
 }

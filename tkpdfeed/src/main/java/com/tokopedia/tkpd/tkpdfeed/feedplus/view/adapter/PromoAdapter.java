@@ -82,7 +82,9 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             temp.copyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onCopyClicked(temp.promoCode.getText().toString(),
+                    viewListener.onCopyClicked(
+                            list.get(position).getId(),
+                            temp.promoCode.getText().toString(),
                             list.get(position).getName());
                 }
             });
@@ -92,7 +94,9 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             temp.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onSeePromo(list.get(position).getLink(),
+                    viewListener.onSeePromo(
+                            list.get(position).getId(),
+                            list.get(position).getLink(),
                             list.get(position).getName());
                 }
             });
@@ -100,7 +104,9 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             temp.seeArea.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onSeePromo(list.get(position).getLink(),
+                    viewListener.onSeePromo(
+                            list.get(position).getId(),
+                            list.get(position).getLink(),
                             list.get(position).getName());
                 }
             });

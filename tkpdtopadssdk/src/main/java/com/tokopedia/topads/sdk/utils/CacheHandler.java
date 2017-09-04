@@ -195,22 +195,4 @@ public class CacheHandler {
         sharedPrefs.edit().remove(keyName).apply();
     }
 
-    public int getSingleArrayListInteger(String key, int index) {
-        ArrayList<Integer> value = getArrayListInteger(key);
-        if (index < value.size()) {
-            return value.get(index);
-        }
-        return -1;
-    }
-
-    public Boolean modifyArrayListInteger(String key, int index, int newValue) {
-        ArrayList<Integer> value = getArrayListInteger(key);
-        if (index < value.size()) {
-            value.set(index, newValue);
-            putArrayListInteger(key, value);
-            applyEditor();
-            return true;
-        }
-        return false;
-    }
 }

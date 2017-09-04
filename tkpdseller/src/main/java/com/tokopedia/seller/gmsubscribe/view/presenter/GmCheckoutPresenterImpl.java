@@ -1,7 +1,5 @@
 package com.tokopedia.seller.gmsubscribe.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
@@ -20,8 +18,7 @@ import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmAutoSubscribeViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmVoucherViewModel;
-import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.seller.product.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.DeleteShopInfoUseCase;
 
 import javax.inject.Inject;
 

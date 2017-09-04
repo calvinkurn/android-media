@@ -3,6 +3,6 @@ package com.tokopedia.seller.topads.dashboard.view.presenter;
 /**
  * Created by zulfikarrahman on 1/3/17.
  */
-public interface TopAdsDetailGroupPresenter extends TopAdsDetailPresenter {
+public interface TopAdsDetailGroupPresenter extends TopAdsDetailViewPresenter {
 
 }

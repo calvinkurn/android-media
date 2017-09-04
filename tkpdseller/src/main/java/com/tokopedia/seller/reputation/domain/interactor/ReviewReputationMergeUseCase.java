@@ -66,15 +66,6 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
         ).toList();
     }
 
-    @Override
-    public void execute(RequestParams requestParams, Subscriber<List<Object>> subscriber) {
-        createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(subscriber);
-    }
-
     public static class RequestParamFactory {
         public static final String KEY_REVIEW_REPUTATION_CONTAINER_PARAM = "KEY_REVIEW_REPUTATION_CONTAINER_PARAM";
         public static final String KEY_SHOP_INFO_CONTAINER_PARAM = "KEY_SHOP_INFO_CONTAINER_PARAM";

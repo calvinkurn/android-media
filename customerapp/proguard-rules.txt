@@ -274,6 +274,7 @@
 -keepclasseswithmembers class * {
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
+
 -keep class com.tokopedia.ride.common.animator.RouteMapAnimator
 -keepclasseswithmembers class com.tokopedia.ride.common.animator.RouteMapAnimator {
    public <methods>;
@@ -303,5 +304,6 @@
 -keep class com.tkpdfeed.feeds.** { *; }
 # -- End of Feeds --
 
-
+# Fingerprint
+-keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 

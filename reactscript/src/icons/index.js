@@ -10,5 +10,6 @@ export const icons = {
     'infographic_original': require('./infographic-original.png'),
     'infographic_promotion': require('./infographic-promotion.png'),
     'infographic_service': require('./infographic-service.png'),
-    'load_more': require('./load-more.png')
+    'load_more': require('./load-more.png'),
+    'offline': require('./ic_offline2.png')
 }

@@ -4,8 +4,8 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
-import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
-import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase_Table;
 
 import java.util.List;
 

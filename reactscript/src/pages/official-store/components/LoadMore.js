@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableNativeFeedback,
   TouchableOpacity,
+  AsyncStorage,
   Platform,
   Text,
   View,
@@ -10,10 +11,9 @@ import {
 
 const LoadMore = (props) => {
   const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
-  
+
   return (
-    <Touchable
-      onPress={() => { props.canFetch && !props.isFetching ? props.onLoadMore(props.limit, props.offset, props.User_ID) : null }}>
+    <Touchable onPress={() => clickHandler(props)}>
       <View style={styles.container}>
         <View style={styles.button}>
           <Text style={styles.text}>Lihat Selebihnya</Text>
@@ -22,6 +22,16 @@ const LoadMore = (props) => {
     </Touchable>
   )
 }
+
+const clickHandler = (props) => {
+  AsyncStorage.getItem('user_id')
+    .then(uid => {
+      if (props.canFetch && !props.isFetching){
+        props.onLoadMore(props.limit, props.offset, uid)        
+      }
+    })
+}
+
 
 const styles = StyleSheet.create({
   container: {

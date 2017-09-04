@@ -15,6 +15,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewMo
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
 /**
  * @author by nisie on 5/15/17.
@@ -46,6 +47,7 @@ public interface FeedPlusTypeFactory  {
 
     int type(EmptyTopAdsModel emptyModel);
 
+    int type(ToppicksViewModel toppicksViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

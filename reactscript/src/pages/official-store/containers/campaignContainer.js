@@ -9,8 +9,9 @@ import CampaignList from '../components/campaignList'
 class CampaignContainer extends Component {
     componentDidMount() {
         const { dispatch } = this.props
-        const User_ID = this.props.screenProps.User_ID
-        dispatch(fetchCampaigns(User_ID))
+        AsyncStorage.getItem('user_id').then(uid => {
+            dispatch(fetchCampaigns(uid))
+        })
         
         this.addToWishlist = DeviceEventEmitter.addListener("WishlistAdd", (res) => {
             dispatch(addWishlistFromPdp(res))
@@ -22,8 +23,7 @@ class CampaignContainer extends Component {
             const userid_from_login_os = res.user_id
             AsyncStorage.setItem('user_id', userid_from_login_os);
             
-            AsyncStorage.getItem('user_id')
-            .then(uid => {
+            AsyncStorage.getItem('user_id').then(uid => {
                 dispatch(fetchCampaigns(uid))
             })
         })

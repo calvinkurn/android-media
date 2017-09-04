@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
 import com.tkpdfeed.feeds.Feeds;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ContentFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
@@ -109,13 +110,15 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
     createContentFeedDomain(Feeds.Data.Content content,
                             List<ProductFeedDomain> productFeedDomains,
                             List<PromotionFeedDomain> promotionFeedDomains,
-                            List<OfficialStoreDomain> officialStoreDomains) {
+                            List<OfficialStoreDomain> officialStoreDomains,
+                            List<TopPicksDomain> topPicksDomains) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 content.total_product() != null ? content.total_product() : 0,
                 productFeedDomains,
                 promotionFeedDomains,
                 officialStoreDomains,
+                topPicksDomains,
                 content.status_activity());
     }
 
@@ -290,12 +293,16 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
                         convertToPromotionFeedDomain(datum.content().promotions());
                 List<OfficialStoreDomain> officialStoreDomains =
                         convertToOfficialStoresFeedDomain(datum.content().official_store());
+                List<TopPicksDomain> topPicksDomains =
+                        convertToTopPicksDomain(datum.content().top_picks());
                 ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
                         promotionFeedDomains,
-                        officialStoreDomains);
+                        officialStoreDomains,
+                        topPicksDomains
+                );
                 SourceFeedDomain sourceFeedDomain =
                         createSourceFeedDomain(datum.source(), shopFeedDomain);
 
@@ -304,6 +311,23 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
             }
         }
         return dataFeedDomains;
+    }
+
+    private List<TopPicksDomain> convertToTopPicksDomain(List<Feeds.Data.Top_pick> top_picks) {
+        List<TopPicksDomain> listToppicks = new ArrayList<>();
+        if (top_picks != null) {
+            for (Feeds.Data.Top_pick topPick : top_picks) {
+                listToppicks.add(new TopPicksDomain(
+                                topPick.name(),
+                                topPick.url(),
+                                topPick.image_url(),
+                                topPick.image_landscape_url(),
+                                topPick.is_parent()
+                        )
+                );
+            }
+        }
+        return listToppicks;
     }
 
     private DataFeedDomain createDataFeedDomain(Feeds.Data.Datum datum,

@@ -19,19 +19,19 @@
 
     <ImageView
         android:id="@+id/zoom_icon"
-        android:layout_width="@dimen/image_width_xs"
-        android:layout_height="@dimen/image_width_xs"
+        android:layout_width="@dimen/image_width_xxxs"
+        android:layout_height="@dimen/image_width_xxxs"
         android:layout_alignBottom="@id/market_insight_number"
         android:layout_marginBottom="@dimen/margin_vs"
         android:layout_marginEnd="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_toLeftOf="@id/market_insight_number"
-        android:src="@drawable/ic_search_icon" />
+        android:src="@drawable/ic_search_white" />
 
     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
         android:id="@+id/market_insight_progress"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_s"
+        android:layout_height="@dimen/image_width_xxs"
         android:layout_below="@id/market_insight_keyword"
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"

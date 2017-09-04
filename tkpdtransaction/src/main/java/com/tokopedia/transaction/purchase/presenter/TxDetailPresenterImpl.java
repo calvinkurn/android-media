@@ -28,7 +28,6 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.TagHandlerUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.activity.TxHistoryActivity;
@@ -221,6 +220,11 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         showComplainDialog(context, orderData);
     }
 
+    @Override
+    public void processFinish(Context context, OrderData orderData) {
+        showFinishDialog(context, orderData);
+    }
+
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -242,6 +246,32 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         viewListener.showDialog(builder.create());
     }
 
+    private void showFinishDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_finish);
+        TextView tvFinishTitle = (TextView) dialog.findViewById(R.id.tvFinishTitle);
+        TextView tvFinishBody = (TextView) dialog.findViewById(R.id.tvFinishBody);
+        Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
+        Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
+        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle()));
+        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg()));
+        btnComplain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmPurchase(context, dialog, orderData);
+            }
+        });
+
+        dialog.show();
+    }
 
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
@@ -254,8 +284,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
-        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle(), null, new TagHandlerUtil()));
-        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg(), null, new TagHandlerUtil()));
+        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
+        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
 
         llFreeReturn.setVisibility(View.GONE);
         btnBack.setVisibility(View.GONE);
@@ -264,11 +294,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
             btnNotReceive.setVisibility(View.VISIBLE);
         else
             btnBack.setVisibility(View.VISIBLE);
-
-        if (orderData.getOrderDetail().getDetailFreeReturn() == FREE_RETURN) {
-            llFreeReturn.setVisibility(View.VISIBLE);
-            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
-        }
+      
+        //will be used later
+//        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
+//            llFreeReturn.setVisibility(View.VISIBLE);
+//            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+//        }
+      
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -324,9 +356,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
         TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
         TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
-        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle(), null, new TagHandlerUtil()));
-        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg(), null,
-                new TagHandlerUtil()));
+        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle()));
+        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg()));
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

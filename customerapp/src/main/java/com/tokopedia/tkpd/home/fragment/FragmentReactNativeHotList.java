@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.home.fragment;
 
+import android.os.Bundle;
+
 import com.tokopedia.core.app.ReactNativeFragment;
 
 /**
@@ -9,12 +11,12 @@ import com.tokopedia.core.app.ReactNativeFragment;
 public class FragmentReactNativeHotList extends ReactNativeFragment {
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getModuleName() {
+        return "HotList";
     }
 
     @Override
-    public String getModuleName() {
-        return "HotList";
+    protected Bundle getInitialBundle() {
+        return null;
     }
 }

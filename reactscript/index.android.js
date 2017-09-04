@@ -34,7 +34,7 @@ class Home extends Component {
     if (this.props.Screen == 'HotList'){
       return <HotList_ />
     } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore screenProps={{ User_ID: this.props.User_ID }}  />
+      return <OfficialStore Screen={this.props.Screen}  />
     } else if(this.props.Screen == 'pos') {
       return <Pos screenProps={ this.props } />
     } else {
