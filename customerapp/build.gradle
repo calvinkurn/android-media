@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
-apply from: "../buildconfig/react.gradle"
-apply from: "../buildconfig/codepush.gradle"
+apply from: "../buildconfig/reactnative/react.gradle"
+apply from: "../buildconfig/reactnative/codepush.gradle"
 
 
 def getDpiId(String density) {
