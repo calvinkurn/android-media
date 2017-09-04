@@ -945,9 +945,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
             getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.black));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 View decor = getActivity().getWindow().getDecorView();
                 decor.setSystemUiVisibility(0);
@@ -956,12 +956,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
+    private boolean getWindowValidation() {
+        return getActivity() != null && getActivity().getWindow() != null;
+    }
+
     private void initStatusBarLight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getWindowValidation()) {
             View decor = getActivity().getWindow().getDecorView();
             decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.white));
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.white));
         }
     }
 
