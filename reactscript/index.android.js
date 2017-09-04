@@ -8,7 +8,6 @@ import {
   Text,
   AppState,
   AsyncStorage,
-  ActivityIndicator,
   View
 } from 'react-native';
 import { NavigationModule, NetworkModule } from 'NativeModules';
@@ -21,6 +20,7 @@ let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
   componentWillMount() {
+    console.log(this.props)
     if (this.props.User_ID != ''){
       AsyncStorage.setItem('user_id', this.props.User_ID);
     } else {
