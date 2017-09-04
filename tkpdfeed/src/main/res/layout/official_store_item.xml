@@ -31,10 +31,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_image"
+            android:layout_marginBottom="@dimen/unified_margin_vvs"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
-            android:layout_marginBottom="@dimen/unified_margin_vvs"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
@@ -48,20 +48,20 @@
             android:id="@+id/text_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unified_margin_vvs"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_38"
             android:textSize="@dimen/unify_font_small"
             android:textStyle="normal"
-            android:layout_marginBottom="@dimen/unified_margin_vvs"
             tools:text="Rp 2.700.000"
             />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_vs"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:orientation="horizontal">
@@ -100,7 +100,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/labels"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_vs"

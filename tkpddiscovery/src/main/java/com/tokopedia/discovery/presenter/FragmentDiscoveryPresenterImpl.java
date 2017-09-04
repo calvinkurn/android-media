@@ -20,6 +20,7 @@ import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
+import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -163,6 +164,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                 new RetrofitInteractor.AddWishListListener() {
                     @Override
                     public void onSuccess() {
+                        view.actionSuccessAddToWishlist(productId);
                         view.finishLoadingWishList();
                         view.showDialog(createSuccessWishListDialog(context));
                         view.updateWishListStatus(true, itemPosition);
@@ -184,6 +186,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                 new RetrofitInteractor.RemoveWishListListener() {
                     @Override
                     public void onSuccess() {
+                        view.actionSuccessRemoveFromWishlist(productId);
                         view.finishLoadingWishList();
                         view.showToastMessage(context
                                 .getString(com.tokopedia.core.R.string.msg_remove_wishlist));

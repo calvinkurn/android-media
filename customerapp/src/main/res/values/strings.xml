@@ -34,6 +34,7 @@
     <string name="toko_cash_pending_title">Bonus Cashback</string>
     <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
     <string name="toko_cash_pending_close_button">Tutup</string>
+    <string name="react_native_banner_official_title">Official Store</string>
 
     <!--tokocash history-->
     <string name="toko_cash_title_page_date_range">Rentang Tanggal</string>

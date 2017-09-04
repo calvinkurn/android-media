@@ -19,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProductAdapter.ViewHolder>{
+public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProductAdapter.ViewHolder> {
 
     protected ArrayList<ProductFeedViewModel> list;
     private final Context context;
@@ -60,7 +60,8 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+                viewListener.onGoToProductDetail(list.get(position).getPage(),
+                        String.valueOf(list.get(position).getProductId()));
 
             }
         });
@@ -68,7 +69,8 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+                viewListener.onGoToProductDetail(list.get(position).getPage(),
+                        String.valueOf(list.get(position).getProductId()));
 
             }
         });

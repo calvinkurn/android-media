@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class ActivityCardViewModel extends ProductCardViewModel {
 
     private final int totalProduct;
+    private final int page;
     private ProductCardHeaderViewModel productCardHeaderViewModel;
     private String shareUrl;
     private String actionText;
@@ -25,7 +26,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                                  String actionText,
                                  String feedId,
                                  int totalProduct,
-                                 String cursor) {
+                                 String cursor, int page) {
         this.listProduct = listProduct;
         this.productCardHeaderViewModel = productCardHeaderViewModel;
         this.shareUrl = shareUrl;
@@ -34,6 +35,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         this.feedId = feedId;
         this.totalProduct = totalProduct;
         this.cursor = cursor;
+        this.page = page;
     }
 
     @Override
@@ -100,5 +102,9 @@ public class ActivityCardViewModel extends ProductCardViewModel {
 
     public void setCursor(String cursor) {
         this.cursor = cursor;
+    }
+
+    public int getPage() {
+        return page;
     }
 }

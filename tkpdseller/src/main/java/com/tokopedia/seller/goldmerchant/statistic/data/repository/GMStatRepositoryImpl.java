@@ -16,7 +16,7 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionSt
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
 import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.product.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import javax.inject.Inject;
 

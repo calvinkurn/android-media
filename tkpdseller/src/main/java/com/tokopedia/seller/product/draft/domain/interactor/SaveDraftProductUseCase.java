@@ -1,11 +1,11 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import javax.inject.Inject;
 
@@ -16,7 +16,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class SaveDraftProductUseCase extends CompositeUseCase<Long> {
+public class SaveDraftProductUseCase extends UseCase<Long> {
     private static final String UPLOAD_PRODUCT_INPUT_MODEL = "UPLOAD_PRODUCT_INPUT_MODEL";
     private static final String IS_UPLOADING = "IS_UPLOADING";
     private static final String PREV_DRAFT_ID = "P_DRAFT_ID";

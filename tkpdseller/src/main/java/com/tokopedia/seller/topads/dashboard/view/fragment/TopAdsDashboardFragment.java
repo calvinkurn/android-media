@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
@@ -218,7 +219,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         openDatePicker();
     }
 
-    void onStatisticImpressionClicked() {
+    protected void onStatisticImpressionClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_IMPR);
@@ -226,7 +227,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    void onStatisticClickClicked() {
+    protected void onStatisticClickClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CLICK);
@@ -234,7 +235,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    void onStatisticCtrClicked() {
+    protected void onStatisticCtrClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CTR);
@@ -242,7 +243,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    void onStatisticConversionClicked() {
+    protected void onStatisticConversionClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CONVERTION);
@@ -250,7 +251,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    void onStatisticAverageClicked() {
+    protected void onStatisticAverageClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_AVG);
@@ -258,7 +259,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    void onStatisticCostClicked() {
+    protected void onStatisticCostClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_SPENT);
@@ -267,6 +268,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     void goToAddCredit() {
+        UnifyTracking.eventTopAdsProductAddBalance();
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
         startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT);
     }

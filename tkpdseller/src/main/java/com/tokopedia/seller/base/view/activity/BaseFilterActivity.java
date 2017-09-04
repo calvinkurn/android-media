@@ -123,7 +123,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
         changeContent(filterContentFragmentList.get(position));
     }
 
-    private void setFilterChangedResult() {
+    protected Intent setFilterChangedResult() {
         Intent intent = getDefaultIntentResult();
         // overwrite with changes
         for (Fragment topAdsFilterContentFragment : filterContentFragmentList) {
@@ -134,6 +134,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
             }
         }
         setResult(Activity.RESULT_OK, intent);
+        return intent;
     }
 
 

@@ -783,14 +783,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
-//            navigateToActivity(
-//                    DigitalWebActivity.newInstance(
-//                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-//                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
-//                    )
-//            );
+            if (categoryDataState != null) {
+                UnifyTracking.eventClickDaftarTransaksiEvent(categoryDataState.getName(), categoryDataState.getName());
+            }
 
-            navigateToActivity(WalletAccountSettingActivity.newInstance(getActivity(), new WalletAccountSettingPassData()));
+            navigateToActivity(
+                    DigitalWebActivity.newInstance(
+                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
+                    )
+            );
             return true;
         } else {
             return super.onOptionsItemSelected(item);
