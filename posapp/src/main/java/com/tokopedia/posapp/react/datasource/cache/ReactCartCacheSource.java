@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.core.database.model.CartDB;
 import com.tokopedia.core.database.model.CartDB_Table;
-import com.tokopedia.core.database.o2o.CartDbManager;
-import com.tokopedia.core.database.o2o.QueryParameter;
+import com.tokopedia.posapp.database.manager.CartDbManager;
+import com.tokopedia.posapp.database.QueryParameter;
 import com.tokopedia.core.react.data.model.CacheResult;
 
 import java.util.ArrayList;

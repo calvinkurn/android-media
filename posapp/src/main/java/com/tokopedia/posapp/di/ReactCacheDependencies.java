@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.react.di;
+package com.tokopedia.posapp.di;
 
 import android.content.Context;
 

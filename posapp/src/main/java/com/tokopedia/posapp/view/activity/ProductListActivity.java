@@ -36,7 +36,7 @@ public class ProductListActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        ProductListFragment fragment = ProductListFragment.newInstance("1325661", "etalase");
+        ProductListFragment fragment = ProductListFragment.newInstance(SessionHandler.getShopID(this), "etalase");
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getSupportFragmentManager().findFragmentByTag(

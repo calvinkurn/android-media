@@ -879,26 +879,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void actionSuccessAddToWishlist(Integer productId) {
-        ReactUtils.init(MainApplication.getInstance())
-                .sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
     public void actionSuccessRemoveFromWishlist(Integer productId) {
-        ReactUtils.init(MainApplication.getInstance())
-                .sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
     public void actionSuccessAddFavoriteShop(String shopId) {
         if (productData.getShopInfo().getShopAlreadyFavorited() == 1) {
             productData.getShopInfo().setShopAlreadyFavorited(0);
-            ReactUtils.init(MainApplication.getInstance())
-                    .sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            ReactUtils.sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
         } else {
             productData.getShopInfo().setShopAlreadyFavorited(1);
-            ReactUtils.init(MainApplication.getInstance())
-                    .sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            ReactUtils.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
         }
     }
 

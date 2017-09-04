@@ -6,6 +6,7 @@ import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
+import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
 import rx.Observable;
 
@@ -30,7 +31,7 @@ public class ShopCloudSource {
         return shopApi.getInfo(params.getParamsAllValueInString()).map(getShopMapper);
     }
 
-    public Observable<ProductModel> getProductList(RequestParams params) {
+    public Observable<ShopProductListDomain> getProductList(RequestParams params) {
         return shopApi.getProductList(params.getParamsAllValueInString()).map(getProductListMapper);
     }
 }

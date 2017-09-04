@@ -1,4 +1,4 @@
-package com.tokopedia.core.database.o2o;
+package com.tokopedia.posapp.database;
 
 /**
  * Created by okasurya on 8/28/17.

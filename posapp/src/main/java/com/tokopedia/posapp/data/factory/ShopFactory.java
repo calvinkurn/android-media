@@ -4,6 +4,7 @@ import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
 import com.tokopedia.posapp.data.source.cloud.ShopCloudSource;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
+import com.tokopedia.posapp.data.source.local.ShopLocalSource;
 
 /**
  * Created by okasurya on 8/3/17.
@@ -24,5 +25,9 @@ public class ShopFactory {
 
     public ShopCloudSource getShopFromCloud() {
         return new ShopCloudSource(shopApi, shopMapper, getProductListMapper);
+    }
+
+    public ShopLocalSource getShopFromLocal() {
+        return new ShopLocalSource();
     }
 }

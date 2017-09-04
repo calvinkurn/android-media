@@ -7,6 +7,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.repository.ShopRepository;
+import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import rx.Observable;
  * Created by okasurya on 8/28/17.
  */
 
-public class GetProductListUseCase extends UseCase<ProductModel> {
+public class GetProductListUseCase extends UseCase<ShopProductListDomain> {
     ShopRepository shopRepository;
 
     public GetProductListUseCase(ThreadExecutor threadExecutor,
@@ -28,7 +29,7 @@ public class GetProductListUseCase extends UseCase<ProductModel> {
     }
 
     @Override
-    public Observable<ProductModel> createObservable(RequestParams requestParams) {
+    public Observable<ShopProductListDomain> createObservable(RequestParams requestParams) {
         return shopRepository.getProductList(requestParams);
     }
 }

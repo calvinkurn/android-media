@@ -34,4 +34,13 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
             return Observable.error(e);
         }
     }
+
+    @Override
+    public Observable<String> getDataAll(String tableName) {
+        try {
+            return cacheFactory.createCacheDataSource(tableName).getAllData();
+        } catch (TableNotFoundException e) {
+            return Observable.error(e);
+        }
+    }
 }

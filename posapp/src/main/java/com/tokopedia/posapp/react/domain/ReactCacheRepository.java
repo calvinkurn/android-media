@@ -12,4 +12,5 @@ public interface ReactCacheRepository {
 
     Observable<String> getDataList(String tableName, int offset, int limit);
 
+    Observable<String> getDataAll(String tableName);
 }

@@ -6,7 +6,6 @@ import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ProductFactory;
-import com.tokopedia.posapp.data.mapper.GetProductCampaignMapper;
 import com.tokopedia.posapp.data.mapper.GetProductDomainMapper;
 import com.tokopedia.posapp.data.mapper.GetProductMapper;
 import com.tokopedia.posapp.data.repository.ProductRepository;
@@ -40,12 +39,6 @@ public class ProductModule {
 
     @Provides
     @ProductScope
-    GetProductCampaignMapper provideGetProductCampaignMapper() {
-        return new GetProductCampaignMapper();
-    }
-
-    @Provides
-    @ProductScope
     GetProductMapper provideGetProductMapper() {
         return new GetProductMapper();
     }
@@ -60,9 +53,8 @@ public class ProductModule {
     @ProductScope
     ProductFactory provideProductFactory(ProductApi productApi,
                                          MojitoApi mojitoApi,
-                                         GetProductMapper getProductMapper,
-                                         GetProductCampaignMapper getProductCampaignMapper) {
-        return new ProductFactory(productApi, mojitoApi, getProductMapper, getProductCampaignMapper);
+                                         GetProductMapper getProductMapper) {
+        return new ProductFactory(productApi, mojitoApi, getProductMapper);
     }
 
     @Provides

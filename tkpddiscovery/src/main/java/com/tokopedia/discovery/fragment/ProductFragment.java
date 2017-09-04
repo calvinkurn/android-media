@@ -698,14 +698,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void actionSuccessRemoveFromWishlist(Integer productId) {
-        ReactUtils.init(MainApplication.getInstance())
-                .sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
     public void actionSuccessAddToWishlist(Integer productId) {
-        ReactUtils.init(MainApplication.getInstance())
-                .sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override

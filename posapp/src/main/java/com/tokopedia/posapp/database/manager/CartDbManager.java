@@ -1,4 +1,4 @@
-package com.tokopedia.core.database.o2o;
+package com.tokopedia.posapp.database.manager;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
@@ -14,22 +14,27 @@ import java.util.List;
 public class CartDbManager implements DbManagerOperation<CartDB, CartDB> {
 
     @Override
-    public void store(CartDB data) {
+    public void store(CartDB data, TransactionListener callback) {
         data.save();
     }
 
     @Override
-    public void update(CartDB data) {
+    public void store(List<CartDB> data, TransactionListener callback) {
+
+    }
+
+    @Override
+    public void update(CartDB data, TransactionListener callback) {
         data.update();
     }
 
     @Override
-    public void delete(ConditionGroup conditions) {
+    public void delete(ConditionGroup conditions, TransactionListener callback) {
         Delete.table(CartDB.class, conditions);
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll(TransactionListener callback) {
         Delete.table(CartDB.class);
     }
 

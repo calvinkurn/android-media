@@ -27,7 +27,7 @@ public class StartUpReceiver extends BroadcastReceiver {
         this.context = context;
 
         // start service after device completed booting
-        intentService = FetcherService.getServiceIntent(context);
+        intentService = CacheService.getServiceIntent(context);
         context.startService(intentService);
 
         setAlarm(MORNING_HOUR_SCHEDULE);
@@ -60,7 +60,7 @@ public class StartUpReceiver extends BroadcastReceiver {
 
     /**
      * The server could be overloaded just because each client request data at the same time,
-     * hence we created a random time range.
+     * hence I created a random time range.
      *
      * @param begin beginning hour of time range
      * @param end ending hour of time range

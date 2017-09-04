@@ -572,8 +572,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void destroy() {
         if (SessionHandler.isV4Login(this)){
-            ReactUtils.init(MainApplication.getInstance())
-                    .sendLoginEmitter(SessionHandler.getLoginID(this));
+            ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(this));
         }
         Log.d(getClass().getSimpleName(), "destroy");
         this.setResult(RESULT_OK);
