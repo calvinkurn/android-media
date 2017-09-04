@@ -25,7 +25,7 @@ public class Option implements Serializable, Parcelable {
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
     public static final String UID_SEPARATOR_SYMBOL = "#";
-    public static final String METRIC_INTERNATIONAL = "international";
+    public static final String METRIC_INTERNATIONAL = "International";
 
     @SerializedName("name")
     @Expose
