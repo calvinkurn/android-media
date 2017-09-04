@@ -39,7 +39,7 @@ public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVar
             Glide.with(imageView.getContext()).load(variantManageViewModel.getImageUrl())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else {
-            imageView.setBackgroundColor(Color.WHITE);
+            imageView.setBackgroundColor(Color.LTGRAY);
             imageView.setImageDrawable(null);
         }
         titleTextView.setText(variantManageViewModel.getTitle());
