@@ -3,20 +3,19 @@ import {
   View,
   Text,
   StyleSheet,
-  Linking,
   TouchableWithoutFeedback,
   Image,
   Dimensions,
 } from 'react-native'
-import { NetworkModule, NavigationModule } from 'NativeModules';
 import PropTypes from 'prop-types'
+import { NavigationModule, NetworkModule } from 'NativeModules'
 
 class Product extends PureComponent {
   render() {
     const product = this.props.product
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => NavigationModule.navigate('tokopedia://product/'+product.id, '')}>
+        <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(`tokopedia://product/${product.id}`, '')}>
           <View>
             <View style={styles.productImageWrapper}>
               <Image source={{ uri: product.image_url }} style={styles.productImage} />
@@ -45,20 +44,21 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
-    width: Dimensions.get('window').width / 3,
+    width: '33%',
     backgroundColor: 'white',
     borderRadius: 3,
     margin: 3,
   },
   productImageWrapper: {
+    alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: 'rgba(255,255,255,0)',
-    padding: 10
+    paddingVertical: 10,
   },
   productImage: {
     borderRadius: 3,
-    width: 110,
-    height: 110,
+    width: 100,
+    height: 100,
     resizeMode: 'cover'
   },
   productName: {

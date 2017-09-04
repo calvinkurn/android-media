@@ -6,14 +6,33 @@ import {
   DrawerLayoutAndroid,
   ToolbarAndroid,
   Dimensions,
-  TextInput
+  TextInput,
+  Modal,
 } from 'react-native'
 import VisibleProductList from '../containers/VisibleProductList'
 import Ticker from '../components/Ticker'
+import CartContainer from '../containers/CartContainer'
+import SearchContainer from '../containers/SearchContainer'
 
 export default class POS extends Component {
+  constructor() {
+    super()
+    this.state = {
+      cartOpen: false,
+      searchOpen: false
+    }
+  }
   onActionSelected = (position) => {
-    console.log(position)
+    if (position === 1) {
+      console.log('onActionSelected called')
+      this.setState({
+        cartOpen: true
+      })
+    } else {
+      this.setState({
+        searchOpen: true
+      })
+    }
   }
 
   onIconClick = () => {
@@ -33,7 +52,13 @@ export default class POS extends Component {
         ref={(drawer) => { this.drawerPane = drawer; }}
         renderNavigationView={() => navigationView}>
         <View style={styles.container}>
-          <ToolbarAndroid style={{ width: Dimensions.get('window').width, height: 60, backgroundColor: '#42b549' }}
+          <CartContainer
+            visible={this.state.cartOpen}
+            onBackPress={() => { this.setState({ cartOpen: false }) }} />
+          <SearchContainer
+            visible={this.state.searchOpen}
+            onBackPress={() => { this.setState({ searchOpen: false }) }} />
+          <ToolbarAndroid style={{ width: '100%', height: 60, backgroundColor: '#42b549' }}
             navIcon={require('./img/icon-burgermenu.png')}
             onIconClicked={this.onIconClick}
             actions={[
@@ -43,7 +68,7 @@ export default class POS extends Component {
                 show: 'always'
               },
               {
-                title: 'Add To Cart',
+                title: 'Cart',
                 icon: require('./img/icon-Cart.png'),
                 show: 'always'
               },]}
@@ -63,7 +88,7 @@ export default class POS extends Component {
             />
           </ToolbarAndroid>
           <Ticker />
-          <VisibleProductList screenProps={this.props.screenProps}/>
+          <VisibleProductList />
         </View>
       </DrawerLayoutAndroid>
 

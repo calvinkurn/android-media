@@ -15,22 +15,19 @@ import Product from '../components/Product'
 class VisibleProductList extends Component {
   constructor(props) {
     super(props)
-    this.shopId = props.screenProps.SHOP_ID
   }
 
   onPickerChange = (value, index) => {
     const etalaseId = value
     this.props.dispatch(onEtalaseChange(etalaseId))
     this.props.dispatch(resetProductList())
-    setTimeout(() => {
-      this.props.dispatch(fetchProducts(this.shopId, 0, 25, value))
-    }, 500)
+    this.props.dispatch(fetchProducts(1987772, 0, 25, value))
   }
 
   componentDidMount() {
     const { dispatch } = this.props
     const { start, rows } = this.props.products.pagination
-    dispatch(fetchEtalase(this.shopId))
+    dispatch(fetchEtalase(1987772))
   }
 
   renderProduct = ({ item }) => {
@@ -43,7 +40,7 @@ class VisibleProductList extends Component {
     }
     const { start, rows } = this.props.products.pagination
     const etalaseId = this.props.etalases.selected
-    this.props.dispatch(fetchProducts(this.shopId, start, rows, etalaseId))
+    this.props.dispatch(fetchProducts(1987772, start, rows, etalaseId))
   }
 
   handleRefresh = () => {
@@ -51,8 +48,8 @@ class VisibleProductList extends Component {
     const selectedEtalase = this.props.etalases.selected
 
     dispatch(pullToRefresh())
-    dispatch(fetchProducts(this.shopId, 0, 25, selectedEtalase))
-    dispatch(fetchEtalase(this.shopId))
+    dispatch(fetchProducts(1987772, 0, 25, selectedEtalase))
+    dispatch(fetchEtalase(1987772))
   }
 
   render() {
@@ -63,7 +60,7 @@ class VisibleProductList extends Component {
     const selectedEtalase = this.props.etalases.selected
 
     return (
-      <View>
+      <View style={styles.container}>
         <View style={styles.productListHeader}>
           <Text style={styles.etalaseText}>Etalase: </Text>
           <StorefrontPicker
@@ -73,7 +70,6 @@ class VisibleProductList extends Component {
             options={etalases} />
         </View>
         {products.length > 0 && <FlatList
-          contentContainerStyle={styles.container}
           data={products}
           keyExtractor={item => item.id}
           renderItem={this.renderProduct}
@@ -107,9 +103,8 @@ const mapStateToProps = state => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    paddingBottom: 200,
+   flex: 1,
+   width: '90%',
   },
   productListHeader: {
     flexDirection: 'row',

@@ -28,8 +28,9 @@ StorefrontPicker.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    width: 150,
-    height: 30,
+    width: 200,
+    height: 40,
+    marginLeft: 5,
     backgroundColor: '#fff',
   }
 })
