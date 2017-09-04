@@ -114,4 +114,21 @@ public class NetworkParam {
         params.put(PARAM_PRODUCT_ID, productId + "");
         return params;
     }
+
+    public static Map<String, String> paramProductTalk(String productId, String shopId) {
+        Map<String, String> param = new HashMap<>();
+        param.put(PARAM_PRODUCT_ID, productId);
+        param.put("page", String.valueOf(1));
+        param.put("per_page", String.valueOf(10));
+        param.put("shop_domain", shopId);
+        return param;
+    }
+
+    public static Map<String, String> paramTalkComment(String talkId, String shopId) {
+        Map<String, String> param = new HashMap<>();
+        param.put("page", String.valueOf(1));
+        param.put("talk_id", talkId);
+        param.put("shop_id", shopId);
+        return param;
+    }
 }

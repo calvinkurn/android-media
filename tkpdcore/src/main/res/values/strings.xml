@@ -307,6 +307,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_catalog">Katalog</string>
     <string name="title_preorder">Preorder</string>
     <string name="title_desc">Deskripsi Produk</string>
+    <string name="title_most_helpful">Ulasan Paling Membantu</string>
+    <string name="title_all_reviews">Lihat Semua Ulasan</string>
     <string name="title_shop_info">Penjual</string>
     <string name="title_speed">Kecepatan</string>
     <string name="title_accuracy">Akurasi</string>
