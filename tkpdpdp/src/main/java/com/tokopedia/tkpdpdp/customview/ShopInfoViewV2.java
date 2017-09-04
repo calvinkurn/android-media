@@ -184,7 +184,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         @Override
         public void onClick(View v) {
-            listener.onProductShopFaveClicked(data.getShopInfo().getShopId());
+            listener.onProductShopFaveClicked(data.getShopInfo().getShopId(), data.getInfo().getProductId());
         }
     }
 

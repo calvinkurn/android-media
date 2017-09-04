@@ -28,16 +28,28 @@ import dagger.Component;
 @Component(modules = TopAdsCreatePromoModule.class, dependencies = AppComponent.class)
 public interface TopAdsCreatePromoComponent {
     void inject(TopAdsNewScheduleNewGroupFragment topAdsNewScheduleFragment);
+
     void inject(TopAdsNewCostWithoutGroupFragment topAdsNewCostWithoutGroupFragment);
+
     void inject(TopAdsNewProductListExistingGroupFragment topAdsNewProductListExistingGroupFragment);
+
     void inject(TopAdsNewProductListNewGroupFragment topAdsNewProductListNewGroupFragment);
+
     void inject(TopAdsNewProductListWithoutGroupFragment topAdsNewProductListWithoutGroupFragment);
+
     void inject(TopAdsEditCostWithoutGroupFragment topAdsEditCostWithoutGroupFragment);
+
     void inject(TopAdsEditCostShopFragment topAdsEditCostShopFragment);
+
     void inject(TopAdsEditCostExistingGroupFragment topAdsEditCostExistingGroupFragment);
+
     void inject(TopAdsNewScheduleShopFragment topAdsNewScheduleShopFragment);
+
     void inject(TopAdsEditScheduleExistingGroupFragment topAdsEditScheduleExistingGroupFragment);
+
     void inject(TopAdsEditScheduleShopFragment topAdsEditScheduleShopFragment);
+
     void inject(TopAdsEditScheduleWithoutGroupFragment topAdsEditScheduleWithoutGroupFragment);
+
     void inject(TopAdsEditGroupNameFragment topAdsEditGroupNameFragment);
 }

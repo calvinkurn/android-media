@@ -214,8 +214,9 @@ public interface ProductDetailView extends ViewListener {
      * Pada saat tombol favorite toko diklik
      *
      * @param shopId id toko tersebut
+     * @param productId
      */
-    void onProductShopFaveClicked(String shopId);
+    void onProductShopFaveClicked(String shopId, Integer productId);
 
 
     /**
@@ -276,4 +277,10 @@ public interface ProductDetailView extends ViewListener {
     void showSuccessWishlistSnackBar();
 
     void showProductCampaign(ProductCampaign productCampaign);
+
+    void actionSuccessAddToWishlist(Integer productId);
+
+    void actionSuccessRemoveFromWishlist(Integer productId);
+
+    void actionSuccessAddFavoriteShop(String shopId);
 }

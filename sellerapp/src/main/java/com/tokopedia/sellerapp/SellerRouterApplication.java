@@ -24,6 +24,8 @@ import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -190,6 +192,16 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void actionAppLink(Context context, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionApplink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
 
     }
 
