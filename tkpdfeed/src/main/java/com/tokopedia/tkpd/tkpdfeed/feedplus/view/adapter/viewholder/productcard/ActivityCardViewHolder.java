@@ -21,8 +21,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 
@@ -134,7 +134,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         ClickableSpan goToFeedDetail = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+                viewListener.onGoToFeedDetail(
+                        activityCardViewModel.getPage(),
+                        activityCardViewModel.getFeedId());
             }
 
             @Override
@@ -205,7 +207,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+                viewListener.onGoToFeedDetail(
+                        activityCardViewModel.getPage(),
+                        activityCardViewModel.getFeedId());
             }
         });
     }
