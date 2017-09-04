@@ -247,7 +247,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
             android:layout_margin="@dimen/padding_activity"
-            android:background="@drawable/green_button_rounded"
+            android:background="@drawable/bg_button_disabled"
+            android:textColor="@color/grey_700"
             android:enabled="false"
             android:text="@string/submit_review"/>
     </LinearLayout>

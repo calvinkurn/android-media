@@ -16,7 +16,9 @@ import rx.Observable;
 public class SendSmileyReputationUseCase extends UseCase<SendSmileyReputationDomain> {
 
     private static final String PARAM_VALUE = "smiley";
-    protected ReputationRepository reputationRepository;
+    private static final String PARAM_REPUTATION_ID = "reputationId";
+
+    private ReputationRepository reputationRepository;
 
     public SendSmileyReputationUseCase(ThreadExecutor threadExecutor,
                                        PostExecutionThread postExecutionThread,
@@ -30,9 +32,10 @@ public class SendSmileyReputationUseCase extends UseCase<SendSmileyReputationDom
         return reputationRepository.sendSmiley(requestParams);
     }
 
-    public static RequestParams getParam(String value) {
+    public static RequestParams getParam(String reputationId, String value) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_VALUE, value);
+        params.putString(PARAM_REPUTATION_ID, reputationId);
         return params;
     }
 }

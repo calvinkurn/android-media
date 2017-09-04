@@ -41,8 +41,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static android.os.Build.VERSION_CODES.M;
-
 /**
  * @author by nisie on 8/19/17.
  */
@@ -222,9 +220,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToGiveReview() {
+    public void onGoToGiveReview(String reviewId, String productId, int shopId) {
         startActivityForResult(
-                InboxReputationFormActivity.getGiveReviewIntent(getActivity()),
+                InboxReputationFormActivity.getGiveReviewIntent(getActivity(), reviewId,
+                        passModel.getReputationId(), productId, String.valueOf(shopId)),
                 REQUEST_GIVE_REVIEW);
     }
 
@@ -270,7 +269,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            presenter.sendSmiley(value);
+                            presenter.sendSmiley(passModel.getReputationId(), value);
                         }
                     });
             builder.setNegativeButton(getString(R.string.title_cancel),

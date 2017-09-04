@@ -112,7 +112,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 detailDomain.isReviewHasReviewed(),
                 detailDomain.isReviewIsEditable(),
                 detailDomain.isReviewIsSkippable(),
-                detailDomain.isReviewIsSkipped()
+                detailDomain.isReviewIsSkipped(),
+                detailDomain.getProductData().getShopId()
         );
     }
 

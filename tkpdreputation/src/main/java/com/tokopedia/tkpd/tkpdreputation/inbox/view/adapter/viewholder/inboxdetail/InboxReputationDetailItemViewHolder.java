@@ -59,7 +59,7 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     @Override
-    public void bind(InboxReputationDetailItemViewModel element) {
+    public void bind(final InboxReputationDetailItemViewModel element) {
         productName.setText(element.getProductName());
         ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
 
@@ -81,7 +81,9 @@ public class InboxReputationDetailItemViewHolder extends
         giveReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToGiveReview();
+                viewListener.onGoToGiveReview(element.getReviewId(),
+                        element.getProductId(),
+                        element.getShopId());
             }
         });
 

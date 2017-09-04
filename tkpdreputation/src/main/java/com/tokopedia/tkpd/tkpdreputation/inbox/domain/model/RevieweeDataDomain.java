@@ -6,6 +6,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model;
 
 public class RevieweeDataDomain {
 
+    private int revieweeRoleId;
     private String revieweeName;
     private String revieweeUri;
     private String revieweeRole;
@@ -14,7 +15,7 @@ public class RevieweeDataDomain {
     private RevieweeBadgeCustomerDomain revieweeBadgeCustomer;
 
     public RevieweeDataDomain(String revieweeName, String revieweeUri,
-                              String revieweeRole, String revieweePicture,
+                              String revieweeRole, int revieweeRoleId, String revieweePicture,
                               RevieweeBadgeCustomerDomain revieweeBadgeCustomer,
                               RevieweeBadgeSellerDomain revieweeBadgeSeller) {
         this.revieweeName = revieweeName;
@@ -23,6 +24,7 @@ public class RevieweeDataDomain {
         this.revieweePicture = revieweePicture;
         this.revieweeBadgeCustomer = revieweeBadgeCustomer;
         this.revieweeBadgeSeller = revieweeBadgeSeller;
+        this.revieweeRoleId = revieweeRoleId;
     }
 
     public String getRevieweeName() {
@@ -47,5 +49,9 @@ public class RevieweeDataDomain {
 
     public RevieweeBadgeCustomerDomain getRevieweeBadgeCustomer() {
         return revieweeBadgeCustomer;
+    }
+
+    public int getRevieweeRoleId() {
+        return revieweeRoleId;
     }
 }

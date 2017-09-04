@@ -812,9 +812,17 @@ public class TkpdBaseURL {
 
     public static class Reputation {
         public static final String URL_REPUTATION = WEB_DOMAIN + "reputationapp/";
+        private static final String REPUTATION_VERSION = "v1";
 
-        public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/v1/inbox";
-        public static final String PATH_GET_DETAIL_INBOX_REPUTATION = "review/api/v1/list";
+        public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/"
+                + REPUTATION_VERSION + "/inbox";
+        public static final String PATH_GET_DETAIL_INBOX_REPUTATION = "review/api/"
+                + REPUTATION_VERSION + "/list";
         public static final String PATH_SEND_REPUTATION_SMILEY = "repuation";
+        public static final String PATH_SEND_REVIEW_VALIDATE = "review/api/"
+                + REPUTATION_VERSION + "/insert/validate";
+        public static final String PATH_SEND_REVIEW_SUBMIT = "review/api/"
+                + REPUTATION_VERSION + "/insert/submit";
+
     }
 }

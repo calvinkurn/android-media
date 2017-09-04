@@ -65,9 +65,10 @@ public class InboxReputationDetailPresenter
     }
 
     @Override
-    public void sendSmiley(String value) {
+    public void sendSmiley(String reputationId, String value) {
         viewListener.showLoadingDialog();
-        sendSmileyReputationUseCase.execute(SendSmileyReputationUseCase.getParam(value),
+        sendSmileyReputationUseCase.execute(SendSmileyReputationUseCase.getParam(reputationId,
+                value),
                 new SendSmileySubscriber(viewListener));
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.user.apis;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
@@ -27,4 +28,6 @@ public interface ReputationApi {
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REPUTATION_SMILEY)
     Observable<Response<TkpdResponse>> sendSmiley(@FieldMap Map<String, Object> params);
 
+    @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_VALIDATE)
+    Observable<Response<TkpdResponse>> sendReviewValidate(@FieldMap Map<String, Object> params);
 }

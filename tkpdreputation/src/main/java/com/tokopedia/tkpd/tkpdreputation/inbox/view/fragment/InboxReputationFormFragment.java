@@ -1,14 +1,23 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,27 +25,46 @@ import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationFormPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * @author by nisie on 8/20/17.
  */
 
+@RuntimePermissions
 public class InboxReputationFormFragment extends BaseDaggerFragment
         implements InboxReputationForm.View {
+
+    public static final String CACHE_INBOX_REPUTATION_FORM = "CACHE_INBOX_REPUTATION_FORM";
 
     RatingBar rating;
     TextView ratingText;
@@ -48,14 +76,23 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     Switch anomymousSwitch;
     Button sendButton;
     ImageUploadAdapter adapter;
+    boolean isValidRating = false;
+    boolean isValidReview = false;
+
+    TkpdProgressDialog progressDialog;
 
     @Inject
     InboxReputationFormPresenter presenter;
 
-    public static InboxReputationFormFragment createInstance(String id) {
+
+    public static InboxReputationFormFragment createInstance(String reviewId, String
+            reputationId, String productId, String shopId) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
-//        bundle.putString(InboxReputationDetailActivity.ARGS_REPUTATION_ID, id);
+        bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId);
+        bundle.putString(InboxReputationFormActivity.ARGS_REVIEW_ID, reviewId);
+        bundle.putString(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -103,11 +140,30 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         adapter.setCanUpload(true);
         adapter.setListener(new ImageUploadAdapter.ProductImageListener() {
             @Override
-            public View.OnClickListener onUploadClicked(int position) {
+            public View.OnClickListener onUploadClicked(final int position) {
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        review.clearFocus();
+                        KeyboardHandler.DropKeyboard(getActivity(), review);
+                        presenter.onImageUploadClicked(position);
+                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                        myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
+                        myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                InboxReputationFormFragmentPermissionsDispatcher.actionImagePickerWithCheck(InboxReputationFormFragment.this);
+                            }
+                        });
+                        myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                InboxReputationFormFragmentPermissionsDispatcher.actionCameraWithCheck(InboxReputationFormFragment.this);
+                            }
+                        });
+                        Dialog dialog = myAlertDialog.create();
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.show();
                     }
                 };
             }
@@ -145,26 +201,210 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                if(rating == 1.0f){
+                if (rating == 1.0f) {
                     ratingText.setText(MainApplication.getAppContext().getString(R.string
                             .rating_title_1));
-                }else if(rating == 2.0f){
+                    isValidRating = true;
+                } else if (rating == 2.0f) {
                     ratingText.setText(MainApplication.getAppContext().getString(R.string
                             .rating_title_2));
-                }else if(rating == 3.0f){
+                    isValidRating = true;
+                } else if (rating == 3.0f) {
                     ratingText.setText(MainApplication.getAppContext().getString(R.string
                             .rating_title_3));
-                }else if(rating == 4.0f){
+                    isValidRating = true;
+                } else if (rating == 4.0f) {
                     ratingText.setText(MainApplication.getAppContext().getString(R.string
                             .rating_title_4));
-                }else if(rating == 5.0f){
+                    isValidRating = true;
+                } else if (rating == 5.0f) {
                     ratingText.setText(MainApplication.getAppContext().getString(R.string
                             .rating_title_5));
-                }else if(rating == 0.0f){
+                    isValidRating = true;
+                } else if (rating == 0.0f) {
                     ratingText.setText(MainApplication.getAppContext().getString(R.string
                             .rating_title_0));
+                    isValidRating = false;
                 }
+
+                setButtonEnabled();
             }
         });
+
+        review.addTextChangedListener(watcher(reviewLayout));
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.sendReview(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                        review.getText().toString(),
+                        rating.getRating(),
+                        adapter.getList(),
+                        shareFbSwitch.isChecked(),
+                        anomymousSwitch.isChecked());
+            }
+        });
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void actionCamera() {
+        presenter.openCamera();
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void actionImagePicker() {
+        presenter.openImageGallery();
+    }
+
+
+    private void setButtonEnabled() {
+        if (isValidRating && isValidReview) {
+            sendButton.setEnabled(true);
+            sendButton.setTextColor(getResources().getColor(R.color.white));
+            MethodChecker.setBackground(sendButton, getResources().getDrawable(R.drawable.green_button_rounded));
+        } else {
+            sendButton.setEnabled(false);
+            sendButton.setTextColor(getResources().getColor(R.color.grey_700));
+            MethodChecker.setBackground(sendButton, getResources().getDrawable(R.drawable.bg_button_disabled));
+        }
+    }
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                    isValidReview = true;
+                    setButtonEnabled();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                    isValidReview = false;
+                    setButtonEnabled();
+                }
+            }
+        };
+    }
+
+    private void setWrapperError(TextInputLayout wrapper, String s) {
+        if (s == null) {
+            wrapper.setError(s);
+            wrapper.setErrorEnabled(false);
+        } else {
+            wrapper.setErrorEnabled(true);
+            wrapper.setError(s);
+        }
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null && getActivity() != null) {
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+
+        if (progressDialog != null)
+            progressDialog.showDialog();
+    }
+
+    @Override
+    public void onErrorSendReview(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessSendReview() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+    @Override
+    public void finishLoadingProgress() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ImageUploadHandler.REQUEST_CODE
+                && resultCode == Activity.RESULT_OK) {
+
+        } else if (requestCode == ImageUploadHandler.REQUEST_CODE
+                && resultCode == GalleryBrowser.RESULT_CODE) {
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        InboxReputationFormFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                InboxReputationFormFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

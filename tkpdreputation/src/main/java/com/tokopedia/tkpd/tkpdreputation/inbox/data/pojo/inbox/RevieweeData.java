@@ -15,6 +15,9 @@ public class RevieweeData {
     @SerializedName("reviewee_role")
     @Expose
     private String revieweeRole;
+    @SerializedName("reviewee_role_id")
+    @Expose
+    private int revieweeRoleId;
     @SerializedName("reviewee_picture")
     @Expose
     private String revieweePicture;
@@ -73,4 +76,7 @@ public class RevieweeData {
         this.revieweeShopBadge = revieweeShopBadge;
     }
 
+    public int getRevieweeRoleId() {
+        return revieweeRoleId;
+    }
 }

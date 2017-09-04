@@ -26,11 +26,13 @@ public class SendSmileySubscriber extends Subscriber<SendSmileyReputationDomain>
 
     @Override
     public void onError(Throwable e) {
+        viewListener.finishLoadingDialog();
         viewListener.onErrorSendSmiley(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(SendSmileyReputationDomain sendSmileyReputationDomain) {
+        viewListener.finishLoadingDialog();
         viewListener.onSuccessSendSmiley();
 
     }

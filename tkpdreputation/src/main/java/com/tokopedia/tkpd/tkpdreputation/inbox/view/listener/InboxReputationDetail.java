@@ -29,7 +29,7 @@ public interface InboxReputationDetail {
 
         void onSkipReview(String reviewId);
 
-        void onGoToGiveReview();
+        void onGoToGiveReview(String reviewId, String productId, int shopId);
 
         void onErrorSendSmiley(String errorMessage);
 
@@ -46,6 +46,6 @@ public interface InboxReputationDetail {
 
         void getNextPage(int lastItemPosition, int visibleItem);
 
-        void sendSmiley(String value);
+        void sendSmiley(String reputationId, String value);
     }
 }

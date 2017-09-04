@@ -149,6 +149,7 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
                 revieweeData.getRevieweeName(),
                 revieweeData.getRevieweeUri(),
                 revieweeData.getRevieweeRole(),
+                revieweeData.getRevieweeRoleId(),
                 revieweeData.getRevieweePicture(),
                 mappingToRevieweeBadgeCustomer(revieweeData.getRevieweeBuyerBadge()),
                 mappingToRevieweeBadgeSeller(revieweeData.getRevieweeShopBadge())

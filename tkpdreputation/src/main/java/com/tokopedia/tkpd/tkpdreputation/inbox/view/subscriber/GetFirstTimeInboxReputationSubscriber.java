@@ -71,15 +71,11 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
                     String.valueOf(domain.getReputationData().getLockingDeadlineDays()),
                     domain.getOrderData().getInvoiceRefNum(),
                     convertToReputationViewModel(domain.getReputationData()),
-                    domain.getRevieweeData().getRevieweeRole().toLowerCase().equals("seller") ?
-                            InboxReputationItemViewModel.ROLE_SELLER
-                            : InboxReputationItemViewModel.ROLE_BUYER,
+                    domain.getRevieweeData().getRevieweeRoleId(),
                     convertToBuyerReputationViewModel(domain.getRevieweeData()
                             .getRevieweeBadgeCustomer()),
                     convertToSellerReputationViewModel(domain.getRevieweeData()
-                            .getRevieweeBadgeSeller())
-
-            ));
+                            .getRevieweeBadgeSeller())));
         }
         return list;
     }
