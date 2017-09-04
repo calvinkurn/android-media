@@ -288,9 +288,10 @@ public class ProductVariantUtils {
      */
     public static List<ProductVariantUnitSubmit> getValidatedVariantUnitList(List<ProductVariantUnitSubmit> variantUnitSubmitList) {
         int variantUnitSubmitSize = variantUnitSubmitList.size();
+
         for (int i = variantUnitSubmitSize - 1; i >= 0; i--) {
             ProductVariantUnitSubmit variantUnitSubmit = variantUnitSubmitList.get(i);
-            if (!isVariantUnitValid(variantUnitSubmit)) {
+            if (!isVariantUnitValid(variantUnitSubmit) || !isVariantLevelOneNotEmpty(variantUnitSubmitList)) {
                 variantUnitSubmitList.remove(i);
             }
         }
@@ -325,7 +326,7 @@ public class ProductVariantUtils {
      * @param productVariantUnitSubmit
      * @return
      */
-    private static boolean isVariantUnitValid(ProductVariantUnitSubmit productVariantUnitSubmit) {
+    public static boolean isVariantUnitValid(ProductVariantUnitSubmit productVariantUnitSubmit) {
         return productVariantUnitSubmit.getProductVariantOptionSubmitList().size() > 0;
     }
 
@@ -470,6 +471,28 @@ public class ProductVariantUtils {
     }
 
     /**
+     * if option list empty at level 1, then the others need to reset
+     * for example level 1 empty, level 2, 3, 4 need to be removed
+     * @return true if option list at level 1 not empty
+     * @param variantUnitSubmitList
+     */
+    private static boolean isVariantLevelOneNotEmpty(List<ProductVariantUnitSubmit> variantUnitSubmitList) {
+        ProductVariantUnitSubmit productVariantUnitSubmit = ProductVariantUtils.getVariantUnitByLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmitList);
+        return productVariantUnitSubmit != null &&
+                productVariantUnitSubmit.getProductVariantOptionSubmitList() != null &&
+                productVariantUnitSubmit.getProductVariantOptionSubmitList().size() > 0;
+    }
+
+    private static ProductVariantUnitSubmit getVariantUnitByLevel(int variantLevel, List<ProductVariantUnitSubmit> variantUnitSubmitList) {
+        for (ProductVariantUnitSubmit productVariantUnitSubmit : variantUnitSubmitList) {
+            if (productVariantUnitSubmit.getPosition() == variantLevel) {
+                return productVariantUnitSubmit;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Remove variant option by option id and return removed variant list
      * eg [{"v": 2,"vu": 0,"pos": 1,"pv": null,"opt":[{"pvo": 0,"vuv": 22,"t_id": 1,"cstm": ""},{"pvo": 0,"vuv": 23,"t_id": 2,"cstm": ""}]},
      * {"v": 3,"vu": 3,"pos": 2,"pv": null,"opt": [{"pvo": 0,"vuv": 15,"t_id": 3,"cstm": ""},{"pvo": 0,"vuv": 16,"t_id": 4,"cstm": ""}]}
@@ -521,7 +544,7 @@ public class ProductVariantUtils {
      * @param variantUnitSubmitList
      * @return
      */
-    private static ProductVariantUnitSubmit getVariantUnitByOptionId(long optionId, List<ProductVariantUnitSubmit> variantUnitSubmitList) {
+    public static ProductVariantUnitSubmit getVariantUnitByOptionId(long optionId, List<ProductVariantUnitSubmit> variantUnitSubmitList) {
         for (ProductVariantUnitSubmit productVariantUnitSubmit : variantUnitSubmitList) {
             ProductVariantOptionSubmit productVariantOptionSubmit = getVariantOptionByOptionId(optionId, productVariantUnitSubmit.getProductVariantOptionSubmitList());
             if (productVariantOptionSubmit != null) {

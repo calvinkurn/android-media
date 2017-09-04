@@ -32,6 +32,8 @@ allprojects {
                 password = "${artifactory_password}"
             }
         }
+        maven { url "$rootDir/node_modules/react-native/android" }
+
     }
 }
 

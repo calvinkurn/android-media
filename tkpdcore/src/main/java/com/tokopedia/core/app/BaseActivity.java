@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.localytics.android.Localytics;
@@ -310,7 +311,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onForceLogout() {
-        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
+        //if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
     }
 
     @Override
@@ -388,6 +389,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (GlobalConfig.isAllowDebuggingTools()
+                && keyCode == KeyEvent.KEYCODE_MENU
+                && MainApplication.getInstance().getReactNativeHost().getReactInstanceManager() != null) {
+            MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
 
