@@ -79,7 +79,14 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             tvPromoTopAds.setVisibility(VISIBLE);
             tvBuy.setBackgroundResource(R.drawable.btn_promo_ads);
             tvBuy.setOnClickListener(new PromoteClick(data));
-            tvPromoTopAds.setOnClickListener(new PromoteTopAdsClick());
+            tvPromoTopAds.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        listener.onPromoAdsClicked();
+                    }
+                }
+            });
         } else {
             if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                     && !data.getPreOrder().getPreorderStatus().equals("0")
@@ -154,14 +161,6 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                 bundle.putBoolean("login", true);
                 listener.onProductBuySessionNotLogin(bundle);
             }
-        }
-    }
-
-    private class PromoteTopAdsClick implements OnClickListener {
-
-        @Override
-        public void onClick(View view) {
-            listener.onPromoAdsClicked();
         }
     }
 }

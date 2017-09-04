@@ -36,16 +36,6 @@ public class TopAdsAddCreditActivity extends BaseSimpleActivity {
                     .setData(uri.build())
                     .putExtras(extras);
         } else {
-//            Intent intent = new Intent("com.tokopedia.tkpd.APPLINK");
-//            intent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-//
-//            PackageManager packageManager = context.getPackageManager();
-//            List activities = packageManager.queryIntentActivities(intent,
-//                    PackageManager.MATCH_DEFAULT_ONLY);
-//            boolean isIntentSafe = activities.size() > 0;
-//            if (isIntentSafe) {
-//                return intent;
-//            }
             Intent launchIntent = context.getPackageManager()
                     .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
             if (launchIntent == null) {

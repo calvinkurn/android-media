@@ -89,6 +89,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String PRODUCT_NAME = "CACHE_PRODUCT_NAME";
     private static final String DATE_EXPIRE = "CACHE_EXPIRED_DATE";
+    private static final String IS_UNPROMOTED_PRODUCT = "0";
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
@@ -879,10 +880,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
             @Override
             public void onSuccess(String adsId) {
-                if(adsId.equals("0")){
-                    openPromoteAds(context, "sellerapp://topads/create?user_id="+userId);
+                if(adsId.equals(IS_UNPROMOTED_PRODUCT)){
+                    openPromoteAds(context, String.format("%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, userId));
                 } else {
-                    openPromoteAds(context, "sellerapp://topads/product/"+adsId+"?user_id="+userId);
+                    openPromoteAds(context, String.format("%s/%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS, adsId, userId));
                 }
             }
 

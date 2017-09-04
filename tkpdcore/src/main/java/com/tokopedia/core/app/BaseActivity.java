@@ -149,8 +149,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
-        Log.v("tes 1", getIntent().toString());
-        Log.v("tes 2", String.valueOf(getIntent().getStringExtra(Constants.EXTRA_APPLINK)));
     }
 
     private void sendScreenAnalytics() {
