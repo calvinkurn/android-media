@@ -7,12 +7,12 @@
     android:orientation="vertical">
 
     <CheckBox
+        android:layout_centerVertical="true"
         android:id="@+id/checkbox_top_ads_add_product_list_promoted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="19dp"
         android:layout_marginRight="19dp"
-        android:layout_marginTop="20dp"
         android:button="@drawable/selector_unable_selection" />
 
     <TextView
@@ -24,6 +24,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
         android:layout_toRightOf="@id/checkbox_top_ads_add_product_list_promoted"
         android:textColor="@color/grey_300"
         android:textSize="16sp"

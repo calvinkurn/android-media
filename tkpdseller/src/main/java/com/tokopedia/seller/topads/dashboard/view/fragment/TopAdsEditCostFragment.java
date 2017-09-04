@@ -39,6 +39,7 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
     protected void initView(View view) {
         super.initView(view);
         headerText.setVisibility(View.GONE);
+        titleCost.setTextSize(getResources().getDimension(R.dimen.font_subheading));
         submitButton.setText(getString(R.string.label_top_ads_save));
     }
 

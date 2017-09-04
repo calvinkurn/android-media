@@ -43,6 +43,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected Button submitButton;
     protected ProgressDialog progressDialog;
     protected TextView headerText;
+    protected TextView titleCost;
 
     protected V detailAd;
 
@@ -52,7 +53,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     }
 
     protected boolean isError() {
-        return maxPriceInputLayout.isErrorEnabled() || maxPriceInputLayout.getError() != null;
+        return maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null;
     }
 
     protected abstract V initiateDetailAd();
@@ -70,6 +71,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetPerDayEditText = (PrefixEditText) view.findViewById(R.id.edit_text_budget_per_day);
         submitButton = (Button) view.findViewById(R.id.button_submit);
         headerText = (TextView) view.findViewById(R.id.header_text);
+        titleCost = (TextView) view.findViewById(R.id.title_cost);
         // trigger the watcher first time
         budgetPerDayEditText.setText(budgetPerDayEditText.getText());
         progressDialog = new ProgressDialog(getActivity());
