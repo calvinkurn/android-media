@@ -61,8 +61,6 @@ public class TokoCashHeaderView extends RelativeLayout {
         final String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData
                 .getDrawerTokoCashAction());
         headerTokoCashLabel.setText(tokoCashLabel);
-        if(showTopUpButton) tokoCashButton.setVisibility(VISIBLE);
-        else tokoCashButton.setVisibility(GONE);
         if (tokoCashData.getLink() == 1) {
             setOnClickListener(onMainViewClickedListener(tokoCashRedirectUrl));
             tokoCashAmount.setText(tokoCashData.getBalance());
@@ -70,6 +68,8 @@ public class TokoCashHeaderView extends RelativeLayout {
             tokoCashButton.setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashActionRedirectUrl));
             pendingLayout.setVisibility(GONE);
             normalLayout.setVisibility(VISIBLE);
+            if(showTopUpButton) tokoCashButton.setVisibility(VISIBLE);
+            else tokoCashButton.setVisibility(GONE);
         } else {
             actionListener.onRequestPendingCashBack();
             tokoCashButton.setOnClickListener(onActivationClickedListener());
