@@ -273,7 +273,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         UnifyTracking.eventPDPDetail(pdt);
         TrackingUtils.sendMoEngageOpenProductEvent(successResult);
 
-        if(successResult.getShopInfo().getShopIsOfficial()==1){
+        if (successResult.getShopInfo().getShopIsOfficial() == 1) {
             ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), AppScreen.SCREEN_OFFICIAL_STORE);
         }
 
@@ -327,14 +327,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void requestFaveShop(@NonNull Context context, @NonNull String shopId) {
+    public void requestFaveShop(@NonNull Context context, @NonNull final String shopId, final Integer productId) {
         if (SessionHandler.isV4Login(context)) {
             retrofitInteractor.favoriteShop(context,
                     NetworkParam.paramFaveShop(shopId),
                     new RetrofitInteractor.FaveListener() {
                         @Override
                         public void onSuccess(boolean status) {
-                            if (status) viewListener.onShopFavoriteUpdated(1);
+                            if (status) {
+                                viewListener.onShopFavoriteUpdated(1);
+                                viewListener.actionSuccessAddFavoriteShop(shopId);
+                                cacheInteractor.deleteProductDetail(productId);
+                            }
                         }
 
                         @Override
@@ -516,7 +520,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     if (SessionHandler.isV4Login(context)) {
                         LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
                         int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
-                        if (CartCache > 0 && menuCart!=null) {
+                        if (CartCache > 0 && menuCart != null) {
                             menuCart.setIcon(R.drawable.cart_active_white);
                         }
                     }
@@ -618,7 +622,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void saveStateProductCampaign(Bundle outState, String key, ProductCampaign value) {
-        if(value != null) outState.putParcelable(key, value);
+        if (value != null) outState.putParcelable(key, value);
     }
 
     @Override
@@ -638,7 +642,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             }
         }
 
-        if(productCampaign != null) {
+        if (productCampaign != null) {
             viewListener.showProductCampaign(productCampaign);
         }
     }
@@ -721,6 +725,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.finishLoadingWishList();
                         viewListener.showSuccessWishlistSnackBar();
                         viewListener.updateWishListStatus(1);
+                        viewListener.actionSuccessAddToWishlist(productId);
                         cacheInteractor.deleteProductDetail(productId);
                     }
 
@@ -742,6 +747,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.showToastMessage(context
                                 .getString(R.string.msg_remove_wishlist));
                         viewListener.updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
+                        viewListener.actionSuccessRemoveFromWishlist(productId);
                         cacheInteractor.deleteProductDetail(productId);
                     }
 
@@ -862,7 +868,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     }
 
                     @Override
-                    public void onError(String error) { }
+                    public void onError(String error) {
+                    }
                 }
         );
     }

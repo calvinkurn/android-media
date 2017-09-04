@@ -59,7 +59,7 @@ public interface ProductDetailPresenter {
 
     void requestProductDetail(final @NonNull Context context, final @NonNull ProductPass productPass, int type, boolean forceNetwork);
 
-    void requestFaveShop(@NonNull Context context, @NonNull String shopId);
+    void requestFaveShop(@NonNull Context context, @NonNull String shopId, Integer productId);
 
     void processResultEdit(int resultCode, Intent data);
 

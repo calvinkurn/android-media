@@ -3,12 +3,9 @@ package com.tokopedia.seller.goldmerchant.statistic.view.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -25,13 +22,15 @@ import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment
 public class GMStatisticDashboardActivity extends DrawerPresenterActivity
         implements SessionHandler.onLogoutListener, HasComponent<GoldMerchantComponent> {
 
+    public static final String TAG = GMStatisticDashboardActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new GMStatisticDashboardFragment(), ProductDraftListFragment.TAG).commit();
+                    .replace(R.id.container, new GMStatisticDashboardFragment(), TAG).commit();
         }
     }
 
@@ -122,6 +121,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
 
     @Override
     public GoldMerchantComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent(getActivityModule());
+        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent();
     }
 }

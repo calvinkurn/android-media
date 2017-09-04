@@ -27,9 +27,9 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
     }
 
     protected List<T> data;
-    private Callback callback;
+    protected Callback<T> callback;
 
-    public void setCallback(Callback callback) {
+    public void setCallback(Callback<T> callback) {
         this.callback = callback;
     }
 
@@ -52,7 +52,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
                 super.onBindViewHolder(holder, position);
                 break;
             default:
-                bindData(position, holder);
+                bindViewHolder(position, holder);
                 break;
         }
     }
@@ -76,10 +76,14 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
     }
 
-    private void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
+    private void bindViewHolder(final int position, RecyclerView.ViewHolder viewHolder) {
         if (data.size() <= position) {
             return;
         }
+        bindData(position, viewHolder);
+    }
+
+    protected void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
         final T t = data.get(position);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +94,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
             }
         });
         if (viewHolder instanceof BaseViewHolder) {
-            ((BaseViewHolder) viewHolder).bindObject(t);
+            ((BaseViewHolder<T>) viewHolder).bindObject(t);
         }
     }
 

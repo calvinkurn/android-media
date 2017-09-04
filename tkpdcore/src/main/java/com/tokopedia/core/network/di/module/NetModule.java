@@ -7,6 +7,7 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
@@ -115,6 +116,14 @@ public class NetModule {
     public Retrofit provideMerlinRetrofit(@NoAuth OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MERLIN_DOMAIN).client(okHttpClient).build();
+    }
+
+    @TomeQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideTomeRetrofit(@NoAuth OkHttpClient okHttpClient,
+                                          Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
     }
 
     @ResolutionQualifier

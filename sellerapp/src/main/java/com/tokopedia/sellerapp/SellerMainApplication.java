@@ -137,6 +137,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = SellerAppBaseUrl.BASE_MOBILE_DOMAIN;
         TkpdBaseURL.BASE_CONTACT_US = SellerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
+        TkpdBaseURL.TOME_DOMAIN = SellerAppBaseUrl.BASE_TOME_DOMAIN;
     }
 
     public void initializeDatabase() {

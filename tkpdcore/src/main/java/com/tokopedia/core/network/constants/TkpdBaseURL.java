@@ -5,6 +5,10 @@ package com.tokopedia.core.network.constants;
  */
 public class TkpdBaseURL {
 
+    public static final String URL_TOKOCASH = "https://tokocash.com/";
+    public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
+    public static final String FLAG_APP = "?flag_app=1";
+    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
     public static String DEFAULT_TOKOPEDIA_WEBSITE_URL = "https://www.tokopedia.com/";
     public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     public static String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
@@ -48,11 +52,8 @@ public class TkpdBaseURL {
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
-    public static final String URL_TOKOCASH = "https://tokocash.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
-    public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
-    public static final String FLAG_APP = "?flag_app=1";
-    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
+    public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -729,11 +730,6 @@ public class TkpdBaseURL {
         public static final String PATH_LINK_WALLET_TO_TOKOCASH = "link";
     }
 
-    public class TkpdCart {
-        public static final String CHECK_VOUCHER = "v1/voucher/verify";
-        public static final String CHECKOUT_ORDER = "v1/cart/order";
-    }
-
     public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
@@ -812,5 +808,17 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
+        public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
+        public static final String PATH_CC_DELETE = "v2/ccvault/delete";
+
+    }
+
+    public static class FinTech {
+        public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
+
+    }
+    public class TkpdCart {
+        public static final String CHECK_VOUCHER = "v1/voucher/verify";
+        public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
 }

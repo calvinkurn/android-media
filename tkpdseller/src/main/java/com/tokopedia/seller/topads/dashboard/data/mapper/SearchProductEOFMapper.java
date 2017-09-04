@@ -4,7 +4,7 @@ package com.tokopedia.seller.topads.dashboard.data.mapper;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
 

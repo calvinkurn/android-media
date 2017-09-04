@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.dashboard.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsGroupAdFactory;
@@ -143,14 +143,14 @@ public class TopAdsCreatePromoModule {
 
     @TopAdsDashboardScope
     @Provides
-    TopAdsSearchProductRepository provideTopAdsSearchProductRepository(@ActivityContext Context context,
+    TopAdsSearchProductRepository provideTopAdsSearchProductRepository(@ApplicationContext Context context,
                                                                        CloudTopAdsSearchProductDataSource cloudTopAdsSearchProductDataSource) {
         return new TopAdsSearchProductRepositoryImpl(context, cloudTopAdsSearchProductDataSource);
     }
 
     @TopAdsDashboardScope
     @Provides
-    TopAdsManagementService provideTopAdsManagementService(@ActivityContext Context context) {
+    TopAdsManagementService provideTopAdsManagementService(@ApplicationContext Context context) {
         return new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
     }
 
