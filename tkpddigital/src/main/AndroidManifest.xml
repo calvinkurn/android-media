@@ -45,11 +45,15 @@
         <activity
             android:name=".wallets.wallettodeposit.WalletToDepositThanksActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".tokocash.activity.TopUpTokoCashActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".tokocash.activity.HistoryTokocashActivity"
-            android:screenOrientation="portrait" />
+        <activity
+            android:name=".tokocash.activity.TopUpTokoCashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.HistoryTokocashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".wallets.accountsetting.WalletAccountSettingActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

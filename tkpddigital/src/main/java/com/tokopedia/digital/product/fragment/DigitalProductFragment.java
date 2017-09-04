@@ -80,6 +80,8 @@ import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.digital.wallets.accountsetting.WalletAccountSettingActivity;
+import com.tokopedia.digital.wallets.accountsetting.WalletAccountSettingPassData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -781,12 +783,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
-            navigateToActivity(
-                    DigitalWebActivity.newInstance(
-                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
-                    )
-            );
+//            navigateToActivity(
+//                    DigitalWebActivity.newInstance(
+//                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+//                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
+//                    )
+//            );
+
+            navigateToActivity(WalletAccountSettingActivity.newInstance(getActivity(), new WalletAccountSettingPassData()));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

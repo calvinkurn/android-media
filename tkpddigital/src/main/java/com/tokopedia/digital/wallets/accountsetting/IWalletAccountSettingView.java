@@ -7,4 +7,18 @@ import com.tokopedia.digital.cart.listener.IBaseView;
  */
 
 public interface IWalletAccountSettingView extends IBaseView {
+
+    void renderWalletAccountSettingData(WalletAccountSettingData walletAccountSettingData);
+
+    void renderErrorGetWalletAccountSettingData(String message);
+
+    void renderErrorHttpGetWalletAccountSettingData(String message);
+
+    void renderErrorNoConnectionGetWalletAccountSettingData(String message);
+
+    void renderErrorTimeoutConnectionGetWalletAccountSettingData(String message);
+
+    void disableSwipeRefresh();
+
+    void enableSwipeRefresh();
 }

@@ -16,6 +16,7 @@ public class WalletAccountSettingData implements Parcelable {
     private String name;
     private String email;
     private String phoneNumber;
+    private String titleListConnectedUser;
     private List<WalletAccountSettingConnectedUserData> connectedUserDataList = new ArrayList<>();
 
     public String getSubTitle() {
@@ -59,6 +60,17 @@ public class WalletAccountSettingData implements Parcelable {
     }
 
 
+    public WalletAccountSettingData() {
+    }
+
+    public String getTitleListConnectedUser() {
+        return titleListConnectedUser;
+    }
+
+    public void setTitleListConnectedUser(String titleListConnectedUser) {
+        this.titleListConnectedUser = titleListConnectedUser;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -70,10 +82,8 @@ public class WalletAccountSettingData implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.email);
         dest.writeString(this.phoneNumber);
+        dest.writeString(this.titleListConnectedUser);
         dest.writeTypedList(this.connectedUserDataList);
-    }
-
-    public WalletAccountSettingData() {
     }
 
     protected WalletAccountSettingData(Parcel in) {
@@ -81,11 +91,12 @@ public class WalletAccountSettingData implements Parcelable {
         this.name = in.readString();
         this.email = in.readString();
         this.phoneNumber = in.readString();
+        this.titleListConnectedUser = in.readString();
         this.connectedUserDataList = in.createTypedArrayList(WalletAccountSettingConnectedUserData.CREATOR);
     }
 
-    public static final Parcelable.Creator<WalletAccountSettingData> CREATOR =
-            new Parcelable.Creator<WalletAccountSettingData>() {
+    public static final Creator<WalletAccountSettingData> CREATOR =
+            new Creator<WalletAccountSettingData>() {
                 @Override
                 public WalletAccountSettingData createFromParcel(Parcel source) {
                     return new WalletAccountSettingData(source);
