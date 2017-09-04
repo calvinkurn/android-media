@@ -15,8 +15,7 @@ import java.util.List;
  * @author kulomady on 12/22/16.
  */
 public class Filter implements Serializable, Parcelable {
-    public static final String TITLE_CATEGORY = "Kategori";
-
+    
     private static final String TITLE_SEPARATOR = "Separator";
     private static final String TITLE_RATING = "Rating";
     private static final String TITLE_SIZE = "Ukuran";
@@ -122,18 +121,6 @@ public class Filter implements Serializable, Parcelable {
     @Override
     public String toString() {
         return new Gson().toJson(this);
-    }
-
-    public static Filter createCategory() {
-        Filter filter = new Filter();
-        filter.setTitle(TITLE_CATEGORY);
-        filter.setTemplateName(TEMPLATE_NAME_CATEGORY);
-        filter.setOptions(new ArrayList<Option>());
-        Search search = new Search();
-        search.setPlaceholder("");
-        search.setSearchable(0);
-        filter.setSearch(search);
-        return filter;
     }
 
     protected Filter(Parcel in) {
