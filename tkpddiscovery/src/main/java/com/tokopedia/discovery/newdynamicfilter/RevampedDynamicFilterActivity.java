@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.discovery.model.Option.CATEGORY_KEY;
+import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
 
 /**
  * Created by henrypriyono on 8/8/17.
@@ -128,6 +129,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         List<Filter> filterList = Parcels.unwrap(
                 getIntent().getParcelableExtra(EXTRA_FILTER_LIST));
         removeFiltersWithEmptyOption(filterList);
+        mergeSizeFilterOptionsWithSameValue(filterList);
         adapter.setFilterList(filterList);
     }
 
@@ -138,6 +140,45 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
             if (filter.getOptions().isEmpty() && !filter.isSeparator()) {
                 iterator.remove();
             }
+        }
+    }
+
+    private void mergeSizeFilterOptionsWithSameValue(List<Filter> filterList) {
+        Filter sizeFilter = getSizeFilter(filterList);
+        if (sizeFilter == null) {
+            return;
+        }
+
+        List<Option> sizeFilterOptions = sizeFilter.getOptions();
+        Iterator<Option> iterator = sizeFilterOptions.iterator();
+        Map<String, Option> optionMap = new HashMap<>();
+
+        while (iterator.hasNext()) {
+            Option option = iterator.next();
+            Option existingOption = optionMap.get(option.getValue());
+            if (existingOption != null) {
+                existingOption.setName(existingOption.getName() + " / " + getFormattedSizeName(option));
+                iterator.remove();
+            } else {
+                option.setName(getFormattedSizeName(option));
+                option.setMetric("");
+                optionMap.put(option.getValue(), option);
+            }
+        }
+    }
+
+    private Filter getSizeFilter(List<Filter> filterList) {
+        for (Filter filter : filterList) {
+            if (filter.isSizeFilter()) return filter;
+        }
+        return null;
+    }
+
+    private String getFormattedSizeName(Option option) {
+        if (METRIC_INTERNATIONAL.equals(option.getMetric())) {
+            return option.getName();
+        } else {
+            return option.getName() + " " + option.getMetric();
         }
     }
 
