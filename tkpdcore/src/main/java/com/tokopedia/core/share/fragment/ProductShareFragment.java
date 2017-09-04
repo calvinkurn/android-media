@@ -316,17 +316,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.card_share_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_close) {
-            getActivity().onBackPressed();
-            return true;
-        } else if (item.getItemId() == R.id.home) {
+        if (item.getItemId() == R.id.home) {
             getFragmentManager().popBackStack();
             return true;
         }
