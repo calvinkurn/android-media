@@ -34,8 +34,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductAtribut;
 import com.tokopedia.discovery.activity.FilterMapAtribut;
-import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
