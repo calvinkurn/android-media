@@ -53,6 +53,7 @@ public class TkpdBaseURL {
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
+    public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -806,6 +807,9 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
+        public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
+        public static final String PATH_CC_DELETE = "v2/ccvault/delete";
+
     }
 
     public static class FinTech {
