@@ -10,8 +10,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
@@ -28,25 +31,40 @@ import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.module.NetModule;
+import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.fabric.sdk.android.Fabric;
+import rx.Subscriber;
 
 /**
  * Example application for adding an L1 image cache to Volley.
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication {
+public class MainApplication extends TkpdMultiDexApplication implements ReactApplication{
 
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
+    private static final String TAG = "MainApplication";
+    public static HUDIntent hudIntent;
+    public static ServiceConnection hudConnection;
+    public static String PACKAGE_NAME;
+    public static MainApplication instance;
     private static Context context;
 	private static Activity activity;
 	private static Boolean isResetNotification = false;
@@ -56,59 +74,15 @@ public class MainApplication extends TkpdMultiDexApplication {
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-    public static HUDIntent hudIntent;
-    public static ServiceConnection hudConnection;
-    public static String PACKAGE_NAME;
-    public static MainApplication instance;
+    @Inject
+    CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
+    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     private LocationUtils locationUtils;
-
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
 
-    public int getApplicationType(){
-        return DEFAULT_APPLICATION_TYPE;
-    }
-
     public static MainApplication getInstance() {
         return instance;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        instance = this;
-        MainApplication.context = getApplicationContext();
-        //Track.setDebugMode(true);
-        //Feature.enableDebug(true);
-        init();
-//		initImageLoader();
-        initFacebook();
-        initCrashlytics();
-        initializeAnalytics();
-        initANRWatchDogs();
-        initStetho();
-        PACKAGE_NAME = getPackageName();
-        isResetTickerState=true;
-
-        //[START] this is for dev process
-		initDB();
-
-		initDbFlow();
-
-        Localytics.autoIntegrate(this);
-
-        daggerBuilder = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .netModule(new NetModule());
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
-        TooLargeTool.startLogging(this);
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        locationUtils.deInitLocationBackground();
     }
 
     public static boolean isAppIsInBackground(Context context) {
@@ -136,22 +110,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         return isInBackground;
     }
 
-
-    /**
-     * Intialize the request manager and the image cache
-     */
-    private void init() {
-    }
-
-    /**
-     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
-     */
-
-    private void initFacebook() {
-
-    }
-
-
     public synchronized static Context getAppContext() {
         return MainApplication.context;
     }
@@ -167,7 +125,6 @@ public class MainApplication extends TkpdMultiDexApplication {
             CommonUtils.dumper(activity.getClass().getName());
         }
     }
-
 
     /**
      * please use Broadcast Manager not store activity within MainApplication.
@@ -211,12 +168,12 @@ public class MainApplication extends TkpdMultiDexApplication {
         return isResetCart;
     }
 
-    public static void setActivityState(int param) {
-        currActivityState = param;
-    }
-
     public static int getActivityState() {
         return currActivityState;
+    }
+
+    public static void setActivityState(int param) {
+        currActivityState = param;
     }
 
     public static void setActivityname(String param) {
@@ -235,17 +192,6 @@ public class MainApplication extends TkpdMultiDexApplication {
 		            >= Configuration.SCREENLAYOUT_SIZE_LARGE;*/
         return false;
     }
-
-//	private void initImageLoader() {
-//		File cacheDir = StorageUtils.getCacheDirectory(context);
-//		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-//				.discCache(new UnlimitedDiscCache(cacheDir)) // default
-//				.memoryCache(new UsingFreqLimitedMemoryCache(20000))
-//				.threadPoolSize(5)
-//				.denyCacheImageMultipleSizesInMemory()
-//				.build();// default
-//		ImageLoader.getInstance().init(config);
-//	}
 
     public static int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
@@ -299,6 +245,101 @@ public class MainApplication extends TkpdMultiDexApplication {
         HUDIntent.unbindService(context, hudConnection);
     }
 
+    public static IntentService getRunningService() {
+        return RunningService;
+    }
+
+    public static void setRunningService(IntentService service) {
+        RunningService = service;
+    }
+
+    public int getApplicationType() {
+        return DEFAULT_APPLICATION_TYPE;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+        MainApplication.context = getApplicationContext();
+        init();
+        initFacebook();
+        initCrashlytics();
+        initializeAnalytics();
+        initANRWatchDogs();
+        initStetho();
+        PACKAGE_NAME = getPackageName();
+        isResetTickerState = true;
+
+        //[START] this is for dev process
+        initDB();
+
+        initDbFlow();
+
+        Localytics.autoIntegrate(this);
+
+        daggerBuilder = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .netModule(new NetModule());
+        getApplicationComponent().inject(this);
+
+        locationUtils = new LocationUtils(this);
+        locationUtils.initLocationBackground();
+        TooLargeTool.startLogging(this);
+
+        addToWhiteList();
+    }
+
+    public void addToWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
+        cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, e.toString());
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                Log.i(TAG, aBoolean.toString());
+            }
+        });
+    }
+
+    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
+        return cacheApiWhitelists;
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        locationUtils.deInitLocationBackground();
+    }
+
+    /**
+     * Intialize the request manager and the image cache
+     */
+    private void init() {
+    }
+
+    /**
+     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
+     */
+
+    private void initFacebook() {
+
+    }
+
     protected void initializeAnalytics() {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
@@ -307,7 +348,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(isDebug());
     }
-
 
     public void initANRWatchDogs() {
         if (!BuildConfig.DEBUG) {
@@ -326,14 +366,6 @@ public class MainApplication extends TkpdMultiDexApplication {
     public void initCrashlytics() {
         Fabric.with(this, new Crashlytics());
         Crashlytics.setUserIdentifier("");
-    }
-
-    public static void setRunningService(IntentService service) {
-        RunningService = service;
-    }
-
-    public static IntentService getRunningService() {
-        return RunningService;
     }
 
     public void initDB() {
@@ -366,5 +398,10 @@ public class MainApplication extends TkpdMultiDexApplication {
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+    }
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return reactNativeHost;
     }
 }

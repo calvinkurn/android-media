@@ -141,6 +141,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         DrawerDataListener {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
+    private static final String TAG = "SellerHomeActivity";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
     ImageHandler imageHandler;
     ShopController shopController;
@@ -505,6 +506,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     protected void showMessageError(Throwable e) {
+        Log.i(TAG, e + "");
         if (snackbarRetryUndefinite != null) {
             snackbarRetryUndefinite.showRetrySnackbar();
         }

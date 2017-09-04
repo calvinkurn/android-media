@@ -35,7 +35,7 @@ public class PhoneVerifModule {
     @PhoneVerifScope
     @Provides
     OtpSourceFactory provideOtpFactory(
-            @ApplicationContext Context context){
+            @ApplicationContext Context context) {
         return new OtpSourceFactory(context);
     }
     @PhoneVerifScope

@@ -49,7 +49,7 @@ public class NewOrderWidgetModule {
 
     @NewOrderWidgetScope
     @Provides
-    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context){
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
     }
 
