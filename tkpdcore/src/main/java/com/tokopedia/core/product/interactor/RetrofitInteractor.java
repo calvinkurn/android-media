@@ -72,6 +72,8 @@ public interface RetrofitInteractor {
     void getProductTalkComment(@NonNull Context context, @NonNull String talkId, @NonNull String shopId,
                               @NonNull DiscussionListener listener);
 
+    void checkPromoAds(String shopId, int itemId, String userId, CheckPromoAdsListener listener);
+
     interface ProductDetailListener {
 
         void onSuccess(@NonNull ProductDetailData data);
@@ -173,6 +175,12 @@ public interface RetrofitInteractor {
     interface DiscussionListener {
 
         void onSucccess(LatestTalkViewModel discussion);
+
+        void onError(String error);
+    }
+
+    interface CheckPromoAdsListener {
+        void onSuccess(String adsId);
 
         void onError(String error);
     }

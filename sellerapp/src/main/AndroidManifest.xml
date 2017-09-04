@@ -151,7 +151,15 @@
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
             android:exported="true"/>
 
-        <activity android:name=".deeplink.DeepLinkHandlerActivity"/>
+        <activity
+            android:name=".deeplink.DeepLinkHandlerActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sellerapp" />
+            </intent-filter>
+        </activity>
     </application>
-
 </manifest>

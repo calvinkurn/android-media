@@ -289,4 +289,10 @@ public interface ProductDetailView extends ViewListener {
     void actionSuccessRemoveFromWishlist(Integer productId);
 
     void actionSuccessAddFavoriteShop(String shopId);
+
+    void showDinkSuccess(String productName);
+
+    void showDinkFailed(String productName, String expired);
+
+    void onPromoAdsClicked();
 }

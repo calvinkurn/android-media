@@ -17,6 +17,7 @@ import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
+import com.tokopedia.core.network.apiservices.product.PromoTopAdsService;
 import com.tokopedia.core.network.apiservices.product.ReputationReviewService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
@@ -55,6 +56,7 @@ import org.json.JSONObject;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +91,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final MojitoService mojitoService;
     private final ReputationReviewService reputationReviewService;
     private final KunyitService kunyitService;
+    private final PromoTopAdsService promoTopAdsService;
     private final int SERVER_ERROR_CODE = 500;
     private static final String ERROR_MESSAGE = "message_error";
     private final ThreadExecutor threadExecutor;
@@ -108,6 +111,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.kunyitService = new KunyitService();
         this.threadExecutor = new JobExecutor();
         this.postExecutionThread = new UIThread();
+        this.promoTopAdsService = new PromoTopAdsService();
     }
 
     @Override
@@ -939,5 +943,40 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         .map(getCommentMapper)
                         .subscribe(subscriber)
         );
+    }
+
+    @Override
+    public void checkPromoAds(@NonNull String shopId, @NonNull int itemId,
+                              @NonNull String userId, final CheckPromoAdsListener listener) {
+        Observable<Response<String>> observable = promoTopAdsService.getApi()
+                .checkPromoAds(NetworkParam.paramCheckAds(shopId, String.valueOf(itemId), userId, "1"));
+        Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                listener.onError(e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onNext(Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject object = new JSONObject(response.body());
+                        String adsId = object.getJSONObject("data").getString("ad_id");
+                        listener.onSuccess(adsId);
+                    } catch (JSONException e) {
+                        listener.onError(e.getLocalizedMessage());
+                    }
+                }
+            }
+        };
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
     }
 }

@@ -30,6 +30,8 @@ import android.widget.TextView;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -46,6 +48,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -61,6 +64,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
+import com.tokopedia.tkpdpdp.DinkFailedActivity;
+import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -881,6 +886,27 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 })
                 .setActionTextColor(getResources().getColor(R.color.tkpd_main_green))
                 .show();
+    }
+
+    @Override
+    public void showDinkSuccess(String productName) {
+        Intent intent = new Intent(getActivity(), DinkSuccessActivity.class);
+        intent.putExtra(DinkSuccessActivity.EXTRA_PRODUCT, productName);
+        startActivity(intent);
+    }
+
+    @Override
+    public void showDinkFailed(String productName, String expired) {
+        Intent intent = new Intent(getActivity(), DinkFailedActivity.class);
+        intent.putExtra(DinkFailedActivity.EXTRA_PRODUCT, productName);
+        intent.putExtra(DinkFailedActivity.EXTRA_TIME_EXP, expired);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPromoAdsClicked() {
+        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
+                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
