@@ -25,6 +25,8 @@ public interface InboxReputationDetail {
                                      RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
                                      List<Visitable> list);
 
+        void finishLoading();
+
         void onEditReview();
 
         void onSkipReview(String reviewId);
@@ -38,6 +40,17 @@ public interface InboxReputationDetail {
         void showLoadingDialog();
 
         void finishLoadingDialog();
+
+        void showRefresh();
+
+        void onErrorRefreshInboxDetail(String errorMessage);
+
+        void onSuccessRefreshGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+                                            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
+                                            List<Visitable> visitables);
+
+        void finishRefresh();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

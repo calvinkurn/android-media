@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -49,9 +51,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         implements InboxReputationDetail.View, ReputationAdapter.ReputationListener {
 
     private static final int REQUEST_GIVE_REVIEW = 101;
-    RecyclerView listProduct;
-    LinearLayoutManager layoutManager;
-    InboxReputationDetailAdapter adapter;
+    private RecyclerView listProduct;
+    private SwipeToRefresh swipeToRefresh;
+    private LinearLayoutManager layoutManager;
+    private InboxReputationDetailAdapter adapter;
     View mainView;
 
     TkpdProgressDialog progressDialog;
@@ -120,6 +123,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation_detail, container,
                 false);
         mainView = parentView.findViewById(R.id.main);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         listProduct = (RecyclerView) parentView.findViewById(R.id.product_list);
         prepareView();
         presenter.attachView(this);
@@ -131,8 +135,17 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         listProduct.setAdapter(adapter);
 
         listProduct.addOnScrollListener(onScroll());
+        swipeToRefresh.setOnRefreshListener(onRefresh());
 
+    }
 
+    private SwipeRefreshLayout.OnRefreshListener onRefresh() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshPage();
+            }
+        };
     }
 
     private RecyclerView.OnScrollListener onScroll() {
@@ -165,7 +178,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetInboxDetail(String errorMessage) {
-        finishLoading();
         if (getActivity() != null && mainView != null)
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
                     new NetworkErrorHelper.RetryClickedListener() {
@@ -179,7 +191,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     });
     }
 
-    private void finishLoading() {
+    @Override
+    public void finishLoading() {
         adapter.removeLoading();
         adapter.notifyDataSetChanged();
     }
@@ -188,7 +201,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     public void onSuccessGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
                                         RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
                                         List<Visitable> list) {
-        finishLoading();
         adapter.clearList();
         adapter.addHeader(createHeaderModel(passModel,
                 revieweeBadgeCustomerViewModel, revieweeBadgeSellerViewModel));
@@ -255,6 +267,34 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showRefresh() {
+        swipeToRefresh.setRefreshing(true);
+    }
+
+    @Override
+    public void onErrorRefreshInboxDetail(String errorMessage) {
+        if (getActivity() != null)
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRefreshGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+                                               RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
+                                               List<Visitable> list) {
+        adapter.clearList();
+        adapter.addHeader(createHeaderModel(passModel,
+                revieweeBadgeCustomerViewModel, revieweeBadgeSellerViewModel));
+        adapter.addList(list);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void finishRefresh() {
+        swipeToRefresh.setRefreshing(false);
+
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
@@ -297,9 +337,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
-
+            refreshPage();
         } else
             super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void refreshPage() {
+        presenter.refreshPage(passModel.getReputationId(),
+                getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1));
     }
 
     @Override

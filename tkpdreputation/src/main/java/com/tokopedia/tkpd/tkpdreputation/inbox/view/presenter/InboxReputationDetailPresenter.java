@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.Get
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendSmileySubscriber;
 
 import javax.inject.Inject;
@@ -50,10 +51,10 @@ public class InboxReputationDetailPresenter
     }
 
     @Override
-    public void getInboxDetail(String id, int tab) {
+    public void getInboxDetail(String reputationId, int tab) {
         viewListener.showLoading();
         getInboxReputationDetailUseCase.execute(
-                GetInboxReputationDetailUseCase.getParam(id,
+                GetInboxReputationDetailUseCase.getParam(reputationId,
                         sessionHandler.getLoginID(),
                         tab),
                 new GetInboxReputationDetailSubscriber(viewListener));
@@ -70,5 +71,14 @@ public class InboxReputationDetailPresenter
         sendSmileyReputationUseCase.execute(SendSmileyReputationUseCase.getParam(reputationId,
                 value),
                 new SendSmileySubscriber(viewListener));
+    }
+
+    public void refreshPage(String reputationId, int tab) {
+        viewListener.showRefresh();
+        getInboxReputationDetailUseCase.execute(
+                GetInboxReputationDetailUseCase.getParam(reputationId,
+                        sessionHandler.getLoginID(),
+                        tab),
+                new RefreshInboxReputationDetailSubscriber(viewListener));
     }
 }

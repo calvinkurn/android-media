@@ -28,7 +28,7 @@ import rx.Subscriber;
 
 public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputationDetailDomain> {
 
-    private final InboxReputationDetail.View viewListener;
+    protected final InboxReputationDetail.View viewListener;
 
     public GetInboxReputationDetailSubscriber(InboxReputationDetail.View viewListener) {
         this.viewListener = viewListener;
@@ -41,11 +41,13 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
 
     @Override
     public void onError(Throwable e) {
+        viewListener.finishLoading();
         viewListener.onErrorGetInboxDetail(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(InboxReputationDetailDomain inboxReputationDetailDomain) {
+        viewListener.finishLoading();
         viewListener.onSuccessGetInboxDetail(
                 convertToRevieweeBadgeCustomerViewModel(inboxReputationDetailDomain.getUserData()
                         .getUserReputation()),
@@ -55,7 +57,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         );
     }
 
-    private RevieweeBadgeSellerViewModel convertToRevieweeBadgeSellerViewModel
+    protected RevieweeBadgeSellerViewModel convertToRevieweeBadgeSellerViewModel
             (ShopReputationDomain shopReputationDomain) {
         return new RevieweeBadgeSellerViewModel(
                 shopReputationDomain.getTooltip(),
@@ -72,7 +74,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 reputationBadge.getSet());
     }
 
-    private RevieweeBadgeCustomerViewModel convertToRevieweeBadgeCustomerViewModel(UserReputationDomain userReputationDomain) {
+    protected RevieweeBadgeCustomerViewModel convertToRevieweeBadgeCustomerViewModel
+            (UserReputationDomain userReputationDomain) {
         return new RevieweeBadgeCustomerViewModel(
                 userReputationDomain.getPositive(),
                 userReputationDomain.getNeutral(),
@@ -82,7 +85,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         );
     }
 
-    private List<Visitable> mappingToListItemViewModel(InboxReputationDetailDomain
+    protected List<Visitable> mappingToListItemViewModel(InboxReputationDetailDomain
                                                                inboxReputationDetailDomain) {
         List<Visitable> list = new ArrayList<>();
         if (inboxReputationDetailDomain.getData() != null) {
