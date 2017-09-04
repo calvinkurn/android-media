@@ -24,15 +24,15 @@
             android:layout_marginEnd="@dimen/margin_vs">
             <ImageView
                 android:id="@+id/image_view"
-                android:layout_width="@dimen/base_picker_multiple_item_cache_image_height"
-                android:layout_height="@dimen/base_picker_multiple_item_cache_image_height"
+                android:layout_width="@dimen/base_picker_multiple_item_search_image_height"
+                android:layout_height="@dimen/base_picker_multiple_item_search_image_height"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/circle_white"
                 tools:visibility="visible" />
             <View
                 android:id="@+id/view_stroke"
-                android:layout_width="@dimen/base_picker_multiple_item_cache_image_height"
-                android:layout_height="@dimen/base_picker_multiple_item_cache_image_height"
+                android:layout_width="@dimen/base_picker_multiple_item_search_image_height"
+                android:layout_height="@dimen/base_picker_multiple_item_search_image_height"
                 android:background="@drawable/circle_stroke_light_gray">
             </View>
         </FrameLayout>

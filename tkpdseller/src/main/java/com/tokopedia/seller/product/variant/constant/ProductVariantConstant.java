@@ -27,4 +27,6 @@ public class ProductVariantConstant {
     public static final long NOT_AVAILABLE_OPTION_ID = Long.MIN_VALUE;
 
     public static final long MAX_LIMIT_VARIANT = 15;
+
+    public static final int COLOR_ID = 1; // from API
 }
