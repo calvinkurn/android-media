@@ -60,7 +60,7 @@ public class Option implements Serializable, Parcelable {
     @SerializedName("val_max")
     @Expose
     String valMax;
-    @SerializedName("icon_url")
+    @SerializedName("icon")
     @Expose
     String iconUrl;
     @SerializedName("child")
