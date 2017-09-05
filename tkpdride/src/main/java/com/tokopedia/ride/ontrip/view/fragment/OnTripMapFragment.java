@@ -1199,6 +1199,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void setDriverIcon(RideRequest result, int drawable) {
+        if (result == null || result.getLocation() == null) {
+            return;
+        }
+
         if (mDriverMarker != null) {
             mDriverMarker.remove();
         }

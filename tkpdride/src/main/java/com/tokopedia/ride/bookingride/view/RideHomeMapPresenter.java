@@ -28,7 +28,6 @@ import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -191,7 +190,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                             startLocationUpdates();
                             if (!getView().isLaunchedWithLocation()) {
                                 setSourceAsCurrentLocation();
-                                prefillDestinationFromRecentAddressList();
                             }
 
                             if (mapConfiguration != null && mCurrentLocation != null) {
@@ -279,6 +277,8 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                             placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
                             placeVm.setTitle(sourceAddress);
                             getView().setSourceLocation(placeVm);
+
+                            prefillDestinationFromRecentAddressList();
                         }
                     }
                 });
@@ -309,7 +309,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                 if (mRenderProductListBasedOnLocationUpdates) {
                     mRenderProductListBasedOnLocationUpdates = false;
                     setSourceAsCurrentLocation();
-                    prefillDestinationFromRecentAddressList();
                 }
 
                 if (mapConfiguration != null) {
@@ -408,7 +407,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     mCurrentLocation = getFuzedLocation();
                     startLocationUpdates();
                     setSourceAsCurrentLocation();
-                    prefillDestinationFromRecentAddressList();
                 } else {
                     mRenderProductListBasedOnLocationUpdates = true;
                     startLocationUpdates();
@@ -560,13 +558,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     }
 
     private void prefillDestinationFromRecentAddressList() {
-        CommonUtils.dumper("prefillDestinationFromRecentAddressList 1");
-
         if (getView().isAlreadySelectDestination()) {
             return;
         }
-
-        CommonUtils.dumper("prefillDestinationFromRecentAddressList 2");
 
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
         String userId = SessionHandler.getLoginID(getView().getActivity());

@@ -422,6 +422,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     private void getOverViewPolyLineDriverBetweenDestination(final boolean animation, RideRequest result) {
+        if (result.getLocation() == null) {
+            return;
+        }
+
         RequestParams polylineRequestParams = getView().getPolyLineParamDriverBetweenDestination(result.getLocation().getLatitude(), result.getLocation().getLongitude());
 
         if (polylineRequestParams != null) {
