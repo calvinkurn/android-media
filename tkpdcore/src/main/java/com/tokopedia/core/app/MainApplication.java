@@ -15,6 +15,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.facebook.soloader.SoLoader;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
@@ -76,7 +77,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
     private static IntentService RunningService;
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
-    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
+    private ReactNativeHost reactNativeHost;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -268,6 +269,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         initializeAnalytics();
         initANRWatchDogs();
         initStetho();
+        initReact();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -288,6 +290,10 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         TooLargeTool.startLogging(this);
 
         addToWhiteList();
+    }
+
+    private void initReact() {
+        SoLoader.init(this, false);
     }
 
     public void addToWhiteList() {
@@ -402,6 +408,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 
     @Override
     public ReactNativeHost getReactNativeHost() {
+        if(reactNativeHost == null) reactNativeHost = ReactNativeHostFactory.init(this);
         return reactNativeHost;
     }
 }

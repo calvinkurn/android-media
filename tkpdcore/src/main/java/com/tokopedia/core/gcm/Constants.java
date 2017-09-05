@@ -104,11 +104,12 @@ public interface Constants {
             String PRODUCT_ADD = "sellerapp://product/add";
             String SALES = "sellerapp://sales";
             String TOPADS_CREDIT = "sellerapp://topads/buy";
-            String TOPADS_PRODUCT_CREATE = "sellerapp://topads/product/create";
+            String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
             String GOLD_MERCHANT = "sellerapp://gold";
             String SELLER_APP_HOME = "sellerapp://home";
             String TOPADS_DASHBOARD = "sellerapp://topads";
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
+            String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         }
     }
 

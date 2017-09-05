@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.dashboard.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 
@@ -66,8 +69,14 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
-                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+                Intent intentActionView = new Intent(Intent.ACTION_VIEW);
+                intentActionView.setData(Uri.parse(extras.getString(DeepLink.URI)));
+                intentActionView.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+                PackageManager manager = context.getPackageManager();
+                List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
+                if (infos.size() > 0) {
+                    launchIntent = intentActionView;
+                }
             }
             return launchIntent;
         }
@@ -116,9 +125,14 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     public void onBackPressed() {
         if (isTaskRoot()) {
             //coming from deeplink
-            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
-            this.startActivity(intent);
-            this.finish();
+            String deepLink = getIntent().getStringExtra(DeepLink.URI);
+            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                this.startActivity(intent);
+                this.finish();
+            }
         } else {
             super.onBackPressed();
         }

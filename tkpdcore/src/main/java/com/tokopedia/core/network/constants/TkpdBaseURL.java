@@ -114,6 +114,8 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
+
+        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -546,6 +548,11 @@ public class TkpdBaseURL {
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
     }
 
+    public static class Tome {
+        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
+        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
+    }
+
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
         public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
@@ -574,6 +581,7 @@ public class TkpdBaseURL {
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
         public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
+        public static final String URL_CHECK_PROMO = "v1/promo/check";
     }
 
     public static class Mojito {
@@ -752,6 +760,7 @@ public class TkpdBaseURL {
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
+        public static final String PATH_USSD = "ussd/balance";
     }
 
     public static class DigitalWebsite {
