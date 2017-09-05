@@ -21,7 +21,4 @@ public interface ShopApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO)
     Observable<Response<TkpdResponse>> getInfo(@FieldMap Map<String, String> params);
-
-    @GET("v1/web-service/shop/get_shop_product")
-    Observable<Response<TkpdResponse>> getProductList(@QueryMap Map<String, String> params);
 }

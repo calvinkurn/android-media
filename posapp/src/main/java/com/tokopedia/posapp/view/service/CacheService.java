@@ -4,11 +4,16 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.di.CacheServiceDependencies;
 import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
+import com.tokopedia.posapp.view.presenter.CachePresenter;
+import com.tokopedia.posapp.di.component.DaggerPosCacheComponent;
+
+import javax.inject.Inject;
 
 /**
  * @author okasurya on 8/28/2017
@@ -16,7 +21,9 @@ import com.tokopedia.posapp.view.Cache;
 public class CacheService extends IntentService implements Cache.CallbackListener {
     private static final String ACTION_START = "com.tokopedia.posapp.view.service.action.START";
 
-    Cache.Presenter presenter;
+    @Inject
+    CachePresenter presenter;
+
     GetProductListUseCase getProductListUseCase;
     StoreProductCacheUseCase storeProductCacheUseCase;
 
@@ -32,19 +39,26 @@ public class CacheService extends IntentService implements Cache.CallbackListene
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        initInjection();
+
         if (intent != null
                 && intent.getAction().equals(ACTION_START)
                 && SessionHandler.isV4Login(this)) {
 
-                initPresenter();
+                presenter.setCallbackListener(this);
                 handleActionStart();
 
         }
     }
 
-    private void initPresenter() {
-        presenter = new CacheServiceDependencies().provideCachePresenter(this);
-        presenter.setCallbackListener(this);
+    private void initInjection() {
+        AppComponent appComponent = ((MainApplication) getApplication()).getAppComponent();
+        DaggerPosCacheComponent daggerCacheComponent =
+                (DaggerPosCacheComponent) DaggerPosCacheComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerCacheComponent.inject(this);
     }
 
     private void handleActionStart() {

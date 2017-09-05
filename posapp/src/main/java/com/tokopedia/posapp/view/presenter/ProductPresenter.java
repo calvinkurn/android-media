@@ -2,7 +2,7 @@ package com.tokopedia.posapp.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -32,7 +32,7 @@ public class ProductPresenter extends BaseDaggerPresenter<Product.View>
     private GetProductCampaignUseCase getProductCampaignUseCase;
 
     @Inject
-    public ProductPresenter(@ActivityContext Context context,
+    public ProductPresenter(@ApplicationContext Context context,
                             GetProductUseCase getProductUseCase,
                             GetProductCampaignUseCase getProductCampaignUseCase,
                             AddToCartUseCase addToCartUseCase) {

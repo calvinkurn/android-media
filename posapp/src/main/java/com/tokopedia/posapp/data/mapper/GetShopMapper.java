@@ -6,6 +6,8 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopInfoDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -15,6 +17,7 @@ import rx.functions.Func1;
 
 public class GetShopMapper implements Func1<Response<TkpdResponse>, ShopDomain> {
 
+    @Inject
     public GetShopMapper() {
 
     }

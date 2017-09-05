@@ -6,6 +6,8 @@ import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.pojo.ShopProductResponse;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -13,8 +15,9 @@ import rx.functions.Func1;
  * Created by okasurya on 8/28/17.
  */
 
-public class GetProductListMapper implements Func1<Response<TkpdResponse>, ShopProductListDomain> {
-    public GetProductListMapper() {
+public class GetShopProductMapper implements Func1<Response<TkpdResponse>, ShopProductListDomain> {
+    @Inject
+    public GetShopProductMapper() {
 
     }
 

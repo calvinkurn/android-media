@@ -3,6 +3,7 @@ package com.tokopedia.core.network.di.module;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
+import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
@@ -59,6 +60,14 @@ public class NetModule {
     @Provides
     public Retrofit provideAceRetrofit(@NoAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
+    }
+
+    @AceAuth
+    @ApplicationScope
+    @Provides
+    public Retrofit provideAceAuthRetrofit(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
     }
 

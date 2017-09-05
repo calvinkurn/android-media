@@ -75,10 +75,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-    public static HUDIntent hudIntent;
-    public static ServiceConnection hudConnection;
-    public static String PACKAGE_NAME;
-    public static MainApplication instance;
 
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;

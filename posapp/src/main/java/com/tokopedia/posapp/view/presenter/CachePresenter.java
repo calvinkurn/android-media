@@ -5,17 +5,22 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.database.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func0;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by okasurya on 8/29/17.
@@ -37,15 +42,21 @@ public class CachePresenter implements Cache.Presenter {
     private StoreProductCacheUseCase storeProductCacheUseCase;
     private Cache.CallbackListener callbackListener;
 
+    private CompositeSubscription compositeSubscription;
+
+    // TODO: 9/5/17 this state is ugly, try somethin else
     private boolean isRequestNextProduct;
     private int productPage;
 
-    public CachePresenter(Context context,
+    @Inject
+    public CachePresenter(@ApplicationContext Context context,
                           GetProductListUseCase getProductListUseCase,
                           StoreProductCacheUseCase storeProductCacheUseCase) {
         this.getProductListUseCase = getProductListUseCase;
         this.storeProductCacheUseCase = storeProductCacheUseCase;
         this.context = context;
+        compositeSubscription = new CompositeSubscription();
+
         this.isRequestNextProduct = true;
         this.productPage = 1;
     }
@@ -53,6 +64,8 @@ public class CachePresenter implements Cache.Presenter {
     @Override
     public void getData() {
         getProduct();
+        getBankList();
+        getInstallmentTerms();
     }
 
     @Override
@@ -62,23 +75,25 @@ public class CachePresenter implements Cache.Presenter {
 
     @Override
     public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
     private void getProduct() {
-        getProductObservable().subscribeOn(Schedulers.newThread()).subscribe(new ProductSubscriber());
-    }
+        compositeSubscription.add(
+            Observable.defer(new Func0<Observable<ShopProductListDomain>>() {
+                @Override
+                public Observable<ShopProductListDomain> call() {
+                    if(isRequestNextProduct) {
+                        return getProductListUseCase.createObservable(getProductParam(productPage));
+                    }
 
-    private Observable<ShopProductListDomain> getProductObservable() {
-        return Observable.defer(new Func0<Observable<ShopProductListDomain>>() {
-            @Override
-            public Observable<ShopProductListDomain> call() {
-                if(isRequestNextProduct)
-                    return getProductListUseCase.createObservable(getProductParam(productPage));
-
-                return Observable.error(null);
-            }
-        })
-        .repeat();
+                    return Observable.error(null);
+                }
+            })
+            .repeat()
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new ProductSubscriber())
+        );
     }
 
     private RequestParams getProductParam(int page) {
@@ -93,6 +108,14 @@ public class CachePresenter implements Cache.Presenter {
         params.putString(WHOLESALE, "1");
 
         return params;
+    }
+
+    private void getInstallmentTerms() {
+
+    }
+
+    private void getBankList() {
+
     }
 
     private class ProductSubscriber extends Subscriber<ShopProductListDomain> {
@@ -116,13 +139,12 @@ public class CachePresenter implements Cache.Presenter {
                 isRequestNextProduct = false;
             }
 
-            Log.d("oka requestnextproduct", String.valueOf(isRequestNextProduct));
-            storeProductCacheUseCase.createObservable(shopProductListDomain).subscribe(new SaveSubscriber());
+            storeProductCacheUseCase.createObservable(shopProductListDomain).subscribe(new SaveProductSubscriber());
             onCompleted();
         }
     }
 
-    private class SaveSubscriber extends Subscriber<ProductSavedResult> {
+    private class SaveProductSubscriber extends Subscriber<ProductSavedResult> {
 
         @Override
         public void onCompleted() {

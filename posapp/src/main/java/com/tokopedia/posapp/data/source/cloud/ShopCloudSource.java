@@ -1,9 +1,9 @@
 package com.tokopedia.posapp.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
-import com.tokopedia.posapp.data.mapper.GetProductListMapper;
+import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
+import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
@@ -15,23 +15,26 @@ import rx.Observable;
  */
 
 public class ShopCloudSource {
-    ShopApi shopApi;
-    GetShopMapper getShopMapper;
-    GetProductListMapper getProductListMapper;
+    private ShopApi shopApi;
+    private AceApi aceApi;
+    private GetShopMapper getShopMapper;
+    private GetShopProductMapper getShopProductMapper;
 
     public ShopCloudSource(ShopApi shopApi,
+                           AceApi aceApi,
                            GetShopMapper getShopMapper,
-                           GetProductListMapper getProductListMapper) {
+                           GetShopProductMapper getShopProductMapper) {
         this.shopApi = shopApi;
+        this.aceApi = aceApi;
         this.getShopMapper = getShopMapper;
-        this.getProductListMapper = getProductListMapper;
+        this.getShopProductMapper = getShopProductMapper;
     }
 
     public Observable<ShopDomain> getShop(RequestParams params) {
         return shopApi.getInfo(params.getParamsAllValueInString()).map(getShopMapper);
     }
 
-    public Observable<ShopProductListDomain> getProductList(RequestParams params) {
-        return shopApi.getProductList(params.getParamsAllValueInString()).map(getProductListMapper);
+    public Observable<ShopProductListDomain> getShopProduct(RequestParams params) {
+        return aceApi.getShopProduct(params.getParamsAllValueInString()).map(getShopProductMapper);
     }
 }

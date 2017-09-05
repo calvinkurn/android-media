@@ -15,6 +15,7 @@ import java.util.Random;
 public class StartUpReceiver extends BroadcastReceiver {
     public static final int FETCHER_SERVICE_REQUEST_CODE = 1001;
 
+    // TODO: 9/5/17 change per 6 hour
     private static final int MORNING_HOUR_SCHEDULE = 12;
     private static final int EVENING_HOUR_SCHEDULE = 21;
     private static final long ONE_DAY = 1000 * 60 * 60 * 24;

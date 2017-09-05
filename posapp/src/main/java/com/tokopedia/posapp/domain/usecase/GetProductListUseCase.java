@@ -4,12 +4,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.repository.ShopRepository;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
-import java.util.List;
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -20,6 +18,7 @@ import rx.Observable;
 public class GetProductListUseCase extends UseCase<ShopProductListDomain> {
     ShopRepository shopRepository;
 
+    @Inject
     public GetProductListUseCase(ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
                                  ShopRepository shopRepository) {
@@ -30,6 +29,6 @@ public class GetProductListUseCase extends UseCase<ShopProductListDomain> {
 
     @Override
     public Observable<ShopProductListDomain> createObservable(RequestParams requestParams) {
-        return shopRepository.getProductList(requestParams);
+        return shopRepository.getShopProduct(requestParams);
     }
 }

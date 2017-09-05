@@ -2,7 +2,7 @@ package com.tokopedia.posapp.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -29,7 +29,7 @@ public class ShopPresenter extends BaseDaggerPresenter<Shop.View>
     private GetShopUseCase shopUseCase;
 
     @Inject
-    public ShopPresenter(@ActivityContext Context context, GetShopUseCase outletUseCase) {
+    public ShopPresenter(@ApplicationContext Context context, GetShopUseCase outletUseCase) {
         this.context = context;
         this.shopUseCase = outletUseCase;
     }

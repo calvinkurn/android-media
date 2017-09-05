@@ -15,7 +15,7 @@ import rx.Observable;
 public interface ShopRepository {
     Observable<ShopDomain> getShop(RequestParams requestParams);
 
-    Observable<ShopProductListDomain> getProductList(RequestParams requestParams);
+    Observable<ShopProductListDomain> getShopProduct(RequestParams requestParams);
 
     Observable<ProductSavedResult> storeProductToCache(ShopProductListDomain productModel);
 }
