@@ -394,7 +394,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
             startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
                     fileLoc), ImageUploadHandler.CODE_UPLOAD_IMAGE);
-        } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
+        } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE
+                && resultCode == Activity.RESULT_OK) {
             presenter.restoreFormFromCache();
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -12,6 +12,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractor;
+import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
+import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentPresenterImpl;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
@@ -84,24 +86,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     @Override
     public void setImages(final Bundle arguments) {
         if (arguments.getBoolean(ImageUploadPreviewActivity.IS_UPDATE, false)) {
-//            cacheInboxReputationInteractor.getInboxReputationFormCache(new CacheInboxReputationInteractor.GetInboxReputationFormCacheListener() {
-//                @Override
-//                public void onSuccess(ActReviewPass review) {
-//                    for (int i = 0; i < review.getImageUploads().size(); i++) {
-//                        review.getImageUploads().get(i).setPosition(i);
-//                    }
-//                    viewListener.getAdapter().addList(review.getImageUploads());
-//                    ImageUpload image = review.getImageUploads().get(arguments.getInt("position", 0));
-//                    viewListener.setCurrentPosition(arguments.getInt("position", 0));
-//                    viewListener.setDescription(image.getDescription());
-//                    viewListener.setPreviewImage(image);
-//                }
-//
-//                @Override
-//                public void onError(Throwable e) {
-//
-//                }
-//            });
 
             getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
                 @Override
@@ -116,7 +100,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
                 @Override
                 public void onNext(SendReviewPass sendReviewPass) {
-                    Log.i(TAG, "Get The Cache!! " + sendReviewPass.toString());
 
                     for (int i = 0; i < sendReviewPass.getListImage().size(); i++) {
                         sendReviewPass.getListImage().get(i).setPosition(i);
@@ -153,7 +136,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
                     @Override
                     public void onNext(SendReviewPass sendReviewPass) {
-                        Log.i(TAG, "Get The Cache!! " + sendReviewPass.toString());
 
                         if (sendReviewPass.getListImage().isEmpty()) {
                             viewListener.getAdapter().addImage(image);
@@ -216,6 +198,48 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 //            }
 //        });
 
+        getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (hasOnlyOneImage()) {
+                    viewListener.getActivity().finish();
+                }
+            }
+
+            @Override
+            public void onNext(SendReviewPass sendReviewPass) {
+                if (!viewListener.getAdapter().getList().get(currentPosition).getImageId()
+                        .startsWith(IMAGE)) {
+                    deletedImageUploads.add(viewListener.getAdapter().getList().get(currentPosition));
+                }
+
+                if (hasOnlyOneImage()) {
+                    sendReviewPass.getListImage().clear();
+                    sendReviewPass.getListDeleted().addAll(deletedImageUploads);
+                    setReviewFormCacheUseCase.execute(SetReviewFormCacheUseCase.getParam
+                            (sendReviewPass));
+                    viewListener.getActivity().setResult(Activity.RESULT_OK);
+                    viewListener.getActivity().finish();
+                } else if (isLastItem(currentPosition)) {
+                    viewListener.getAdapter().removeImage(currentPosition);
+                    viewListener.getPagerAdapter().resetAdapter();
+                    viewListener.getPagerAdapter().notifyDataSetChanged();
+                    viewListener.setCurrentPosition(currentPosition - 1);
+                    viewListener.setDescription(viewListener.getAdapter().getList().get(currentPosition - 1).getDescription());
+                    viewListener.setPreviewImage(viewListener.getAdapter().getList().get(currentPosition - 1));
+                } else {
+                    viewListener.getAdapter().removeImage(currentPosition);
+                    viewListener.getPagerAdapter().resetAdapter();
+                    viewListener.getPagerAdapter().notifyDataSetChanged();
+                    viewListener.setPreviewImage(viewListener.getAdapter().getList().get(currentPosition));
+                }
+            }
+        });
 
     }
 
