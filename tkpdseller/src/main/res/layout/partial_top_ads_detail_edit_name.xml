@@ -13,6 +13,7 @@
         style="@style/TextInputLayout">
 
         <EditText
+            android:maxLines="1"
             android:id="@+id/edit_text_name"
             style="@style/EditText"
             android:layout_width="match_parent"

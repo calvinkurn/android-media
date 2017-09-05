@@ -53,7 +53,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     }
 
     protected boolean isError() {
-        return maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null;
+        return (maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null) ||
+                (budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null);
     }
 
     protected abstract V initiateDetailAd();
