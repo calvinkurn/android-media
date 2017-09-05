@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -32,6 +33,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -1146,9 +1150,23 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         delegate.dispatchFrom(getActivity(), intent);
     }
 
-    public void onReceivedTokoCashData(DrawerTokoCash tokoCashData) {
+    public void onReceivedTokoCashData(final DrawerTokoCash tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
-        holder.tokoCashHeaderView.renderData(tokoCashData);
+        final FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
+        config.setDefaults(R.xml.remote_config_default);
+        config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    config.activateFetched();
+                    holder.tokoCashHeaderView.renderData(tokoCashData, config
+                            .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
+                    FragmentIndexCategory.this.tokoCashData = tokoCashData;
+                }
+            }
+        });
+        holder.tokoCashHeaderView.renderData(tokoCashData, false, getActivity()
+                .getString(R.string.tokocash));
         this.tokoCashData = tokoCashData;
     }
 
