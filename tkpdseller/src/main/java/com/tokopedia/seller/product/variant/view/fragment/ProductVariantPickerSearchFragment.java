@@ -107,6 +107,11 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof ProductVariantPickerActivity) {
+            searchInputView.setSearchHint(
+                    getString(R.string.product_variant_search_x,
+                            ((ProductVariantPickerActivity) getActivity()).getVariantName()));
+        }
         SpinnerTextView unitSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_variant_unit);
         unitSpinnerTextView.setHint(getString(R.string.product_variant_standard_unit_x, unitName) );
         unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {

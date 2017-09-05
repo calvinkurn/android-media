@@ -756,6 +756,8 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_PRODUCT_VIDEO = "O6";
         String FIELDS_OPTIONAL_PREORDER = "O7";
         String FIELDS_OPTIONAL_SHARE = "O8";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1 = "O9";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "10";
     }
 
     interface CustomDimension {
