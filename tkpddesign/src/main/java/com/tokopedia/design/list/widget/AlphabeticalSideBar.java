@@ -32,6 +32,8 @@ public class AlphabeticalSideBar extends View {
     private int magnifierRadius;
     private int itemTopMargin;
     private int itemBottomMargin;
+    private int touchAreaLeftOffset;
+    private boolean isDragging = false;
 
     public AlphabeticalSideBar(Context context) {
         super(context);
@@ -55,6 +57,7 @@ public class AlphabeticalSideBar extends View {
         magnifierPadding = getContext().getResources().getDimensionPixelSize(R.dimen.alphabetical_sidebar_magnifier_padding);
         int magnifierToSidebarDistance = getContext().getResources().getDimensionPixelSize(R.dimen.alphabetical_sidebar_to_magnifier_distance);
         magnifierRadius = magnifierTextSize / 2 + magnifierPadding;
+        touchAreaLeftOffset = magnifierRadius * 2 + magnifierToSidebarDistance;
         itemTopMargin = magnifierRadius;
         itemBottomMargin = magnifierRadius;
 
@@ -94,25 +97,35 @@ public class AlphabeticalSideBar extends View {
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
 
-        if (event.getAction() == MotionEvent.ACTION_DOWN
-                || event.getAction() == MotionEvent.ACTION_MOVE) {
-
-            char selectedAlphabet = findSelectedAlphabet(event);
-            if (isValidAlphabet(selectedAlphabet)) {
-                int position = sectionIndexer.getPositionForSection(selectedAlphabet);
-                if (position != -1) {
-                    recyclerView.smoothScrollToPosition(position);
-                }
-                lastSelectedAlphabet = selectedAlphabet;
-                lastSelectedY = event.getY();
-                invalidate();
-            }
+        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getX() > touchAreaLeftOffset) {
+            isDragging = true;
+            handleGesture(event);
+            return true;
         } else if (event.getAction() == MotionEvent.ACTION_UP){
+            isDragging = false;
             lastSelectedAlphabet = 0;
             lastSelectedY = 0;
             invalidate();
+            return true;
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE && isDragging) {
+            handleGesture(event);
+            return true;
         }
-        return true;
+
+        return false;
+    }
+
+    private void handleGesture(MotionEvent event) {
+        char selectedAlphabet = findSelectedAlphabet(event);
+        if (isValidAlphabet(selectedAlphabet)) {
+            int position = sectionIndexer.getPositionForSection(selectedAlphabet);
+            if (position != -1) {
+                recyclerView.smoothScrollToPosition(position);
+            }
+            lastSelectedAlphabet = selectedAlphabet;
+            lastSelectedY = event.getY();
+            invalidate();
+        }
     }
 
     private char findSelectedAlphabet(MotionEvent event) {
