@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class Filter implements Serializable, Parcelable {
     
-    private static final String TITLE_SEPARATOR = "Separator";
-    private static final String TITLE_RATING = "Rating";
-    private static final String TITLE_SIZE = "Ukuran";
+    private static final String TEMPLATE_NAME_SEPARATOR = "template_separator";
+    private static final String TEMPLATE_NAME_RATING = "template_rating";
+    private static final String TEMPLATE_NAME_SIZE = "template_size";
     private static final String TEMPLATE_NAME_CATEGORY = "template_category";
     private static final String TEMPLATE_NAME_COLOR = "template_color";
     private static final String TEMPLATE_NAME_PRICE = "template_price";
@@ -41,7 +41,7 @@ public class Filter implements Serializable, Parcelable {
     }
 
     public boolean isSeparator() {
-        return TITLE_SEPARATOR.equals(title);
+        return TEMPLATE_NAME_SEPARATOR.equals(templateName);
     }
 
     public boolean isCategoryFilter() {
@@ -57,11 +57,11 @@ public class Filter implements Serializable, Parcelable {
     }
 
     public boolean isRatingFilter() {
-        return TITLE_RATING.equals(title);
+        return TEMPLATE_NAME_RATING.equals(templateName);
     }
 
     public boolean isSizeFilter() {
-        return TITLE_SIZE.equals(title);
+        return TEMPLATE_NAME_SIZE.equals(templateName);
     }
 
     public boolean isBrandFilter() {
