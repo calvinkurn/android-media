@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -978,9 +980,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
             );
         } else {
-            launchIntent = new Intent(Intent.ACTION_VIEW);
-            launchIntent.setData(Uri.parse(url));
-            launchIntent.putExtra(Constants.EXTRA_APPLINK, url);
+            Intent intentActionView = new Intent(Intent.ACTION_VIEW);
+            intentActionView.setData(Uri.parse(url));
+            intentActionView.putExtra(Constants.EXTRA_APPLINK, url);
+            PackageManager manager = context.getPackageManager();
+            List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
+            if (infos.size() > 0) {
+                launchIntent = intentActionView;
+            }
+
         }
         context.startActivity(launchIntent);
     }
