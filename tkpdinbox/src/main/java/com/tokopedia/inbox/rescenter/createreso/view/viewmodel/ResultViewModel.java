@@ -23,6 +23,7 @@ public class ResultViewModel implements Parcelable {
     public int attachmentCount;
     public String orderId;
     public boolean isAttachmentRequired;
+    public CreateResoStep2ViewModel createResoStep2ViewModel;
 
     public JSONObject writeToJson() {
         JSONObject object = new JSONObject();
@@ -40,7 +41,9 @@ public class ResultViewModel implements Parcelable {
                 object.put("attachmentCount", attachmentCount);
             }
             if (message != null) {
-                object.put("message", message.writeToJson());
+                if (!message.remark.equals("")) {
+                    object.put("message", message.writeToJson());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,6 +52,8 @@ public class ResultViewModel implements Parcelable {
     }
 
     public ResultViewModel() {
+        message = new ProblemMessageResult();
+        createResoStep2ViewModel = new CreateResoStep2ViewModel();
     }
 
     public JSONArray getProblemArray() {
@@ -79,6 +84,7 @@ public class ResultViewModel implements Parcelable {
         dest.writeInt(this.attachmentCount);
         dest.writeString(this.orderId);
         dest.writeByte(this.isAttachmentRequired ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.createResoStep2ViewModel, flags);
     }
 
     protected ResultViewModel(Parcel in) {
@@ -90,6 +96,7 @@ public class ResultViewModel implements Parcelable {
         this.attachmentCount = in.readInt();
         this.orderId = in.readString();
         this.isAttachmentRequired = in.readByte() != 0;
+        this.createResoStep2ViewModel = in.readParcelable(CreateResoStep2ViewModel.class.getClassLoader());
     }
 
     public static final Creator<ResultViewModel> CREATOR = new Creator<ResultViewModel>() {

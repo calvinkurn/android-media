@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +18,8 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep2Domain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
@@ -229,7 +230,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
         if (resultViewModel.problem.size() != 0 && resultViewModel.solution != 0) {
             if (resultViewModel.isAttachmentRequired) {
-                if (!resultViewModel.message.remark.equals("")) {
+                if (resultViewModel.message.remark != null) {
                     btnCreateResolution.setEnabled(true);
                     btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
                 }
@@ -252,9 +253,12 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             problemResultString += "Selisih Ongkos Kirim ";
             if (problemResultList.size() > 1) {
                 problemResultString += "& ";
+                problemResultString += (isType1Selected ? problemResultList.size() - 1 : problemResultList.size()) + " Barang Bermasalah";
             }
         }
-        problemResultString += (isType1Selected ? problemResultList.size() - 1 : problemResultList.size()) + " Barang Bermasalah";
+        else  {
+            problemResultString += (isType1Selected ? problemResultList.size() - 1 : problemResultList.size()) + " Barang Bermasalah";
+        }
         tvChooseProductProblem.setText(problemResultString);
     }
 
@@ -310,6 +314,35 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 presenter.loadProductProblem(orderId);
             }
         });
+    }
+
+    @Override
+    public void successCreateResoStep1(CreateResoStep1Domain createResoStep1Domain) {
+        if (createResoStep1Domain.getCacheKey() == null) {
+            finishResoActivity();
+        } else {
+            //upload videos and photos string through createResoStep2
+        }
+
+    }
+
+    @Override
+    public void errorCreateResoStep1(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void successCreateResoStep2(CreateResoStep2Domain createResoStep2Domain) {
+        finishResoActivity();
+    }
+
+    @Override
+    public void errorCreateResoStep2(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    private void finishResoActivity() {
+
     }
 
     @Override

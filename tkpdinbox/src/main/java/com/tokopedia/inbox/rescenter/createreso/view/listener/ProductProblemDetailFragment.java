@@ -17,7 +17,7 @@ public interface ProductProblemDetailFragment {
     interface View extends CustomerView {
         void populateDataToScreen(ProductProblemViewModel productProblemViewModel);
 
-        void updateArriveStatusButton(boolean isArrived, boolean canShowInfo);
+        void updateArriveStatusButton(boolean isDelivered, boolean canShowInfo);
 
         void populateReasonSpinner(String[] reasonStringArray);
 

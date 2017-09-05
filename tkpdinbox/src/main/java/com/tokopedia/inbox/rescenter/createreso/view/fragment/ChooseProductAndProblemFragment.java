@@ -40,9 +40,6 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     public static final String RESULT_DATA = "result_data";
     public static final String RESULT_STEP_CODE = "result_step_code";
     public static final int REQUEST_CODE = 1234;
-    public static final int RESULT_SAVE = 2001;
-    public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
-
 
     public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
 

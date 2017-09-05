@@ -60,6 +60,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
 
     public void initProblemResult(ProductProblemViewModel productProblemViewModel) {
         problemResult.type = productProblemViewModel.getProblem().getType();
+        problemResult.isDelivered = false;
         //init with first trouble item of undelivered status
         updateSpinner(problemResult.isDelivered);
         getCanShowNotArrived();
@@ -100,6 +101,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
                 mainView.populateReasonSpinner(troubleStringArray);
             }
         }
+//        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
     }
 
     public void getCanShowNotArrived() {

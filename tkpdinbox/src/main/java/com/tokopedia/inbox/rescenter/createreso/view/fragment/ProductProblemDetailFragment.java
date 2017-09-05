@@ -229,10 +229,10 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public void updateArriveStatusButton(boolean isArrived, boolean canShowInfo) {
         btnInfo.setVisibility(View.GONE);
         if(canShowInfo) {
-            presenter.updateSpinner(true);
+            presenter.updateSpinner(false);
             btnInfo.setVisibility(View.VISIBLE);
-            buttonDisabled(btnNotArrived);
-            buttonSelected(btnArrived);
+            buttonDisabled(btnArrived);
+            buttonSelected(btnNotArrived);
         } else {
             if (isArrived) {
                 buttonCanSelected(btnNotArrived);

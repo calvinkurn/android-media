@@ -35,6 +35,13 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> getSolution(@Path("order_id") String orderId,
                                                    @Body String object);
 
+    @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_CREATE)
+    Observable<Response<TkpdResponse>> postCreateResolution(@Path("order_id") String orderId,
+                                                   @Body String object);
+
+    @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_CREATE)
+    Observable<Response<TkpdResponse>> postCreateResolutionCache(@Path("order_id") String orderId,
+                                                            @Body String object);
 
     //Version 1
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL)
