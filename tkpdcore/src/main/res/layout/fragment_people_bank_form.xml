@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:hint="@string/title_account_number"
+                    android:hint="@string/title_account_number_saldo"
                     android:inputType="number" />
             </android.support.design.widget.TextInputLayout>
 
