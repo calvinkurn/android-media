@@ -314,9 +314,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
-//            presenter.refreshItem(
-//                    data.getStringExtra(InboxReputationDetailActivity.ARGS_REPUTATION_ID),
-//                    getTab());
+            onRefresh();
         } else if (requestCode == REQUEST_FILTER
                 && resultCode == Activity.RESULT_OK
                 && data.getStringExtra(

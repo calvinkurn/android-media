@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,7 +29,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.ImageUploadFragmentPresenter;
@@ -67,9 +70,13 @@ public class ImageUploadPreviewFragment extends
     PreviewImageViewPagerAdapter viewPagerAdapter;
     int currentPosition = 0;
 
-    public static ImageUploadPreviewFragment createInstance(Bundle extras) {
+    public static Fragment createInstance(String fileLoc, boolean isUpdate, int position) {
         ImageUploadPreviewFragment fragment = new ImageUploadPreviewFragment();
-        fragment.setArguments(extras);
+        Bundle bundle = new Bundle();
+        bundle.putString(ImageUploadHandler.FILELOC, fileLoc);
+        bundle.putBoolean(ImageUploadPreviewActivity.IS_UPDATE, isUpdate);
+        bundle.putInt(ImageUploadPreviewActivity.ARGS_POSITION, position);
+        fragment.setArguments(bundle);
         return fragment;
     }
 

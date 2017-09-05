@@ -4,7 +4,8 @@ import android.app.Activity;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.customadapter.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 public interface InboxReputationForm {
     interface View extends CustomerView {
 
-
         void showLoadingProgress();
 
         void onErrorSendReview(String errorMessage);
@@ -25,6 +25,8 @@ public interface InboxReputationForm {
         void finishLoadingProgress();
 
         Activity getActivity();
+
+        void setFormFromCache(SendReviewPass sendReviewPass);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -37,6 +39,11 @@ public interface InboxReputationForm {
 
         void openImageGallery();
 
-        void onImageUploadClicked(int position);
+        void setFormToCache(int position, SendReviewPass sendReviewPass);
+
+        String getFileLocFromCamera();
+
+        void restoreFormFromCache();
+
     }
 }

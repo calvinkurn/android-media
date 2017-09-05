@@ -128,7 +128,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         }
     }
 
-    public void addList(List<ImageUpload> data) {
+    public void addList(ArrayList<ImageUpload> data) {
         this.data.clear();
         this.data.addAll(data);
         notifyDataSetChanged();

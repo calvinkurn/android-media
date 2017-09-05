@@ -99,8 +99,9 @@ public class InboxReputationFormActivity extends BasePresenterActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE)
-            getFragmentManager().findFragmentById(R.id.container).onActivityResult(requestCode,
+        if (requestCode == ImageUploadHandler.REQUEST_CODE
+                || requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE)
+            getSupportFragmentManager().findFragmentById(R.id.container).onActivityResult(requestCode,
                     resultCode, data);
         else
             super.onActivityResult(requestCode, resultCode, data);

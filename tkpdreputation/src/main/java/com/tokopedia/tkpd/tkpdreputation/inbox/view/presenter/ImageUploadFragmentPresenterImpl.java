@@ -7,46 +7,51 @@ import android.util.Log;
 
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractor;
-import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
-import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentPresenterImpl;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
-import static com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment.CACHE_INBOX_REPUTATION_FORM;
 
 /**
  * Created by Nisie on 2/12/16.
  */
 public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPresenter {
 
-    private static final String UPLOAD_URL = "url";
+    private static final String IMAGE = "image";
     private static final String TAG = ImageUploadFragmentPresenterImpl.class.getSimpleName();
 
     ImageUploadPreviewFragmentView viewListener;
     ImageUploadHandler imageUploadHandler;
-    GlobalCacheManager globalCacheManager;
     CacheInboxReputationInteractor cacheInboxReputationInteractor;
+    GetSendReviewFormUseCase getSendReviewFormUseCase;
+    SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     List<ImageUpload> deletedImageUploads;
+
 
     public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener) {
         this.viewListener = viewListener;
         this.imageUploadHandler = ImageUploadHandler.createInstance(viewListener.getActivity());
-        globalCacheManager = new GlobalCacheManager();
         this.deletedImageUploads = new ArrayList<>();
+        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+        this.getSendReviewFormUseCase = new GetSendReviewFormUseCase(new JobExecutor(),
+                new UIThread(), globalCacheManager);
+        this.setReviewFormCacheUseCase = new SetReviewFormCacheUseCase(new JobExecutor(),
+                new UIThread(), globalCacheManager);
     }
 
 
@@ -58,7 +63,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
             int position = viewListener.getAdapter().getList().size();
             ImageUpload image = new ImageUpload();
             image.setPosition(position);
-            image.setImageId("image" + UUID.randomUUID().toString());
+            image.setImageId(IMAGE + UUID.randomUUID().toString());
 
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
@@ -78,7 +83,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
     @Override
     public void setImages(final Bundle arguments) {
-        if (arguments.getBoolean("is_update", false)) {
+        if (arguments.getBoolean(ImageUploadPreviewActivity.IS_UPDATE, false)) {
 //            cacheInboxReputationInteractor.getInboxReputationFormCache(new CacheInboxReputationInteractor.GetInboxReputationFormCacheListener() {
 //                @Override
 //                public void onSuccess(ActReviewPass review) {
@@ -97,78 +102,77 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 //
 //                }
 //            });
-            updateImageToCache();
-        } else {
-//            File imgFile = new File(arguments.getString(ImageUploadHandler.FILELOC, ""));
-//
-//            if (imgFile.exists()) {
-//                final ImageUpload image = new ImageUpload();
-//                image.setFileLoc(arguments.getString(ImageUploadHandler.FILELOC, ""));
-//                image.setImageId("image" + UUID.randomUUID().toString());
-//
-//                cacheInboxReputationInteractor.getInboxReputationFormCache(new CacheInboxReputationInteractor.GetInboxReputationFormCacheListener() {
-//                    @Override
-//                    public void onSuccess(ActReviewPass review) {
-//                        for (int i = 0; i < review.getImageUploads().size(); i++) {
-//                            review.getImageUploads().get(i).setPosition(i);
-//                            viewListener.getAdapter().addImage(review.getImageUploads().get(i));
-//                        }
-//                        image.setPosition(viewListener.getAdapter().getList().size());
-//                        viewListener.getAdapter().addImage(image);
-//
-//                        viewListener.setPreviewImage(image);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        image.setPosition(viewListener.getAdapter().getList().size());
-//                        viewListener.getAdapter().addImage(image);
-//                        viewListener.setPreviewImage(image);
-//                    }
-//                });
-//
-//
-//            }
-        }
-    }
 
-    private void updateImageToCache() {
-//        Observable.just(InboxReputationFormFragment.CACHE_INBOX_REPUTATION_FORM)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(new Func1<String, ActReviewPass>() {
-//                    @Override
-//                    public ActReviewPass call(String s) {
-//                        GlobalCacheManager cache = new GlobalCacheManager();
-//                        return convertToInboxReputationForm(cache.getValueString(CACHE_INBOX_REPUTATION_FORM));
-//                    }
-//                })
-//                .subscribe(new Subscriber<ActReviewPass>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.e(TAG, e.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onNext(ActReviewPass reviewPass) {
-//                        Log.i(TAG, "Get The Cache!! " + reviewPass.toString());
-//                        for (int i = 0; i < review.getImageUploads().size(); i++) {
-//                            review.getImageUploads().get(i).setPosition(i);
-//                        }
-//                        viewListener.getAdapter().addList(review.getImageUploads());
-//                        ImageUpload image = review.getImageUploads().get(arguments.getInt("position", 0));
-//                        viewListener.setCurrentPosition(arguments.getInt("position", 0));
-//                        viewListener.setDescription(image.getDescription());
-//                        viewListener.setPreviewImage(image);
-//                    }
-//
-//                });
+            getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+                @Override
+                public void onNext(SendReviewPass sendReviewPass) {
+                    Log.i(TAG, "Get The Cache!! " + sendReviewPass.toString());
+
+                    for (int i = 0; i < sendReviewPass.getListImage().size(); i++) {
+                        sendReviewPass.getListImage().get(i).setPosition(i);
+                    }
+                    viewListener.getAdapter().addList(sendReviewPass.getListImage());
+                    ImageUpload image = sendReviewPass.getListImage().get(arguments.getInt
+                            (ImageUploadPreviewActivity.ARGS_POSITION, 0));
+                    viewListener.setCurrentPosition(arguments.getInt(
+                            ImageUploadPreviewActivity.ARGS_POSITION, 0));
+                    viewListener.setDescription(image.getDescription());
+                    viewListener.setPreviewImage(image);
+
+                }
+            });
+
+        } else {
+            File imgFile = new File(arguments.getString(ImageUploadHandler.FILELOC, ""));
+
+            if (imgFile.exists()) {
+                final ImageUpload image = new ImageUpload();
+                image.setFileLoc(arguments.getString(ImageUploadHandler.FILELOC, ""));
+                image.setImageId(IMAGE + UUID.randomUUID().toString());
+
+                getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(SendReviewPass sendReviewPass) {
+                        Log.i(TAG, "Get The Cache!! " + sendReviewPass.toString());
+
+                        if (sendReviewPass.getListImage().isEmpty()) {
+                            viewListener.getAdapter().addImage(image);
+                            viewListener.setPreviewImage(image);
+                        } else {
+                            for (int i = 0; i < sendReviewPass.getListImage().size(); i++) {
+                                sendReviewPass.getListImage().get(i).setPosition(i);
+                            }
+                            viewListener.getAdapter().addList(sendReviewPass.getListImage());
+                            image.setPosition(viewListener.getAdapter().getList().size());
+                            viewListener.getAdapter().addImage(image);
+                            viewListener.setPreviewImage(image);
+                        }
+
+                    }
+                });
+
+            }
+        }
     }
 
     @Override
@@ -218,7 +222,32 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     @Override
     public void onSubmitImageUpload(final ArrayList<ImageUpload> list) {
 
-        String reviewId = viewListener.getArguments().getString(InboxReputationFormFragmentPresenterImpl.EXTRA_REVIEW_ID);
+        getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onNext(SendReviewPass sendReviewPass) {
+                Log.i(TAG, "Get The Cache!! " + sendReviewPass.toString());
+
+                for (ImageUpload imageUpload : list) {
+                    imageUpload.setIsSelected(false);
+                }
+                sendReviewPass.setListImage(list);
+                sendReviewPass.getListDeleted().addAll(deletedImageUploads);
+                setReviewFormCacheUseCase.execute(SetReviewFormCacheUseCase.getParam
+                        (sendReviewPass));
+
+            }
+        });
+
 //        cacheInboxReputationInteractor.getInboxReputationFormCache(new CacheInboxReputationInteractor.GetInboxReputationFormCacheListener() {
 //            @Override
 //            public void onSuccess(ActReviewPass review) {
@@ -236,6 +265,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 //            }
 //        });
 
+        viewListener.getActivity().setResult(Activity.RESULT_OK);
         viewListener.getActivity().finish();
 
 

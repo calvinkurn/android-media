@@ -51,4 +51,5 @@
     <string name="rating_title_3">Cukup</string>
     <string name="rating_title_4">Baik</string>
     <string name="rating_title_5">Sangat Baik</string>
+    <string name="title_activity_image_upload">Unggah Gambar</string>
 </resources>

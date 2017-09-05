@@ -17,6 +17,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.Get
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -156,5 +158,29 @@ public class ReputationModule {
                 threadExecutor,
                 postExecutionThread,
                 sendReviewValidateUseCase);
+    }
+
+    @ReputationScope
+    @Provides
+    GetSendReviewFormUseCase
+    provideGetSendReviewFormUseCase(ThreadExecutor threadExecutor,
+                                    PostExecutionThread postExecutionThread,
+                                    GlobalCacheManager globalCacheManager) {
+        return new GetSendReviewFormUseCase(
+                threadExecutor,
+                postExecutionThread,
+                globalCacheManager);
+    }
+
+    @ReputationScope
+    @Provides
+    SetReviewFormCacheUseCase
+    provideSetReviewFormCacheUseCase(ThreadExecutor threadExecutor,
+                                     PostExecutionThread postExecutionThread,
+                                     GlobalCacheManager globalCacheManager) {
+        return new SetReviewFormCacheUseCase(
+                threadExecutor,
+                postExecutionThread,
+                globalCacheManager);
     }
 }

@@ -13,6 +13,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,21 +29,24 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.customadapter.ImageUpload;
-import com.tokopedia.core.customadapter.ImageUploadAdapter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationFormPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +67,6 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class InboxReputationFormFragment extends BaseDaggerFragment
         implements InboxReputationForm.View {
-
-    public static final String CACHE_INBOX_REPUTATION_FORM = "CACHE_INBOX_REPUTATION_FORM";
 
     RatingBar rating;
     TextView ratingText;
@@ -146,7 +148,17 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                     public void onClick(View v) {
                         review.clearFocus();
                         KeyboardHandler.DropKeyboard(getActivity(), review);
-                        presenter.onImageUploadClicked(position);
+                        presenter.setFormToCache(position, new SendReviewPass(
+                                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                                String.valueOf(rating.getRating()),
+                                review.getText().toString(),
+                                adapter.getList(),
+                                shareFbSwitch.isChecked(),
+                                anomymousSwitch.isChecked()
+                        ));
                         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
                         myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
                         myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
@@ -169,14 +181,31 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
 
             @Override
-            public View.OnClickListener onImageClicked(int position, ArrayList<ImageUpload> imageUpload) {
+            public View.OnClickListener onImageClicked(final int position, final ImageUpload imageUpload) {
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        review.clearFocus();
+                        KeyboardHandler.DropKeyboard(getActivity(), review);
+                        presenter.setFormToCache(position, new SendReviewPass(
+                                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                                String.valueOf(rating.getRating()),
+                                review.getText().toString(),
+                                adapter.getList(),
+                                shareFbSwitch.isChecked(),
+                                anomymousSwitch.isChecked()
+                        ));
+                        startActivityForResult(
+                                ImageUploadPreviewActivity.getUpdateCallingIntent(getActivity(),
+                                        position),
+                                ImageUploadHandler.CODE_UPLOAD_IMAGE);
                     }
                 };
             }
+
         });
         listImageUpload.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
@@ -338,15 +367,38 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setFormFromCache(SendReviewPass sendReviewPass) {
+        rating.setRating(Float.parseFloat(sendReviewPass.getRating()));
+        if (!TextUtils.isEmpty(sendReviewPass.getReviewMessage()))
+            review.setText(sendReviewPass.getReviewMessage());
+        shareFbSwitch.setChecked(sendReviewPass.isShareFb());
+        anomymousSwitch.setChecked(sendReviewPass.isAnonymous());
+        adapter.addList(sendReviewPass.getListImage());
+        adapter.setDeletedList(sendReviewPass.getListDeleted());
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
-
+            String fileLoc = "";
+            if (presenter != null)
+                fileLoc = presenter.getFileLocFromCamera();
+            startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
+                    fileLoc), ImageUploadHandler.CODE_UPLOAD_IMAGE);
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && resultCode == GalleryBrowser.RESULT_CODE) {
-
+            String fileLoc = "";
+            if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
+                fileLoc = data.getStringExtra(ImageGallery.EXTRA_URL);
+            }
+            startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
+                    fileLoc), ImageUploadHandler.CODE_UPLOAD_IMAGE);
+        } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
+            presenter.restoreFormFromCache();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
