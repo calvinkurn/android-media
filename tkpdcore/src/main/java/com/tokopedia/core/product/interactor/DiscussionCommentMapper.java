@@ -36,7 +36,9 @@ public class DiscussionCommentMapper implements Func1<Response<TkpdResponse>, La
                         talkComment.getCommentIsSeller() == 1 ? talkComment.getCommentShopName() : talkComment.getCommentUserName()
                 );
                 latestTalkViewModel.setCommentUserLabel(talkComment.getCommentUserLabel());
-                latestTalkViewModel.setCommentUserAvatar(talkComment.getCommentUserImage());
+                latestTalkViewModel.setCommentUserAvatar(
+                        talkComment.getCommentIsSeller() == 1 ? talkComment.getCommentShopImage() : talkComment.getCommentUserImage()
+                );
 
                 return latestTalkViewModel;
             }
