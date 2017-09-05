@@ -49,6 +49,7 @@
             android:layout_below="@id/filter_detail_search_container"
             android:layout_alignParentRight="true"
             android:paddingRight="@dimen/filter_detail_sidebar_padding_right"
+            android:layout_marginTop="@dimen/filter_detail_sidebar_margin_top"
             android:visibility="gone"/>
 
         <com.tokopedia.design.search.EmptySearchResultView
