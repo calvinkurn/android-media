@@ -400,6 +400,16 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                     tipButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            //if last selected tip index is clicked again then unselect it.
+                            if (selectedTipIndex == (int) v.getTag()) {
+                                TextView button = (TextView) tipLayout.getChildAt(selectedTipIndex);
+                                setButtonBackground(button, R.drawable.shape_bg_rounded_white_rectangle);
+                                tipAmount = 0;
+
+                                return;
+                            }
+
+
                             selectedTipIndex = (int) v.getTag();
                             tipAmount = receipt.getTipList().getList().get(selectedTipIndex);
 
@@ -415,18 +425,21 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                                 }
 
                                 button.setTextColor(textColor);
-
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                    button.setBackground(getResources().getDrawable(backgroundDrawableResId));
-                                } else {
-                                    button.setBackgroundDrawable(getResources().getDrawable(backgroundDrawableResId));
-                                }
+                                setButtonBackground(button, backgroundDrawableResId);
                             }
                         }
                     });
                     tipLayout.addView(tipButton);
                 }
             }
+        }
+    }
+
+    private void setButtonBackground(View view, int backgroundDrawableResId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(getResources().getDrawable(backgroundDrawableResId));
+        } else {
+            view.setBackgroundDrawable(getResources().getDrawable(backgroundDrawableResId));
         }
     }
 
