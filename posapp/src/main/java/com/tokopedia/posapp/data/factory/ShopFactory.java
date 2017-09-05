@@ -30,11 +30,11 @@ public class ShopFactory {
         this.getShopProductMapper = getShopProductMapper;
     }
 
-    public ShopCloudSource getShopFromCloud() {
+    public ShopCloudSource cloud() {
         return new ShopCloudSource(shopApi, aceApi, shopMapper, getShopProductMapper);
     }
 
-    public ShopLocalSource getShopFromLocal() {
+    public ShopLocalSource local() {
         return new ShopLocalSource();
     }
 }

@@ -22,7 +22,7 @@ public class ProductFactory {
         this.getProductMapper = getProductMapper;
     }
 
-    public ProductCloudSource productFromCloud() {
+    public ProductCloudSource cloud() {
         return new ProductCloudSource(productApi, mojitoApi, getProductMapper);
     }
 }

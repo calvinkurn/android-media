@@ -19,6 +19,6 @@ public class CartRepositoryImpl implements CartRepository {
 
     @Override
     public Observable<AddToCartStatusDomain> addToCart(CartDomain cartDomain) {
-        return cartFactory.getCartFromLocal().addToCart(cartDomain);
+        return cartFactory.local().addToCart(cartDomain);
     }
 }

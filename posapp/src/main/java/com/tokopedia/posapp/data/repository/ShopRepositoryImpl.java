@@ -21,16 +21,16 @@ public class ShopRepositoryImpl implements ShopRepository {
 
     @Override
     public Observable<ShopDomain> getShop(RequestParams requestParams) {
-        return shopFactory.getShopFromCloud().getShop(requestParams);
+        return shopFactory.cloud().getShop(requestParams);
     }
 
     @Override
     public Observable<ShopProductListDomain> getShopProduct(RequestParams requestParams) {
-        return shopFactory.getShopFromCloud().getShopProduct(requestParams);
+        return shopFactory.cloud().getShopProduct(requestParams);
     }
 
     @Override
     public Observable<ProductSavedResult> storeProductToCache(ShopProductListDomain productListDomain) {
-        return shopFactory.getShopFromLocal().storeProduct(productListDomain);
+        return shopFactory.local().storeProduct(productListDomain);
     }
 }

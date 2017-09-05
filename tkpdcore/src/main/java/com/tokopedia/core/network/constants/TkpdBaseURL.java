@@ -819,6 +819,7 @@ public class TkpdBaseURL {
         public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
 
+        public static final String PATH_INSTALLMENT_TERMS = "installment/terms/";
     }
 
     public static class FinTech {
