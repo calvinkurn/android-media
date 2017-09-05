@@ -11,7 +11,7 @@ public class CreateResoStep1Response {
 
     @SerializedName("resolution")
     @Expose
-    private String resolution;
+    private ResolutionResponse resolution;
 
     @SerializedName("cacheKey")
     @Expose
@@ -25,11 +25,11 @@ public class CreateResoStep1Response {
         this.cacheKey = cacheKey;
     }
 
-    public String getResolution() {
+    public ResolutionResponse getResolution() {
         return resolution;
     }
 
-    public void setResolution(String resolution) {
+    public void setResolution(ResolutionResponse resolution) {
         this.resolution = resolution;
     }
 

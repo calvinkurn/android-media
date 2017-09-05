@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 public class CreateResoStep1Domain {
 
     @Nullable
-    private String resolution;
+    private ResolutionDomain resolution;
 
     @Nullable
     private String cacheKey;
@@ -17,17 +17,17 @@ public class CreateResoStep1Domain {
     @Nullable
     private boolean isSuccess;
 
-    public CreateResoStep1Domain(String resolution, String cacheKey) {
+    public CreateResoStep1Domain(ResolutionDomain resolution, String cacheKey) {
         this.resolution = resolution;
         this.cacheKey = cacheKey;
     }
 
     @Nullable
-    public String getResolution() {
+    public ResolutionDomain getResolution() {
         return resolution;
     }
 
-    public void setResolution(@Nullable String resolution) {
+    public void setResolution(@Nullable ResolutionDomain resolution) {
         this.resolution = resolution;
     }
 

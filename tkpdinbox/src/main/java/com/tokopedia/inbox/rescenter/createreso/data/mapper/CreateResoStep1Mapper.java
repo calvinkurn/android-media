@@ -4,12 +4,12 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoStep1Response;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ResolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.ResolutionDomain;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -30,7 +30,8 @@ public class CreateResoStep1Mapper implements Func1<Response<TkpdResponse>, Crea
     private CreateResoStep1Domain mappingResponse(Response<TkpdResponse> response) {
         try {
             CreateResoStep1Response createResoStep1Response = response.body().convertDataObj(CreateResoStep1Response.class);
-            CreateResoStep1Domain model = new CreateResoStep1Domain(createResoStep1Response.getResolution(), createResoStep1Response.getCacheKey());
+            CreateResoStep1Domain model = new CreateResoStep1Domain(createResoStep1Response.getResolution() != null ? mappingResolutionDomain(createResoStep1Response.getResolution()) : null,
+                    createResoStep1Response.getCacheKey());
             if (response.isSuccessful()) {
                 if (response.raw().code() == ResponseStatus.SC_OK) {
                     model.setSuccess(true);
@@ -55,5 +56,9 @@ public class CreateResoStep1Mapper implements Func1<Response<TkpdResponse>, Crea
             e.printStackTrace();
         }
         return null;
+    }
+
+    private ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {
+        return new ResolutionDomain(response.getId());
     }
 }
