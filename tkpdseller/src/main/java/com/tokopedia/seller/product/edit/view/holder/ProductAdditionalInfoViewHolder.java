@@ -28,10 +28,8 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
@@ -55,6 +53,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public static final String SAVED_PRD_VARIANT_SUBMIT = "svd_variant";
     public static final String SAVED_VARIANT_CAT = "svd_var";
+    public static final String SAVED_OPTION_SUBMIT_LV_1 = "svd_opt_sub_lv1";
 
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
@@ -72,6 +71,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
      * this prevent duplication at videoIdList;
      */
     private List<String> videoIdList;
+    private ArrayList<ProductVariantOptionSubmit> productVariantOptionSubmitList;
 
     public ProductAdditionalInfoViewHolder(View view) {
         videoIdList = new ArrayList<>();
@@ -113,7 +113,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         variantLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.startProductVariantActivity(productVariantByCatModelList, productVariantDataSubmit);
+                listener.startProductVariantActivity(
+                        productVariantByCatModelList,
+                        productVariantDataSubmit,
+                        productVariantOptionSubmitList);
             }
         });
         preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
@@ -244,6 +247,14 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         setUiVariantSelection(variantLabelView.getContent());
     }
 
+    /**
+     * this is to retrieve the original image from server, since client cannot upload image,
+     * so this is to save the original image to retain the image url
+     */
+    public void setOptionSubmitLv1(ProductVariantDataSubmit productVariantDataSubmit) {
+        productVariantOptionSubmitList = ProductVariantUtils.getProductVariantOptionSubmitLv1(productVariantDataSubmit);
+    }
+
     public void setProductVariantDataSubmit(ProductVariantDataSubmit productVariantDataSubmit, String defaultStringSelection) {
         this.productVariantDataSubmit = productVariantDataSubmit;
         setUiVariantSelection(defaultStringSelection);
@@ -345,6 +356,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<>(videoIdList));
         savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, productVariantDataSubmit);
         savedInstanceState.putParcelableArrayList(SAVED_VARIANT_CAT, productVariantByCatModelList);
+        savedInstanceState.putParcelableArrayList(SAVED_OPTION_SUBMIT_LV_1, productVariantOptionSubmitList);
     }
 
     @Override
@@ -355,6 +367,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         }
         productVariantDataSubmit = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
         productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT_CAT);
+        productVariantOptionSubmitList = savedInstanceState.getParcelableArrayList(SAVED_OPTION_SUBMIT_LV_1);
     }
 
     /**
@@ -370,7 +383,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
 
         void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelArrayList,
-                                         ProductVariantDataSubmit productVariantSubmit);
+                                         ProductVariantDataSubmit productVariantSubmit,
+                                         ArrayList<ProductVariantOptionSubmit> productVariantOptionSubmitArrayList);
 
         void onDescriptionTextChanged(String text);
 

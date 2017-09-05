@@ -670,27 +670,27 @@ public class ProductVariantUtils {
         return variantCombination;
     }
 
-    public static List<ProductVariantOptionSubmit> getProductVariantOptionSubmit(int level, ProductVariantDataSubmit productVariantDataSubmit){
+    public static ArrayList<ProductVariantOptionSubmit> getProductVariantOptionSubmitLv1(ProductVariantDataSubmit productVariantDataSubmit){
         if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
                 productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
-            return Collections.emptyList();
+            return null;
         }
         List<ProductVariantUnitSubmit> productVariantUnitSubmitList =
                 productVariantDataSubmit.getProductVariantUnitSubmitList();
 
         for (int i = 0, sizei = productVariantUnitSubmitList.size(); i<sizei; i++) {
             ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
-            if (productVariantUnitSubmit.getPosition() != level) {
+            if (productVariantUnitSubmit.getPosition() != ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
                 continue;
             }
             return cloneVarianOptionSubmitList(productVariantUnitSubmit.getProductVariantOptionSubmitList());
         }
-        return Collections.emptyList();
+        return null;
     }
 
-    private static List<ProductVariantOptionSubmit> cloneVarianOptionSubmitList(
+    private static ArrayList<ProductVariantOptionSubmit> cloneVarianOptionSubmitList(
             List<ProductVariantOptionSubmit> productVariantOptionSubmitList){
-        List <ProductVariantOptionSubmit> cloneProductVariantOptionSubmitList = new ArrayList<>();
+        ArrayList <ProductVariantOptionSubmit> cloneProductVariantOptionSubmitList = new ArrayList<>();
         for (int i = 0, sizei = productVariantOptionSubmitList.size(); i<sizei; i++) {
             ProductVariantOptionSubmit sourceProductVariantOptionSubmit = productVariantOptionSubmitList.get(i);
             ProductVariantOptionSubmit newProductVariantOptionSubmit = new ProductVariantOptionSubmit();
