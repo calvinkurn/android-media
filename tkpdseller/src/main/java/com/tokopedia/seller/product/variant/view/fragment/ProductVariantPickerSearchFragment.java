@@ -19,6 +19,7 @@ import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
@@ -215,7 +216,7 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         productVariantViewModel.setUnitValueId(Long.parseLong(productVariantOption.getId()));
         productVariantViewModel.setHexCode(productVariantOption.getHexCode());
         productVariantViewModel.setTitle(productVariantOption.getValue());
-        productVariantViewModel.setImageUrl(productVariantOption.getIcon());
+        productVariantViewModel.setIcon(productVariantOption.getIcon());
         return productVariantViewModel;
     }
 
