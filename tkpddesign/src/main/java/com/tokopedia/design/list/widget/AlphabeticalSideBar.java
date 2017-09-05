@@ -58,7 +58,7 @@ public class AlphabeticalSideBar extends View {
         itemTopMargin = magnifierRadius;
         itemBottomMargin = magnifierRadius;
 
-        totalWidth = magnifierTextSize + magnifierToSidebarDistance + magnifierRadius * 2;
+        totalWidth = itemTextSize + magnifierToSidebarDistance + magnifierRadius * 2;
         totalHeight = itemTextSize * alphabetText.length();
         alphabetHeight = totalHeight / ALPHABET_COUNT;
 
@@ -82,7 +82,8 @@ public class AlphabeticalSideBar extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension((int) totalWidth, (int) totalHeight + itemTopMargin + itemBottomMargin);
+        setMeasuredDimension((int) totalWidth + getPaddingRight(),
+                (int) totalHeight + itemTopMargin + itemBottomMargin);
     }
 
     public void setRecyclerView(RecyclerView recyclerView) {
@@ -129,7 +130,7 @@ public class AlphabeticalSideBar extends View {
 
     protected void onDraw(Canvas canvas) {
 
-        float itemCenterX = getMeasuredWidth() - itemTextSize / 2;
+        float itemCenterX = totalWidth - itemTextSize / 2;
         float bulletRadius = itemTextSize / 6;
 
         for (int i = 0; i < alphabetText.length(); i++) {
