@@ -303,7 +303,9 @@ public interface AppEventTracking {
         String FILTER = "Filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
-
+        String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";
+        String CLICK_USSD_BUY_PULSA = "Click Beli from USSD";
+        String CLICK_USSD_EDIT_NUMBER = "Click Edit Number from USSD";
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
