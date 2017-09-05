@@ -324,18 +324,6 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels,
-                                 long startDate, long endDate, int datePickerSelection,
-                                 int datePickerType) {
-        return null;
-    }
-
-    @Override
-    public String getRangeDateFormatted(Context context, long startDate, long endDate) {
-        return null;
-    }
-
-    @Override
     public void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
         ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.seller;
 
-import com.tokopedia.core.base.di.module.ActivityModule;
 import android.content.Context;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by normansyahputa on 12/14/16.
  */
 
-public interface SellerModuleRouter extends com.tokopedia.core.router.digitalmodule.sellermodule.SellerModuleRouter {
+public interface SellerModuleRouter {
 
     GoldMerchantComponent getGoldMerchantComponent();
 
@@ -24,5 +23,4 @@ public interface SellerModuleRouter extends com.tokopedia.core.router.digitalmod
     void goToProductDetail(Context context, String productUrl);
 
     void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
-    GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule);
 }

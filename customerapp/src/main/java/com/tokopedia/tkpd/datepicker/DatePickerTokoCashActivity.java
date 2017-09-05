@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.datepicker;
 
+import android.os.Bundle;
+
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.tkpd.R;
 
@@ -10,8 +12,8 @@ import com.tokopedia.tkpd.R;
 public class DatePickerTokoCashActivity extends DatePickerActivity {
 
     @Override
-    protected void setupLayout() {
-        super.setupLayout();
+    protected void setupLayout(Bundle savedInstanceStat) {
+        super.setupLayout(savedInstanceStat);
         tabLayout.removeAllTabs();
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.toko_cash_tab_choose_date_range)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.toko_cash_tab_choose_date)));
