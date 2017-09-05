@@ -91,7 +91,8 @@
                     android:id="@+id/bca_one_click_register_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/add_bca_one_click_layout"
