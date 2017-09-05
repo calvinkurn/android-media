@@ -790,7 +790,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 R.drawable.ic_settings
         };
         for (int i = 0; i < drawables.length; i++)
-            drawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
+            drawables[i] = AppCompatDrawableManager.get().getDrawable(this, drawablesResource[i]);
 
         String[] titleMenus = getResources().getStringArray(R.array.title_menu_home);
         String[] strings = new String[drawables.length];
