@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -60,6 +61,13 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     public void onAttach(Context context) {
         super.onAttach(context);
         reactRootView = new ReactRootView(context);
+        reactInstanceManager = MainApplication.getInstance().getReactNativeHost().getReactInstanceManager();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        reactRootView = new ReactRootView(activity);
         reactInstanceManager = MainApplication.getInstance().getReactNativeHost().getReactInstanceManager();
     }
 
