@@ -675,6 +675,14 @@ public class ProductList extends V2BaseFragment {
                             break;
                         }
                     }
+                } else {
+                    String etalaseId = productShopParam.getEtalaseId();
+                    for (int i = 0; i < etalaseList.size(); i++) {
+                        if (etalaseList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
+                            index = i;
+                            break;
+                        }
+                    }
                 }
                 adapter.setSelectedEtalasePos(index);
                 adapter.notifyDataSetChanged();
