@@ -403,6 +403,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                             //if last selected tip index is clicked again then unselect it.
                             if (selectedTipIndex == (int) v.getTag()) {
                                 TextView button = (TextView) tipLayout.getChildAt(selectedTipIndex);
+                                button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
                                 setButtonBackground(button, R.drawable.shape_bg_rounded_white_rectangle);
                                 tipAmount = 0;
 
