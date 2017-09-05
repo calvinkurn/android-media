@@ -10,9 +10,12 @@ import {
   REMOVE_FROM_CART,
   INCREMENT_QTY,
   DECREMENT_QTY,
-  CLEAR_CART
+  CLEAR_CART,
+  FETCH_SEARCH_PRODUCT,
+  CLEAR_SEARCH_RESULTS,
+  ON_SEARCH_QUERY_TYPE
 } from '../actions/index'
-import {bankData, emiData} from '../components/bankData';
+import { bankData, emiData } from '../components/bankData';
 
 const products = (state = {
   items: [],
@@ -201,37 +204,37 @@ const payment = (state = {
   mon: '',
   year: '',
   cvv: '',
-  cardType : ''
+  cardType: ''
 }, action) => {
   switch (action.type) {
     case 'FETCH_BANK_FUlFILLED':
       //const data  = action.payload.data
       //TODO: update with API on future
-      const data = bankData; 
+      const data = bankData;
       return {
         ...state,
-        items:data
+        items: data
       }
-    break;
+      break;
     case 'FETCH_EMI_FUlFILLED':
       return {
         ...state,
-        emiList:emiData
+        emiList: emiData
       }
       break;
     case 'BANK_SELECTED':
-        const bankId = action.payload
-        const newData = {
-          items: state.items.map(i => {
-            i.isSelected = false;
-            if (i.id === bankId) {
-              i.isSelected = true;
-            }
-            return i
-          })
-        }
-        return {...state, ...newData};
-    break;
+      const bankId = action.payload
+      const newData = {
+        items: state.items.map(i => {
+          i.isSelected = false;
+          if (i.id === bankId) {
+            i.isSelected = true;
+          }
+          return i
+        })
+      }
+      return { ...state, ...newData };
+      break;
     case 'EMI_SELECTED':
       const emiId = action.payload
       const newEmiData = {
@@ -243,18 +246,50 @@ const payment = (state = {
           return i
         })
       }
-      return {...state, ...newEmiData};
-    break;
+      return { ...state, ...newEmiData };
+      break;
     case 'SELECT_PAYMENT_OPTIONS':
       switch (action.payload.option) {
         case 'mon':
-           return {...state, mon:action.payload.value}
+          return { ...state, mon: action.payload.value }
         case 'year':
-          return {...state, year:action.payload.value}
+          return { ...state, year: action.payload.value }
         case 'ccNum':
-          return {...state, ccNum:action.payload.value}
+          return { ...state, ccNum: action.payload.value }
         case 'cvv':
-          return {...state, cvv:action.payload.value}
+          return { ...state, cvv: action.payload.value }
+      }
+    default:
+      return state
+  }
+}
+
+const search = (state = {
+  items: [],
+  query: ''
+}, action) => {
+  switch (action.type) {
+    case ON_SEARCH_QUERY_TYPE:
+      return {
+        ...state,
+        query: action.payload,
+      }
+    case `${FETCH_SEARCH_PRODUCT}_${PENDING}`:
+      return state
+    case `${FETCH_SEARCH_PRODUCT}_${FULFILLED}`:
+      return {
+        ...state,
+        items: action.payload.data.data.products.map(p => ({
+          id: p.id,
+          text: p.name
+        }))
+      }
+    case `${FETCH_SEARCH_PRODUCT}_${REJECTED}`:
+      return state
+    case CLEAR_SEARCH_RESULTS:
+      return {
+        items: [],
+        query: '',
       }
     default:
       return state
@@ -265,7 +300,8 @@ const rootReducer = combineReducers({
   products,
   etalase,
   cart,
-  payment
+  payment,
+  search,
 })
 
 export default rootReducer

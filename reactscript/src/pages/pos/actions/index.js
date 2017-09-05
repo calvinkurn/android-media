@@ -122,3 +122,37 @@ export const selectEmi = (id) => {
     payload: id
   }
 }
+
+//Search actions
+export const ON_SEARCH_QUERY_TYPE = 'ON_SEARCH_QUERY_TYPE'
+export const onSearchQueryType = (queryText) => {
+  return {
+    type: ON_SEARCH_QUERY_TYPE,
+    payload: queryText
+  }
+}
+
+export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
+export const fetchSearchProduct = (query) => {
+  console.log(query)
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=1987772&start=0&q=${query}`
+  return {
+    type: FETCH_SEARCH_PRODUCT,
+    payload: axios.get(url),
+    queryText: query,
+  }
+}
+
+export const ON_SEARCH_RESULT_TAP = 'ON_SEARCH_RESULT_TAP'
+export const onSearchResultTap = () => {
+  return {
+    type: ON_SEARCH_RESULT_TAP,
+  }
+}
+
+export const CLEAR_SEARCH_RESULTS = 'CLEAR_SEARCH_RESULTS'
+export const clearSearchResults = () => {
+  return {
+    type: CLEAR_SEARCH_RESULTS,
+  }
+}

@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import SearchNotFound from './SearchNotFound'
 
-const renderItem = ({item}) => (
+const renderItem = ({ item }) => (
   <View style={{
     height: 80, borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
@@ -22,7 +22,7 @@ const renderItem = ({item}) => (
   </View>
 )
 
-const renderHeader = ({section}) => (
+const renderHeader = ({ section }) => (
   <View style={{
     paddingLeft: '10%',
     justifyContent: 'center',
@@ -38,7 +38,7 @@ const renderHeader = ({section}) => (
   </View>
 )
 
-const SearchList = () => {
+const SearchList = ({ searchItems }) => {
   return (
     <View>
       <SectionList
@@ -48,15 +48,14 @@ const SearchList = () => {
         renderItem={renderItem}
         renderSectionHeader={renderHeader}
         sections={[ // homogenous rendering between sections
-          { data: [{ text: 'Samsung S4', id: 1 }, { text: 'Samsung Galaxy', id: 2 }, { text: 'Samsung duos', id: 3 }], title: 'Pencarian Terakhir' },
-          { data: [{ text: 'Samsung S4', id: 4 }], title: 'Popular Search', },
+          { data: searchItems, title: 'Pencarian Terakhir' }
         ]}
       />
     </View>
   )
 }
 
-const SearchScreen = ({ visible, onBackPress }) => {
+const SearchScreen = ({ visible, onBackPress, onSearch, items, onClearSearch, queryText, onSearchType }) => {
   return (
     <Modal
       animationType={'slide'}
@@ -72,14 +71,22 @@ const SearchScreen = ({ visible, onBackPress }) => {
             autoFocus={true}
             inlineImageLeft='search_icon'
             inlineImagePadding={20}
+            value={queryText}
+            onChangeText={
+              (text) => {
+                onSearchType(text)
+                onSearch(text)
+              }
+            }
           />
         </View>
         <View style={styles.closeIconWrapper}>
-          <TouchableWithoutFeedback onPress={() => { }}>
+          <TouchableWithoutFeedback onPress={onClearSearch}>
             <Image source={require('./img/close-icon.png')} />
           </TouchableWithoutFeedback>
         </View>
       </View>
+      {(items.length === 0 && queryText) ? <SearchNotFound /> : <SearchList searchItems={items} />}
       {/* <SearchNotFound /> */}
       <SearchList />
     </Modal>
