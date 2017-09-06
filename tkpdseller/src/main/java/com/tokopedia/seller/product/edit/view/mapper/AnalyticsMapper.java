@@ -4,6 +4,10 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
+import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,15 @@ public class AnalyticsMapper {
         }
         if(isShare){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
+        }
+        if (viewModel.getSwitchVariant() > ProductVariantConstant.SWITCH_VARIANT_EXIST) {
+            List<ProductVariantUnitSubmit> productVariantUnitSubmitList = viewModel.getProductVariantDataSubmit().getProductVariantUnitSubmitList();
+            if (productVariantUnitSubmitList.size() == 1) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1);
+            }
+            else if (productVariantUnitSubmitList.size() == 2) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2);
+            }
         }
 
         return StringUtils.convertListToStringDelimiter(listOfFields, ",");

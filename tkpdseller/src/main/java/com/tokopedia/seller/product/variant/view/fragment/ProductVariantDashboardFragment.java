@@ -13,6 +13,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
@@ -43,6 +44,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
     private ProductVariantDataSubmit productVariantDataSubmit;
     private View variantListView;
+    private List<ProductVariantOptionSubmit> oldProductVariantOptionSubmitList;
 
     public static ProductVariantDashboardFragment newInstance() {
         Bundle args = new Bundle();
@@ -64,6 +66,8 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         } else {
             productVariantDataSubmit = savedInstanceState.getParcelable(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
         }
+        oldProductVariantOptionSubmitList = ProductVariantUtils.getProductVariantOptionSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE,
+                (ProductVariantDataSubmit) activityIntent.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION));
     }
 
     @Override
@@ -189,11 +193,62 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 level = ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE;
                 break;
         }
+
         addVariantCombination(level, productVariantUnitSubmit);
         updateVariantUnitList(productVariantUnitSubmit);
         checkVariantValidation(level, productVariantUnitSubmit);
+        remapImageToVariant();
         updateVariantUnitView();
         updateVariantItemListView();
+    }
+
+    /**
+     * this is to give the variant the imageURL, currenly imageURL can be uploaded from desktop (retrieve from server)
+     * Change this logic when we already have the logic to upload variant image
+     */
+    private void remapImageToVariant() {
+        if (this.productVariantDataSubmit == null || this.productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
+                this.productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0 ||
+                oldProductVariantOptionSubmitList == null || oldProductVariantOptionSubmitList.size() == 0) {
+            return;
+        }
+        List<ProductVariantUnitSubmit> productVariantUnitSubmitList = this.productVariantDataSubmit.getProductVariantUnitSubmitList();
+        for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
+            ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
+            if (productVariantUnitSubmit.getPosition() == ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
+                List<ProductVariantOptionSubmit> productVariantOptionSubmitList = productVariantUnitSubmit.getProductVariantOptionSubmitList();
+                for (int j = 0, sizej = productVariantOptionSubmitList.size(); j < sizej; j++) {
+                    ProductVariantOptionSubmit productVariantOptionSubmit =
+                            productVariantOptionSubmitList.get(j);
+                    productVariantOptionSubmit.setPictureItemList(getOldPictureItem(productVariantOptionSubmit));
+                }
+                break;
+            }
+        }
+    }
+
+    private List<PictureItem> getOldPictureItem(ProductVariantOptionSubmit productVariantOptionSubmit) {
+        long vuvId = productVariantOptionSubmit.getVariantUnitValueId();
+        String customText = productVariantOptionSubmit.getCustomText();
+        if (vuvId == 0 && TextUtils.isEmpty(customText)) {
+            return null;
+        }
+        if (vuvId != 0) {
+            for (int i = 0, sizei = oldProductVariantOptionSubmitList.size(); i < sizei; i++) {
+                ProductVariantOptionSubmit oldProductVariantOptionSubmit =oldProductVariantOptionSubmitList.get(i);
+                if (vuvId == oldProductVariantOptionSubmit.getVariantUnitValueId()) {
+                    return oldProductVariantOptionSubmit.getPictureItemList();
+                }
+            }
+        } else {
+            for (int i = 0, sizei = oldProductVariantOptionSubmitList.size(); i < sizei; i++) {
+                ProductVariantOptionSubmit oldProductVariantOptionSubmit =oldProductVariantOptionSubmitList.get(i);
+                if (customText.equals(oldProductVariantOptionSubmit.getCustomText())) {
+                    return oldProductVariantOptionSubmit.getPictureItemList();
+                }
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")

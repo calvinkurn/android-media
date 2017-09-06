@@ -67,7 +67,7 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
                 showLoading();
                 fetchInputData();
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override
