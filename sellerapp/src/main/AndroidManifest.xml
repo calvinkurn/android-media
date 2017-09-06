@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.view.SellerHomeActivity"
+            android:name=".dashboard.view.activity.DashboardActivity"
             android:exported="true"
             android:label="Home"
             android:launchMode="singleTask"
@@ -64,7 +64,7 @@
             android:value="@string/key_gtm" />
         <meta-data
             android:name="GA_ID"
-            android:value="@string/key_ga"/>
+            android:value="@string/key_ga" />
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
@@ -133,8 +133,9 @@
             android:name="com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService"
             android:exported="false" />
 
-        <service android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.ListOrderViewServiceWidget"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service
+            android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.ListOrderViewServiceWidget"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget">
             <intent-filter>
@@ -149,15 +150,17 @@
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
-            android:exported="true"/>
+            android:exported="true" />
 
         <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>

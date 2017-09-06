@@ -13,6 +13,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
@@ -37,11 +38,11 @@ public class SplashScreenActivity extends SplashScreen {
                     intent.putExtras(bundle);
                     delegate.dispatchFrom(this, intent);
                 } else {
-                    startActivity(new Intent(SplashScreenActivity.this, SellerHomeActivity.class));
+                    startActivity(DashboardActivity.createInstance(this));
                 }
             } else {
                 // Means it is a Seller
-                startActivity(new Intent(SplashScreenActivity.this, SellerHomeActivity.class));
+                startActivity(DashboardActivity.createInstance(this));
             }
         } else {
             // Means it is buyer
