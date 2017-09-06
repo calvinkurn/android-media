@@ -18,7 +18,7 @@
             android:value="@string/key_localytics" />
 
         <service
-            android:name=".view.service.FetcherService"
+            android:name=".view.service.CacheService"
             android:exported="false" />
 
         <receiver

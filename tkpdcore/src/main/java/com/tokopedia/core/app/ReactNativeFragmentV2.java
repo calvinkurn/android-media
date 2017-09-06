@@ -48,7 +48,7 @@ public abstract class ReactNativeFragmentV2 extends TkpdBaseV4Fragment
 
     @Override
     public void onDestroy() {
-        ReactUtils.init(MainApplication.getInstance()).sendDestroyPageEmitter();
+        ReactUtils.sendDestroyPageEmitter();
         super.onDestroy();
 
         if (reactInstanceManager != null) {

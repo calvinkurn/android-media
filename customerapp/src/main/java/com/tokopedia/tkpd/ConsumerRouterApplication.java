@@ -8,19 +8,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -33,7 +35,6 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -49,13 +50,18 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
-import com.tokopedia.seller.product.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.common.di.module.ProductModule;
+import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -68,10 +74,11 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -88,9 +95,29 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
+    private DaggerProductComponent.Builder daggerProductBuilder;
+    private ProductComponent productComponent;
 
-    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
+    public GoldMerchantComponent getGoldMerchantComponent() {
         throw new RuntimeException("method used in sellerapp only");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initializeDagger();
+    }
+
+    private void initializeDagger() {
+        daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
+    }
+
+    @Override
+    public ProductComponent getProductComponent() {
+        if (productComponent == null) {
+            productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return productComponent;
     }
 
     @Override
@@ -149,6 +176,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void goMultipleInstagramAddProduct(Context context,
+                                              ArrayList<InstagramMediaModel> instagramMediaModelList) {
+        ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
+    }
+
+    @Override
     public void goToProductDetailForResult(Fragment fragment, String productId,
                                            int adapterPosition,
                                            int requestCode) {
@@ -195,23 +228,32 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
-        return Uri.parse(originUrl).buildUpon()
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-                )
-                .build().toString();
+        Uri originUri = Uri.parse(originUrl);
+        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+            );
+        }
+        return uriBuilder.build().toString().trim();
     }
 
     @Override
@@ -243,14 +285,26 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
+    }
+
+    @Override
     public void removeInstopedToken() {
         InstagramMediaPresenterImpl.removeToken();
     }
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProduct.class);
+        Intent intent = new Intent(context, ManageProductSeller.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToDraftProductList(Context context) {
+        Intent intent = new Intent(context, ProductDraftListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
@@ -346,6 +400,9 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public void onLogout(AppComponent appComponent) {
+        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
+        cacheApiClearAllUseCase.execute(RequestParams.EMPTY, new TkpdSellerLogout.EmptySubscriber());
+
         TkpdSellerLogout.onLogOut(appComponent);
     }
 

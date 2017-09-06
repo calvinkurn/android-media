@@ -43,7 +43,7 @@
     <style name="WebViewActivity" parent="@style/Theme.Tokopedia3">
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
         <item name="android:statusBarColor">@color/white</item>
-        <item name="android:colorPrimaryDark">@color/white</item>
+       // <item name="android:colorPrimaryDark">@color/white</item>
     </style>
 
     <style name="CustomAlertDialogStyle" parent="android:Theme.Material.Light.Dialog.Alert">

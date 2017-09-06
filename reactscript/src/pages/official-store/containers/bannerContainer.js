@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Linking } from 'react-native'
 import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
 import { fetchBanners } from '../actions/actions'

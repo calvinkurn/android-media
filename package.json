@@ -28,6 +28,8 @@
         "redux": "^3.7.0",
         "redux-logger": "^3.0.6",
         "redux-promise-middleware": "4.2.1",
-        "redux-thunk": "^2.2.0"
+        "redux-thunk": "^2.2.0",
+        "axios": "^0.16.2",
+        "react-native-popup-dialog": "^0.9.34"
     }
 }

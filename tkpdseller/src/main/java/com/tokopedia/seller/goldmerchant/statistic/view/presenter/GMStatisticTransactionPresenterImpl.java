@@ -6,7 +6,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
 

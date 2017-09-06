@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
@@ -81,7 +83,36 @@ public class TopAdsStatisticProductActivity extends TopAdsStatisticActivity {
                         }
                     }));
         }
+    }
 
 
+    @Override
+    protected void onCostSelected() {
+        UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CPC);
+    }
+
+    @Override
+    protected void onAverageConversionSelected() {
+        UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_AVERAGE_CONVERSION);
+    }
+
+    @Override
+    protected void onConversionSelected() {
+        UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CONVERSION);
+    }
+
+    @Override
+    protected void onCtrSelected() {
+        UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CTR);
+    }
+
+    @Override
+    protected void onClickSelected() {
+        UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CLICK);
+    }
+
+    @Override
+    protected void onImpressionSelected() {
+        UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_IMPRESSION);
     }
 }

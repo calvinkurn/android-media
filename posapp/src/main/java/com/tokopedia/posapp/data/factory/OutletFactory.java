@@ -17,7 +17,7 @@ public class OutletFactory {
         this.getOutletMapper = getOutletMapper;
     }
 
-    public OutletCloudSource getOutletFromCloud() {
+    public OutletCloudSource cloud() {
         return new OutletCloudSource(peopleApi, getOutletMapper);
     }
 }

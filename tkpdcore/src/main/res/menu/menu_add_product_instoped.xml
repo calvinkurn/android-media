@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/action_instagram"
+        android:icon="@drawable/ig"
+        android:orderInCategory="100"
+        android:title="@string/title_instagram" />
+
+    <item
         android:id="@+id/action_gallery"
         android:icon="@drawable/gallery"
         android:orderInCategory="101"

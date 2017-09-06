@@ -2,6 +2,8 @@ package com.tokopedia.core.network.apiservices.transaction;
 
 import com.tokopedia.core.network.apiservices.transaction.apis.DepositApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import retrofit2.Retrofit;
@@ -15,6 +17,15 @@ public class DepositService extends AuthService<DepositApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(DepositApi.class);
+    }
+
+    @Override
+    protected Retrofit createRetrofitInstance(String processedBaseUrl) {
+        return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                        .buildClientDefaultCacheAuth())
+                .build();
     }
 
     @Override

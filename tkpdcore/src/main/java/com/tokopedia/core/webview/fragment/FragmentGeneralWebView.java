@@ -131,7 +131,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
-            if (((IDigitalModuleRouter) getActivity().getApplication())
+            if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
                     .isSupportedDelegateDeepLink(url)) {
                 ((IDigitalModuleRouter) getActivity().getApplication())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());

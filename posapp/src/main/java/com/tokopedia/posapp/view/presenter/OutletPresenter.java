@@ -2,7 +2,7 @@ package com.tokopedia.posapp.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -33,7 +33,7 @@ public class OutletPresenter extends BaseDaggerPresenter<Outlet.View>
     private PagingHandler pagingHandler;
 
     @Inject
-    public OutletPresenter(@ActivityContext Context context, GetOutletUseCase outletUseCase) {
+    public OutletPresenter(@ApplicationContext Context context, GetOutletUseCase outletUseCase) {
         this.context = context;
         this.getOutletUseCase = outletUseCase;
         pagingHandler = new PagingHandler();

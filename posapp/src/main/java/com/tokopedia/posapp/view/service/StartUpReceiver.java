@@ -15,6 +15,7 @@ import java.util.Random;
 public class StartUpReceiver extends BroadcastReceiver {
     public static final int FETCHER_SERVICE_REQUEST_CODE = 1001;
 
+    // TODO: 9/5/17 change per 6 hour
     private static final int MORNING_HOUR_SCHEDULE = 12;
     private static final int EVENING_HOUR_SCHEDULE = 21;
     private static final long ONE_DAY = 1000 * 60 * 60 * 24;
@@ -27,7 +28,7 @@ public class StartUpReceiver extends BroadcastReceiver {
         this.context = context;
 
         // start service after device completed booting
-        intentService = FetcherService.getServiceIntent(context);
+        intentService = CacheService.getServiceIntent(context);
         context.startService(intentService);
 
         setAlarm(MORNING_HOUR_SCHEDULE);
@@ -60,7 +61,7 @@ public class StartUpReceiver extends BroadcastReceiver {
 
     /**
      * The server could be overloaded just because each client request data at the same time,
-     * hence we created a random time range.
+     * hence I created a random time range.
      *
      * @param begin beginning hour of time range
      * @param end ending hour of time range

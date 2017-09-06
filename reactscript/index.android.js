@@ -8,35 +8,27 @@ import {
   Text,
   AppState,
   AsyncStorage,
-  ActivityIndicator,
   View
 } from 'react-native';
 import { NavigationModule, NetworkModule } from 'NativeModules';
 import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
-import Pos from './src/pages/pos/setup'
 
 
-let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+// let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
-  componentWillMount() {
-    if (this.props.User_ID != ''){
-      AsyncStorage.setItem('user_id', this.props.User_ID);
-    } else {
-      AsyncStorage.removeItem('user_id').then(res => { })
-      AsyncStorage.getItem('user_id').then(uid => { })
-    }
-  }
+  // componentWillMount() {
+  //   console.log(this.props)
+  // }
   
-
   render(){
     if (this.props.Screen == 'HotList'){
       return <HotList_ />
     } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore screenProps={{ User_ID: this.props.User_ID }}  />
+      return <OfficialStore Screen={this.props.Screen}  />
     } else if(this.props.Screen == 'pos') {
-      return <Pos screenProps={ this.props } />
+      return <Pos data={ this.props } />
     } else {
       return(
         <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
@@ -58,7 +50,8 @@ const styles = StyleSheet.create({
   },
 });
 
-Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
+// Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
+
 

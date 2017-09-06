@@ -21,11 +21,11 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +34,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class Utilities {
+
+    private static final String HTTP_AGENT = "http.agent";
 
     public static boolean isDeviceRooted() {
         return checkRootMethod1() || checkRootMethod2() || checkRootMethod3();
@@ -156,4 +158,25 @@ public class Utilities {
         byte[] data = text.getBytes("UTF-8");
         return Base64.encodeToString(data, mode);
     }
+
+    public static String getDeviceModel(){
+        return Build.MODEL;
+    }
+
+    public static String getDeviceFabrik(){
+        return Build.MANUFACTURER;
+    }
+
+    public static String getDeviceOS(){
+        return Build.VERSION.RELEASE;
+    }
+
+    public static String getHttpAgent(){
+        return System.getProperty(HTTP_AGENT);
+    }
+
+    public static String getLanguage(){
+        return Locale.getDefault().toString();
+    }
+
 }

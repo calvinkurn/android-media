@@ -14,7 +14,7 @@ public class CartFactory {
         this.addToCartMapper = addToCartMapper;
     }
 
-    public CartLocalSource getCartFromLocal() {
+    public CartLocalSource local() {
         return new CartLocalSource(addToCartMapper);
     }
 }

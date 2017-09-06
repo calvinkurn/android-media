@@ -95,7 +95,8 @@ export const fetchCampaigns = (User_ID) => {
                                         return {
                                             ...c,
                                             Products: c.Products.map(p => {
-                                            const is_wishlist = wishlistProd.indexOf(p.data.id) > -1 ? true : false
+                                            const is_wishlist = User_ID === '' ? (false) : (wishlistProd.indexOf(p.data.id) > -1 ? true : false)
+                                            // const is_wishlist = wishlistProd.indexOf(p.data.id) > -1 ? true : false
                                             return {
                                                 ...p,
                                                 data: {
@@ -183,8 +184,9 @@ export const fetchBrands = (limit, offset, User_ID, status) => ({
 
 getBrands = (limit, offset, User_ID, status) => {
     const Check_UserID = !User_ID ? 0 : User_ID
-    const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${Check_UserID}&limit=${limit}&offset=${offset}`
-    return NetworkModule.getResponse(url, "GET", "", false)
+    const URL_ = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${Check_UserID}&limit=${limit}&offset=${offset}`
+    console.log(URL_)
+    return NetworkModule.getResponse(URL_, "GET", "", false)
         .then(response => {
             const jsonResponse = JSON.parse(response)
             const brands = jsonResponse.data
@@ -203,11 +205,10 @@ getBrands = (limit, offset, User_ID, status) => {
             let shopIds = brands.map(shop => shop.shop_id)
             shopIds = shopIds.toString()
             const shopCount = shopIds.length
-            const url_brands = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
-
+            const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
             let ids = []
             let wishlistProd = []
-            return NetworkModule.getResponse(`${url_brands}`, "GET", "", false)
+            return NetworkModule.getResponse(url, "GET", "", false)
                 .then(brandsProducts => {
                     const jsonResponse = JSON.parse(brandsProducts)
                     const brands = jsonResponse.data.brands
@@ -233,37 +234,19 @@ getBrands = (limit, offset, User_ID, status) => {
                                 discount_percentage: product.discount_percentage,
                                 original_price: product.original_price,
                             }))
-
+                            
                             return shop
                         } else {
                             shop.products = []
                             return shop
                         }
                     })
+  
+            if (Check_UserID !== 0){
+                return checkProductInWishlist(Check_UserID, ids.toString())
+                    .then(res => {
+                        wishlistProd = res.data.ids.map(id => +id)
 
-                    if (Check_UserID !== 0){
-                        return checkProductInWishlist(Check_UserID, ids.toString())
-                            .then(res => {
-                                wishlistProd = res.data.ids.map(id => +id)
-
-                                return {
-                                    data: shopList.map(s => {
-                                        return {
-                                            ...s,
-                                            products: s.products.map(p => {
-                                                return {
-                                                    ...p,
-                                                    is_wishlist: wishlistProd.indexOf(p.id) > -1 ? true : false
-                                                }
-                                            })
-                                        }
-                                    }),
-                                    total_brands,
-                                    status: !status ? null : status
-                                }
-                            })
-                            .catch(err => { })
-                    } else {
                         return {
                             data: shopList.map(s => {
                                 return {
@@ -271,19 +254,37 @@ getBrands = (limit, offset, User_ID, status) => {
                                     products: s.products.map(p => {
                                         return {
                                             ...p,
-                                            is_wishlist: false
+                                            is_wishlist: wishlistProd.indexOf(p.id) > -1 ? true : false
                                         }
                                     })
                                 }
                             }),
                             total_brands,
-                            status: !status ? null : status   
+                            // status: !status ? null : status
                         }
+                    })
+                    .catch(err => { })
+                } else {
+                    return {
+                        data: shopList.map(s => {
+                            return {
+                                ...s,
+                                products: s.products.map(p => {
+                                    return {
+                                        ...p,
+                                        is_wishlist: false
+                                    }
+                                })
+                            }
+                        }),
+                        total_brands,
+                        // status: !status ? null : status   
                     }
+                }
 
-                })
+            })
         })
-}
+    }
 
 
 

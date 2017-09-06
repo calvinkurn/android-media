@@ -3,10 +3,12 @@ package com.tokopedia.core.network.di.module;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
+import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
@@ -58,6 +60,14 @@ public class NetModule {
     @Provides
     public Retrofit provideAceRetrofit(@NoAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
+    }
+
+    @AceAuth
+    @ApplicationScope
+    @Provides
+    public Retrofit provideAceAuthRetrofit(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
     }
 
@@ -115,6 +125,14 @@ public class NetModule {
     public Retrofit provideMerlinRetrofit(@NoAuth OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MERLIN_DOMAIN).client(okHttpClient).build();
+    }
+
+    @TomeQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideTomeRetrofit(@NoAuth OkHttpClient okHttpClient,
+                                          Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
     }
 
     @ResolutionQualifier

@@ -9,7 +9,6 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Text,
-  Linking,
 } from 'react-native'
 import { NetworkModule, NavigationModule } from 'NativeModules';
 import Swiper from 'react-native-swiper'

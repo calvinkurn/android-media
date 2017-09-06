@@ -382,6 +382,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
                     AppWidgetUtil.sendBroadcastToAppWidget(this);
+                    if(!SessionHandler.isUserSeller(this)){
+                        UnifyTracking.eventLoginCreateShopSellerApp();
+                    }
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
@@ -573,8 +576,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void destroy() {
         if (SessionHandler.isV4Login(this)){
-            ReactUtils.init(MainApplication.getInstance())
-                    .sendLoginEmitter(SessionHandler.getLoginID(this));
+            ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(this));
         }
         Log.d(getClass().getSimpleName(), "destroy");
         this.setResult(RESULT_OK);

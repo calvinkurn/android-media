@@ -27,18 +27,8 @@ public class ReactNativeHostFactory {
 
     public static ReactNativeHost init(Application application) {
         if(instance == null) instance = new ReactNativeHostFactory();
-        /*reactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(application)
-                .setBundleAssetName("index.android.bundle")
-                .setJSMainModuleName("reactscript/index.android")
-                .addPackage(new MainReactPackage())
-                .addPackage(new CoreReactPackage())
-                .setUseDeveloperSupport(true)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build();*/
 
         return instance.createReactNativeHostDev(application);
-
     }
 
     private ReactNativeHost createReactNativeHost(final Application application) {

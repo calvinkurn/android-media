@@ -9,6 +9,7 @@ import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -20,8 +21,4 @@ public interface ShopApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO)
     Observable<Response<TkpdResponse>> getInfo(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_PRODUCT)
-    Observable<Response<TkpdResponse>> getProductList(@QueryMap Map<String, String> params);
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -37,12 +38,22 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
+
+    }
+
+    @Override
     public void removeInstopedToken() {
 
     }
 
     @Override
     public void goToManageProduct(Context context) {
+
+    }
+
+    @Override
+    public void goToDraftProductList(Context context) {
 
     }
 

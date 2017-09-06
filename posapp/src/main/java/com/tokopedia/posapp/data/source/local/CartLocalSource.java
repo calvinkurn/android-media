@@ -3,7 +3,7 @@ package com.tokopedia.posapp.data.source.local;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.core.database.model.CartDB_Table;
 import com.tokopedia.posapp.data.mapper.AddToCartMapper;
-import com.tokopedia.core.database.o2o.CartDbManager;
+import com.tokopedia.posapp.database.manager.CartDbManager;
 import com.tokopedia.core.database.model.CartDB;
 import com.tokopedia.posapp.domain.model.cart.AddToCartStatusDomain;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
@@ -36,13 +36,13 @@ public class CartLocalSource {
             public void call(CartDomain cartDomain) {
                 CartDB cartDB = generateExistingData(cartDomain);
                 if(cartDB != null) {
-                    cartDbManager.update(cartDB);
+                    cartDbManager.update(cartDB, null);
                 } else {
                     cartDB = new CartDB();
                     cartDB.setProductId(cartDomain.getProductId());
                     cartDB.setQuantity(cartDomain.getQuantity());
                     cartDB.setOutletId(cartDomain.getOutletId());
-                    cartDbManager.store(cartDB);
+                    cartDbManager. store(cartDB, null);
                 }
             }
         };

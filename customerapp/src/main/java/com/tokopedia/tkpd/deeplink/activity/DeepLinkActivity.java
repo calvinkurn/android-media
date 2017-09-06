@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -27,6 +29,7 @@ import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -65,6 +68,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
     private Bundle mExtras;
+    private boolean isNeedToUseToolbarWithOptions;
 
 
     @Override
@@ -131,6 +135,25 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void actionChangeToolbarWithBackToNative() {
+        isNeedToUseToolbarWithOptions = true;
+        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
+        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        setSupportActionBar(toolbar);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isNeedToUseToolbarWithOptions){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData productData) {
 
     }
@@ -185,12 +208,19 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (id == com.tokopedia.core.R.id.menu_home) {
+            onBackPressed();
+            return true;
+        } else if (id == com.tokopedia.core.R.id.menu_help) {
+            Intent intent = InboxRouter.getContactUsActivityIntent(this);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void catchToWebView(String url) {
+        actionChangeToolbarWithBackToNative();
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_view, FragmentGeneralWebView.createInstance(url))
                 .commit();
@@ -268,9 +298,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        CommonUtils.dumper("FCM onNewIntent "+intent.getData());
-        if(intent.getData()!=null)
-        {
+        CommonUtils.dumper("FCM onNewIntent " + intent.getData());
+        if (intent.getData() != null) {
             uriData = intent.getData();
         }
         sendNotifLocalyticsCallback(intent);

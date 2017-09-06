@@ -5,7 +5,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.goldmerchant.statistic.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.common.data.mapper.SimpleResponseMapper;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cache.GMStatCache;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.GMStatCloud;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
@@ -53,7 +53,7 @@ public class GMStatDataSource {
         Observable<GetTransactionGraph> getTransactionGraphObservable = gmStatCache.getTransactionGraph(startDate, endDate);
         if (getTransactionGraphObservable == null) {
             return gmStatCloud.getTransactionGraph(shopId, startDate, endDate)
-                    .map(new SimpleDataResponseMapper<GetTransactionGraph>())
+                    .map(new SimpleResponseMapper<GetTransactionGraph>())
                     .doOnNext(getSaveAction(new TypeToken<GetTransactionGraph>() {}.getType(),
                             GMStatActionType.TRANS_GRAPH, startDate, endDate));
         } else {
@@ -69,7 +69,7 @@ public class GMStatDataSource {
         Observable<GetTransactionTable> getTransactionTableObservable = gmStatCache.getTransactionTable(startDate, endDate);
         if (getTransactionTableObservable == null) {
             getTransactionTableObservable = gmStatCloud.getTransactionTable(shopId, startDate, endDate,page, pageSize, sortType, sortBy)
-                    .map(new SimpleDataResponseMapper<GetTransactionTable>());
+                    .map(new SimpleResponseMapper<GetTransactionTable>());
             // if it load all data, save to cache, else, just remove the cache
             // never save cache when it load per page only.
             if (page == -1 && pageSize == -1) {
@@ -98,8 +98,6 @@ public class GMStatDataSource {
                             switch (sortBy) {
                                 case GMTransactionTableSortBy.DELIVERED_AMT:
                                     return ascendingSign * (o1.getDeliveredAmt() - o2.getDeliveredAmt());
-                                case GMTransactionTableSortBy.ORDER_SUM:
-                                    return ascendingSign * (o1.getOrderSum() - o2.getOrderSum());
                                 case GMTransactionTableSortBy.TRANS_SUM:
                                     return ascendingSign * (o1.getTransSum() - o2.getTransSum());
                                 default:
@@ -119,7 +117,7 @@ public class GMStatDataSource {
         Observable<GetProductGraph> getProductGraphObservable = gmStatCache.getProductGraph(startDate, endDate);
         if (getProductGraphObservable == null) {
             return gmStatCloud.getProductGraph(shopId, startDate, endDate)
-                    .map(new SimpleDataResponseMapper<GetProductGraph>())
+                    .map(new SimpleResponseMapper<GetProductGraph>())
                     .doOnNext(getSaveAction(new TypeToken<GetProductGraph>() {}.getType(),
                             GMStatActionType.PROD_GRAPH, startDate, endDate));
         } else {
@@ -131,7 +129,7 @@ public class GMStatDataSource {
         Observable<GetPopularProduct> getProductGraphObservable = gmStatCache.getPopularProduct(startDate, endDate);
         if (getProductGraphObservable == null) {
             return gmStatCloud.getPopularProduct(shopId, startDate, endDate)
-                    .map(new SimpleDataResponseMapper<GetPopularProduct>())
+                    .map(new SimpleResponseMapper<GetPopularProduct>())
                     .doOnNext(getSaveAction(new TypeToken<GetPopularProduct>() {}.getType(),
                             GMStatActionType.POPULAR_PRODUCT, startDate, endDate));
         } else {
@@ -143,7 +141,7 @@ public class GMStatDataSource {
         Observable<GetBuyerGraph> getBuyerDataObservable = gmStatCache.getBuyerGraph(startDate, endDate);
         if (getBuyerDataObservable == null) {
             return gmStatCloud.getBuyerGraph(shopId, startDate, endDate)
-                    .map(new SimpleDataResponseMapper<GetBuyerGraph>())
+                    .map(new SimpleResponseMapper<GetBuyerGraph>())
                     .doOnNext(getSaveAction(new TypeToken<GetBuyerGraph>() {
                             }.getType(),
                             GMStatActionType.BUYER, startDate, endDate));
@@ -156,7 +154,7 @@ public class GMStatDataSource {
         Observable<GetKeyword> getKeywordObservable = gmStatCache.getKeywordModel(Long.parseLong(categoryId));
         if (getKeywordObservable == null) {
             return gmStatCloud.getKeywordModel(categoryId)
-                    .map(new SimpleDataResponseMapper<GetKeyword>())
+                    .map(new SimpleResponseMapper<GetKeyword>())
                     .doOnNext(getSaveAction(new TypeToken<GetKeyword>() {}.getType(),
                             GMStatActionType.KEYWORD, Long.parseLong(categoryId), -1));
         } else {
@@ -168,7 +166,7 @@ public class GMStatDataSource {
         Observable<GetShopCategory> getShopCategoryObservable = gmStatCache.getShopCategory(startDate, endDate);
         if (getShopCategoryObservable == null) {
             return gmStatCloud.getShopCategory(shopId, startDate, endDate)
-                    .map(new SimpleDataResponseMapper<GetShopCategory>())
+                    .map(new SimpleResponseMapper<GetShopCategory>())
                     .doOnNext(getSaveAction(new TypeToken<GetShopCategory>() {}.getType(),
                             GMStatActionType.SHOP_CAT, startDate, endDate));
         } else {
@@ -224,12 +222,12 @@ public class GMStatDataSource {
 
     public Observable<GetProductTable> getProductTable(String shopId, long startDate, long endDate) {
         return gmStatCloud.getProductTable(shopId, startDate, endDate)
-                .map(new SimpleDataResponseMapper<GetProductTable>());
+                .map(new SimpleResponseMapper<GetProductTable>());
     }
 
     public Observable<GetBuyerTable> getBuyerTable(String shopId, long startDate, long endDate) {
         return gmStatCloud.getBuyerTable(shopId, startDate, endDate)
-                .map(new SimpleDataResponseMapper<GetBuyerTable>());
+                .map(new SimpleResponseMapper<GetBuyerTable>());
     }
 
 }

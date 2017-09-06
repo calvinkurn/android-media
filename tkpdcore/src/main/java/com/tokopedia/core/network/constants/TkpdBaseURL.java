@@ -5,6 +5,10 @@ package com.tokopedia.core.network.constants;
  */
 public class TkpdBaseURL {
 
+    public static final String URL_TOKOCASH = "https://tokocash.com/";
+    public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
+    public static final String FLAG_APP = "?flag_app=1";
+    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
     public static String DEFAULT_TOKOPEDIA_WEBSITE_URL = "https://www.tokopedia.com/";
     public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     public static String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
@@ -48,11 +52,8 @@ public class TkpdBaseURL {
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
-    public static final String URL_TOKOCASH = "https://tokocash.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
-    public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
-    public static final String FLAG_APP = "?flag_app=1";
-    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
+    public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -113,6 +114,8 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
+
+        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -545,6 +548,11 @@ public class TkpdBaseURL {
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
     }
 
+    public static class Tome {
+        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
+        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
+    }
+
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
         public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
@@ -573,6 +581,7 @@ public class TkpdBaseURL {
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
         public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
+        public static final String URL_CHECK_PROMO = "v1/promo/check";
     }
 
     public static class Mojito {
@@ -712,10 +721,12 @@ public class TkpdBaseURL {
     }
 
     public static class ContactUs {
+        public static final String URL_BASE = BASE_DOMAIN + "contact-us/";
         public static final String PATH_GET_SOLUTION = "ajax/solution/{id}";
         public static final String PATH_CREATE_STEP_1 = "ajax/create/step/1";
         public static final String PATH_CREATE_STEP_2 = "ajax/create/step/2";
         public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
+        public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
     }
 
     public static class TopCash {
@@ -724,11 +735,6 @@ public class TkpdBaseURL {
         public static final String PATH_WALLET = "balance";
         public static final String PATH_REQUEST_OTP_WALLET = "otp/request";
         public static final String PATH_LINK_WALLET_TO_TOKOCASH = "link";
-    }
-
-    public class TkpdCart {
-        public static final String CHECK_VOUCHER = "v1/voucher/verify";
-        public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
 
     public static class Truecaller {
@@ -754,12 +760,14 @@ public class TkpdBaseURL {
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
+        public static final String PATH_USSD = "ussd/balance";
     }
 
     public static class DigitalWebsite {
         public static final String PATH_TRANSACTION_LIST = "order-list/";
         public static final String PATH_PRODUCT_LIST = "products/";
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
+        public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
     }
 
     public static class HadesCategory {
@@ -808,5 +816,18 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
+        public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
+        public static final String PATH_CC_DELETE = "v2/ccvault/delete";
+
+        public static final String PATH_INSTALLMENT_TERMS = "installment/terms/";
+    }
+
+    public static class FinTech {
+        public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
+
+    }
+    public class TkpdCart {
+        public static final String CHECK_VOUCHER = "v1/voucher/verify";
+        public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
 }

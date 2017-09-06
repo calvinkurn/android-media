@@ -12,11 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -63,8 +64,6 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Inject
     AddToCartPresenter addToCartPresenter;
 
-    @Inject
-    @ActivityContext
     Context context;
 
     public static ProductDetailFragment newInstance(Bundle bundle) {
@@ -76,6 +75,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = getContext();
         productPass = getArguments().getParcelable(PRODUCT_PASS);
     }
 
@@ -468,6 +468,16 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showMostHelpfulReview(List<Review> reviews) {
+
+    }
+
+    @Override
+    public void showLatestTalkView(LatestTalkViewModel discussion) {
+
+    }
+
+    @Override
     public void actionSuccessAddToWishlist(Integer productId) {
 
     }
@@ -479,6 +489,21 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void actionSuccessAddFavoriteShop(String shopId) {
+
+    }
+
+    @Override
+    public void showDinkSuccess(String productName) {
+
+    }
+
+    @Override
+    public void showDinkFailed(String productName, String expired) {
+
+    }
+
+    @Override
+    public void onPromoAdsClicked() {
 
     }
 }

@@ -33,6 +33,7 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.session.model.LoginEmailModel;
@@ -327,7 +328,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         if (accountsParameter.getErrorModel() == null) {
                             TokenModel tokenModel = accountsParameter.getTokenModel();
                             sessionHandler.setToken(tokenModel.getAccessToken(),
-                                    tokenModel.getTokenType()
+                                    tokenModel.getTokenType(), EncoderDecoder.Encrypt(tokenModel.getRefreshToken(), SessionHandler.getRefreshTokenIV(getApplicationContext()))
                             );
 
                             if(!TextUtils.isEmpty(accountsParameter.getTokenModel().getScope())){
@@ -431,7 +432,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
                                 result.putParcelable(ACCOUNTS, accountsParameter);
                                 SessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
-
                             }
 
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());
@@ -558,7 +558,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         params.put(Login.USER_ID, String.valueOf(accountsParameter.getInfoModel().getUserId()));
         params = MapNulRemover.removeNull(params);
         TokenModel tokenModel = accountsParameter.getTokenModel();
-        String authKey = tokenModel.getTokenType() + " " + tokenModel.getAccessToken();
+        String authKey = tokenModel.getTokenType() + " " + SessionHandler.getAccessToken();
         Bundle bundle = new Bundle();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);

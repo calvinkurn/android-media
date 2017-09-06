@@ -48,9 +48,6 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
     private EditText editSearchOutlet;
     private OutletAdapter adapter;
 
-    // TODO: 8/8/17 temporary
-    Button buttonPdp;
-
     @Inject
     OutletPresenter outletPresenter;
 
@@ -179,20 +176,6 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 submitQuery(editSearchOutlet.getText());
                 return true;
-            }
-        });
-
-        // TODO: 8/24/17 temporary
-        buttonPdp = parentView.findViewById(R.id.button_pdp);
-        buttonPdp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ProductDetailActivity.class);
-                ProductPass productPass = ProductPass.Builder.aProductPass()
-                        .setProductId(163209073)
-                        .build();
-                intent.putExtra(PRODUCT_PASS, productPass);
-                startActivity(intent);
             }
         });
     }

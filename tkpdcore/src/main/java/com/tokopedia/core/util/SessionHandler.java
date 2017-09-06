@@ -67,6 +67,7 @@ public class SessionHandler {
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
     private static final String USER_SCOPE = "USER_SCOPE";
@@ -77,6 +78,7 @@ public class SessionHandler {
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
     private static final String USER_DATA = "USER_DATA";
+    private static final String KEY_IV = "tokopedia1234567";
 
 
     private Context context;
@@ -130,6 +132,7 @@ public class SessionHandler {
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(USER_DATA, null);
+        editor.putString(REFRESH_TOKEN, null);
         editor.putString(USER_SCOPE, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
@@ -155,7 +158,9 @@ public class SessionHandler {
 
         clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
+
     }
+
 
     private static void logoutInstagram(Context context) {
         if (isV4Login(context) && context instanceof AppCompatActivity) {
@@ -443,6 +448,11 @@ public class SessionHandler {
         return sharedPrefs.getString(REFRESH_TOKEN, "");
     }
 
+    public static String getRefreshTokenIV(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(REFRESH_TOKEN_KEY, KEY_IV);
+    }
+
     public static boolean isFirstTimeAskedPermissionStorage(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_FIRST_TIME_STORAGE, true);
@@ -569,6 +579,14 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(TEMP_NAME, userPhone);
+        editor.apply();
+    }
+
+    public void setToken(String accessToken, String tokenType, String refreshToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        setToken(accessToken, tokenType);
+        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
     }
 
