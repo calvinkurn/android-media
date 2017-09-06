@@ -1,18 +1,11 @@
 package com.tokopedia.core.react;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 
-import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -60,5 +53,10 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionApplink(this.getCurrentActivity(), Constants.Applinks.LOGIN);
         }
+    }
+
+    @ReactMethod
+    public void getCurrentUserId(Promise promise) {
+        promise.resolve(SessionHandler.getLoginID(context));
     }
 }
