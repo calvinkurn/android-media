@@ -37,6 +37,7 @@ import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.LastOrderNumberRepository;
+import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -116,7 +117,8 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
                         compositeSubscription, digitalCategoryRepository,
-                        lastOrderNumberRepository, cacheHandler);
+                        lastOrderNumberRepository, cacheHandler,
+                        new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper));
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
                 sessionHandler.getAccessToken(this)));
         ITokoCashBalanceInteractor balanceInteractor = new TokoCashBalanceInteractor(balanceRepository,
