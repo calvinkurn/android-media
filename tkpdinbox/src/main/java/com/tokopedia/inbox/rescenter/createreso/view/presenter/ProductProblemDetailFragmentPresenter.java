@@ -60,7 +60,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
 
     public void initProblemResult(ProductProblemViewModel productProblemViewModel) {
         problemResult.type = productProblemViewModel.getProblem().getType();
-        problemResult.isDelivered = false;
+        problemResult.isDelivered = true;
         //init with first trouble item of undelivered status
         updateSpinner(problemResult.isDelivered);
         getCanShowNotArrived();
@@ -76,12 +76,14 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     public void btnArrivedClicked() {
         problemResult.isDelivered = true;
         updateSpinner(true);
+        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
     }
 
     @Override
     public void btnNotArrivedClicked() {
         problemResult.isDelivered = false;
         updateSpinner(false);
+        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
     }
 
 
@@ -90,9 +92,14 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
         troubleHashMap = new HashMap<>();
         for (StatusViewModel statusViewModel : productProblemViewModel.getStatusList()) {
             if (isDelivered == statusViewModel.isDelivered()) {
-                String[] troubleStringArray = new String[statusViewModel.getTrouble().size()];
+                String[] troubleStringArray = new String[isDelivered ? statusViewModel.getTrouble().size() + 1 : statusViewModel.getTrouble().size()];
                 problemResult.trouble = statusViewModel.getTrouble().get(0).getId();
                 int i = 0;
+                if (isDelivered) {
+                    troubleHashMap.put("Pilih Masalah", 0);
+                    troubleStringArray[i] = "Pilih Masalah";
+                    i++;
+                }
                 for (StatusTroubleViewModel statusTroubleViewModel : statusViewModel.getTrouble()) {
                     troubleHashMap.put(statusTroubleViewModel.getName(), statusTroubleViewModel.getId());
                     troubleStringArray[i] = statusTroubleViewModel.getName();
@@ -101,7 +108,6 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
                 mainView.populateReasonSpinner(troubleStringArray);
             }
         }
-//        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
     }
 
     public void getCanShowNotArrived() {

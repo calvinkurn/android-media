@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -202,28 +203,39 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             ffSolution.setEnabled(true);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
-            updateProductProblemString(resultViewModel.problem);
+            updateProductProblemString(resultViewModel.problem, tvChooseProductProblem);
+            tvSolution.setTextColor(context.getResources().getColor(R.color.black_70));
+            tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_70));
         } else {
             ffSolution.setEnabled(false);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
+            tvChooseProductProblem.setText(context.getResources().getString(R.string.string_choose_product_problem));
+            tvSolution.setTextColor(context.getResources().getColor(R.color.black_38));
+            tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_38));
         }
 
         if (resultViewModel.solution != 0) {
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
             if (!resultViewModel.isAttachmentRequired) {
-                ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
                 ffUploadProve.setEnabled(false);
+                tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
+                tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
             } else {
                 ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
                 ffUploadProve.setEnabled(true);
+                tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_70));
+                tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_70));
             }
-            updateSolutionString(resultViewModel);
+            updateSolutionString(resultViewModel, tvSolution);
         } else {
             ffUploadProve.setEnabled(false);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
+            tvSolution.setText(context.getResources().getString(R.string.string_choose_solution));
+            tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
+            tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
         }
 
         btnCreateResolution.setEnabled(false);
@@ -233,15 +245,19 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 if (resultViewModel.message.remark != null) {
                     btnCreateResolution.setEnabled(true);
                     btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+                    btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
                 }
             } else {
                 btnCreateResolution.setEnabled(true);
                 btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+                ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
+                btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
+                ffUploadProve.setEnabled(false);
             }
         }
     }
 
-    public void updateProductProblemString(List<ProblemResult> problemResultList) {
+    public void updateProductProblemString(List<ProblemResult> problemResultList, TextView textView) {
         String problemResultString = "";
         boolean isType1Selected = false;
         for (ProblemResult problemResult : problemResultList) {
@@ -259,11 +275,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         else  {
             problemResultString += (isType1Selected ? problemResultList.size() - 1 : problemResultList.size()) + " Barang Bermasalah";
         }
-        tvChooseProductProblem.setText(problemResultString);
+        textView.setText(problemResultString);
     }
 
-    public void updateSolutionString(ResultViewModel resultViewModel) {
-        tvSolution.setText(resultViewModel.refundAmount != 0 ? "Kembalikan Rp " + resultViewModel.refundAmount + " ke Pembeli" : resultViewModel.solutionName);
+    public void updateSolutionString(ResultViewModel resultViewModel, TextView textView) {
+        textView.setText(resultViewModel.refundAmount != 0 ? "Kembalikan Rp " + resultViewModel.refundAmount + " ke Pembeli" : resultViewModel.solutionName);
     }
 
     @Override
@@ -368,6 +384,41 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         startActivityForResult(intent, REQUEST_STEP3);
     }
 
+    @Override
+    public void showCreateComplainDialog(ResultViewModel resultViewModel) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.layout_create_complain);
+        TextView tvProblem = (TextView) dialog.findViewById(R.id.tv_problem);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnCreateComplain = (Button) dialog.findViewById(R.id.btn_create_complain);
+
+        updateProductProblemString(resultViewModel.problem, tvProblem);
+        updateSolutionString(resultViewModel, tvSolution);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnCreateComplain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.callCreateResolutionAPI();
+            }
+        });
+
+        dialog.show();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

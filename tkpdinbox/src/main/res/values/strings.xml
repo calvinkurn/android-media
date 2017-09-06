@@ -90,4 +90,18 @@
     <string name="string_information">Keterangan</string>
     <string name="string_min_30_char">Minimal 30 karakter</string>
 
+    <!--info reso string-->
+    <string name="string_info_information">Informasi</string>
+    <string name="string_info_1">Untuk pengiriman menggunakan</string>
+    <string name="string_info_2">komplain \"Barang belum diterima\" dapat dilakukan setelah</string>
+    <string name="string_btn_close">Tutup</string>
+
+    <!--create complain string-->
+    <string name="string_create_complain_title">Buat Komplain?</string>
+    <string name="string_detail_create_complain">Pastikan detil komplain sudah benar:</string>
+    <string name="string_problem">Masalah:</string>
+    <string name="string_create_complain_solution">Solusi:</string>
+    <string name="string_create_complain">Buat Komplain</string>
+    <string name="string_return">Kembali</string>
+
 </resources>

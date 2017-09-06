@@ -40,6 +40,8 @@ public interface CreateResolutionCenter {
 
         void errorLoadProductProblemData(String error);
 
+        void showCreateComplainDialog(ResultViewModel resultViewModel);
+
         void successCreateResoStep1(CreateResoStep1Domain createResoStep1Domain);
 
         void errorCreateResoStep1(String error);
@@ -63,6 +65,8 @@ public interface CreateResolutionCenter {
         void uploadProveClicked();
 
         void createResoClicked();
+
+        void callCreateResolutionAPI();
 
         void loadProductProblem(String orderId);
 

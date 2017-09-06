@@ -19,6 +19,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblem
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoStep1Subscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.CreateResoStep2ViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
@@ -53,7 +54,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private ProductProblemResponseDomain productProblemResponseDomain;
 
     private ResultViewModel resultViewModel;
-
+    private String orderId;
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
                                            CreateResoStep1UseCase createResoStep1UseCase,
@@ -74,6 +75,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     public void loadProductProblem(String orderId) {
         mainView.showLoading();
         resultViewModel.orderId = orderId;
+        this.orderId = orderId;
         getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId), new LoadProductSubscriber(mainView));
     }
 
@@ -104,13 +106,16 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void addResultFromStep1(ArrayList<ProblemResult> problemResultList) {
+        resultViewModel = new ResultViewModel();
         resultViewModel.problem = problemResultList;
+        resultViewModel.orderId = orderId;
         mainView.updateView(resultViewModel);
     }
 
     @Override
     public void addResultFromStep2(ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
+        this.resultViewModel.createResoStep2ViewModel = new CreateResoStep2ViewModel();
         mainView.updateView(resultViewModel);
     }
 
@@ -122,6 +127,11 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void createResoClicked() {
+        mainView.showCreateComplainDialog(resultViewModel);
+    }
+
+    @Override
+    public void callCreateResolutionAPI() {
         createResoStep1UseCase.execute(createResoStep1UseCase.createResoStep1Params(resultViewModel), new CreateResoStep1Subscriber(mainView));
     }
 

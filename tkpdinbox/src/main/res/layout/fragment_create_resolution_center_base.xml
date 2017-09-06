@@ -38,7 +38,8 @@
                         android:id="@+id/tv_product_problem_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/string_product_problem"/>
+                        android:text="@string/string_product_problem"
+                        android:textColor="@color/black_70"/>
 
                     <TextView
                         android:id="@+id/tv_product_problem"
@@ -47,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:ellipsize="end"
-                        android:textColor="#b3000000"
+                        android:textColor="@color/black_70"
                         android:text="@string/string_choose_product_problem"/>
                 </LinearLayout>
 

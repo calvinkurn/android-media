@@ -2024,11 +2024,6 @@ di Tokopedia Sekarang!</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>
 
-    <!--info reso string-->
-    <string name="string_information">Informasi</string>
-    <string name="string_info_1">Untuk pengiriman menggunakan</string>
-    <string name="string_info_2">komplain \"Barang belum diterima\" dapat dilakukan setelah</string>
-    <string name="string_btn_close">Tutup</string>
     <!-- finish dialog string-->
     <string name="string_finish_title">Selesaikan Pemesanan</string>
     <string name="string_finish_body">1. Pilih \"Selesai\" untuk menyelesaikan pemesanan\n\n2. Pilih \"Komplain\" apabila ada kendala pada pemesanan</string>

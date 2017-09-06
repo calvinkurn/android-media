@@ -210,7 +210,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
     @Override
     protected String getScreenName() {
-        return productProblemViewModel.getOrder().getProduct().getName();
+        return null;
     }
 
     @Override
@@ -229,10 +229,10 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public void updateArriveStatusButton(boolean isArrived, boolean canShowInfo) {
         btnInfo.setVisibility(View.GONE);
         if(canShowInfo) {
-            presenter.updateSpinner(false);
+            presenter.updateSpinner(true);
             btnInfo.setVisibility(View.VISIBLE);
-            buttonDisabled(btnArrived);
-            buttonSelected(btnNotArrived);
+            buttonDisabled(btnNotArrived);
+            buttonSelected(btnArrived);
         } else {
             if (isArrived) {
                 buttonCanSelected(btnNotArrived);
@@ -269,6 +269,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         if (reasonStringArray != null) {
             stvProblem.setValues(reasonStringArray);
             stvProblem.setEntries(reasonStringArray);
+            stvProblem.setEnabled(reasonStringArray.length != 1);
         }
     }
 
