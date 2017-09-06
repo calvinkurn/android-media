@@ -55,7 +55,7 @@ public class ShipmentCartActivity extends BasePresenterActivity {
     @Override
     protected void setViewListener() {
         getFragmentManager().beginTransaction().replace(R.id.container,
-                ShipmentCartFragment.newInstance(cartData), "shipping_fragment").commit();
+                ShipmentCartFragment.newInstance(cartData)).commit();
     }
 
     @Override

@@ -124,7 +124,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         return fragment;
     }
 
-
     @Override
     protected boolean isRetainInstance() {
         return false;
