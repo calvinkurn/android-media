@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
-apply from: "../buildconfig/reactnative/react.gradle"
+//apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
 
 
