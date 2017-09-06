@@ -19,7 +19,8 @@ class Root extends Component {
   render() {
     return (
       <Provider store={store}>
-        <POS />
+        {this.props.data.POS_PAGE === 'POS' && <POS />}
+        {this.props.data.POS_PAGE === 'PAYMENT' && <APP />}
       </Provider>
     )
   }
