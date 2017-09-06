@@ -25,5 +25,5 @@ public interface TokoCashHistoryListener {
 
     void renderEmptyTokoCashHistory(List<HeaderHistory> headerHistoryList);
 
-    void renderErrorMessage(Throwable throwable);
+    void renderErrorMessage(String message);
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.digital.tokocash.presenter;
 
-import android.util.Log;
-
+import com.tokopedia.core.network.exception.HttpErrorException;
+import com.tokopedia.core.network.exception.ResponseDataNullException;
+import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -10,7 +12,14 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.tokocash.interactor.ITokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
@@ -18,7 +27,7 @@ import rx.Subscriber;
  * Created by nabillasabbaha on 8/21/17.
  */
 
-public class TopUpTokocashPresenter  implements ITopUpTokocashPresenter {
+public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
 
     private final static String TOPUP_CATEGORY_ID = "103";
     private final static String PARAM_IS_RESELLER = "is_reseller";
@@ -26,11 +35,14 @@ public class TopUpTokocashPresenter  implements ITopUpTokocashPresenter {
     private final static String CATEGORY_ID = "category_id";
 
     private final IProductDigitalInteractor productDigitalInteractor;
+    private final ITokoCashBalanceInteractor balanceInteractor;
     private final TopUpTokoCashListener view;
 
     public TopUpTokocashPresenter(IProductDigitalInteractor productDigitalInteractor,
+                                  ITokoCashBalanceInteractor balanceInteractor,
                                   TopUpTokoCashListener view) {
         this.productDigitalInteractor = productDigitalInteractor;
+        this.balanceInteractor = balanceInteractor;
         this.view = view;
     }
 
@@ -63,12 +75,12 @@ public class TopUpTokocashPresenter  implements ITopUpTokocashPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                Log.e("TAG", "onError: " + e.getMessage());
+                view.hideProgressLoading();
             }
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
+                view.hideProgressLoading();
                 view.renderTopUpDataTokoCash(productDigitalData.getCategoryData());
             }
         };
@@ -76,7 +88,7 @@ public class TopUpTokocashPresenter  implements ITopUpTokocashPresenter {
 
     @Override
     public void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
-        DigitalCheckoutPassData digitalCheckoutPassData =  new DigitalCheckoutPassData.Builder()
+        DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
                 .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                 .categoryId(preCheckoutProduct.getCategoryId())
                 .clientNumber("")
@@ -110,6 +122,50 @@ public class TopUpTokocashPresenter  implements ITopUpTokocashPresenter {
 
     @Override
     public void processGetBalanceTokoCash() {
+        view.showProgressLoading();
+        balanceInteractor.getBalanceTokoCash(getBalanceSubscriber());
+    }
 
+    private Subscriber<TokoCashData> getBalanceSubscriber() {
+        return new Subscriber<TokoCashData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                errorNetworkHandler(e);
+                view.hideProgressLoading();
+                view.showEmptyPage();
+            }
+
+            @Override
+            public void onNext(TokoCashData tokoCashData) {
+                view.hideProgressLoading();
+                view.renderBalanceTokoCash(tokoCashData);
+            }
+        };
+    }
+
+    private void errorNetworkHandler(Throwable e) {
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException) {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseDataNullException) {
+            view.showToastMessage(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            view.showToastMessage(e.getMessage());
+        } else if (e instanceof ServerErrorException) {
+            ServerErrorHandlerUtil.handleError(e);
+        } else {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        balanceInteractor.onDestroy();
     }
 }

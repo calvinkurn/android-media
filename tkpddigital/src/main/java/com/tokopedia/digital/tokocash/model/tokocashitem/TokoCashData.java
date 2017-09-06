@@ -20,6 +20,10 @@ public class TokoCashData implements Parcelable {
     private Long mWalletId;
     @SerializedName("link")
     private Integer link;
+    @SerializedName("total_balance")
+    private String totalBalance;
+    @SerializedName("hold_balance")
+    private String holdBalance;
 
 
     public Action getAction() {
@@ -70,6 +74,22 @@ public class TokoCashData implements Parcelable {
         this.link = link;
     }
 
+    public String getTotalBalance() {
+        return totalBalance;
+    }
+
+    public void setTotalBalance(String totalBalance) {
+        this.totalBalance = totalBalance;
+    }
+
+    public String getHoldBalance() {
+        return holdBalance;
+    }
+
+    public void setHoldBalance(String holdBalance) {
+        this.holdBalance = holdBalance;
+    }
+
     protected TokoCashData(Parcel in) {
         mAction = (Action) in.readValue(Action.class.getClassLoader());
         mBalance = in.readString();
@@ -77,6 +97,8 @@ public class TokoCashData implements Parcelable {
         mText = in.readString();
         mWalletId = in.readByte() == 0x00 ? null : in.readLong();
         link = in.readByte() == 0x00 ? null : in.readInt();
+        totalBalance = in.readString();
+        holdBalance = in.readString();
     }
 
     @Override
@@ -102,6 +124,8 @@ public class TokoCashData implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(link);
         }
+        dest.writeString(totalBalance);
+        dest.writeString(holdBalance);
     }
 
     @SuppressWarnings("unused")

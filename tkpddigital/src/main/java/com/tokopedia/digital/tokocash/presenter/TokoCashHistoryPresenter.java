@@ -1,11 +1,18 @@
 package com.tokopedia.digital.tokocash.presenter;
 
+import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
+import com.tokopedia.core.network.exception.ServerErrorException;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
 import com.tokopedia.digital.tokocash.model.HeaderHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
+import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import rx.Subscriber;
@@ -44,6 +51,8 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             public void onError(Throwable e) {
                 if (e instanceof ResponseDataNullException) {
                     view.renderEmptyTokoCashHistory(new ArrayList<HeaderHistory>());
+                } else {
+                    errorNetworkHandler(e);
                 }
             }
 
@@ -79,7 +88,7 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                errorNetworkHandler(e);
             }
 
             @Override
@@ -94,6 +103,22 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
                 view.setHasNextPage(tokoCashHistoryData.isNext_uri());
             }
         };
+    }
+
+    private void errorNetworkHandler(Throwable e) {
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            view.renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException) {
+            view.renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseDataNullException) {
+            view.renderErrorMessage(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            view.renderErrorMessage(e.getMessage());
+        } else if (e instanceof ServerErrorException) {
+            ServerErrorHandlerUtil.handleError(e);
+        } else {
+            view.renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
     }
 
     @Override

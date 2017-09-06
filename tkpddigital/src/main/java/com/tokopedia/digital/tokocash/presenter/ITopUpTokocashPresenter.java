@@ -1,6 +1,5 @@
 package com.tokopedia.digital.tokocash.presenter;
 
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 
 /**
@@ -14,5 +13,7 @@ public interface ITopUpTokocashPresenter {
     void processGetBalanceTokoCash();
 
     void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct);
+
+    void onDestroy();
 
 }
