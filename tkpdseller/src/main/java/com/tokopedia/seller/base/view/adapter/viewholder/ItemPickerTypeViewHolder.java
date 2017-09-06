@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
 /**
@@ -32,9 +31,9 @@ public class ItemPickerTypeViewHolder extends BaseViewHolder<ItemPickerType> {
 
     @Override
     public void bindObject(final ItemPickerType itemPickerType) {
-        if (!TextUtils.isEmpty(itemPickerType.getImageUrl())) {
+        if (!TextUtils.isEmpty(itemPickerType.getIcon())) {
             imageView.setVisibility(View.VISIBLE);
-            Glide.with(imageView.getContext()).load(itemPickerType.getImageUrl())
+            Glide.with(imageView.getContext()).load(itemPickerType.getIcon())
                     .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else {
             imageView.setVisibility(View.GONE);

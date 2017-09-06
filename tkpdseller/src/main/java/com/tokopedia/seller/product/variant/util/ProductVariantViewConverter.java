@@ -74,7 +74,11 @@ public class ProductVariantViewConverter {
                     ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantOptionLv1.getVariantUnitValueId(), variantByCatModelList);
             if (productVariantOption != null) {
                 variantManageViewModel.setHexCode(productVariantOption.getHexCode());
-                variantManageViewModel.setImageUrl(productVariantOption.getIcon());
+                variantManageViewModel.setIconUrl(productVariantOption.getIcon());
+                if (variantOptionLv1.getPictureItemList()!= null &&
+                        variantOptionLv1.getPictureItemList().size() > 0) {
+                    variantManageViewModel.setImageUrl(variantOptionLv1.getPictureItemList().get(0).getPictureUrl300());
+                }
             }
         }
         variantManageViewModel.setStockAvailable(isContainVariantStatusByOptionId(variantOptionLv1.getTemporaryId(), variantCombinationList));
