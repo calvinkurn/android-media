@@ -15,10 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.SellerModuleRouter;
@@ -319,29 +319,27 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
         historyListRecyclerView.setVisibility(View.GONE);
         viewEmptyNoHistory.setVisibility(View.VISIBLE);
         for (HeaderHistory header : headerHistoryList) {
-            if (header.isSelected() && !header.getType().equals(ALL_TRANSACTION_TYPE)) {
-                Glide.with(getApplicationContext())
-                        .load(ContextCompat.getDrawable(this, R.drawable.ic_tokocash_no_history_category))
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(emptyIconTransaction);
-                emptyDescTransaction.setText(getString(R.string.desc_empty_page_tokocash));
-                emptyTextTransaction.setText(getString(R.string.message_no_transaction)+ header.getName());
-            } else {
-                Glide.with(getApplicationContext())
-                        .load(ContextCompat.getDrawable(this, R.drawable.ic_tokocash_no_transaction))
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(emptyIconTransaction);
-                emptyDescTransaction.setText(getString(R.string.desc_empty_page_no_transaction_tokocash));
-                emptyTextTransaction.setText(getString(R.string.message_no_transaction));
+            if (header.isSelected()) {
+                if (!header.getType().equals(ALL_TRANSACTION_TYPE)) {
+                    emptyIconTransaction.setImageDrawable(ContextCompat.getDrawable(this,
+                            R.drawable.ic_tokocash_no_history_category));
+                    emptyDescTransaction.setText(getString(R.string.desc_empty_page_tokocash));
+                    emptyTextTransaction.setText(getString(R.string.message_no_transaction) + " " + header.getName());
+                } else {
+                    emptyIconTransaction.setImageDrawable(ContextCompat.getDrawable(this,
+                            R.drawable.ic_tokocash_no_transaction));
+                    emptyDescTransaction.setText(getString(R.string.desc_empty_page_no_transaction_tokocash));
+                    emptyTextTransaction.setText(getString(R.string.message_no_transaction));
+                }
             }
         }
     }
 
     @Override
-    public void renderErrorMessage(Throwable throwable) {
-
+    public void renderErrorMessage(String message) {
+        View view = findViewById(android.R.id.content);
+        if (view != null) NetworkErrorHelper.showSnackbar(this, message);
+        else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -374,7 +372,7 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         presenter.onDestroy();
+        super.onDestroy();
     }
 }

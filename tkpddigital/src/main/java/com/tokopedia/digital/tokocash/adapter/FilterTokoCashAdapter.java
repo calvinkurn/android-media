@@ -37,12 +37,14 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
     private FilterTokoCashListener listener;
     private Random randomGenerator;
     private Context context;
+    private HeaderItemColor lastHeaderItemColor;
+    private int pos;
 
     public FilterTokoCashAdapter() {
         this.headerHistoryList = new ArrayList<>();
         headerItemColorList = new ArrayList<>();
-        addColorFilter();
         randomGenerator = new Random();
+        addColorFilter();
     }
 
     public void setListener(FilterTokoCashListener listener) {
@@ -59,7 +61,7 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ItemViewFilter) holder).bindView(headerHistoryList.get(position));
+        ((ItemViewFilter) holder).bindView(headerHistoryList.get(position), position);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
             ButterKnife.bind(this, itemView);
         }
 
-        private void bindView(final HeaderItemColor headerHistory) {
+        private void bindView(final HeaderItemColor headerHistory, final int position) {
             filterName.setText(headerHistory.getHeaderHistory().getName());
             handleViewFilter(headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
             layoutFilterTokocash.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +111,12 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
                     } else {
                         listener.selectFilter(headerHistory.getHeaderHistory().getType());
                         headerHistory.getHeaderHistory().setSelected(true);
+                        if (lastHeaderItemColor != null) {
+                            headerItemColorList.get(pos).getHeaderHistory().setSelected(false);
+                            notifyItemChanged(pos);
+                        }
+                        lastHeaderItemColor = headerHistory;
+                        pos = position;
                     }
                     handleViewFilter(headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
                 }

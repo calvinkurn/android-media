@@ -7,10 +7,10 @@
 
     <android.support.v7.widget.CardView
         style="@style/CardViewDigital"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
-        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_vs"
         app:cardCornerRadius="@dimen/padding_vvs"
         app:cardElevation="1dp">
 
@@ -50,67 +50,39 @@
                 android:layout_marginTop="@dimen/margin_vs"
                 android:background="@color/grey_300" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 android:layout_below="@id/separator1"
-                android:weightSum="4">
+                android:padding="@dimen/padding_small">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/title_hold_balance"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:orientation="vertical"
-                    android:padding="@dimen/padding_small">
+                    android:layout_centerHorizontal="true"
+                    android:text="Dana Tertahan"
+                    android:textSize="@dimen/fontvs" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/padding_small"
-                        android:drawableRight="@drawable/info_icon"
-                        android:text="Dana Tertahan"
-                        android:textSize="@dimen/fontvs" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vs"
-                        android:text="Rp 12.500.000"
-                        android:textSize="@dimen/font_medium" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="1dp"
+                <ImageView
+                    android:id="@+id/tooltip_tokocash"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/balance_tokocash"
-                    android:background="@color/grey_300" />
+                    android:src="@drawable/info_icon"
+                    android:layout_toRightOf="@+id/title_hold_balance"
+                    android:layout_marginLeft="@dimen/margin_vs"/>
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/hold_balance"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:orientation="vertical"
-                    android:padding="@dimen/padding_small">
+                    android:layout_below="@+id/title_hold_balance"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:text="Rp 0"
+                    android:textSize="@dimen/font_medium" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/padding_small"
-                        android:drawableRight="@drawable/info_icon"
-                        android:text="Kekurangan Dana"
-                        android:textSize="@dimen/fontvs" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vs"
-                        android:text="Rp 12.500.000"
-                        android:textSize="@dimen/font_medium" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            </RelativeLayout>
 
         </RelativeLayout>
 

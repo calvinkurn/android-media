@@ -107,6 +107,8 @@
     <string name="desc_empty_page_no_transaction_tokocash">Anda belum bertransaksi dengan TokoCash di rentang waktu yang anda pilih. Ayo gunakan TokoCash untuk semua kebutuhan harianmu.</string>
     <string name="title_detail_transaction">Detail Transaksi</string>
     <string name="message_no_transaction">Belum ada Riwayat Transaksi </string>
+    <string name="title_tooltip_tokocash">Dana Tertahan</string>
+    <string name="body_tooltip_tokocash">Dana Anda tertahan, untuk Transaksi yang Belum Lunas. Dana akan dikembalikan bila transaksi batal</string>
 
     <string name="ussd_batal">Batal</string>
     <string name="ok">Ok</string>

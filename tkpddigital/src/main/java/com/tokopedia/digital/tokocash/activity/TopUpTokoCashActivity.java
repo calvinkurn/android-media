@@ -11,17 +11,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
@@ -41,7 +45,12 @@ import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.tokocash.compoundview.BalanceTokoCashView;
 import com.tokopedia.digital.tokocash.compoundview.ReceivedTokoCashView;
 import com.tokopedia.digital.tokocash.compoundview.TopUpTokoCashView;
+import com.tokopedia.digital.tokocash.domain.ITokoCashRepository;
+import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
+import com.tokopedia.digital.tokocash.interactor.ITokoCashBalanceInteractor;
+import com.tokopedia.digital.tokocash.interactor.TokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.tokocash.presenter.TopUpTokocashPresenter;
 
 import java.util.List;
@@ -57,16 +66,21 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
         implements TopUpTokoCashListener {
 
     @BindView(R2.id.balance_tokocash_layout)
-    //TODO : use linear instead
-            BalanceTokoCashView balanceTokoCashView;
+    LinearLayout balanceTokoCashViewLayout;
     @BindView(R2.id.topup_tokocash_layout)
     LinearLayout topupTokoCashViewLayout;
     @BindView(R2.id.received_tokocash_layout)
-    //TODO : use linear instead
-            ReceivedTokoCashView receivedTokoCashView;
+    LinearLayout receivedTokoCashViewLayout;
+    @BindView(R2.id.pb_main_loading)
+    ProgressBar progressLoading;
+    @BindView(R2.id.main_content)
+    RelativeLayout mainContent;
 
     private CompositeSubscription compositeSubscription;
     private TopUpTokoCashView topUpTokoCashView;
+    private BalanceTokoCashView balanceTokoCashView;
+    private ReceivedTokoCashView receivedTokoCashView;
+    private BottomSheetView bottomSheetTokoCashView;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, TopUpTokoCashActivity.class);
@@ -89,6 +103,7 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
 
     @Override
     protected void initialPresenter() {
+        SessionHandler sessionHandler = new SessionHandler(this);
         LocalCacheHandler cacheHandler = new LocalCacheHandler(
                 this, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
@@ -102,8 +117,11 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
                 new ProductDigitalInteractor(
                         compositeSubscription, digitalCategoryRepository,
                         lastOrderNumberRepository, cacheHandler);
-        presenter = new TopUpTokocashPresenter(productDigitalInteractor, this);
-        presenter.processGetCategoryTopUp();
+        ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
+                sessionHandler.getAccessToken(this)));
+        ITokoCashBalanceInteractor balanceInteractor = new TokoCashBalanceInteractor(balanceRepository,
+                new CompositeSubscription());
+        presenter = new TopUpTokocashPresenter(productDigitalInteractor, balanceInteractor, this);
     }
 
     @Override
@@ -115,6 +133,11 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
     protected void initView() {
         toolbar.setTitle(getString(R.string.title_tokocash_topup));
         topUpTokoCashView = new TopUpTokoCashView(this);
+        balanceTokoCashView = new BalanceTokoCashView(this);
+        receivedTokoCashView = new ReceivedTokoCashView(this);
+        bottomSheetTokoCashView = new BottomSheetView(this);
+        presenter.processGetBalanceTokoCash();
+        presenter.processGetCategoryTopUp();
     }
 
     @Override
@@ -134,18 +157,24 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         clearHolder(topupTokoCashViewLayout);
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+        super.onDestroy();
     }
 
     @Override
     public void showProgressLoading() {
-
+        progressLoading.setVisibility(View.VISIBLE);
+        mainContent.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProgressLoading() {
-
+        if (progressLoading.getVisibility() == View.VISIBLE) {
+            progressLoading.setVisibility(View.GONE);
+            mainContent.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -153,6 +182,47 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
         View view = findViewById(android.R.id.content);
         if (view != null) NetworkErrorHelper.showSnackbar(this, message);
         else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void renderBalanceTokoCash(TokoCashData tokoCashData) {
+        clearHolder(balanceTokoCashViewLayout);
+        clearHolder(receivedTokoCashViewLayout);
+        balanceTokoCashView.renderDataBalance(tokoCashData);
+        balanceTokoCashView.setListener(getBalanceListener());
+        receivedTokoCashView.renderReceivedView(tokoCashData);
+        receivedTokoCashViewLayout.addView(receivedTokoCashView);
+        balanceTokoCashViewLayout.addView(balanceTokoCashView);
+        bottomSheetTokoCashView.renderBottomSheet(new BottomSheetView
+                        .BottomSheetField.BottomSheetFieldBuilder()
+                        .setTitle(getString(R.string.title_tooltip_tokocash))
+                .setBody(getString(R.string.body_tooltip_tokocash))
+                .setImg(R.drawable.ic_tokocash_activated)
+                .build());
+    }
+
+    private BalanceTokoCashView.ActionListener getBalanceListener() {
+        return new BalanceTokoCashView.ActionListener() {
+            @Override
+            public void showTooltipHoldBalance() {
+                bottomSheetTokoCashView.show();
+            }
+        };
+    }
+
+    @Override
+    public void showEmptyPage() {
+        NetworkErrorHelper.showEmptyState(getApplicationContext(), mainContent, getRetryListener());
+    }
+
+    private NetworkErrorHelper.RetryClickedListener getRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processGetBalanceTokoCash();
+                presenter.processGetCategoryTopUp();
+            }
+        };
     }
 
     @Override

@@ -56,14 +56,14 @@
     </RelativeLayout>
 
     <ProgressBar
-        android:id="@+id/ProgressBar"
+        android:id="@+id/progress_bar_tokocash"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:indeterminate="false"
         android:maxHeight="10dip"
         android:minHeight="10dip"
-        android:progress="70"
+        android:progress="0"
         android:progressDrawable="@drawable/horizontal_progressbar"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="273dp"
