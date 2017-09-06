@@ -40,7 +40,7 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
 
     @Override
     public void onDestroy() {
-        if (compositeSubscription != null) {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
     }

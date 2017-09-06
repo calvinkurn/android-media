@@ -2,9 +2,11 @@ package com.tokopedia.digital.tokocash.domain;
 
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
 import com.tokopedia.digital.tokocash.mapper.ActivateTokoCashMapper;
 import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -55,6 +57,21 @@ public class TokoCashRepository implements ITokoCashRepository {
                     public Observable<TokoCashHistoryEntity> call(Response<TkpdDigitalResponse> response) {
                         return Observable
                                 .just(response.body().convertDataObj(TokoCashHistoryEntity.class));
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<TokoCashData> getBalanceTokoCash() {
+        return tokoCashService.getApi().getTokoCash()
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<TokoCashData>>() {
+                    @Override
+                    public Observable<TokoCashData> call(Response<TkpdResponse> topCashItemResponse) {
+                        return Observable
+                                .just(topCashItemResponse.body().convertDataObj(TokoCashData.class));
                     }
                 })
                 .subscribeOn(Schedulers.newThread())

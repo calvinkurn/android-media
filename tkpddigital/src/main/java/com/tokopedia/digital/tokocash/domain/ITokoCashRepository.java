@@ -2,6 +2,7 @@ package com.tokopedia.digital.tokocash.domain;
 
 import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
 import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 
 import rx.Observable;
 
@@ -17,4 +18,6 @@ public interface ITokoCashRepository {
 
     Observable<TokoCashHistoryEntity> getTokoCashHistoryData(String type, String startDate,
                                                              String endDate, String afterId);
+
+    Observable<TokoCashData> getBalanceTokoCash();
 }
