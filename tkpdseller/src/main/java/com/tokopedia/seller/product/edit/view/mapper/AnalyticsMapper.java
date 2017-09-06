@@ -46,23 +46,22 @@ public class AnalyticsMapper {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
         }
         if (viewModel.getSwitchVariant() == ProductVariantConstant.SWITCH_VARIANT_EXIST) {
-            boolean hasCustomVariantLv1 = false;
-            boolean hasCustomVariantLv2 = false;
             List<ProductVariantUnitSubmit> productVariantUnitSubmitList = viewModel.getProductVariantDataSubmit().getProductVariantUnitSubmitList();
-            if (productVariantUnitSubmitList.size() == 1) {
-                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1);
-                hasCustomVariantLv1 = ProductVariantUtils.hasCustomVariant(productVariantUnitSubmitList, ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
+            if (productVariantUnitSubmitList.size() >= 1) {
+                boolean hasCustomVariantLv1 = ProductVariantUtils.hasCustomVariant(productVariantUnitSubmitList, ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
+                if (hasCustomVariantLv1) {
+                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM);
+                } else {
+                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1);
+                }
             }
-            else if (productVariantUnitSubmitList.size() == 2) {
-                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2);
-                hasCustomVariantLv2 = ProductVariantUtils.hasCustomVariant(productVariantUnitSubmitList, ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
-            }
-
-            if (hasCustomVariantLv1) {
-                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM);
-            }
-            if (hasCustomVariantLv2) {
-                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM);
+            if (productVariantUnitSubmitList.size() >= 2) {
+                boolean hasCustomVariantLv2 = ProductVariantUtils.hasCustomVariant(productVariantUnitSubmitList, ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
+                if (hasCustomVariantLv2) {
+                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM);
+                } else {
+                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2);
+                }
             }
         }
 
