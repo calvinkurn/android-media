@@ -53,6 +53,7 @@ public class TkpdBaseURL {
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
+    public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -113,6 +114,8 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
+
+        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -545,6 +548,11 @@ public class TkpdBaseURL {
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
     }
 
+    public static class Tome {
+        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
+        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
+    }
+
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
         public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
@@ -573,6 +581,7 @@ public class TkpdBaseURL {
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
         public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
+        public static final String URL_CHECK_PROMO = "v1/promo/check";
     }
 
     public static class Mojito {
@@ -751,6 +760,7 @@ public class TkpdBaseURL {
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
+        public static final String PATH_USSD = "ussd/balance";
     }
 
     public static class DigitalWebsite {
@@ -806,6 +816,9 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
+        public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
+        public static final String PATH_CC_DELETE = "v2/ccvault/delete";
+
     }
 
     public static class FinTech {

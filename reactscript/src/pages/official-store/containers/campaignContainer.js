@@ -3,14 +3,15 @@ import { View, ActivityIndicator, DeviceEventEmitter, AsyncStorage } from 'react
 import { connect } from 'react-redux'
 import { fetchCampaigns, addWishlistFromPdp, removeWishlistFromPdp } from '../actions/actions'
 import CampaignList from '../components/campaignList'
-
+import { NavigationModule } from 'NativeModules';
 
 
 class CampaignContainer extends Component {
     componentDidMount() {
         const { dispatch } = this.props
-        AsyncStorage.getItem('user_id').then(uid => {
-            dispatch(fetchCampaigns(uid))
+
+        NavigationModule.getCurrentUserId().then(uuid => {
+            dispatch(fetchCampaigns(uuid))
         })
         
         this.addToWishlist = DeviceEventEmitter.addListener("WishlistAdd", (res) => {
@@ -19,20 +20,15 @@ class CampaignContainer extends Component {
         this.removeWishlist = DeviceEventEmitter.addListener("WishlistRemove", (res) => {
             dispatch(removeWishlistFromPdp(res))
         });
-        this.checkLogin = DeviceEventEmitter.addListener('Login', (res) => {
-            const userid_from_login_os = res.user_id
-            AsyncStorage.setItem('user_id', userid_from_login_os);
-            
-            AsyncStorage.getItem('user_id').then(uid => {
-                dispatch(fetchCampaigns(uid))
-            })
+        this.checkLoginCampaign = DeviceEventEmitter.addListener('Login', (res) => {
+            dispatch(fetchCampaigns(res.user_id))
         })
     }
 
     componentWillUnmount(){
         this.addToWishlist.remove()
         this.removeWishlist.remove()
-        this.checkLogin.remove()
+        this.checkLoginCampaign.remove()
     }
     
     renderCampaign = (campaigns) => {
