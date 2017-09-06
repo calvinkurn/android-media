@@ -253,6 +253,16 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         onSubmitFormNewGroup(inputNewGroup.getText().toString());
     }
 
+    @Override
+    public void showErrorGroupNameNotValid() {
+        textInputLayoutNewGroup.setError(getString(R.string.top_ads_title_group_name_not_valid));
+    }
+
+    @Override
+    public void hideErrorGroupNameNotValid() {
+        textInputLayoutNewGroup.setError(null);
+    }
+
     private View.OnClickListener onClickNext() {
         return new View.OnClickListener() {
             @Override

@@ -183,6 +183,7 @@
     <string name="next">Selanjutnya</string>
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
     <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
+    <string name="top_ads_title_group_name_not_valid">Nama grup tidak valid.</string>
 
     <!-- Top Ads Keyword -->
     <string name="top_ads_title_keyword_add_keyword">Tambah Kata Kunci</string>
