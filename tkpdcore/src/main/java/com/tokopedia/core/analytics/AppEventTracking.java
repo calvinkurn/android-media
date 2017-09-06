@@ -736,7 +736,9 @@ public interface AppEventTracking {
     interface AddProduct {
         String EVENT_CLICK_ADD_PRODUCT = "clickAddProduct";
         String CATEGORY_ADD_PRODUCT = "Add Product";
+        String CATEGORY_EDIT_PRODUCT = "Edit Product";
         String EVENT_ACTION_ADD = "Add";
+        String EVENT_ACTION_EDIT = "Edit";
         String EVENT_ACTION_ADD_MORE = "Add More";
         String EVENT_ACTION_ERROR = "Error";
         String EVENT_ACTION_ERROR_SERVER = "Error Server";
@@ -759,7 +761,9 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_PREORDER = "O7";
         String FIELDS_OPTIONAL_SHARE = "O8";
         String FIELDS_OPTIONAL_VARIANT_LEVEL1 = "O9";
-        String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "10";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "O10";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM = "O11";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM = "O12";
     }
 
     interface CustomDimension {
