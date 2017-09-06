@@ -120,7 +120,7 @@ android {
         release {
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources tru
+            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
