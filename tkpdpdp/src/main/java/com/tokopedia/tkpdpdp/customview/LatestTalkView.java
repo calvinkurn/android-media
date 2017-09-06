@@ -89,7 +89,7 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
         if (data != null) {
             setVisibility(VISIBLE);
 
-            ImageHandler.loadImageCircle2(getContext(), avatarTalk, data.getTalkUserAvatar());
+            ImageHandler.loadImageRounded2(getContext(), avatarTalk, data.getTalkUserAvatar());
             textTalkName.setText(data.getTalkUsername());
             textTalkDate.setText(data.getTalkDate());
             textTalkMessage.setText(data.getTalkMessage());
