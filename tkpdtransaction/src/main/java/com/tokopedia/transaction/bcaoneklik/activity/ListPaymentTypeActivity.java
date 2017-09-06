@@ -257,6 +257,8 @@ public class ListPaymentTypeActivity extends TActivity
                     bcaOneClickRecyclerView.setVisibility(View.GONE);
                     bcaOneClickRegisterLayout.setVisibility(View.GONE);
                 } else {
+                    bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
+                    quickPaymentTitle.setVisibility(View.VISIBLE);
                     paymentModels = paymentListModel;
                     bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
                             paymentListModel.getBcaOneClickUserModels(),

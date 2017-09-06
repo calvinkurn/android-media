@@ -71,9 +71,11 @@ public class ReactUtils {
     private static void sendEmittEvent(ReactContext reactContext,
                                        String eventName,
                                        @Nullable WritableMap params) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
+        if (reactContext != null) {
+            reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
+        }
     }
 
     public static void sendDestroyPageEmitter() {
