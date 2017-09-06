@@ -68,6 +68,11 @@ public class Filter implements Serializable, Parcelable {
         return TEMPLATE_NAME_BRAND.equals(templateName);
     }
 
+    public boolean isExpandableFilter() {
+        return isCategoryFilter() || isColorFilter() || isRatingFilter()
+                || isSizeFilter() || isBrandFilter() || options.size() > 1;
+    }
+
     /**
      * @return The title
      */

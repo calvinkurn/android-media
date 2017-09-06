@@ -30,10 +30,10 @@ public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
         }
         else if (filter.isPriceFilter()) {
             return R.layout.dynamic_filter_item_price;
-        } else if (filter.getOptions().size() == 1) {
-            return R.layout.dynamic_filter_item_toggle;
-        } else {
+        } else if (filter.isExpandableFilter()) {
             return R.layout.dynamic_filter_expandable_item;
+        } else {
+            return R.layout.dynamic_filter_item_toggle;
         }
     }
 
