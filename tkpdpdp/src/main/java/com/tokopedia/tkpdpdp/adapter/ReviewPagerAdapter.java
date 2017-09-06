@@ -59,10 +59,10 @@ public class ReviewPagerAdapter extends PagerAdapter{
         View view = inflater.inflate(R.layout.item_most_helpful_review, container, false);
 
         ImageView bannerImage = (ImageView) view.findViewById(R.id.image_reviewer);
-        ImageHandler.LoadImage(
-                bannerImage,
-                reviews.get(position).getUser().getUserImage()
+        ImageHandler.loadImageRounded2(
+                context, bannerImage, reviews.get(position).getUser().getUserImage()
         );
+
         ((TextView) view.findViewById(R.id.text_reviewer_name)).setText( reviews.get(position).getUser().getFullName());
         ((TextView) view.findViewById(R.id.text_review_time)).setText(reviews.get(position).getReviewCreateTime().getDateTimeFmt1());
         ((TextView) view.findViewById(R.id.text_review)).setText( reviews.get(position).getReviewMessage());

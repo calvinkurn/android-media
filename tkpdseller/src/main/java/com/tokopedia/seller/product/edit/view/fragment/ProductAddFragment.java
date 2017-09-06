@@ -62,6 +62,7 @@ import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -580,7 +581,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
-                                            ProductVariantDataSubmit productVariantDataSubmit) {
+                                            ProductVariantDataSubmit productVariantDataSubmit,
+                                            ArrayList<ProductVariantOptionSubmit> productVariantOptionSubmitArrayList) {
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -596,6 +598,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 productVariantByCatModelList.size() > 0) {
             intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantDataSubmit);
         }
+        intent.putExtra(ProductVariantConstant.EXTRA_OLD_PRODUCT_OPTION_SUBMIT_LV1_LIST, productVariantOptionSubmitArrayList);
         startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT);
     }
 

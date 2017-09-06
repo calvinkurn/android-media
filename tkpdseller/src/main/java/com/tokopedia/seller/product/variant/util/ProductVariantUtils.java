@@ -16,6 +16,7 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVari
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -71,6 +72,7 @@ public class ProductVariantUtils {
                     productVariantOptionSubmit.setCustomText("");
                 }
                 productVariantOptionSubmit.setTemporaryId(tIdCounter);
+                productVariantOptionSubmit.setPictureItemList(optionSource.getPicture());
                 // add to map, to enable inverse lookup later
                 tempIdInverseMap.put(pvoId, tIdCounter);
 
@@ -666,5 +668,38 @@ public class ProductVariantUtils {
         optionIdList.add(optionIdLv2);
         variantCombination.setOptionList(optionIdList);
         return variantCombination;
+    }
+
+    public static ArrayList<ProductVariantOptionSubmit> getProductVariantOptionSubmitLv1(ProductVariantDataSubmit productVariantDataSubmit){
+        if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
+                productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
+            return null;
+        }
+        List<ProductVariantUnitSubmit> productVariantUnitSubmitList =
+                productVariantDataSubmit.getProductVariantUnitSubmitList();
+
+        for (int i = 0, sizei = productVariantUnitSubmitList.size(); i<sizei; i++) {
+            ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
+            if (productVariantUnitSubmit.getPosition() != ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
+                continue;
+            }
+            return cloneVarianOptionSubmitList(productVariantUnitSubmit.getProductVariantOptionSubmitList());
+        }
+        return null;
+    }
+
+    private static ArrayList<ProductVariantOptionSubmit> cloneVarianOptionSubmitList(
+            List<ProductVariantOptionSubmit> productVariantOptionSubmitList){
+        ArrayList <ProductVariantOptionSubmit> cloneProductVariantOptionSubmitList = new ArrayList<>();
+        for (int i = 0, sizei = productVariantOptionSubmitList.size(); i<sizei; i++) {
+            ProductVariantOptionSubmit sourceProductVariantOptionSubmit = productVariantOptionSubmitList.get(i);
+            ProductVariantOptionSubmit newProductVariantOptionSubmit = new ProductVariantOptionSubmit();
+            newProductVariantOptionSubmit.setVariantUnitValueId(sourceProductVariantOptionSubmit.getVariantUnitValueId());
+            newProductVariantOptionSubmit.setCustomText(sourceProductVariantOptionSubmit.getCustomText());
+            newProductVariantOptionSubmit.setPictureItemList(sourceProductVariantOptionSubmit.getPictureItemList());
+            newProductVariantOptionSubmit.setTemporaryId(sourceProductVariantOptionSubmit.getTemporaryId());
+            cloneProductVariantOptionSubmitList.add(newProductVariantOptionSubmit);
+        }
+        return cloneProductVariantOptionSubmitList;
     }
 }
