@@ -28,6 +28,7 @@ import java.util.Locale;
 public class PriceRangeInputView extends BaseCustomView {
 
     private static final int VALUE_STOP_COUNT = 100;
+    private static final int POWER = 2;
 
     private View rootView;
     private TextView minLabel;
@@ -49,8 +50,8 @@ public class PriceRangeInputView extends BaseCustomView {
     private float seekbarWidth = 0;
     private float seekbarRange = 0;
     private float seekbarLeftOffset = 0;
-    private double basePower = 1;
     private int valueList[] = new int[VALUE_STOP_COUNT];
+    private double baseRange = 0;
 
     private boolean isMinButtonDragging = false;
     private boolean isMaxButtonDragging = false;
@@ -83,7 +84,6 @@ public class PriceRangeInputView extends BaseCustomView {
                 seekbarLeftOffset = seekbarDynamicBackground.getX();
                 seekbarWidth = seekbarDynamicBackground.getWidth();
                 seekbarRange = seekbarWidth - seekbarButtonSize;
-                updateValueCalculation();
                 refreshButtonPosition();
             }
         });
@@ -111,26 +111,23 @@ public class PriceRangeInputView extends BaseCustomView {
         this.maxBound = maxBound;
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.valueRange = maxBound - minBound;
         updateValueCalculation();
         refreshButtonPosition();
         refreshInputText();
     }
 
     private void updateValueCalculation() {
-        if (seekbarRange == 0) {
-            return;
-        }
+        valueRange = maxBound - minBound;
+        baseRange = Math.pow(valueRange, 1 / POWER);
 
-        basePower = Math.pow(valueRange, 1 / seekbarRange);
         valueList[0] = minBound;
         valueList[VALUE_STOP_COUNT - 1] = maxBound;
 
         for (int i = 1; i < VALUE_STOP_COUNT - 1; i++) {
 
-            double power = (double) i / (VALUE_STOP_COUNT - 1) * seekbarRange;
+            double base = (double) i / (VALUE_STOP_COUNT - 1) * baseRange;
 
-            valueList[i] = minBound + (int) Math.pow(basePower, power);
+            valueList[i] = minBound + (int) Math.pow(base, POWER);
 
             int delta = valueList[i] - valueList[i - 1];
             if (delta > 0) {
@@ -170,10 +167,8 @@ public class PriceRangeInputView extends BaseCustomView {
     }
 
     private int getPositionFromValue(int value) {
-        if (basePower == 1 || value - minBound == 0) {
-            return 0;
-        }
-        double result = Math.log(value - minBound) / Math.log(basePower);
+        double base = Math.pow(value - minBound, 1 / POWER);
+        double result = base / baseRange * seekbarRange;
         return (int) (result + seekbarLeftOffset);
     }
 
