@@ -18,9 +18,9 @@ import OfficialStore from './src/pages/official-store/setup'
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
-  componentWillMount() {
-    // console.log(this.props)
-  }
+  // componentWillMount() {
+  //   console.log(this.props)
+  // }
   
   render(){
     if (this.props.Screen == 'HotList'){
