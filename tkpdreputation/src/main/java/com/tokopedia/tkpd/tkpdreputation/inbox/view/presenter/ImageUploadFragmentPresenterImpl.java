@@ -11,10 +11,8 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractor;
-import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
-import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentPresenterImpl;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
@@ -34,12 +32,10 @@ import rx.Subscriber;
  */
 public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPresenter {
 
-    private static final String IMAGE = "image";
     private static final String TAG = ImageUploadFragmentPresenterImpl.class.getSimpleName();
 
     ImageUploadPreviewFragmentView viewListener;
     ImageUploadHandler imageUploadHandler;
-    CacheInboxReputationInteractor cacheInboxReputationInteractor;
     GetSendReviewFormUseCase getSendReviewFormUseCase;
     SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     List<ImageUpload> deletedImageUploads;
@@ -65,7 +61,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
             int position = viewListener.getAdapter().getList().size();
             ImageUpload image = new ImageUpload();
             image.setPosition(position);
-            image.setImageId(IMAGE + UUID.randomUUID().toString());
+            image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
 
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
@@ -121,7 +117,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
             if (imgFile.exists()) {
                 final ImageUpload image = new ImageUpload();
                 image.setFileLoc(arguments.getString(ImageUploadHandler.FILELOC, ""));
-                image.setImageId(IMAGE + UUID.randomUUID().toString());
+                image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
 
                 getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
                     @Override
@@ -159,44 +155,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
     @Override
     public void onDeleteImage(final int currentPosition) {
-//
-//        cacheInboxReputationInteractor.getInboxReputationFormCache(new CacheInboxReputationInteractor.GetInboxReputationFormCacheListener() {
-//            @Override
-//            public void onSuccess(ActReviewPass review) {
-//
-//                if (!viewListener.getAdapter().getList().get(currentPosition).getImageId().startsWith(ActReviewPass.NEW_IMAGE_INDICATOR)) {
-//                    deletedImageUploads.add(viewListener.getAdapter().getList().get(currentPosition));
-//                }
-//
-//                if (hasOnlyOneImage()) {
-//                    review.getImageUploads().clear();
-//                    review.getDeletedImageUploads().addAll(deletedImageUploads);
-//                    cacheInboxReputationInteractor.setInboxReputationFormCache(viewListener.getArguments().getString(InboxReputationFormFragmentPresenterImpl.EXTRA_REVIEW_ID), review);
-//                    viewListener.getActivity().finish();
-//                } else if (isLastItem(currentPosition)) {
-//                    viewListener.getAdapter().removeImage(currentPosition);
-//                    viewListener.getPagerAdapter().resetAdapter();
-//                    viewListener.getPagerAdapter().notifyDataSetChanged();
-//                    viewListener.setCurrentPosition(currentPosition - 1);
-//                    viewListener.setDescription(viewListener.getAdapter().getList().get(currentPosition - 1).getDescription());
-//                    viewListener.setPreviewImage(viewListener.getAdapter().getList().get(currentPosition - 1));
-//                } else {
-//                    viewListener.getAdapter().removeImage(currentPosition);
-//                    viewListener.getPagerAdapter().resetAdapter();
-//                    viewListener.getPagerAdapter().notifyDataSetChanged();
-//                    viewListener.setPreviewImage(viewListener.getAdapter().getList().get(currentPosition));
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                if (hasOnlyOneImage()) {
-//                    viewListener.getActivity().finish();
-//                }
-//            }
-//        });
 
         getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
             @Override
@@ -214,7 +172,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
             @Override
             public void onNext(SendReviewPass sendReviewPass) {
                 if (!viewListener.getAdapter().getList().get(currentPosition).getImageId()
-                        .startsWith(IMAGE)) {
+                        .startsWith(SendReviewUseCase.IMAGE)) {
                     deletedImageUploads.add(viewListener.getAdapter().getList().get(currentPosition));
                 }
 
@@ -271,23 +229,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
             }
         });
-
-//        cacheInboxReputationInteractor.getInboxReputationFormCache(new CacheInboxReputationInteractor.GetInboxReputationFormCacheListener() {
-//            @Override
-//            public void onSuccess(ActReviewPass review) {
-//                for (ImageUpload imageUpload : list) {
-//                    imageUpload.setIsSelected(false);
-//                }
-//                review.setImageUploads(list);
-//                review.getDeletedImageUploads().addAll(deletedImageUploads);
-//                cacheInboxReputationInteractor.setInboxReputationFormCache(review.getReviewId(), review);
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//            }
-//        });
 
         viewListener.getActivity().setResult(Activity.RESULT_OK);
         viewListener.getActivity().finish();

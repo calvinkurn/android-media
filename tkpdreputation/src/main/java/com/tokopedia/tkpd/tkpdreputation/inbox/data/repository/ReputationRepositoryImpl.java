@@ -1,11 +1,12 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.data;
+package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 
 import rx.Observable;
 
@@ -52,5 +53,12 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudSendReviewValidationDataSource()
                 .sendReviewValidation(requestParams);
+    }
+
+    @Override
+    public Observable<SendReviewSubmitDomain> sendReviewSubmit(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudSendReviewSubmitDataSource()
+                .sendReviewSubmit(requestParams);
     }
 }

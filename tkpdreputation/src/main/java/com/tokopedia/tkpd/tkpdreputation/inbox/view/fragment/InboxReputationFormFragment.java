@@ -273,6 +273,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                         review.getText().toString(),
                         rating.getRating(),
                         adapter.getList(),
+                        adapter.getDeletedList(),
                         shareFbSwitch.isChecked(),
                         anomymousSwitch.isChecked());
             }
@@ -394,8 +395,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
             startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
                     fileLoc), ImageUploadHandler.CODE_UPLOAD_IMAGE);
-        } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE
-                && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
             presenter.restoreFormFromCache();
         } else {
             super.onActivityResult(requestCode, resultCode, data);

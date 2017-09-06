@@ -2,9 +2,9 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
@@ -13,6 +13,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,20 +28,20 @@ public class InboxReputationFormPresenter
         implements InboxReputationForm.Presenter {
 
     private final SendReviewUseCase sendReviewUseCase;
-    private final GlobalCacheManager globalCacheManager;
     private final SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     private final GetSendReviewFormUseCase getSendReviewFormUseCase;
+    private final SendReviewValidateUseCase sendReviewValidateUseCase;
     private InboxReputationForm.View viewListener;
     private ImageUploadHandler imageUploadHandler;
 
 
     @Inject
-    InboxReputationFormPresenter(SendReviewUseCase sendReviewUseCase,
-                                 GlobalCacheManager globalCacheManager,
+    InboxReputationFormPresenter(SendReviewValidateUseCase sendReviewValidateUseCase,
+                                 SendReviewUseCase sendReviewUseCase,
                                  SetReviewFormCacheUseCase setReviewFormCacheUseCase,
                                  GetSendReviewFormUseCase getSendReviewFormUseCase) {
+        this.sendReviewValidateUseCase = sendReviewValidateUseCase;
         this.sendReviewUseCase = sendReviewUseCase;
-        this.globalCacheManager = globalCacheManager;
         this.setReviewFormCacheUseCase = setReviewFormCacheUseCase;
         this.getSendReviewFormUseCase = getSendReviewFormUseCase;
     }
@@ -61,15 +62,42 @@ public class InboxReputationFormPresenter
 
     public void sendReview(String reviewId, String reputationId, String productId, String shopId,
                            String review, float rating, ArrayList<ImageUpload> list,
-                           boolean shareFb, boolean anonymous) {
+                           List<ImageUpload> deletedList, boolean shareFb, boolean anonymous) {
         viewListener.showLoadingProgress();
+        if (list.isEmpty()) {
+            sendReviewWithoutImage(reviewId, reputationId, productId, shopId, review, rating);
+        } else {
+            sendReviewWithImage(reviewId, reputationId, productId, shopId, review, rating, list,
+                    deletedList, shareFb, anonymous);
+        }
+
+    }
+
+    private void sendReviewWithImage(String reviewId, String reputationId, String productId,
+                                     String shopId, String review, float rating,
+                                     ArrayList<ImageUpload> list, List<ImageUpload> deletedList,
+                                     boolean shareFb, boolean anonymous) {
         sendReviewUseCase.execute(SendReviewUseCase.getParam(reviewId,
                 productId,
                 reputationId,
                 shopId,
                 String.valueOf(rating),
-                review), new SendReviewSubscriber(viewListener));
+                review,
+                list,
+                deletedList),
+                new SendReviewSubscriber(viewListener));
+    }
 
+    private void sendReviewWithoutImage(String reviewId, String reputationId, String productId,
+                                        String shopId, String review, float rating) {
+        sendReviewValidateUseCase.execute(SendReviewValidateUseCase.getParam(
+                reviewId,
+                productId,
+                reputationId,
+                shopId,
+                String.valueOf(rating),
+                review
+        ), new SendReviewWithoutImageSubscriber(viewListener));
     }
 
     public void openCamera() {

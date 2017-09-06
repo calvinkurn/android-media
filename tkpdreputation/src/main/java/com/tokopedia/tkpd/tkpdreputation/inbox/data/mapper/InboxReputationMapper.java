@@ -42,7 +42,8 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
     public InboxReputationDomain call(Response<TkpdResponse> response) {
 
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if (!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals("")) {
                 InboxReputationPojo data = response.body().convertDataObj(InboxReputationPojo.class);
                 return mappingToDomain(data);
             } else {

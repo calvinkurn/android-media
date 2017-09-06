@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReviewValidateDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 
 import rx.Observable;
 

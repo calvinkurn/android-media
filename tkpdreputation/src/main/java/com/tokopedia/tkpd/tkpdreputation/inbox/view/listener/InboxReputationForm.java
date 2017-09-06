@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 8/20/17.
@@ -27,13 +28,14 @@ public interface InboxReputationForm {
         Activity getActivity();
 
         void setFormFromCache(SendReviewPass sendReviewPass);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void sendReview(String reviewId, String reputationId, String productId, String shopId,
                         String review, float rating, ArrayList<ImageUpload> list,
-                        boolean shareFb, boolean anonymous);
+                        List<ImageUpload> deletedList, boolean shareFb, boolean anonymous);
 
         void openCamera();
 

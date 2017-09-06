@@ -4,25 +4,24 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.sendreview.SendReviewValidatePojo;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.SendReviewSubmitPojo;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 
 import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * @author by nisie on 8/31/17.
+ * @author by nisie on 9/5/17.
  */
 
-public class SendReviewValidateMapper implements Func1<Response<TkpdResponse>,
-        SendReviewValidateDomain> {
-
+public class SendReviewSubmitMapper implements Func1<Response<TkpdResponse>, SendReviewSubmitDomain> {
     @Override
-    public SendReviewValidateDomain call(Response<TkpdResponse> response) {
+    public SendReviewSubmitDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if (!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals("")) {
-                SendReviewValidatePojo data = response.body().convertDataObj(SendReviewValidatePojo.class);
+                SendReviewSubmitPojo data = response.body().convertDataObj(SendReviewSubmitPojo
+                        .class);
                 return mappingToDomain(data);
             } else {
                 if (response.body().getErrorMessages() != null
@@ -44,11 +43,7 @@ public class SendReviewValidateMapper implements Func1<Response<TkpdResponse>,
         }
     }
 
-    private SendReviewValidateDomain mappingToDomain(SendReviewValidatePojo data) {
-        return new SendReviewValidateDomain(
-                data.getPostKey(),
-                data.getReviewId(),
-                data.getIsSuccess()
-        );
+    private SendReviewSubmitDomain mappingToDomain(SendReviewSubmitPojo data) {
+        return new SendReviewSubmitDomain();
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
+package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview;
 
 /**
  * @author by nisie on 8/31/17.

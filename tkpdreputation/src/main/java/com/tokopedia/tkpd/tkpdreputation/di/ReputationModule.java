@@ -3,22 +3,34 @@ package com.tokopedia.tkpd.tkpdreputation.di;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
+import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReviewValidateUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewSubmitUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.factory.ImageUploadFactory;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.GenerateHostMapper;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepository;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepositoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.GenerateHostUseCase;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadImageUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -74,10 +86,12 @@ public class ReputationModule {
             InboxReputationDetailMapper inboxReputationDetailMapper,
             SendSmileyReputationMapper sendSmileyReputationMapper,
             SendReviewValidateMapper sendReviewValidateMapper,
+            SendReviewSubmitMapper sendReviewSubmitMapper,
             GlobalCacheManager globalCacheManager) {
         return new ReputationFactory(reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
-                sendReviewValidateMapper, globalCacheManager);
+                sendReviewValidateMapper, sendReviewSubmitMapper,
+                globalCacheManager);
     }
 
     @ReputationScope
@@ -153,11 +167,19 @@ public class ReputationModule {
     SendReviewUseCase
     provideSendReviewUseCase(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
-                             SendReviewValidateUseCase sendReviewValidateUseCase) {
+                             SendReviewValidateUseCase sendReviewValidateUseCase,
+                             GenerateHostUseCase generateHostUseCase,
+                             UploadImageUseCase uploadImageUseCase,
+                             SendReviewSubmitUseCase sendReviewSubmitUseCase
+    ) {
         return new SendReviewUseCase(
                 threadExecutor,
                 postExecutionThread,
-                sendReviewValidateUseCase);
+                sendReviewValidateUseCase,
+                generateHostUseCase,
+                uploadImageUseCase,
+                sendReviewSubmitUseCase
+        );
     }
 
     @ReputationScope
@@ -182,5 +204,95 @@ public class ReputationModule {
                 threadExecutor,
                 postExecutionThread,
                 globalCacheManager);
+    }
+
+    @ReputationScope
+    @Provides
+    UploadImageUseCase
+    provideUploadImageUseCase(ThreadExecutor threadExecutor,
+                              PostExecutionThread postExecutionThread,
+                              ImageUploadRepository imageUploadRepository) {
+        return new UploadImageUseCase(
+                threadExecutor,
+                postExecutionThread,
+                imageUploadRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    GenerateHostUseCase
+    provideGenerateHostUseCase(ThreadExecutor threadExecutor,
+                               PostExecutionThread postExecutionThread,
+                               ImageUploadRepository imageUploadRepository) {
+        return new GenerateHostUseCase(
+                threadExecutor,
+                postExecutionThread,
+                imageUploadRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    ImageUploadRepository
+    provideImageUploadRepository(ImageUploadFactory imageUploadFactory) {
+        return new ImageUploadRepositoryImpl(imageUploadFactory);
+    }
+
+    @ReputationScope
+    @Provides
+    ImageUploadFactory
+    provideImageUploadFactory(GenerateHostActService generateHostActService,
+                              UploadImageService uploadImageService,
+                              GenerateHostMapper generateHostMapper,
+                              UploadImageMapper uploadImageMapper) {
+        return new ImageUploadFactory(generateHostActService,
+                uploadImageService,
+                generateHostMapper,
+                uploadImageMapper);
+    }
+
+    @ReputationScope
+    @Provides
+    GenerateHostActService
+    provideGenerateHostActService() {
+        return new GenerateHostActService();
+    }
+
+    @ReputationScope
+    @Provides
+    UploadImageService
+    provideUploadImageService() {
+        return new UploadImageService();
+    }
+
+    @ReputationScope
+    @Provides
+    GenerateHostMapper
+    provideGenerateHostMapper() {
+        return new GenerateHostMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    UploadImageMapper
+    provideUploadImageMapper() {
+        return new UploadImageMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    SendReviewSubmitUseCase
+    provideSendReviewSubmitUseCase(ThreadExecutor threadExecutor,
+                                   PostExecutionThread postExecutionThread,
+                                   ReputationRepository reputationRepository) {
+        return new SendReviewSubmitUseCase(
+                threadExecutor,
+                postExecutionThread,
+                reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    SendReviewSubmitMapper provideSendReviewSubmitMapper() {
+        return new SendReviewSubmitMapper();
     }
 }

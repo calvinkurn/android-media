@@ -3,6 +3,7 @@ package com.tokopedia.core.network.apiservices.user.apis;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -33,4 +34,8 @@ public interface ReputationApi {
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_VALIDATE)
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> sendReviewValidate(@FieldMap Map<String, Object> params);
+
+    @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_VALIDATE)
+    @FormUrlEncoded
+    Observable<Response<TkpdResponse>> sendReviewSubmit(@FieldMap Map<String, Object> params);
 }
