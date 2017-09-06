@@ -19,14 +19,12 @@ const { width, height } = Dimensions.get('window')
 const CampaignList = ({ campaigns, User_ID }) => {
   return (
     <View style={styles.container}>
-      <ScrollView>
         <FlatList
           data={campaigns}
           keyExtractor={item => item.banner_id}
           renderItem={this.renderCampaign}
           initialNumToRender={1}
         />
-      </ScrollView>
     </View>
   );
 };
