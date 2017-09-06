@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
-//apply from: "../buildconfig/reactnative/react.gradle"
+apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
 
 
@@ -120,7 +120,7 @@ android {
         release {
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
+            shrinkResources tru
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
