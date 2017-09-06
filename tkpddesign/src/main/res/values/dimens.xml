@@ -59,7 +59,6 @@
     <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="padding_ms">8dp</dimen>
     <dimen name="padding_small">10dp</dimen>
-    <dimen name="padding_detail">15dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
 
