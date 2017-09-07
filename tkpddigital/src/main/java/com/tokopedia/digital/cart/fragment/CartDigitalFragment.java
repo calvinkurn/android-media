@@ -698,7 +698,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 case TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
                     closeView();
-
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
