@@ -94,10 +94,6 @@ import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
-import com.tokopedia.digital.wallets.WalletToDepositActivity;
-import com.tokopedia.digital.wallets.WalletToDepositPassData;
-import com.tokopedia.digital.wallets.accountsetting.WalletAccountSettingActivity;
-import com.tokopedia.digital.wallets.accountsetting.WalletAccountSettingPassData;
 
 import java.util.ArrayList;
 import java.util.List;

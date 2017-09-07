@@ -120,13 +120,4 @@
     <string name="msg_ussd_please_wait">Tolong tunggu, periksa saldo pulsa sedang berlangsung</string>
     <string name="label_cancel">Cancel</string>
 
-    <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
-    <string name="title_menu_help_tokocash">Bantuan</string>
-    <string name="range_date_today">Hari ini</string>
-    <string name="range_date_seven_days_ago">7 Hari Terakhir</string>
-    <string name="range_date_thirty_days_ago">30 Hari Terakhir</string>
-    <string name="range_date_this_month">Bulan ini</string>
-    <string name="range_date_last_month">Bulan Lalu</string>
-    <string name="title_tokocash_topup">TokoCash</string>
-
 </resources>
