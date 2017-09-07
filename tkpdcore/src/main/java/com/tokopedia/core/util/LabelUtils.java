@@ -27,11 +27,20 @@ public class LabelUtils {
     private TextView userName;
     private float labelWidth;
     private boolean detailView;
+    int textLength = 21;
 
     public static LabelUtils getInstance(Context context, TextView userName){
         LabelUtils privilege = new LabelUtils();
         privilege.userName = userName;
         privilege.context = context;
+        return privilege;
+    }
+
+    public static LabelUtils getInstance(Context context, TextView userName, int textLength){
+        LabelUtils privilege = new LabelUtils();
+        privilege.userName = userName;
+        privilege.context = context;
+        privilege.textLength = textLength;
         return privilege;
     }
     public void giveLabel(String userRole){
@@ -117,7 +126,6 @@ public class LabelUtils {
             userName.setText(wordToSpan);
     }
     private int maximumString(String userRole){
-        int textLength = 21;
         if(userRole.length()>8)
             textLength = textLength-4;
         if(userName.getTypeface()!=null && userName.getTypeface().getStyle()==Typeface.BOLD)
