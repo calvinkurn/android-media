@@ -147,6 +147,12 @@ public class SpinnerTextView extends BaseCustomView {
         requestLayout();
     }
 
+    public void setEntries(String[] entries, int position) {
+        updateEntries(entries, position);
+        invalidate();
+        requestLayout();
+    }
+
     public void setValues(String[] values) {
         this.values = values;
         invalidate();
@@ -221,6 +227,19 @@ public class SpinnerTextView extends BaseCustomView {
             this.entries = entries;
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
+            if (selectionIndex >= 0) {
+                textAutoComplete.setText(entries[selectionIndex]);
+                updateOnItemChanged(selectionIndex);
+            }
+        }
+    }
+
+    private void updateEntries(String[] entries, int position) {
+        if (entries != null) {
+            this.entries = entries;
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
+            textAutoComplete.setAdapter(adapter);
+            selectionIndex = position;
             if (selectionIndex >= 0) {
                 textAutoComplete.setText(entries[selectionIndex]);
                 updateOnItemChanged(selectionIndex);
