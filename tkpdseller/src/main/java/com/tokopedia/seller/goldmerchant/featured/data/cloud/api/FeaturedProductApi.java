@@ -20,6 +20,5 @@ public interface FeaturedProductApi {
     Observable<Response<FeaturedProductGETModel>> getFeaturedProduct(@Path("id") String shopId);
 
     @POST(FeaturedConstant.POST_FEATURED_PRODUCT_URL)
-    Observable<Response<FeaturedProductGETModel>> postFeaturedProduct(@Path("id") String shopId,
-                                                                      @Body PostFeaturedProductModel postFeaturedProductModel);
+    Observable<Response<FeaturedProductGETModel>> postFeaturedProduct(@Body PostFeaturedProductModel postFeaturedProductModel);
 }

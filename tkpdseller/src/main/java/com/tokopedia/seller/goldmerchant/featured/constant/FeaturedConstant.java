@@ -6,5 +6,7 @@ package com.tokopedia.seller.goldmerchant.featured.constant;
 
 public interface FeaturedConstant {
     String GET_FEATURED_PRODUCT_URL = "/v1/mobile/featured_product/{id}?json=1";
-    String POST_FEATURED_PRODUCT_URL = "/v1/product/featured/{id}";
+    String POST_FEATURED_PRODUCT_URL = "/v1/product/manage/featured";
 }
+
+
