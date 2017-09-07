@@ -42,14 +42,13 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     ProductProblemViewModel productProblemViewModel;
     ProblemResult problemResult;
 
-    ImageView ivProductImage, btnInfo;
+    ImageView ivProductImage, btnInfo, btnPlus, btnMinus;
     TextView tvProductName, tvProductPrice, tvQty;
     Button btnArrived, btnNotArrived, btnSaveAndChooseOther, btnSave, btnCancel;
     LinearLayout llFreeReturn;
     SpinnerTextView stvProblem;
     TkpdTextInputLayout tilComplainReason;
     EditText etComplainReason;
-    ImageButton btnPlus, btnMinus;
 
     ProductProblemDetailFragmentPresenter presenter;
 
@@ -120,8 +119,8 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         stvProblem = (SpinnerTextView) view.findViewById(R.id.stv_problem);
         tilComplainReason = (TkpdTextInputLayout) view.findViewById(R.id.til_complain);
         etComplainReason = (EditText) view.findViewById(R.id.et_complain);
-        btnPlus = (ImageButton) view.findViewById(R.id.btn_plus);
-        btnMinus = (ImageButton) view.findViewById(R.id.btn_minus);
+        btnPlus = (ImageView) view.findViewById(R.id.btn_plus);
+        btnMinus = (ImageView) view.findViewById(R.id.btn_minus);
         btnInfo = (ImageView) view.findViewById(R.id.btn_info);
         llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
 
@@ -291,12 +290,16 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public void updatePlusMinusButton(int currentValue, int maxValue) {
         tvQty.setText(String.valueOf(currentValue));
         btnPlus.setEnabled(true);
+        btnPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_plus_enable));
         btnMinus.setEnabled(true);
+        btnMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_minus_enable));
         if (currentValue == 1) {
             btnMinus.setEnabled(false);
+            btnMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_minus_disable));
         }
         if (currentValue == maxValue) {
             btnPlus.setEnabled(false);
+            btnPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_plus_disable));
         }
     }
 
