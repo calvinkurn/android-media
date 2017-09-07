@@ -104,7 +104,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
 
         widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
         widgetClientNumberView.setHint(clientNumber.getPlaceholder());
-        widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(), true);
+        widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
         widgetWrapperBuyView.setCategory(category);
 
         holderWidgetClientNumber.addView(widgetClientNumberView);
@@ -349,9 +349,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.operatorId);
                 widgetClientNumberView.setImgOperatorInvisible();
-                widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(),
-                        rechargeOperatorModel.allowAlphanumeric);
                 minLengthDefaultOperator = rechargeOperatorModel.minimumLength;
+                widgetClientNumberView.setInputType(rechargeOperatorModel.allowAlphanumeric);
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.maximumLength);
                 widgetProductChoserView.setTitleProduct(rechargeOperatorModel.nominalText);
                 widgetProductChoserView.setVisibilityProduct(rechargeOperatorModel.showProduct);

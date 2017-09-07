@@ -104,9 +104,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         if (category.getAttributes().getClientNumber().isShown()) {
             widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
             widgetClientNumberView.setHint(clientNumber.getPlaceholder());
-            widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(), true);
+            widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
             holderWidgetClientNumber.addView(widgetClientNumberView);
-
             initClientNumber();
         } else {
             clearHolder(holderWidgetWrapperBuy);
@@ -174,9 +173,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);
             }
-        }
-
-                ;
+        };
     }
 
     private WidgetClientNumberView.OnButtonPickerListener getButtonPickerListener() {
@@ -211,7 +208,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                     if (widgetProductChoserView.checkStockProduct(selectedProduct))
                         presenter.storeLastInstantCheckoutUsed(String.valueOf(category.getId()),
                                 widgetWrapperBuyView.isCreditCheckboxChecked());
-
 
                     DigitalCheckoutPassData digitalCheckoutPassData =
                             widgetWrapperBuyView.getGeneratedCheckoutPassData(getDataPreCheckout());
@@ -350,6 +346,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         widgetClientNumberView.setImgOperator(operatorModel.image);
         widgetClientNumberView.setFilterMaxLength(operatorModel.maximumLength);
         widgetClientNumberView.setImgOperatorVisible();
+        widgetClientNumberView.setInputType(operatorModel.allowAlphanumeric);
         widgetProductChoserView.setTitleProduct(operatorModel.nominalText);
         widgetProductChoserView.setVisibilityProduct(operatorModel.showProduct);
         if (!operatorModel.showPrice) showPrice = false;

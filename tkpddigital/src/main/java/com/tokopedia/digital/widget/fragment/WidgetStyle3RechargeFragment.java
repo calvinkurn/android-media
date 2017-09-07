@@ -105,7 +105,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetClientNumberView.setRechargeEditTextListener(getEditTextListener());
             widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
             widgetClientNumberView.setHint(clientNumber.getPlaceholder());
-            widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(), true);
+            widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
             holderWidgetClientNumber.addView(widgetClientNumberView);
 
             setRechargeEditTextCallback(widgetClientNumberView);
@@ -323,14 +323,12 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.operatorId);
                 widgetClientNumberView.setImgOperatorInvisible();
-                widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook(),
-                        rechargeOperatorModel.allowAlphanumeric);
                 minLengthDefaultOperator = rechargeOperatorModel.minimumLength;
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.maximumLength);
+                widgetClientNumberView.setInputType(rechargeOperatorModel.allowAlphanumeric);
                 widgetProductChoserView.setTitleProduct(rechargeOperatorModel.nominalText);
                 widgetProductChoserView.setVisibilityProduct(rechargeOperatorModel.showProduct);
                 if (!rechargeOperatorModel.showPrice) showPrice = false;
-
 
                 if (!category.getAttributes().getClientNumber().isShown()) {
                     clearHolder(holderWidgetWrapperBuy);

@@ -245,7 +245,7 @@ public class WidgetClientNumberView extends LinearLayout {
         };
     }
 
-    public void setVisibilityPhoneBook(boolean isUsePhoneBook, boolean allowAlphanumeric) {
+    public void setVisibilityPhoneBook(boolean isUsePhoneBook) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (isUsePhoneBook && pulsaAutocompleteView != null) {
@@ -256,8 +256,10 @@ public class WidgetClientNumberView extends LinearLayout {
             layoutParams.weight = 1;
         }
         pulsaFrameLayout.setLayoutParams(layoutParams);
+    }
 
-        if (allowAlphanumeric) {
+    public void setInputType(boolean allowAlphaNumeric) {
+        if (allowAlphaNumeric) {
             setInputTypeText();
         } else {
             setInputTypeNumber();
