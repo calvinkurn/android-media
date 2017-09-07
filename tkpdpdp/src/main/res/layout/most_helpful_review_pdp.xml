@@ -19,11 +19,11 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager_review"
-        android:layout_width="350dp"
+        android:layout_width="340dp"
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/margin_sm"
-        android:layout_marginRight="@dimen/margin_sm"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
         android:layout_marginBottom="@dimen/margin_vs"
         android:visibility="visible" />
 
