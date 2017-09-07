@@ -82,7 +82,7 @@ public class PriceRangeInputView extends BaseCustomView {
                 rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 seekbarLeftOffset = seekbarDynamicBackground.getX();
                 seekbarWidth = seekbarDynamicBackground.getWidth();
-                seekbarRange = seekbarWidth - seekbarButtonSize;
+                seekbarRange = seekbarWidth - 2 * seekbarButtonSize;
                 refreshButtonPosition();
             }
         });
@@ -150,9 +150,23 @@ public class PriceRangeInputView extends BaseCustomView {
     }
 
     private void refreshButtonPosition() {
-        minButton.setX(getPositionFromValue(minValue));
-        maxButton.setX(getPositionFromValue(maxValue));
+        minButton.setX(getMinButtonX());
+        maxButton.setX(getMaxButtonX());
         refreshSeekbarBackground();
+    }
+
+    private int getMinButtonX() {
+        return getPositionFromValue(minValue);
+    }
+
+    private int getMaxButtonX() {
+        return getPositionFromValue(maxValue) + seekbarButtonSize;
+    }
+
+    private int getPositionFromValue(int value) {
+        double base = Math.pow(value - minBound, 1 / power);
+        double result = base / baseRange * seekbarRange;
+        return (int) (result + seekbarLeftOffset);
     }
 
     private void refreshSeekbarBackground() {
@@ -178,10 +192,12 @@ public class PriceRangeInputView extends BaseCustomView {
                 .format(value).replace("$", "").replace(".00","").replace(",", ".");
     }
 
-    private int getPositionFromValue(int value) {
-        double base = Math.pow(value - minBound, 1 / power);
-        double result = base / baseRange * seekbarRange;
-        return (int) (result + seekbarLeftOffset);
+    private int getMinValue() {
+        return getValueFromPosition(minButton.getX());
+    }
+
+    private int getMaxValue() {
+        return getValueFromPosition(maxButton.getX() - seekbarButtonSize);
     }
 
     private int getValueFromPosition(float x) {
@@ -215,14 +231,14 @@ public class PriceRangeInputView extends BaseCustomView {
                     float position = normalizeMinButtonPosition(targetX);
                     minButton.setX(position);
                     refreshSeekbarBackground();
-                    minValue = getValueFromPosition(position);
+                    minValue = getMinValue();
                     refreshInputText();
                     requestDisallowInterceptTouchEvent(true);
                 } else if (isMaxButtonDragging) {
                     float position = normalizeMaxButtonPosition(targetX);
                     maxButton.setX(position);
                     refreshSeekbarBackground();
-                    maxValue = getValueFromPosition(position);
+                    maxValue = getMaxValue();
                     refreshInputText();
                     requestDisallowInterceptTouchEvent(true);
                 } else {
@@ -273,11 +289,14 @@ public class PriceRangeInputView extends BaseCustomView {
     private class MinInputWatcher extends InputTextWatcher {
         @Override
         void updateValue(int newValue) {
-            int maxThreshold = getValueFromPosition(maxButton.getX() - seekbarButtonSize);
             if (newValue < minBound) {
                 minValue = minBound;
-            } else if (newValue > maxThreshold) {
-                minValue = maxThreshold;
+            } else if (newValue > maxBound) {
+                minValue = maxBound;
+                maxValue = maxBound;
+            } else if (newValue > maxValue) {
+                minValue = newValue;
+                maxValue = newValue;
             } else {
                 minValue = newValue;
             }
@@ -287,11 +306,14 @@ public class PriceRangeInputView extends BaseCustomView {
     private class MaxInputWatcher extends InputTextWatcher {
         @Override
         void updateValue(int newValue) {
-            int minThreshold = getValueFromPosition(minButton.getX() + seekbarButtonSize);
             if (newValue > maxBound) {
                 maxValue = maxBound;
-            } else if (newValue < minThreshold) {
-                maxValue = minThreshold;
+            } else if (newValue < minBound) {
+                maxValue = minBound;
+                minValue = minBound;
+            } else if (newValue < minValue) {
+                maxValue = newValue;
+                minValue = newValue;
             } else {
                 maxValue = newValue;
             }
