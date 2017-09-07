@@ -19,20 +19,10 @@ public class SellerLoginDataSource {
     }
 
     public Observable<Boolean> saveLoginTime(String userId){
-        SellerLoginDataBase productDraftDataBase = new Select()
-                .from(SellerLoginDataBase.class)
-                .where(SellerLoginDataBase_Table.user_id.is(userId))
-                .querySingle();
-        if (productDraftDataBase != null){
-            productDraftDataBase.setTimeStamp(System.currentTimeMillis() / 1000L);
-            productDraftDataBase.save();
-            return Observable.just(true);
-        } else {
-            SellerLoginDataBase insertSellerLoginDataBase = new SellerLoginDataBase();
-            insertSellerLoginDataBase.setUserId(userId);
-            insertSellerLoginDataBase.setTimeStamp(System.currentTimeMillis() / 1000L);
-            insertSellerLoginDataBase.save();
-            return Observable.just(true);
-        }
+        SellerLoginDataBase insertSellerLoginDataBase = new SellerLoginDataBase();
+        insertSellerLoginDataBase.setUserId(userId);
+        insertSellerLoginDataBase.setTimeStamp(System.currentTimeMillis() / 1000L);
+        insertSellerLoginDataBase.save();
+        return Observable.just(true);
     }
 }
