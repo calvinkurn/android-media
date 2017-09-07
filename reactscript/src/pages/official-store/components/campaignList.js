@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   ScrollView,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions
 } from 'react-native';
@@ -19,14 +20,12 @@ const { width, height } = Dimensions.get('window')
 const CampaignList = ({ campaigns, User_ID }) => {
   return (
     <View style={styles.container}>
-      <ScrollView>
         <FlatList
           data={campaigns}
           keyExtractor={item => item.banner_id}
           renderItem={this.renderCampaign}
           initialNumToRender={1}
         />
-      </ScrollView>
     </View>
   );
 };
@@ -188,11 +187,9 @@ this.renderCampaign = (c) => {
       {productGrid}
       {
         item.html_id === 6 ? null : (<View style={viewAll}>
-          <Text
-            style={viewAllText}
-            onPress={() => {
-              NavigationModule.navigate(item.redirect_url_app, '')}}>Lihat Semua &gt;
-          </Text>
+          <TouchableOpacity onPress={() => NavigationModule.navigate(item.redirect_url_app, '')}>
+            <Text style={viewAllText}>Lihat Semua &gt;</Text>
+          </TouchableOpacity>
         </View>)
       }
     </View >
