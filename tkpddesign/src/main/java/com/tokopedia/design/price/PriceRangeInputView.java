@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -54,7 +55,6 @@ public class PriceRangeInputView extends BaseCustomView {
 
     private boolean isMinButtonDragging = false;
     private boolean isMaxButtonDragging = false;
-    private boolean isAutoTextChange = false;
 
     public PriceRangeInputView(@NonNull Context context) {
         super(context);
@@ -96,8 +96,10 @@ public class PriceRangeInputView extends BaseCustomView {
         minButton = rootView.findViewById(R.id.min_button);
         maxButton = rootView.findViewById(R.id.max_button);
 
-        minValueInput.addTextChangedListener(new MinInputWatcher());
-        maxValueInput.addTextChangedListener(new MaxInputWatcher());
+        minValueInput.addTextChangedListener(new NumberTextWatcher(minValueInput));
+        maxValueInput.addTextChangedListener(new NumberTextWatcher(maxValueInput));
+        minValueInput.setOnFocusChangeListener(new MinInputListener());
+        maxValueInput.setOnFocusChangeListener(new MaxInputListener());
     }
 
     public void setData(String minText, String maxText,
@@ -178,18 +180,11 @@ public class PriceRangeInputView extends BaseCustomView {
     }
 
     private void refreshInputText() {
-        isAutoTextChange = true;
-        minValueInput.setText(formatToRupiah(minValue));
-        maxValueInput.setText(formatToRupiah(maxValue));
+        minValueInput.setText(Integer.toString(minValue));
+        maxValueInput.setText(Integer.toString(maxValue));
         minValueInput.setSelection(minValueInput.length());
         maxValueInput.setSelection(maxValueInput.length());
         onValueChangedListener.onValueChanged(minValue, maxValue);
-        isAutoTextChange = false;
-    }
-
-    private String formatToRupiah(int value) {
-        return "Rp" + NumberFormat.getCurrencyInstance(Locale.US)
-                .format(value).replace("$", "").replace(".00","").replace(",", ".");
     }
 
     private int getMinValue() {
@@ -230,15 +225,15 @@ public class PriceRangeInputView extends BaseCustomView {
                 if (isMinButtonDragging) {
                     float position = normalizeMinButtonPosition(targetX);
                     minButton.setX(position);
-                    refreshSeekbarBackground();
                     minValue = getMinValue();
+                    refreshSeekbarBackground();
                     refreshInputText();
                     requestDisallowInterceptTouchEvent(true);
                 } else if (isMaxButtonDragging) {
                     float position = normalizeMaxButtonPosition(targetX);
                     maxButton.setX(position);
-                    refreshSeekbarBackground();
                     maxValue = getMaxValue();
+                    refreshSeekbarBackground();
                     refreshInputText();
                     requestDisallowInterceptTouchEvent(true);
                 } else {
@@ -286,7 +281,7 @@ public class PriceRangeInputView extends BaseCustomView {
         this.onValueChangedListener = onValueChangedListener;
     }
 
-    private class MinInputWatcher extends InputTextWatcher {
+    private class MinInputListener extends InputTextFocusChangeListener {
         @Override
         void updateValue(int newValue) {
             if (newValue < minBound) {
@@ -303,7 +298,7 @@ public class PriceRangeInputView extends BaseCustomView {
         }
     }
 
-    private class MaxInputWatcher extends InputTextWatcher {
+    private class MaxInputListener extends InputTextFocusChangeListener {
         @Override
         void updateValue(int newValue) {
             if (newValue > maxBound) {
@@ -320,23 +315,11 @@ public class PriceRangeInputView extends BaseCustomView {
         }
     }
 
-    private abstract class InputTextWatcher implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
+    private abstract class InputTextFocusChangeListener implements OnFocusChangeListener {
 
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            if (isAutoTextChange) {
-                return;
-            }
-
+        public void onFocusChange(View view, boolean hasFocus) {
+            Editable editable = ((EditText) view).getText();
             int inputValue = 0;
             if (!TextUtils.isEmpty(editable.toString())) {
                 inputValue = rupiahToInt(editable.toString());

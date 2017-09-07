@@ -54,6 +54,7 @@
             android:paddingRight="0dp"
             android:inputType="number"
             android:digits="0123456789"
+            android:nextFocusDown="@+id/max_value"
             />
 
         <TextView
