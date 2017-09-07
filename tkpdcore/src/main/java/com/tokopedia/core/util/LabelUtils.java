@@ -23,11 +23,13 @@ import com.tokopedia.core.R;
  */
 public class LabelUtils {
 
+    public static final int DEFAULT_MAX_TEXT_LENGTH = 21;
+
     private Context context;
     private TextView userName;
     private float labelWidth;
     private boolean detailView;
-    int textLength = 21;
+    int textLength = DEFAULT_MAX_TEXT_LENGTH;
 
     public static LabelUtils getInstance(Context context, TextView userName){
         LabelUtils privilege = new LabelUtils();
