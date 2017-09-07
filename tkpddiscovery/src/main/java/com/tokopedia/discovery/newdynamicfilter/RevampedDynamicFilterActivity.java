@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
@@ -123,6 +124,14 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.line_separator_medium));
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    KeyboardHandler.hideSoftKeyboard(RevampedDynamicFilterActivity.this);
+                }
+            }
+        });
     }
 
     private void loadFilterItems() {
