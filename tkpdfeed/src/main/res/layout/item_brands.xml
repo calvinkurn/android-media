@@ -33,7 +33,7 @@
             android:layout_margin="3dp"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_loading_toped"/>
+            android:src="@drawable/loading_page"/>
 
     </RelativeLayout>
 </LinearLayout>

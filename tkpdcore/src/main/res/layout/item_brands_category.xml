@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerInside"
             android:adjustViewBounds="true"
-            android:src="@drawable/ic_loading_toped"
+            android:src="@drawable/loading_page"
             android:layout_margin="3dp" />
 
     </RelativeLayout>
@@ -44,7 +44,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="0.04"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <View
             android:id="@+id/separator"
