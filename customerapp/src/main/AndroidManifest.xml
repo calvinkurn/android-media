@@ -191,11 +191,7 @@
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".datepicker.DatePickerTokoCashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-
+        
         <activity
             android:name="com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity"
             android:screenOrientation="portrait" />
