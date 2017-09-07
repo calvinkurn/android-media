@@ -726,11 +726,10 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @Override
     public int getTipAmount() {
-
         if (rateStarRatingBar.getRating() >= 4 && tipAmount > 0) {
             return tipAmount;
         }
 
-        return tipAmount;
+        return 0;
     }
 }

@@ -618,7 +618,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void renderAcceptedRequest(RideRequest result) {
         replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result, getTag()));
         if (result.getLocation() != null) {
-            reDrawDriverMarker(result);
+            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude(), result.getLocation().getBearing());
         }
     }
 
@@ -633,7 +633,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderInProgressRequest(RideRequest result) {
         if (result.getLocation() != null) {
-            reDrawDriverMarker(result);
+            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude(), result.getLocation().getBearing());
         }
 
         setTitle(R.string.title_trip_in_progress);
@@ -724,7 +724,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderArrivingDriverEvent(RideRequest result) {
         if (result.getLocation() != null) {
-            reDrawDriverMarker(result);
+            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude(), result.getLocation().getBearing());
         }
 
         setTitle(R.string.title_trip_arriving);
@@ -841,7 +841,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void reDrawDriverMarker(RideRequest result) {
+    public void reDrawDriverMarker(double latitude, double longitude, float bearing) {
         if (mGoogleMap == null) {
             return;
         }
@@ -858,14 +858,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         MarkerOptions options;
         if (markerId != 0) {
             options = new MarkerOptions()
-                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                    .position(new LatLng(latitude, longitude))
                     .icon(getCarMapIcon(markerId))
-                    .rotation(result.getLocation().getBearing())
+                    .rotation(bearing)
                     .title(getString(R.string.ontrip_marker_driver));
         } else {
             options = new MarkerOptions()
-                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                    .rotation(result.getLocation().getBearing())
+                    .position(new LatLng(latitude, longitude))
+                    .rotation(bearing)
                     .title(getString(R.string.ontrip_marker_driver));
         }
 
