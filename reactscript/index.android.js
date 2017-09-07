@@ -18,16 +18,10 @@ import OfficialStore from './src/pages/official-store/setup'
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
-  componentWillMount() {
-    if (this.props.User_ID != ''){
-      AsyncStorage.setItem('user_id', this.props.User_ID);
-    } else {
-      AsyncStorage.removeItem('user_id').then(res => { })
-      AsyncStorage.getItem('user_id').then(uid => { })
-    }
-  }
+  // componentWillMount() {
+  //   console.log(this.props)
+  // }
   
-
   render(){
     if (this.props.Screen == 'HotList'){
       return <HotList_ />
