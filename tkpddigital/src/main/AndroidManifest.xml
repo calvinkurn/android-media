@@ -39,7 +39,7 @@
         <activity
             android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
             android:screenOrientation="portrait"/>
-
+              
         <activity
             android:name=".tokocash.activity.TopUpTokoCashActivity"
             android:screenOrientation="portrait"/>
@@ -63,7 +63,9 @@
 
         <activity android:name=".product.activity.DigitalUssdActivity"/>
 
-
+        <activity
+            android:name=".wallets.WalletToDepositActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".wallets.accountsetting.WalletAccountSettingActivity"
             android:screenOrientation="portrait"/>
