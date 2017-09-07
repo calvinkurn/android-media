@@ -1,5 +1,9 @@
 package com.tokopedia.seller.product.draft.data.repository;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
@@ -18,9 +22,11 @@ import rx.functions.Func2;
 
 public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     private final ProductDraftDataSource productDraftDataSource;
+    private Context context;
 
-    public ProductDraftRepositoryImpl(ProductDraftDataSource productDraftDataSource) {
+    public ProductDraftRepositoryImpl(ProductDraftDataSource productDraftDataSource, Context context) {
         this.productDraftDataSource = productDraftDataSource;
+        this.context = context;
     }
 
 
@@ -91,5 +97,14 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     @Override
     public Observable<Boolean> updateuploadingStatusDraft(long productId, boolean isUploading) {
         return productDraftDataSource.updateUploadingStatusDraft(productId, isUploading);
+    }
+
+    @Override
+    public Observable<Boolean> updateBlankUserIdDraft() {
+        String userId = SessionHandler.getLoginID(context);
+        if (TextUtils.isEmpty(userId)) {
+            return Observable.just(false);
+        }
+        return productDraftDataSource.updateBlankUserId(userId);
     }
 }

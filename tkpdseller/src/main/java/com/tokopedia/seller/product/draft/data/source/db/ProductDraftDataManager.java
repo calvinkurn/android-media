@@ -126,5 +126,14 @@ public class ProductDraftDataManager {
         }
     }
 
+    public Observable<Boolean> updateBlankUserId(String userId) {
+        // update for userid, update all blank user to current user
+        new Update<>(ProductDraftDataBase.class)
+                .set(ProductDraftDataBase_Table.user_id.eq(userId))
+                .where(ProductDraftDataBase_Table.user_id.isNull())
+                .execute();
+        return Observable.just(true);
+    }
+
 
 }

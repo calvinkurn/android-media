@@ -1,10 +1,16 @@
 package com.tokopedia.seller.product.draft.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.UpdateBlankUserIdDraftUseCase;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftUpdateBlankUserIDPresenter;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftUpdateBlankUserIDPresenterImpl;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
@@ -26,8 +32,8 @@ public class ProductDraftListModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource){
-        return new ProductDraftRepositoryImpl(productDraftDataSource);
+    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
+        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
     }
 
     @ProductAddScope
@@ -38,6 +44,13 @@ public class ProductDraftListModule extends ProductAddModule {
                                                     SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
         return new ProductDraftListPresenterImpl(fetchAllDraftProductUseCase, deleteSingleDraftProductUseCase,
                 updateUploadingDraftProductUseCase, saveBulkDraftProductUseCase);
+    }
+
+
+    @ProductAddScope
+    @Provides
+    ProductDraftUpdateBlankUserIDPresenter provideProductDraftUpdateBlankUserIDPresenter(UpdateBlankUserIdDraftUseCase updateBlankUserIdDraftUseCase){
+        return new ProductDraftUpdateBlankUserIDPresenterImpl(updateBlankUserIdDraftUseCase);
     }
 
 }
