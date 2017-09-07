@@ -36,6 +36,7 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context)
                             .setData(uri.build())
+                            .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
                             .putExtras(extras);
                 } else {
                     return TopAdsDashboardActivity.getCallingIntent(context)
@@ -45,6 +46,7 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                 return getCallingIntent(context)
                         .setData(uri.build())
+                        .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
                         .putExtras(extras);
             }
         } else {

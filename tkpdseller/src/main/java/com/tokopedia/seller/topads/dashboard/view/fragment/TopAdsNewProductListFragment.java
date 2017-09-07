@@ -94,8 +94,7 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
     private boolean isShouldLoadItemIdToAdd() {
         return stepperModel != null &&
                 stepperModel.getIdToAdd() != null &&
-                !stepperModel.getIdToAdd().equals("") &&
-                stepperModel.getTopAdsProductViewModels() != null;
+                !stepperModel.getIdToAdd().equals("");
     }
 
     @Override
@@ -236,6 +235,7 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         List<TopAdsProductViewModel> topAdsProductViewModels = new ArrayList<>();
         topAdsProductViewModels.add(topAdsProductViewModel);
         populateView(topAdsProductViewModels);
+        updateSelectedProductCount();
     }
 
     protected boolean isHideExistingGroup() {
