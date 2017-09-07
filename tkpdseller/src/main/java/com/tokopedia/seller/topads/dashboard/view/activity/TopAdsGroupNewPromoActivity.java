@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.dashboard.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +17,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
+
+import java.util.List;
 
 import static com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
 
@@ -52,9 +56,14 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
-                launchIntent = new Intent(Intent.ACTION_VIEW);
-                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+                Intent intentActionView = new Intent(Intent.ACTION_VIEW);
+                intentActionView.setData(Uri.parse(extras.getString(DeepLink.URI)));
+                intentActionView.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+                PackageManager manager = context.getPackageManager();
+                List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
+                if (infos.size() > 0) {
+                    launchIntent = intentActionView;
+                }
             }
             return launchIntent;
         }

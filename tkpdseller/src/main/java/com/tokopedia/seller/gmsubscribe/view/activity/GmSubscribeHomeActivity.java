@@ -6,6 +6,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -22,6 +24,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmHomeFragment;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmHomeFragmentCallback;
+
+import java.util.List;
 
 /**
  * Created by sebastianuskh on 11/23/16.
@@ -51,9 +55,14 @@ public class GmSubscribeHomeActivity
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
-                launchIntent = new Intent(Intent.ACTION_VIEW);
-                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+                Intent intentActionView = new Intent(Intent.ACTION_VIEW);
+                intentActionView.setData(Uri.parse(extras.getString(DeepLink.URI)));
+                intentActionView.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+                PackageManager manager = context.getPackageManager();
+                List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
+                if (infos.size() > 0) {
+                    launchIntent = intentActionView;
+                }
             }
             return launchIntent;
         }
