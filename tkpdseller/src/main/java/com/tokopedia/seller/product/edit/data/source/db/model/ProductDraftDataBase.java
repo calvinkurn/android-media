@@ -14,6 +14,7 @@ import com.tokopedia.seller.database.TkpdSellerDatabase;
 public class ProductDraftDataBase extends BaseModel{
     public static final String COLUMN_IS_UPLOADING = "is_uploading";
     public static final String COLUMN_USER_ID = "user_id";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
 
     @PrimaryKey(autoincrement = true)
     @Column

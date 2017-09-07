@@ -18,12 +18,12 @@ public class SellerLoginDataBase extends BaseModel{
 
     @PrimaryKey
     @Column (name = COLUMN_USER_ID)
-    long userId;
+    String userId;
 
     @Column (name = COLUMN_TIMESTAMP)
     long timeStamp;
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -35,7 +35,7 @@ public class SellerLoginDataBase extends BaseModel{
         this.timeStamp = timeStamp;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 }
