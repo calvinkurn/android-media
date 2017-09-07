@@ -1,4 +1,4 @@
-package com.tokopedia.digital.wallets;
+package com.tokopedia.digital.wallets.wallettodeposit;
 
 import android.app.Fragment;
 import android.content.Context;

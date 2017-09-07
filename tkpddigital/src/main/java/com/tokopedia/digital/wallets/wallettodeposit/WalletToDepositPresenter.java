@@ -1,4 +1,4 @@
-package com.tokopedia.digital.wallets;
+package com.tokopedia.digital.wallets.wallettodeposit;
 
 import com.tokopedia.digital.R;
 

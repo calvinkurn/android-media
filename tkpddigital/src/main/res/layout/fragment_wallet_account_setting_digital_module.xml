@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="wrap_content">
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/main_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/header_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/digital_padding_20">
+
+                    <TextView
+                        android:id="@+id/tv_subtitle"
+                        style="@style/TextSubTitleMedium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/digital_padding_14"
+                        tools:text="Anda dapat mengelola TokoCash dengan akun Tokopedia melalui halaman ini."/>
+
+
+                    <com.tokopedia.design.text.TkpdTextInputLayout
+                        android:id="@+id/til_et_name"
+                        style="@style/TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/digital_padding_16"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
+                        app:success_focus_color="@color/font_black_secondary_54"
+                        app:success_leave_color="@color/font_black_secondary_54">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_name"
+                            style="@style/TextSubTitleMedium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/digital_padding_14"
+                            tools:hint="Nama"
+                            tools:text="Angga Keren"/>
+                    </com.tokopedia.design.text.TkpdTextInputLayout>
+
+                    <com.tokopedia.design.text.TkpdTextInputLayout
+                        android:id="@+id/til_et_email"
+                        style="@style/TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/digital_padding_16"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
+                        app:success_focus_color="@color/font_black_secondary_54"
+                        app:success_leave_color="@color/font_black_secondary_54">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_email"
+                            style="@style/TextSubTitleMedium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/digital_padding_14"
+                            tools:hint="Email"
+                            tools:text="angga.keren@toped.com"/>
+                    </com.tokopedia.design.text.TkpdTextInputLayout>
+
+                    <com.tokopedia.design.text.TkpdTextInputLayout
+                        android:id="@+id/til_et_phone"
+                        style="@style/TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/digital_padding_16"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
+                        app:success_focus_color="@color/font_black_secondary_54"
+                        app:success_leave_color="@color/font_black_secondary_54">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_phone"
+                            style="@style/TextSubTitleMedium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/digital_padding_14"
+                            tools:hint="Nomor Handphone"
+                            tools:text="08666666666666"/>
+                    </com.tokopedia.design.text.TkpdTextInputLayout>
+
+
+                </LinearLayout>
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/digital_padding_30"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_account_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+</android.support.design.widget.CoordinatorLayout>

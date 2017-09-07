@@ -1,4 +1,4 @@
-package com.tokopedia.digital.wallets;
+package com.tokopedia.digital.wallets.wallettodeposit;
 
 import android.os.Parcel;
 import android.os.Parcelable;
