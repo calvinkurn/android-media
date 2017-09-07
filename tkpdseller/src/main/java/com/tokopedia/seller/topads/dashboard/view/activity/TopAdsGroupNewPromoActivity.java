@@ -24,10 +24,13 @@ import static com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNew
 
 public class TopAdsGroupNewPromoActivity extends TActivity {
 
+    public static final String PARAM_ITEM_ID = "item_id";
+    public static final String PARAM_USER_ID = "user_id";
+
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
-            String userId = extras.getString("user_id", "");
+            String userId = extras.getString(PARAM_USER_ID, "");
             if (!TextUtils.isEmpty(userId)) {
                 if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -52,8 +55,11 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
+                Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+                String itemId = uri.getQueryParameter(PARAM_ITEM_ID);
                 launchIntent = new Intent(Intent.ACTION_VIEW);
-                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
+                launchIntent.setData(uri);
+                launchIntent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
                 launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             }
             return launchIntent;

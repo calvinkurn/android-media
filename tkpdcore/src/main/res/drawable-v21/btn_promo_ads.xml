@@ -17,10 +17,10 @@
                 </shape>
             </item>
             <item
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp">
+                android:bottom="0dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp">
 
                 <shape
                     android:dither="true"
@@ -28,10 +28,10 @@
                     <solid android:color="@color/white" />
 
                     <padding
-                        android:bottom="8dp"
-                        android:left="8dp"
-                        android:right="8dp"
-                        android:top="8dp" />
+                        android:bottom="6dp"
+                        android:left="6dp"
+                        android:right="6dp"
+                        android:top="6dp" />
                     <!--<corners android:radius="2dp" />-->
                 </shape>
             </item>
