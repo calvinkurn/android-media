@@ -10,12 +10,19 @@ import {
   AsyncStorage,
   View
 } from 'react-native';
-import { NavigationModule, NetworkModule } from 'NativeModules';
-import { HotList_ } from './src/configs/router';
+// import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
 
+if((process.env.NODE_ENV || '').toLowerCase() === 'production'){
+  // disable console. log in production
+  console.log = function () {};
+  console.info = function () {};
+  console.warn = function () {};
+  console.error = function () {}
+  console.debug = function () {}
+}
 
-let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+// let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
   // componentWillMount() {
@@ -23,17 +30,7 @@ class Home extends Component {
   // }
   
   render(){
-    if (this.props.Screen == 'HotList'){
-      return <HotList_ />
-    } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore Screen={this.props.Screen}  /> 
-    } else {
-      return(
-        <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
-          <ActivityIndicator size="large" />
-        </View>
-      )
-    }
+    return <OfficialStore Screen={this.props.Screen}  />
   }
 }
 const styles = StyleSheet.create({
@@ -48,7 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
+// Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 

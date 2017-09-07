@@ -35,11 +35,9 @@ class App extends Component {
 
   componentWillMount(){
     const { dispatch } = this.props
-    NavigationModule.getCurrentUserId().then(uuid => dispatch(reloadState()))
+    dispatch(reloadState())
 
-    NetInfo.fetch().then((reach) => {
-      this.setState({ statusConnection: reach })
-    })
+    NetInfo.fetch().then((reach) => this.setState({ statusConnection: reach }) )
     NetInfo.addEventListener('change', (res) => {
       this.setState({ statusConnection: res }) 
     });
@@ -83,6 +81,14 @@ class App extends Component {
 
   render() {
     const statusConnection = this.state.statusConnection
+    if (statusConnection === ''){
+      return (
+        <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+          <ActivityIndicator size="large" />
+        </View>
+      )
+    } 
+    
     if (statusConnection === 'MOBILE' || statusConnection === 'WIFI'){
       return (
         <View>
@@ -96,9 +102,9 @@ class App extends Component {
                 colors={['#42b549']} />
             }>
             <OfficialStoreIntro />
-            <BannerContainer screenProps={this.props.screenProps} />
-            <CampaignContainer screenProps={this.props.screenProps} />
-            <BrandContainer screenProps={this.props.screenProps} />
+            {/* <BannerContainer /> */}
+            <CampaignContainer />
+            <BrandContainer />
             <Infographic /> 
             <Seo /> 
           </ScrollView>
@@ -109,13 +115,7 @@ class App extends Component {
       )
     } else if (statusConnection === 'NONE') {
       return <NotConnect />
-    } else {
-      return (
-        <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-          <ActivityIndicator size="large" />
-        </View>
-      )
-    }
+    } 
   }
 }
 
