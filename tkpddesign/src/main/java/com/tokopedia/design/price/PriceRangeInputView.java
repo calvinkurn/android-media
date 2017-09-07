@@ -319,6 +319,10 @@ public class PriceRangeInputView extends BaseCustomView {
 
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
+            if (hasFocus) {
+                return;
+            }
+
             Editable editable = ((EditText) view).getText();
             int inputValue = 0;
             if (!TextUtils.isEmpty(editable.toString())) {
