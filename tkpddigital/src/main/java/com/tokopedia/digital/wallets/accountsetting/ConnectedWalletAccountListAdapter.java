@@ -1,6 +1,7 @@
 package com.tokopedia.digital.wallets.accountsetting;
 
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.base.BaseItemHolderItemData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,41 +25,67 @@ import butterknife.ButterKnife;
 
 public class ConnectedWalletAccountListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_HOLDER_CONNECTED_ACCOUNT_ITEM =
-            R.layout.view_holder_wallet_connected_account_item;
+            R.layout.view_holder_wallet_connected_account_item_digital_module;
     public static final int TYPE_HOLDER_TITLE =
-            R.layout.view_holder_wallet_connected_account_list_title;
+            R.layout.view_holder_wallet_connected_account_list_title_digital_module;
 
-    private List<Object> dataList = new ArrayList<>();
+    private List<BaseItemHolderItemData> dataList;
     private final Fragment hostFragment;
     private final ActionListener actionListener;
+    private final LayoutInflater layoutInflater;
 
     public ConnectedWalletAccountListAdapter(Fragment hostFragment,
                                              ActionListener actionListener) {
         this.hostFragment = hostFragment;
         this.actionListener = actionListener;
+        this.dataList = new ArrayList<>();
+        this.layoutInflater = LayoutInflater.from(hostFragment.getActivity());
     }
 
-    public void addAllDataList(String title,
-                               List<WalletAccountSettingConnectedUserData> connectedUserDataList) {
-        dataList.clear();
-        dataList.add(title);
-        dataList.addAll(connectedUserDataList);
-        notifyDataSetChanged();
+    public void addAllDataList(@NonNull final String title,
+                               @NonNull List<WalletAccountSettingConnectedUserData> connectedUserDataList) {
+        for (int i = 0, connectedUserDataListSize = connectedUserDataList.size(); i < connectedUserDataListSize; i++) {
+            final WalletAccountSettingConnectedUserData data = connectedUserDataList.get(i);
+            dataList.add(new BaseItemHolderItemData<WalletAccountSettingConnectedUserData>() {
+                @Override
+                public int getHolderLayoutId() {
+                    return TYPE_HOLDER_CONNECTED_ACCOUNT_ITEM;
+                }
+
+                @Override
+                public WalletAccountSettingConnectedUserData getItemData() {
+                    return data;
+                }
+            });
+            notifyItemInserted(i);
+        }
+
+        dataList.add(0, new BaseItemHolderItemData<String>() {
+            @Override
+            public int getHolderLayoutId() {
+                return TYPE_HOLDER_TITLE;
+            }
+
+            @Override
+            public String getItemData() {
+                return title;
+            }
+        });
+        notifyItemInserted(0);
     }
 
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HOLDER_CONNECTED_ACCOUNT_ITEM) {
-            return new ConnectedUserViewHolder(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false
-            ));
+            return new ConnectedUserViewHolder(
+                    layoutInflater.inflate(TYPE_HOLDER_CONNECTED_ACCOUNT_ITEM, parent, false)
+            );
         } else if (viewType == TYPE_HOLDER_TITLE) {
-            return new TitleViewHolder(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false
-            ));
+            return new TitleViewHolder(layoutInflater.inflate(TYPE_HOLDER_TITLE, parent, false));
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -66,9 +94,10 @@ public class ConnectedWalletAccountListAdapter extends RecyclerView.Adapter<Recy
         if (type == TYPE_HOLDER_CONNECTED_ACCOUNT_ITEM) {
             ConnectedUserViewHolder itemHolder = (ConnectedUserViewHolder) holder;
             final WalletAccountSettingConnectedUserData data
-                    = (WalletAccountSettingConnectedUserData) dataList.get(position);
+                    = (WalletAccountSettingConnectedUserData) dataList.get(position).getItemData();
             itemHolder.tvEmail.setText(data.getEmail());
             itemHolder.tvRegisteredDate.setText(data.getRegisteredDate());
+            itemHolder.btnDelete.setText(data.getLabelButtonAction());
             itemHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,7 +106,7 @@ public class ConnectedWalletAccountListAdapter extends RecyclerView.Adapter<Recy
             });
         } else if (type == TYPE_HOLDER_TITLE) {
             TitleViewHolder titleHolder = (TitleViewHolder) holder;
-            final String titleStr = (String) dataList.get(position);
+            final String titleStr = (String) dataList.get(position).getItemData();
             titleHolder.tvTitle.setText(titleStr);
         }
     }
@@ -89,13 +118,7 @@ public class ConnectedWalletAccountListAdapter extends RecyclerView.Adapter<Recy
 
     @Override
     public int getItemViewType(int position) {
-        Object data = dataList.get(position);
-        if (data instanceof WalletAccountSettingConnectedUserData) {
-            return TYPE_HOLDER_CONNECTED_ACCOUNT_ITEM;
-        } else if (data instanceof String) {
-            return TYPE_HOLDER_TITLE;
-        }
-        return super.getItemViewType(position);
+        return dataList.get(position).getHolderLayoutId();
     }
 
     public void clearAllDataList() {

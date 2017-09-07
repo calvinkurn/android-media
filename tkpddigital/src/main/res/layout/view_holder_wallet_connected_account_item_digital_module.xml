@@ -19,11 +19,11 @@
             android:id="@+id/iv_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            tools:src="@drawable/ic_tokocash_benefit"/>
+            tools:src="@drawable/ic_toped_step_01"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="@dimen/digital_padding_10">
 
@@ -53,7 +53,7 @@
         android:padding="@dimen/digital_padding_10"
         android:textColor="@color/digital_item_sub_title"
         android:textSize="12sp"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:text="Hapus Akses"
         tools:visibility="visible"/>
 

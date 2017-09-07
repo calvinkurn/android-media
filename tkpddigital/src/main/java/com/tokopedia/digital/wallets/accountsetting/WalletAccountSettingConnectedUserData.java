@@ -11,6 +11,7 @@ public class WalletAccountSettingConnectedUserData implements Parcelable {
 
     private String email;
     private String userName;
+    private String labelButtonAction;
     private String registeredDate;
     private String iconUrl;
     private int resIconId;
@@ -18,6 +19,7 @@ public class WalletAccountSettingConnectedUserData implements Parcelable {
     private WalletAccountSettingConnectedUserData(Builder builder) {
         setEmail(builder.email);
         setUserName(builder.userName);
+        setLabelButtonAction(builder.labelButtonAction);
         setRegisteredDate(builder.registeredDate);
         setIconUrl(builder.iconUrl);
         setResIconId(builder.resIconId);
@@ -63,6 +65,13 @@ public class WalletAccountSettingConnectedUserData implements Parcelable {
         this.resIconId = resIconId;
     }
 
+    public String getLabelButtonAction() {
+        return labelButtonAction;
+    }
+
+    public void setLabelButtonAction(String labelButtonAction) {
+        this.labelButtonAction = labelButtonAction;
+    }
 
     @Override
     public int describeContents() {
@@ -106,6 +115,7 @@ public class WalletAccountSettingConnectedUserData implements Parcelable {
     public static final class Builder {
         private String email;
         private String userName;
+        private String labelButtonAction;
         private String registeredDate;
         private String iconUrl;
         private int resIconId;
@@ -120,6 +130,11 @@ public class WalletAccountSettingConnectedUserData implements Parcelable {
 
         public Builder userName(String val) {
             userName = val;
+            return this;
+        }
+
+        public Builder labelButtonAction(String val) {
+            labelButtonAction = val;
             return this;
         }
 
@@ -142,4 +157,6 @@ public class WalletAccountSettingConnectedUserData implements Parcelable {
             return new WalletAccountSettingConnectedUserData(this);
         }
     }
+
+
 }

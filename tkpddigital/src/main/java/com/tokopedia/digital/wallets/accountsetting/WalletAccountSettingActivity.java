@@ -16,6 +16,7 @@ import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 public class WalletAccountSettingActivity extends BaseDigitalPresenterActivity {
     private static final String EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA =
             "EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA";
+    public static final int REQUEST_CODE = WalletAccountSettingActivity.class.hashCode();
     private WalletAccountSettingPassData walletAccountSettingPassData;
 
     public static Intent newInstance(Context context, WalletAccountSettingPassData passData) {

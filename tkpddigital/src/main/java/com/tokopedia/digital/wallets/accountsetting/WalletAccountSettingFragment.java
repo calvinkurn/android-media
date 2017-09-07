@@ -32,7 +32,8 @@ import butterknife.BindView;
  */
 
 public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletAccountSettingPresenter>
-        implements IWalletAccountSettingView, RefreshHandler.OnRefreshHandlerListener, ConnectedWalletAccountListAdapter.ActionListener {
+        implements IWalletAccountSettingView, RefreshHandler.OnRefreshHandlerListener,
+        ConnectedWalletAccountListAdapter.ActionListener {
 
     public static final String ARG_EXTRA_WALLET_ACCOUNT_SETTING_DATA =
             "ARG_EXTRA_WALLET_ACCOUNT_SETTING_DATA";

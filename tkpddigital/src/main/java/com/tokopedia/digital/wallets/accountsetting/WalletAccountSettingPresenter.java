@@ -54,6 +54,7 @@ public class WalletAccountSettingPresenter implements IWalletAccountSettingPrese
         dummyData.setPhoneNumber("08966666666");
         dummyData.setSubTitle("Anda dapat mengelola TokoCash dengan akun Tokopedia melalui halaman ini.");
         dummyData.setName("Angga Keren");
+        dummyData.setTitleListConnectedUser("Aplikasi yang Terhubung ke TokoCash");
         dummyData.setConnectedUserDataList(dummyList);
 
         view.renderWalletAccountSettingData(dummyData);
