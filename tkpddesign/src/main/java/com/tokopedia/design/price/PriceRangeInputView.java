@@ -221,7 +221,7 @@ public class PriceRangeInputView extends BaseCustomView {
                 maxButton.setBackgroundResource(R.drawable.price_input_seekbar_button_neutral);
                 break;
             case MotionEvent.ACTION_MOVE:
-                float targetX = normalizeButtonPositionOnScreen(event.getRawX() - seekbarButtonSize);
+                float targetX = event.getRawX() - seekbarButtonSize;
                 if (isMinButtonDragging) {
                     float position = normalizeMinButtonPosition(targetX);
                     minButton.setX(position);
@@ -244,29 +244,23 @@ public class PriceRangeInputView extends BaseCustomView {
         return true;
     }
 
-    private float normalizeButtonPositionOnScreen(float x) {
+    private float normalizeMinButtonPosition(float x) {
         if (x < 0) {
             return 0;
-        } else if (x > seekbarRange + seekbarLeftOffset) {
-            return seekbarRange + seekbarLeftOffset;
-        } else {
-            return x;
-        }
-    }
-
-    private float normalizeMinButtonPosition(float x) {
-        if (x < maxButton.getX() - seekbarButtonSize) {
-            return x;
-        } else {
+        } else if (x > maxButton.getX() - seekbarButtonSize) {
             return maxButton.getX() - seekbarButtonSize;
+        } else {
+            return x;
         }
     }
 
     private float normalizeMaxButtonPosition(float x) {
-        if (x > minButton.getX() + seekbarButtonSize) {
-            return x;
-        } else {
+        if (x > seekbarRange + seekbarLeftOffset + seekbarButtonSize) {
+            return seekbarRange + seekbarLeftOffset + seekbarButtonSize;
+        } else if (x < minButton.getX() + seekbarButtonSize) {
             return minButton.getX() + seekbarButtonSize;
+        } else {
+            return x;
         }
     }
 

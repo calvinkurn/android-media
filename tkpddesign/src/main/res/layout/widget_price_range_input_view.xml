@@ -54,6 +54,7 @@
             android:paddingRight="0dp"
             android:inputType="number"
             android:digits="0123456789"
+            android:maxLength="@integer/max_length_price_input"
             android:nextFocusDown="@+id/max_value"
             />
 
@@ -77,6 +78,7 @@
             android:paddingRight="0dp"
             android:inputType="number"
             android:digits="0123456789"
+            android:maxLength="@integer/max_length_price_input"
             />
 
     </LinearLayout>
