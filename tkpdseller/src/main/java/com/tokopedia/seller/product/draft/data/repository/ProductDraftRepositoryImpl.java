@@ -33,7 +33,8 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     @Override
     public Observable<Long> saveDraft(UploadProductInputDomainModel domainModel, boolean isUploading) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
-        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading);
+        String userId = SessionHandler.getLoginID(context);
+        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading, userId);
     }
 
     @Override
@@ -44,7 +45,8 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<List<UploadProductInputDomainModel>> getAllDraft() {
-        return productDraftDataSource.getAllDraft()
+        String userId = SessionHandler.getLoginID(context);
+        return productDraftDataSource.getAllDraft(userId)
                 .flatMap(new Func1<List<ProductDraftDataBase>, Observable<ProductDraftDataBase>>() {
                     @Override
                     public Observable<ProductDraftDataBase> call(List<ProductDraftDataBase> productDraftDataBases) {
@@ -68,12 +70,14 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<Long> getAllDraftCount() {
-        return productDraftDataSource.getAllDraftCount();
+        String userId = SessionHandler.getLoginID(context);
+        return productDraftDataSource.getAllDraftCount(userId);
     }
 
     @Override
     public Observable<Boolean> clearAllDraft() {
-        return productDraftDataSource.clearAllDraft();
+        String userId = SessionHandler.getLoginID(context);
+        return productDraftDataSource.clearAllDraft(userId);
     }
 
     @Override

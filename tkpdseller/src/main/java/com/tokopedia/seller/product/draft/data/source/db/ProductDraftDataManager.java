@@ -24,11 +24,12 @@ public class ProductDraftDataManager {
     public ProductDraftDataManager() {
     }
 
-    public Observable<Long> saveDraft(String json, long draftId, boolean isUploading){
+    public Observable<Long> saveDraft(String json, long draftId, boolean isUploading, String userId){
         ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();
         productDraftDataBase.setData(json);
         productDraftDataBase.setId(draftId);
         productDraftDataBase.setUploading(isUploading);
+        productDraftDataBase.setUserId(userId);
         productDraftDataBase.save();
         return Observable.just(productDraftDataBase.getId());
     }
@@ -45,22 +46,25 @@ public class ProductDraftDataManager {
         return Observable.just(productDraftDatabase.getData());
     }
 
-    public Observable<List<ProductDraftDataBase>> getAllDraft() {
+    public Observable<List<ProductDraftDataBase>> getAllDraft(String userId) {
         return Observable.just( new Select()
                 .from(ProductDraftDataBase.class)
                 .where(ProductDraftDataBase_Table.is_uploading.is(false))
+                .and(ProductDraftDataBase_Table.user_id.is(userId))
                 .queryList());
     }
 
-    public Observable<Long> getAllDraftCount() {
+    public Observable<Long> getAllDraftCount(String userId) {
         return Observable.just( new Select(Method.count())
                 .from(ProductDraftDataBase.class)
                 .where(ProductDraftDataBase_Table.is_uploading.is(false))
+                .and(ProductDraftDataBase_Table.user_id.is(userId))
                 .count());
     }
 
-    public Observable<Boolean> clearAllDraft(){
-        new Delete().from(ProductDraftDataBase.class).execute();
+    public Observable<Boolean> clearAllDraft(String userId){
+        new Delete().from(ProductDraftDataBase.class)
+                .where(ProductDraftDataBase_Table.user_id.is(userId)).execute();
         return Observable.just(true);
     }
 
