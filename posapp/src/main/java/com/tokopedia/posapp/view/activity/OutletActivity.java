@@ -4,21 +4,46 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.drawer2.di.DrawerInjector;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.fragment.OutletFragment;
 
 /**
  * @author okasurya on 7/31/17
  */
-public class OutletActivity extends BasePresenterActivity implements HasComponent {
+public class OutletActivity extends DrawerPresenterActivity implements HasComponent {
+
+    LocalCacheHandler drawerCache;
+    DrawerHelper drawerHelper;
+    Toolbar toolbar;
+
+    @Override
+    protected int setDrawerPosition() {
+        return 0;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        toolbar = (Toolbar) findViewById(R.id.pos_home_toolbar);
+        toolbar.setNavigationIcon(null);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
+        drawerHelper.initDrawer(this);
+        drawerHelper.setEnabled(true);
+        drawerHelper.setSelectedPosition(0);
     }
 
     @Override

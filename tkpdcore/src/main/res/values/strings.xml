@@ -2016,6 +2016,8 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_shipping_status">Status Pengiriman</string>
     <string name="drawer_title_activity_contact_us">Hubungi Kami</string>
     <string name="drawer_title_help">Bantuan</string>
+    <string name="drawer_title_pos_riwayat_tx">Riwayat Transaksi</string>
+    <string name="drawer_title_pos_choose_outlet">Pilih Outlet</string>
     <string name="max_notif">999+</string>
     <string name="register_text_login">Belum punya akun? Daftar</string>
     <string name="or">Atau</string>
