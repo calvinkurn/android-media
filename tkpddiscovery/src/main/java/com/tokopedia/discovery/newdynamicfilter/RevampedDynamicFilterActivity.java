@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.FilterMapAtribut;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
@@ -59,6 +60,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     TextView buttonApply;
     TextView buttonReset;
     View buttonClose;
+    View mainLayout;
 
     HashMap<String, Boolean> savedCheckedState = new HashMap<>();
     HashMap<String, String> savedTextInput = new HashMap<>();
@@ -85,6 +87,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_revamped_dynamic_filter);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         bindView();
+        initKeyboardVisibilityListener();
         initRecyclerView();
         loadLastFilterState(savedInstanceState);
         loadFilterItems();
@@ -111,6 +114,21 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
             @Override
             public void onClick(View v) {
                 applyFilter();
+            }
+        });
+        mainLayout = findViewById(R.id.main_layout);
+    }
+
+    private void initKeyboardVisibilityListener() {
+        KeyboardHelper.setKeyboardVisibilityChangedListener(mainLayout, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
+            @Override
+            public void onKeyboardShown() {
+                buttonApply.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyboardHide() {
+                buttonApply.setVisibility(View.VISIBLE);
             }
         });
     }
