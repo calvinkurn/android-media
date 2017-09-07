@@ -68,7 +68,7 @@ public class DetailTransactionActivity extends BaseDigitalPresenterActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        itemHistory = extras.getParcelable("ITEM_HISTORY");
+        itemHistory = extras.getParcelable(ITEM_HISTORY_KEY);
     }
 
     @Override
