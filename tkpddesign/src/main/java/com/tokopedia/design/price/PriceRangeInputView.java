@@ -11,12 +11,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.item.DeletableItemView;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -28,7 +26,7 @@ import java.util.Locale;
 public class PriceRangeInputView extends BaseCustomView {
 
     private static final int VALUE_STOP_COUNT = 100;
-    private static final int POWER = 2;
+    private static final double DEFAULT_POWER = 2;
 
     private View rootView;
     private TextView minLabel;
@@ -52,6 +50,7 @@ public class PriceRangeInputView extends BaseCustomView {
     private float seekbarLeftOffset = 0;
     private int valueList[] = new int[VALUE_STOP_COUNT];
     private double baseRange = 0;
+    private double power = 0;
 
     private boolean isMinButtonDragging = false;
     private boolean isMaxButtonDragging = false;
@@ -104,6 +103,12 @@ public class PriceRangeInputView extends BaseCustomView {
     public void setData(String minText, String maxText,
                         int minBound, int maxBound,
                         int minValue, int maxValue) {
+        setData(minText, maxText, minBound, maxBound, minValue, maxValue, 0);
+    }
+
+    public void setData(String minText, String maxText,
+                        int minBound, int maxBound,
+                        int minValue, int maxValue, double power) {
         minLabel.setText(minText);
         maxLabel.setText(maxText);
 
@@ -111,6 +116,13 @@ public class PriceRangeInputView extends BaseCustomView {
         this.maxBound = maxBound;
         this.minValue = minValue;
         this.maxValue = maxValue;
+
+        if (power > 0) {
+            this.power = power;
+        } else {
+            this.power = DEFAULT_POWER;
+        }
+
         updateValueCalculation();
         refreshButtonPosition();
         refreshInputText();
@@ -118,7 +130,7 @@ public class PriceRangeInputView extends BaseCustomView {
 
     private void updateValueCalculation() {
         valueRange = maxBound - minBound;
-        baseRange = Math.pow(valueRange, 1 / POWER);
+        baseRange = Math.pow(valueRange, 1 / power);
 
         valueList[0] = minBound;
         valueList[VALUE_STOP_COUNT - 1] = maxBound;
@@ -127,7 +139,7 @@ public class PriceRangeInputView extends BaseCustomView {
 
             double base = (double) i / (VALUE_STOP_COUNT - 1) * baseRange;
 
-            valueList[i] = minBound + (int) Math.pow(base, POWER);
+            valueList[i] = minBound + (int) Math.pow(base, power);
 
             int delta = valueList[i] - valueList[i - 1];
             if (delta > 0) {
@@ -167,7 +179,7 @@ public class PriceRangeInputView extends BaseCustomView {
     }
 
     private int getPositionFromValue(int value) {
-        double base = Math.pow(value - minBound, 1 / POWER);
+        double base = Math.pow(value - minBound, 1 / power);
         double result = base / baseRange * seekbarRange;
         return (int) (result + seekbarLeftOffset);
     }
