@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/product_variant_status"
-        style="@style/LabelLayout2"/>
+        style="@style/LabelLayout"/>
 
     <View
         android:layout_width="match_parent"

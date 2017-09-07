@@ -94,5 +94,4 @@
         <attr name="tckv_indicator_on_color" format="color" />
         <attr name="tckv_indicator_off_color" format="color" />
     </declare-styleable>
-
 </resources>

@@ -14,7 +14,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.widget.DateLabelView;
+import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Summary;

@@ -1,8 +1,7 @@
-package com.tokopedia.seller.common.widget;
+package com.tokopedia.design.label;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -10,9 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
+import com.tokopedia.design.utils.DateLabelUtils;
 
 import java.util.Date;
 
@@ -24,7 +23,6 @@ public class DateLabelView extends BaseCustomView {
 
     private TextView dateTextView;
     private TextView comparedDateTextView;
-    private String content;
     private ImageView ivArrow;
     private ColorStateList defaultTextColor;
     private ColorStateList defaultCompareTextColor;
@@ -47,12 +45,6 @@ public class DateLabelView extends BaseCustomView {
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DatePickerLabelView);
-        try {
-            content = styledAttributes.getString(R.styleable.DatePickerLabelView_date_picker_content);
-        } finally {
-            styledAttributes.recycle();
-        }
     }
 
     private void init() {
@@ -68,7 +60,6 @@ public class DateLabelView extends BaseCustomView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        dateTextView.setText(content);
         invalidate();
         requestLayout();
     }
@@ -78,13 +69,13 @@ public class DateLabelView extends BaseCustomView {
     }
 
     public void setDate(long startDate, long endDate) {
-        dateTextView.setText(DatePickerUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
+        dateTextView.setText(DateLabelUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
         invalidate();
         requestLayout();
     }
 
     public void setComparedDate(long startDate, long endDate) {
-        comparedDateTextView.setText(DatePickerUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
+        comparedDateTextView.setText(DateLabelUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
         invalidate();
         requestLayout();
     }

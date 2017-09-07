@@ -34,7 +34,6 @@
     <string name="menu_top_ads_add_promo_group">Tambah Grup Promo</string>
     <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
 
-    <string name="top_ads_range_date_text">%1$s - %2$s</string>
     <string name="top_ads_delete_product_alert">Yakin menghapus produk ini?</string>
     <string name="top_ads_delete_group_alert">Yakin menghapus grup ini?</string>
 
