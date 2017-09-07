@@ -24,6 +24,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -251,23 +252,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                     .setData(uri.build())
                     .putExtras(extras);
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                Intent intentActionView = new Intent(Intent.ACTION_VIEW);
-                intentActionView.setData(Uri.parse(extras.getString(DeepLink.URI)));
-                intentActionView.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-                PackageManager manager = context.getPackageManager();
-                List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
-                if (infos.size() > 0) {
-                    launchIntent = intentActionView;
-                }
-            }
-            return launchIntent;
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
         }
     }
 

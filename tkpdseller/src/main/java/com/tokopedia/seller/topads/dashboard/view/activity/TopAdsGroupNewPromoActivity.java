@@ -7,11 +7,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -49,23 +51,7 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                         .putExtras(extras);
             }
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                Intent intentActionView = new Intent(Intent.ACTION_VIEW);
-                intentActionView.setData(Uri.parse(extras.getString(DeepLink.URI)));
-                intentActionView.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-                PackageManager manager = context.getPackageManager();
-                List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
-                if (infos.size() > 0) {
-                    launchIntent = intentActionView;
-                }
-            }
-            return launchIntent;
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
         }
     }
 

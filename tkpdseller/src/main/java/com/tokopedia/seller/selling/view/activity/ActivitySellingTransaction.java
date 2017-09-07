@@ -34,6 +34,7 @@ import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
@@ -120,23 +121,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .setData(uri.build())
                     .putExtras(extras);
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                Intent intentActionView = new Intent(Intent.ACTION_VIEW);
-                intentActionView.setData(Uri.parse(extras.getString(DeepLink.URI)));
-                intentActionView.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-                PackageManager manager = context.getPackageManager();
-                List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
-                if (infos.size() > 0) {
-                    launchIntent = intentActionView;
-                }
-            }
-            return launchIntent;
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
         }
     }
 
