@@ -67,6 +67,9 @@
             android:name=".wallets.WalletToDepositActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".wallets.WalletToDepositThanksActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".wallets.accountsetting.WalletAccountSettingActivity"
             android:screenOrientation="portrait"/>
 
