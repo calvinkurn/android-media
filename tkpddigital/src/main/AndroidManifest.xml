@@ -40,17 +40,37 @@
             android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".wallets.wallettodeposit.WalletToDepositActivity"
+            android:name=".wallets.WalletToDepositActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".wallets.wallettodeposit.WalletToDepositThanksActivity"
+            android:name=".wallets.WalletToDepositThanksActivity"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".tokocash.activity.TopUpTokoCashActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".tokocash.activity.HistoryTokocashActivity"
-            android:screenOrientation="portrait"/>
+
+        <activity android:name=".tokocash.activity.TopUpTokoCashActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".tokocash.activity.HistoryTokocashActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".tokocash.activity.DetailTransactionActivity"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".product.service.USSDAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/config_accessibility_service" />
+        </service>
+        <activity android:name=".product.activity.DigitalUssdActivity"></activity>
+
+        <activity android:name=".tokocash.activity.ActivateTokoCashActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".wallets.accountsetting.WalletAccountSettingActivity"
             android:screenOrientation="portrait"/>

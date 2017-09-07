@@ -52,14 +52,15 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                         Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
                 );
             } else {
-                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                launchIntent = new Intent(Intent.ACTION_VIEW);
+                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
                 launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             }
             return launchIntent;
         }
     }
 
-    public static Intent getCallingIntent(Context context){
+    public static Intent getCallingIntent(Context context) {
         return new Intent(context, TopAdsGroupNewPromoActivity.class);
     }
 
@@ -76,7 +77,7 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                 .commit();
     }
 
-    private void initFromIntent (){
+    private void initFromIntent() {
         Intent intent = getIntent();
         if (intent != null) {
             itemId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
@@ -109,9 +110,14 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
     public void onBackPressed() {
         if (isTaskRoot()) {
             //coming from deeplink
-            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
-            this.startActivity(intent);
-            this.finish();
+            String deepLink = getIntent().getStringExtra(DeepLink.URI);
+            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                this.startActivity(intent);
+                this.finish();
+            }
         } else {
             super.onBackPressed();
         }

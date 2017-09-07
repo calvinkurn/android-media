@@ -24,6 +24,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 public class TokoCashHeaderView extends RelativeLayout {
 
     private static final String TOKO_CASH_URL = "url";
+    private TextView headerTokoCashLabel;
     private TextView tokoCashAmount;
     private TextView tokoCashButton;
     private ActionListener actionListener;
@@ -53,10 +54,13 @@ public class TokoCashHeaderView extends RelativeLayout {
         initView(context);
     }
 
-    public void renderData(final DrawerTokoCash tokoCashData) {
+    public void renderData(final DrawerTokoCash tokoCashData,
+                           boolean showTopUpButton,
+                           String tokoCashLabel) {
         String tokoCashRedirectUrl = tokoCashData.getRedirectUrl();
         final String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData
                 .getDrawerTokoCashAction());
+        headerTokoCashLabel.setText(tokoCashLabel);
         if (tokoCashData.getLink() == 1) {
             setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashRedirectUrl));
             tokoCashAmount.setText(tokoCashData.getBalance());
@@ -65,6 +69,8 @@ public class TokoCashHeaderView extends RelativeLayout {
             tokoCashButton.setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashActionRedirectUrl));
             pendingLayout.setVisibility(GONE);
             normalLayout.setVisibility(VISIBLE);
+            if(showTopUpButton) tokoCashButton.setVisibility(VISIBLE);
+            else tokoCashButton.setVisibility(GONE);
         } else {
             actionListener.onRequestPendingCashBack();
             tokoCashButton.setOnClickListener(onActivationClickedListener());
@@ -128,6 +134,7 @@ public class TokoCashHeaderView extends RelativeLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.toko_cash_header_view_home, this, true);
 
+        headerTokoCashLabel = (TextView) findViewById(R.id.header_toko_cash_label);
         pendingLayout = (LinearLayout) findViewById(R.id.pending_cash_back_layout);
         normalLayout = (LinearLayout) findViewById(R.id.toko_cash_normal_layout);
         tokoCashAmount = (TextView) findViewById(R.id.header_toko_cash_amount);

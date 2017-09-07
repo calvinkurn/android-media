@@ -1,12 +1,15 @@
 package com.tokopedia.digital.tokocash.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by nabillasabbaha on 8/23/17.
  */
 
-public class ItemHistory {
+public class ItemHistory implements Parcelable {
 
     private long transactionId;
 
@@ -15,6 +18,8 @@ public class ItemHistory {
     private String transactionType;
 
     private String title;
+
+    private String urlImage;
 
     private String description;
 
@@ -28,7 +33,41 @@ public class ItemHistory {
 
     private long amount;
 
+    private String notes;
+
     private List<ActionHistory> actionHistoryList;
+
+    public ItemHistory() {
+    }
+
+
+    protected ItemHistory(Parcel in) {
+        transactionId = in.readLong();
+        transactionDetailId = in.readLong();
+        transactionType = in.readString();
+        title = in.readString();
+        urlImage = in.readString();
+        description = in.readString();
+        transactionInfoId = in.readString();
+        transactionInfoDate = in.readString();
+        amountChanges = in.readString();
+        amountChangesSymbol = in.readString();
+        amount = in.readLong();
+        notes = in.readString();
+        actionHistoryList = in.createTypedArrayList(ActionHistory.CREATOR);
+    }
+
+    public static final Creator<ItemHistory> CREATOR = new Creator<ItemHistory>() {
+        @Override
+        public ItemHistory createFromParcel(Parcel in) {
+            return new ItemHistory(in);
+        }
+
+        @Override
+        public ItemHistory[] newArray(int size) {
+            return new ItemHistory[size];
+        }
+    };
 
     public long getTransactionId() {
         return transactionId;
@@ -116,5 +155,43 @@ public class ItemHistory {
 
     public void setActionHistoryList(List<ActionHistory> actionHistoryList) {
         this.actionHistoryList = actionHistoryList;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(transactionId);
+        parcel.writeLong(transactionDetailId);
+        parcel.writeString(transactionType);
+        parcel.writeString(title);
+        parcel.writeString(urlImage);
+        parcel.writeString(description);
+        parcel.writeString(transactionInfoId);
+        parcel.writeString(transactionInfoDate);
+        parcel.writeString(amountChanges);
+        parcel.writeString(amountChangesSymbol);
+        parcel.writeLong(amount);
+        parcel.writeString(notes);
+        parcel.writeTypedList(actionHistoryList);
     }
 }

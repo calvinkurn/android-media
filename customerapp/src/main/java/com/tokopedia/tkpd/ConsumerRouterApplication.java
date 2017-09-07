@@ -55,6 +55,8 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
+import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -494,6 +496,14 @@ public class ConsumerRouterApplication extends MainApplication implements
         activity.startActivity(intent);
     }
 
+    @Override
+    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels,
+                                 long startDate, long endDate,
+                                 int datePickerSelection, int datePickerType) {
+        return DatePickerUtil.getDatePickerIntent(activity, startDate, endDate, convert(periodRangeModels),
+                datePickerSelection, datePickerType);
+    }
+
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
         List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
         for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
@@ -506,4 +516,20 @@ public class ConsumerRouterApplication extends MainApplication implements
         return periodRangeModels;
     }
 
+    @Override
+    public String getRangeDateFormatted(Context context, long startDate, long endDate) {
+        return DatePickerUtils.getRangeDateFormatted(context, startDate, endDate);
+    }
+
+    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
+        List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
+        for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
+            periodRangeModels.add(new PeriodRangeModel(
+                    periodRangeModelCore.getStartDate(),
+                    periodRangeModelCore.getEndDate(),
+                    periodRangeModelCore.getLabel()
+            ));
+        }
+        return periodRangeModels;
+    }
 }

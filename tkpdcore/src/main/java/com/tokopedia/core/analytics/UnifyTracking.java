@@ -2149,6 +2149,15 @@ public class UnifyTracking extends TrackingUtils {
         eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
     }
 
+    public static void eventUssd(String action, String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE + AppEventTracking.Category.PULSA,
+                action,
+                eventLabel
+        ).getEvent());
+    }
+
     public static void eventClickPaymentAndTopupOnDrawer() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
@@ -2175,7 +2184,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.PRODUCT + category
         ).getEvent());
     }
-
 
     public static void eventTopAds(String category, String eventLabel){
         sendGTMEvent(new EventTracking(

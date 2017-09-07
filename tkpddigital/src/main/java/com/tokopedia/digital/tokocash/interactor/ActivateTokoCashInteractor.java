@@ -1,6 +1,6 @@
 package com.tokopedia.digital.tokocash.interactor;
 
-import com.tokopedia.digital.tokocash.domain.ActivateTokoCashRepository;
+import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
 import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
 
 import rx.Subscriber;
@@ -14,10 +14,10 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
 
-    private final ActivateTokoCashRepository repository;
+    private final TokoCashRepository repository;
     private final CompositeSubscription compositeSubscription;
 
-    public ActivateTokoCashInteractor(ActivateTokoCashRepository repository) {
+    public ActivateTokoCashInteractor(TokoCashRepository repository) {
         this.repository = repository;
         compositeSubscription = new CompositeSubscription();
     }

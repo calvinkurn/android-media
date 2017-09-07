@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -152,6 +153,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_small"/>
+
+                    <com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView
+                        android:id="@+id/view_most_helpful"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginBottom="@dimen/margin_small" />
+
+                    <com.tokopedia.tkpdpdp.customview.LatestTalkView
+                        android:id="@+id/view_latest_discussion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginBottom="@dimen/margin_small" />
 
                     <com.tokopedia.tkpdpdp.customview.OtherProductsView
                         android:id="@+id/view_other_products"

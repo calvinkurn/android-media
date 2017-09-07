@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.tokocash.fragment.ActivateTokoCashFragment;

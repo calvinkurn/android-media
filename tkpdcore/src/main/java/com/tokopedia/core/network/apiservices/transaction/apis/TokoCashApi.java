@@ -18,15 +18,23 @@ import rx.Observable;
 
 public interface TokoCashApi {
 
-    @GET(TkpdBaseURL.TopCash.PATH_WALLET)
+    @GET(TkpdBaseURL.TokoCash.PATH_WALLET)
     Observable<Response<TkpdResponse>> getTokoCash();
 
-    @GET(TkpdBaseURL.TopCash.PATH_CASH_BACK_DOMAIN)
+    @GET(TkpdBaseURL.TokoCash.PATH_CASH_BACK_DOMAIN)
     Observable<Response<TkpdDigitalResponse>> getTokoCashPending(@QueryMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.TopCash.PATH_REQUEST_OTP_WALLET)
+    @GET(TkpdBaseURL.TokoCash.PATH_REQUEST_OTP_WALLET)
     Observable<Response<TkpdResponse>> requestOtpWallet();
 
-    @GET(TkpdBaseURL.TopCash.PATH_LINK_WALLET_TO_TOKOCASH)
+    @GET(TkpdBaseURL.TokoCash.PATH_LINK_WALLET_TO_TOKOCASH)
     Observable<Response<TkpdResponse>> linkedWalletToTokocash(@Query("otp") String otp);
+
+    @GET(TkpdBaseURL.TokoCash.GET_HISTORY)
+    Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(
+            @Query("type") String type,
+            @Query("start_date") String startDate,
+            @Query("end_date") String endDate,
+            @Query("after_id") String afterId
+    );
 }

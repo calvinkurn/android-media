@@ -23,6 +23,11 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+}
+
 def getTkpdPayment() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
@@ -113,6 +118,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile getTkpdCore()
+    compile getTkpdDesign()
     compile getTkpdPayment()
     compile getTkpdDesign()
 

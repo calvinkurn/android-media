@@ -148,4 +148,8 @@ public class DigitalWebActivity extends BaseDigitalPresenterActivity
             finish();
         }
     }
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

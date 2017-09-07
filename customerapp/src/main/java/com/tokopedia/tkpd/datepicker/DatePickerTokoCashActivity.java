@@ -12,8 +12,8 @@ import com.tokopedia.tkpd.R;
 public class DatePickerTokoCashActivity extends DatePickerActivity {
 
     @Override
-    protected void setupLayout(Bundle savedInstanceStat) {
-        super.setupLayout(savedInstanceStat);
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
         tabLayout.removeAllTabs();
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.toko_cash_tab_choose_date_range)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.toko_cash_tab_choose_date)));

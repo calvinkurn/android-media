@@ -75,6 +75,8 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -321,6 +323,18 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
+    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels,
+                                 long startDate, long endDate, int datePickerSelection,
+                                 int datePickerType) {
+        return null;
+    }
+
+    @Override
+    public String getRangeDateFormatted(Context context, long startDate, long endDate) {
+        return null;
     }
 
     @Override
