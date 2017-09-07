@@ -21,6 +21,7 @@
         <attr name="content_max_lines" format="integer" />
         <attr name="switch_enable" format="boolean" />
         <attr name="label_show_arrow" format="boolean" />
+        <attr name="weighted" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="DatePickerLabelView">
