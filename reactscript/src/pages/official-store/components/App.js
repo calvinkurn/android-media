@@ -54,10 +54,10 @@ class App extends Component {
     const { dispatch } = this.props
 
     NavigationModule.getCurrentUserId().then(uuid => {
-      dispatch(refreshState())
+      dispatch(reloadState())
       dispatch(fetchBanners())
-      dispatch(fetchCampaigns(uid))
-      dispatch(fetchBrands(10, 0, uid, 'REFRESH'))
+      dispatch(fetchCampaigns(uuid))
+      dispatch(fetchBrands(10, 0, uuid))
     })
     
     setTimeout(() => {
@@ -102,7 +102,7 @@ class App extends Component {
                 colors={['#42b549']} />
             }>
             <OfficialStoreIntro />
-            {/* <BannerContainer /> */}
+            <BannerContainer />
             <CampaignContainer />
             <BrandContainer />
             <Infographic /> 

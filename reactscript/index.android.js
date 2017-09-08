@@ -13,24 +13,14 @@ import {
 // import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
 
-if((process.env.NODE_ENV || '').toLowerCase() === 'production'){
-  // disable console. log in production
-  console.log = function () {};
-  console.info = function () {};
-  console.warn = function () {};
-  console.error = function () {}
-  console.debug = function () {}
-}
 
-// let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
-  // componentWillMount() {
-  //   console.log(this.props)
-  // }
-  
   render(){
-    return <OfficialStore Screen={this.props.Screen}  />
+    if(this.props.Screen === 'official-store'){
+      return <OfficialStore />
+    }
   }
 }
 const styles = StyleSheet.create({
@@ -45,7 +35,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
+Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 
