@@ -24,7 +24,6 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
-import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.tkpd.R;
 
 /**
@@ -39,7 +38,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private String url;
 
     public static Intent newInstance(Context context, String url) {
-        return new Intent(context, DigitalWebActivity.class)
+        return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url);
     }
 
@@ -118,7 +117,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView))
             getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
-                    FragmentGeneralWebView.createInstance(url, true)).commit();
+                    FragmentGeneralWebView.createInstance(Uri.encode(url), true)).commit();
     }
 
     @Override

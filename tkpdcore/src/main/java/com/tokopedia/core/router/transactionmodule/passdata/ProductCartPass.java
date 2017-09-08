@@ -17,6 +17,7 @@ public class ProductCartPass implements Parcelable {
     private String weight;
     private String shopId;
     private String price;
+    private String notes;
 
     public ProductCartPass() {
     }
@@ -85,6 +86,14 @@ public class ProductCartPass implements Parcelable {
         this.price = price;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     protected ProductCartPass(Parcel in) {
         productId = in.readString();
         productName = in.readString();
@@ -94,7 +103,9 @@ public class ProductCartPass implements Parcelable {
         weight = in.readString();
         shopId = in.readString();
         price = in.readString();
+        notes = in.readString();
     }
+
 
     @Override
     public int describeContents() {
@@ -111,6 +122,7 @@ public class ProductCartPass implements Parcelable {
         dest.writeString(weight);
         dest.writeString(shopId);
         dest.writeString(price);
+        dest.writeString(notes);
     }
 
     @SuppressWarnings("unused")
@@ -137,6 +149,7 @@ public class ProductCartPass implements Parcelable {
         private String weight;
         private String shopId;
         private String price;
+        private String notes;
 
         private Builder() {
         }
@@ -185,6 +198,11 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
+        public Builder setNotes(String notes) {
+            this.notes = notes;
+            return this;
+        }
+
         public Builder but() {
             return aProductCartPass()
                     .setProductId(productId)
@@ -194,7 +212,9 @@ public class ProductCartPass implements Parcelable {
                     .setProductCategory(productCategory)
                     .setWeight(weight)
                     .setShopId(shopId)
-                    .setPrice(price);
+                    .setPrice(price)
+                    .setNotes(notes);
+
         }
 
         public ProductCartPass build() {
@@ -207,6 +227,7 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setWeight(weight);
             productCartPass.setShopId(shopId);
             productCartPass.setPrice(price);
+            productCartPass.setNotes(notes);
             return productCartPass;
         }
     }

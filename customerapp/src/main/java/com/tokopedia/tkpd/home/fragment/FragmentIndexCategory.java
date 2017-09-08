@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -32,9 +33,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -66,9 +69,11 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -85,6 +90,7 @@ import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.BannerPagerAdapter;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
@@ -744,13 +750,20 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SessionHandler.isV4Login(getContext())) {
+                /*if (SessionHandler.isV4Login(getContext())) {
                     UnifyTracking.eventViewAllOSLogin();
                 } else {
                     UnifyTracking.eventViewAllOSNonLogin();
                 }
 
-                openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+                openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);*/
+                getActivity().startActivity(
+                        ReactNativeOfficialStoresActivity.createReactNativeActivity(
+                                getActivity(), ReactConst.Screen.OFFICIAL_STORE,
+                                SessionHandler.getLoginID(getActivity()),
+                                getString(R.string.react_native_banner_official_title)
+                        )
+                );
             }
         };
     }
@@ -1137,9 +1150,23 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         delegate.dispatchFrom(getActivity(), intent);
     }
 
-    public void onReceivedTokoCashData(DrawerTokoCash tokoCashData) {
+    public void onReceivedTokoCashData(final DrawerTokoCash tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
-        holder.tokoCashHeaderView.renderData(tokoCashData);
+        final FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
+        config.setDefaults(R.xml.remote_config_default);
+        config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    config.activateFetched();
+                    holder.tokoCashHeaderView.renderData(tokoCashData, config
+                            .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
+                    FragmentIndexCategory.this.tokoCashData = tokoCashData;
+                }
+            }
+        });
+        holder.tokoCashHeaderView.renderData(tokoCashData, false, getActivity()
+                .getString(R.string.tokocash));
         this.tokoCashData = tokoCashData;
     }
 
