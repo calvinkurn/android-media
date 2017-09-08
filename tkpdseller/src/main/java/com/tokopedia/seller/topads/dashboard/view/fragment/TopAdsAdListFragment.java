@@ -24,7 +24,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.common.widget.DateLabelView;
+import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;

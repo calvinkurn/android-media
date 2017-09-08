@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/top_ads_dashboard_padding_cards"
-    android:paddingStart="@dimen/top_ads_dashboard_padding_cards">
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingRight="@dimen/margin_sm">
 
     <RadioButton
         android:id="@+id/radio_button"

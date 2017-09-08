@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.tokopedia.seller.common.widget.DateLabelView
+        <com.tokopedia.design.label.DateLabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.BorderBottom" />
 

@@ -68,6 +68,11 @@
         <attr name="tcv_title_height" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="TitleGroupView">
+        <attr name="tgv_title" format="string" />
+        <attr name="tgv_icon" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="LoadingStateView">
         <attr name="lsv_loading_layout" format="reference" />
         <attr name="lsv_empty_layout" format="reference" />

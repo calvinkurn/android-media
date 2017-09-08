@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:paddingBottom="@dimen/margin_med">
 
-        <com.tokopedia.seller.common.widget.DateLabelView
+        <com.tokopedia.design.label.DateLabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.BorderBottom" />
 

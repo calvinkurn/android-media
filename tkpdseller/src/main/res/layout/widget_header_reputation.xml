@@ -45,8 +45,8 @@
 
         <ImageView
             android:id="@+id/calendar_arrow_icon"
-            android:layout_width="@dimen/topads_arrow_left_width"
-            android:layout_height="@dimen/topads_arrow_left_height"
+            android:layout_width="@dimen/image_width_xxxs"
+            android:layout_height="@dimen/image_width_xxs"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

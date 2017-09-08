@@ -3,4 +3,5 @@
     <string name="product_default_counter_text">0</string>
     <string name="text_ticker_action_close">Tutup</string>
     <string name="search_input_hint">Cari</string>
+    <string name="top_ads_range_date_text">%1$s - %2$s</string>
 </resources>
