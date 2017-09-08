@@ -70,7 +70,12 @@ public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
         List<FeaturedProductModel> featuredProductModels = new ArrayList<>();
 
         for (FeaturedProductDomainModel.Datum datum : featuredProductDomainModel.getData()) {
-            FeaturedProductModel featuredProductModel = new FeaturedProductModel(datum.getProductId());
+            FeaturedProductModel featuredProductModel = new FeaturedProductModel();
+            featuredProductModel.setProductId(datum.getProductId());
+            featuredProductModel.setImageUrl(datum.getImageUri());
+            featuredProductModel.setProductName(datum.getName());
+            featuredProductModel.setProductPrice(datum.getPrice());
+
 
             featuredProductModels.add(featuredProductModel);
         }

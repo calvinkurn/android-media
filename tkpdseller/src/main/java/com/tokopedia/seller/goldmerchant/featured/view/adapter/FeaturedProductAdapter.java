@@ -11,24 +11,30 @@ import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedPro
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.viewholder.FeaturedProductViewHolder;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by normansyahputa on 9/6/17.
  */
 
-public class FeaturedProductAdapter extends BaseListAdapter<FeaturedProductModel> implements ItemTouchHelperAdapter {
+public class FeaturedProductAdapter extends BaseListAdapter<FeaturedProductModel> implements ItemTouchHelperAdapter, FeaturedProductViewHolder.PostDataListener {
 
     private final OnStartDragListener mDragStartListener;
+    private UseCaseListener useCaseListener;
 
     public FeaturedProductAdapter(OnStartDragListener dragStartListener) {
         mDragStartListener = dragStartListener;
+    }
+
+    public void setUseCaseListener(UseCaseListener useCaseListener) {
+        this.useCaseListener = useCaseListener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case FeaturedProductModel.TYPE:
-                return new FeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), mDragStartListener);
+                return new FeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), mDragStartListener, (FeaturedProductViewHolder.PostDataListener) this);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -55,5 +61,16 @@ public class FeaturedProductAdapter extends BaseListAdapter<FeaturedProductModel
     public void onItemDismiss(int position) {
         data.remove(position);
         notifyItemRemoved(position);
+    }
+
+    @Override
+    public void postData() {
+        if (useCaseListener != null) {
+            useCaseListener.postData(getData());
+        }
+    }
+
+    public interface UseCaseListener {
+        void postData(List<FeaturedProductModel> data);
     }
 }

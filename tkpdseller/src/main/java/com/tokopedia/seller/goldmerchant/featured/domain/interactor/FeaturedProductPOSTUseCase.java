@@ -41,7 +41,7 @@ public class FeaturedProductPOSTUseCase extends UseCase<FeaturedProductPOSTDomai
                 new PostFeaturedProductModel();
 
         ArrayList<PostFeaturedProductModel.ItemsFeatured> itemsFeatureds = new ArrayList<>();
-        for (int i = 1; i < featuredProductModels.size(); i++) {
+        for (int i = 1; i <= featuredProductModels.size(); i++) {
             FeaturedProductModel featuredProductModel = featuredProductModels.get(i - 1);
 
             PostFeaturedProductModel.ItemsFeatured itemsFeatured
