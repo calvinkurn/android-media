@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="ticker_height">100dp</dimen>
+
     <!-- Card Header -->
     <dimen name="card_container_margin">7.5dp</dimen>
     <dimen name="card_header_container">32.5dp</dimen>

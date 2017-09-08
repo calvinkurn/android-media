@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.sellerapp.R;
 
@@ -19,6 +20,8 @@ public class DashboardFragment extends BaseDaggerFragment {
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
     }
+
+    private TickerView tickerView;
 
     private LabelView newOrderLabelView;
     private LabelView deliveryConfirmationLabelView;
@@ -38,6 +41,7 @@ public class DashboardFragment extends BaseDaggerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         newOrderLabelView = (LabelView) view.findViewById(R.id.label_view_new_order);
         deliveryConfirmationLabelView = (LabelView) view.findViewById(R.id.label_view_delivery_confirmation);
         deliveryStatusLabelView = (LabelView) view.findViewById(R.id.label_view_delivery_status);

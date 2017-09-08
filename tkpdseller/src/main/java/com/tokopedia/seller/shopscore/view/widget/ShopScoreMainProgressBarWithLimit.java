@@ -50,7 +50,7 @@ public class ShopScoreMainProgressBarWithLimit
     }
 
     private void initView(Context context) {
-        View view = inflate(context, R.layout.view_main_shop_score_progressbar, this);
+        View view = inflate(context, R.layout.widget_shop_score_progressbar, this);
         icShopScoreLimit = (ImageView) view.findViewById(R.id.ic_shop_score_limit);
         shopScoreMainProgressBar =
                 (ShopScoreMainProgressBar) view.findViewById(R.id.shop_score_progress_bar);

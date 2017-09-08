@@ -133,4 +133,7 @@
     <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
     <string name="product_variant_search_x">Cari %1$s</string>
 
+    <string name="shop_score_min_value">0</string>
+    <string name="shop_score_max_value">100</string>
+
 </resources>
