@@ -14,7 +14,7 @@
         app:lv_title_color="@color/font_black_secondary_54"
         app:content_text_size="@dimen/font_subheading"
         app:content_color="@color/font_black_primary_70"
-        style="@style/LabelLayout2"/>
+        style="@style/LabelLayout"/>
 
     <View
         android:layout_width="match_parent"
