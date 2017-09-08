@@ -374,4 +374,14 @@ public class OkHttpFactory {
                 .build();
     }
 
+    public OkHttpClient buildDaggerClientCreditCardAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                        CreditCardInterceptor creditCardInterceptor) {
+            return new TkpdOkHttpBuilder(builder)
+                    .addInterceptor(fingerprintInterceptor)
+                    .addInterceptor(creditCardInterceptor)
+                    .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                    .addDebugInterceptor()
+                    .build();
+    }
+
 }

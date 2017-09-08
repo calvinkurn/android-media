@@ -1,8 +1,7 @@
 package com.tokopedia.posapp.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
-import com.tokopedia.posapp.database.ProductSavedResult;
+import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 

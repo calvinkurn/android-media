@@ -7,8 +7,6 @@ import android.content.Context;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
-import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
 import com.tokopedia.posapp.view.presenter.CachePresenter;
 import com.tokopedia.posapp.di.component.DaggerPosCacheComponent;
@@ -23,9 +21,6 @@ public class CacheService extends IntentService implements Cache.CallbackListene
 
     @Inject
     CachePresenter presenter;
-
-    GetProductListUseCase getProductListUseCase;
-    StoreProductCacheUseCase storeProductCacheUseCase;
 
     public CacheService() {
         super("CacheService");

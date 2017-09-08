@@ -15,15 +15,8 @@ import dagger.Component;
  * Created by okasurya on 9/5/17.
  */
 
-@BankScope
-@ShopScope
-@Component(
-    modules = {
-        ShopProductModule.class,
-        BankModule.class
-    },
-    dependencies = AppComponent.class
-)
+@PosCacheScope
+@Component(modules = PosCacheModule.class, dependencies = AppComponent.class)
 public interface PosCacheComponent {
     void inject(CacheService cacheService );
 }

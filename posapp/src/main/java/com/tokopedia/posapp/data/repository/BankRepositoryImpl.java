@@ -3,6 +3,7 @@ package com.tokopedia.posapp.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.data.factory.BankFactory;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
+import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 
 import rx.Observable;
 
@@ -20,5 +21,10 @@ public class BankRepositoryImpl implements BankRepository {
     @Override
     public Observable<BankInstallmentDomain> getBankInstallment(RequestParams params) {
         return bankFactory.cloud().getBankInstallment(params);
+    }
+
+    @Override
+    public Observable<BankSavedResult> storeBankToCache(BankInstallmentDomain data) {
+        return bankFactory.local().storeBankToCache(data);
     }
 }

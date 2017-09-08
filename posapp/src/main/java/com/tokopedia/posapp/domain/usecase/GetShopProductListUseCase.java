@@ -15,15 +15,14 @@ import rx.Observable;
  * Created by okasurya on 8/28/17.
  */
 
-public class GetProductListUseCase extends UseCase<ShopProductListDomain> {
+public class GetShopProductListUseCase extends UseCase<ShopProductListDomain> {
     ShopRepository shopRepository;
 
     @Inject
-    public GetProductListUseCase(ThreadExecutor threadExecutor,
-                                 PostExecutionThread postExecutionThread,
-                                 ShopRepository shopRepository) {
+    public GetShopProductListUseCase(ThreadExecutor threadExecutor,
+                                     PostExecutionThread postExecutionThread,
+                                     ShopRepository shopRepository) {
         super(threadExecutor, postExecutionThread);
-
         this.shopRepository = shopRepository;
     }
 

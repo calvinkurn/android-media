@@ -10,6 +10,7 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.core.TkpdV4ResponseError;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
@@ -125,5 +126,11 @@ public class InterceptorModule {
     @Provides
     public ResolutionInterceptor provideResolutionInterceptor() {
         return new ResolutionInterceptor();
+    }
+
+    @ApplicationScope
+    @Provides
+    public CreditCardInterceptor provideCreditCardInterceptor() {
+        return new CreditCardInterceptor();
     }
 }

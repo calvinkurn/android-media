@@ -32,6 +32,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
+import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -84,6 +85,7 @@ public interface AppComponent {
     Retrofit mojitoRetrofit();
 
     @HadesQualifier
+
     Retrofit hadesRetrofit();
 
     @YoutubeQualifier
@@ -113,6 +115,9 @@ public interface AppComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
+
+    @ScroogeCreditCardRetrofit
+    Retrofit scroogeCreditCardRetrofit();
 
     ThreadExecutor threadExecutor();
 
