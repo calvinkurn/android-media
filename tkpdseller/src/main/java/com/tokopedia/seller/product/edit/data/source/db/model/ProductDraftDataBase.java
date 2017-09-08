@@ -13,8 +13,7 @@ import com.tokopedia.seller.database.TkpdSellerDatabase;
 @Table(database = TkpdSellerDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class ProductDraftDataBase extends BaseModel{
     public static final String COLUMN_IS_UPLOADING = "is_uploading";
-    public static final String COLUMN_USER_ID = "user_id";
-    public static final String COLUMN_TIMESTAMP = "timestamp";
+    public static final String COLUMN_SHOP_ID = "shopId";
 
     @PrimaryKey(autoincrement = true)
     @Column
@@ -26,8 +25,8 @@ public class ProductDraftDataBase extends BaseModel{
     @Column (name = COLUMN_IS_UPLOADING)
     boolean isUploading;
 
-    @Column (name = COLUMN_USER_ID)
-    String userId;
+    @Column (name = COLUMN_SHOP_ID)
+    String shopId;
 
     public long getId() {
         return id;
@@ -53,11 +52,11 @@ public class ProductDraftDataBase extends BaseModel{
         isUploading = uploading;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getShopId() {
+        return shopId;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
     }
 }

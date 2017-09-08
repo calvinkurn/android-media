@@ -33,8 +33,8 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     @Override
     public Observable<Long> saveDraft(UploadProductInputDomainModel domainModel, boolean isUploading) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
-        String userId = SessionHandler.getLoginID(context);
-        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading, userId);
+        String shopId = SessionHandler.getShopID(context);
+        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading, shopId);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<List<UploadProductInputDomainModel>> getAllDraft() {
-        String userId = SessionHandler.getLoginID(context);
-        return productDraftDataSource.getAllDraft(userId)
+        String shopId = SessionHandler.getShopID(context);
+        return productDraftDataSource.getAllDraft(shopId)
                 .flatMap(new Func1<List<ProductDraftDataBase>, Observable<ProductDraftDataBase>>() {
                     @Override
                     public Observable<ProductDraftDataBase> call(List<ProductDraftDataBase> productDraftDataBases) {
@@ -70,14 +70,14 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<Long> getAllDraftCount() {
-        String userId = SessionHandler.getLoginID(context);
-        return productDraftDataSource.getAllDraftCount(userId);
+        String shopId = SessionHandler.getShopID(context);
+        return productDraftDataSource.getAllDraftCount(shopId);
     }
 
     @Override
     public Observable<Boolean> clearAllDraft() {
-        String userId = SessionHandler.getLoginID(context);
-        return productDraftDataSource.clearAllDraft(userId);
+        String shopID = SessionHandler.getShopID(context);
+        return productDraftDataSource.clearAllDraft(shopID);
     }
 
     @Override
@@ -105,10 +105,10 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<Boolean> updateBlankUserIdDraft() {
-        String userId = SessionHandler.getLoginID(context);
-        if (TextUtils.isEmpty(userId)) {
+        String shopID = SessionHandler.getShopID(context);
+        if (TextUtils.isEmpty(shopID)) {
             return Observable.just(false);
         }
-        return productDraftDataSource.updateBlankUserId(userId);
+        return productDraftDataSource.updateBlankShopId(shopID);
     }
 }

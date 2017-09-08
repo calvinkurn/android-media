@@ -24,12 +24,12 @@ public class ProductDraftDataManager {
     public ProductDraftDataManager() {
     }
 
-    public Observable<Long> saveDraft(String json, long draftId, boolean isUploading, String userId){
+    public Observable<Long> saveDraft(String json, long draftId, boolean isUploading, String shopId){
         ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();
         productDraftDataBase.setData(json);
         productDraftDataBase.setId(draftId);
         productDraftDataBase.setUploading(isUploading);
-        productDraftDataBase.setUserId(userId);
+        productDraftDataBase.setShopId(shopId);
         productDraftDataBase.save();
         return Observable.just(productDraftDataBase.getId());
     }
@@ -50,7 +50,7 @@ public class ProductDraftDataManager {
         return Observable.just( new Select()
                 .from(ProductDraftDataBase.class)
                 .where(ProductDraftDataBase_Table.is_uploading.is(false))
-                .and(ProductDraftDataBase_Table.user_id.is(userId))
+                .and(ProductDraftDataBase_Table.shopId.is(userId))
                 .queryList());
     }
 
@@ -58,13 +58,13 @@ public class ProductDraftDataManager {
         return Observable.just( new Select(Method.count())
                 .from(ProductDraftDataBase.class)
                 .where(ProductDraftDataBase_Table.is_uploading.is(false))
-                .and(ProductDraftDataBase_Table.user_id.is(userId))
+                .and(ProductDraftDataBase_Table.shopId.is(userId))
                 .count());
     }
 
     public Observable<Boolean> clearAllDraft(String userId){
         new Delete().from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.user_id.is(userId)).execute();
+                .where(ProductDraftDataBase_Table.shopId.is(userId)).execute();
         return Observable.just(true);
     }
 
@@ -134,8 +134,9 @@ public class ProductDraftDataManager {
     public Observable<Boolean> updateBlankUserId(String userId) {
         // update for userid, update all blank user to current user
         new Update<>(ProductDraftDataBase.class)
-                .set(ProductDraftDataBase_Table.user_id.eq(userId))
-                .where(ProductDraftDataBase_Table.user_id.isNull())
+                .set(ProductDraftDataBase_Table.shopId.eq(userId))
+                .where(ProductDraftDataBase_Table.shopId.isNull())
+
                 .execute();
         return Observable.just(true);
     }

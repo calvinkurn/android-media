@@ -21,24 +21,24 @@ public class ProductDraftDataSource {
         this.productDraftDataManager = productDraftDataManager;
     }
 
-    public Observable<Long> saveDraft(String productDraftDataBase, long draftId, boolean isUploading, String userId){
-        return productDraftDataManager.saveDraft(productDraftDataBase, draftId, isUploading, userId);
+    public Observable<Long> saveDraft(String productDraftDataBase, long draftId, boolean isUploading, String shopId){
+        return productDraftDataManager.saveDraft(productDraftDataBase, draftId, isUploading, shopId);
     }
 
     public Observable<String> getDraft(long productId) {
         return productDraftDataManager.getDraft(productId);
     }
 
-    public Observable<List<ProductDraftDataBase>> getAllDraft(String userId) {
-        return productDraftDataManager.getAllDraft(userId);
+    public Observable<List<ProductDraftDataBase>> getAllDraft(String shopId) {
+        return productDraftDataManager.getAllDraft(shopId);
     }
 
-    public Observable<Long> getAllDraftCount(String userId) {
-        return productDraftDataManager.getAllDraftCount(userId);
+    public Observable<Long> getAllDraftCount(String shopId) {
+        return productDraftDataManager.getAllDraftCount(shopId);
     }
 
-    public Observable<Boolean> clearAllDraft(String userId) {
-        return productDraftDataManager.clearAllDraft(userId);
+    public Observable<Boolean> clearAllDraft(String shopId) {
+        return productDraftDataManager.clearAllDraft(shopId);
     }
 
     public Observable<Boolean> deleteDraft(long productId) {
@@ -57,7 +57,7 @@ public class ProductDraftDataSource {
         return productDraftDataManager.updateUploadingStatusDraft(productId, draftDataBase);
     }
 
-    public Observable<Boolean> updateBlankUserId(String userId) {
-        return productDraftDataManager.updateBlankUserId(userId);
+    public Observable<Boolean> updateBlankShopId(String shopId) {
+        return productDraftDataManager.updateBlankUserId(shopId);
     }
 }

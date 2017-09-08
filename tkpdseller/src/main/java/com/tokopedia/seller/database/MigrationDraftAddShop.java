@@ -13,15 +13,15 @@ import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBa
  * From version 4 to 5, add column userId and tm
  */
 @Migration(version = 5, database = TkpdSellerDatabase.class)
-public class MigrationDraftAddUser extends AlterTableMigration<ProductDraftDataBase> {
+public class MigrationDraftAddShop extends AlterTableMigration<ProductDraftDataBase> {
 
-    public MigrationDraftAddUser(Class<ProductDraftDataBase> table) {
+    public MigrationDraftAddShop(Class<ProductDraftDataBase> table) {
         super(table);
     }
 
     @Override
     public void onPreMigrate() {
         super.onPreMigrate();
-        addColumn(SQLiteType.TEXT, ProductDraftDataBase.COLUMN_USER_ID);
+        addColumn(SQLiteType.TEXT, ProductDraftDataBase.COLUMN_SHOP_ID);
     }
 }
