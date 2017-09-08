@@ -50,7 +50,7 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
                     itemHistory.setTransactionType(tokoCashHistoryEntity.getItems()
                             .get(i).getTransaction_type());
                     itemHistory.setTitle(tokoCashHistoryEntity.getItems().get(i).getTitle());
-                    itemHistory.setUrlImage(tokoCashHistoryEntity.getItems().get(i).getUrlImage());
+                    itemHistory.setUrlImage(tokoCashHistoryEntity.getItems().get(i).getIcon_uri());
                     itemHistory.setDescription(tokoCashHistoryEntity.getItems()
                             .get(i).getDescription());
                     itemHistory.setTransactionInfoId(tokoCashHistoryEntity.getItems()

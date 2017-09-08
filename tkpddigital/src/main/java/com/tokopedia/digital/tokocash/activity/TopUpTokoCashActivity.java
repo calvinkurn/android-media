@@ -196,8 +196,8 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
         receivedTokoCashViewLayout.addView(receivedTokoCashView);
         balanceTokoCashViewLayout.addView(balanceTokoCashView);
         bottomSheetTokoCashView.renderBottomSheet(new BottomSheetView
-                        .BottomSheetField.BottomSheetFieldBuilder()
-                        .setTitle(getString(R.string.title_tooltip_tokocash))
+                .BottomSheetField.BottomSheetFieldBuilder()
+                .setTitle(getString(R.string.title_tooltip_tokocash))
                 .setBody(getString(R.string.body_tooltip_tokocash))
                 .setImg(R.drawable.ic_tokocash_activated)
                 .build());

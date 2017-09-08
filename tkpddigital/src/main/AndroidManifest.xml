@@ -64,10 +64,10 @@
         <activity android:name=".product.activity.DigitalUssdActivity"/>
 
         <activity
-            android:name=".wallets.WalletToDepositActivity"
+            android:name=".wallets.wallettodeposit.WalletToDepositActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".wallets.WalletToDepositThanksActivity"
+            android:name=".wallets.wallettodeposit.WalletToDepositThanksActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".wallets.accountsetting.WalletAccountSettingActivity"

@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -73,7 +72,6 @@ import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -174,11 +172,24 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
 
     @Override
-    public void onTopUpTokoCashClicked() {
+    public void onWalletHistoryClicked() {
         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
             IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
             startActivity(digitalModuleRouter.instanceIntentTokoCashTopUp());
         }
+    }
+
+    @Override
+    public void onTopUpTokoCashClicked(String tokocashLabel) {
+        Intent intent = DigitalProductActivity.newInstance(
+                getActivity(), new DigitalCategoryDetailPassData.Builder()
+                        .appLinks("tokopedia://digital/form?category_id=103")
+                        .categoryId("103")
+                        .categoryName(tokocashLabel)
+                        .build()
+        );
+        startActivity(intent);
+
     }
 
     @Override
@@ -1172,7 +1183,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     config.activateFetched();
                     holder.tokoCashHeaderView.renderData(tokoCashData, config
                             .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));

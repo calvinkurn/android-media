@@ -37,29 +37,33 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_balance_tokocash"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:text="Rp. 0"
                 android:textSize="30sp" />
 
-            <View
-                android:id="@+id/separator1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/balance_tokocash"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:background="@color/grey_300" />
 
             <RelativeLayout
+                android:id="@+id/layout_hold_balance"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
-                android:layout_below="@id/separator1"
-                android:padding="@dimen/padding_small">
+                android:layout_below="@id/balance_tokocash"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:visibility="visible">
+
+                <View
+                    android:id="@+id/separator1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:background="@color/grey_300" />
 
                 <TextView
                     android:id="@+id/title_hold_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/separator1"
+                    android:layout_marginTop="@dimen/margin_vs"
                     android:layout_centerHorizontal="true"
                     android:text="Dana Tertahan"
                     android:textSize="@dimen/fontvs" />
@@ -68,9 +72,11 @@
                     android:id="@+id/tooltip_tokocash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/info_icon"
+                    android:layout_below="@+id/separator1"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_toRightOf="@+id/title_hold_balance"
-                    android:layout_marginLeft="@dimen/margin_vs"/>
+                    android:src="@drawable/info_icon" />
 
                 <TextView
                     android:id="@+id/hold_balance"

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
@@ -28,6 +29,8 @@ public class BalanceTokoCashView extends LinearLayout {
     TextView holdBalance;
     @BindView(R2.id.tooltip_tokocash)
     ImageView tooltip;
+    @BindView(R2.id.layout_hold_balance)
+    RelativeLayout layoutHoldBalance;
 
     private ActionListener listener;
 
@@ -64,6 +67,7 @@ public class BalanceTokoCashView extends LinearLayout {
                 listener.showTooltipHoldBalance();
             }
         });
+        layoutHoldBalance.setVisibility(tokoCashData.getRawHoldBalance() > 0 ? VISIBLE : GONE);
     }
 
     public interface ActionListener {

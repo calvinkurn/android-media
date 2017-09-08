@@ -24,6 +24,14 @@ public class TokoCashData implements Parcelable {
     private String totalBalance;
     @SerializedName("hold_balance")
     private String holdBalance;
+    @SerializedName("raw_total_balance")
+    private long rawTotalBalance;
+    @SerializedName("raw_hold_balance")
+    private long rawHoldBalance;
+    @SerializedName("raw_threshold")
+    private long rawThreshold;
+    @SerializedName("threshold")
+    private String threshold;
 
 
     public Action getAction() {
@@ -90,6 +98,38 @@ public class TokoCashData implements Parcelable {
         this.holdBalance = holdBalance;
     }
 
+    public long getRawTotalBalance() {
+        return rawTotalBalance;
+    }
+
+    public void setRawTotalBalance(long rawTotalBalance) {
+        this.rawTotalBalance = rawTotalBalance;
+    }
+
+    public long getRawHoldBalance() {
+        return rawHoldBalance;
+    }
+
+    public void setRawHoldBalance(long rawHoldBalance) {
+        this.rawHoldBalance = rawHoldBalance;
+    }
+
+    public long getRawThreshold() {
+        return rawThreshold;
+    }
+
+    public void setRawThreshold(long rawThreshold) {
+        this.rawThreshold = rawThreshold;
+    }
+
+    public String getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(String threshold) {
+        this.threshold = threshold;
+    }
+
     protected TokoCashData(Parcel in) {
         mAction = (Action) in.readValue(Action.class.getClassLoader());
         mBalance = in.readString();
@@ -99,6 +139,10 @@ public class TokoCashData implements Parcelable {
         link = in.readByte() == 0x00 ? null : in.readInt();
         totalBalance = in.readString();
         holdBalance = in.readString();
+        rawHoldBalance = in.readLong();
+        rawTotalBalance = in.readLong();
+        rawThreshold = in.readLong();
+        threshold = in.readString();
     }
 
     @Override
@@ -126,6 +170,10 @@ public class TokoCashData implements Parcelable {
         }
         dest.writeString(totalBalance);
         dest.writeString(holdBalance);
+        dest.writeLong(rawHoldBalance);
+        dest.writeLong(rawTotalBalance);
+        dest.writeLong(rawThreshold);
+        dest.writeString(threshold);
     }
 
     @SuppressWarnings("unused")

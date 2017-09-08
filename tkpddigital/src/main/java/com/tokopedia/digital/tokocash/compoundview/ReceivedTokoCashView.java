@@ -21,12 +21,21 @@ import butterknife.ButterKnife;
 
 public class ReceivedTokoCashView extends LinearLayout {
 
+    private static String THRESHOLD_DEFAULT = "Rp 20.000.000";
+    private static int MAX_TOTAL_BALANCE = 20000000;
+    private static int PROGRESS_DUMMY = 30;
+    private static int PROGRESS_COMPLETE = 100;
+    private static int PROGRESS_ZERO = 0;
+
     @BindView(R2.id.income_tokocash)
     TextView incomeTokocash;
-    @BindView(R2.id.progress_bar_tokocash)
-    ProgressBar progressBar;
+    @BindView(R2.id.progress_bar_tokocash_balance)
+    ProgressBar progressBarTokocash;
     @BindView(R2.id.limit_tokocash)
     TextView limitTokocash;
+
+    private long rawThreshold;
+    private String threshold;
 
     public ReceivedTokoCashView(Context context) {
         super(context);
@@ -50,7 +59,31 @@ public class ReceivedTokoCashView extends LinearLayout {
 
     public void renderReceivedView(TokoCashData tokoCashData) {
         incomeTokocash.setText(tokoCashData.getTotalBalance());
-        progressBar.setProgress(50);
-        limitTokocash.setText("Limit: " + "Rp 20.000.000" + "/bulan");
+        renderLimitTokoCash(tokoCashData);
+    }
+
+    private void renderLimitTokoCash(TokoCashData tokoCashData) {
+        if (tokoCashData.getThreshold() != null) {
+            rawThreshold = tokoCashData.getRawThreshold();
+            threshold = tokoCashData.getThreshold();
+        } else {
+            rawThreshold = MAX_TOTAL_BALANCE;
+            threshold = THRESHOLD_DEFAULT;
+        }
+        limitTokocash.setText(String.format(getContext().getString(R.string.limit_balance_tokocash), threshold));
+        renderProgressBarTokoCash(tokoCashData.getRawTotalBalance(), rawThreshold);
+    }
+
+    private void renderProgressBarTokoCash(long totalBalance, long rawThreshold) {
+        int progress = (int) (totalBalance / rawThreshold) * PROGRESS_COMPLETE;
+        progressBarTokocash.setMax(PROGRESS_COMPLETE);
+        progressBarTokocash.setProgress(PROGRESS_DUMMY);
+        if (progress == PROGRESS_ZERO) {
+            progressBarTokocash.setMax(PROGRESS_ZERO);
+            progressBarTokocash.setProgress(PROGRESS_ZERO);
+        } else {
+            progressBarTokocash.setMax(PROGRESS_COMPLETE);
+            progressBarTokocash.setProgress(progress);
+        }
     }
 }

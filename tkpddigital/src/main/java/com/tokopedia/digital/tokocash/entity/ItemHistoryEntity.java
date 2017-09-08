@@ -16,7 +16,7 @@ public class ItemHistoryEntity {
 
     private String title;
 
-    private String urlImage;
+    private String icon_uri;
 
     private String description;
 
@@ -66,12 +66,12 @@ public class ItemHistoryEntity {
         this.title = title;
     }
 
-    public String getUrlImage() {
-        return urlImage;
+    public String getIcon_uri() {
+        return icon_uri;
     }
 
-    public void setUrlImage(String urlImage) {
-        this.urlImage = urlImage;
+    public void setIcon_uri(String icon_uri) {
+        this.icon_uri = icon_uri;
     }
 
     public String getDescription() {

@@ -56,14 +56,12 @@
     </RelativeLayout>
 
     <ProgressBar
-        android:id="@+id/progress_bar_tokocash"
+        android:id="@+id/progress_bar_tokocash_balance"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="false"
         android:maxHeight="10dip"
         android:minHeight="10dip"
-        android:progress="0"
         android:progressDrawable="@drawable/horizontal_progressbar"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="273dp"
@@ -85,7 +83,6 @@
             android:paddingBottom="@dimen/padding_ms"
             android:paddingLeft="@dimen/padding_detail"
             android:paddingRight="@dimen/padding_detail"
-            android:text="Limit: Rp 20.000.000/bulan"
             android:textSize="@dimen/fontvs"
             android:layout_alignParentRight="true"
             android:textStyle="italic"/>

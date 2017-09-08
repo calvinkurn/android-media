@@ -109,6 +109,7 @@
     <string name="message_no_transaction">Belum ada Riwayat Transaksi </string>
     <string name="title_tooltip_tokocash">Dana Tertahan</string>
     <string name="body_tooltip_tokocash">Dana Anda tertahan, untuk Transaksi yang Belum Lunas. Dana akan dikembalikan bila transaksi batal</string>
+    <string name="limit_balance_tokocash">Limit: %s/bulan</string>
 
     <string name="ussd_batal">Batal</string>
     <string name="ok">Ok</string>
