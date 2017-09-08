@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductDomainModel;
 import com.tokopedia.seller.goldmerchant.featured.repository.FeaturedProductRepository;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -17,13 +19,16 @@ public class FeaturedProductUseCase extends UseCase<FeaturedProductDomainModel> 
 
     private FeaturedProductRepository featuredProductRepository;
 
-    public FeaturedProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, FeaturedProductRepository featuredProductRepository) {
+    @Inject
+    public FeaturedProductUseCase(ThreadExecutor threadExecutor,
+                                  PostExecutionThread postExecutionThread,
+                                  FeaturedProductRepository featuredProductRepository) {
         super(threadExecutor, postExecutionThread);
         this.featuredProductRepository = featuredProductRepository;
     }
 
     @Override
     public Observable<FeaturedProductDomainModel> createObservable(RequestParams requestParams) {
-        return null;
+        return featuredProductRepository.getFeatureProductData(requestParams);
     }
 }

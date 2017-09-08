@@ -8,6 +8,7 @@ import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantCompone
 import com.tokopedia.seller.goldmerchant.featured.di.module.FeaturedProductModule;
 import com.tokopedia.seller.goldmerchant.featured.di.scope.FeaturedProductScope;
 import com.tokopedia.seller.goldmerchant.featured.view.activity.FeaturedProductActivity;
+import com.tokopedia.seller.goldmerchant.featured.view.fragment.FeaturedProductFragment;
 
 import dagger.Component;
 
@@ -18,4 +19,6 @@ import dagger.Component;
 @Component(modules = FeaturedProductModule.class, dependencies = GoldMerchantComponent.class)
 public interface FeaturedProductComponent {
     void inject(FeaturedProductActivity featuredProductActivity);
+
+    void inject(FeaturedProductFragment featuredProductFragment);
 }

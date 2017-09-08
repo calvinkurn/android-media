@@ -2,6 +2,7 @@ package com.tokopedia.seller.goldmerchant.featured.data.cloud.api;
 
 import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedConstant;
 import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
+import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;
 import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
 
 import retrofit2.Response;
@@ -20,5 +21,5 @@ public interface FeaturedProductApi {
     Observable<Response<FeaturedProductGETModel>> getFeaturedProduct(@Path("id") String shopId);
 
     @POST(FeaturedConstant.POST_FEATURED_PRODUCT_URL)
-    Observable<Response<FeaturedProductGETModel>> postFeaturedProduct(@Body PostFeaturedProductModel postFeaturedProductModel);
+    Observable<Response<FeaturedProductPOSTModel>> postFeaturedProduct(@Body PostFeaturedProductModel postFeaturedProductModel);
 }
