@@ -57,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/padding_vvs"
+                android:textSize="@dimen/text_size_s_medium"
                 android:text="@string/toast_promo_error_cache" />
 
             <ImageView
@@ -71,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/padding_vvs"
+                android:textSize="@dimen/text_size_s_medium"
                 android:text="@string/toast_success_promo2"
                 android:textStyle="bold" />
 

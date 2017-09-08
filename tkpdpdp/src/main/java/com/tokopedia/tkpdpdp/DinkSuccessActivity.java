@@ -50,8 +50,8 @@ public class DinkSuccessActivity extends TActivity {
             String text = String.format(getString(R.string.promo_dink_success), productTitle);
             SpannableString spannableString = new SpannableString(text);
             StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-            int start = text.indexOf(productTitle);
-            int end = text.lastIndexOf(productTitle);
+            int start = 18;
+            int end = 18 + productTitle.length();
             spannableString.setSpan(boldSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tvTitle.setText(spannableString);
         }
