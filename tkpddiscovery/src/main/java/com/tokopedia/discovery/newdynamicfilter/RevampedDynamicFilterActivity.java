@@ -129,7 +129,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
             @Override
             public void onKeyboardHide() {
                 buttonApply.setVisibility(View.VISIBLE);
-                buttonApply.requestFocus();
+                mainLayout.requestFocus();
             }
         });
     }
