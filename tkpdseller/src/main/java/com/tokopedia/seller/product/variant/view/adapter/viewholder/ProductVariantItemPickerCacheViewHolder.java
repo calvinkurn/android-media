@@ -20,21 +20,16 @@ import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
 public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCacheViewHolder<ProductVariantViewModel> {
 
-    private ImageView imageView;
-    private TextView titleTextView;
-    private ImageButton closeImageButton;
     private boolean hasColor;
 
     public ProductVariantItemPickerCacheViewHolder(boolean hasColor, View itemView) {
         super(itemView);
         this.hasColor = hasColor;
-        imageView = (ImageView) itemView.findViewById(R.id.image_view);
-        titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
-        closeImageButton = (ImageButton) itemView.findViewById(R.id.image_button_close);
     }
 
     @Override
     public void bindObject(final ProductVariantViewModel productVariantViewModel) {
+        super.bindObject(productVariantViewModel);
         if (hasColor) {
             if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
                 imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
@@ -55,15 +50,5 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
                 imageView.setVisibility(View.GONE);
             }
         }
-
-        titleTextView.setText(productVariantViewModel.getTitle());
-        closeImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (removeCallback != null) {
-                    removeCallback.onRemove(productVariantViewModel);
-                }
-            }
-        });
     }
 }
