@@ -221,7 +221,7 @@
                         android:scaleX=".75"
                         android:scaleY=".75"
                         android:stepSize="1"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         tools:rating="5" />
                 </RelativeLayout>
 
