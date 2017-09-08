@@ -77,7 +77,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
     private static IntentService RunningService;
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
-    private ReactNativeHost reactNativeHost;
+    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -408,7 +408,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 
     @Override
     public ReactNativeHost getReactNativeHost() {
-        if(reactNativeHost == null) reactNativeHost = ReactNativeHostFactory.init(this);
         return reactNativeHost;
     }
 }
