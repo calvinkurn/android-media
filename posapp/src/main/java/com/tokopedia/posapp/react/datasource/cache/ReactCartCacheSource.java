@@ -2,11 +2,11 @@ package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.core.database.model.CartDB;
-import com.tokopedia.core.database.model.CartDB_Table;
+import com.tokopedia.posapp.database.model.CartDB;
+import com.tokopedia.posapp.database.model.CartDB_Table;
 import com.tokopedia.posapp.database.manager.CartDbManager;
 import com.tokopedia.posapp.database.QueryParameter;
-import com.tokopedia.core.react.data.model.CacheResult;
+import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
 import java.util.List;

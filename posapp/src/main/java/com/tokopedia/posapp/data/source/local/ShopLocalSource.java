@@ -1,10 +1,10 @@
 package com.tokopedia.posapp.data.source.local;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.mapper.StoreProductMapper;
-import com.tokopedia.posapp.database.ProductSavedResult;
+import com.tokopedia.posapp.database.model.ProductDb;
+import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.database.manager.DbManagerOperation;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
@@ -41,14 +41,14 @@ public class ShopLocalSource {
                         return Observable.create(new Observable.OnSubscribe<ProductSavedResult>() {
                             @Override
                             public void call(final Subscriber<? super ProductSavedResult> subscriber) {
-                                List<ProductDB> data = new ArrayList<>();
+                                List<ProductDb> data = new ArrayList<>();
                                 for (com.tokopedia.core.shopinfo.models.productmodel.List item : productListDomain.getProductList()) {
-                                    ProductDB productDB = new ProductDB();
-                                    productDB.setProductId(item.productId);
-                                    productDB.setNameProd(item.productName);
-                                    productDB.setPriceFormatted(item.productPrice);
-                                    productDB.setProductUrl(item.productUrl);
-                                    data.add(productDB);
+                                    ProductDb productDb = new ProductDb();
+                                    productDb.setProductId(item.productId);
+                                    productDb.setProductName(item.productName);
+                                    productDb.setProductPrice(item.productPrice);
+                                    productDb.setProductUrl(item.productUrl);
+                                    data.add(productDb);
                                 }
 
                                 productDbManager.store(data, new DbManagerOperation.TransactionListener() {

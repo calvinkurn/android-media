@@ -2,14 +2,17 @@ package com.tokopedia.posapp.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
 import com.tokopedia.posapp.data.factory.BankFactory;
 import com.tokopedia.posapp.data.mapper.GetBankInstallmentMapper;
 import com.tokopedia.posapp.data.repository.BankRepository;
 import com.tokopedia.posapp.data.repository.BankRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.CreditCardApi;
+import com.tokopedia.posapp.database.manager.BankDbManager;
 import com.tokopedia.posapp.di.scope.BankScope;
 import com.tokopedia.posapp.di.scope.PosCacheScope;
 import com.tokopedia.posapp.domain.usecase.GetBankInstallmentUseCase;
+import com.tokopedia.posapp.domain.usecase.StoreBankInstallmentCacheUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,14 +31,20 @@ public class BankModule {
     }
 
     @Provides
-    CreditCardApi provideCreditCardApi(Retrofit retrofit) {
+    CreditCardApi provideCreditCardApi(@ScroogeCreditCardRetrofit Retrofit retrofit) {
         return retrofit.create(CreditCardApi.class);
     }
 
     @Provides
+    BankDbManager provideBankDbManager() {
+        return new BankDbManager();
+    }
+
+    @Provides
     BankFactory provideBankFactory(CreditCardApi creditCardApi,
-                                   GetBankInstallmentMapper getBankInstallmentMapper) {
-        return new BankFactory(creditCardApi, getBankInstallmentMapper);
+                                   GetBankInstallmentMapper getBankInstallmentMapper,
+                                   BankDbManager bankDbManager) {
+        return new BankFactory(creditCardApi, getBankInstallmentMapper, bankDbManager);
     }
 
     @Provides
@@ -48,5 +57,12 @@ public class BankModule {
                                                                PostExecutionThread postExecutionThread,
                                                                BankRepository bankRepository) {
         return new GetBankInstallmentUseCase(threadExecutor, postExecutionThread, bankRepository);
+    }
+
+    @Provides
+    StoreBankInstallmentCacheUseCase provideStoreBankInstallmentUseCase(ThreadExecutor threadExecutor,
+                                                                        PostExecutionThread postExecutionThread,
+                                                                        BankRepository bankRepository) {
+        return new StoreBankInstallmentCacheUseCase(threadExecutor, postExecutionThread, bankRepository);
     }
 }

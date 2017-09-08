@@ -61,6 +61,10 @@ dependencies {
     compile project(':tkpdseller')
     compile project(':tkpddesign')
 
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

@@ -1,4 +1,4 @@
-package com.tokopedia.core.react.data.model;
+package com.tokopedia.posapp.react.datasource.model;
 
 import java.util.List;
 

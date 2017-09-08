@@ -1,14 +1,31 @@
-package com.tokopedia.posapp.domain.model.bank;
+package com.tokopedia.posapp.data.pojo;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by okasurya on 9/5/17.
+ * Created by okasurya on 9/8/17.
  */
 
-public class InstallmentDomain {
+public class InstallmentResponse {
+    @SerializedName("term")
+    @Expose
     private int term;
+
+    @SerializedName("fee_value")
+    @Expose
     private double feeValue;
+
+    @SerializedName("fee_type")
+    @Expose
     private String feeType;
+
+    @SerializedName("interest")
+    @Expose
     private double interest;
+
+    @SerializedName("minimum_ammount")
+    @Expose
     private double minimumAmount;
 
     public int getTerm() {

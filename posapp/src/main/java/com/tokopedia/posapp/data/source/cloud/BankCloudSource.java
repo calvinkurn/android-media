@@ -22,6 +22,8 @@ public class BankCloudSource {
     }
 
     public Observable<BankInstallmentDomain> getBankInstallment(RequestParams params) {
-        return creditCardApi.getBankInstallment(params.getParamsAllValueInString()).map(getBankInstallmentMapper);
+        return creditCardApi
+                .getBankInstallment(params.getParamsAllValueInString())
+                .map(getBankInstallmentMapper);
     }
 }

@@ -1,12 +1,14 @@
 package com.tokopedia.posapp.domain.model.bank;
 
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
 import java.util.List;
 
 /**
  * Created by okasurya on 9/5/17.
  */
 
-public class BankDomain {
+public class BankDomain extends BaseModel {
     private int bankId;
     private String bankName;
     private List<InstallmentDomain> installmentList;

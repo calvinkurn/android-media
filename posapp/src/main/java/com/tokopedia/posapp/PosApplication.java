@@ -1,9 +1,12 @@
 package com.tokopedia.posapp;
 
 import com.facebook.react.ReactNativeHost;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.posapp.react.PosReactNativeHostFactory;
+//import com.raizlabs.android.dbflow.config.PosAppGeneratedDatabaseHolder;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -14,7 +17,12 @@ public class PosApplication extends PosRouterApplication {
     public void onCreate() {
         setGlobalConfiguration();
         generatePosAppBaseUrl();
+        initializeDatabase();
         super.onCreate();
+    }
+
+    private void initializeDatabase() {
+        FlowManager.init(new FlowConfig.Builder(this).build());
     }
 
     private void setGlobalConfiguration() {
@@ -49,6 +57,8 @@ public class PosApplication extends PosRouterApplication {
         TkpdBaseURL.DIGITAL_API_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
         TkpdBaseURL.GRAPHQL_DOMAIN = PosAppBaseUrl.GRAPHQL_DOMAIN;
+        TkpdBaseURL.SCROOGE_DOMAIN = PosAppBaseUrl.SCROOGE_DOMAIN;
+        TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = PosAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.database;
+package com.tokopedia.posapp.domain.model.result;
 
 /**
  * Created by okasurya on 8/31/17.

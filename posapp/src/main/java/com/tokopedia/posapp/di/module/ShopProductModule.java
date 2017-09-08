@@ -11,9 +11,8 @@ import com.tokopedia.posapp.data.repository.ShopRepository;
 import com.tokopedia.posapp.data.repository.ShopRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
-import com.tokopedia.posapp.di.scope.PosCacheScope;
 import com.tokopedia.posapp.di.scope.ShopScope;
-import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
+import com.tokopedia.posapp.domain.usecase.GetShopProductListUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 
 import dagger.Module;
@@ -62,10 +61,10 @@ public class ShopProductModule {
     }
 
     @Provides
-    GetProductListUseCase provideGetProductListUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       ShopRepository shopRepository) {
-        return new GetProductListUseCase(threadExecutor, postExecutionThread, shopRepository);
+    GetShopProductListUseCase provideGetProductListUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           ShopRepository shopRepository) {
+        return new GetShopProductListUseCase(threadExecutor, postExecutionThread, shopRepository);
     }
 
     @Provides

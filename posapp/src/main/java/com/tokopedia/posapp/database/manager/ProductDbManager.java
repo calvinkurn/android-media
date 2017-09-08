@@ -7,9 +7,9 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-import com.tokopedia.core.database.DbFlowDatabase;
-import com.tokopedia.core.database.model.ProductDB;
-import com.tokopedia.core.database.model.ProductDB_Table;
+import com.tokopedia.posapp.database.PosDatabase;
+import com.tokopedia.posapp.database.model.ProductDb;
+import com.tokopedia.posapp.database.model.ProductDb_Table;
 
 import java.util.List;
 
@@ -17,26 +17,26 @@ import java.util.List;
  * Created by okasurya on 8/30/17.
  */
 
-public class ProductDbManager implements DbManagerOperation<ProductDB, ProductDB> {
+public class ProductDbManager implements DbManagerOperation<ProductDb, ProductDb> {
     @Override
-    public void store(ProductDB data, TransactionListener callback) {
-        data.save();
+    public void store(ProductDb data, TransactionListener callback) {
+        ProductDb existing = getExistingProduct(data.getProductId());
+        if(existing != null) {
+            data.setId(existing.getId());
+            data.update();
+        } else {
+            data.save();
+        }
     }
 
     @Override
-    public void store(final List<ProductDB> data, final TransactionListener callback) {
-        DatabaseDefinition database = FlowManager.getDatabase(DbFlowDatabase.class);
+    public void store(final List<ProductDb> data, final TransactionListener callback) {
+        DatabaseDefinition database = FlowManager.getDatabase(PosDatabase.class);
         Transaction transaction = database.beginTransactionAsync(new ITransaction() {
             @Override
             public void execute(DatabaseWrapper databaseWrapper) {
-                for(ProductDB product: data) {
-                    ProductDB existing = getExistingProduct(product.getProductId());
-                    if(existing != null) {
-                        product.setId(existing.getId());
-                        product.update();
-                    } else {
-                        product.save();
-                    }
+                for(ProductDb product: data) {
+                    store(product, null);
                 }
             }
         }).success(new Transaction.Success() {
@@ -54,18 +54,19 @@ public class ProductDbManager implements DbManagerOperation<ProductDB, ProductDB
         transaction.execute();
     }
 
-    private ProductDB getExistingProduct(int productId) {
-        return first(ConditionGroup.clause().and(ProductDB_Table.productId.eq(productId)));
+    private ProductDb getExistingProduct(int productId) {
+        return first(ConditionGroup.clause().and(ProductDb_Table.productId.eq(productId)));
     }
 
     @Override
-    public void update(ProductDB data, TransactionListener callback) {
-
+    public void update(ProductDb data, TransactionListener callback) {
+        data.update();
     }
 
     @Override
     public void delete(ConditionGroup conditions, TransactionListener callback) {
-        SQLite.select().from(ProductDB.class).where(conditions).querySingle().delete();
+        ProductDb productDb = SQLite.select().from(ProductDb.class).where(conditions).querySingle();
+        if(productDb != null) productDb.delete();
     }
 
     @Override
@@ -73,28 +74,28 @@ public class ProductDbManager implements DbManagerOperation<ProductDB, ProductDB
     }
 
     @Override
-    public ProductDB first(ConditionGroup conditions) {
-        return SQLite.select().from(ProductDB.class).where(conditions).querySingle();
+    public ProductDb first(ConditionGroup conditions) {
+        return SQLite.select().from(ProductDb.class).where(conditions).querySingle();
     }
 
     @Override
-    public ProductDB first() {
-        return SQLite.select().from(ProductDB.class).querySingle();
+    public ProductDb first() {
+        return SQLite.select().from(ProductDb.class).querySingle();
     }
 
     @Override
-    public List<ProductDB> getListData(ConditionGroup conditions) {
-        return SQLite.select().from(ProductDB.class).where(conditions).queryList();
+    public List<ProductDb> getListData(ConditionGroup conditions) {
+        return SQLite.select().from(ProductDb.class).where(conditions).queryList();
     }
 
     @Override
-    public List<ProductDB> getListData(int offset, int limit) {
-        return SQLite.select().from(ProductDB.class).offset(offset).limit(limit).queryList();
+    public List<ProductDb> getListData(int offset, int limit) {
+        return SQLite.select().from(ProductDb.class).offset(offset).limit(limit).queryList();
     }
 
     @Override
-    public List<ProductDB> getAllData() {
-        return SQLite.select().from(ProductDB.class).queryList();
+    public List<ProductDb> getAllData() {
+        return SQLite.select().from(ProductDb.class).queryList();
     }
 
     @Override
