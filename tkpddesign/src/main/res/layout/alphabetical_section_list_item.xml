@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/alphabetical_section_header_padding"
-        android:background="@color/grey_200"
-        style="@style/TextView.Body1.BlackSecondary"
+        android:background="@color/white"
+        style="@style/TextView.Body1.Green.Bold"
         tools:text="Section Header"
         />
 
