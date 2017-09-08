@@ -9,85 +9,103 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Text,
+  Linking,
 } from 'react-native'
-import { NetworkModule, NavigationModule } from 'NativeModules';
+
 import Swiper from 'react-native-swiper'
-// import Carousel from 'react-native-looped-carousel';
+import Carousel from 'react-native-looped-carousel'
 
 const { height, width } = Dimensions.get('window')
 
 const BannerList = ({ banners, onBannerPress, onViewAllPress }) => {
   const topBanners = banners.filter(banner => banner.html_id === 0)
   return (
-    <View height={215} backgroundColor={'rgba(0, 0, 0, 0.05)'} paddingBottom={10}>
-      <Swiper 
-        autoplay={true}
-        showsPagination={true}
-        autoplayTimeout={5}
-        height={205}
-        style={styles.bannerSwipe}
-        paginationStyle={styles.bannerPagination}
-        activeDotColor={'#FF5722'}
-        >
+    <View style={{flex: 1}}>
+      <Carousel
+        delay={5000}
+        style={styles.carouselContainer}
+        bullets={true}
+        bulletsContainerStyle={styles.dotContainer}
+        bulletStyle={styles.dot}
+        chosenBulletStyle={styles.dotActive}
+      >
         {
           topBanners.map((banner, index) => (
             <TouchableWithoutFeedback key={index} onPress={(e) => onBannerPress(e, banner)}>
-              <View key={banner.banner_id} style={styles.bannerBox}>
-                <Image source={{ uri: banner.image_url }} style={styles.pageStyle} />
+              <View key={banner.banner_id} style={styles.bannerContainer}>
+                <Image source={{ uri: banner.image_url }} style={styles.bannerImage} />
               </View>
             </TouchableWithoutFeedback>
           ))
         }
-      </Swiper>
-      <Text
-        style={styles.viewAll}
-        onPress={onViewAllPress}> Lihat Semua Promo  >
-      </Text>
+      </Carousel>
+      <View style={styles.viewAllContainer}>
+        <Text
+          style={styles.viewAll}
+          onPress={onViewAllPress}> Lihat Semua Promo  >
+        </Text>
+      </View>
     </View>
   )
 }
 
 var styles = StyleSheet.create({
-  container: {
-    marginVertical: 10
+  carouselContainer: {
+    width,
+    height: Math.round(width * 0.453) + 40,
   },
-  bannerBox: {
-    width: width,
-    height: 180
+  bannerContainer: {
+    height: 200,
   },
-  pageStyle: {
+  bannerImage: {
     alignItems: 'center',
-    padding: 20,
     width: width,
-    height: 173,
-    height: 180,
+    height: Math.round(width * 0.46),
     resizeMode: 'contain',
   },
-  viewPager: {
-    height: 185,
+  viewAllContainer: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    flex: 1 / 2,
+    alignSelf: 'flex-end',
+    width: 140,
+    height: 20,
   },
   viewAll: {
     color: '#42b549',
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'right',
-    padding: 10,
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-  },
-  bannerPagination: {
-    justifyContent: 'flex-start',
-    position: 'absolute',
-    width: 210,
-    left: 10,
-    bottom: 0,
   },
   slide: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  dotContainer: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    height: 20,
+    marginLeft: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    backgroundColor: 'rgba(0, 0, 0, .2)',
+    borderWidth: 0,
+    margin: 3,
+    borderWidth: 0,
+  },
+  dotActive: {
+    margin: 3,
+    width: 8,
+    height: 8,
+    borderRadius: 20,
+    backgroundColor: '#FF5722',
+    borderWidth: 0,
+  },
 })
 
 BannerList.propTypes = {
