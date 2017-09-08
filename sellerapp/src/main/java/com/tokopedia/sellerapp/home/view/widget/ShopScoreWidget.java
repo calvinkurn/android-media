@@ -46,7 +46,9 @@ public class ShopScoreWidget extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        callback.getShopScoreData();
+        if (callback != null) {
+            callback.getShopScoreData();
+        }
     }
 
     private void initView(Context context, AttributeSet attrs) {

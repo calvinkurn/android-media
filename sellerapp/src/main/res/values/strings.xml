@@ -24,4 +24,7 @@
     <string name="home_seller_etalase">Etalase</string>
     <string name="home_seller_setting">Pengaturan</string>
 
+    <string name="dashboard_label_regular_merchant">Regular Merchant</string>
+    <string name="dashboard_label_gold_merchant">Gold Merchant</string>
+
 </resources>
