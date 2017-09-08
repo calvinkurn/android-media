@@ -798,6 +798,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(RevampedDynamicFilterActivity.FILTER_CHECKED_STATE_PREF);
         editor.remove(RevampedDynamicFilterActivity.FILTER_TEXT_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_SELECTED_CATEGORY_ID_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_SELECTED_CATEGORY_NAME_PREF);
         editor.apply();
         if (browseModel != null) {
             browseModel.setFilterOptions(new HashMap<String, String>());

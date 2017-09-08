@@ -49,10 +49,10 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
     public static final String FILTER_TEXT_PREF = "filter_text";
+    public static final String FILTER_SELECTED_CATEGORY_ROOT_ID_PREF = "filter_selected_category_root_id";
+    public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
+    public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
 
-    private static final String FILTER_SELECTED_CATEGORY_ROOT_ID_PREF = "filter_selected_category_root_id";
-    private static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
-    private static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
     private static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
 
     RecyclerView recyclerView;
