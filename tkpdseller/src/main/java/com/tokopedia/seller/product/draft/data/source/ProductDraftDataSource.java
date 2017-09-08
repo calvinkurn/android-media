@@ -15,6 +15,7 @@ import rx.Observable;
 
 public class ProductDraftDataSource {
     private final ProductDraftDataManager productDraftDataManager;
+    private boolean hasUpdateBlankShopId = false;
 
     @Inject
     public ProductDraftDataSource(ProductDraftDataManager productDraftDataManager) {
@@ -30,10 +31,19 @@ public class ProductDraftDataSource {
     }
 
     public Observable<List<ProductDraftDataBase>> getAllDraft(String shopId) {
+        updateBlankShopId(shopId);
         return productDraftDataManager.getAllDraft(shopId);
     }
 
+    private void updateBlankShopId(String shopId){
+        if (!hasUpdateBlankShopId) {
+            productDraftDataManager.updateBlankShopIdDraft(shopId);
+            hasUpdateBlankShopId = true;
+        }
+    }
+
     public Observable<Long> getAllDraftCount(String shopId) {
+        updateBlankShopId(shopId);
         return productDraftDataManager.getAllDraftCount(shopId);
     }
 
@@ -55,9 +65,5 @@ public class ProductDraftDataSource {
 
     public Observable<Boolean> updateUploadingStatusDraft(long productId, boolean draftDataBase) {
         return productDraftDataManager.updateUploadingStatusDraft(productId, draftDataBase);
-    }
-
-    public Observable<Boolean> updateBlankShopId(String shopId) {
-        return productDraftDataManager.updateBlankUserId(shopId);
     }
 }

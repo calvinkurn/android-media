@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.draft.data.source.db;
 
-import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -131,15 +130,12 @@ public class ProductDraftDataManager {
         }
     }
 
-    public Observable<Boolean> updateBlankUserId(String userId) {
-        // update for userid, update all blank user to current user
+    public Observable<Boolean> updateBlankShopIdDraft(String shopId) {
         new Update<>(ProductDraftDataBase.class)
-                .set(ProductDraftDataBase_Table.shopId.eq(userId))
+                .set(ProductDraftDataBase_Table.shopId.eq(shopId))
                 .where(ProductDraftDataBase_Table.shopId.isNull())
-
                 .execute();
         return Observable.just(true);
     }
-
 
 }

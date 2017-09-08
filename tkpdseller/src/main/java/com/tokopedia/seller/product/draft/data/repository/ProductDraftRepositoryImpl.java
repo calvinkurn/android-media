@@ -102,13 +102,4 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     public Observable<Boolean> updateuploadingStatusDraft(long productId, boolean isUploading) {
         return productDraftDataSource.updateUploadingStatusDraft(productId, isUploading);
     }
-
-    @Override
-    public Observable<Boolean> updateBlankUserIdDraft() {
-        String shopID = SessionHandler.getShopID(context);
-        if (TextUtils.isEmpty(shopID)) {
-            return Observable.just(false);
-        }
-        return productDraftDataSource.updateBlankShopId(shopID);
-    }
 }

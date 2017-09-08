@@ -28,6 +28,4 @@ public interface ProductDraftRepository {
 
     Observable<Boolean> updateuploadingStatusDraft(long productId, boolean isUploading);
 
-    Observable<Boolean> updateBlankUserIdDraft();
-
 }

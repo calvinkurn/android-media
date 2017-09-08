@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -42,7 +41,6 @@ import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
@@ -50,7 +48,6 @@ import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
-import com.tokopedia.seller.product.draft.view.presenter.ProductDraftUpdateBlankUserIDPresenter;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
@@ -83,8 +80,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
-    @Inject
-    ProductDraftUpdateBlankUserIDPresenter productDraftUpdateBlankUserIDPresenter;
 
     private BroadcastReceiver draftBroadCastReceiver;
     private TkpdProgressDialog progressDialog;
@@ -146,9 +141,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 .build()
                 .inject(this);
         productDraftListPresenter.attachView(this);
-        productDraftUpdateBlankUserIDPresenter.attachView(this);
-
-        productDraftUpdateBlankUserIDPresenter.updateBlankUserId();
     }
 
     @Override
@@ -460,7 +452,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onDestroy() {
         super.onDestroy();
         productDraftListPresenter.detachView();
-        productDraftUpdateBlankUserIDPresenter.detachView();
     }
 
     @Override
