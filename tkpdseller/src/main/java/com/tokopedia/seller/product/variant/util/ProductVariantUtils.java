@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.variant.util;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.SparseIntArray;
 
@@ -475,8 +476,9 @@ public class ProductVariantUtils {
     /**
      * if option list empty at level 1, then the others need to reset
      * for example level 1 empty, level 2, 3, 4 need to be removed
-     * @return true if option list at level 1 not empty
+     *
      * @param variantUnitSubmitList
+     * @return true if option list at level 1 not empty
      */
     private static boolean isVariantLevelOneNotEmpty(List<ProductVariantUnitSubmit> variantUnitSubmitList) {
         ProductVariantUnitSubmit productVariantUnitSubmit = ProductVariantUtils.getVariantUnitByLevel(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE, variantUnitSubmitList);
@@ -670,7 +672,7 @@ public class ProductVariantUtils {
         return variantCombination;
     }
 
-    public static ArrayList<ProductVariantOptionSubmit> getProductVariantOptionSubmitLv1(ProductVariantDataSubmit productVariantDataSubmit){
+    public static ArrayList<ProductVariantOptionSubmit> getProductVariantOptionSubmitLv1(ProductVariantDataSubmit productVariantDataSubmit) {
         if (productVariantDataSubmit == null || productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
                 productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
             return null;
@@ -678,7 +680,7 @@ public class ProductVariantUtils {
         List<ProductVariantUnitSubmit> productVariantUnitSubmitList =
                 productVariantDataSubmit.getProductVariantUnitSubmitList();
 
-        for (int i = 0, sizei = productVariantUnitSubmitList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
             ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
             if (productVariantUnitSubmit.getPosition() != ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
                 continue;
@@ -689,9 +691,9 @@ public class ProductVariantUtils {
     }
 
     private static ArrayList<ProductVariantOptionSubmit> cloneVarianOptionSubmitList(
-            List<ProductVariantOptionSubmit> productVariantOptionSubmitList){
-        ArrayList <ProductVariantOptionSubmit> cloneProductVariantOptionSubmitList = new ArrayList<>();
-        for (int i = 0, sizei = productVariantOptionSubmitList.size(); i<sizei; i++) {
+            List<ProductVariantOptionSubmit> productVariantOptionSubmitList) {
+        ArrayList<ProductVariantOptionSubmit> cloneProductVariantOptionSubmitList = new ArrayList<>();
+        for (int i = 0, sizei = productVariantOptionSubmitList.size(); i < sizei; i++) {
             ProductVariantOptionSubmit sourceProductVariantOptionSubmit = productVariantOptionSubmitList.get(i);
             ProductVariantOptionSubmit newProductVariantOptionSubmit = new ProductVariantOptionSubmit();
             newProductVariantOptionSubmit.setVariantUnitValueId(sourceProductVariantOptionSubmit.getVariantUnitValueId());
@@ -701,5 +703,28 @@ public class ProductVariantUtils {
             cloneProductVariantOptionSubmitList.add(newProductVariantOptionSubmit);
         }
         return cloneProductVariantOptionSubmitList;
+    }
+
+    public static boolean hasCustomVariant(List<ProductVariantUnitSubmit> productVariantUnitSubmitList, int position) {
+        for (int i = 0; i < productVariantUnitSubmitList.size(); i++) {
+            ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
+            if (productVariantUnitSubmit.getPosition() == position) {
+                return hasCustomVariant(productVariantUnitSubmit);
+            }
+        }
+        return false;
+    }
+
+    private static boolean hasCustomVariant(@NonNull ProductVariantUnitSubmit productVariantUnitSubmit) {
+        List<ProductVariantOptionSubmit> productVariantOptionSubmitList = productVariantUnitSubmit.getProductVariantOptionSubmitList();
+        for (int i = 0, sizei = productVariantOptionSubmitList.size(); i < sizei; i++) {
+            ProductVariantOptionSubmit productVariantOptionSubmit = productVariantOptionSubmitList.get(i);
+            long vuvId = productVariantOptionSubmit.getVariantUnitValueId();
+            String customText = productVariantOptionSubmit.getCustomText();
+            if (vuvId == 0 && !TextUtils.isEmpty(customText)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

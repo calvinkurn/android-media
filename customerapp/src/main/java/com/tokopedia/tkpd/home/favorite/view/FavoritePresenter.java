@@ -117,14 +117,12 @@ public class FavoritePresenter
 
     @Override
     public void onSaveDataBeforeRotate(Bundle outState) {
-        pagingHandler.onSavedInstanceState(outState);
+
     }
 
     @Override
     public void onViewStateRestored(Bundle outState) {
-        if (outState != null) {
-            pagingHandler.onCreate(outState);
-        }
+
     }
 
     private void setNextPaging(PagingHandler.PagingHandlerModel pagingModel) {

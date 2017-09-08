@@ -8,6 +8,7 @@ import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
+import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +45,27 @@ public class AnalyticsMapper {
         if(isShare){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
         }
-        if (viewModel.getSwitchVariant() > ProductVariantConstant.SWITCH_VARIANT_EXIST) {
+        if (viewModel.getSwitchVariant() == ProductVariantConstant.SWITCH_VARIANT_EXIST) {
+            boolean hasCustomVariantLv1 = false;
+            boolean hasCustomVariantLv2 = false;
             List<ProductVariantUnitSubmit> productVariantUnitSubmitList = viewModel.getProductVariantDataSubmit().getProductVariantUnitSubmitList();
-            if (productVariantUnitSubmitList.size() == 1) {
-                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1);
+            if (productVariantUnitSubmitList.size() >= 1) {
+                hasCustomVariantLv1 = ProductVariantUtils.hasCustomVariant(productVariantUnitSubmitList, ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
+                if (!hasCustomVariantLv1) {
+                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1);
+                }
             }
-            else if (productVariantUnitSubmitList.size() == 2) {
-                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2);
+            if (productVariantUnitSubmitList.size() >= 2) {
+                hasCustomVariantLv2 = ProductVariantUtils.hasCustomVariant(productVariantUnitSubmitList, ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
+                if (!hasCustomVariantLv2) {
+                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2);
+                }
+            }
+            if (hasCustomVariantLv1) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM);
+            }
+            if (hasCustomVariantLv2) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM);
             }
         }
 
