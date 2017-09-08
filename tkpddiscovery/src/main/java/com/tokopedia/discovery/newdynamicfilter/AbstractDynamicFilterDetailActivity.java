@@ -55,6 +55,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private boolean isSearchable;
     private String searchHint;
     private String pageTitle;
+    private boolean isAutoTextChange = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,7 +127,9 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                getSearchFilter().filter(charSequence);
+                if (!isAutoTextChange) {
+                    getSearchFilter().filter(charSequence);
+                }
             }
 
             @Override
@@ -182,7 +185,16 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         finish();
     }
 
-    protected abstract void resetFilter();
+    protected void resetFilter() {
+        loadFilterItems(optionList);
+        clearSearchInput();
+    }
+
+    private void clearSearchInput() {
+        isAutoTextChange = true;
+        searchInputView.setText("");
+        isAutoTextChange = false;
+    }
 
     public class OptionSearchFilter extends android.widget.Filter {
         private ArrayList<Option> sourceData;

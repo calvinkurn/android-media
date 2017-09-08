@@ -63,6 +63,7 @@ public class DynamicFilterDetailBrandActivity extends AbstractDynamicFilterDetai
 
     @Override
     protected void resetFilter() {
+        super.resetFilter();
         adapter.resetAllOptionsInputState();
     }
 }

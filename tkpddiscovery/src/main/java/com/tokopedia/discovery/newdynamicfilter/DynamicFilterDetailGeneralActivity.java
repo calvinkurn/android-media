@@ -46,6 +46,7 @@ public class DynamicFilterDetailGeneralActivity
 
     @Override
     protected void resetFilter() {
+        super.resetFilter();
         adapter.resetAllOptionsInputState();
     }
 }
