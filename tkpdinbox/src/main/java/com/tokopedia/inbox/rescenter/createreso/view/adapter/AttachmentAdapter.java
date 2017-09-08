@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentAdapterListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentImage;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ItemHolder> {
     private Context context;
-    private List<AttachmentImage> attachmentImageList = new ArrayList<>();
+    private List<AttachmentViewModel> attachmentViewModelList = new ArrayList<>();
     private AttachmentAdapterListener listener;
 
     public AttachmentAdapter(Context context, AttachmentAdapterListener attachmentAdapterListener) {
@@ -30,8 +31,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
         this.listener = attachmentAdapterListener;
     }
 
-    public void updateAdapter(List<AttachmentImage> attachmentImageList) {
-        this.attachmentImageList = attachmentImageList;
+    public void updateAdapter(List<AttachmentViewModel> attachmentViewModelList) {
+        this.attachmentViewModelList = attachmentViewModelList;
+        notifyDataSetChanged();
+    }
+
+    public void addAttachment(AttachmentViewModel attachmentViewModel) {
+        attachmentViewModelList.add(attachmentViewModel);
         notifyDataSetChanged();
     }
 
@@ -41,20 +47,19 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder holder, final int position) {
-        if (position == attachmentImageList.size()) {
+    public void onBindViewHolder(final ItemHolder holder, int position) {
+        if (position == attachmentViewModelList.size()) {
             //show upload image
             holder.ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment));
         } else {
             //show image
-            Glide.with(context).load(attachmentImageList.get(position).realPath).into(holder.ivImage);
+            Glide.with(context).load(attachmentViewModelList.get(position).getUrl()).into(holder.ivImage);
         }
 
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (position == attachmentImageList.size()) {
-                    //add image clicked
+                if (holder.getAdapterPosition() == attachmentViewModelList.size()) {
                     listener.onAddAttachmentClicked();
                 } else {
                     //image clicked
@@ -65,7 +70,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
 
     @Override
     public int getItemCount() {
-        return attachmentImageList.size() + 1;
+        return attachmentViewModelList.size() + 1;
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder {
@@ -74,5 +79,9 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
             super(itemView);
             ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
         }
+    }
+
+    public List<AttachmentViewModel> getList() {
+        return attachmentViewModelList;
     }
 }

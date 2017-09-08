@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,6 +8,10 @@ import java.util.List;
  */
 
 public class Attachment {
-    public List<AttachmentImage> imageUrl;
+    public List<AttachmentViewModel> attachmentViewModelList = new ArrayList<>();
     public String information;
+
+    public Attachment() {
+        this.attachmentViewModelList = new ArrayList<>();
+    }
 }

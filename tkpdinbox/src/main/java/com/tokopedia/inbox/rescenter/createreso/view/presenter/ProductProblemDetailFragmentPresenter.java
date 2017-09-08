@@ -64,6 +64,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
         //init with first trouble item of undelivered status
         updateSpinner(problemResult.isDelivered);
         getCanShowNotArrived();
+        problemResult.trouble = 0;
         problemResult.remark = "";
         problemResult.quantity = 1;
         problemResult.name = productProblemViewModel.getProblem().getName();

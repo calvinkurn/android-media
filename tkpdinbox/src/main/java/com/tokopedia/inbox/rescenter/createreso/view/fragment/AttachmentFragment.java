@@ -2,28 +2,29 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
@@ -33,12 +34,18 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentFragment
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.AttachmentFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attachment;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 /**
@@ -50,7 +57,6 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     private static final int REQUEST_CODE_GALLERY = 1243;
-    private static final int MAXIMAL_VIDEO_CONTENT_ALLOW = 1;
 
     private TkpdTextInputLayout tilInformation;
     private EditText etInformation;
@@ -63,9 +69,6 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     private ImageUploadHandler uploadImageDialog;
 
 
-    private String[] extensions = {
-            "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
-    };
 
     public static AttachmentFragment newInstance(ResultViewModel resultViewModel) {
         AttachmentFragment fragment = new AttachmentFragment();
@@ -77,11 +80,69 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        presenter = new AttachmentFragmentPresenter(getActivity(), this);
+        uploadImageDialog = ImageUploadHandler.createInstance(this);
+        presenter = new AttachmentFragmentPresenter(getActivity(), this, uploadImageDialog);
         presenter.attachView(this);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        AttachmentFragmentPermissionsDispatcher.onRequestPermissionsResult(AttachmentFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+    }
     @Override
     protected String getScreenName() {
         return null;
@@ -129,7 +190,6 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         btnContinue = (Button) view.findViewById(R.id.btn_upload);
         rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
         adapter = new AttachmentAdapter(context, this);
-        uploadImageDialog = ImageUploadHandler.createInstance(this);
 
         rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         rvAttachment.setAdapter(adapter);
@@ -158,7 +218,11 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         } else {
             buttonDisabled(btnContinue);
         }
+    }
 
+    @Override
+    public void addAttachmentFile(AttachmentViewModel attachmentViewModel) {
+        adapter.addAttachment(attachmentViewModel);
     }
 
     public void buttonSelected(Button button) {
@@ -204,7 +268,33 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
     @Override
     public void onAddAttachmentClicked() {
+        if (adapter.getList().size() < 5) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(context.getString(R.string.dialog_upload_option));
+            builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    AttachmentFragmentPermissionsDispatcher.actionImagePickerWithCheck(AttachmentFragment.this);
+                }
+            }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    AttachmentFragmentPermissionsDispatcher.actionCameraWithCheck(AttachmentFragment.this);
+                }
+            });
 
+            Dialog dialog = builder.create();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.show();
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
+        }
+
+    }
+
+    @Override
+    public List<AttachmentViewModel> getAttachmentListFromAdapter() {
+        return adapter.getList();
     }
 
     @Override
@@ -236,105 +326,19 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ImageUploadHandler.REQUEST_CODE:
-                handleDefaultOldUploadImageHandlerResult(resultCode, data);
+                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
                 break;
             case REQUEST_CODE_GALLERY:
-                handleNewGalleryResult(resultCode, data);
+                presenter.handleNewGalleryResult(resultCode, data);
                 break;
             default:
                 break;
         }
     }
 
-    private void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
-        switch (resultCode) {
-            case GalleryBrowser.RESULT_CODE:
-                if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL), AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
-            case Activity.RESULT_OK:
-                if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(), AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
-        }
+    @Override
+    public void showSnackBarError(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
-    private void handleNewGalleryResult(int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
-//                MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-//                if (checkAttachmentValidation(item)) {
-//                    onAddImageAttachment(item.getRealPath(), getTypeFile(item));
-//                }
-//            } else {
-//                onFailedAddAttachment();
-//            }
-//        }
-    }
-
-    private void onFailedAddAttachment() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.failed_upload_image));
-    }
-
-    private void onAddImageAttachment(String fileLoc, int typeFile) {
-//        attachmentList.setVisibility(View.VISIBLE);
-//        AttachmentViewModel attachment = new AttachmentViewModel();
-//        attachment.setFileLoc(fileLoc);
-//        attachment.setFileType(typeFile);
-//        attachmentAdapter.addImage(attachment);
-    }
-
-    private boolean checkAttachmentValidation(MediaItem item) {
-//        boolean isExtensionAllow = false;
-//        for (String extension : extensions) {
-//            String path = item.getRealPath();
-//            if (path != null && path.toLowerCase(Locale.US).endsWith(extension)) {
-//                Log.d("hangnadi validation", "checkAttachmentValidation: " + extension + "\npath : " + path);
-//                isExtensionAllow = true;
-//            }
-//        }
-//        if (!isExtensionAllow) {
-//            NetworkErrorHelper.showSnackbar(
-//                    getActivity(),
-//                    getActivity().getString(R.string.error_reply_discussion_resolution_file_not_allowed)
-//            );
-//            return false;
-//        }
-//
-//        int countVideoAlreadyAdded = 0;
-//        if (item.isVideo()) {
-//            for (AttachmentViewModel model :attachmentAdapter.getList()) {
-//                if (model.isVideo()) {
-//                    countVideoAlreadyAdded++;
-//                }
-//            }
-//        }
-//        if (countVideoAlreadyAdded == MAXIMAL_VIDEO_CONTENT_ALLOW) {
-//            NetworkErrorHelper.showSnackbar(
-//                    getActivity(),
-//                    getActivity().getString(R.string.error_reply_discussion_resolution_reach_max)
-//            );
-//            return false;
-//        }
-//
-//        if (item.isVideo()) {
-//            File file = new File(item.getRealPath());
-//            long length = file.length() / 1024;
-//            if (length >= 20000) {
-//                NetworkErrorHelper.showSnackbar(
-//                        getActivity(),
-//                        getActivity().getString(R.string.error_reply_discussion_resolution_reach_max_size)
-//                );
-//                return false;
-//            }
-//        }
-
-        return true;
-    }
 }
