@@ -8,6 +8,7 @@ import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.ProductDB;
+import com.tokopedia.posapp.database.PosDatabase;
 import com.tokopedia.posapp.database.model.BankDb;
 import com.tokopedia.posapp.database.model.InstallmentDb;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
@@ -29,7 +30,7 @@ public class BankDbManager implements DbManagerOperation<BankDomain,BankDb> {
 
     @Override
     public void store(final List<BankDomain> bankDomainList, final TransactionListener callback) {
-        DatabaseDefinition database = FlowManager.getDatabase(DbFlowDatabase.class);
+        DatabaseDefinition database = FlowManager.getDatabase(PosDatabase.class);
         Transaction transaction = database.beginTransactionAsync(new ITransaction() {
             @Override
             public void execute(DatabaseWrapper databaseWrapper) {

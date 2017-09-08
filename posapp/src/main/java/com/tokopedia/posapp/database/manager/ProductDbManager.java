@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.posapp.database.PosDatabase;
 import com.tokopedia.posapp.database.model.ProductDb;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
 
@@ -31,7 +31,7 @@ public class ProductDbManager implements DbManagerOperation<ProductDb, ProductDb
 
     @Override
     public void store(final List<ProductDb> data, final TransactionListener callback) {
-        DatabaseDefinition database = FlowManager.getDatabase(DbFlowDatabase.class);
+        DatabaseDefinition database = FlowManager.getDatabase(PosDatabase.class);
         Transaction transaction = database.beginTransactionAsync(new ITransaction() {
             @Override
             public void execute(DatabaseWrapper databaseWrapper) {

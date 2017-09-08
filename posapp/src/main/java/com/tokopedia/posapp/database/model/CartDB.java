@@ -1,4 +1,4 @@
-package com.tokopedia.core.database.model;
+package com.tokopedia.posapp.database.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ContainerKey;
@@ -8,13 +8,14 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.core.database.DatabaseConstant;
 import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.posapp.database.PosDatabase;
 
 /**
  * Created by okasurya on 8/22/17.
  */
 
 @ModelContainer
-@Table(database = DbFlowDatabase.class)
+@Table(database = PosDatabase.class)
 public class CartDB extends BaseModel {
     @ContainerKey(DatabaseConstant.ID)
     @Column

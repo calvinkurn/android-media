@@ -3,7 +3,7 @@ package com.tokopedia.posapp.database.manager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.tokopedia.core.database.model.CartDB;
+import com.tokopedia.posapp.database.model.CartDB;
 
 import java.util.List;
 
