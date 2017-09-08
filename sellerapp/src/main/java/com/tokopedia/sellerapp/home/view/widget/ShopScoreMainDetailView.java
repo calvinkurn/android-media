@@ -17,10 +17,9 @@ import com.tokopedia.sellerapp.R;
  */
 
 public class ShopScoreMainDetailView extends RelativeLayout {
-    private TextView descriptionTextView;
+
     private TextView shopScoreTextView;
     private ShopScoreMainProgressBarWithLimit progressBar;
-    private TextView shopScorePercentTextView;
 
     public ShopScoreMainDetailView(Context context) {
         super(context);
@@ -48,10 +47,8 @@ public class ShopScoreMainDetailView extends RelativeLayout {
     }
 
     private void initView(Context context) {
-        View view = inflate(context, R.layout.view_shop_score_main_detail, this);
-        descriptionTextView = (TextView) view.findViewById(R.id.text_view_main_score_description);
+        View view = inflate(context, R.layout.widget_shop_score_main_detail, this);
         shopScoreTextView = (TextView) view.findViewById(R.id.text_view_shop_score_big);
-        shopScorePercentTextView = (TextView) view.findViewById(R.id.text_view_shop_score_percent);
         progressBar = (ShopScoreMainProgressBarWithLimit) view.findViewById(R.id.progress_bar_shop_score_with_limit);
     }
 
@@ -59,20 +56,10 @@ public class ShopScoreMainDetailView extends RelativeLayout {
     public void setProgress(float progress) {
         progressBar.setProgress(progress);
         shopScoreTextView.setText(String.valueOf(Math.round(progress)));
-        shopScorePercentTextView.setVisibility(VISIBLE);
     }
 
     public void setLimit(float limit) {
         progressBar.setLimit(limit);
-    }
-
-    public void setDescription(String description) {
-        Spanned concatenated = Html.fromHtml(
-                description +
-                        " " +
-                        getContext().getString(R.string.decription_shop_score_summary_30days_info)
-        );
-        descriptionTextView.setText(concatenated);
     }
 
     public void setProgressBarColor(int progressBarColor) {

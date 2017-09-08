@@ -18,9 +18,7 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModelData;
 
 public class ShopScoreWidget extends FrameLayout {
     private ShopScoreMainDetailView shopScoreMainDetailView;
-    private TextView shopScoreTitleWidget;
     private ShopScoreWidgetCallback callback;
-    private LinearLayout goToDetailButton;
 
     public ShopScoreWidget(Context context) {
         super(context);
@@ -56,42 +54,18 @@ public class ShopScoreWidget extends FrameLayout {
     }
 
     private void initView(Context context) {
-        View view = inflate(context, R.layout.view_shop_score_home, this);
+        View view = inflate(context, R.layout.widget_shop_score, this);
         shopScoreMainDetailView =
                 (ShopScoreMainDetailView) view.findViewById(R.id.shop_score_progress_bar_group);
-        shopScoreTitleWidget = (TextView) view.findViewById(R.id.title_shop_score_widget);
-        goToDetailButton = (LinearLayout) view
-                .findViewById(R.id.text_view_go_to_detail);
-        goToDetailButton.setOnClickListener(goToDetailListener());
-    }
-
-    private OnClickListener goToDetailListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.goToShopScoreDetail();
-            }
-        };
     }
 
     public void renderView(ShopScoreViewModel shopScoreViewModel) {
         setLimit(shopScoreViewModel.getBadgeScore());
         ShopScoreViewModelData data = shopScoreViewModel.getData();
-
-        setTitle(data);
         setDescription(data.getDescription());
         setProgressBarColor(data.getProgressBarColor());
         setProgress(data.getValue());
-        setButtonGoToDetailVisible();
 
-    }
-
-    private void setButtonGoToDetailVisible() {
-        goToDetailButton.setVisibility(VISIBLE);
-    }
-
-    private void setTitle(ShopScoreViewModelData data) {
-        shopScoreTitleWidget.setText(data.getTitle());
     }
 
     private void setProgressBarColor(int progressBarColor) {
@@ -108,7 +82,6 @@ public class ShopScoreWidget extends FrameLayout {
 
     public void setDescription(String description) {
         shopScoreMainDetailView.setVisibility(VISIBLE);
-        shopScoreMainDetailView.setDescription(description);
     }
 
 
