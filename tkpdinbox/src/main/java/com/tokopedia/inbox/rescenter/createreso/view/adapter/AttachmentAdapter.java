@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentAdapterL
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentImage;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +27,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
     private Context context;
     private List<AttachmentViewModel> attachmentViewModelList = new ArrayList<>();
     private AttachmentAdapterListener listener;
+    private int maxAttachmentCount;
 
-    public AttachmentAdapter(Context context, AttachmentAdapterListener attachmentAdapterListener) {
+    public AttachmentAdapter(Context context, int maxAttachmentCount, AttachmentAdapterListener attachmentAdapterListener) {
         this.context = context;
+        this.maxAttachmentCount = maxAttachmentCount;
         this.listener = attachmentAdapterListener;
     }
 
@@ -41,6 +45,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
         notifyDataSetChanged();
     }
 
+    public void deleteAttachment(int position) {
+        attachmentViewModelList.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ItemHolder(LayoutInflater.from(context).inflate(R.layout.item_attachment, parent, false));
@@ -48,12 +57,21 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
 
     @Override
     public void onBindViewHolder(final ItemHolder holder, int position) {
-        if (position == attachmentViewModelList.size()) {
-            //show upload image
-            holder.ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment));
+
+        if (attachmentViewModelList.size() < maxAttachmentCount) {
+            if (position == attachmentViewModelList.size()) {
+                //show upload image
+                holder.ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment));
+            } else {
+                File file = new File(attachmentViewModelList.get(position).getFileLoc());
+                holder.ivImage.setImageURI(Uri.fromFile(file));
+                Glide.with(context).load(attachmentViewModelList.get(position).getFileLoc()).into(holder.ivImage);
+            }
         } else {
-            //show image
-            Glide.with(context).load(attachmentViewModelList.get(position).getUrl()).into(holder.ivImage);
+            //show without upload image icon
+            File file = new File(attachmentViewModelList.get(position).getFileLoc());
+            holder.ivImage.setImageURI(Uri.fromFile(file));
+            Glide.with(context).load(attachmentViewModelList.get(position).getFileLoc()).into(holder.ivImage);
         }
 
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +88,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
 
     @Override
     public int getItemCount() {
-        return attachmentViewModelList.size() + 1;
+        return attachmentViewModelList.size() < maxAttachmentCount ? attachmentViewModelList.size() + 1 : attachmentViewModelList.size();
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder {
