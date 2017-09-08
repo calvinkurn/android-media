@@ -38,7 +38,7 @@ class BrandContainer extends Component {
     })
 
     this.checkLoginBrand = DeviceEventEmitter.addListener('Login', (res) => {
-      this.props.resetBrandsAfterLogin(limit, offset, res.user_id, 'REFRESH')
+      this.props.resetBrandsAfterLogin(limit, offset, res.user_id)
     })
   }
 
