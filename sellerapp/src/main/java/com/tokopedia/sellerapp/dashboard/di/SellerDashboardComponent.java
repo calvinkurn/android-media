@@ -1,11 +1,10 @@
-package com.tokopedia.seller.common.logout.di.component;
+package com.tokopedia.sellerapp.dashboard.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.common.logout.di.module.TkpdSellerLogoutModule;
 import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.product.category.domain.interactor.ClearCategoryCacheUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 
 import dagger.Component;
 
@@ -14,9 +13,6 @@ import dagger.Component;
  */
 @TkpdSellerLogoutScope
 @Component(modules = TkpdSellerLogoutModule.class, dependencies = AppComponent.class)
-public interface TkpdSellerLogoutComponent {
+public interface SellerDashboardComponent {
 
-    ClearCategoryCacheUseCase getClearCategoryCacheUseCase();
-
-    GMStatClearCacheUseCase getGmStatClearUseCase();
 }

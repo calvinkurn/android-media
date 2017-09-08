@@ -3,6 +3,8 @@ package com.tokopedia.core.gcm.data;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -14,6 +16,7 @@ import rx.schedulers.Schedulers;
 public class RegisterDeviceInteractor {
     private final PushNotificationRepository mPushNotificationRepository;
 
+    @Inject
     public RegisterDeviceInteractor() {
         this.mPushNotificationRepository = new PushNotificationDataRepository();
     }
@@ -28,6 +31,10 @@ public class RegisterDeviceInteractor {
 
     public void storeRegistrationDevice(String registrationDevice){
         mPushNotificationRepository.saveRegistrationDevice(registrationDevice);
+    }
+
+    public String getRegistrationToken(){
+        return mPushNotificationRepository.getRegistrationToken().toBlocking().first();
     }
 
 }
