@@ -102,7 +102,7 @@ class App extends Component {
                 colors={['#42b549']} />
             }>
             <OfficialStoreIntro />
-            <BannerContainer />
+            {/* <BannerContainer /> */}
             <CampaignContainer />
             <BrandContainer />
             <Infographic /> 
