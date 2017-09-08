@@ -128,8 +128,8 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
 
             @Override
             public void onKeyboardHide() {
-                mainLayout.requestFocus();
                 buttonApply.setVisibility(View.VISIBLE);
+                buttonApply.requestFocus();
             }
         });
     }
@@ -147,7 +147,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    mainLayout.requestFocus();
+                    KeyboardHandler.hideSoftKeyboard(RevampedDynamicFilterActivity.this);
                 }
             }
         });
