@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class DrawerPosHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
-        DrawerHeaderDataBinder.DrawerHeaderListener {
+        DrawerPosHeaderDataBinder.DrawerHeaderListener {
 
     private TextView shopName;
     private TextView shopLabel;
@@ -53,36 +53,6 @@ public class DrawerPosHelper extends DrawerHelper
                                                    SessionHandler sessionHandler,
                                                    LocalCacheHandler drawerCache) {
         return new DrawerPosHelper(activity, sessionHandler, drawerCache);
-    }
-
-    @Override
-    public void onGoToDeposit() {
-
-    }
-
-    @Override
-    public void onGoToProfile() {
-
-    }
-
-    @Override
-    public void onGoToTopPoints(String topPointsUrl) {
-
-    }
-
-    @Override
-    public void onGoToTopCash(String topCashUrl) {
-
-    }
-
-    @Override
-    public void onGoToTopCashWithOtp(String topCashUrl) {
-
-    }
-
-    @Override
-    public void onGoToProfileCompletion() {
-
     }
 
     @Override
@@ -114,6 +84,7 @@ public class DrawerPosHelper extends DrawerHelper
     public void initDrawer(Activity activity) {
         this.adapter = DrawerAdapter.createAdapter(activity, this, drawerCache);
         this.adapter.setData(createDrawerData());
+        this.adapter.setHeader(new DrawerPosHeaderDataBinder(adapter, activity, this, drawerCache));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
