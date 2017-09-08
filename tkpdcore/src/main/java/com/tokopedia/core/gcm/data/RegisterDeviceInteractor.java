@@ -33,8 +33,4 @@ public class RegisterDeviceInteractor {
         mPushNotificationRepository.saveRegistrationDevice(registrationDevice);
     }
 
-    public String getRegistrationToken(){
-        return mPushNotificationRepository.getRegistrationToken().toBlocking().first();
-    }
-
 }

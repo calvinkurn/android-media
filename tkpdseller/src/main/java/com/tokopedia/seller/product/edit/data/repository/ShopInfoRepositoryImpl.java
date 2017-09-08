@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.edit.data.repository;
 
 import android.content.Context;
 
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.edit.data.mapper.ShopInfoDataToDomainMapper;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
@@ -29,6 +30,11 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
     @Override
     public Observable<AddProductShopInfoDomainModel> getAddProductShopInfo() {
         return shopInfoDataSource.getShopInfo().map(new ShopInfoDataToDomainMapper());
+    }
+
+    @Override
+    public Observable<ShopModel> getShopInfo() {
+        return shopInfoDataSource.getShopInfo();
     }
 
     @Override

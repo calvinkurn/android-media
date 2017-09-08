@@ -72,13 +72,6 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     }
 
     @Override
-    public Observable<String> getRegistrationToken() {
-        return mPushNotificationDataStoreFactory
-                .createDiskPushNotificationDataStore()
-                .getRegistrationDevice();
-    }
-
-    @Override
     public Observable<List<MessagePushNotification>> getSavedMessagePushNotification() {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE, true)
