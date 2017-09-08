@@ -7,7 +7,7 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
  */
 
 public class FeaturedProductModel implements ItemType {
-    public static int TYPE = 128391;
+    public static final int TYPE = 128391;
     private long productId;
 
     public FeaturedProductModel(long productId) {

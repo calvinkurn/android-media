@@ -1,5 +1,6 @@
 package com.tokopedia.seller.goldmerchant.featured.domain.mapper;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
 import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductDomainModel;
 
@@ -50,7 +51,13 @@ public class FeaturedProductMapper implements Func1<FeaturedProductGETModel, Fea
 
     private static List<FeaturedProductDomainModel.WholesaleDetail> convert3(List<FeaturedProductGETModel.WholesaleDetail> wholesaleDetail) {
         List<FeaturedProductDomainModel.WholesaleDetail> details = new ArrayList<>();
-        for (FeaturedProductGETModel.WholesaleDetail detail : wholesaleDetail) {
+
+        if (!CommonUtils.checkCollectionNotNull(details))
+            return details;
+
+        for (int i = 0; i < wholesaleDetail.size(); i++) {
+            FeaturedProductGETModel.WholesaleDetail detail = wholesaleDetail.get(i);
+
             FeaturedProductDomainModel.WholesaleDetail wholesaleDetail1 = new FeaturedProductDomainModel.WholesaleDetail();
 
             wholesaleDetail1.setPrice(detail.getPrice());
@@ -64,7 +71,13 @@ public class FeaturedProductMapper implements Func1<FeaturedProductGETModel, Fea
 
     private static List<FeaturedProductDomainModel.Label> convert2(List<FeaturedProductGETModel.Label> labels) {
         List<FeaturedProductDomainModel.Label> details = new ArrayList<>();
-        for (FeaturedProductGETModel.Label detail : labels) {
+
+        if (!CommonUtils.checkCollectionNotNull(labels))
+            return details;
+
+        for (int i = 0; i < labels.size(); i++) {
+            FeaturedProductGETModel.Label detail = labels.get(i);
+
             FeaturedProductDomainModel.Label wholesaleDetail1 = new FeaturedProductDomainModel.Label();
 
             wholesaleDetail1.setTitle(detail.getTitle());
@@ -87,7 +100,13 @@ public class FeaturedProductMapper implements Func1<FeaturedProductGETModel, Fea
 
     public static List<FeaturedProductDomainModel.Badge> convert(List<FeaturedProductGETModel.Badge> data) {
         List<FeaturedProductDomainModel.Badge> badges = new ArrayList<>();
-        for (FeaturedProductDomainModel.Badge badge : badges) {
+
+        if (!CommonUtils.checkCollectionNotNull(data))
+            return badges;
+
+        for (int i = 0; i < data.size(); i++) {
+            FeaturedProductGETModel.Badge badge = data.get(i);
+
             FeaturedProductDomainModel.Badge badge1 = new FeaturedProductDomainModel.Badge();
             badge1.setImageUrl(badge.getImageUrl());
             badge1.setTitle(badge.getTitle());

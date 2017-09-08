@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.goldmerchant.featured.data.FeaturedProductDataSource;
 import com.tokopedia.seller.goldmerchant.featured.data.cloud.api.FeaturedProductApi;
 import com.tokopedia.seller.goldmerchant.featured.di.scope.FeaturedProductScope;
@@ -13,6 +14,7 @@ import com.tokopedia.seller.goldmerchant.featured.repository.FeaturedProductRepo
 import com.tokopedia.seller.goldmerchant.featured.repository.FeaturedProductRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import dagger.Module;
@@ -45,5 +47,11 @@ public class FeaturedProductModule {
     @Provides
     ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
+    }
+
+    @FeaturedProductScope
+    @Provides
+    ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit) {
+        return retrofit.create(ShopApi.class);
     }
 }

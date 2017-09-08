@@ -1,5 +1,7 @@
 package com.tokopedia.seller.goldmerchant.featured.view.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.goldmerchant.featured.domain.interactor.FeaturedProductPOSTUseCase;
 import com.tokopedia.seller.goldmerchant.featured.domain.interactor.FeaturedProductUseCase;
@@ -20,6 +22,7 @@ import rx.Subscriber;
 
 public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
 
+    private static final String TAG = "FeaturedProductPresente";
     private FeaturedProductPOSTUseCase featuredProductPOSTUseCase;
     private FeaturedProductUseCase featuredProductUseCase;
 
@@ -42,7 +45,7 @@ public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                Log.d(TAG, e.toString());
             }
 
             @Override
@@ -85,7 +88,7 @@ public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                Log.d(TAG, e.toString());
             }
 
             @Override

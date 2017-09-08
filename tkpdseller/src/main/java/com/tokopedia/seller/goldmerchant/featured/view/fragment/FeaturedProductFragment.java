@@ -1,10 +1,16 @@
 package com.tokopedia.seller.goldmerchant.featured.view.fragment;
 
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.featured.di.component.DaggerFeaturedProductComponent;
+import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperAdapter;
+import com.tokopedia.seller.goldmerchant.featured.helper.OnStartDragListener;
+import com.tokopedia.seller.goldmerchant.featured.helper.SimpleItemTouchHelperCallback;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.FeaturedProductAdapter;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
 import com.tokopedia.seller.goldmerchant.featured.view.listener.FeaturedProductView;
@@ -16,10 +22,11 @@ import javax.inject.Inject;
  * Created by normansyahputa on 9/6/17.
  */
 
-public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, FeaturedProductModel> implements FeaturedProductView {
+public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, FeaturedProductModel> implements FeaturedProductView, OnStartDragListener {
 
     @Inject
     FeaturedProductPresenterImpl featuredProductPresenter;
+    private ItemTouchHelper mItemTouchHelper;
 
     @Override
     protected void initInjector() {
@@ -42,8 +49,16 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     }
 
     @Override
+    protected void setViewListener() {
+        super.setViewListener();
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter) adapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    @Override
     protected BaseListAdapter<FeaturedProductModel> getNewAdapter() {
-        return new FeaturedProductAdapter();
+        return new FeaturedProductAdapter(this);
     }
 
     @Override
@@ -54,5 +69,10 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     @Override
     public void onPostSuccess() {
 
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 }
