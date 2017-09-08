@@ -99,8 +99,8 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource){
-        return new ProductDraftRepositoryImpl(productDraftDataSource);
+    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
+        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
     }
 
     @ProductAddScope

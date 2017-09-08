@@ -1,7 +1,8 @@
 package com.tokopedia.seller.product.draft.di.module;
 
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
@@ -26,8 +27,8 @@ public class ProductDraftListModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource){
-        return new ProductDraftRepositoryImpl(productDraftDataSource);
+    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
+        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
     }
 
     @ProductAddScope

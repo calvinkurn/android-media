@@ -122,6 +122,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String EXTRA_STATE_CLIENT_NUMBER = "EXTRA_STATE_CLIENT_NUMBER";
     private static final String EXTRA_STATE_CATEGORY_DATA = "EXTRA_STATE_CATEGORY_DATA";
     private static final String EXTRA_STATE_BANNER_LIST_DATA = "EXTRA_STATE_BANNER_LIST_DATA";
+    private static final String EXTRA_STATE_OTHER_BANNER_LIST_DATA = "EXTRA_STATE_OTHER_BANNER_LIST_DATA";
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA";
     private static final String EXTRA_STATE_INSTANT_CHECKOUT_CHECKED =
             "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
@@ -211,6 +212,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         state.putParcelableArrayList(
                 EXTRA_STATE_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) bannerDataListState
         );
+        state.putParcelableArrayList(
+                EXTRA_STATE_OTHER_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) otherBannerDataListState
+        );
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
         state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
@@ -224,6 +228,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         isInstantCheckoutChecked = savedState.getBoolean(EXTRA_STATE_INSTANT_CHECKOUT_CHECKED);
         categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
         bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
+        otherBannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_OTHER_BANNER_LIST_DATA);
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
         voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
         digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);

@@ -41,7 +41,6 @@ import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;

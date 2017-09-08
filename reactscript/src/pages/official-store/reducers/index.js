@@ -15,6 +15,7 @@ import {
     REMOVE_WISHLIST_PDP_CAMPAIGN,
     ADD_TO_WISHLIST_BRAND_PDP,
     REMOVE_WISHLIST_BRAND_PDP,
+    RESET_BRANDS,
     CHECKOUT
 } from '../actions/actions'
 
@@ -236,6 +237,12 @@ const brands = (state = {
     }
 }, action) => {
     switch (action.type) {
+        case `${RESET_BRANDS}_${FULFILLED}`:
+            const brands = action.payload.data
+            return {
+                ...state,
+                items : brands
+            }
         case `${FETCH_BRANDS}_${PENDING}`:
             return {
                 ...state,

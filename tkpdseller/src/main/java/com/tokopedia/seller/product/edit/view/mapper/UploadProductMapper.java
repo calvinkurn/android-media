@@ -128,7 +128,6 @@ public class UploadProductMapper {
         viewModel.setPoProcessValue(domainModel.getPoProcessValue());
         viewModel.setServerId(domainModel.getServerId());
         viewModel.setProductId(domainModel.getProductId());
-        viewModel.setSwitchVariant(domainModel.getSwitchVariant());
         ProductVariantDataSubmit productVariantDataSubmit = domainModel.getProductVariantDataSubmit();
         viewModel.setProductVariantData(productVariantDataSubmit);
         viewModel.setVariantStringSelection(domainModel.getVariantStringSelection());

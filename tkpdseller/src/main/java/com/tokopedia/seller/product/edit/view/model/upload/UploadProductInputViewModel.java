@@ -86,10 +86,6 @@ public class UploadProductInputViewModel {
         this.productVideos = productVideos;
     }
 
-    public void setSwitchVariant(int switchVariant) {
-        this.switchVariant = switchVariant;
-    }
-
     public int getSwitchVariant() {
         return switchVariant;
     }
@@ -108,6 +104,13 @@ public class UploadProductInputViewModel {
 
     public void setProductVariantData(ProductVariantDataSubmit productVariantDataSubmit) {
         this.productVariantDataSubmit = productVariantDataSubmit;
+        if (productVariantDataSubmit== null
+                || productVariantDataSubmit.getProductVariantUnitSubmitList()== null
+                || productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
+            switchVariant = ProductVariantConstant.SWITCH_VARIANT_NOT_EXIST;
+        } else {
+            switchVariant = ProductVariantConstant.SWITCH_VARIANT_EXIST;
+        }
     }
 
     public String getProductName() {

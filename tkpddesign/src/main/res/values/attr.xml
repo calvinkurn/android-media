@@ -94,4 +94,11 @@
         <attr name="tckv_indicator_on_color" format="color" />
         <attr name="tckv_indicator_off_color" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="ReputationView">
+        <attr name="rep_layout" format="string" />
+        <attr name="rep_icon" format="reference" />
+        <attr name="rep_title_text" format="string" />
+    </declare-styleable>
+
 </resources>

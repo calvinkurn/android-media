@@ -24,6 +24,7 @@ import OfficialStoreIntro from '../components/OfficialStoreIntro'
 import { fetchBanners, fetchCampaigns, fetchBrands, refreshState, reloadState } from '../actions/actions'
 import NotConnect from '../NotConnect'
 
+import { NavigationModule } from 'NativeModules'
 
 
 class App extends Component {
@@ -34,8 +35,8 @@ class App extends Component {
 
   componentWillMount(){
     const { dispatch } = this.props
-    AsyncStorage.getItem('user_id').then(uid => { dispatch(reloadState()) })
-    
+    NavigationModule.getCurrentUserId().then(uuid => dispatch(reloadState()))
+
     NetInfo.fetch().then((reach) => {
       this.setState({ statusConnection: reach })
     })
@@ -53,13 +54,14 @@ class App extends Component {
   _onRefresh() {
     this.setState({ refreshing: true });
     const { dispatch } = this.props
-    AsyncStorage.getItem('user_id')
-      .then(uid => {
-          dispatch(refreshState())
-          dispatch(fetchBanners())
-          dispatch(fetchCampaigns(uid))
-          dispatch(fetchBrands(10, 0, uid, 'REFRESH'))
-      })
+
+    NavigationModule.getCurrentUserId().then(uuid => {
+      dispatch(refreshState())
+      dispatch(fetchBanners())
+      dispatch(fetchCampaigns(uid))
+      dispatch(fetchBrands(10, 0, uid, 'REFRESH'))
+    })
+    
     setTimeout(() => {
       this.setState({ refreshing: false });
     }, 5000)

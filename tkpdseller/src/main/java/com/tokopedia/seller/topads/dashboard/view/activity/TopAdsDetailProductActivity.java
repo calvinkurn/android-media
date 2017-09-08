@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.dashboard.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -31,6 +34,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 
@@ -59,18 +63,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
                         .putExtras(extras);
             }
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                launchIntent = new Intent(Intent.ACTION_VIEW);
-                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            }
-            return launchIntent;
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
         }
     }
 

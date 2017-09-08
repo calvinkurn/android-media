@@ -57,8 +57,8 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource dataSource){
-        return new ProductDraftRepositoryImpl(dataSource);
+    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource dataSource, @ApplicationContext Context context){
+        return new ProductDraftRepositoryImpl(dataSource, context);
     }
 
     @TkpdSellerLogoutScope
