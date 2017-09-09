@@ -1,0 +1,108 @@
+package com.tokopedia.sellerapp.dashboard.presenter;
+
+import android.util.Log;
+import android.view.View;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.home.view.ReputationView;
+import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreMainDataUseCase;
+import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoUseCase;
+import com.tokopedia.sellerapp.dashboard.view.SellerDashboardView;
+import com.tokopedia.sellerapp.home.view.mapper.ShopScoreMapper;
+import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
+
+import javax.inject.Inject;
+
+import rx.Observer;
+import rx.Subscriber;
+
+/**
+ * Created by User on 9/8/2017.
+ */
+
+public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboardView> {
+    private GetShopInfoUseCase getShopInfoUseCase;
+    private GetShopScoreMainDataUseCase getShopScoreMainDataUseCase;
+
+    @Inject
+    public SellerDashboardPresenter(GetShopInfoUseCase getShopInfoUseCase,
+                                    GetShopScoreMainDataUseCase getShopScoreMainDataUseCase) {
+        this.getShopInfoUseCase = getShopInfoUseCase;
+        this.getShopScoreMainDataUseCase = getShopScoreMainDataUseCase;
+    }
+
+    public void getShopInfo() {
+        getShopInfoUseCase.execute(RequestParams.EMPTY, getShopInfoSubscriber());
+    }
+
+    public void getShopScoreMainData() {
+        getShopScoreMainDataUseCase.execute(
+                RequestParams.EMPTY,
+                getShopScoreSubscriber()
+        );
+    }
+
+    private Subscriber<ShopScoreMainDomainModel> getShopScoreSubscriber() {
+        return new Subscriber<ShopScoreMainDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorShopScore();
+            }
+
+            @Override
+            public void onNext(ShopScoreMainDomainModel shopScoreMainDomainModel) {
+                ShopScoreViewModel shopScoreViewModel = ShopScoreMapper.map(shopScoreMainDomainModel);
+                getView().renderShopScore(shopScoreViewModel);
+            }
+        };
+    }
+
+    private Subscriber<ShopModel> getShopInfoSubscriber() {
+        return new Subscriber<ShopModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorGetShopInfo(e);
+            }
+
+            @Override
+            public void onNext(ShopModel shopModel) {
+                if (isViewAttached()) {
+                    getView().onSuccessGetShopInfo(shopModel.info);
+                    getView().onSuccessGetShopOpenInfo(shopModel.isOpen > 0);
+                    getView().onSuccessGetShopTransaction(shopModel.shopTxStats);
+
+                    ReputationView.ReputationViewModel reputationViewModel = new ReputationView.ReputationViewModel();
+                    reputationViewModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
+                    reputationViewModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
+                    reputationViewModel.reputationPoints = shopModel.stats.shopReputationScore;
+                    reputationViewModel.stats = shopModel.stats;
+                    getView().onSuccessGetReputation(reputationViewModel);
+
+                }
+            }
+        };
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getShopInfoUseCase.unsubscribe();
+        getShopScoreMainDataUseCase.unsubscribe();
+    }
+}

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.domain;
 
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 
 import rx.Observable;
@@ -12,4 +13,5 @@ public interface ShopInfoRepository {
     Observable<AddProductShopInfoDomainModel> getAddProductShopInfo();
     String getShopId();
     Observable<Boolean> clearCacheShopInfo();
+    Observable<ShopModel> getShopInfo();
 }
