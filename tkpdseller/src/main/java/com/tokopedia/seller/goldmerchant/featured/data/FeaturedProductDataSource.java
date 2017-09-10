@@ -3,6 +3,8 @@ package com.tokopedia.seller.goldmerchant.featured.data;
 import com.tokopedia.seller.common.data.mapper.SimpleResponseMapper;
 import com.tokopedia.seller.goldmerchant.featured.data.cloud.api.FeaturedProductApi;
 import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
+import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;
+import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
 
 import javax.inject.Inject;
 
@@ -22,5 +24,9 @@ public class FeaturedProductDataSource {
 
     public Observable<FeaturedProductGETModel> productGETModelObservable(String shopId) {
         return featuredProductApi.getFeaturedProduct(shopId).map(new SimpleResponseMapper<FeaturedProductGETModel>());
+    }
+
+    public Observable<FeaturedProductPOSTModel> productPOSTModelObservable(PostFeaturedProductModel postFeaturedProductModel) {
+        return featuredProductApi.postFeaturedProduct(postFeaturedProductModel).map(new SimpleResponseMapper<FeaturedProductPOSTModel>());
     }
 }

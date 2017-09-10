@@ -7,10 +7,50 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
  */
 
 public class FeaturedProductModel implements ItemType {
-    public static int TYPE = 128391;
+    public static final int TYPE = 128391;
+    private long productId;
+
+    private String productName;
+    private String productPrice;
+    private String imageUrl;
+
+    public FeaturedProductModel() {
+    }
 
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
