@@ -33,4 +33,8 @@
         <key>toko_cash_label</key>
         <value>TokoCash</value>
     </entry>
+    <entry>
+        <key>mainapp_react_show_os</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
