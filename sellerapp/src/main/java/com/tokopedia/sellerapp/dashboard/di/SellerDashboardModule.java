@@ -6,6 +6,8 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.goldmerchant.apis.GoldMerchantApi;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
@@ -17,6 +19,7 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
+import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 
 import dagger.Module;
 import dagger.Provides;
@@ -70,5 +73,11 @@ public class SellerDashboardModule {
     @Provides
     ShopScoreDetailMapper provideShopScoreDetailMapper(@ApplicationContext Context context){
         return new ShopScoreDetailMapper(context);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    TickerApiSeller provideTickerApiSeller(@MojitoQualifier Retrofit retrofit){
+        return retrofit.create(TickerApiSeller.class);
     }
 }

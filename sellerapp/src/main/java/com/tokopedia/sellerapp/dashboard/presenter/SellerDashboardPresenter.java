@@ -5,15 +5,14 @@ import android.view.View;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreMainDataUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
-import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoUseCase;
+import com.tokopedia.sellerapp.dashboard.usecase.GetTickerUseCase;
 import com.tokopedia.sellerapp.dashboard.view.SellerDashboardView;
+import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.view.mapper.ShopScoreMapper;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 
@@ -29,12 +28,15 @@ import rx.Subscriber;
 public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboardView> {
     private GetShopInfoUseCase getShopInfoUseCase;
     private GetShopScoreMainDataUseCase getShopScoreMainDataUseCase;
+    private GetTickerUseCase getTickerUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoUseCase getShopInfoUseCase,
-                                    GetShopScoreMainDataUseCase getShopScoreMainDataUseCase) {
+                                    GetShopScoreMainDataUseCase getShopScoreMainDataUseCase,
+                                    GetTickerUseCase getTickerUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getShopScoreMainDataUseCase = getShopScoreMainDataUseCase;
+        this.getTickerUseCase = getTickerUseCase;
     }
 
     public void getShopInfo() {
@@ -46,6 +48,29 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                 RequestParams.EMPTY,
                 getShopScoreSubscriber()
         );
+    }
+
+    public void getTicker(){
+        getTickerUseCase.execute(RequestParams.EMPTY, getTickerSubscriber());
+    }
+
+    private Subscriber<Ticker.Tickers[]> getTickerSubscriber() {
+        return new Subscriber<Ticker.Tickers[]>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorGetTickers(e);
+            }
+
+            @Override
+            public void onNext(Ticker.Tickers[] tickers) {
+                getView().onSuccessGetTickers(tickers);
+            }
+        };
     }
 
     private Subscriber<ShopScoreMainDomainModel> getShopScoreSubscriber() {
@@ -104,5 +129,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         super.detachView();
         getShopInfoUseCase.unsubscribe();
         getShopScoreMainDataUseCase.unsubscribe();
+        getTickerUseCase.unsubscribe();
     }
 }

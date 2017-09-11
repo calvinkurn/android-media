@@ -19,6 +19,7 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.SellerDashboardView;
+import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 
 import javax.inject.Inject;
@@ -133,6 +134,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onResume();
         sellerDashboardPresenter.getShopInfo();
         sellerDashboardPresenter.getShopScoreMainData();
+        sellerDashboardPresenter.getTicker();
     }
 
     @Override
@@ -171,6 +173,16 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onErrorShopScore() {
         //TODO snackbar shop score
+    }
+
+    @Override
+    public void onErrorGetTickers(Throwable throwable) {
+        // TODO onError getTickers
+    }
+
+    @Override
+    public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
+        // TODO onSuccess get Tickers
     }
 
     @Override
