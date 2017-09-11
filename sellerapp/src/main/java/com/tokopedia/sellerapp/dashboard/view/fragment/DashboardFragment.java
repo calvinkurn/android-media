@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
 import com.tokopedia.design.ticker.TickerView;
@@ -21,9 +22,9 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
-import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidgetCallback;
 
 import javax.inject.Inject;
 
@@ -147,6 +148,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onResume();
         sellerDashboardPresenter.getShopInfo();
         sellerDashboardPresenter.getShopScoreMainData();
+        sellerDashboardPresenter.getTicker();
+        sellerDashboardPresenter.getNotification();
     }
 
     @Override
@@ -184,6 +187,34 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onErrorShopScore(Throwable t) {
         //TODO snackbar shop score
+    }
+
+    @Override
+    public void onErrorGetTickers(Throwable throwable) {
+        // TODO onError getTickers
+    }
+
+    @Override
+    public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
+        // TODO onSuccess get Tickers
+    }
+
+    @Override
+    public void onErrorGetNotifiction(String message) {
+        // TODO on Error get notification
+    }
+
+    @Override
+    public void onSuccessGetNotification(DrawerNotification drawerNotification) {
+        // TODO drawer nofitication
+        int newOrderCount = drawerNotification.getSellingNewOrder();
+        int shippingConfirmation = drawerNotification.getSellingShippingConfirmation();
+        int shippingStatus = drawerNotification.getSellingShippingStatus();
+
+        int inboxCount = drawerNotification.getInboxMessage();
+        int discussCount = drawerNotification.getInboxTalk();
+        int reviewCount = drawerNotification.getInboxReview();
+
     }
 
     @Override

@@ -2,10 +2,17 @@ package com.tokopedia.sellerapp.dashboard.di;
 
 import android.content.Context;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
+import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
+import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.goldmerchant.apis.GoldMerchantApi;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
@@ -17,6 +24,7 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
+import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 
 import dagger.Module;
 import dagger.Provides;
@@ -71,4 +79,24 @@ public class SellerDashboardModule {
     ShopScoreDetailMapper provideShopScoreDetailMapper(@ApplicationContext Context context){
         return new ShopScoreDetailMapper(context);
     }
+
+    @SellerDashboardScope
+    @Provides
+    TickerApiSeller provideTickerApiSeller(@MojitoQualifier Retrofit retrofit){
+        return retrofit.create(TickerApiSeller.class);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    NotificationRepository provideNotificationRepository(NotificationSourceFactory notificationSourceFactory){
+        return new NotificationRepositoryImpl(notificationSourceFactory);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context){
+        return new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+    }
+
+
 }
