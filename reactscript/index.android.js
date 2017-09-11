@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   AppState,
+  UIManager,
   AsyncStorage,
   View
 } from 'react-native';
@@ -16,6 +17,7 @@ import OfficialStore from './src/pages/official-store/setup'
 
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class Home extends Component {
   render(){
