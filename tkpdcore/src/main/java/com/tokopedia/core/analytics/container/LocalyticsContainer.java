@@ -97,10 +97,9 @@ public class LocalyticsContainer implements ILocalyticsContainer {
             try{
                 appl.registerActivityLifecycleCallbacks(new LocalyticsActivityLifecycleCallbacks(context));
             }catch (RuntimeException e){
-                ((Application) MainApplication.getAppContext()).registerActivityLifecycleCallbacks(new LocalyticsActivityLifecycleCallbacks(context));
                 e.printStackTrace();
             }catch (Exception e){
-
+                e.printStackTrace();
             }
         }
         Localytics.setMessagingListener(msgListener);

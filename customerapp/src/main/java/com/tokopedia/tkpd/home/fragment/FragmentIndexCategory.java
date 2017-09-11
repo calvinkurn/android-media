@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -73,7 +72,6 @@ import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -121,14 +119,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.schedulers.TimeInterval;
 
 
 /**
@@ -760,7 +750,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 getActivity().startActivity(
                         ReactNativeOfficialStoresActivity.createReactNativeActivity(
                                 getActivity(), ReactConst.Screen.OFFICIAL_STORE,
-                                SessionHandler.getLoginID(getActivity()),
                                 getString(R.string.react_native_banner_official_title)
                         )
                 );

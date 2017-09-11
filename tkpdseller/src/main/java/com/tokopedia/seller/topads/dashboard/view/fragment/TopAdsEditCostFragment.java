@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -39,6 +40,7 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
     protected void initView(View view) {
         super.initView(view);
         headerText.setVisibility(View.GONE);
+        titleCost.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         submitButton.setText(getString(R.string.label_top_ads_save));
     }
 
