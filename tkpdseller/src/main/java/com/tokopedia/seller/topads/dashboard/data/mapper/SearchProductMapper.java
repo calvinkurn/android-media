@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.dashboard.data.mapper;
 
 import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 
 import java.util.ArrayList;
 import java.util.List;

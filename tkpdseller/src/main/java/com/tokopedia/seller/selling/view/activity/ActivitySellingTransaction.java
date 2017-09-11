@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,8 +32,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
@@ -118,16 +123,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .setData(uri.build())
                     .putExtras(extras);
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            }
-            return launchIntent;
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
         }
     }
 
@@ -463,8 +459,8 @@ public class ActivitySellingTransaction extends TkpdActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!GlobalConfig.isSellerApp()) {
             getMenuInflater().inflate(R.menu.cart_and_search, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
-            int CartCache = Cache.getInt("is_has_cart");
+            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
             } else {

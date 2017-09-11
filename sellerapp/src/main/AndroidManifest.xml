@@ -68,10 +68,13 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
+        <meta-data
+            android:name="APP_ID"
+            android:value="@string/key_moengage" />
 
         <meta-data
             android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="OQcSB25ec2f92263c41b5a3d10152ace7888e" />
+            android:value="@string/key_truecaller_seller_app" />
 
         <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
 
@@ -148,7 +151,15 @@
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
             android:exported="true"/>
 
-        <activity android:name=".deeplink.DeepLinkHandlerActivity"/>
+        <activity
+            android:name=".deeplink.DeepLinkHandlerActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sellerapp" />
+            </intent-filter>
+        </activity>
     </application>
-
 </manifest>

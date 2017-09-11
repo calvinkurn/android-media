@@ -18,6 +18,7 @@ import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
@@ -39,6 +40,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
+        generateConsumerAppNetworkKeys();
         initializeDatabase();
         super.onCreate();
 
@@ -49,6 +51,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -78,6 +81,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
         TkpdBaseURL.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TkpdBaseURL.SCROOGE_DOMAIN = ConsumerAppBaseUrl.SCROOGE_DOMAIN;
+        TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = ConsumerAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
+    }
+
+    private void generateConsumerAppNetworkKeys() {
+        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
     }
 
     public void initializeDatabase() {

@@ -26,15 +26,18 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
@@ -92,6 +95,10 @@ public class DrawerSellerHelper extends DrawerHelper
 
         data.add(getGoldMerchantMenu());
         data.add(getPaymentAndTopupMenu());
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_mitra_toppers),
+                R.drawable.ic_mitra_toppers,
+                TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),
                 R.drawable.statistik_icon,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
@@ -205,6 +212,9 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_OPENED, false),
                 0);
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_add_product),
+                TkpdState.DrawerPosition.ADD_PRODUCT,
+                true));
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_product_list),
                 TkpdState.DrawerPosition.MANAGE_PRODUCT,
                 true));
@@ -355,6 +365,10 @@ public class DrawerSellerHelper extends DrawerHelper
                     intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
                     context.startActivity(intent);
                     break;
+                case TkpdState.DrawerPosition.ADD_PRODUCT:
+                    intent = new Intent(context, ProductAddActivity.class);
+                    context.startActivity(intent);
+                    break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
@@ -384,6 +398,10 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(intent);
                     UnifyTracking.eventClickGMStat();
                     break;
+                case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
+                    intent = new Intent(context, MitraToppersActivity.class);
+                    context.startActivity(intent);
+                    break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads();
                     intent = new Intent(context, TopAdsDashboardActivity.class);
@@ -411,7 +429,7 @@ public class DrawerSellerHelper extends DrawerHelper
     @Override
     public void onGoToProfile() {
         context.startActivity(
-                PeopleInfoDrawerActivity.createInstance(context, SessionHandler.getLoginID(context))
+                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID(context))
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 

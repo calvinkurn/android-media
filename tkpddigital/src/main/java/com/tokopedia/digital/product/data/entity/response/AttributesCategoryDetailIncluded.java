@@ -51,6 +51,13 @@ public class AttributesCategoryDetailIncluded {
     @SerializedName("data_title")
     @Expose
     private String dataTitle;
+    @SerializedName("ussd")
+    @Expose
+    private String ussdCode;
+
+    public String getUssdCode() {
+        return ussdCode;
+    }
 
     public String getName() {
         return name;
