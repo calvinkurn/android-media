@@ -1,0 +1,56 @@
+package com.tokopedia.seller.goldmerchant.featured.view.adapter.model;
+
+import com.tokopedia.seller.base.view.adapter.ItemType;
+
+/**
+ * Created by normansyahputa on 9/6/17.
+ */
+
+public class FeaturedProductModel implements ItemType {
+    public static final int TYPE = 128391;
+    private long productId;
+
+    private String productName;
+    private String productPrice;
+    private String imageUrl;
+
+    public FeaturedProductModel() {
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+}

@@ -135,4 +135,7 @@
     <string name="title_activity_product_list_picker">Pilih Produk Unggulan</string>
     <string name="product_list_picker_variant_count">%1$d Produk Unggulan terpilih</string>
 
+    <!-- featured product -->
+    <string name="featured_product_activity_title">Featured Product</string>
+
 </resources>
