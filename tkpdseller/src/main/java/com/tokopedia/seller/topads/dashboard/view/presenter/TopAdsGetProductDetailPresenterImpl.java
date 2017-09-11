@@ -27,12 +27,11 @@ public class TopAdsGetProductDetailPresenterImpl<T extends TopAdsGetProductDetai
                         productId), new Subscriber<ProductListDomain>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        getView().onErrorLoadTopAdsProduct(e.getLocalizedMessage());
                     }
 
                     @Override

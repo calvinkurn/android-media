@@ -475,6 +475,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        topAdsRecyclerAdapter.reset();
+
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         topAdsRecyclerAdapter.setEndlessScrollListener();

@@ -1,9 +1,13 @@
 package com.tokopedia.tkpdpdp;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -41,9 +45,15 @@ public class DinkSuccessActivity extends TActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle!=null){
-            tvTitle.setText(String.format(getString(R.string.promo_dink_success),
-                    bundle.getString(EXTRA_PRODUCT)));
+        if (bundle != null) {
+            String productTitle = bundle.getString(EXTRA_PRODUCT, "");
+            String text = String.format(getString(R.string.promo_dink_success), productTitle);
+            SpannableString spannableString = new SpannableString(text);
+            StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+            int start = 18;
+            int end = 18 + productTitle.length();
+            spannableString.setSpan(boldSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tvTitle.setText(spannableString);
         }
 
     }
