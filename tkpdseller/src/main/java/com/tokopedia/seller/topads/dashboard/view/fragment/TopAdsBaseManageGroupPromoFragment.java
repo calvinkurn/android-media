@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -41,16 +43,15 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     protected EditText inputNewGroup;
     private TextInputLayout textInputLayoutNewGroup;
-    private TextView viewInfoNewGroup;
     protected TopAdsRadioExpandView viewRadioNewGroup;
 
     protected TopAdsCustomAutoCompleteTextView inputChooseGroup;
-    private TextView viewInfoChooseGroup;
     private TextInputLayout textInputLayoutChooseGroup;
     protected TopAdsRadioExpandView viewRadioChooseGroup;
 
     protected TopAdsRadioExpandView viewRadioNotInGroup;
     private Button buttonNext;
+    protected TextView titleChoosePromo;
 
     private TopAdsAutoCompleteAdapter adapterChooseGroup;
     private ArrayList<String> groupNames = new ArrayList<>();
@@ -119,12 +120,10 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         viewRadioNewGroup = (TopAdsRadioExpandView) view.findViewById(R.id.view_radio_new_group);
         viewRadioChooseGroup = (TopAdsRadioExpandView) view.findViewById(R.id.view_radio_choose_group);
         viewRadioNotInGroup = (TopAdsRadioExpandView) view.findViewById(R.id.view_radio_not_in_group);
-        viewInfoNewGroup = (TextView) view.findViewById(R.id.view_info_radio_new_group);
-        viewInfoChooseGroup = (TextView) view.findViewById(R.id.view_info_radio_choose_group);
+        titleChoosePromo = (TextView) view.findViewById(R.id.title_choose_promo);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         buttonNext.setText(getTitleButtonNext());
-        setVisibilityInfoOption();
 
         // prevent other edit texts on focusing on start
         view.requestFocus();
@@ -254,6 +253,16 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         onSubmitFormNewGroup(inputNewGroup.getText().toString());
     }
 
+    @Override
+    public void showErrorGroupNameNotValid() {
+        textInputLayoutNewGroup.setError(getString(R.string.top_ads_title_group_name_not_valid));
+    }
+
+    @Override
+    public void hideErrorGroupNameNotValid() {
+        textInputLayoutNewGroup.setError(null);
+    }
+
     private View.OnClickListener onClickNext() {
         return new View.OnClickListener() {
             @Override
@@ -310,36 +319,11 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.label_top_ads_error_choose_one_option));
     }
 
-
-    private void setVisibilityInfoOption() {
-        if (getVisibleInfoNewGroupOption()) {
-            viewInfoNewGroup.setVisibility(View.VISIBLE);
-            viewInfoNewGroup.setText(getTextInfoNewGroupOption());
-        } else {
-            viewInfoNewGroup.setVisibility(View.GONE);
-        }
-
-        if (getVisibleInfoChooseGroupOption()) {
-            viewInfoChooseGroup.setText(getTextInfoChooseGroupOption());
-            viewInfoChooseGroup.setVisibility(View.VISIBLE);
-        } else {
-            viewInfoChooseGroup.setVisibility(View.GONE);
-        }
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
     }
-
-    protected abstract String getTextInfoChooseGroupOption();
-
-    protected abstract String getTextInfoNewGroupOption();
-
-    protected abstract boolean getVisibleInfoChooseGroupOption();
-
-    protected abstract boolean getVisibleInfoNewGroupOption();
 
     protected abstract void onSubmitFormNewGroup(String groupName);
 

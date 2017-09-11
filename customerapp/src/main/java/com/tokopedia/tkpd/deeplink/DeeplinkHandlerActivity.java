@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.SessionApplinkModule;
+import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -39,7 +41,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
         RideDeeplinkModule.class,
-        DiscoveryApplinkModule.class
+        DiscoveryApplinkModule.class,
+        SessionApplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -53,7 +56,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
                 new RideDeeplinkModuleLoader(),
-                new DiscoveryApplinkModuleLoader()
+                new DiscoveryApplinkModuleLoader(),
+                new SessionApplinkModuleLoader()
         );
     }
 
@@ -65,7 +69,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         if (getIntent() != null) {
             Intent intent = getIntent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri applink = intent.getData();
+            Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(applink);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 deepLinkDelegate.dispatchFrom(this, intent);

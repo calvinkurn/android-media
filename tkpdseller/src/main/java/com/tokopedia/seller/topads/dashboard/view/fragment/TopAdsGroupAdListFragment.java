@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
@@ -35,7 +38,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     protected void searchForPage(int page) {
-        presenter.searchAd(startDate, endDate, keyword, status, page);
+        presenter.searchAd(startDate, endDate, keyword, status, getCurrentPage());
     }
 
     @Override
@@ -77,6 +80,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     public void onCreateAd() {
+        UnifyTracking.eventTopAdsProductNewPromoGroup();
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }
@@ -87,7 +91,39 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-            setAndSearchForPage(START_PAGE);
+            resetPageAndSearch();
+        }
+    }
+
+    @Override
+    public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        super.onDateChoosen(sDate, eDate, lastSelection, selectionType);
+        trackingDateTopAds(lastSelection, selectionType);
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsProductPageGroupDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

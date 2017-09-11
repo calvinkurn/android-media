@@ -113,8 +113,13 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("toppicks"));
     }
 
+    private static boolean isHelp(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("bantuan"));
+    }
+
     private static boolean isProduct(List<String> linkSegment) {
         return (linkSegment.size() == 2
+                && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
                 && !isCatalog(linkSegment)

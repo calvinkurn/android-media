@@ -9,9 +9,6 @@ import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatA
 import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.SHOP_CAT;
 import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.TRANS_GRAPH;
 import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.TRANS_TABLE;
-import static com.tokopedia.seller.product.constant.UploadToTypeDef.TYPE_ACTIVE;
-import static com.tokopedia.seller.product.constant.UploadToTypeDef.TYPE_NOT_ACTIVE;
-import static com.tokopedia.seller.product.constant.UploadToTypeDef.TYPE_WAREHOUSE;
 
 /**
  * @author normansyahputa on 4/25/17.

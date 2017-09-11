@@ -29,7 +29,7 @@ public interface OnTripMapContract {
 
 //        boolean isWaitingResponse();
 
-        void reDrawDriverMarker(RideRequest result);
+        void reDrawDriverMarker(double latitude, double longitude, float bearing);
 
         void hideRideRequestStatus();
 

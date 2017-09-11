@@ -446,7 +446,10 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                             return;
                         }
                         if (verifyData()) {
+                            UnifyTracking.eventCreateShopFillBiodata();
                             view.startOpenShopEditShippingActivity();
+                        }else{
+                            UnifyTracking.eventCreateShopFillBiodataError();
                         }
                     }
                 }));
@@ -493,6 +496,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
         int type = resultData.getInt(ShopEditService.TYPE, ShopEditService.INVALID_TYPE);
         switch (resultCode) {
             case ShopEditServiceConstant.STATUS_RUNNING:
+                UnifyTracking.eventCreateShopFillLogistic();
                 switch (type) {
                     case ShopEditServiceConstant.CREATE_SHOP:
                         view.showProgress(true);
@@ -517,6 +521,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 break;
             case ShopEditService.STATUS_ERROR:
                 String errorMessage = resultData.getString(ShopEditServiceConstant.MESSAGE_ERROR_FLAG);
+                UnifyTracking.eventCreateShopFillLogisticError();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         shopCreateParams.setShopImgAvatarSrc(resultData.getString(PIC_SRC));

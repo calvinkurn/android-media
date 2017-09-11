@@ -21,6 +21,7 @@ public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
     private static final int GM_PRODUCT = 100;
     private final List<GmProductViewModel> data;
     private final GmProductAdapterCallback listener;
+    private String packageName;
 
     public GmProductAdapter(GmProductAdapterCallback listener) {
         data = new ArrayList<>();
@@ -59,13 +60,22 @@ public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
                 listener.selectedProductId(
                         Integer.valueOf(data.get(position).getProductId())
                 );
+                updatePackageName(position);
                 GmProductAdapter.this.notifyDataSetChanged();
             }
         });
+        boolean isSelected = Integer.valueOf(data.get(position).getProductId())
+                .equals(listener.getSelectedProductId());
         holder.renderData(data.get(position),
-                Integer.valueOf(data.get(position).getProductId())
-                        .equals(listener.getSelectedProductId())
+                isSelected
         );
+        if(isSelected){
+            updatePackageName(position);
+        }
+    }
+
+    private void updatePackageName(int position) {
+        packageName = data.get(position).getName();
     }
 
     @Override
@@ -93,5 +103,9 @@ public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
     public void clearDatas() {
         data.clear();
         notifyDataSetChanged();
+    }
+
+    public String getProductSelection() {
+        return packageName;
     }
 }

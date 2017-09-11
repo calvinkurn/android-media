@@ -37,6 +37,7 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
     TextView title;
     View mainView;
     View seeAll;
+    TextView seeAllText;
 
     private OfficialStoreCampaignAdapter adapter;
 
@@ -48,6 +49,7 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         title = (TextView) itemView.findViewById(R.id.official_store_title);
         mainView = itemView.findViewById(R.id.main_view);
         seeAll = itemView.findViewById(R.id.footer);
+        seeAllText = (TextView) itemView.findViewById(R.id.see_all_text);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
@@ -100,6 +102,12 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
             }
         });
         seeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onSeeAllOfficialStoresFromCampaign(officialStoreViewModel.getRedirectUrl());
+            }
+        });
+        seeAllText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewListener.onSeeAllOfficialStoresFromCampaign(officialStoreViewModel.getRedirectUrl());

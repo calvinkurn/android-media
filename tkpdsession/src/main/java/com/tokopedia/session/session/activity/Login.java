@@ -1,6 +1,7 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
@@ -39,8 +41,10 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -131,6 +135,16 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     ResetPasswordResultReceiver resetPasswordReceiver;
     OTPResultReceiver otpReceiver;
     ErrorNetworkReceiver mReceiverLogout;
+
+    @DeepLink({Constants.Applinks.LOGIN})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle){
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        Intent intent = new Intent(context, Login.class);
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                TkpdState.DrawerPosition.LOGIN);
+        return intent
+                .setData(uri.build());
+    }
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
@@ -365,6 +379,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
                     AppWidgetUtil.sendBroadcastToAppWidget(this);
+                    if(!SessionHandler.isUserSeller(this)){
+                        UnifyTracking.eventLoginCreateShopSellerApp();
+                    }
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
@@ -553,6 +570,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void destroy() {
+        if (SessionHandler.isV4Login(this)){
+            ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(this));
+        }
         Log.d(getClass().getSimpleName(), "destroy");
         this.setResult(RESULT_OK);
         this.finish();

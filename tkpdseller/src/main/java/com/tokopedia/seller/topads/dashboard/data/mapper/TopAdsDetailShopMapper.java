@@ -2,9 +2,11 @@ package com.tokopedia.seller.topads.dashboard.data.mapper;
 
 import com.tokopedia.seller.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -13,6 +15,10 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 2/20/17.
  */
 public class TopAdsDetailShopMapper implements Func1<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>, TopAdsDetailShopDomainModel> {
+
+    @Inject
+    public TopAdsDetailShopMapper() {
+    }
 
     @Override
     public TopAdsDetailShopDomainModel call(Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>> dataResponseResponse) {

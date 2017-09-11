@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -156,6 +157,7 @@ public class GmCheckoutFragment
 
     @Override
     public void changeCurrentSelected() {
+        UnifyTracking.eventClickChangePackageGoldMerchant();
         callback.changeCurrentSelected(selectedProduct);
     }
 
@@ -242,6 +244,7 @@ public class GmCheckoutFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventClickSubscribeCheckoutGoldMerchant();
                 goToCheckout();
             }
         };

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -15,7 +15,7 @@ import rx.Observable;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class GMStatGetKeywordUseCase extends CompositeUseCase<GetKeyword> {
+public class GMStatGetKeywordUseCase extends UseCase<GetKeyword> {
     public static final String CATEGORY_ID = "cat_id";
     private GMStatRepository gmStatRepository;
 

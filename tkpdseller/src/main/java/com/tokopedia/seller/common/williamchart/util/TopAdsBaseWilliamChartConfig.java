@@ -8,8 +8,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraph
  */
 
 public class TopAdsBaseWilliamChartConfig extends GrossGraphChartConfig {
-    public static final int HEIGHT_TIP = 80;
-    public static final int WIDTH_TIP = 60;
+    public static final int HEIGHT_TIP = 60;
+    public static final int WIDTH_TIP = 80;
 
     @Override
     public int topMargin() {

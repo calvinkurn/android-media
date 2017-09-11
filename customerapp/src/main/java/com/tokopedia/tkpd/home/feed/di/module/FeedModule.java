@@ -3,12 +3,12 @@ package com.tokopedia.tkpd.home.feed.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.core.base.common.service.AceService;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.FeedDataSourceFactory;
 import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
-import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 
 import dagger.Module;
@@ -43,7 +43,7 @@ public class FeedModule {
 
     @DataFeedScope
     @Provides
-    FeedDataSourceFactory provideFeedDataStoreFactory(@ActivityContext Context context,
+    FeedDataSourceFactory provideFeedDataStoreFactory(@ApplicationContext Context context,
                                                       AceService aceService,
                                                       FeedMapper feedMapper,
                                                       FeedDbManager feedDbManager) {
