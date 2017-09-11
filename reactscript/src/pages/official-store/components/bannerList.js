@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { NetworkModule, NavigationModule } from 'NativeModules';
 import Swiper from 'react-native-swiper'
+// import Carousel from 'react-native-looped-carousel';
 
 const { height, width } = Dimensions.get('window')
 
@@ -96,3 +97,67 @@ BannerList.propTypes = {
 }
 
 export default BannerList
+
+
+
+// const BannerList = ({ banners, onBannerPress, onViewAllPress }) => {
+//   const topBanners = banners.filter(banner => banner.html_id === 0)
+//   return (
+//     <View style={{flex: 1,}}>
+//       <Carousel
+//         delay={5000}
+//         style={{width, height: 200}}
+//         bullets={true}
+//       >
+//         {
+//           topBanners.map((banner, index) => (
+//             <TouchableWithoutFeedback key={index} onPress={(e) => onBannerPress(e, banner)}>
+//               <View key={banner.banner_id} style={styles.bannerContainer}>
+//                 <Image source={{ uri: banner.image_url }} style={styles.bannerImage} />
+//               </View>
+//             </TouchableWithoutFeedback>
+//           ))
+//         }
+//       </Carousel>
+//       <Text
+//         style={styles.viewAll}
+//         onPress={onViewAllPress}> Lihat Semua Promo  >
+//       </Text>
+//     </View>
+//   )
+// }
+
+// var styles = StyleSheet.create({
+//   bannerContainer: {
+//     flex: 1
+//   },
+//   bannerImage: {
+//     alignItems: 'center',
+//     width: width,
+//     height: Math.round(width * 0.5),
+//     resizeMode: 'contain',
+//   },
+//   viewAll: {
+//     position: 'absolute',
+//     bottom: 0,
+//     right: 0,
+//     color: '#42b549',
+//     fontSize: 12,
+//     fontWeight: '600',
+//     textAlign: 'right',
+//     padding: 10
+//   },
+//   slide: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   bannerPagination: {
+//     justifyContent: 'flex-start',
+//     position: 'absolute',
+//     width: 210,
+//     left: 10,
+//     bottom: 0,
+//   }
+// })
+

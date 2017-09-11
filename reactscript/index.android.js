@@ -10,29 +10,16 @@ import {
   AsyncStorage,
   View
 } from 'react-native';
-import { NavigationModule, NetworkModule } from 'NativeModules';
-import { HotList_ } from './src/configs/router';
+// import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
 
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
-  // componentWillMount() {
-  //   console.log(this.props)
-  // }
-  
   render(){
-    if (this.props.Screen == 'HotList'){
-      return <HotList_ />
-    } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore Screen={this.props.Screen}  /> 
-    } else {
-      return(
-        <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
-          <ActivityIndicator size="large" />
-        </View>
-      )
+    if(this.props.Screen === 'official-store'){
+      return <OfficialStore />
     }
   }
 }
