@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -23,6 +25,8 @@ import java.util.Locale;
  */
 
 public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailView> {
+
+    public static final int DATE_TEXT_LENGTH_MAX = 35;
 
     private ImageView avatarTalk;
     private TextView textTalkName;
@@ -92,15 +96,15 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
             ImageHandler.loadImageRounded2(getContext(), avatarTalk, data.getTalkUserAvatar());
             textTalkName.setText(data.getTalkUsername());
             textTalkDate.setText(data.getTalkDate());
-            textTalkMessage.setText(data.getTalkMessage());
+            textTalkMessage.setText(MethodChecker.fromHtml((data.getTalkMessage())));
 
             if (data.getCommentId() != null) {
                 layoutComment.setVisibility(VISIBLE);
                 ImageHandler.loadImageRounded2(getContext(), avatarComment, data.getCommentUserAvatar());
                 textCommentName.setText(data.getCommentUserName());
                 textCommentDate.setText(data.getCommentDate());
-                textCommentMessage.setText(data.getCommentMessage());
-                LabelUtils label = LabelUtils.getInstance(getContext(), textCommentDate);
+                textCommentMessage.setText(MethodChecker.fromHtml(data.getCommentMessage()));
+                LabelUtils label = LabelUtils.getInstance(getContext(), textCommentDate, DATE_TEXT_LENGTH_MAX);
                 label.giveSquareLabel(data.getCommentUserLabel());
             }
 

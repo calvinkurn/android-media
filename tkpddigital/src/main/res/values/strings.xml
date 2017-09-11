@@ -59,7 +59,7 @@
     <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="dialog_accessibility_service_on">Harap berikan akses untuk membaca nomor Anda.\n Aksesibilitas > Tokopedia > Aktif </string>
     <string name="msg_ussd_sim_balance">Mohon pastikan nomor Anda sudah terisi dengan benar.</string>
-    <string name="msg_ussd_sim_number">Nomor Anda tidak terdeteksi, mohan masukkan nomor <b>%1$s</b> dalam perangkat ini:</string>
+    <string name="msg_ussd_sim_number">Nomor Anda tidak terdeteksi, mohon masukkan nomor <b>%1$s</b> dalam perangkat ini:</string>
     <string name="msg_ussd_sim_number_change">Silakan masukkan nomor <b>%1$s</b> Anda dalam perangkat ini:</string>
     <string name="promo_category">Promo %1$s</string>
     <string name="other_promo">lainnya</string>

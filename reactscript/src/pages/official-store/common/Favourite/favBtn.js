@@ -15,14 +15,13 @@ import { NavigationModule } from 'NativeModules';
 class FavouriteButton extends Component {
   _onTap = (isShopFav, shopId) => {
     const { dispatch } = this.props
-    
-    AsyncStorage.getItem('user_id').then(res => { 
-      const User_ID = res 
-      if (User_ID != null) {
+
+    NavigationModule.getCurrentUserId().then(uuid => {
+      if (uuid != ''){
         if (isShopFav) {
-          return dispatch(removeFromFavourite(shopId, User_ID))
+          return dispatch(removeFromFavourite(shopId, uuid))
         } else {
-          return dispatch(addToFavourite(shopId, User_ID))
+          return dispatch(addToFavourite(shopId, uuid))
         }
       } else {
         NavigationModule.navigateToLoginWithResult()

@@ -15,42 +15,36 @@ import { addToWishlist, removeFromWishlist } from '../../actions/actions'
 import { NavigationModule } from 'NativeModules'
 import { icons } from '../../../../icons/index'
 
-// // Icon from Firebase
-// const icon_love = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist-red.png?alt=media&token=7cb838f9-3f3b-4705-8218-eb242a0377f1'
-// const icon_notlove = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-wishlist.png?alt=media&token=f13280d1-7d29-4e3c-838e-f040fa8a50c2'
-
 
 class Wishlist extends Component {
   _onTap = (isWishlist, pId) => {
-    AsyncStorage.getItem('user_id').then(res => { 
-      const User_ID = res
-
-      if (User_ID != null){
-        if (isWishlist) {
-          this.props.dispatch(removeFromWishlist(pId, User_ID))
+    NavigationModule.getCurrentUserId().then(uuid => {
+        if (uuid != ''){
+          if (isWishlist) {
+            this.props.dispatch(removeFromWishlist(pId, uuid))
+          } else {
+            this.props.dispatch(addToWishlist(pId, uuid))
+          }
         } else {
-          this.props.dispatch(addToWishlist(pId, User_ID))
+          NavigationModule.navigateToLoginWithResult()
         }
-      } else {
-        NavigationModule.navigateToLoginWithResult().then(response => { console.log(response) })
-      }
-    })
+      })
   }
 
   render() {
     const isWishlist = this.props.isWishlist || false
     const { productId } = this.props
-    const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
+    // const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
     return (
       <View style={styles.wrapper}>
-        <Touchable onPress={() => this._onTap(isWishlist, productId)}>
+        <TouchableOpacity onPress={() => this._onTap(isWishlist, productId)}>
            <View>
             {
               isWishlist ? (<Image source={ icons.icon_wishlist_red } style={{width:20, height:20, margin:10}} />) :
                 (<Image source={ icons.icon_wishlist } style={{width:20, height:20, margin:10}} />)
             }
           </View> 
-        </Touchable>
+        </TouchableOpacity>
       </View>
     )
   }

@@ -8,7 +8,7 @@
     android:padding="@dimen/padding_small">
 
     <TextView
-        android:id="@id/tv_name"
+        android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -16,7 +16,6 @@
         android:layout_marginRight="80dp"
         tools:text="Product Name"
         android:textColor="#b3000000"
-        android:textAllCaps="true"
         android:textSize="@dimen/text_size_l_medium"
         tools:ignore="HardcodedText" />
 

@@ -111,6 +111,11 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
         // do nothing
     }
 
+    @Override
+    public void onErrorLoadTopAdsProduct(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
     protected void showSnackBarError(String errorMessage) {
         if (!TextUtils.isEmpty(errorMessage)) {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);

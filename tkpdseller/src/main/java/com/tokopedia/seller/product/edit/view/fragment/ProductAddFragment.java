@@ -207,7 +207,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     private void saveAndAddDraft(boolean isUploading) {
         UploadProductInputViewModel viewModel = collectDataFromView();
-        sendAnalyticsAddMore(viewModel);
+        if (isUploading) {
+            sendAnalyticsAddMore(viewModel);
+        }
         presenter.saveDraftAndAdd(viewModel, isUploading);
     }
 
@@ -228,13 +230,21 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public void saveDraft(boolean isUploading) {
         UploadProductInputViewModel viewModel = collectDataFromView();
-        sendAnalyticsAdd(viewModel);
+        if (isUploading) {
+            sendAnalyticsAdd(viewModel);
+        }
         presenter.saveDraft(viewModel, isUploading);
     }
 
     private void sendAnalyticsAdd(UploadProductInputViewModel viewModel) {
         if(getStatusUpload() == ProductStatus.ADD) {
             UnifyTracking.eventAddProductAdd(
+                    AnalyticsMapper.mapViewToAnalytic(viewModel,
+                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                            productAdditionalInfoViewHolder.isShare()
+                    ));
+        } else if(getStatusUpload() == ProductStatus.EDIT){
+            UnifyTracking.eventAddProductEdit(
                     AnalyticsMapper.mapViewToAnalytic(viewModel,
                             Integer.parseInt(getString(R.string.product_free_return_values_active)),
                             productAdditionalInfoViewHolder.isShare()
