@@ -46,7 +46,7 @@ public class DinkSuccessActivity extends TActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String productTitle = bundle.getString(EXTRA_PRODUCT);
+            String productTitle = bundle.getString(EXTRA_PRODUCT, "");
             String text = String.format(getString(R.string.promo_dink_success), productTitle);
             SpannableString spannableString = new SpannableString(text);
             StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
