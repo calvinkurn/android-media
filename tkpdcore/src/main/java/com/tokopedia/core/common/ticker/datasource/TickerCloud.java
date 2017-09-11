@@ -1,7 +1,7 @@
-package com.tokopedia.sellerapp.dashboard.datasource;
+package com.tokopedia.core.common.ticker.datasource;
 
-import com.tokopedia.sellerapp.home.api.TickerApiSeller;
-import com.tokopedia.sellerapp.home.model.Ticker;
+import com.tokopedia.core.common.ticker.api.TickerApiSeller;
+import com.tokopedia.core.common.ticker.model.Ticker;
 
 import javax.inject.Inject;
 

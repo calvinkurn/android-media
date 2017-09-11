@@ -2,6 +2,8 @@ package com.tokopedia.sellerapp.dashboard.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.common.ticker.model.Ticker;
+import com.tokopedia.core.common.ticker.usecase.GetTickerUseCase;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
@@ -12,9 +14,7 @@ import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreMainDataUseC
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoUseCase;
-import com.tokopedia.sellerapp.dashboard.usecase.GetTickerUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
-import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.view.mapper.ShopScoreMapper;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 

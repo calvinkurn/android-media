@@ -1,13 +1,12 @@
-package com.tokopedia.sellerapp.dashboard.repository;
+package com.tokopedia.core.common.ticker.repository;
 
+import com.tokopedia.core.common.mapper.SimpleResponseMapper;
+import com.tokopedia.core.common.ticker.datasource.TickerDataSource;
+import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.common.data.mapper.SimpleResponseMapper;
-import com.tokopedia.sellerapp.dashboard.datasource.TickerDataSource;
-import com.tokopedia.sellerapp.home.model.Ticker;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 

@@ -1,12 +1,11 @@
-package com.tokopedia.sellerapp.dashboard.usecase;
+package com.tokopedia.core.common.ticker.usecase;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.sellerapp.dashboard.repository.TickerRepository;
-import com.tokopedia.sellerapp.home.model.Ticker;
+import com.tokopedia.core.common.ticker.model.Ticker;
+import com.tokopedia.core.common.ticker.repository.TickerRepository;
 
 import javax.inject.Inject;
 

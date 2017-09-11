@@ -1,11 +1,6 @@
-package com.tokopedia.sellerapp.dashboard.datasource;
+package com.tokopedia.core.common.ticker.datasource;
 
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.edit.data.source.cache.ShopInfoCache;
-import com.tokopedia.seller.product.edit.data.source.cloud.ShopInfoCloud;
-import com.tokopedia.sellerapp.home.model.Ticker;
-
+import com.tokopedia.core.common.ticker.model.Ticker;
 import javax.inject.Inject;
 
 import retrofit2.Response;

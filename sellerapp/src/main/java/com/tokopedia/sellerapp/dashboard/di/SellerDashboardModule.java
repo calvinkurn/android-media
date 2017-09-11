@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.common.ticker.api.TickerApiSeller;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
@@ -24,7 +25,6 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
-import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 
 import dagger.Module;
 import dagger.Provides;
