@@ -22,6 +22,8 @@ import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFr
 
 import java.util.List;
 
+import bolts.AppLink;
+
 import static com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
 
 /**
@@ -56,20 +58,10 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                         .putExtras(extras);
             }
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-                String itemId = uri.getQueryParameter(PARAM_ITEM_ID);
-                launchIntent = new Intent(Intent.ACTION_VIEW);
-                launchIntent.setData(uri);
-                launchIntent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            }
+            Intent launchIntent = ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+            Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+            String itemId = uri.getQueryParameter(PARAM_ITEM_ID);
+            launchIntent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
             return launchIntent;
         }
     }
