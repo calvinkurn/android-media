@@ -188,11 +188,21 @@ public class PriceRangeInputView extends BaseCustomView {
     }
 
     private int getMinValue() {
-        return getValueFromPosition(minButton.getX());
+        int minValue = getValueFromPosition(minButton.getX());
+        if (minValue < maxValue) {
+            return minValue;
+        } else {
+            return maxValue;
+        }
     }
 
     private int getMaxValue() {
-        return getValueFromPosition(maxButton.getX() - seekbarButtonSize);
+        int maxValue = getValueFromPosition(maxButton.getX() - seekbarButtonSize);
+        if (maxValue > minValue) {
+            return maxValue;
+        } else {
+            return minValue;
+        }
     }
 
     private int getValueFromPosition(float x) {
