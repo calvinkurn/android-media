@@ -2,8 +2,13 @@ package com.tokopedia.sellerapp.dashboard.di;
 
 import android.content.Context;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
+import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
+import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.goldmerchant.apis.GoldMerchantApi;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
@@ -80,4 +85,18 @@ public class SellerDashboardModule {
     TickerApiSeller provideTickerApiSeller(@MojitoQualifier Retrofit retrofit){
         return retrofit.create(TickerApiSeller.class);
     }
+
+    @SellerDashboardScope
+    @Provides
+    NotificationRepository provideNotificationRepository(NotificationSourceFactory notificationSourceFactory){
+        return new NotificationRepositoryImpl(notificationSourceFactory);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context){
+        return new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+    }
+
+
 }

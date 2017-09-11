@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.dashboard.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
 import com.tokopedia.seller.home.view.ReputationView;
@@ -29,4 +30,8 @@ public interface SellerDashboardView extends CustomerView {
     void onErrorGetTickers(Throwable throwable);
 
     void onSuccessGetTickers(Ticker.Tickers[] tickers);
+
+    void onErrorGetNotifiction(String message);
+
+    void onSuccessGetNotification(DrawerNotification drawerNotification);
 }
