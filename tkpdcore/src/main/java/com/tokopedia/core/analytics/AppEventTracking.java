@@ -707,7 +707,7 @@ public interface AppEventTracking {
         String CLICK_HOTLIST = "Clicked_Hotlist_Item";
         String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
         String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
-        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
+        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched";
         String CAT_SCREEN_OPEN = "Category_Screen_Launched";
         String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
         String PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
