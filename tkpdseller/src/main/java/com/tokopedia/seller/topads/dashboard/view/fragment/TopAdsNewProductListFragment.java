@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
@@ -236,6 +238,18 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         topAdsProductViewModels.add(topAdsProductViewModel);
         populateView(topAdsProductViewModels);
         updateSelectedProductCount();
+    }
+
+    @Override
+    public void onErrorLoadTopAdsProduct(String errorMessage) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                showLoading();
+                daggerPresenter.getProductDetail(stepperModel.getIdToAdd());
+            }
+        });
     }
 
     protected boolean isHideExistingGroup() {
