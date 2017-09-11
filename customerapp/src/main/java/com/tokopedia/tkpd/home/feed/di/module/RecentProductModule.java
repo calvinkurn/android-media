@@ -3,12 +3,12 @@ package com.tokopedia.tkpd.home.feed.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.RecentProductSourceFactory;
 import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 
 import dagger.Module;
@@ -43,7 +43,7 @@ public class RecentProductModule {
 
     @DataFeedScope
     @Provides
-    RecentProductSourceFactory provideDataSourceFactory(@ActivityContext Context context,
+    RecentProductSourceFactory provideDataSourceFactory(@ApplicationContext Context context,
                                                         MojitoService mojitoService,
                                                         RecentProductDbManager recentDbManager,
                                                         RecentProductMapper mapperResult) {

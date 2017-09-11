@@ -13,11 +13,12 @@
         style="@style/TextInputLayout">
 
         <EditText
+            android:maxLines="1"
+            android:inputType="text"
             android:id="@+id/edit_text_name"
             style="@style/EditText"
             android:layout_width="match_parent"
-            android:enabled="false"
-            android:hint="@string/label_top_ads_shop_name"/>
+            android:hint="@string/label_top_ads_group_name"/>
 
     </android.support.design.widget.TextInputLayout>
 

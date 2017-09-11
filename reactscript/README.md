@@ -13,7 +13,8 @@
 4. If necessary, add dependencies in `package.json` inside root_project folder 
 5. If necessary, add common components in `reactscript/src/components/common` inside root_project folder (Don't forget ro register the component in `index.js` file)
 
-
+## Important 
+1. Please contact the admin if you want to improve and/ or modify `index.android.js` and others root level React Native project
 
 
 

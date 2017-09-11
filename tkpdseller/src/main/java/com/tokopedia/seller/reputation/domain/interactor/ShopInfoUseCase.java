@@ -33,15 +33,6 @@ public class ShopInfoUseCase extends UseCase<ShopModel> {
         return reputationReviewRepository.getShopInfo(requestParams);
     }
 
-    @Override
-    public void execute(RequestParams requestParams, Subscriber<ShopModel> subscriber) {
-        this.subscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(subscriber);
-    }
-
     public void execute(String userid, String deviceId,
                         ShopNetworkController.ShopInfoParam shopInfoParam,
                         Subscriber<ShopModel> subscriber) {

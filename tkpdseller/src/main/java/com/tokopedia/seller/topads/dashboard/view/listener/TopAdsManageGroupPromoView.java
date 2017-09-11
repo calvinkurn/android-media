@@ -26,4 +26,8 @@ public interface TopAdsManageGroupPromoView extends CustomerView {
     void dismissLoading();
 
     void onGroupNotExistOnSubmitNewGroup();
+
+    void showErrorGroupNameNotValid();
+
+    void hideErrorGroupNameNotValid();
 }

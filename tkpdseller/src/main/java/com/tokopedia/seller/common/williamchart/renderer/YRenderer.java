@@ -160,10 +160,12 @@ public class YRenderer extends AxisRenderer {
 			float aux;
 			float maxLabelLength = 0;
 			String formatedLabel = "";
-			for (String label : labels)
+			for (String label : labels) {
 				formatedLabel = stringFormatRenderer != null ? stringFormatRenderer.formatString(label) : label;
-				if ((aux = style.getLabelsPaint().measureText(formatedLabel)) > maxLabelLength)
+				if ((aux = style.getLabelsPaint().measureText(formatedLabel)) > maxLabelLength) {
 					maxLabelLength = aux;
+				}
+			}
 			result += maxLabelLength + distLabelToAxis;
 		}
 		return result;

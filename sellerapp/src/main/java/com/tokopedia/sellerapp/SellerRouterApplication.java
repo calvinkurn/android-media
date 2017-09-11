@@ -8,20 +8,24 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -55,11 +59,15 @@ import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
-import com.tokopedia.seller.product.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.common.di.module.ProductModule;
+import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
@@ -67,6 +75,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -82,6 +91,9 @@ public class SellerRouterApplication extends MainApplication
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
+    private DaggerProductComponent.Builder daggerProductBuilder;
+    private ProductComponent productComponent;
+
     private DaggerGoldMerchantComponent.Builder daggerGoldMerchantBuilder;
     private GoldMerchantComponent goldMerchantComponent;
 
@@ -92,13 +104,21 @@ public class SellerRouterApplication extends MainApplication
     }
 
     private void initializeDagger() {
-        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder()
-                .goldMerchantModule(new GoldMerchantModule());
+        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder().goldMerchantModule(new GoldMerchantModule());
+        daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
     }
 
-    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
+    @Override
+    public ProductComponent getProductComponent() {
+        if (productComponent == null) {
+            productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return productComponent;
+    }
+
+    public GoldMerchantComponent getGoldMerchantComponent() {
         if (goldMerchantComponent == null) {
-            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent(activityModule)).build();
+            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent()).build();
         }
         return goldMerchantComponent;
     }
@@ -111,6 +131,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
         InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
+    }
+
+    @Override
+    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
     }
 
     @Override
@@ -128,6 +153,13 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageEtalase(Context context) {
         Intent intent = new Intent(context, EtalaseShopEditor.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void goToDraftProductList(Context context) {
+        Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -166,6 +198,16 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionApplink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
+
+    }
+
+    @Override
     public void goToCreateMerchantRedirect(Context context) {
         //no route to merchant redirect on seller, go to default
         goToDefaultRoute(context);
@@ -200,10 +242,15 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
+        Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            return new Intent(context, SellerHomeActivity.class);
+            if(SessionHandler.isUserSeller(context)){
+                return new Intent(context, SellerHomeActivity.class);
+            }else{
+                return intent;
+            }
         } else {
-            return new Intent(context, WelcomeActivity.class);
+            return intent;
         }
     }
 
@@ -226,6 +273,9 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void onLogout(AppComponent appComponent) {
+        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
+        cacheApiClearAllUseCase.getExecuteObservable(RequestParams.EMPTY).toBlocking().first();
+
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
@@ -269,6 +319,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
+    public void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
+        ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
     }
 
     @Override
@@ -393,23 +448,32 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
-        return Uri.parse(originUrl).buildUpon()
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-                )
-                .appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-                )
-                .build().toString();
+        Uri originUri = Uri.parse(originUrl);
+        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+            );
+        }
+        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+            uriBuilder.appendQueryParameter(
+                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+            );
+        }
+        return uriBuilder.build().toString().trim();
     }
 
     @Override

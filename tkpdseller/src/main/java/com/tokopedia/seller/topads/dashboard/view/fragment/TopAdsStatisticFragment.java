@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -108,12 +109,8 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     private void generateLineChart() {
         try {
             contentGraph.dismissAllTooltips();
-            //filter display dot at graph to avoid tight display graph
-            final List<Integer> indexToDisplay = new ArrayList<>();
-            int divide = mValues.length / 10;
-            for (int j = 1; j <= divide - 1; j++) {
-                indexToDisplay.add((j * 10) - 1);
-            }
+            final List<Integer> indexToDisplay = calculateIndexToDisplay();
+
 
             if (topAdsBaseWilliamChartConfig == null) {
                 topAdsBaseWilliamChartConfig = new TopAdsBaseWilliamChartConfig();
@@ -131,6 +128,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
             TooltipWithDynamicPointer tooltip = new TooltipWithDynamicPointer(getActivity(),
                     R.layout.item_tooltip_topads, R.id.tooltip_value, R.id.tooltip_title, R.id.tooltip_pointer);
             baseWilliamChartConfig
+                    .reset()
                     .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
                     .setBasicGraphConfiguration(topAdsBaseWilliamChartConfig)
                     .setTooltip(tooltip, new TopAdsTooltipConfiguration())
@@ -141,7 +139,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                                 if (i == 0 || mValues.length - 1 == i)
                                     return true;
 
-                                if (mValues.length <= 15) {
+                                if (mValues.length <= 10) {
                                     return true;
                                 }
 
@@ -154,8 +152,29 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                     .setDotDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.oval_2_copy_6))
                     .buildChart(contentGraph);
         } catch (Exception e) {
-
+            if (e != null && e.getMessage() != null) {
+                Log.e("TopAdsStatisticFragment", e.getMessage());
+            } else {
+                Log.e("TopAdsStatisticFragment", "Null Pointer");
+            }
         }
+    }
+
+    @NonNull
+    private List<Integer> calculateIndexToDisplay() {
+        //filter display dot at graph to avoid tight display graph
+        final List<Integer> indexToDisplay = new ArrayList<>();
+        int divider;
+        if(mValues.length > 50){
+            divider = 10;
+        }else{
+            divider = 5;
+        }
+        int divided = mValues.length / divider;
+        for (int j = 1; j <= divided - 1; j++) {
+            indexToDisplay.add((j * divider) - 1);
+        }
+        return indexToDisplay;
     }
 
     @Override

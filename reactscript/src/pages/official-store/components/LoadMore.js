@@ -3,17 +3,18 @@ import {
   StyleSheet,
   TouchableNativeFeedback,
   TouchableOpacity,
+  AsyncStorage,
   Platform,
   Text,
   View,
 } from 'react-native'
+import { NavigationModule } from 'NativeModules'
 
 const LoadMore = (props) => {
   const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
-  
+
   return (
-    <Touchable
-      onPress={() => { props.canFetch && !props.isFetching ? props.onLoadMore(props.limit, props.offset, props.User_ID) : null }}>
+    <Touchable onPress={() => clickHandler(props)}>
       <View style={styles.container}>
         <View style={styles.button}>
           <Text style={styles.text}>Lihat Selebihnya</Text>
@@ -22,6 +23,15 @@ const LoadMore = (props) => {
     </Touchable>
   )
 }
+
+const clickHandler = (props) => {
+  NavigationModule.getCurrentUserId().then(uuid => {
+    if (props.canFetch && !props.isFetching){
+      props.onLoadMore(props.limit, props.offset, uuid)        
+    }
+  })
+}
+
 
 const styles = StyleSheet.create({
   container: {

@@ -120,7 +120,7 @@ public class SquareMenuButton
         // Default close icon width
         private int closeWidth = (int) Util.getInstance().dp2px(15);
         // Default circle button width
-        private int buttonWidth = (int) Util.getInstance().dp2px(88);
+        private int buttonWidth = (int) Util.getInstance().dp2px(100);
         // Default bar width
         private int barWidth = (int) Util.getInstance().dp2px(36);
         // Default bar height

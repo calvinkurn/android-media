@@ -92,11 +92,17 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
     public void checkIsGroupExistOnSubmitNewGroup(String keyword) {
         if (keyword.trim().isEmpty()) {
             getView().showErrorShouldFillGroupName();
+        } else if(isKeywordContainsTag(keyword)){
+            getView().showErrorGroupNameNotValid();
         } else {
             getView().showLoading();
             topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(keyword)
                     , getSubscriberCheckGroupExistOnSubmitNewGroup());
         }
+    }
+
+    protected boolean isKeywordContainsTag(String keyword) {
+        return keyword.contains("<") || keyword.contains(">");
     }
 
     private Subscriber<List<GroupAd>> getSubscriberSearchGroupName() {
@@ -164,8 +170,13 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
             @Override
             public void onNext(String string) {
                 if (!string.equals("")) {
-                    topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(string)
-                            , getSubscriberCheckGroupExist());
+                    if(isKeywordContainsTag(string)){
+                        getView().showErrorGroupNameNotValid();
+                    }else {
+                        getView().hideErrorGroupNameNotValid();
+                        topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(string)
+                                , getSubscriberCheckGroupExist());
+                    }
                 }
             }
         };

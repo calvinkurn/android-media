@@ -179,8 +179,8 @@ dependencies {
     }
     compile rootProject.ext.debugToolsDependencies.stetho
 
-    compile ("com.facebook.react:react-native:0.46.4")
-    compile ("com.microsoft.codepush:react-native-codepush:1.0@aar")
+    compile (rootProject.ext.miscDependencies.reactNative)
+    compile (rootProject.ext.miscDependencies.codePushReactNative)
 
 }
 

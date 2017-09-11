@@ -8,6 +8,8 @@ import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.domain.TopAdsShopAdsRepository;
 import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -17,6 +19,7 @@ public class TopAdsSaveDetailShopUseCase extends UseCase<TopAdsDetailShopDomainM
 
     protected final TopAdsShopAdsRepository topAdsShopAdsRepository;
 
+    @Inject
     public TopAdsSaveDetailShopUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsShopAdsRepository topAdsShopAdsRepository) {
         super(threadExecutor, postExecutionThread);
         this.topAdsShopAdsRepository = topAdsShopAdsRepository;
