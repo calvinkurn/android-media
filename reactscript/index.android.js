@@ -4,32 +4,28 @@ import React, { Component } from 'react';
 import codePush from "react-native-code-push";
 import {
   AppRegistry,
+  ActivityIndicator,
   StyleSheet,
   Text,
   AppState,
+  UIManager,
   AsyncStorage,
   View
 } from 'react-native';
-import { NavigationModule, NetworkModule } from 'NativeModules';
-import { HotList_ } from './src/configs/router';
+// import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
 
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class Home extends Component {
-  // componentWillMount() {
-  //   console.log(this.props)
-  // }
-  
   render(){
-    if (this.props.Screen == 'HotList'){
-      return <HotList_ />
-    } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore Screen={this.props.Screen}  /> 
+    if (this.props.Screen === 'official-store'){
+      return <OfficialStore />
     } else {
-      return(
-        <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
+      return (
+        <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
           <ActivityIndicator size="large" />
         </View>
       )

@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from 'react-native'
+import { NavigationModule } from 'NativeModules'
 
 const LoadMore = (props) => {
   const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
@@ -24,12 +25,11 @@ const LoadMore = (props) => {
 }
 
 const clickHandler = (props) => {
-  AsyncStorage.getItem('user_id')
-    .then(uid => {
-      if (props.canFetch && !props.isFetching){
-        props.onLoadMore(props.limit, props.offset, uid)        
-      }
-    })
+  NavigationModule.getCurrentUserId().then(uuid => {
+    if (props.canFetch && !props.isFetching){
+      props.onLoadMore(props.limit, props.offset, uuid)        
+    }
+  })
 }
 
 
