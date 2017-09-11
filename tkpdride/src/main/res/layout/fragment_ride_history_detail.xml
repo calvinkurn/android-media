@@ -217,17 +217,15 @@
                             android:id="@+id/tv_driver_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentTop="true"
                             android:layout_marginLeft="@dimen/margin_large"
                             android:layout_marginStart="@dimen/margin_large"
-                            android:ellipsize="end"
                             android:maxLines="2"
+                            android:ellipsize="end"
                             android:paddingLeft="@dimen/padding_small"
                             android:paddingStart="@dimen/padding_small"
                             android:textColor="@color/black"
-                            tools:text="Your trip with John Your trip with John" />
+                            tools:text="Your trip with John Ferdinand van java de paris" />
                     </RelativeLayout>
 
                     <RatingBar
@@ -236,7 +234,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:clickable="false"
                         android:isIndicator="true"
                         android:numStars="5"
