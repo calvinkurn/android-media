@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import codePush from "react-native-code-push";
 import {
   AppRegistry,
+  ActivityIndicator,
   StyleSheet,
   Text,
   AppState,
@@ -18,8 +19,14 @@ let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
 class Home extends Component {
   render(){
-    if(this.props.Screen === 'official-store'){
+    if (this.props.Screen === 'official-store'){
       return <OfficialStore />
+    } else {
+      return (
+        <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
+          <ActivityIndicator size="large" />
+        </View>
+      )
     }
   }
 }
