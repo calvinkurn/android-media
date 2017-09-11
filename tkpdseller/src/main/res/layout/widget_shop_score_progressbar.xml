@@ -21,8 +21,7 @@
         <View
             android:id="@+id/shop_score_view_limit"
             android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_alignTop="@id/shop_score_progress_bar"
+            android:layout_height="13dp"
             android:background="@android:color/white" />
     </RelativeLayout>
 

@@ -65,7 +65,6 @@ public class ShopScoreWidget extends FrameLayout {
         setDescription(data.getDescription());
         setProgressBarColor(data.getProgressBarColor());
         setProgress(data.getValue());
-
     }
 
     private void setProgressBarColor(int progressBarColor) {
@@ -83,7 +82,6 @@ public class ShopScoreWidget extends FrameLayout {
     public void setDescription(String description) {
         shopScoreMainDetailView.setVisibility(VISIBLE);
     }
-
 
     public void setCallback(ShopScoreWidgetCallback callback) {
         this.callback = callback;

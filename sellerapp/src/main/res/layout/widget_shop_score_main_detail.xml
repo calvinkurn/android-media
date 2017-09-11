@@ -5,34 +5,31 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:gravity="center_vertical">
 
         <TextView
-            style="@style/TextView.Body1"
+            style="@style/TextView.Body1.Bold"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="@string/title_shop_score_widget_home" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true">
+        <TextView
+            android:id="@+id/text_view_shop_score"
+            style="@style/TextView.Body1.Green"
+            tools:text="@string/label_empty_value" />
 
-            <TextView
-                android:id="@+id/text_view_shop_score_big"
-                style="@style/TextView.Body1"
-                tools:text="@string/label_empty_value" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/arrow_left"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxs"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_arrow_right" />
-
-        </LinearLayout>
-    </RelativeLayout>
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/arrow_left"
+            android:layout_width="@dimen/image_width_xxxs"
+            android:layout_height="@dimen/image_width_xxs"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_arrow_right" />
+    </LinearLayout>
 
     <com.tokopedia.seller.shopscore.view.widget.ShopScoreMainProgressBarWithLimit
         android:id="@+id/progress_bar_shop_score_with_limit"
