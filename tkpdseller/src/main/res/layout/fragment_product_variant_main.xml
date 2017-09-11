@@ -12,7 +12,8 @@
         android:visibility="gone"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:content="@string/product_label_choose" />
+        app:content="@string/product_label_choose"
+        app:weighted="true"/>
 
     <View
         android:layout_width="match_parent"
@@ -26,7 +27,8 @@
         android:visibility="gone"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:content="@string/product_label_choose" />
+        app:content="@string/product_label_choose"
+        app:weighted="true"/>
 
     <LinearLayout
         android:id="@+id/linear_layout_variant_list"
