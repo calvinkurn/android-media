@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.picker.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
@@ -39,6 +40,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
 
     private List<ProductListPickerViewModel> productListPickerViewModels;
     private String keywordFilter = "";
+    private boolean hasNextPage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,12 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     }
 
     @Override
+    public void resetPageAndSearch() {
+        super.resetPageAndSearch();
+
+    }
+
+    @Override
     protected BaseListAdapter<ProductListPickerViewModel> getNewAdapter() {
         return new ProductListPickerSearchAdapter();
     }
@@ -110,6 +118,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     @Override
     protected void searchForPage(int page) {
         productListPickerSearchPresenter.getProductList(page, keywordFilter);
+        hasNextPage = false;
     }
 
     @Override
@@ -120,6 +129,18 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     @Override
     public void onSuccessGetProductList(ProductListSellerModelView productListSellerModelView) {
         onSearchLoaded(productListSellerModelView.getProductListPickerViewModels(), productListSellerModelView.getProductListPickerViewModels().size());
+        hasNextPage = productListSellerModelView.isHasNextPage();
+    }
+
+    @Override
+    protected void showViewList(@NonNull List<ProductListPickerViewModel> list) {
+        super.showViewList(list);
+        productListPickerMultipleItem.validateFooterAndInfoView();
+    }
+
+    @Override
+    protected boolean hasNextPage() {
+        return hasNextPage;
     }
 
     @Override

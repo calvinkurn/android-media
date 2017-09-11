@@ -133,5 +133,6 @@
     <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
     <string name="product_list_picker_max_has_been_reached">Jumlah produk yang ditambahkan sudah mencapai maksimum</string>
     <string name="title_activity_product_list_picker">Pilih Produk Unggulan</string>
+    <string name="product_list_picker_variant_count">%1$d Produk Unggulan terpilih</string>
 
 </resources>

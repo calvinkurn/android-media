@@ -29,6 +29,9 @@ public class GetProductListPickerMapperView {
             }else{
                 productListSellerModelView.setProductListPickerViewModels(new ArrayList<ProductListPickerViewModel>());
             }
+            if(productListSellerModelView.getProductListPickerViewModels().isEmpty()){
+                productListSellerModelView.setHasNextPage(false);
+            }
             return productListSellerModelView;
         }else{
             throw new RuntimeException("Data tidak ditemukan");
@@ -49,7 +52,10 @@ public class GetProductListPickerMapperView {
     }
 
     private boolean checkNextPage(ProductListSellerModel productListSellerModel) {
-        if(productListSellerModel.getData().getPaging()!= null && productListSellerModel.getData().getPaging().getUriNext() != null){
+        if(productListSellerModel.getData().getPaging()!= null &&
+                productListSellerModel.getData().getPaging().getUriNext() != null &&
+                !productListSellerModel.getData().getPaging().getUriNext().isEmpty() &&
+                !productListSellerModel.getData().getPaging().getUriNext().equals("0")){
             return true;
         }else{
             return true;
