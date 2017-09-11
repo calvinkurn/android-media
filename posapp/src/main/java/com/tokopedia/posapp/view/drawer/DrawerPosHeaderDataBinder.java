@@ -9,14 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.posapp.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Herdi_WORK on 07.09.17.
@@ -56,10 +52,11 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvOnline = (TextView) itemView.findViewById(R.id.tv_online);
-            tvOutlet = (TextView) itemView.findViewById(R.id.tv_outlet);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvOnline = itemView.findViewById(R.id.tv_online);
+            tvOutlet = itemView.findViewById(R.id.tv_outlet);
             ivOnline = itemView.findViewById(R.id.iv_online);
+            ivAvatar = itemView.findViewById(R.id.iv_avatar);
         }
     }
 

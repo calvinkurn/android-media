@@ -285,6 +285,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_inbox">Kotak Masuk</string>
     <string name="title_customer_care">Layanan Pengguna</string>
     <string name="verified_account">Verified Account</string>
+    <string name="online">Online</string>
 
     <!-- Strings related Navigation Drawer -->
 

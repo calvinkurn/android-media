@@ -47,6 +47,8 @@ public class DrawerPosHelper extends DrawerHelper
         shopIcon = activity.findViewById(R.id.icon);
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
+        shopLayout.setVisibility(View.GONE);
+        footerShadow.setVisibility(View.GONE);
     }
 
     public static DrawerPosHelper createInstance(Activity activity,
@@ -75,8 +77,6 @@ public class DrawerPosHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
-        shopLayout.setVisibility(View.VISIBLE);
-        footerShadow.setVisibility(View.VISIBLE);
         return data;
     }
 
