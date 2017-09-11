@@ -86,7 +86,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     }
 
     protected List<Visitable> mappingToListItemViewModel(InboxReputationDetailDomain
-                                                               inboxReputationDetailDomain) {
+                                                                 inboxReputationDetailDomain) {
         List<Visitable> list = new ArrayList<>();
         if (inboxReputationDetailDomain.getData() != null) {
             for (InboxReputationDetailItemDomain detailDomain : inboxReputationDetailDomain.getData()) {
@@ -120,8 +120,17 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         );
     }
 
-    private List<ImageAttachmentViewModel> convertToImageAttachmentViewModel(List<ImageAttachmentDomain>
-                                                                                     reviewImageUrl) {
-        return new ArrayList<>();
+    private List<ImageAttachmentViewModel>
+    convertToImageAttachmentViewModel(List<ImageAttachmentDomain> reviewImageUrl) {
+        List<ImageAttachmentViewModel> list = new ArrayList<>();
+        for (ImageAttachmentDomain domain : reviewImageUrl) {
+            list.add(new ImageAttachmentViewModel(
+                    domain.getAttachmentId(),
+                    domain.getDescription(),
+                    domain.getUriThumbnail(),
+                    domain.getUriLarge()
+            ));
+        }
+        return list;
     }
 }

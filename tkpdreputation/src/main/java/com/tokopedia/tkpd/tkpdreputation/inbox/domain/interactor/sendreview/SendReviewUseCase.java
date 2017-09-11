@@ -74,6 +74,8 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         return new Func1<SendReviewSubmitDomain, Observable<SendReviewRequestModel>>() {
             @Override
             public Observable<SendReviewRequestModel> call(SendReviewSubmitDomain sendReviewSubmitDomain) {
+                sendReviewRequestModel.setIsSubmitSuccess(sendReviewSubmitDomain.getIsSuccess());
+                sendReviewRequestModel.setReviewId(sendReviewSubmitDomain.getReviewId());
                 return Observable.just(sendReviewRequestModel);
             }
         };
@@ -171,7 +173,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
             public Observable<SendReviewDomain> call(
                     SendReviewRequestModel sendReviewRequestModel) {
                 SendReviewDomain sendReviewDomain =
-                        new SendReviewDomain(false);
+                        new SendReviewDomain(sendReviewRequestModel.getIsSubmitSuccess() == 1);
                 return Observable.just(sendReviewDomain);
             }
         };

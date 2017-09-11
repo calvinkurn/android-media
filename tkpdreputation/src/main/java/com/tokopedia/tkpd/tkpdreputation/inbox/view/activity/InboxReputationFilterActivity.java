@@ -15,6 +15,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +31,12 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFilt
 
 public class InboxReputationFilterActivity extends BasePresenterActivity {
 
+    public interface ResetListener {
+        void resetFilter();
+    }
+
     public static final String CACHE_INBOX_REPUTATION_FILTER = "CACHE_INBOX_REPUTATION_FILTER";
+    ResetListener listener;
 
     public static Intent createIntent(Context context, String timeFilter) {
         Intent intent = new Intent(context, InboxReputationFilterActivity.class);
@@ -60,12 +67,15 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_close, menu);
+        getMenuInflater().inflate(R.menu.menu_reset, menu);
         return true;
     }
 
@@ -73,8 +83,9 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_close) {
-            finish();
+        if (item.getItemId() == R.id.action_reset
+                && listener != null) {
+            listener.resetFilter();
             return true;
         } else
             return super.onOptionsItemSelected(item);
@@ -103,6 +114,7 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
                 fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
 
+        listener = (InboxReputationFilterFragment) fragment;
     }
 
     @Override
@@ -142,7 +154,7 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
         }
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_close_24dp);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);

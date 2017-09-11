@@ -109,6 +109,7 @@ public class SessionHandler {
     }
 
     public static void clearUserData(Context context) {
+
         logoutInstagram(context);
         InboxCache.ClearCache(context);
         PenjualanCache.ClearCache(context);

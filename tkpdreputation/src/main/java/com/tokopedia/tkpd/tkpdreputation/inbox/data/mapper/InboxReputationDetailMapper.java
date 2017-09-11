@@ -10,6 +10,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReputationB
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ResponseCreateTime;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewCreateTime;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewData;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewImageUrl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewInboxDatum;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewResponse;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReviewUpdateTime;
@@ -181,8 +182,17 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
                 reviewCreateTime.getDateTimeAndroid());
     }
 
-    private List<ImageAttachmentDomain> convertToImageAttachmentDomain(List<Object> reviewImageUrl) {
+    private List<ImageAttachmentDomain> convertToImageAttachmentDomain(List<ReviewImageUrl> reviewImageUrl) {
         List<ImageAttachmentDomain> list = new ArrayList<>();
+
+        for (ReviewImageUrl pojo : reviewImageUrl) {
+            list.add(new ImageAttachmentDomain(
+                    pojo.getAttachmentId(),
+                    pojo.getDescription(),
+                    pojo.getUriThumbnail(),
+                    pojo.getUriLarge()
+            ));
+        }
         return list;
     }
 

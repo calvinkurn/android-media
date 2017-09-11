@@ -2,10 +2,9 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdet
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,8 +15,14 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 8/19/17.
@@ -40,6 +45,7 @@ public class InboxReputationDetailItemViewHolder extends
     RatingBar reviewStar;
     View giveReview;
     Context context;
+    ImageUploadAdapter adapter;
 
     public InboxReputationDetailItemViewHolder(View itemView,
                                                InboxReputationDetail.View viewListener) {
@@ -56,6 +62,11 @@ public class InboxReputationDetailItemViewHolder extends
         review = (TextView) itemView.findViewById(R.id.review);
         reviewStar = (RatingBar) itemView.findViewById(R.id.product_rating);
         giveReview = itemView.findViewById(R.id.add_review_layout);
+        adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
+        adapter.setCanUpload(false);
+        reviewAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        reviewAttachment.setAdapter(adapter);
     }
 
     @Override
@@ -87,6 +98,21 @@ public class InboxReputationDetailItemViewHolder extends
             }
         });
 
+        adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentViewModel> reviewAttachment) {
+        ArrayList<ImageUpload> list = new ArrayList<>();
+        for (ImageAttachmentViewModel vm : reviewAttachment) {
+            list.add(new ImageUpload(
+                    vm.getUriThumbnail(),
+                    vm.getUriLarge(),
+                    vm.getDescription(),
+                    String.valueOf(vm.getAttachmentId())));
+        }
+        return list;
     }
 
     private String getReviewerNameText(String reviewerName) {

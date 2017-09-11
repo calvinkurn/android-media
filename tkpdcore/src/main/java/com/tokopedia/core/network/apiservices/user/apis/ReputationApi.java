@@ -35,7 +35,7 @@ public interface ReputationApi {
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> sendReviewValidate(@FieldMap Map<String, Object> params);
 
-    @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_VALIDATE)
+    @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_SUBMIT)
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> sendReviewSubmit(@FieldMap Map<String, Object> params);
 }

@@ -18,6 +18,7 @@ public class SendReviewRequestModel {
 
     private String attachmentString;
     private ArrayList<ImageUpload> listUpload;
+    private int isSubmitSuccess;
 
     public SendReviewRequestModel() {
         this.postKey = "";
@@ -25,6 +26,7 @@ public class SendReviewRequestModel {
         this.isValidateSuccess = false;
         this.uploadHost = "";
         this.serverId = "";
+        this.isSubmitSuccess= 0;
     }
 
     public void setPostKey(String postKey) {
@@ -82,4 +84,14 @@ public class SendReviewRequestModel {
     public ArrayList<ImageUpload> getListUpload() {
         return listUpload;
     }
+
+    public void setIsSubmitSuccess(int isSubmitSuccess) {
+        this.isSubmitSuccess = isSubmitSuccess;
+    }
+
+    public int getIsSubmitSuccess() {
+        return isSubmitSuccess;
+    }
+
+
 }

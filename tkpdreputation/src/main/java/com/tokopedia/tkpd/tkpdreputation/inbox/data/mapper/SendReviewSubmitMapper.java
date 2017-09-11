@@ -44,6 +44,9 @@ public class SendReviewSubmitMapper implements Func1<Response<TkpdResponse>, Sen
     }
 
     private SendReviewSubmitDomain mappingToDomain(SendReviewSubmitPojo data) {
-        return new SendReviewSubmitDomain();
+        return new SendReviewSubmitDomain(
+                data.getReviewId(),
+                data.getIsSuccess()
+        );
     }
 }

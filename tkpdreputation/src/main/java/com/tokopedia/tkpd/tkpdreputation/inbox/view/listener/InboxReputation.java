@@ -32,6 +32,8 @@ public interface InboxReputation {
 
         void showLoadingNext();
 
+        void finishLoading();
+
         void onGoToDetail(String reputationId, String invoice, String createTime,
                           String revieweeName, String revieweeImage,
                           ReputationDataViewModel reputationDataViewModel, String textDeadline,

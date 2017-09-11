@@ -182,6 +182,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void showLoadingFull() {
         adapter.showLoadingFull();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -205,6 +206,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void finishLoadingFull() {
         adapter.removeLoadingFull();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -248,6 +250,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void showLoadingNext() {
         adapter.showLoading();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void finishLoading() {
+        adapter.removeLoading();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -309,6 +318,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onShowEmpty() {
         adapter.clearList();
         adapter.showEmpty();
+        adapter.notifyDataSetChanged();
     }
 
     @Override

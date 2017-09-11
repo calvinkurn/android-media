@@ -24,7 +24,7 @@ public class ReviewData {
     private int reviewRating;
     @SerializedName("review_image_url")
     @Expose
-    private List<Object> reviewImageUrl = null;
+    private List<ReviewImageUrl> reviewImageUrl = null;
     @SerializedName("review_create_time")
     @Expose
     private ReviewCreateTime reviewCreateTime;
@@ -78,12 +78,8 @@ public class ReviewData {
         this.reviewRating = reviewRating;
     }
 
-    public List<Object> getReviewImageUrl() {
+    public List<ReviewImageUrl> getReviewImageUrl() {
         return reviewImageUrl;
-    }
-
-    public void setReviewImageUrl(List<Object> reviewImageUrl) {
-        this.reviewImageUrl = reviewImageUrl;
     }
 
     public ReviewCreateTime getReviewCreateTime() {

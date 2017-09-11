@@ -123,7 +123,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-
     }
 
     protected abstract int setDrawerPosition();

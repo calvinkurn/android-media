@@ -23,11 +23,13 @@ public class GetNextPageInboxReputationSubscriber extends GetFirstTimeInboxReput
 
     @Override
     public void onError(Throwable e) {
+        viewListener.finishLoading();
         viewListener.onErrorGetNextPage(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(InboxReputationDomain inboxReputationDomain) {
+        viewListener.finishLoading();
         viewListener.onSuccessGetNextPage(mappingToViewModel(inboxReputationDomain));
     }
 }
