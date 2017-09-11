@@ -35,6 +35,6 @@
     </entry>
     <entry>
         <key>mainapp_react_show_os</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
 </defaultsMap>
