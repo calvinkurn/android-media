@@ -242,6 +242,7 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
 
     @Override
     public void onErrorLoadTopAdsProduct(String errorMessage) {
+        hideLoading();
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
             @Override
