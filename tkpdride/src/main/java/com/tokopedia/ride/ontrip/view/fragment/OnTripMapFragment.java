@@ -489,12 +489,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             fragmentTransaction.addToBackStack(null);
             DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-
             //using state loss, because sometimes this dialog comes on top of location enablegit
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.add(dialogFragment, INTERRUPT_DIALOG_TAG);
             transaction.commitAllowingStateLoss();
-
             isOpenInterruptWebviewDialog = true;
         }
     }
@@ -1353,7 +1351,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             fragmentTransaction.addToBackStack(null);
             DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
-            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+//            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            getFragmentManager().beginTransaction().add(dialogFragment, INTERRUPT_TOKOPEDIA_DIALOG_TAG).commitAllowingStateLoss();
             isOpenInterruptWebviewDialog = true;
         }
     }
