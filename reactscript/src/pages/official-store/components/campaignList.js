@@ -67,50 +67,49 @@ this.renderCampaign = (c) => {
     for (let i = 0; i < products.length; i += 2) {
       const productRow = [];
       for (let j = i; j < i + 2; j += 1) {
-        const dataProducts = products[j].data;
+        // const dataProducts = products[j].data;
         if (!products[j]) {
           break;
         }
 
         productRow.push(
-          <View style={productCell} key={dataProducts.id}>
+          <View style={productCell} key={products[j].data.id}>
             <TouchableWithoutFeedback onPress={() => {
-                NavigationModule.navigate(dataProducts.url_app, "")
+                NavigationModule.navigate(products[j].data.url_app, "")
               }}>
               <View>
                 <View style={productImageWrapper}>
-                  <Image source={{ uri: dataProducts.image_url }} style={productImage} />
+                  <Image source={{ uri: products[j].data.image_url }} style={productImage} />
                 </View>
                 <Text
                   style={productName}
                   ellipsizeMode='tail'
-                  numberOfLines={2}>{unescape(dataProducts.name)}</Text>
+                  numberOfLines={2}>{unescape(products[j].data.name)}</Text>
               </View>
             </TouchableWithoutFeedback>
             <View style={priceContainer}>
               <View style={productGridNormalPrice}>
                 {
-                  dataProducts.discount_percentage && (
+                  products[j].data.discount_percentage && (
                     <View style={{ height: 15 }}>
-                      <Text style={productGridNormalPriceText}>{dataProducts.original_price}</Text>
+                      <Text style={productGridNormalPriceText}>{products[j].data.original_price}</Text>
                     </View>
                   )
                 }
               </View>
               <View style={priceWrapper}>
-                <Text style={price}>{dataProducts.price}</Text>
-                { dataProducts.discount_percentage && (
+                <Text style={price}>{products[j].data.price}</Text>
+                { products[j].data.discount_percentage && (
                   <View style={productGridCampaignRate}>
-                    <Text style={productGridCampaignRateText}>{`${dataProducts.discount_percentage}% OFF`}</Text>
+                    <Text style={productGridCampaignRateText}>{`${products[j].data.discount_percentage}% OFF`}</Text>
                   </View>)
                 }
               </View>
             </View>
             <View style={productBadgeWrapper}>
               {
-                dataProducts.labels.map((l) => {
+                products[j].data.labels.map((l) => {
                   let labelTitle = l.title;
-                  // console.log(l);
                   if (l.title.indexOf('Cashback') > -1) {
                     labelTitle = 'Cashback';
                   }
@@ -118,12 +117,12 @@ this.renderCampaign = (c) => {
                     case 'PO':
                     case 'Grosir':
                       return (
-                        <View style={productLabel} key={dataProducts.id}>
+                        <View style={productLabel} key={products[j].data.id}>
                           <Text style={labelText}>{l.title}</Text>
                         </View>);
                     case 'Cashback':
                       return (
-                        <View style={productCashback} key={dataProducts.id}>
+                        <View style={productCashback} key={products[j].data.id}>
                           <Text style={cashbackText}>{l.title}</Text>
                         </View>
                       );
@@ -134,7 +133,7 @@ this.renderCampaign = (c) => {
               }
             </View>
             <TouchableWithoutFeedback onPress={() => {
-              NavigationModule.navigate(dataProducts.shop.url_app, "")}}>
+              NavigationModule.navigate(products[j].data.shop.url_app, "")}}>
               <View style={shopSection}>
                 <View style={shopImageWrapper}>
                   <Image source={{ uri: products[j].brand_logo }} style={shopImage} />
@@ -143,18 +142,18 @@ this.renderCampaign = (c) => {
                   <Text
                     style={{ lineHeight: 15 }}
                     ellipsizeMode='tail'
-                    numberOfLines={1}>{unescape(dataProducts.shop.name)}</Text>
+                    numberOfLines={1}>{unescape(products[j].data.shop.name)}</Text>
                 </View>
-                { dataProducts.badges.map(b => (b.title === 'Free Return' ? (
-                  <View key={dataProducts.id} style={badgeImageContainer}>
+                { products[j].data.badges.map(b => (b.title === 'Free Return' ? (
+                  <View key={products[j].data.id} style={badgeImageContainer}>
                     <Image source={{ uri: b.image_url }} style={badgeImage} />
                   </View>) : null))
                 }
               </View>
             </TouchableWithoutFeedback>
             <WishListButton
-              isWishlist={dataProducts.is_wishlist || false}
-              productId={dataProducts.id} />
+              isWishlist={products[j].data.is_wishlist || false}
+              productId={products[j].data.id} />
           </View>
         );
       }
