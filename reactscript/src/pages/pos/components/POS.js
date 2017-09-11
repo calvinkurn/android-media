@@ -8,11 +8,14 @@ import {
   Dimensions,
   TextInput,
   Modal,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback
 } from 'react-native'
 import VisibleProductList from '../containers/VisibleProductList'
-import Ticker from '../components/Ticker'
+import Ticker from '../components/product/Ticker'
 import CartContainer from '../containers/CartContainer'
 import SearchContainer from '../containers/SearchContainer'
+import PasswordPopup from './PasswordPopup'
 
 export default class POS extends Component {
   constructor() {
@@ -43,6 +46,44 @@ export default class POS extends Component {
     const navigationView = (
       <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
+        <TouchableNativeFeedback
+          onPress = {() => {
+            this.passwordPopup.show();
+            this.drawerPane.closeDrawer();
+          }}
+        >
+            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Riwayat Transaksi</Text>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress = {() => {
+           this.props.navigation.navigate('BankSelection', {})
+          }}
+        >
+        <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Bank Selection</Text>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress = {() => {
+           this.props.navigation.navigate('Payment', {})
+          }}
+        >
+            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment screen</Text>
+        </TouchableNativeFeedback>
+
+        <TouchableNativeFeedback
+          onPress = {() => {
+           this.props.navigation.navigate('PaymentProcessing', {})
+          }}
+        >
+            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Processing</Text>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress = {() => {
+           this.props.navigation.navigate('PaymentInvoice', {})
+          }}
+        >
+            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Invoice</Text>
+        </TouchableNativeFeedback>
+
       </View>)
 
     return (
@@ -89,9 +130,11 @@ export default class POS extends Component {
           </ToolbarAndroid>
           <Ticker />
           <VisibleProductList />
+          <PasswordPopup
+          navigation={this.props.navigation}
+           ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} />
         </View>
       </DrawerLayoutAndroid>
-
     )
   }
 }
@@ -101,5 +144,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f1f1f1',
     alignItems: 'center',
-  },
+  }
 })

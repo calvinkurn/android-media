@@ -104,7 +104,7 @@ export const SELECT_PAYMENT_OPTIONS = 'SELECT_PAYMENT_OPTIONS'
 export const selectPaymentOptions = (option, value) => {
   return {
     type: SELECT_PAYMENT_OPTIONS,
-    payload: {option: option, value: value}
+    payload: { option: option, value: value }
   }
 }
 
@@ -133,13 +133,13 @@ export const onSearchQueryType = (queryText) => {
 }
 
 export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
-export const fetchSearchProduct = (query) => {
-  console.log(query)
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=1987772&start=0&q=${query}`
+export const fetchSearchProduct = (queryText) => {
+  const text = queryText.replace(' ', '+')
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=1987772&start=0&q=${text}`
   return {
     type: FETCH_SEARCH_PRODUCT,
     payload: axios.get(url),
-    queryText: query,
+    queryText: queryText,
   }
 }
 
@@ -154,5 +154,12 @@ export const CLEAR_SEARCH_RESULTS = 'CLEAR_SEARCH_RESULTS'
 export const clearSearchResults = () => {
   return {
     type: CLEAR_SEARCH_RESULTS,
+  }
+}
+
+export const FETCH_TRANSACTION_HISTORY = 'FETCH_TRANSACTION_HISTORY'
+export const getTransactionHistory = () => {
+  return {
+    type: FETCH_TRANSACTION_HISTORY,
   }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text,TextInput, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions} from 'react-native';
+import { StyleSheet, Text,TextInput, TouchableNativeFeedback, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions} from 'react-native';
 import {selectPaymentOptions} from '../actions/index';
 import { ccFormat, getCardType } from '../lib/utility'
 
@@ -13,10 +13,10 @@ class payment extends Component {
     this.state = {
      months : [1, 2, 3, 4, 5, 6,7, 8, 9, 10, 11, 12],
      years: () => {
-        let arr = []; 
+        let arr = [];
         let d = new Date();
         let n = d.getFullYear();
-        for (let i = 0; i<=10; i++) { 
+        for (let i = 0; i<=10; i++) {
           arr.push(i+n);
         }
         return arr;
@@ -63,21 +63,23 @@ class payment extends Component {
     switch(cardType) {
       case 'MASTER':
         return ( <Image source={require('./img/Logo-MasterCard.png')}
-                style={styles.cardLogo} />);
+                style={styles.cardLogo} resizeMode={'contain'} />);
       case 'VISA':
         return ( <Image source={require('./img/Logo-Visa.png')}
-                style={styles.cardLogo} />);
+                style={styles.cardLogo} resizeMode={'contain'} />);
       case 'JCB':
         return (<Image source={require('./img/Logo-JCB.png')}
-                style={styles.cardLogo} />);
+                style={styles.cardLogo} resizeMode={'contain'} />);
     }
-
-    return <View/>;
   };
 
   static navigationOptions = {
     title: 'Payment Page',
   };
+
+  _getCreditCardType(){
+
+  }
 
   render() {
     console.log(this.state)
@@ -107,29 +109,56 @@ class payment extends Component {
             </Text>
           </View>
 
-          <View style={[styles.row, styles.row2]} >
-            <View style={{flex:0.5, padding: 15}}>
+          <View style={{flex:1,flexDirection:'row',alignItems:'center',backgroundColor:'#fff',paddingBottom:0,paddingHorizontal:20}} >
+            <View style={{flex:0.5}}>
               <Text style={styles.row2Text}>
                 Kartu Kredit
               </Text>
             </View>
-            <View  style={{flex:0.5, borderColor:'black',flexDirection:'row', justifyContent:'flex-end'}}>
-              <Image source={require('./img/secure-guarantee.png')}
-                style={styles.secureImage} />
+            <View  style={{flex:0.5, alignItems:'flex-end'}}>
+              <Image source={require('./img/secure-guarantee.png')} style={{width:75,height:55}} resizeMode={'contain'}/>
             </View>
           </View>
 
-          <View style={[styles.row, styles.row4]} >
-           <View style={{flex:0.5, paddingLeft: 15}}>
-              <Text style={styles.row4Text}>
+          <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',paddingBottom:0,paddingHorizontal:20}} >
+            <View style={{flex:0.5,justifyContent:'flex-end',borderBottomWidth:2,borderBottomColor:'#F0F0F0'}}>
+              <Text style={[styles.row4Text]}>
                 Nomor kartu kredit
               </Text>
+               <TextInput
+                 underlineColorAndroid={'transparent'}
+                 style={{fontSize:17,paddingLeft:0,paddingVertical:0}}
+                 placeholder="Contoh : 1234567890"
+                 placeholderTextColor = "#C6C6C6"
+                 keyboardType= "numeric"
+                 value = {ccFormat(this.props.ccNum)}
+                 maxLength= {19}
+                 onChangeText={(text) => this.props.dispatch(selectPaymentOptions('ccNum', text))}
+               />
             </View>
-          </View>
-
-          <View style={[styles.row, styles.row5]} >
-           <View style={{flex:0.5, paddingLeft: 10}}>
+            <View style={{flex:0.5,height:60,flexDirection:'row',alignItems:'flex-end',justifyContent:'flex-end',borderBottomWidth:2,borderBottomColor:'#F0F0F0'}}>
+              {
+                (getCardType(this.props.ccNum) === 'MASTER') ?
+                  <Image source={require('./img/Logo-MasterCard.png')} style={{width:60,height:60,flex:0.2}} resizeMode={'contain'} />
+                :
+                  (getCardType(this.props.ccNum) === 'VISA') ?
+                    <Image source={require('./img/Logo-Visa.png')}  style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                    :
+                      (getCardType(this.props.ccNum) === 'JCB') ?
+                      <Image source={require('./img/Logo-JCB.png')}  style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                      :
+                      (
+                        <View style={{flexDirection:'row',marginRight:-10}}>
+                          <Image source={require('./img/Logo-MasterCard.png')} style={styles.cardLogo} resizeMode={'contain'} />
+                          <Image source={require('./img/Logo-Visa.png')}  style={styles.cardLogo}  resizeMode={'contain'} />
+                          <Image source={require('./img/Logo-JCB.png')}  style={styles.cardLogo}  resizeMode={'contain'} />
+                        </View>
+                      )
+              }
+            </View>
+           {/*<View style={{flex:1, paddingLeft: 10}}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 style={{fontSize:17}}
                 placeholder="Contoh : 1234567890"
                 placeholderTextColor = "#C6C6C6"
@@ -140,20 +169,82 @@ class payment extends Component {
               />
             </View>
 
-            <View  style={{flex:0.4, borderColor:'black', flexDirection:'row', justifyContent:'center'}}>{this._cardType()}</View>
+            <View  style={{flex:1, borderColor:'black', flexDirection:'row', justifyContent:'center'}}>
+              <Image source={require('./img/Logo-MasterCard.png')} style={styles.cardLogo} />
+              <Image source={require('./img/Logo-JCB.png')}  style={styles.cardLogo} />
+              <Image source={require('./img/Logo-Visa.png')}  style={styles.cardLogo} />
+            </View>*/}
           </View>
 
           <View style={[styles.row, styles.row6]} >
-          <View style={{flex:0.5, paddingLeft: 15}}>
-              <Text style={styles.row4Text}>
-                Masukan nomor kartu kredit
-              </Text>
+            <View style={{flex:0.5, paddingLeft: 20}}>
               <Text style={styles.row4Text, styles.errorText}>
                {this.state.errorMessage.ccNum}
+              </Text>
+              <Text style={styles.row4Text}>
+                Masukan nomor kartu kredit
               </Text>
             </View>
           </View>
 
+          <View style={{backgroundColor:'#fff',flexDirection:'row',paddingTop:25}}>
+            <View style={{flex:0.4,marginLeft:20}}>
+              <Text>
+                Masa Berlaku
+              </Text>
+              <View style={{flexDirection:'row',marginLeft:-3}}>
+                <View style={{borderBottomWidth:2.5,borderBottomColor:'#F0F0F0',marginRight:20}}>
+                  <Picker style={{width:width*.15}}
+                    selectedValue={this.props.mon}
+                    onValueChange={(itemValue, itemIndex) => this.props.dispatch(selectPaymentOptions('mon', itemValue))}>
+                    <Picker.Item label="mm" value="" />
+                    {months}
+                  </Picker>
+                </View>
+                <View style={{borderBottomWidth:2.5,borderBottomColor:'#F0F0F0'}}>
+                  <Picker style={{width:width*.15}}
+                    selectedValue={this.props.year}
+                      onValueChange={(itemValue, itemIndex) => this.props.dispatch(selectPaymentOptions('year', itemValue))}>
+                    <Picker.Item label="YY" value="" />
+                    {years}
+                  </Picker>
+                </View>
+              </View>
+            </View>
+            <View style={{flex:0.275,marginRight:15,borderBottomWidth:2,borderBottomColor:'#F0F0F0',marginBottom:1}}>
+              <Text>
+                CVV
+              </Text>
+              <View style={{flex:1,backgroundColor:'white',flexDirection:'row',alignItems:'center'}}>
+                <TextInput
+                  underlineColorAndroid={'transparent'}
+                  style={{fontSize:17,width:150,marginBottom:-2,paddingBottom:0,paddingLeft:0}}
+                  placeholder="Contoh : 123"
+                  secureTextEntry={true}
+                  placeholderTextColor = "#C6C6C6"
+                  keyboardType= "numeric"
+                  maxLength= {3}
+                  onChangeText={(text) => this.props.dispatch(selectPaymentOptions('cvv', text))}
+                />
+                <View style={{flex:1,marginBottom:-5}}>
+                  <Image source={require('./img/cvv-icon.png')} style={styles.cvvLogo} resizeMode={'contain'}/>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={{flexDirection:'row',backgroundColor:'white',paddingHorizontal:20,paddingBottom:25}}>
+            <View style={{flex:0.4}} />
+            <View style={{flex:0.6}}>
+              <Text style={styles.errorText}>
+               {this.state.errorMessage.date}
+              </Text>
+              <Text style={styles.row4Text}>
+                Masukan CVV
+              </Text>
+            </View>
+          </View>
+          {/*
           <View style={[styles.row, styles.row7]} >
             <View style={{flex:0.6, flexDirection:'row',}}>
 
@@ -173,6 +264,7 @@ class payment extends Component {
             </View>
             <View style={{flex:0.5, flexDirection:'row'}}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 style={{width:100, height:50, fontSize:17}}
                 placeholder="Contoh : 123"
                 secureTextEntry={true}
@@ -208,14 +300,32 @@ class payment extends Component {
                {this.state.errorMessage.cvv}
               </Text>
             </View>
-               
-          </View>
+
+          </View>*/}
+
           <View style={styles.buttonContainer}>
-            <Button
+            {/*<Button
               title="Bayar"
               color='#FF5722'
               onPress={this._handleButtonPress}
-            />
+            />*/}
+            <TouchableNativeFeedback
+              onPress={this._handleButtonPress}
+              background={TouchableNativeFeedback.SelectableBackground()}
+            >
+                <View style={{
+                  flex:1,
+                  height:52,
+                  justifyContent:'center',
+                  alignItems:'center',
+                  backgroundColor:'#FF5722',
+                  borderRadius:3
+                }}>
+                  <Text style={{color:'#fff',fontSize:16}}>
+                    Bayar
+                  </Text>
+                </View>
+            </TouchableNativeFeedback>
           </View>
         </View>
         </ScrollView>
@@ -298,18 +408,15 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   secureImage: {
-    flex:0.6,
-    resizeMode: 'contain'
+    flex:0.6
   },
   row4Text : {
     fontSize:13,
     color: '#C6C6C6'
   },
   cardLogo: {
-    flex:1,
-    resizeMode: 'contain',
-    height:45,
-    width:45
+    height:55,
+    width:55
   },
   cvvLogo: {
     flex:0.5,

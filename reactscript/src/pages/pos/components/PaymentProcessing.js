@@ -15,9 +15,6 @@ class PaymentProcessing extends Component {
         justifyContent: 'space-around'
         }}>
           <View style={{ width: '10%', left: 10 }}>
-            <TouchableWithoutFeedback>
-              <Image source={require('./img/icon_back.png')} />
-            </TouchableWithoutFeedback>
           </View>
           <View style={{ width: '80%', left: 10 }}>
             <Text style={{ fontSize: 18, color: '#fff' }}>Pembayaran</Text>
@@ -27,7 +24,7 @@ class PaymentProcessing extends Component {
         </View>
         
         <View style={{ width: "100%", marginTop: "60%", flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
-          <Image source={require('./img/loading-tmp.gif')} />
+          <Image source={require('./img/loading.gif')} />
               <Text style={{fontSize:17, marginTop:"2%"}}>Pembayaran sedang diproses...</Text>
         </View>
       </View>

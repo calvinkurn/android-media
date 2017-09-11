@@ -34,11 +34,11 @@ const TKPPopupModal = ({
       <View style={styles.container}>
         <View style={styles.overlay}>
           <View style={styles.box}>
-            <View style={styles.closeIcon}>
+            {/* <View style={styles.closeIcon}>
               <TouchableWithoutFeedback onPress={onCloseIconTap}>
                 <Image source={require('./img/close-icon.png')} />
               </TouchableWithoutFeedback>
-            </View>
+            </View> */}
             <View style={styles.padVer5}>
               <Text style={styles.titleText}>{title}</Text>
             </View>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   box: {
     backgroundColor: '#fff',
-    width: '90%',
+    width: '80%',
     borderRadius: 9,
     height: 189,
     flexDirection: 'column',
@@ -104,12 +104,12 @@ const styles = StyleSheet.create({
 
   },
   titleText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
     color: 'rgba(0, 0, 0, 0.7)',
   },
   subTitleText: {
-    fontSize: 12,
+    fontSize: 14,
     color: 'rgba(0, 0, 0, 0.54)',
     fontWeight: '600',
     marginTop: 10

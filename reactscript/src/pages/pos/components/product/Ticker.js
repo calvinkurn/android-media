@@ -6,11 +6,11 @@ const Ticker = () => {
     <View style={styles.container}>
       <View>
         <View style={styles.imageWrapper}>
-          <Image source={require('./img/toped.png')} style={styles.imageIcon} />
+          <Image source={require('../img/toped.png')} style={styles.imageIcon} />
         </View>
       </View>
       <View style={styles.textContainer}>
-        <Text style={{ fontSize: 8 }}>Selamat Datang di (Shop name here)</Text>
+        <Text style={{ fontSize: 13 }}>Selamat Datang di (Shop name here)</Text>
         <View style={styles.singleLineTextContainer}>
           <Text style={styles.textStyle}>Nikamati Cicilan 0% Gratis Biaya Admin,</Text>
           <Text style={styles.linkText}> Cek Sekarang</Text>
@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontWeight: 'bold',
-    fontSize: 10,
+    fontSize: 15,
   },
   linkText: {
     color: '#42b549',
     fontWeight: 'bold',
-    fontSize: 10,
+    fontSize: 15,
   },
   imageWrapper: {
     paddingHorizontal: 10

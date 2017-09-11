@@ -7,18 +7,28 @@ import {
   RefreshControl,
   ActivityIndicator,
   Text,
+  TouchableNativeFeedback,
+  Image,
 } from 'react-native'
-import StorefrontPicker from '../components/StorefrontPicker'
+import Picker from '../components/product/EtalaseSelectPopUp'
 import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList } from '../actions/index'
-import Product from '../components/Product'
+import Product from '../components/product/Product'
 
 class VisibleProductList extends Component {
   constructor(props) {
     super(props)
+    this.state = { showEtalasePicker: false }
+  }
+
+  closePopUp = () => {
+    this.setState({ showEtalasePicker: false })
   }
 
   onPickerChange = (value, index) => {
     const etalaseId = value
+    if (etalaseId == this.props.etalases.selected || this.props.products.isFetching) {
+      return
+    }
     this.props.dispatch(onEtalaseChange(etalaseId))
     this.props.dispatch(resetProductList())
     this.props.dispatch(fetchProducts(1987772, 0, 25, value))
@@ -28,6 +38,7 @@ class VisibleProductList extends Component {
     const { dispatch } = this.props
     const { start, rows } = this.props.products.pagination
     dispatch(fetchEtalase(1987772))
+    this.props.dispatch(fetchProducts(1987772, 0, 25, 0))
   }
 
   renderProduct = ({ item }) => {
@@ -45,10 +56,10 @@ class VisibleProductList extends Component {
 
   handleRefresh = () => {
     const { dispatch } = this.props
-    const selectedEtalase = this.props.etalases.selected
+    const selectedEtalaseId = this.props.etalases.selected
 
     dispatch(pullToRefresh())
-    dispatch(fetchProducts(1987772, 0, 25, selectedEtalase))
+    dispatch(fetchProducts(1987772, 0, 25, selectedEtalaseId))
     dispatch(fetchEtalase(1987772))
   }
 
@@ -57,17 +68,25 @@ class VisibleProductList extends Component {
     const fetchInProgress = this.props.products.isFetching
     const etalases = this.props.etalases.items
     const refreshing = this.props.products.refreshing
-    const selectedEtalase = this.props.etalases.selected
+    const selectedEtalaseId = this.props.etalases.selected
+    const selectedEtalase = etalases.filter(e => e.id == selectedEtalaseId)
 
     return (
       <View style={styles.container}>
+        <Picker
+          visible={this.state.showEtalasePicker}
+          onBackTap={this.closePopUp}
+          onChange={this.onPickerChange}
+          value={selectedEtalaseId}
+          options={etalases} />
         <View style={styles.productListHeader}>
           <Text style={styles.etalaseText}>Etalase: </Text>
-          <StorefrontPicker
-            value={selectedEtalase}
-            onChange={this.onPickerChange}
-            isFetching={fetchInProgress}
-            options={etalases} />
+          <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
+            <View style={styles.etalasePicker}>
+              <Text style={{ fontSize: 18, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
+              <Image source={require('../components/img/arrow-down-grey.png')} />
+            </View>
+          </TouchableNativeFeedback>
         </View>
         {products.length > 0 && <FlatList
           data={products}
@@ -103,8 +122,9 @@ const mapStateToProps = state => {
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   width: '90%',
+    flex: 1,
+    width: '90%',
+    paddingBottom: 30,
   },
   productListHeader: {
     flexDirection: 'row',
@@ -116,6 +136,16 @@ const styles = StyleSheet.create({
   },
   etalaseText: {
     fontWeight: 'bold',
+    fontSize: 18,
+  },
+  etalasePicker: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    backgroundColor: '#fff',
+    padding: 10,
+    alignItems: 'center',
+    marginLeft: 20,
   }
 })
 
