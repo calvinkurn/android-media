@@ -188,6 +188,8 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     protected void resetFilter() {
         loadFilterItems(optionList);
         clearSearchInput();
+        KeyboardHandler.hideSoftKeyboard(this);
+        searchResultEmptyView.setVisibility(View.GONE);
     }
 
     private void clearSearchInput() {
