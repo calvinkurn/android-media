@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -243,14 +244,8 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
     @Override
     public void onErrorLoadTopAdsProduct(String errorMessage) {
         hideLoading();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage,
-                new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                showLoading();
-                daggerPresenter.getProductDetail(stepperModel.getIdToAdd());
-            }
-        });
+        Toast.makeText(getActivity(), getString(R.string.msg_network_error), Toast.LENGTH_LONG).show();
+        getActivity().finish();
     }
 
     protected boolean isHideExistingGroup() {
