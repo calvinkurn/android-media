@@ -136,8 +136,8 @@
     <string name="shop_score_min_value">0</string>
     <string name="shop_score_max_value">100</string>
     <string name="product_draft_delete_all_draft">Hapus Semua Draft</string>
-    <string name="product_draft_delete_all_draft_dialog_message">Yakin Hapus Semua Draft?</string>
+    <string name="product_draft_delete_all_draft_dialog_message">Yakin hapus semua Draft?</string>
     <string name="product_draft_error_delete_draft">Terjadi kesalahan dalam menghapus semua draft. Silakan coba kembali.</string>
-    <string name="product_draft_success_delete_draft">Semua draf Produk berhasil dihapus</string>
+    <string name="product_draft_success_delete_draft">Semua draft Produk berhasil dihapus</string>
 
 </resources>
