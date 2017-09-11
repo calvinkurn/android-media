@@ -1,8 +1,5 @@
 package com.tokopedia.sellerapp.dashboard.presenter;
 
-import android.util.Log;
-import android.view.View;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -11,14 +8,13 @@ import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreMainDataUseC
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.dashboard.usecase.GetTickerUseCase;
-import com.tokopedia.sellerapp.dashboard.view.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.view.mapper.ShopScoreMapper;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 
 import javax.inject.Inject;
 
-import rx.Observer;
 import rx.Subscriber;
 
 /**
@@ -82,7 +78,9 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorShopScore();
+                if (isViewAttached()) {
+                    getView().onErrorShopScore(e);
+                }
             }
 
             @Override
@@ -102,24 +100,23 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorGetShopInfo(e);
+                if (isViewAttached()) {
+                    getView().onErrorGetShopInfo(e);
+                }
             }
 
             @Override
             public void onNext(ShopModel shopModel) {
-                if (isViewAttached()) {
-                    getView().onSuccessGetShopInfo(shopModel.info);
-                    getView().onSuccessGetShopOpenInfo(shopModel.isOpen > 0);
-                    getView().onSuccessGetShopTransaction(shopModel.shopTxStats);
+                getView().onSuccessGetShopInfo(shopModel.info);
+                getView().onSuccessGetShopOpenInfo(shopModel.isOpen > 0);
+                getView().onSuccessGetShopTransaction(shopModel.shopTxStats);
 
-                    ReputationView.ReputationViewModel reputationViewModel = new ReputationView.ReputationViewModel();
-                    reputationViewModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
-                    reputationViewModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
-                    reputationViewModel.reputationPoints = shopModel.stats.shopReputationScore;
-                    reputationViewModel.stats = shopModel.stats;
-                    getView().onSuccessGetReputation(reputationViewModel);
-
-                }
+                ReputationView.ReputationViewModel reputationViewModel = new ReputationView.ReputationViewModel();
+                reputationViewModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
+                reputationViewModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
+                reputationViewModel.reputationPoints = shopModel.stats.shopReputationScore;
+                reputationViewModel.stats = shopModel.stats;
+                getView().onSuccessGetReputation(reputationViewModel);
             }
         };
     }

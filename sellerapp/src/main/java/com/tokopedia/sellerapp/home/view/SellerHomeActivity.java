@@ -969,12 +969,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     @Override
-    public void goToShopScoreDetail() {
-        Intent intent = new Intent(this, ShopScoreDetailActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
     public void getShopScoreData() {
         presenter.getShopScoreMainData();
     }

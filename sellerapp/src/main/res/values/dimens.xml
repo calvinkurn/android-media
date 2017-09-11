@@ -1,7 +1,40 @@
 <resources>
+    <dimen name="ticker_height">100dp</dimen>
+
+    <!-- Card Header -->
+    <dimen name="card_container_margin">7.5dp</dimen>
+    <dimen name="card_header_container">32.5dp</dimen>
+    <dimen name="card_header_title">12sp</dimen>
+    <dimen name="card_header_img_width">19.5dp</dimen>
+    <dimen name="card_header_img_height">19.5dp</dimen>
+    <dimen name="card_header_see_detail">8sp</dimen>
+
+    <!-- Transaksi -->
+    <dimen name="card_text_size">32.5sp</dimen>
+    <dimen name="card_description_size">10.4sp</dimen>
+
+    <!-- New Order-->
+
+    <!-- Discussion -->
+    <dimen name="margin_title_with_icon">9dp</dimen>
+
+    <!-- boom menu -->
+    <!-- Boom menu dimens -->
+    <dimen name="default_corner_radius">4dp</dimen>
+    <dimen name="default_shadow_radius">4dp</dimen>
+
+    <dimen name="default_circle_button_corner_2radius">100dp</dimen>
+    <dimen name="default_circle_button_text_size">10sp</dimen>
+
+    <dimen name="default_ham_button_corner_radius">3dp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="padding_top_onboard_cover_page">20dp</dimen>
     <dimen name="padding_bottom_onboard_cover_page">80dp</dimen>
+
+    <dimen name="dashboard_icon_shop_height">64dp</dimen>
 </resources>

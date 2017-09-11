@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.dashboard.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -14,13 +15,16 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.home.view.ReputationView;
+import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
-import com.tokopedia.sellerapp.dashboard.view.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
+import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
+import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidgetCallback;
 
 import javax.inject.Inject;
 
@@ -47,6 +51,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView discussionLabelView;
     private LabelView reviewLabelView;
 
+    private ShopScoreWidget shopScoreWidget;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +76,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView = (LabelView) view.findViewById(R.id.label_view_message);
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
+        shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,6 +117,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             @Override
             public void onClick(View v) {
 
+            }
+        });
+        shopScoreWidget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ShopScoreDetailActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -166,12 +180,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void renderShopScore(ShopScoreViewModel shopScoreViewModel) {
-        // TODO render shop score
-        // shopScoreWidget.renderView(shopScoreViewModel);
+        shopScoreWidget.renderView(shopScoreViewModel);
     }
 
     @Override
-    public void onErrorShopScore() {
+    public void onErrorShopScore(Throwable t) {
         //TODO snackbar shop score
     }
 
