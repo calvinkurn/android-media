@@ -9,4 +9,6 @@ import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 public interface TopAdsGetProductDetailView extends CustomerView {
 
     void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel);
+
+    void onErrorLoadTopAdsProduct(String errorMessage);
 }

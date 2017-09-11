@@ -22,6 +22,8 @@ import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFr
 
 import java.util.List;
 
+import bolts.AppLink;
+
 import static com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
 
 /**
@@ -30,15 +32,19 @@ import static com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNew
 
 public class TopAdsGroupNewPromoActivity extends TActivity {
 
+    public static final String PARAM_ITEM_ID = "item_id";
+    public static final String PARAM_USER_ID = "user_id";
+
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
-            String userId = extras.getString("user_id", "");
+            String userId = extras.getString(PARAM_USER_ID, "");
             if (!TextUtils.isEmpty(userId)) {
                 if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context)
                             .setData(uri.build())
+                            .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
                             .putExtras(extras);
                 } else {
                     return TopAdsDashboardActivity.getCallingIntent(context)
@@ -48,10 +54,15 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                 return getCallingIntent(context)
                         .setData(uri.build())
+                        .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
                         .putExtras(extras);
             }
         } else {
-            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+            Intent launchIntent = ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+            Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+            String itemId = uri.getQueryParameter(PARAM_ITEM_ID);
+            launchIntent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+            return launchIntent;
         }
     }
 

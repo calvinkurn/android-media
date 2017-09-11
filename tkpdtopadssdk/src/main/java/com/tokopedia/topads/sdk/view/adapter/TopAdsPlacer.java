@@ -189,7 +189,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
                     position = position - 1;
                 }
                 setTopAds(adsItems, itemList, position);
-                adapter.notifyItemInserted(position);
                 if (recyclerView != null && position == 0) {
                     recyclerView.scrollToPosition(position);
                 }
@@ -257,6 +256,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         Log.d(TAG, "setTopAds size " + list.size() + " pos " + pos);
         if (list.size() > 0) {
             arrayList.add(pos, new TopAdsViewModel(list));
+            adapter.notifyItemInserted(pos);
         } else {
             setShouldLoadAds(false);
         }
