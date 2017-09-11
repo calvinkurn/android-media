@@ -45,6 +45,10 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         this.bannerList = promoList;
     }
 
+    public void setBannerList(List<FacadePromo.PromoItem> bannerList) {
+        this.bannerList = bannerList;
+    }
+
     public class BannerViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout linearLayout;

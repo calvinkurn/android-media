@@ -216,6 +216,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         public View bannerSeeAll;
         private TokoCashHeaderView tokoCashHeaderView;
         TabLayout tabLayoutRecharge;
+        View pulsaPlaceHolder;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView tickerContainer;
         NestedScrollView wrapperScrollview;
@@ -277,6 +278,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void initData() {
+
+        loadDummyPromos();
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
@@ -301,6 +304,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         });
     }
 
+    private void loadDummyPromos() {
+        List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
+        dummyPromoList.add(new FacadePromo.PromoItem());
+        dummyPromoList.add(new FacadePromo.PromoItem());
+        setBanner(dummyPromoList);
+    }
+
     private void getAnnouncement() {
         if (!category.isTickerClosed()) {
             category.fetchTickers(new Category.FetchTickersListener() {
@@ -308,6 +318,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 public void onSuccess(final ArrayList<Ticker.Tickers> tickersResponse) {
                     holder.tickerContainer.setVisibility(View.VISIBLE);
                     if (tickersResponse.size() > 1) {
+                        tickerShowed.clear();
                         tickerIncrementPage = runnableIncrementTicker();
                         tickerHandler = new Handler();
                         holder.tickerContainer.setVisibility(View.VISIBLE);
@@ -361,13 +372,19 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
-            bannerPagerAdapter = new BannerPagerAdapter(promoList);
-            holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
+            if(bannerPagerAdapter ==null) {
+                bannerPagerAdapter = new BannerPagerAdapter(promoList);
+            }else {
+                bannerPagerAdapter.setBannerList(promoList);
+                bannerPagerAdapter.notifyDataSetChanged();
+            }
             holder.bannerPager = (RecyclerView) holder.banner.findViewById(R.id.viewpager_banner_category);
+            holder.bannerPager.setVisibility(View.VISIBLE);
             holder.bannerIndicator = (ViewGroup) holder.banner.findViewById(R.id.indicator_banner_container);
             holder.bannerSeeAll = holder.banner.findViewById(R.id.promo_link);
             holder.bannerSeeAll.setOnClickListener(onPromoLinkClicked());
-
+            indicatorItems.clear();
+            holder.bannerIndicator.removeAllViews();
             holder.bannerPager.setHasFixedSize(true);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -416,6 +433,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
 
             PagerSnapHelper snapHelper = new PagerSnapHelper();
+            holder.bannerPager.setOnFlingListener(null);
             snapHelper.attachToRecyclerView(holder.bannerPager);
 
             bannerHandler = new Handler();
@@ -584,7 +602,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.containerRecharge = (CardView) holder.MainView.findViewById(R.id.container_recharge);
         holder.tabLayoutRecharge = (TabLayout) holder.MainView.findViewById(R.id.tablayout_recharge);
         holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
-        ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
+       // ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
         holder.cardBrandLayout = (CardView) holder.MainView.findViewById(R.id.card_brand_layout);
@@ -594,6 +612,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tokoCashHeaderView.setActionListener(this);
         holder.seeAllProduct = (TextView) holder.MainView.findViewById(R.id.see_all_product);
         holder.seeAllProduct.setOnClickListener(getClickListenerShowAllDigitalProducts());
+        holder.pulsaPlaceHolder = holder.MainView.findViewById(R.id.pulsa_place_holders);
+
+        holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
@@ -1053,6 +1074,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {
         for (int i = 0; i < rechargeCategory.getData().size(); i++) {
+            holder.pulsaPlaceHolder.setVisibility(View.GONE);
             com.tokopedia.core.database.model.category.Category category = rechargeCategory.getData().get(i);
             TabLayout.Tab tab = holder.tabLayoutRecharge.newTab();
             tab.setText(category.getAttributes().getName());

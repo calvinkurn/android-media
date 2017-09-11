@@ -106,7 +106,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
 
     @Override
     public void onSuccess(Status data) {
-        view.hideRechargeWidget();
         if (SessionHandler.isV4Login(activity)) {
             fetchRecentNumberList();
         }

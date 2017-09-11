@@ -203,7 +203,7 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
-        Glide.with(imageview.getContext())
+        Glide.with(imageview.getContext().getApplicationContext())
                 .load(url)
                 .fitCenter()
                 .dontAnimate()
