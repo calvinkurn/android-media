@@ -220,31 +220,38 @@
                             android:layout_alignParentTop="true"
                             android:layout_marginLeft="@dimen/margin_large"
                             android:layout_marginStart="@dimen/margin_large"
-                            android:maxLines="2"
                             android:ellipsize="end"
+                            android:maxLines="2"
                             android:paddingLeft="@dimen/padding_small"
                             android:paddingStart="@dimen/padding_small"
                             android:textColor="@color/black"
                             tools:text="Your trip with John Ferdinand van java de paris" />
                     </RelativeLayout>
 
-                    <RatingBar
-                        android:id="@+id/rb_rating_result"
-                        style="@style/avgRatingBarSmall"
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_weight="0.3"
-                        android:clickable="false"
-                        android:isIndicator="true"
-                        android:numStars="5"
-                        android:rating="0"
-                        android:scaleX=".75"
-                        android:scaleY=".75"
-                        android:stepSize="1"
-                        android:visibility="gone"
-                        tools:rating="3"
-                        tools:visibility="visible" />
+                        android:layout_weight="0.2">
+
+                        <RatingBar
+                            android:id="@+id/rb_rating_result"
+                            style="@style/avgRatingBarSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_gravity="center_horizontal"
+                            android:clickable="false"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:rating="0"
+                            android:scaleX=".75"
+                            android:scaleY=".75"
+                            android:stepSize="1"
+                            android:visibility="gone"
+                            tools:rating="3"
+                            tools:visibility="visible" />
+                    </RelativeLayout>
                 </LinearLayout>
 
 
@@ -291,9 +298,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/tv_payment_details"
-                        tools:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="-" />
 
                     <TextView
                         android:id="@+id/tv_label_discount"
@@ -313,9 +320,9 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/tv_label_total_fare"
                         android:paddingTop="8dp"
-                        tools:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="-" />
 
                     <TextView
                         android:id="@+id/tv_label_cashback"
@@ -335,9 +342,9 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/tv_label_discount"
                         android:paddingTop="8dp"
-                        tools:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="-" />
 
                     <View
                         android:id="@+id/fare_sep"
@@ -367,9 +374,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/fare_sep"
-                        tools:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="-" />
 
                 </RelativeLayout>
 
