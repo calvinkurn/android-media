@@ -13,12 +13,4 @@
         android:layout_height="match_parent"
         tools:ignore="MergeRootFrame" />
 
-
-    <android.support.v7.widget.Toolbar
-        android:layout_alignParentTop="true"
-        android:id="@+id/pos_home_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        app:layout_collapseMode="pin"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 </RelativeLayout>
