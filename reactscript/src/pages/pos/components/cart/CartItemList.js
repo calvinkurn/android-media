@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Modal, View, Text, TouchableWithoutFeedback, Image, ScrollView } from 'react-native'
-import CartItem from '../components/CartItem'
-import Button from '../common/TKPPrimaryBtn'
-import PopUp from '../common/TKPPopupModal'
+import CartItem from './CartItem'
+import Button from '../../common/TKPPrimaryBtn'
+import PopUp from '../../common/TKPPopupModal'
 
 export default class CartItemList extends Component {
   constructor(props) {
@@ -40,24 +40,18 @@ export default class CartItemList extends Component {
         onRequestClose={onBackPress}>
         {items.length > 0 ?
           <View style={{ flex: 1 }}>
-            <View style={{
-              height: 55,
-              backgroundColor: '#42b549',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-around'
-            }}>
-              <View style={{ width: '10%', left: 10 }}>
+            <View style={styles.headerContainer}>
+              <View style={{ width: '10%' }}>
                 <TouchableWithoutFeedback onPress={onBackPress}>
-                  <Image source={require('./img/icon_back.png')} />
+                  <Image source={require('../img/icon_back.png')} />
                 </TouchableWithoutFeedback>
               </View>
-              <View style={{ width: '80%', left: 10 }}>
-                <Text style={{ fontSize: 18, color: '#fff' }}>Keranjang Belanja</Text>
+              <View style={{ width: '85%' }}>
+                <Text style={{ fontSize: 24, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
               </View>
-              <View style={{ width: '10%' }}>
+              <View style={{ width: '5%' }}>
                 <TouchableWithoutFeedback onPress={() => { this.toggleScreen(true) }}>
-                  <Image source={require('./img/trash-all.png')} />
+                  <Image source={require('../img/trash-all.png')} />
                 </TouchableWithoutFeedback>
               </View>
             </View>
@@ -88,8 +82,8 @@ export default class CartItemList extends Component {
                 }
               </ScrollView>
               <View style={styles.paymentContainer}>
-                <Text>Total Pembayaran</Text>
-                <Text>Rp {totalPrice}</Text>
+                <Text style={styles.paymentText}>Total Pembayaran</Text>
+                <Text style={styles.paymentText}>Rp {totalPrice}</Text>
               </View>
               <View style={{ marginTop: 20 }}>
                 <Button
@@ -99,20 +93,14 @@ export default class CartItemList extends Component {
               </View>
             </View></View> :
           <View style={styles.emptyContainer}>
-            <View style={{
-              height: 55,
-              backgroundColor: '#42b549',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-around'
-            }}>
+            <View style={styles.headerContainer}>
               <View style={{ width: '10%', left: 10 }}>
                 <TouchableWithoutFeedback onPress={onBackPress}>
-                  <Image source={require('./img/icon_back.png')} />
+                  <Image source={require('../img/icon_back.png')} />
                 </TouchableWithoutFeedback>
               </View>
               <View style={{ width: '80%', left: 10 }}>
-                <Text style={{ fontSize: 18, color: '#fff' }}>Keranjang Belanja</Text>
+                <Text style={styles.headerTitleText}>Keranjang Belanja</Text>
               </View>
               <View style={{ width: '10%' }}>
               </View>
@@ -124,7 +112,7 @@ export default class CartItemList extends Component {
                 height: '40%',
                 backgroundColor: '#fff'
               }}>
-                <Image source={require('./img/shopping-basket.png')} style={{ width: 100, height: 100 }} />
+                <Image source={require('../img/shopping-basket.png')} style={{ width: 100, height: 100 }} />
                 <Text>Tidak Ada barang dalam keranjang</Text>
               </View>
               <View style={{ marginTop: 20 }}>
@@ -148,8 +136,8 @@ const styles = {
     marginTop: 10,
     backgroundColor: '#fff',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 5,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   itemListContainer: {
     backgroundColor: '#fff',
@@ -166,8 +154,8 @@ const styles = {
   container: {
     flex: 1,
     backgroundColor: '#f1f1f1',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 30,
+    paddingHorizontal: '4%',
     backgroundColor: '#f1f1f1',
   },
   checkoutBtn: {
@@ -183,5 +171,22 @@ const styles = {
     color: '#fff',
     fontSize: 13,
     fontWeight: '600'
+  },
+  headerContainer: {
+    height: 75,
+    backgroundColor: '#42b549',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: '4%',
+  },
+  headerTitleText: {
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: '300',
+  },
+  paymentText: {
+    fontSize: 20,
+    color: 'black'
   }
 }

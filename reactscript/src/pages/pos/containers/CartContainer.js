@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import CartItemList from '../components/CartItemList'
+import CartItemList from '../components/cart/CartItemList'
 import {
   removeFromCart,
   incrementQty,

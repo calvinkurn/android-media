@@ -48,21 +48,37 @@ const SearchList = ({ searchItems }) => {
         renderItem={renderItem}
         renderSectionHeader={renderHeader}
         sections={[ // homogenous rendering between sections
-          { data: searchItems, title: 'Pencarian Terakhir' }
+          { data: searchItems, title: 'Pencarian Terakhir' },
+          { data: [{ text: 'Samsung S4', id: 4 }], title: 'Popular Search', },
         ]}
       />
     </View>
   )
 }
 
-const SearchScreen = ({ visible, onBackPress, onSearch, items, onClearSearch, queryText, onSearchType }) => {
+const SearchScreen = ({
+  visible,
+  onBackPress,
+  onSearch,
+  items,
+  onClearSearch,
+  queryText,
+  onSearchType,
+  isFetching,
+}) => {
+  console.log(queryText)
   return (
     <Modal
       animationType={'slide'}
       transparent={false}
       hardwareAccelerated={true}
       visible={visible}
-      onRequestClose={onBackPress}>
+      onRequestClose={
+        () => {
+          onBackPress()
+          onClearSearch()
+        }
+      }>
       <View style={styles.container}>
         <View style={styles.searchTextBoxWrapper}>
           <TextInput
@@ -82,13 +98,11 @@ const SearchScreen = ({ visible, onBackPress, onSearch, items, onClearSearch, qu
         </View>
         <View style={styles.closeIconWrapper}>
           <TouchableWithoutFeedback onPress={onClearSearch}>
-            <Image source={require('./img/close-icon.png')} />
+            <Image source={require('../img/close-icon.png')} />
           </TouchableWithoutFeedback>
         </View>
       </View>
       {(items.length === 0 && queryText) ? <SearchNotFound /> : <SearchList searchItems={items} />}
-      {/* <SearchNotFound /> */}
-      <SearchList />
     </Modal>
   )
 }

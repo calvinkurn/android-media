@@ -26,10 +26,12 @@ class Product extends PureComponent {
                 borderBottomWidth: 1,
               }}
             />
-            <Text
-              style={styles.productName}
-              ellipsizeMode='tail'
-              numberOfLines={3}>{product.name}</Text>
+            <View style={{ height: 50 }}>
+              <Text
+                style={styles.productName}
+                ellipsizeMode='tail'
+                numberOfLines={3}>{product.name}</Text>
+            </View>
           </View>
         </TouchableWithoutFeedback>
         <View style={styles.priceWrapper}>
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
-    width: '33%',
+    width: '32%',
     backgroundColor: 'white',
     borderRadius: 3,
     margin: 3,
@@ -57,15 +59,14 @@ const styles = StyleSheet.create({
   },
   productImage: {
     borderRadius: 3,
-    width: 100,
-    height: 100,
+    width: 211,
+    height: 209,
     resizeMode: 'cover'
   },
   productName: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '200',
     color: 'rgba(0,0,0,.7)',
-    height: 33.8,
     paddingHorizontal: 10,
     paddingTop: 3,
   },
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   },
   price: {
     color: '#ff5722',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     lineHeight: 20,
     paddingHorizontal: 10
