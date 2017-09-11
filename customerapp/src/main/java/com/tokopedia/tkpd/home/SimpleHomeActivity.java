@@ -22,6 +22,8 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
@@ -200,8 +202,8 @@ public class SimpleHomeActivity extends TActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.cart_only, menu);
-        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
-        int CartCache = Cache.getInt("is_has_cart");
+        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+        int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
         if (CartCache > 0) {
             menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
         } else {
