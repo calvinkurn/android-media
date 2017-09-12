@@ -213,7 +213,9 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         } else {
             tilInformation.hideErrorSuccess();
         }
-
+        if (attachment.attachmentViewModelList.size() == 0) {
+            isComplete = false;
+        }
         if (isComplete) {
             buttonSelected(btnContinue);
         } else {
@@ -262,7 +264,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                presenter.btnContinueClicked();
             }
         });
     }

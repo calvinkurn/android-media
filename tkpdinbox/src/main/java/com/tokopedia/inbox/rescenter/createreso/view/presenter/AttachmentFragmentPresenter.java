@@ -53,12 +53,14 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
     @Override
     public void onInformationStringChanged(String information) {
         attachment.information = information.length() < 30 ? "" : information;
-        mainView.updateView(attachment);
+        updateView();
     }
 
     @Override
     public void btnContinueClicked() {
         resultViewModel.message.remark = attachment.information;
+        resultViewModel.attachmentList = attachment.attachmentViewModelList;
+        resultViewModel.attachmentCount = attachment.attachmentViewModelList.size();
         mainView.submitData(resultViewModel);
     }
 
@@ -116,6 +118,12 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
         attachmentViewModel.setFileLoc(fileLoc);
         attachmentViewModel.setFileType(typeFile);
         mainView.addAttachmentFile(attachmentViewModel);
+        attachment.attachmentViewModelList.add(attachmentViewModel);
+        updateView();
+    }
+
+    private void updateView() {
+        mainView.updateView(attachment);
     }
 
     private boolean checkAttachmentValidation(MediaItem item) {

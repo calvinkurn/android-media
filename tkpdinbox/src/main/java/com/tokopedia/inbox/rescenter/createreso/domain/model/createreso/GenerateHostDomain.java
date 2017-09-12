@@ -6,13 +6,12 @@ import javax.annotation.Nullable;
  * Created by yoasfs on 05/09/17.
  */
 
-public class CreateResoStep1Domain {
+public class GenerateHostDomain {
 
     @Nullable
-    private ResolutionDomain resolution;
-
+    private String serverId;
     @Nullable
-    private String cacheKey;
+    private String url;
 
     @Nullable
     private boolean isSuccess;
@@ -20,28 +19,27 @@ public class CreateResoStep1Domain {
     @Nullable
     private String successMessage;
 
-    public CreateResoStep1Domain(ResolutionDomain resolution, String cacheKey, String successMessage) {
-        this.resolution = resolution;
-        this.cacheKey = cacheKey;
-        this.successMessage = successMessage;
+    public GenerateHostDomain(@Nullable String serverId, @Nullable String url) {
+        this.serverId = serverId;
+        this.url = url;
     }
 
     @Nullable
-    public ResolutionDomain getResolution() {
-        return resolution;
+    public String getServerId() {
+        return serverId;
     }
 
-    public void setResolution(@Nullable ResolutionDomain resolution) {
-        this.resolution = resolution;
+    public void setServerId(@Nullable String serverId) {
+        this.serverId = serverId;
     }
 
     @Nullable
-    public String getCacheKey() {
-        return cacheKey;
+    public String getUrl() {
+        return url;
     }
 
-    public void setCacheKey(@Nullable String cacheKey) {
-        this.cacheKey = cacheKey;
+    public void setUrl(@Nullable String url) {
+        this.url = url;
     }
 
     @Nullable

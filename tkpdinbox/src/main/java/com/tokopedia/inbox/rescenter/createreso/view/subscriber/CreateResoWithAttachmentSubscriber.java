@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.subscriber;
 
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 
@@ -10,10 +10,10 @@ import rx.Subscriber;
  * Created by yoasfs on 04/09/17.
  */
 
-public class CreateResoStep1Subscriber extends Subscriber<CreateResoStep1Domain> {
+public class CreateResoWithAttachmentSubscriber extends Subscriber<CreateSubmitDomain> {
     private final CreateResolutionCenter.View mainView;
 
-    public CreateResoStep1Subscriber(CreateResolutionCenter.View mainView) {
+    public CreateResoWithAttachmentSubscriber(CreateResolutionCenter.View mainView) {
         this.mainView = mainView;
     }
 
@@ -25,12 +25,11 @@ public class CreateResoStep1Subscriber extends Subscriber<CreateResoStep1Domain>
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        mainView.errorCreateResoStep1(e.getLocalizedMessage());
+        mainView.errorCreateResoWithAttachment(e.getLocalizedMessage());
     }
 
     @Override
-    public void onNext(CreateResoStep1Domain createResoStep1Domain) {
-        mainView.successCreateResoStep1(String.valueOf(createResoStep1Domain.getResolution().getId()), createResoStep1Domain.getCacheKey(), createResoStep1Domain.getSuccessMessage());
+    public void onNext(CreateSubmitDomain createSubmitDomain) {
+        mainView.successCreateResoWithAttachment(String.valueOf(createSubmitDomain.getResolution().getId()), createSubmitDomain.getSuccessMessage());
     }
-
 }

@@ -19,6 +19,11 @@ public class AttachmentViewModel implements Parcelable{
     private int fileType;
     private UploadedFileViewModel uploadedFile;
     private int isVideo;
+    // start --------------------> New Upload Attachment
+    public String imageUUID;
+    public String picSrc;
+    public String picObj;
+    // end   --------------------> New Upload Attachment
 
     public UploadedFileViewModel getUploadedFile() {
         return uploadedFile;
@@ -79,41 +84,29 @@ public class AttachmentViewModel implements Parcelable{
         this.imgLarge = imgLarge;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getImageUUID() {
+        return imageUUID;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.imgThumb);
-        dest.writeString(this.imgLarge);
-        dest.writeString(this.url);
-        dest.writeString(this.fileLoc);
-        dest.writeInt(this.fileType);
-        dest.writeParcelable(this.uploadedFile, flags);
+    public void setImageUUID(String imageUUID) {
+        this.imageUUID = imageUUID;
     }
 
-    protected AttachmentViewModel(Parcel in) {
-        this.imgThumb = in.readString();
-        this.imgLarge = in.readString();
-        this.url = in.readString();
-        this.fileLoc = in.readString();
-        this.fileType = in.readInt();
-        this.uploadedFile = in.readParcelable(UploadedFileViewModel.class.getClassLoader());
+    public String getPicSrc() {
+        return picSrc;
     }
 
-    public static final Creator<AttachmentViewModel> CREATOR = new Creator<AttachmentViewModel>() {
-        @Override
-        public AttachmentViewModel createFromParcel(Parcel source) {
-            return new AttachmentViewModel(source);
-        }
+    public void setPicSrc(String picSrc) {
+        this.picSrc = picSrc;
+    }
 
-        @Override
-        public AttachmentViewModel[] newArray(int size) {
-            return new AttachmentViewModel[size];
-        }
-    };
+    public String getPicObj() {
+        return picObj;
+    }
+
+    public void setPicObj(String picObj) {
+        this.picObj = picObj;
+    }
 
     public static class UploadedFileViewModel implements Parcelable {
 
@@ -178,4 +171,48 @@ public class AttachmentViewModel implements Parcelable{
             }
         };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.imgThumb);
+        dest.writeString(this.imgLarge);
+        dest.writeString(this.url);
+        dest.writeString(this.fileLoc);
+        dest.writeInt(this.fileType);
+        dest.writeParcelable(this.uploadedFile, flags);
+        dest.writeInt(this.isVideo);
+        dest.writeString(this.imageUUID);
+        dest.writeString(this.picSrc);
+        dest.writeString(this.picObj);
+    }
+
+    protected AttachmentViewModel(Parcel in) {
+        this.imgThumb = in.readString();
+        this.imgLarge = in.readString();
+        this.url = in.readString();
+        this.fileLoc = in.readString();
+        this.fileType = in.readInt();
+        this.uploadedFile = in.readParcelable(UploadedFileViewModel.class.getClassLoader());
+        this.isVideo = in.readInt();
+        this.imageUUID = in.readString();
+        this.picSrc = in.readString();
+        this.picObj = in.readString();
+    }
+
+    public static final Creator<AttachmentViewModel> CREATOR = new Creator<AttachmentViewModel>() {
+        @Override
+        public AttachmentViewModel createFromParcel(Parcel source) {
+            return new AttachmentViewModel(source);
+        }
+
+        @Override
+        public AttachmentViewModel[] newArray(int size) {
+            return new AttachmentViewModel[size];
+        }
+    };
 }

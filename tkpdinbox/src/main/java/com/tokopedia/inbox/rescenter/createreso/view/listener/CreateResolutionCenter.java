@@ -42,17 +42,19 @@ public interface CreateResolutionCenter {
 
         void showCreateComplainDialog(ResultViewModel resultViewModel);
 
-        void successCreateResoStep1(CreateResoStep1Domain createResoStep1Domain);
+        void successCreateResoStep1(String resolutionId, String cacheKey, String message);
 
         void errorCreateResoStep1(String error);
 
-        void successCreateResoStep2(CreateResoStep2Domain createResoStep2Domain);
+        void successCreateResoStep2(String resolutionId, String message);
 
         void errorCreateResoStep2(String error);
 
+        void successCreateResoWithAttachment(String resolutionId, String message);
+
+        void errorCreateResoWithAttachment(String error);
+
     }
-
-
 
     interface Presenter extends CustomerPresenter<View> {
 
@@ -67,6 +69,8 @@ public interface CreateResolutionCenter {
         void createResoClicked();
 
         void callCreateResolutionAPI();
+
+        void callCreateResolutionAPIWithAttachment();
 
         void loadProductProblem(String orderId);
 

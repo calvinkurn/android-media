@@ -5,12 +5,20 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep2Mapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoStep1CloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoStep2CloudSource;
+import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateSubmitCloudSource;
+import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateValidateCloudSource;
+import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GenerateHostCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetProductProblemCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetSolutionCloudSource;
+import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.UploadCloudSource;
 
 /**
  * Created by yoasfs on 16/08/17.
@@ -22,6 +30,10 @@ public class CreateResolutionFactory {
     private SolutionMapper solutionMapper;
     private CreateResoStep1Mapper createResoStep1Mapper;
     private CreateResoStep2Mapper createResoStep2Mapper;
+    private CreateValidateMapper createValidateMapper;
+    private GenerateHostMapper generateHostMapper;
+    private UploadMapper uploadMapper;
+    private CreateSubmitMapper createSubmitMapper;
     private ResolutionApi resolutionApi;
 
     public CreateResolutionFactory(Context context,
@@ -29,12 +41,20 @@ public class CreateResolutionFactory {
                                    SolutionMapper solutionMapper,
                                    CreateResoStep1Mapper createResoStep1Mapper,
                                    CreateResoStep2Mapper createResoStep2Mapper,
+                                   CreateValidateMapper createValidateMapper,
+                                   GenerateHostMapper generateHostMapper,
+                                   UploadMapper uploadMapper,
+                                   CreateSubmitMapper createSubmitMapper,
                                    ResolutionApi resolutionApi) {
         this.context = context;
         this.productProblemMapper = productProblemMapper;
         this.solutionMapper = solutionMapper;
         this.createResoStep1Mapper = createResoStep1Mapper;
         this.createResoStep2Mapper = createResoStep2Mapper;
+        this.createValidateMapper = createValidateMapper;
+        this.generateHostMapper = generateHostMapper;
+        this.uploadMapper = uploadMapper;
+        this.createSubmitMapper = createSubmitMapper;
         this.resolutionApi = resolutionApi;
     }
 
@@ -54,4 +74,19 @@ public class CreateResolutionFactory {
         return new CreateResoStep2CloudSource(context, createResoStep2Mapper, resolutionApi);
     }
 
+    public CreateValidateCloudSource getCreateValidateCloudSource() {
+        return new CreateValidateCloudSource(createValidateMapper, resolutionApi);
+    }
+
+    public GenerateHostCloudSource generateHostCloudSource() {
+        return new GenerateHostCloudSource(context, generateHostMapper, resolutionApi);
+    }
+
+    public UploadCloudSource getUploadCloudSource() {
+        return new UploadCloudSource(uploadMapper, resolutionApi);
+    }
+
+    public CreateSubmitCloudSource createSubmitCloudSource() {
+        return new CreateSubmitCloudSource(createSubmitMapper, resolutionApi);
+    }
 }

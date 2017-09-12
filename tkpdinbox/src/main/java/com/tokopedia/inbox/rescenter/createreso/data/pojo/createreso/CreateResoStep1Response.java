@@ -17,6 +17,10 @@ public class CreateResoStep1Response {
     @Expose
     private String cacheKey;
 
+    @SerializedName("successMessage")
+    @Expose
+    private String successMessage;
+
     public String getCacheKey() {
         return cacheKey;
     }
@@ -33,11 +37,20 @@ public class CreateResoStep1Response {
         this.resolution = resolution;
     }
 
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
+
     @Override
     public String toString() {
         return "CreateResoStep1Response{" +
                 "resolution='" + resolution + '\'' +
                 "cacheKey='" + cacheKey + '\'' +
+                "successMessage='" + successMessage + '\'' +
                 '}';
     }
 

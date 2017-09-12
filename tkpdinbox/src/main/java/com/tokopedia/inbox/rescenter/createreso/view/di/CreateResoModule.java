@@ -11,20 +11,33 @@ import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.inbox.rescenter.createreso.data.factory.CreateResolutionFactory;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep2Mapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep1Repository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep1RepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep2Repository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep2RepositoryImpl;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateValidateSubmitRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateValidateSubmitRepositoryImpl;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.GenerateHostUploadRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.GenerateHostUploadRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep1UseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep2UseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateSubmitUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateValidateUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.GenerateHostUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.UploadUseCase;
 
 
 import dagger.Module;
@@ -51,6 +64,30 @@ public class CreateResoModule {
     @Provides
     ResolutionApi provideResolutionService(@ResolutionQualifier Retrofit retrofit) {
         return retrofit.create(ResolutionApi.class);
+    }
+
+    @CreateResoScope
+    @Provides
+    CreateValidateMapper provideCreateValidateMapper() {
+        return new CreateValidateMapper();
+    }
+
+    @CreateResoScope
+    @Provides
+    GenerateHostMapper provideGenerateHostMapper() {
+        return new GenerateHostMapper();
+    }
+
+    @CreateResoScope
+    @Provides
+    UploadMapper provideUploadMapper() {
+        return new UploadMapper();
+    }
+
+    @CreateResoScope
+    @Provides
+    CreateSubmitMapper provideCreateSubmitMapper() {
+        return new CreateSubmitMapper();
     }
 
     @CreateResoScope
@@ -84,12 +121,20 @@ public class CreateResoModule {
                                                          SolutionMapper solutionMapper,
                                                          CreateResoStep1Mapper createResoStep1Mapper,
                                                          CreateResoStep2Mapper createResoStep2Mapper,
+                                                         CreateValidateMapper createValidateMapper,
+                                                         GenerateHostMapper generateHostMapper,
+                                                         UploadMapper uploadMapper,
+                                                         CreateSubmitMapper createSubmitMapper,
                                                          ResolutionApi resolutionApi) {
         return new CreateResolutionFactory(context,
                 getProductProblemMapper,
                 solutionMapper,
                 createResoStep1Mapper,
                 createResoStep2Mapper,
+                createValidateMapper,
+                generateHostMapper,
+                uploadMapper,
+                createSubmitMapper,
                 resolutionApi);
     }
 
@@ -115,6 +160,74 @@ public class CreateResoModule {
     @Provides
     ProductProblemRepository provideProductProblemRepository(CreateResolutionFactory createResolutionFactory) {
         return new ProductProblemRepositoryImpl(createResolutionFactory);
+    }
+
+    @CreateResoScope
+    @Provides
+    CreateValidateSubmitRepository provideCreateValidateSubmitRepository(CreateResolutionFactory createResolutionFactory) {
+        return new CreateValidateSubmitRepositoryImpl(createResolutionFactory);
+    }
+
+    @CreateResoScope
+    @Provides
+    GenerateHostUploadRepository provideGenerateHostUploadRepository(CreateResolutionFactory createResolutionFactory) {
+        return new GenerateHostUploadRepositoryImpl(createResolutionFactory);
+    }
+
+    @CreateResoScope
+    @Provides
+    CreateValidateUseCase provideCreateValidateUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       CreateValidateSubmitRepository createValidateSubmitRepository) {
+        return new CreateValidateUseCase(threadExecutor,
+                postExecutionThread,
+                createValidateSubmitRepository);
+    }
+
+    @CreateResoScope
+    @Provides
+    GenerateHostUseCase provideGenerateHostUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   GenerateHostUploadRepository generateHostUploadRepository) {
+        return new GenerateHostUseCase(threadExecutor,
+                postExecutionThread,
+                generateHostUploadRepository);
+    }
+
+    @CreateResoScope
+    @Provides
+    UploadUseCase provideUploadUseCase(ThreadExecutor threadExecutor,
+                                             PostExecutionThread postExecutionThread,
+                                             GenerateHostUploadRepository generateHostUploadRepository) {
+        return new UploadUseCase(threadExecutor,
+                postExecutionThread,
+                generateHostUploadRepository);
+    }
+
+    @CreateResoScope
+    @Provides
+    CreateSubmitUseCase provideCreateSubmitUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     CreateValidateSubmitRepository createValidateSubmitRepository) {
+        return new CreateSubmitUseCase(threadExecutor,
+                postExecutionThread,
+                createValidateSubmitRepository);
+    }
+
+    @CreateResoScope
+    @Provides
+    CreateResoWithAttachmentUseCase provideCreateResoWithAttachmentUseCase(ThreadExecutor threadExecutor,
+                                                                           PostExecutionThread postExecutionThread,
+                                                                           CreateValidateUseCase createValidateUseCase,
+                                                                           GenerateHostUseCase generateHostUseCase,
+                                                                           UploadUseCase uploadUseCase,
+                                                                           CreateSubmitUseCase createSubmitUseCase) {
+        return new CreateResoWithAttachmentUseCase(threadExecutor,
+                postExecutionThread,
+                createValidateUseCase,
+                generateHostUseCase,
+                uploadUseCase,
+                createSubmitUseCase);
     }
 
     @CreateResoScope

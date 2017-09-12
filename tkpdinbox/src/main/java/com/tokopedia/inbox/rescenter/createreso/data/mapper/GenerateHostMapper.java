@@ -3,10 +3,8 @@ package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoStep2Response;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ResolutionResponse;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep2Domain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.ResolutionDomain;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.GenerateHostResponse;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,20 +16,20 @@ import rx.functions.Func1;
  * Created by yoasfs on 05/09/17.
  */
 
-public class CreateResoStep2Mapper implements Func1<Response<TkpdResponse>, CreateResoStep2Domain> {
+public class GenerateHostMapper implements Func1<Response<TkpdResponse>, GenerateHostDomain> {
     private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
     private static final String ERROR_MESSAGE = "message_error";
 
     @Override
-    public CreateResoStep2Domain call(Response<TkpdResponse> response) {
+    public GenerateHostDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
     }
 
-    private CreateResoStep2Domain mappingResponse(Response<TkpdResponse> response) {
+    private GenerateHostDomain mappingResponse(Response<TkpdResponse> response) {
         try {
-            CreateResoStep2Response createResoStep2Response = response.body().convertDataObj(CreateResoStep2Response.class);
-            CreateResoStep2Domain model = new CreateResoStep2Domain(createResoStep2Response.getResolution() != null ? mappingResolutionDomain(createResoStep2Response.getResolution()) : null,
-                    createResoStep2Response.getSuccessMessage());
+            GenerateHostResponse generateHostResponse = response.body().convertDataObj(GenerateHostResponse.class);
+            GenerateHostDomain model = new GenerateHostDomain(generateHostResponse.getServerId(),
+                    generateHostResponse.getUrl());
             if (response.isSuccessful()) {
                 if (response.raw().code() == ResponseStatus.SC_OK) {
                     model.setSuccess(true);
@@ -56,9 +54,5 @@ public class CreateResoStep2Mapper implements Func1<Response<TkpdResponse>, Crea
             e.printStackTrace();
         }
         return null;
-    }
-
-    public ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {
-        return new ResolutionDomain(response.getId());
     }
 }

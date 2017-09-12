@@ -15,9 +15,11 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Stat
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep1UseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep2UseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoStep1Subscriber;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.CreateResoStep2ViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
@@ -51,17 +53,21 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private GetProductProblemUseCase getProductProblemUseCase;
     private CreateResoStep1UseCase createResoStep1UseCase;
     private CreateResoStep2UseCase createResoStep2UseCase;
+    private CreateResoWithAttachmentUseCase createResoWithAttachmentUseCase;
     private ProductProblemResponseDomain productProblemResponseDomain;
 
     private ResultViewModel resultViewModel;
     private String orderId;
+
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
                                            CreateResoStep1UseCase createResoStep1UseCase,
-                                           CreateResoStep2UseCase createResoStep2UseCase) {
+                                           CreateResoStep2UseCase createResoStep2UseCase,
+                                           CreateResoWithAttachmentUseCase createResoWithAttachmentUseCase) {
         this.getProductProblemUseCase = getProductProblemUseCase;
         this.createResoStep1UseCase = createResoStep1UseCase;
         this.createResoStep2UseCase = createResoStep2UseCase;
+        this.createResoWithAttachmentUseCase = createResoWithAttachmentUseCase;
         resultViewModel = new ResultViewModel();
     }
 
@@ -115,7 +121,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     @Override
     public void addResultFromStep2(ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
-        this.resultViewModel.createResoStep2ViewModel = new CreateResoStep2ViewModel();
+        resultViewModel.clearAttachment();
         mainView.updateView(resultViewModel);
     }
 
@@ -133,6 +139,11 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     @Override
     public void callCreateResolutionAPI() {
         createResoStep1UseCase.execute(createResoStep1UseCase.createResoStep1Params(resultViewModel), new CreateResoStep1Subscriber(mainView));
+    }
+
+    @Override
+    public void callCreateResolutionAPIWithAttachment() {
+        createResoWithAttachmentUseCase.execute(createResoWithAttachmentUseCase.createResoWithAttachmentRequestParams(resultViewModel), new CreateResoWithAttachmentSubscriber(mainView));
     }
 
     private ProductProblemListViewModel mappingDomainToViewModel(ProductProblemResponseDomain responseDomain) {

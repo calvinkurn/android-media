@@ -19,8 +19,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep2Domain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
@@ -32,7 +30,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -245,6 +243,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 if (resultViewModel.message.remark != null) {
                     btnCreateResolution.setEnabled(true);
                     btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+                    ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
                     btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
                 }
             } else {
@@ -333,9 +332,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void successCreateResoStep1(CreateResoStep1Domain createResoStep1Domain) {
-        if (createResoStep1Domain.getCacheKey() == null) {
-            finishResoActivity();
+    public void successCreateResoStep1(String resolutionId, String cacheKey, String message) {
+        if (cacheKey == null) {
+            finishResolution(resolutionId, message);
         } else {
             //upload videos and photos string through createResoStep2
         }
@@ -348,8 +347,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void successCreateResoStep2(CreateResoStep2Domain createResoStep2Domain) {
-        finishResoActivity();
+    public void successCreateResoStep2(String resolutionId, String message) {
+        finishResolution(resolutionId, message);
     }
 
     @Override
@@ -357,8 +356,19 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
-    private void finishResoActivity() {
+    @Override
+    public void successCreateResoWithAttachment(String resolutionId, String message) {
 
+    }
+
+    @Override
+    public void errorCreateResoWithAttachment(String error) {
+
+    }
+
+    private void finishResolution(String resolutionId, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        context.startActivity(DetailResCenterActivity.newInstance(context, String.valueOf(resolutionId)));
     }
 
     @Override
@@ -385,7 +395,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void showCreateComplainDialog(ResultViewModel resultViewModel) {
+    public void showCreateComplainDialog(final ResultViewModel resultViewModel) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.layout_create_complain);
         TextView tvProblem = (TextView) dialog.findViewById(R.id.tv_problem);
@@ -413,7 +423,10 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         btnCreateComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.callCreateResolutionAPI();
+                if (resultViewModel.isAttachmentRequired)
+                    presenter.callCreateResolutionAPIWithAttachment();
+                else
+                    presenter.callCreateResolutionAPI();
             }
         });
 

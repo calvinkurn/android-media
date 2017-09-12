@@ -12,6 +12,15 @@ public class Attachment {
     public String information;
 
     public Attachment() {
+        this.information = "";
         this.attachmentViewModelList = new ArrayList<>();
+    }
+
+    public List<AttachmentViewModel> getAttachmentViewModelList() {
+        return attachmentViewModelList;
+    }
+
+    public void setAttachmentViewModelList(List<AttachmentViewModel> attachmentViewModelList) {
+        this.attachmentViewModelList = attachmentViewModelList;
     }
 }

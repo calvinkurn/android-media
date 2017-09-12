@@ -6,10 +6,7 @@ import javax.annotation.Nullable;
  * Created by yoasfs on 05/09/17.
  */
 
-public class CreateResoStep1Domain {
-
-    @Nullable
-    private ResolutionDomain resolution;
+public class CreateValidateDomain {
 
     @Nullable
     private String cacheKey;
@@ -20,19 +17,8 @@ public class CreateResoStep1Domain {
     @Nullable
     private String successMessage;
 
-    public CreateResoStep1Domain(ResolutionDomain resolution, String cacheKey, String successMessage) {
-        this.resolution = resolution;
+    public CreateValidateDomain(@Nullable String cacheKey) {
         this.cacheKey = cacheKey;
-        this.successMessage = successMessage;
-    }
-
-    @Nullable
-    public ResolutionDomain getResolution() {
-        return resolution;
-    }
-
-    public void setResolution(@Nullable ResolutionDomain resolution) {
-        this.resolution = resolution;
     }
 
     @Nullable

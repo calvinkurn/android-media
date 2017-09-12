@@ -42,7 +42,6 @@ public class CreateResoStep2UseCase extends UseCase<CreateResoStep2Domain> {
             problemObject.put("problem", resultViewModel.getProblemArray());
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
-            params.putString(PARAM_STEP_2, resultViewModel.createResoStep2ViewModel.toString());
             return params;
         } catch (Exception e) {
             e.printStackTrace();

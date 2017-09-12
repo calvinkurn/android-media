@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by yoasfs on 05/09/17.
  */
 
-public class CreateResoStep2Response {
+public class CreateSubmitResponse {
     @SerializedName("resolution")
     @Expose
     private ResolutionResponse resolution;

@@ -3,6 +3,8 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,7 +25,26 @@ public class ResultViewModel implements Parcelable {
     public int attachmentCount;
     public String orderId;
     public boolean isAttachmentRequired;
-    public CreateResoStep2ViewModel createResoStep2ViewModel;
+    public List<AttachmentViewModel> attachmentList = new ArrayList<>();
+
+    public ResultViewModel() {
+        message = new ProblemMessageResult();
+        clearSolution();
+        clearAttachment();
+    }
+
+    public void clearSolution() {
+        solutionName = "";
+        solution = 0;
+        refundAmount = 0;
+        isAttachmentRequired = false;
+    }
+
+    public void clearAttachment() {
+        attachmentCount = 0;
+        attachmentList = new ArrayList<>();
+        message = new ProblemMessageResult();
+    }
 
     public JSONObject writeToJson() {
         JSONObject object = new JSONObject();
@@ -49,11 +70,6 @@ public class ResultViewModel implements Parcelable {
             e.printStackTrace();
         }
         return object;
-    }
-
-    public ResultViewModel() {
-        message = new ProblemMessageResult();
-        createResoStep2ViewModel = new CreateResoStep2ViewModel();
     }
 
     public JSONArray getProblemArray() {
@@ -84,7 +100,7 @@ public class ResultViewModel implements Parcelable {
         dest.writeInt(this.attachmentCount);
         dest.writeString(this.orderId);
         dest.writeByte(this.isAttachmentRequired ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.createResoStep2ViewModel, flags);
+        dest.writeTypedList(this.attachmentList);
     }
 
     protected ResultViewModel(Parcel in) {
@@ -96,7 +112,7 @@ public class ResultViewModel implements Parcelable {
         this.attachmentCount = in.readInt();
         this.orderId = in.readString();
         this.isAttachmentRequired = in.readByte() != 0;
-        this.createResoStep2ViewModel = in.readParcelable(CreateResoStep2ViewModel.class.getClassLoader());
+        this.attachmentList = in.createTypedArrayList(AttachmentViewModel.CREATOR);
     }
 
     public static final Creator<ResultViewModel> CREATOR = new Creator<ResultViewModel>() {
