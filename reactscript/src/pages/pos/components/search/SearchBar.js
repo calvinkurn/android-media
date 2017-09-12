@@ -6,7 +6,8 @@ import {
   Text,
   SectionList,
   TouchableWithoutFeedback,
-  Image
+  Image,
+  Keyboard
 } from 'react-native'
 
 import NotFound from './SearchNotFound'
@@ -28,6 +29,7 @@ class SearchBar extends Component {
         () => {
           this.props.onSearchItemTap(item)
           this.toggleResults(false)
+          Keyboard.dismiss()
         }
       }>
         <View>
@@ -107,6 +109,7 @@ class SearchBar extends Component {
             <View style={styles.results}>
               {
                 this.props.items.length > 0 ? (<SectionList
+                  keyboardShouldPersistTaps='always'
                   keyExtractor={(item) => {
                     return item.id
                   }}
