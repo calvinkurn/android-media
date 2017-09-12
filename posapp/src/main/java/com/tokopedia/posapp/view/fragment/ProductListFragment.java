@@ -19,6 +19,7 @@ public class ProductListFragment extends ReactNativeFragmentV2 {
         Bundle args = new Bundle();
         args.putString(SHOP_ID, shopId);
         args.putString(ETALASE_ID, etalaseId);
+        args.putString(ReactConst.Screen.PARAM_POS_PAGE, ReactConst.Page.PAYMENT_BANK);
         ProductListFragment fragment = new ProductListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -30,7 +31,7 @@ public class ProductListFragment extends ReactNativeFragmentV2 {
 
     @Override
     public String getReactScreenName() {
-        return ReactConst.Screen.POS_O2O;
+        return ReactConst.Screen.MAIN_POS_O2O;
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.posapp.database.PosDatabase;
 import com.tokopedia.posapp.database.model.BankDb;
+import com.tokopedia.posapp.database.model.BankDb_Table;
 import com.tokopedia.posapp.database.model.InstallmentDb;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;

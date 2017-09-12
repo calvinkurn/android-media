@@ -104,9 +104,8 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-//                        getActivity().startActivity(ReactNativeActivity.createReactNativeActivity(getActivity(),
-//                                ReactConst.Screen.POS_O2O, SessionHandler.getLoginID(getActivity())));
                         getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
+                        getActivity().finish();
                     }
                 })
                 .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {

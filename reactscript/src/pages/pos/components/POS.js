@@ -93,7 +93,7 @@ export default class POS extends Component {
           <CartContainer
             visible={this.state.cartOpen}
             onBackPress={() => { this.setState({ cartOpen: false }) }} />
-          <ToolbarAndroid style={{ width: '100%', height: 60, backgroundColor: '#42b549' }}
+          <ToolbarAndroid style={{ width: '100%', height: 60, backgroundColor: '#000' }}
             navIcon={require('./img/icon-burgermenu.png')}
             onIconClicked={this.onIconClick}
             actions={[

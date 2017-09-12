@@ -20,13 +20,7 @@ import java.util.List;
 public class ProductDbManager implements DbManagerOperation<ProductDb, ProductDb> {
     @Override
     public void store(ProductDb data, TransactionListener callback) {
-        ProductDb existing = getExistingProduct(data.getProductId());
-        if(existing != null) {
-            data.setId(existing.getId());
-            data.update();
-        } else {
-            data.save();
-        }
+        data.save();
     }
 
     @Override
@@ -36,7 +30,7 @@ public class ProductDbManager implements DbManagerOperation<ProductDb, ProductDb
             @Override
             public void execute(DatabaseWrapper databaseWrapper) {
                 for(ProductDb product: data) {
-                    store(product, null);
+                    product.save();
                 }
             }
         }).success(new Transaction.Success() {
@@ -52,10 +46,6 @@ public class ProductDbManager implements DbManagerOperation<ProductDb, ProductDb
         }).build();
 
         transaction.execute();
-    }
-
-    private ProductDb getExistingProduct(int productId) {
-        return first(ConditionGroup.clause().and(ProductDb_Table.productId.eq(productId)));
     }
 
     @Override

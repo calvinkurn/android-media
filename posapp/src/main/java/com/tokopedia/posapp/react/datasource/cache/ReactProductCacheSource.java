@@ -1,12 +1,27 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
+import com.google.gson.Gson;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.posapp.database.model.ProductDb;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by okasurya on 8/28/17.
  */
 
 public class ReactProductCacheSource implements ReactCacheSource {
+   private Gson gson;
+
+    public ReactProductCacheSource() {
+        gson = new Gson();
+    }
+
     @Override
     public Observable<String> getData(String id) {
         return null;
@@ -19,6 +34,24 @@ public class ReactProductCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> getAllData() {
-        return null;
+        List<ProductDb> productDbs = SQLite.select().from(ProductDb.class).queryList();
+        ProductModel productModel = new ProductModel();
+        List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
+        for(ProductDb productDb : productDbs) {
+            com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
+            item.productName = productDb.getProductName();
+            item.productPrice = productDb.getProductPrice();
+            item.productId = productDb.getProductId();
+            productList.add(item);
+        }
+        productModel.list = productList;
+
+        return Observable.just(productModel)
+                .map(new Func1<ProductModel, String>() {
+                    @Override
+                    public String call(ProductModel productModel) {
+                        return gson.toJson(productModel);
+                    }
+                });
     }
 }

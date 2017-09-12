@@ -27,7 +27,7 @@ class Root extends Component {
     if (this.props.data.Screen === 'pos'){
       return (
         <Provider store={store}>
-          <App />
+          <POS />
         </Provider>
       )
     } else if (this.props.data.Screen === 'bankselection'){

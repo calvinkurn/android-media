@@ -19,6 +19,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.posapp.view.drawer.DrawerPosHelper;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -117,7 +118,7 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public DrawerHelper getDrawer(AppCompatActivity activity, SessionHandler sessionHandler, LocalCacheHandler drawerCache, GlobalCacheManager globalCacheManager) {
-        return null;
+        return DrawerPosHelper.createInstance(activity, sessionHandler, drawerCache);
     }
 
     @Override
