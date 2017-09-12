@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.sellerapp">
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove"/>
-
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="true"
