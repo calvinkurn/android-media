@@ -69,7 +69,7 @@ public class ReputationView extends BaseCustomView {
         removeAllViews();
         View view;
         if (viewType == 1) {
-            view = inflate(getContext(), R.layout.buyer_reputation, this);
+            view = inflate(getContext(), R.layout.widget_user_reputation, this);
             iconView = (ImageView) view.findViewById(R.id.icon);
             percent = (TextView) view.findViewById(R.id.percent);
         } else {
