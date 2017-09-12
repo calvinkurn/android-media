@@ -16,12 +16,17 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -144,5 +149,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
+    }
+
+    @Override
+    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
+        return cacheApiWhitelists;
     }
 }

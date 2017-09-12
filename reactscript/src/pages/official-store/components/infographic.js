@@ -62,7 +62,7 @@ class infographic extends Component {
   render() {
     return(
       <View>
-        {!this.props.campaigns.isFetching && this.renderInfographic()}
+        {this.renderInfographic()}
       </View>
     )
   }

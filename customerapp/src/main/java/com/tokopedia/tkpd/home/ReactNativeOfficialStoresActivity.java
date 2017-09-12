@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.react.ReactConst;
@@ -123,5 +124,10 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_OFFICIAL_STORE_REACT;
     }
 }
