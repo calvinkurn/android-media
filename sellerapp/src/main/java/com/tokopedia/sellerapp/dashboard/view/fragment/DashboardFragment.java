@@ -3,6 +3,9 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +15,10 @@ import android.widget.TextView;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.shop.model.shopinfo.ShopInfo;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.design.loading.LoadingStateView;
@@ -24,8 +30,11 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -143,6 +152,17 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 startActivity(intent);
             }
         });
+
+        final SwipeToRefresh swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //TODO
+                //this is after refresh success
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
     }
 
     @Override
@@ -186,17 +206,42 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             gmIconImageView.setVisibility(View.GONE);
         }
 
+        updateViewShopOpen(shopModel);
+
         shopScoreWidget.renderView(shopScoreViewModel);
+    }
+
+    private void updateViewShopOpen(ShopModel shopModel){
+        if (shopModel.isOpen == ShopModel.IS_OPEN) {
+
+        } else {
+
+        }
     }
 
     @Override
     public void onErrorGetTickers(Throwable throwable) {
-        // TODO onError getTickers
+        tickerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
-        // TODO onSuccess get Tickers
+        tickerView.setVisibility(View.VISIBLE);
+        ArrayList<String> messages = new ArrayList<>();
+        for (Ticker.Tickers ticker : tickers) {
+            messages.add(ticker.getBasicMessage());
+        }
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
+        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
+            @Override
+            public void onClick(View view, String messageClick) {
+                Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra("url", messageClick);
+                startActivity(intent);
+            }
+        });
+        tickerView.buildView();
     }
 
     @Override

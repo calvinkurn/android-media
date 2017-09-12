@@ -3,62 +3,86 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@drawable/line_separator"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:divider="@drawable/line_separator_medium"
+    android:showDividers="middle"
     android:orientation="vertical">
 
     <LinearLayout
         style="@style/LabelLayout"
+        android:id="@+id/label_layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:id="@+id/image_view_shop_icon"
-            android:layout_width="@dimen/dashboard_icon_shop_height"
-            android:layout_height="@dimen/dashboard_icon_shop_height"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_placeholder_shop" />
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_view_shop_name"
-                style="@style/TextView.Subheading.Bold"
-                android:text="@string/label_empty_value" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/image_view_shop_icon"
+                android:layout_width="@dimen/dashboard_icon_shop_height"
+                android:layout_height="@dimen/dashboard_icon_shop_height"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_placeholder_shop" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/image_view_gm_icon"
-                    android:layout_width="@dimen/image_width_xxs"
-                    android:layout_height="@dimen/image_width_xxs"
-                    android:src="@drawable/ic_goldmerchant_drawer"
-                    android:visibility="gone" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/text_view_gm_status"
-                    style="@style/TextView.Body1"
-                    android:text="@string/label_empty_value" />
+                    android:id="@+id/text_view_shop_name"
+                    style="@style/TextView.Subheading.Bold"
+                    tools:text="Toko Kelontong Indonesia" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_ms">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/image_view_gm_icon"
+                        android:layout_width="@dimen/image_width_xxs"
+                        android:layout_height="@dimen/image_width_xxs"
+                        app:srcCompat="@drawable/ic_goldmerchant_drawer"
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
+
+                    <TextView
+                        android:id="@+id/text_view_gm_status"
+                        style="@style/TextView.Body1"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginStart="@dimen/margin_vs"
+                        tools:text="Regular Merchant" />
+                </LinearLayout>
+
             </LinearLayout>
 
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="@dimen/image_width_xs"
+                android:layout_height="@dimen/image_width_xs"
+                android:layout_marginBottom="@dimen/margin_ms"
+                app:srcCompat="@drawable/icon_setting"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
         </LinearLayout>
 
-        <ImageButton
-            android:layout_width="@dimen/image_width_s"
-            android:layout_height="@dimen/image_width_s"
-            android:layout_marginBottom="@dimen/margin_ms"
-            android:src="@drawable/icon_setting" />
+        <include layout="@layout/layout_dashboard_shop_close"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vs" />
+
     </LinearLayout>
 
-    <include layout="@layout/partial_separator_horizontal" />
 
     <com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget
         android:id="@+id/shop_score_widget"
@@ -66,16 +90,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <include layout="@layout/partial_separator_horizontal" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dashboard_widget_height"
+        android:orientation="horizontal">
 
         <LinearLayout
             style="@style/LabelLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -89,12 +112,15 @@
                 android:text="@string/label_empty_value" />
         </LinearLayout>
 
-        <include layout="@layout/partial_separator_vertical" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_300" />
 
         <LinearLayout
             style="@style/LabelLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
