@@ -9,27 +9,19 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
-import com.tokopedia.design.list.item.AlphabeticallySortableItem;
+import com.tokopedia.design.list.item.SectionDividedItem;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
-public abstract class SectionDividedItemAdapter<T extends AlphabeticallySortableItem>
+public abstract class SectionDividedItemAdapter<T extends SectionDividedItem>
         extends RecyclerView.Adapter<SectionDividedItemAdapter.ViewHolder<T>> implements SectionIndexer {
 
     protected List<T> itemList = new ArrayList<>();
 
     public void setItemList(List<T> itemList) {
         this.itemList = itemList;
-        Collections.sort(this.itemList, new Comparator<T>() {
-            @Override
-            public int compare(T item, T nextItem) {
-                return item.getSortableKey().compareTo(nextItem.getSortableKey());
-            }
-        });
         notifyDataSetChanged();
     }
 
@@ -53,9 +45,9 @@ public abstract class SectionDividedItemAdapter<T extends AlphabeticallySortable
         return itemList.size();
     }
 
-    public int getPositionForSection(int section) {
+    public int getPositionForSection(int sectionId) {
         for (int i = 0; i < itemList.size(); i++) {
-            if (itemList.get(i).getFirstCharacter() == section) {
+            if (itemList.get(i).getSectionId() == sectionId) {
                 return i;
             }
         }
@@ -73,26 +65,27 @@ public abstract class SectionDividedItemAdapter<T extends AlphabeticallySortable
     protected abstract int getItemLayout();
     protected abstract ViewHolder<T> getViewHolder(View itemView);
 
-    public abstract static class ViewHolder<T extends AlphabeticallySortableItem>
+    public abstract static class ViewHolder<T extends SectionDividedItem>
             extends RecyclerView.ViewHolder {
 
-        TextView sectionHeader;
+        private TextView sectionHeader;
+        private SectionTitleDictionary sectionTitleDictionary;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, SectionTitleDictionary sectionTitleDictionary) {
             super(itemView);
             sectionHeader = (TextView) itemView.findViewById(R.id.section_header);
+            this.sectionTitleDictionary = sectionTitleDictionary;
             initItem(itemView);
         }
 
         public void bind(T item, T prevItem) {
-            char firstChar = item.getFirstCharacter();
+            int sectionId = item.getSectionId();
 
             if (prevItem == null) {
-                showSectionHeader(firstChar);
+                showSectionHeader(sectionId);
             } else {
-                char prevFirstChar = prevItem.getFirstCharacter();
-                if (firstChar != prevFirstChar) {
-                    showSectionHeader(firstChar);
+                if (sectionId != prevItem.getSectionId()) {
+                    showSectionHeader(sectionId);
                 } else {
                     hideSectionHeader();
                 }
@@ -100,9 +93,9 @@ public abstract class SectionDividedItemAdapter<T extends AlphabeticallySortable
             bindItem(item);
         }
 
-        private void showSectionHeader(char headerLabel) {
+        private void showSectionHeader(int sectionId) {
             sectionHeader.setVisibility(View.VISIBLE);
-            sectionHeader.setText(String.valueOf(headerLabel));
+            sectionHeader.setText(sectionTitleDictionary.getSectionTitle(sectionId));
         }
 
         private void hideSectionHeader() {

@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.product.apis.DynamicFilter;
 import com.tokopedia.design.list.adapter.SectionDividedItemAdapter;
+import com.tokopedia.design.list.adapter.SectionTitleDictionary;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.model.OptionWrapper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
@@ -21,7 +22,8 @@ import java.util.List;
 
 public class DynamicFilterBrandAdapter extends SectionDividedItemAdapter<OptionWrapper> {
 
-    DynamicFilterDetailView filterDetailView;
+    private SectionTitleDictionary sectionTitleDictionary = new SectionTitleDictionary();
+    private DynamicFilterDetailView filterDetailView;
 
     public DynamicFilterBrandAdapter(DynamicFilterDetailView filterDetailView) {
         this.filterDetailView = filterDetailView;
@@ -53,7 +55,7 @@ public class DynamicFilterBrandAdapter extends SectionDividedItemAdapter<OptionW
 
     @Override
     protected SectionDividedItemAdapter.ViewHolder<OptionWrapper> getViewHolder(View itemView) {
-        return new BrandViewHolder(itemView, filterDetailView);
+        return new BrandViewHolder(itemView, filterDetailView, sectionTitleDictionary);
     }
 
     private static class BrandViewHolder extends SectionDividedItemAdapter.ViewHolder<OptionWrapper> {
@@ -61,8 +63,10 @@ public class DynamicFilterBrandAdapter extends SectionDividedItemAdapter<OptionW
         private final DynamicFilterDetailView filterDetailView;
         CheckBox checkBox;
 
-        BrandViewHolder(View itemView, DynamicFilterDetailView filterDetailView) {
-            super(itemView);
+        BrandViewHolder(View itemView, DynamicFilterDetailView filterDetailView,
+                        SectionTitleDictionary sectionTitleDictionary) {
+
+            super(itemView, sectionTitleDictionary);
             this.filterDetailView = filterDetailView;
         }
 

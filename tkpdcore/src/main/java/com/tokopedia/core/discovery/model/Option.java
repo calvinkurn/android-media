@@ -63,6 +63,9 @@ public class Option implements Serializable, Parcelable {
     @SerializedName("icon")
     @Expose
     String iconUrl;
+    @SerializedName("is_popular")
+    @Expose
+    boolean isPopular;
     @SerializedName("child")
     @Expose
     List<LevelTwoCategory> levelTwoCategoryList;
@@ -197,6 +200,14 @@ public class Option implements Serializable, Parcelable {
         this.inputState = inputState;
     }
 
+    public boolean isPopular() {
+        return isPopular;
+    }
+
+    public void setPopular(boolean popular) {
+        isPopular = popular;
+    }
+
     public List<LevelTwoCategory> getLevelTwoCategoryList() {
         return levelTwoCategoryList;
     }
@@ -225,6 +236,7 @@ public class Option implements Serializable, Parcelable {
         valMax = in.readString();
         iconUrl = in.readString();
         inputState = in.readString();
+        isPopular = in.readByte() == 0x01;
         if (in.readByte() == 0x01) {
             levelTwoCategoryList = new ArrayList<>();
             in.readList(levelTwoCategoryList, LevelTwoCategory.class.getClassLoader());
@@ -253,6 +265,11 @@ public class Option implements Serializable, Parcelable {
         dest.writeString(valMax);
         dest.writeString(iconUrl);
         dest.writeString(inputState);
+        if (isPopular) {
+            dest.writeByte((byte) (0x01));
+        } else {
+            dest.writeByte((byte) (0x00));
+        }
         if (levelTwoCategoryList == null) {
             dest.writeByte((byte) (0x00));
         } else {
