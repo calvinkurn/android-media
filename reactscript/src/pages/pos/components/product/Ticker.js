@@ -12,7 +12,7 @@ const Ticker = () => {
       <View style={styles.textContainer}>
         <Text style={{ fontSize: 13 }}>Selamat Datang di (Shop name here)</Text>
         <View style={styles.singleLineTextContainer}>
-          <Text style={styles.textStyle}>Nikamati Cicilan 0% Gratis Biaya Admin,</Text>
+          <Text style={styles.textStyle}>Nikmati Cicilan 0% Gratis Biaya Admin,</Text>
           <Text style={styles.linkText}> Cek Sekarang</Text>
         </View>
       </View>
