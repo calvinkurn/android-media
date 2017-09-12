@@ -217,9 +217,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void updateViewShopOpen(ShopModel shopModel){
         if (shopModel.isOpen == ShopModel.IS_OPEN) {
-
+            //TODO remove the close shop if any
         } else {
-
+            //TODO add the close shop if any
         }
     }
 
@@ -263,6 +263,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         int inboxCount = drawerNotification.getInboxMessage();
         int discussCount = drawerNotification.getInboxTalk();
         int reviewCount = drawerNotification.getInboxReview();
+
+        newOrderLabelView.setContent(String.valueOf(newOrderCount));
+        deliveryConfirmationLabelView.setContent(String.valueOf(shippingConfirmation));
+        deliveryStatusLabelView.setContent(String.valueOf(shippingStatus));
+
+        messageLabelView.setContent(String.valueOf(inboxCount));
+        discussionLabelView.setContent(String.valueOf(discussCount));
+        reviewLabelView.setContent(String.valueOf(reviewCount));
 
     }
 
