@@ -407,14 +407,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance) {
-        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
+        }
     }
 
     @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
     public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
         holderCheckBalance.removeAllViews();
         for (int i = 0; i < 2; i++) {
             String phoneNumber = presenter.getDeviceMobileNumber(i);
@@ -1032,7 +1031,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             pulsaBalance.setMobileNumber(number);
             startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
                     categoryDataState.getClientNumberList().get(0).getValidation(),
-                    categoryId, categoryDataState.getName(), selectedSim,presenter.getSelectedUssdOperatorList(selectedSim)));
+                    categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
         } else {
             showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
         }
