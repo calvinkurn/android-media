@@ -1197,23 +1197,22 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void setDriverIcon(RideRequest result, int drawable) {
-        if (result == null || result.getLocation() == null) {
-            return;
-        }
-
         if (mDriverMarker != null) {
             mDriverMarker.remove();
         }
         markerId = drawable;
 
-        MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                .icon(getCarMapIcon(drawable))
-                .rotation(result.getLocation().getBearing())
-                .title(getString(R.string.ontrip_marker_driver));
+        //set marker on map
+        if (result != null && result.getLocation() != null) {
+            MarkerOptions options = new MarkerOptions()
+                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                    .icon(getCarMapIcon(drawable))
+                    .rotation(result.getLocation().getBearing())
+                    .title(getString(R.string.ontrip_marker_driver));
 
-        if (mGoogleMap != null) {
-            mDriverMarker = mGoogleMap.addMarker(options);
+            if (mGoogleMap != null) {
+                mDriverMarker = mGoogleMap.addMarker(options);
+            }
         }
     }
 
