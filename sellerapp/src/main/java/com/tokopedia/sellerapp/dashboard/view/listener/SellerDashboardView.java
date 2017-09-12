@@ -4,6 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
@@ -13,19 +14,11 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
  */
 
 public interface SellerDashboardView extends CustomerView {
-    void onErrorGetShopInfo(Throwable t);
 
-    void onSuccessGetShopInfo(Info shopModelInfo);
+    void onSuccessGetShopInfoAndScore(ShopModel shopModel,
+                                      ShopScoreViewModel shopScoreViewModel);
 
-    void onSuccessGetShopOpenInfo(boolean isOpen);
-
-    void onSuccessGetShopTransaction(ShopTxStats shopTxStats);
-
-    void onSuccessGetReputation(ReputationView.ReputationViewModel reputationViewModel);
-
-    void renderShopScore(ShopScoreViewModel shopScoreViewModel);
-
-    void onErrorShopScore(Throwable t);
+    void onErrorShopInfoAndScore(Throwable t);
 
     void onErrorGetTickers(Throwable throwable);
 

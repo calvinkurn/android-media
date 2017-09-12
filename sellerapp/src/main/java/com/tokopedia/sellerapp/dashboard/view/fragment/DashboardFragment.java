@@ -3,7 +3,6 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,10 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
@@ -166,21 +164,20 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onResume() {
         super.onResume();
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-        sellerDashboardPresenter.getShopInfo();
-        sellerDashboardPresenter.getShopScoreMainData();
+        sellerDashboardPresenter.getShopInfoWithScore();
         sellerDashboardPresenter.getTicker();
         sellerDashboardPresenter.getNotification();
     }
 
     @Override
-    public void onErrorGetShopInfo(Throwable e) {
-        Log.i("Test", e.getMessage());
-        //TODO snackbar retry
+    public void onErrorShopInfoAndScore(Throwable t) {
+        //TODO snackbar error
     }
 
     @Override
-    public void onSuccessGetShopInfo(Info shopModelInfo) {
-        //TODO render shop name, logo, cover, location, goldmerchant or not, etc
+    public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
+        // TODO update view
+        Info shopModelInfo = shopModel.info;
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
         shopNameTextView.setText(shopModelInfo.getShopName());
         if (shopModelInfo.isShopIsGoldBadge()) {
@@ -188,32 +185,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         } else {
             gmIconImageView.setVisibility(View.GONE);
         }
-    }
 
-    @Override
-    public void onSuccessGetShopOpenInfo(boolean isOpen) {
-        //TODO is Shop open
-    }
-
-    @Override
-    public void onSuccessGetShopTransaction(ShopTxStats shopTxStats) {
-        //TODO render transation shop stat
-    }
-
-    @Override
-    public void onSuccessGetReputation(ReputationView.ReputationViewModel reputationViewModel) {
-        // TODO render reputation
-        //reputationview.setseller(...);
-    }
-
-    @Override
-    public void renderShopScore(ShopScoreViewModel shopScoreViewModel) {
         shopScoreWidget.renderView(shopScoreViewModel);
-    }
-
-    @Override
-    public void onErrorShopScore(Throwable t) {
-        //TODO snackbar shop score
     }
 
     @Override

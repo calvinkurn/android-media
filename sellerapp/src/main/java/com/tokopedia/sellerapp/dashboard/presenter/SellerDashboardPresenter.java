@@ -10,10 +10,10 @@ import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.home.view.ReputationView;
-import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreMainDataUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
+import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
-import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoUseCase;
+import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.home.view.mapper.ShopScoreMapper;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
@@ -23,35 +23,54 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 /**
- * Created by User on 9/8/2017.
+ * Created by hendry on 9/8/2017.
  */
 
 public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboardView> {
-    private GetShopInfoUseCase getShopInfoUseCase;
-    private GetShopScoreMainDataUseCase getShopScoreMainDataUseCase;
+    private GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase;
     private GetTickerUseCase getTickerUseCase;
     private NotificationUseCase notificationUseCase;
 
     @Inject
-    public SellerDashboardPresenter(GetShopInfoUseCase getShopInfoUseCase,
-                                    GetShopScoreMainDataUseCase getShopScoreMainDataUseCase,
+    public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
                                     GetTickerUseCase getTickerUseCase,
                                     NotificationUseCase notificationUseCase) {
-        this.getShopInfoUseCase = getShopInfoUseCase;
-        this.getShopScoreMainDataUseCase = getShopScoreMainDataUseCase;
+        this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.notificationUseCase = notificationUseCase;
     }
 
-    public void getShopInfo() {
-        getShopInfoUseCase.execute(RequestParams.EMPTY, getShopInfoSubscriber());
+    public void getShopInfoWithScore(){
+        getShopInfoWithScoreUseCase.execute(
+                RequestParams.EMPTY, getShopInfoAndScoreSubscriber());
     }
 
-    public void getShopScoreMainData() {
-        getShopScoreMainDataUseCase.execute(
-                RequestParams.EMPTY,
-                getShopScoreSubscriber()
-        );
+    private Subscriber<ShopModelWithScore> getShopInfoAndScoreSubscriber() {
+        return new Subscriber<ShopModelWithScore>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorShopInfoAndScore(e);
+                }
+            }
+
+            @Override
+            public void onNext(ShopModelWithScore ShopInfoWithScoreModel) {
+                ShopScoreMainDomainModel shopScoreMainDomainModel =
+                        ShopInfoWithScoreModel.getShopScoreMainDomainModel();
+                ShopScoreViewModel shopScoreViewModel = ShopScoreMapper.map(shopScoreMainDomainModel);
+
+                ShopModel shopModel = ShopInfoWithScoreModel.getShopModel();
+                getView().onSuccessGetShopInfoAndScore(
+                        shopModel,
+                        shopScoreViewModel);
+            }
+        };
     }
 
     public void getTicker(){
@@ -94,63 +113,10 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         };
     }
 
-    private Subscriber<ShopScoreMainDomainModel> getShopScoreSubscriber() {
-        return new Subscriber<ShopScoreMainDomainModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorShopScore(e);
-                }
-            }
-
-            @Override
-            public void onNext(ShopScoreMainDomainModel shopScoreMainDomainModel) {
-                ShopScoreViewModel shopScoreViewModel = ShopScoreMapper.map(shopScoreMainDomainModel);
-                getView().renderShopScore(shopScoreViewModel);
-            }
-        };
-    }
-
-    private Subscriber<ShopModel> getShopInfoSubscriber() {
-        return new Subscriber<ShopModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorGetShopInfo(e);
-                }
-            }
-
-            @Override
-            public void onNext(ShopModel shopModel) {
-                getView().onSuccessGetShopInfo(shopModel.info);
-                getView().onSuccessGetShopOpenInfo(shopModel.isOpen > 0);
-                getView().onSuccessGetShopTransaction(shopModel.shopTxStats);
-
-                ReputationView.ReputationViewModel reputationViewModel = new ReputationView.ReputationViewModel();
-                reputationViewModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
-                reputationViewModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
-                reputationViewModel.reputationPoints = shopModel.stats.shopReputationScore;
-                reputationViewModel.stats = shopModel.stats;
-                getView().onSuccessGetReputation(reputationViewModel);
-            }
-        };
-    }
-
     @Override
     public void detachView() {
         super.detachView();
-        getShopInfoUseCase.unsubscribe();
-        getShopScoreMainDataUseCase.unsubscribe();
+        getShopInfoWithScoreUseCase.unsubscribe();
         getTickerUseCase.unsubscribe();
     }
 }
