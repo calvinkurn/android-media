@@ -13,7 +13,9 @@ import {
   CLEAR_CART,
   FETCH_SEARCH_PRODUCT,
   CLEAR_SEARCH_RESULTS,
-  ON_SEARCH_QUERY_TYPE
+  ON_SEARCH_QUERY_TYPE,
+  SET_SEARCH_TEXT,
+  ON_SUBMIT_FETCH_SEARCH_PRODUCT,
 } from '../actions/index'
 import {bankData, emiData} from '../components/bankData';
 
@@ -72,6 +74,12 @@ const products = (state = {
           start: 0,
           rows: 25,
         },
+      }
+    case `${ON_SUBMIT_FETCH_SEARCH_PRODUCT}_${FULFILLED}`:
+    console.log(ON_SUBMIT_FETCH_SEARCH_PRODUCT)
+      return {
+        ...state,
+        items: action.payload.data.data.products
       }
     default:
       return state
@@ -298,6 +306,12 @@ const search = (state = {
       return {
         items: [],
         query: '',
+      }
+    case SET_SEARCH_TEXT:
+    console.log(action.payload)
+      return {
+        ...state,
+        query: action.payload
       }
     default:
       return state

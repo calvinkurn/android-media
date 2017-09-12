@@ -68,7 +68,6 @@ export default class POS extends Component {
         >
             <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment screen</Text>
         </TouchableNativeFeedback>
-
         <TouchableNativeFeedback
           onPress = {() => {
            this.props.navigation.navigate('PaymentProcessing', {})
@@ -83,9 +82,7 @@ export default class POS extends Component {
         >
             <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Invoice</Text>
         </TouchableNativeFeedback>
-
       </View>)
-
     return (
       <DrawerLayoutAndroid
         drawerWidth={Dimensions.get('window').width / 2}
@@ -96,9 +93,6 @@ export default class POS extends Component {
           <CartContainer
             visible={this.state.cartOpen}
             onBackPress={() => { this.setState({ cartOpen: false }) }} />
-          <SearchContainer
-            visible={this.state.searchOpen}
-            onBackPress={() => { this.setState({ searchOpen: false }) }} />
           <ToolbarAndroid style={{ width: '100%', height: 60, backgroundColor: '#42b549' }}
             navIcon={require('./img/icon-burgermenu.png')}
             onIconClicked={this.onIconClick}
@@ -138,7 +132,6 @@ export default class POS extends Component {
     )
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
