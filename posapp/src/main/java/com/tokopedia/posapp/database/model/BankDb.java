@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.database.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -17,27 +18,16 @@ import java.util.List;
  */
 
 @ModelContainer
-@Table(database = PosDatabase.class)
+@Table(database = PosDatabase.class, insertConflict = ConflictAction.REPLACE)
 public class BankDb extends BaseModel {
-    @PrimaryKey(autoincrement = true)
     @Column
-    private int Id;
-
-    @Column
+    @PrimaryKey
     private int bankId;
 
     @Column
     private String bankName;
 
     List<InstallmentDb> installmentDbs;
-
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
-    }
 
     public int getBankId() {
         return bankId;
@@ -60,7 +50,7 @@ public class BankDb extends BaseModel {
         if(installmentDbs == null || installmentDbs.isEmpty()){
             installmentDbs = SQLite.select()
                     .from(InstallmentDb.class)
-                    .where(InstallmentDb_Table.bankDbContainer_Id.eq(bankId))
+                    .where(InstallmentDb_Table.bankDbContainer_bankId.eq(bankId))
                     .queryList();
         }
         return installmentDbs;

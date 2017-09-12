@@ -48,6 +48,9 @@ public class ShopLocalSource {
                                     productDb.setProductName(item.productName);
                                     productDb.setProductPrice(item.productPrice);
                                     productDb.setProductUrl(item.productUrl);
+                                    productDb.setProductImage(item.productImage);
+                                    productDb.setProductImage300(item.productImage300);
+                                    productDb.setProductImageFull(item.productImageFull);
                                     data.add(productDb);
                                 }
 
