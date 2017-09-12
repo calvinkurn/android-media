@@ -8,6 +8,7 @@
     <ImageView
         android:layout_centerVertical="true"
         android:id="@+id/image_product_picker_search"
+        android:layout_marginRight="@dimen/margin_small"
         android:layout_width="@dimen/image_add_video_url_width"
         android:layout_height="@dimen/image_add_video_url_width" />
 
@@ -29,7 +30,7 @@
             android:id="@+id/text_product_price"
             android:layout_marginTop="@dimen/margin_small"
             tools:text="Rp. 500"
-            style="@style/TextView.Body2.Black"/>
+            style="@style/TextView.Body2.BlackSecondary"/>
 
     </LinearLayout>
 

@@ -1,11 +1,10 @@
 package com.tokopedia.seller.product.picker.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -18,6 +17,10 @@ import com.tokopedia.seller.product.picker.view.listener.ProductListPickerMultip
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 9/7/17.
@@ -25,7 +28,11 @@ import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 
 public class ProductListPickerActivity extends BasePickerMultipleItemActivity<ProductListPickerViewModel> implements ProductListPickerMultipleItem<ProductListPickerViewModel>, HasComponent<ProductComponent> {
 
-    public static final String EXTRA_PRODUCT_LIST_SUBMIT = "extra_product_list_submit";
+    public static Intent createIntent(Context context, List<ProductListPickerViewModel> productListPickerViewModels){
+        Intent intent = new Intent(context, ProductListPickerActivity.class);
+        intent.putParcelableArrayListExtra(ProductListPickerConstant.PRODUCT_LIST_PICKER_MODEL_EXTRA, new ArrayList<Parcelable>(productListPickerViewModels));
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +51,22 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        bottomSheetContentTextView.setText(getString(R.string.product_list_featured_max_limit, ProductListPickerConstant.MAX_LIMIT_PRODUCT_LIST_FEATURED_PICKER));
+        bottomSheetContentTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     protected Intent getDefaultIntentResult() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_PRODUCT_LIST_SUBMIT, "");
+        intent.putParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT, new ArrayList<Parcelable>(getItemListCache()));
         return intent;
     }
 
     @Override
     public void validateFooterAndInfoView() {
-        if (getCacheListSize() < 1) {
+        if (getSearchListSize() <1 && getCacheListSize() < 1) {
             showFooterAndInfo(false);
         } else {
             showFooterAndInfo(true);
@@ -88,7 +102,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
 
     private boolean isMaxVariantReached(){
         return ((ProductListPickerCacheFragment) getCacheListFragment()).getItemList().size()
-                >= ProductListPickerConstant.MAX_LIMIT_VARIANT;
+                >= ProductListPickerConstant.MAX_LIMIT_PRODUCT_LIST_FEATURED_PICKER;
     }
 
     private void showMaxVariantReachedMessage(){
@@ -105,13 +119,26 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
         }
     }
 
-    private int getCacheListSize() {
-        Fragment fragment = getCacheListFragment();
+    private int getSearchListSize() {
+        Fragment fragment = getSearchListFragment();
         int selectedItemSize = 0;
         if ((fragment) != null) {
-            selectedItemSize = ((ProductListPickerCacheFragment) fragment).getItemList().size();
+            selectedItemSize = ((ProductListPickerSearchFragment) fragment).getItemList().size();
         }
         return selectedItemSize;
+    }
+
+    private int getCacheListSize() {
+        return getItemListCache().size();
+    }
+
+    private List<ProductListPickerViewModel> getItemListCache(){
+        Fragment fragment = getCacheListFragment();
+        List<ProductListPickerViewModel> productListPickerViewModels = new ArrayList<>();
+        if ((fragment) != null) {
+            productListPickerViewModels = ((ProductListPickerCacheFragment) fragment).getItemList();
+        }
+        return productListPickerViewModels;
     }
 
     @Override
