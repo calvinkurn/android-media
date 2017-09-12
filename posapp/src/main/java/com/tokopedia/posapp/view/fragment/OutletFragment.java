@@ -105,7 +105,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 //                        getActivity().startActivity(ReactNativeActivity.createReactNativeActivity(getActivity(),
-//                                ReactConst.Screen.POS_O2O, SessionHandler.getLoginID(getActivity())));
+//                                ReactConst.Screen.MAIN_POS_O2O, SessionHandler.getLoginID(getActivity())));
                         getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
                     }
                 })

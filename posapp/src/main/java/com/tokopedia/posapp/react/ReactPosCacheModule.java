@@ -2,6 +2,7 @@ package com.tokopedia.posapp.react;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.tokopedia.posapp.di.ReactCacheDependencies;
 import com.tokopedia.posapp.react.domain.ReactCacheRepository;
@@ -13,7 +14,7 @@ import rx.schedulers.Schedulers;
  * Created by okasurya on 8/25/17.
  */
 
-public class ReactPosCacheModule extends ReactTableChooserModule {
+public class ReactPosCacheModule extends ReactContextBaseJavaModule {
     ReactCacheRepository reactCacheRepository;
 
     public ReactPosCacheModule(ReactApplicationContext reactContext) {
@@ -23,7 +24,7 @@ public class ReactPosCacheModule extends ReactTableChooserModule {
 
     @Override
     public String getName() {
-        return null;
+        return "PosCacheModule";
     }
 
     @ReactMethod
