@@ -95,8 +95,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem &&
-                        totalItem != Integer.MAX_VALUE) {
+                if (lastItemPosition == visibleItem && hasNextPage()) {
                     setAndSearchForPage(currentPage + 1);
                     adapter.showRetryFull(false);
                     adapter.showLoading(true);
@@ -119,6 +118,11 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
                 }
             });
         }
+    }
+
+    protected boolean hasNextPage() {
+        return adapter.getDataSize() < totalItem &&
+                totalItem != Integer.MAX_VALUE;
     }
 
     protected RecyclerView.ItemDecoration getItemDecoration() {
@@ -166,6 +170,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     public void resetPageAndSearch() {
+        currentPage = getStartPage();
         searchForPage(getStartPage());
     }
 
@@ -180,7 +185,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         recyclerView.addOnScrollListener(onScrollListener);
         this.totalItem = totalItem;
         hideLoading();
-        if (totalItem <= 0) {
+        if (totalItem <= 0 && getCurrentPage() == getStartPage()) {
             if (searchMode) {
                 showViewSearchNoResult();
             } else {

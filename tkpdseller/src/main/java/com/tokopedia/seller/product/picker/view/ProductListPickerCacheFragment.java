@@ -16,7 +16,7 @@ public class ProductListPickerCacheFragment extends BaseCacheListFragment<Produc
     protected BaseListAdapter<ProductListPickerViewModel> getNewAdapter() {
         ProductListPickerCacheAdapter productListPickerCacheAdapter = new ProductListPickerCacheAdapter();
         productListPickerCacheAdapter.setRemoveCallback(this);
-        return new ProductListPickerCacheAdapter();
+        return productListPickerCacheAdapter;
     }
 
     @Override
