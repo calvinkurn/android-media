@@ -146,47 +146,23 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onResume() {
         super.onResume();
-        sellerDashboardPresenter.getShopInfo();
-        sellerDashboardPresenter.getShopScoreMainData();
+        sellerDashboardPresenter.getShopInfoWithScore();
         sellerDashboardPresenter.getTicker();
         sellerDashboardPresenter.getNotification();
     }
 
     @Override
-    public void onErrorGetShopInfo(Throwable e) {
-        Log.i("Test", e.getMessage());
-        //TODO snackbar retry
+    public void onErrorShopInfoAndScore(Throwable t) {
+        //TODO snackbar error
     }
 
     @Override
-    public void onSuccessGetShopInfo(Info shopModelInfo) {
-        //TODO render shop name, logo, cover, location, goldmerchant or not, etc
-    }
-
-    @Override
-    public void onSuccessGetShopOpenInfo(boolean isOpen) {
-        //TODO is Shop open
-    }
-
-    @Override
-    public void onSuccessGetShopTransaction(ShopTxStats shopTxStats) {
-        //TODO render transation shop stat
-    }
-
-    @Override
-    public void onSuccessGetReputation(ReputationView.ReputationViewModel reputationViewModel) {
-        // TODO render reputation
-        //reputationview.setseller(...);
-    }
-
-    @Override
-    public void renderShopScore(ShopScoreViewModel shopScoreViewModel) {
-        shopScoreWidget.renderView(shopScoreViewModel);
-    }
-
-    @Override
-    public void onErrorShopScore(Throwable t) {
-        //TODO snackbar shop score
+    public void onSuccessGetShopInfoAndScore(Info shopModelInfo,
+                                             boolean isOpen,
+                                             ShopTxStats shopTxStats,
+                                             ReputationView.ReputationViewModel reputationViewModel,
+                                             ShopScoreViewModel shopScoreViewModel) {
+        // TODO update view
     }
 
     @Override

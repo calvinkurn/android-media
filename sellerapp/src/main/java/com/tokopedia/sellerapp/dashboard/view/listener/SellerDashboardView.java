@@ -13,19 +13,14 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
  */
 
 public interface SellerDashboardView extends CustomerView {
-    void onErrorGetShopInfo(Throwable t);
 
-    void onSuccessGetShopInfo(Info shopModelInfo);
+    void onSuccessGetShopInfoAndScore(Info shopModelInfo,
+                                      boolean isOpen,
+                                      ShopTxStats shopTxStats,
+                                      ReputationView.ReputationViewModel reputationViewModel,
+                                      ShopScoreViewModel shopScoreViewModel);
 
-    void onSuccessGetShopOpenInfo(boolean isOpen);
-
-    void onSuccessGetShopTransaction(ShopTxStats shopTxStats);
-
-    void onSuccessGetReputation(ReputationView.ReputationViewModel reputationViewModel);
-
-    void renderShopScore(ShopScoreViewModel shopScoreViewModel);
-
-    void onErrorShopScore(Throwable t);
+    void onErrorShopInfoAndScore(Throwable t);
 
     void onErrorGetTickers(Throwable throwable);
 
