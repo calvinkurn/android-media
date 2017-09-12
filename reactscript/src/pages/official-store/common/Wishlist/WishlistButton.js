@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import {
   Button,
   StyleSheet,
-  AsyncStorage,
   TouchableNativeFeedback,
   TouchableOpacity,
   Platform,
