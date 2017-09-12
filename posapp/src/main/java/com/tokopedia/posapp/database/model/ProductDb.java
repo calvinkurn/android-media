@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.database.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -12,13 +13,10 @@ import com.tokopedia.posapp.database.PosDatabase;
  */
 
 @ModelContainer
-@Table(database = PosDatabase.class)
+@Table(database = PosDatabase.class, insertConflict = ConflictAction.REPLACE)
 public class ProductDb extends BaseModel {
-    @PrimaryKey(autoincrement = true)
     @Column
-    private int Id;
-
-    @Column
+    @PrimaryKey
     private int productId;
 
     @Column
@@ -36,13 +34,14 @@ public class ProductDb extends BaseModel {
     @Column
     private String productDescription;
 
-    public int getId() {
-        return Id;
-    }
+    @Column
+    private String productImage;
 
-    public void setId(int id) {
-        Id = id;
-    }
+    @Column
+    private String productImage300;
+
+    @Column
+    private String productImageFull;
 
     public int getProductId() {
         return productId;
@@ -90,5 +89,29 @@ public class ProductDb extends BaseModel {
 
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
+    }
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public String getProductImage300() {
+        return productImage300;
+    }
+
+    public void setProductImage300(String productImage300) {
+        this.productImage300 = productImage300;
+    }
+
+    public String getProductImageFull() {
+        return productImageFull;
+    }
+
+    public void setProductImageFull(String productImageFull) {
+        this.productImageFull = productImageFull;
     }
 }

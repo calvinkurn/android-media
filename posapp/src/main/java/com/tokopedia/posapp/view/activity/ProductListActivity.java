@@ -2,9 +2,15 @@ package com.tokopedia.posapp.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.drawer2.di.DrawerInjector;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.fragment.ProductListFragment;
@@ -13,7 +19,21 @@ import com.tokopedia.posapp.view.fragment.ProductListFragment;
  * Created by okasurya on 8/24/17.
  */
 
-public class ProductListActivity extends BasePresenterActivity {
+public class ProductListActivity extends DrawerPresenterActivity {
+    LocalCacheHandler drawerCache;
+    DrawerHelper drawerHelper;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
+        drawerHelper.initDrawer(this);
+        drawerHelper.setEnabled(true);
+        drawerHelper.setSelectedPosition(0);
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -51,6 +71,11 @@ public class ProductListActivity extends BasePresenterActivity {
         }
 
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected int setDrawerPosition() {
+        return 0;
     }
 
     @Override

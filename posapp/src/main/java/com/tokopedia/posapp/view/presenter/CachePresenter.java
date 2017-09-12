@@ -7,6 +7,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
@@ -96,7 +97,7 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private void getProduct() {
-        compositeSubscription.add(
+//        compositeSubscription.add(
             Observable.defer(new Func0<Observable<ShopProductListDomain>>() {
                 @Override
                 public Observable<ShopProductListDomain> call() {
@@ -109,8 +110,8 @@ public class CachePresenter implements Cache.Presenter {
             })
             .repeat()
             .subscribeOn(Schedulers.newThread())
-            .subscribe(new ProductSubscriber())
-        );
+            .subscribe(new ProductSubscriber());
+//        );
     }
 
     private RequestParams getProductParam(int page) {
@@ -128,13 +129,13 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private void getBankList() {
-        compositeSubscription.add(
+//        compositeSubscription.add(
             getBankInstallmentUseCase
                     .createObservable(RequestParams.create())
                     .observeOn(Schedulers.newThread())
                     .flatMap(storeBankToCache())
                     .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Subscriber<Object>() {
+                    .subscribe(new Subscriber<BankSavedResult>() {
                         @Override
                         public void onCompleted() {
 
@@ -146,17 +147,17 @@ public class CachePresenter implements Cache.Presenter {
                         }
 
                         @Override
-                        public void onNext(Object o) {
+                        public void onNext(BankSavedResult o) {
 
                         }
-                    })
-        );
+                    });
+//        );
     }
 
-    private Func1<BankInstallmentDomain, Observable<?>> storeBankToCache() {
-        return new Func1<BankInstallmentDomain, Observable<?>>() {
+    private Func1<BankInstallmentDomain, Observable<BankSavedResult>> storeBankToCache() {
+        return new Func1<BankInstallmentDomain, Observable<BankSavedResult>>() {
             @Override
-            public Observable<?> call(BankInstallmentDomain bankInstallmentDomain) {
+            public Observable<BankSavedResult> call(BankInstallmentDomain bankInstallmentDomain) {
                 RequestParams requestParams = RequestParams.create();
                 requestParams.putObject(
                         StoreBankInstallmentCacheUseCase.BANK_INSTALLMENT_DOMAIN,

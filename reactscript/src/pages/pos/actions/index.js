@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {PosCacheModule} from 'NativeModules'
 
 // Product list action and action creators
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
@@ -21,7 +22,12 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
 
   return {
     type: FETCH_PRODUCTS,
-    payload: axios.get(url)
+    payload: PosCacheModule.getDataAll("PRODUCT")
+             .then(response => {
+               const jsonResponse = JSON.parse(response)
+               return jsonResponse;
+             })
+             .catch(error => {})
   }
 }
 
