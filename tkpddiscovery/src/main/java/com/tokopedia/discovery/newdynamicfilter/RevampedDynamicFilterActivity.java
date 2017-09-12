@@ -158,6 +158,7 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
                 getIntent().getParcelableExtra(EXTRA_FILTER_LIST));
         removeFiltersWithEmptyOption(filterList);
         mergeSizeFilterOptionsWithSameValue(filterList);
+        removeBrandFilterOptionsWithSameValue(filterList);
         adapter.setFilterList(filterList);
     }
 
@@ -198,6 +199,34 @@ public class RevampedDynamicFilterActivity extends AppCompatActivity implements 
     private Filter getSizeFilter(List<Filter> filterList) {
         for (Filter filter : filterList) {
             if (filter.isSizeFilter()) return filter;
+        }
+        return null;
+    }
+
+    private void removeBrandFilterOptionsWithSameValue(List<Filter> filterList) {
+        Filter brandFilter = getBrandFilter(filterList);
+        if (brandFilter == null) {
+            return;
+        }
+
+        List<Option> brandFilterOptions = brandFilter.getOptions();
+        Iterator<Option> iterator = brandFilterOptions.iterator();
+        Map<String, Option> optionMap = new HashMap<>();
+
+        while (iterator.hasNext()) {
+            Option option = iterator.next();
+            Option existingOption = optionMap.get(option.getValue());
+            if (existingOption != null) {
+                iterator.remove();
+            } else {
+                optionMap.put(option.getValue(), option);
+            }
+        }
+    }
+
+    private Filter getBrandFilter(List<Filter> filterList) {
+        for (Filter filter : filterList) {
+            if (filter.isBrandFilter()) return filter;
         }
         return null;
     }
