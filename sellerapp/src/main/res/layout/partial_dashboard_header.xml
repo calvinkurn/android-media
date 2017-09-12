@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:divider="@drawable/line_separator"
     android:orientation="vertical">
-
-    <com.tokopedia.design.ticker.TickerView
-        android:id="@+id/ticker_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/ticker_height"
-        android:layout_marginBottom="@dimen/margin_med"
-        android:layout_marginLeft="@dimen/margin_sm"
-        android:layout_marginRight="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_med"
-        android:visibility="gone"
-        app:tckv_indicator_off_color="@color/grey"
-        app:tckv_indicator_on_color="@color/tkpd_main_green" />
 
     <LinearLayout
         style="@style/LabelLayout"
@@ -71,11 +58,15 @@
             android:src="@drawable/icon_setting" />
     </LinearLayout>
 
+    <include layout="@layout/partial_separator_horizontal" />
+
     <com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget
         android:id="@+id/shop_score_widget"
         style="@style/LabelLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <include layout="@layout/partial_separator_horizontal" />
 
     <LinearLayout
         android:layout_width="match_parent"

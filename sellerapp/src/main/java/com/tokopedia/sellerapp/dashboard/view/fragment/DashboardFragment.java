@@ -3,10 +3,11 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -14,6 +15,7 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.home.view.ReputationView;
@@ -42,6 +44,16 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public SellerDashboardPresenter sellerDashboardPresenter;
 
     private TickerView tickerView;
+    private LoadingStateView headerShopInfoLoadingStateView;
+    private ImageView shopIconImageView;
+    private TextView shopNameTextView;
+    private ImageView gmIconImageView;
+    private TextView gmStatusTextView;
+
+    private ShopScoreWidget shopScoreWidget;
+
+    private TextView reputationPointTextView;
+    private TextView transactionSuccessTextView;
 
     private LabelView newOrderLabelView;
     private LabelView deliveryConfirmationLabelView;
@@ -50,8 +62,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView messageLabelView;
     private LabelView discussionLabelView;
     private LabelView reviewLabelView;
-
-    private ShopScoreWidget shopScoreWidget;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +79,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
+        headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
+        shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
+        shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
+        gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
+        gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
+        reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
+        transactionSuccessTextView = (TextView) view.findViewById(R.id.text_view_transaction_success);
+
         newOrderLabelView = (LabelView) view.findViewById(R.id.label_view_new_order);
         deliveryConfirmationLabelView = (LabelView) view.findViewById(R.id.label_view_delivery_confirmation);
         deliveryStatusLabelView = (LabelView) view.findViewById(R.id.label_view_delivery_status);
@@ -146,6 +164,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onResume() {
         super.onResume();
+        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         sellerDashboardPresenter.getShopInfoWithScore();
         sellerDashboardPresenter.getTicker();
         sellerDashboardPresenter.getNotification();
@@ -163,6 +182,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                                              ReputationView.ReputationViewModel reputationViewModel,
                                              ShopScoreViewModel shopScoreViewModel) {
         // TODO update view
+        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        shopNameTextView.setText(shopModelInfo.getShopName());
+        if (shopModelInfo.isShopIsGoldBadge()) {
+            gmIconImageView.setVisibility(View.VISIBLE);
+        } else {
+            gmIconImageView.setVisibility(View.GONE);
+        }
+
+        shopScoreWidget.renderView(shopScoreViewModel);
     }
 
     @Override

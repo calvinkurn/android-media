@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/line_separator"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/LabelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/dashboard_icon_shop_height"
+            android:layout_height="@dimen/dashboard_icon_shop_height" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:orientation="vertical">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/font_loading_width_xs"
+                android:layout_height="@dimen/font_loading_width_xs" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/font_loading_width_xs"
+                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_marginTop="@dimen/margin_sm" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/LabelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxxl"
+            android:layout_height="@dimen/font_loading_width_xs" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_marginTop="@dimen/margin_sm" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_marginTop="@dimen/margin_sm" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/font_loading_width_l"
+                android:layout_height="@dimen/font_loading_width_xs" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/font_loading_width_l"
+                android:layout_height="@dimen/font_loading_width_xs" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/font_loading_width_l"
+                android:layout_height="@dimen/font_loading_width_xs" />
+        </LinearLayout>
+
+        <include layout="@layout/partial_separator_vertical" />
+
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/font_loading_width_l"
+                android:layout_height="@dimen/font_loading_width_xs" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/font_loading_width_l"
+                android:layout_height="@dimen/font_loading_width_xs" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

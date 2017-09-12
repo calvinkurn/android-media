@@ -109,6 +109,134 @@ public class Info {
     @Expose
     public List<Badge> badges = new ArrayList<>();
 
+    public String getShopStatusTitle() {
+        return shopStatusTitle;
+    }
+
+    public int getShopIsClosedReason() {
+        return shopIsClosedReason;
+    }
+
+    public String getShopLucky() {
+        return shopLucky;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public String getShopOwnerLastLogin() {
+        return shopOwnerLastLogin;
+    }
+
+    public String getShopTagline() {
+        return shopTagline;
+    }
+
+    public String getShopUrl() {
+        return shopUrl;
+    }
+
+    public String getShopStatusMessage() {
+        return shopStatusMessage;
+    }
+
+    public String getShopDescription() {
+        return shopDescription;
+    }
+
+    public String getShopCover() {
+        return shopCover;
+    }
+
+    public int getShopHasTerms() {
+        return shopHasTerms;
+    }
+
+    public int getShopIsGold() {
+        return shopIsGold;
+    }
+
+    public boolean isShopIsGoldBadge() {
+        return shopIsGoldBadge;
+    }
+
+    public String getShopOpenSince() {
+        return shopOpenSince;
+    }
+
+    public int getShopMinBadgeScore() {
+        return shopMinBadgeScore;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
+    }
+
+    public String getShopOfficialTop() {
+        return shopOfficialTop;
+    }
+
+    public int getShopIsClosedUntil() {
+        return shopIsClosedUntil;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public String getShopReputation() {
+        return shopReputation;
+    }
+
+    public int getShopIsOfficial() {
+        return shopIsOfficial;
+    }
+
+    public int getShopOwnerId() {
+        return shopOwnerId;
+    }
+
+    public int getShopAlreadyFavorited() {
+        return shopAlreadyFavorited;
+    }
+
+    public int getShopIsOwner() {
+        return shopIsOwner;
+    }
+
+    public int getShopStatus() {
+        return shopStatus;
+    }
+
+    public int getShopIsClosedNote() {
+        return shopIsClosedNote;
+    }
+
+    public String getShopReputationBadge() {
+        return shopReputationBadge;
+    }
+
+    public String getShopAvatar() {
+        return shopAvatar;
+    }
+
+    public int getShopTotalFavorit() {
+        return shopTotalFavorit;
+    }
+
+    public String getShopDomain() {
+        return shopDomain;
+    }
+
+    public String getShopIsFreeReturns() {
+        return shopIsFreeReturns;
+    }
+
+    public List<Badge> getBadges() {
+        return badges;
+    }
+
     /**
      *
      * @return
