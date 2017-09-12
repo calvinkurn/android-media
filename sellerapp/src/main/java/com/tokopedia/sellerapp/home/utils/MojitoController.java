@@ -6,10 +6,10 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.BaseNetworkController;
 import com.tkpd.library.utils.network.CommonListener;
+import com.tokopedia.core.common.ticker.api.TickerApiSeller;
+import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.SellerMainApplication;
-import com.tokopedia.sellerapp.home.api.TickerApiSeller;
-import com.tokopedia.sellerapp.home.model.Ticker;
 
 import retrofit2.Response;
 import rx.Observable;

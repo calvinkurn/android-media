@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
@@ -36,9 +37,10 @@ public class ProductDraftListModule extends ProductAddModule {
     ProductDraftListPresenter providePresenterDraft(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                                     DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                                     UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                                    SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
+                                                    SaveBulkDraftProductUseCase saveBulkDraftProductUseCase,
+                                                    ClearAllDraftProductUseCase clearAllDraftProductUseCase){
         return new ProductDraftListPresenterImpl(fetchAllDraftProductUseCase, deleteSingleDraftProductUseCase,
-                updateUploadingDraftProductUseCase, saveBulkDraftProductUseCase);
+                updateUploadingDraftProductUseCase, saveBulkDraftProductUseCase, clearAllDraftProductUseCase);
     }
 
 }

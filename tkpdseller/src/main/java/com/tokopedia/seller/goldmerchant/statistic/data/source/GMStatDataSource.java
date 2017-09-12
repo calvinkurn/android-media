@@ -1,11 +1,11 @@
 package com.tokopedia.seller.goldmerchant.statistic.data.source;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.common.mapper.SimpleResponseMapper;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.common.data.mapper.SimpleResponseMapper;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cache.GMStatCache;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.GMStatCloud;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
