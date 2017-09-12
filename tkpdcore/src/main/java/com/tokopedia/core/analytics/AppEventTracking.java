@@ -671,7 +671,7 @@ public interface AppEventTracking {
         String EMAIL = "Email";
         String LOGIN_STATUS = "logged_in_status";
         String PRODUCTS_NUMBER = "number_of_products";
-        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY = "subcategory";
         String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "category";
         String CATEGORY_ID = "category_id";
