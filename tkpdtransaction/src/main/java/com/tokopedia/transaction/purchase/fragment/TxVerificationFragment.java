@@ -233,6 +233,11 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     }
 
     @Override
+    public void showCancelTransactionDialog(String message, String paymentId) {
+
+    }
+
+    @Override
     public void showNoConnectionLoadMoreData(String message) {
         isLoading = false;
         lvTXVerification.removeFooterView(loadMoreView);
@@ -442,6 +447,11 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         Dialog dialog = myAlertDialog.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
+    }
+
+    @Override
+    public void actionCancelTransaction(TxVerData data) {
+
     }
 
     @SuppressLint("InlinedApi")

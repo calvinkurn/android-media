@@ -88,4 +88,5 @@
     <string name="title_expiry_date">Masa Berlaku</string>
     <string name="message_no_credit_card">Belum Ada Kartu Kredit Tersimpan</string>
     <string name="success_cancel_replacement">Pesanan berhasil dibatalkan</string>
+    <string name="title_cancel_transaction">Batalkan Transaksi</string>
 </resources>

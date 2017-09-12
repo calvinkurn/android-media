@@ -48,6 +48,8 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         void actionEditPayment(TxVerData data);
 
         void actionUploadProof(TxVerData data);
+
+        void actionCancelTransaction(TxVerData data);
     }
 
     @NonNull
@@ -98,8 +100,8 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
         int menuId = data.getButton().getButtonUploadProof() == 0
-                ? R.menu.menu_edit_payment
-                : R.menu.menu_edit_payment_upload;
+                ? R.menu.menu_transaction_payment
+                : R.menu.menu_transaction_payment_upload;
         inflater.inflate(menuId, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -111,7 +113,10 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
                 } else if (i == R.id.action_upload) {
                     actionListener.actionUploadProof(data);
                     return true;
-                } else {
+                } else if (i == R.id.action_cancel_transaction) {
+                    actionListener.actionCancelTransaction(data);
+                    return true;
+                }else {
                     return false;
                 }
             }

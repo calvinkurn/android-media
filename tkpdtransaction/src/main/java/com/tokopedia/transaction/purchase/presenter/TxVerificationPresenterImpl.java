@@ -2,6 +2,8 @@ package com.tokopedia.transaction.purchase.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
@@ -101,6 +103,16 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
     }
 
     @Override
+    public void processCancelTransaction(Context context, TxVerData data) {
+        TKPDMapParam<String, String> cancelTransactionParams = new TKPDMapParam<>();
+        cancelTransactionParams.put("payment_id", data.getPaymentId());
+        netInteractor
+                .showCancelTransactionDialog(AuthUtil.generateParamsNetwork(
+                        context, cancelTransactionParams
+                ), dialogListener(data.getPaymentId()));
+    }
+
+    @Override
     public void uploadProofImageWSV4(Context context, String imagePath, TxVerData txVerData) {
         if (imagePath == null || imagePath.isEmpty()) {
             viewListener.showToastMessage(context.getString(
@@ -153,5 +165,29 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
                     }
                 });
 
+    }
+
+    private TxOrderNetInteractor.CancelTransactionDialogListener dialogListener(String paymentId) {
+        return new TxOrderNetInteractor.CancelTransactionDialogListener() {
+            @Override
+            public void onSuccess(String message) {
+                viewListener.
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onTimeout(String message) {
+
+            }
+
+            @Override
+            public void onNoConnection(String message) {
+
+            }
+        };
     }
 }

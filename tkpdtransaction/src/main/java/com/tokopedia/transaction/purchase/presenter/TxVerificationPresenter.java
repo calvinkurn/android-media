@@ -14,6 +14,8 @@ public interface TxVerificationPresenter {
 
     void processToTxVerificationDetail(Context context, TxVerData data);
 
+    void processCancelTransaction(Context context, TxVerData data);
+
     void uploadProofImageWSV4(Context context, String imagePath, TxVerData txVerData);
 
     void onDestroyView();

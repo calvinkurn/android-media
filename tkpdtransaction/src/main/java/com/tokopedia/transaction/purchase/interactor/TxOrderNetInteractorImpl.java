@@ -333,6 +333,16 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
         );
     }
 
+    @Override
+    public void showCancelTransactionDialog(@NonNull TKPDMapParam<String, String> params, CancelTransactionDialogListener listener) {
+
+    }
+
+    @Override
+    public void cancelTransaction(@NonNull TKPDMapParam<String, String> params, CancelTransactionListener listener) {
+
+    }
+
 
     @Override
     public void getCancelPaymentForm(final Context context, final Map<String, String> params,
