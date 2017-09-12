@@ -22,6 +22,7 @@ import com.tokopedia.core.shop.model.shopinfo.ShopInfo;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
@@ -61,6 +62,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private ShopScoreWidget shopScoreWidget;
 
     private TextView reputationPointTextView;
+    private ShopReputationView shopReputationView;
     private TextView transactionSuccessTextView;
 
     private LabelView newOrderLabelView;
@@ -93,6 +95,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
         reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
+        shopReputationView = (ShopReputationView) view.findViewById(R.id.shop_reputation_view);
         transactionSuccessTextView = (TextView) view.findViewById(R.id.text_view_transaction_success);
 
         newOrderLabelView = (LabelView) view.findViewById(R.id.label_view_new_order);
@@ -205,6 +208,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         } else {
             gmIconImageView.setVisibility(View.GONE);
         }
+        shopReputationView.setValue(0, 0, 0);
 
         updateViewShopOpen(shopModel);
 

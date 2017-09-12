@@ -101,4 +101,7 @@
         <attr name="rep_title_text" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="ShopReputationView">
+        <attr name="rsv_show_tooltip" format="boolean" />
+    </declare-styleable>
 </resources>
