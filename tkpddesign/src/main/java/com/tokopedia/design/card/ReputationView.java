@@ -138,12 +138,6 @@ public class ReputationView extends BaseCustomView {
             iconView.setImageDrawable(drawable);
     }
 
-    public void setSeller(int typeMedal, int levelMedal, String reputationPoints) {
-        viewType = ROLE_SELLER;
-        init();
-        ReputationBadgeUtils.setReputationMedals(getContext(), layout, typeMedal, levelMedal, reputationPoints);
-    }
-
     private void setTitleText(String text) {
         if (!TextUtils.isEmpty(text) && percent != null) {
             percent.setVisibility(VISIBLE);
