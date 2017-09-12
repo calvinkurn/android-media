@@ -38,4 +38,8 @@ public interface ReputationApi {
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_SUBMIT)
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> sendReviewSubmit(@FieldMap Map<String, Object> params);
+
+    @POST(TkpdBaseURL.Reputation.PATH_SKIP_REVIEW)
+    @FormUrlEncoded
+    Observable<Response<TkpdResponse>> skipReview(@FieldMap Map<String, Object> params);
 }

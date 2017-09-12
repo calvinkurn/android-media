@@ -6,6 +6,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxRep
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
 
 import rx.Observable;
 
@@ -26,4 +27,6 @@ public interface ReputationRepository {
     Observable<SendReviewValidateDomain> sendReviewValidation(RequestParams requestParams);
 
     Observable<SendReviewSubmitDomain> sendReviewSubmit(RequestParams requestParams);
+
+    Observable<SkipReviewDomain> skipReview(RequestParams requestParams);
 }

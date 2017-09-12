@@ -30,6 +30,7 @@ public class InboxReputationDetailItemViewModel implements
     String review;
     int reviewStar;
     boolean reviewIsSkipped;
+    int tab;
 
     public InboxReputationDetailItemViewModel(String productId, String productName,
                                               String productAvatar, String reviewId,
@@ -39,7 +40,9 @@ public class InboxReputationDetailItemViewModel implements
                                               boolean reviewHasReviewed,
                                               boolean reviewIsEditable,
                                               boolean reviewIsSkippable,
-                                              boolean reviewIsSkipped, int shopId) {
+                                              boolean reviewIsSkipped,
+                                              int shopId,
+                                              int tab) {
         this.productId = productId;
         this.productName = productName;
         this.productAvatar = productAvatar;
@@ -54,6 +57,7 @@ public class InboxReputationDetailItemViewModel implements
         this.reviewIsEditable = reviewIsEditable;
         this.reviewIsSkippable = reviewIsSkippable;
         this.shopId = shopId;
+        this.tab = tab;
     }
 
     public String getReviewId() {
@@ -110,6 +114,10 @@ public class InboxReputationDetailItemViewModel implements
 
     public int getShopId() {
         return shopId;
+    }
+
+    public int getTab() {
+        return tab;
     }
 
     @Override

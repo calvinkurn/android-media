@@ -52,4 +52,9 @@
     <string name="rating_title_4">Baik</string>
     <string name="rating_title_5">Sangat Baik</string>
     <string name="title_activity_image_upload">Unggah Gambar</string>
+    <string name="action_skip">Lewati</string>
+    <string name="menu_report">Laporkan</string>
+    <string name="dialog_skip_review_confirmation">Apakah Anda ingin lewatkan ulasan ini ?</string>
+    <string name="title_skip_review">Lewati Ulasan</string>
+
 </resources>

@@ -33,7 +33,7 @@ public interface InboxReputationDetail {
 
         void onSkipReview(String reviewId);
 
-        void onGoToGiveReview(String reviewId, String productId, int shopId);
+        void onGoToGiveReview(String reviewId, String productId, int shopId, boolean reviewIsSkippable);
 
         void onErrorSendSmiley(String errorMessage);
 
@@ -54,6 +54,10 @@ public interface InboxReputationDetail {
         void finishRefresh();
 
         void goToPreviewImage(int position, ArrayList<ImageUpload> list);
+
+        int getTab();
+
+        void onReportReview();
     }
 
     interface Presenter extends CustomerPresenter<View> {

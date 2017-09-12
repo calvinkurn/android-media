@@ -824,5 +824,6 @@ public class TkpdBaseURL {
         public static final String PATH_SEND_REVIEW_SUBMIT = "review/api/"
                 + REPUTATION_VERSION + "/insert/submit";
 
+        public static final String PATH_SKIP_REVIEW = "review/api/" + REPUTATION_VERSION + "/skip";
     }
 }

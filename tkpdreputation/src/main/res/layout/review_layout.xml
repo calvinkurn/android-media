@@ -16,10 +16,21 @@
         android:padding="@dimen/padding_activity"
         >
 
+        <RatingBar
+            android:id="@+id/product_rating"
+            style="@style/Small.RatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="4"/>
+
         <TextView
             android:id="@+id/reviewer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/product_rating"
+            android:layout_marginTop="@dimen/margin_vs"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="7sp"
@@ -35,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/reviewer_name"
+            android:layout_marginTop="@dimen/margin_vs"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/black_38"
             android:textSize="@dimen/text_size_xsmall"
@@ -46,21 +58,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:src="@drawable/ic_more_vert_black_24dp"/>
 
     </RelativeLayout>
-
-    <RatingBar
-        android:id="@+id/product_rating"
-        style="@style/Small.RatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginLeft="@dimen/padding_activity"
-        android:layout_marginRight="@dimen/padding_activity"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:rating="4"/>
 
     <TextView
         android:id="@+id/review"

@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxRep
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
 
 import rx.Observable;
 
@@ -60,5 +61,12 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudSendReviewSubmitDataSource()
                 .sendReviewSubmit(requestParams);
+    }
+
+    @Override
+    public Observable<SkipReviewDomain> skipReview(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudSkipReviewDataSource()
+                .skipReview(requestParams);
     }
 }

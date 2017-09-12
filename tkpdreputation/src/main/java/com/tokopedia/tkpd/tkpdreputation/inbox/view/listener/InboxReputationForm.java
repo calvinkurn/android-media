@@ -29,6 +29,9 @@ public interface InboxReputationForm {
 
         void setFormFromCache(SendReviewPass sendReviewPass);
 
+        void onErrorSkipReview(String errorMessage);
+
+        void onSuccessSkipReview();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -47,5 +50,6 @@ public interface InboxReputationForm {
 
         void restoreFormFromCache();
 
+        void skipReview(String reputationId, String shopId, String productId);
     }
 }

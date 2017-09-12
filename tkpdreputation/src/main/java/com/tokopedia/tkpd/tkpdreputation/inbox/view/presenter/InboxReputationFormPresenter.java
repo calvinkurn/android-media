@@ -3,12 +3,15 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendReviewSubscriber;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SkipReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
@@ -31,6 +34,8 @@ public class InboxReputationFormPresenter
     private final SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     private final GetSendReviewFormUseCase getSendReviewFormUseCase;
     private final SendReviewValidateUseCase sendReviewValidateUseCase;
+    private final SkipReviewUseCase skipReviewUseCase;
+    private final SessionHandler sessionHandler;
     private InboxReputationForm.View viewListener;
     private ImageUploadHandler imageUploadHandler;
 
@@ -39,11 +44,15 @@ public class InboxReputationFormPresenter
     InboxReputationFormPresenter(SendReviewValidateUseCase sendReviewValidateUseCase,
                                  SendReviewUseCase sendReviewUseCase,
                                  SetReviewFormCacheUseCase setReviewFormCacheUseCase,
-                                 GetSendReviewFormUseCase getSendReviewFormUseCase) {
+                                 GetSendReviewFormUseCase getSendReviewFormUseCase,
+                                 SkipReviewUseCase skipReviewUseCase,
+                                 SessionHandler sessionHandler) {
         this.sendReviewValidateUseCase = sendReviewValidateUseCase;
         this.sendReviewUseCase = sendReviewUseCase;
         this.setReviewFormCacheUseCase = setReviewFormCacheUseCase;
         this.getSendReviewFormUseCase = getSendReviewFormUseCase;
+        this.skipReviewUseCase = skipReviewUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -142,5 +151,14 @@ public class InboxReputationFormPresenter
 
             }
         });
+    }
+
+    @Override
+    public void skipReview(String reputationId, String shopId, String productId) {
+        viewListener.showLoadingProgress();
+        skipReviewUseCase.execute(SkipReviewUseCase.getParam(reputationId, shopId, productId,
+                sessionHandler.getLoginID()), new
+                SkipReviewSubscriber
+                (viewListener));
     }
 }

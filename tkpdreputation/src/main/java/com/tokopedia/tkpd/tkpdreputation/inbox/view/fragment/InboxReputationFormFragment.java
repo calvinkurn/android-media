@@ -66,7 +66,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class InboxReputationFormFragment extends BaseDaggerFragment
-        implements InboxReputationForm.View {
+        implements InboxReputationForm.View, InboxReputationFormActivity.SkipListener {
 
     RatingBar rating;
     TextView ratingText;
@@ -376,6 +376,47 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         anomymousSwitch.setChecked(sendReviewPass.isAnonymous());
         adapter.addList(sendReviewPass.getListImage());
         adapter.setDeletedList(sendReviewPass.getListDeleted());
+    }
+
+    @Override
+    public void onErrorSkipReview(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessSkipReview() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+
+    @Override
+    public void skipReview() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.title_skip_review));
+        builder.setMessage(getString(R.string.dialog_skip_review_confirmation));
+        builder.setPositiveButton(getString(R.string.action_skip),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.skipReview(
+                                getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID));
+                    }
+                });
+        builder.setNegativeButton(getString(R.string.title_cancel),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int param) {
+                        dialog.dismiss();
+                    }
+                });
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+
+
     }
 
     @Override

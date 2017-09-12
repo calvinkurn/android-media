@@ -236,10 +236,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToGiveReview(String reviewId, String productId, int shopId) {
+    public void onGoToGiveReview(String reviewId, String productId,
+                                 int shopId, boolean reviewIsSkippable) {
         startActivityForResult(
                 InboxReputationFormActivity.getGiveReviewIntent(getActivity(), reviewId,
-                        passModel.getReputationId(), productId, String.valueOf(shopId)),
+                        passModel.getReputationId(), productId,
+                        String.valueOf(shopId), reviewIsSkippable),
                 REQUEST_GIVE_REVIEW);
     }
 
@@ -316,6 +318,17 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     position
             );
         }
+    }
+
+    @Override
+    public int getTab() {
+        return getArguments().getInt(InboxReputationDetailActivity
+                .ARGS_TAB);
+    }
+
+    @Override
+    public void onReportReview() {
+
     }
 
     @Override

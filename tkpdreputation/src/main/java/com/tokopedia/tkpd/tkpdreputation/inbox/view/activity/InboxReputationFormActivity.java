@@ -2,13 +2,17 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
@@ -20,10 +24,18 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationForm
 public class InboxReputationFormActivity extends BasePresenterActivity
         implements HasComponent {
 
+
+    public interface SkipListener {
+        void skipReview();
+    }
+
     public static final String ARGS_REVIEW_ID = "ARGS_REVIEW_ID";
     public static final String ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID";
     public static final String ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID";
     public static final String ARGS_SHOP_ID = "ARGS_SHOP_ID";
+    private static final String ARGS_IS_SKIPPABLE = "ARGS_IS_SKIPPABLE";
+
+    SkipListener listener;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -38,6 +50,37 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     @Override
     protected void initialPresenter() {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (getIntent().getExtras() != null
+                && getIntent().getBooleanExtra(ARGS_IS_SKIPPABLE, false)) {
+            menu.add(Menu.NONE, R.id.action_skip, 0, "");
+            MenuItem menuItem = menu.findItem(R.id.action_skip);
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            menuItem.setIcon(getSkipMenu());
+            return true;
+        } else {
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    private Drawable getSkipMenu() {
+        TextDrawable drawable = new TextDrawable(this);
+        drawable.setText(getResources().getString(R.string.action_skip));
+        drawable.setTextColor(R.color.black_70b);
+        return drawable;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_skip
+                && listener != null) {
+            listener.skipReview();
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -64,6 +107,9 @@ public class InboxReputationFormActivity extends BasePresenterActivity
                 fragment,
                 fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+
+        listener = (InboxReputationFormFragment) fragment;
+
     }
 
     @Override
@@ -88,12 +134,13 @@ public class InboxReputationFormActivity extends BasePresenterActivity
 
     public static Intent getGiveReviewIntent(Context context, String reviewId,
                                              String reputationId, String productId,
-                                             String shopId) {
+                                             String shopId, boolean reviewIsSkippable) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
         intent.putExtra(ARGS_REVIEW_ID, reviewId);
         intent.putExtra(ARGS_SHOP_ID, shopId);
+        intent.putExtra(ARGS_IS_SKIPPABLE, reviewIsSkippable);
         return intent;
     }
 

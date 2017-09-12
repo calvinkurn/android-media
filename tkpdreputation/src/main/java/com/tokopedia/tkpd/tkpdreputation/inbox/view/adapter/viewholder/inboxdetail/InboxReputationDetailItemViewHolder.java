@@ -15,6 +15,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
@@ -99,11 +100,15 @@ public class InboxReputationDetailItemViewHolder extends
         productName.setText(element.getProductName());
         ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
 
+        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
+                || element.isReviewSkipped()) {
+            giveReview.setVisibility(View.GONE);
+        } else {
+            giveReview.setVisibility(View.VISIBLE);
+        }
+
         if (!element.isReviewHasReviewed()) {
             viewReview.setVisibility(View.GONE);
-            giveReview.setVisibility(View.VISIBLE);
-        } else if (element.isReviewSkipped()) {
-
         } else {
             viewReview.setVisibility(View.VISIBLE);
             giveReview.setVisibility(View.GONE);
@@ -119,7 +124,8 @@ public class InboxReputationDetailItemViewHolder extends
             public void onClick(View v) {
                 viewListener.onGoToGiveReview(element.getReviewId(),
                         element.getProductId(),
-                        element.getShopId());
+                        element.getShopId(),
+                        element.isReviewIsSkippable());
             }
         });
 
@@ -162,12 +168,19 @@ public class InboxReputationDetailItemViewHolder extends
                     popup.getMenu().add(1, R.id.menu_edit, 1, MainApplication.getAppContext()
                             .getString(R.string.menu_edit));
 
+                if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW)
+                    popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
+                            .getString(R.string.menu_report));
+
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.menu_edit) {
                             viewListener.onEditReview();
+                            return true;
+                        } else  if (item.getItemId() == R.id.menu_report) {
+                            viewListener.onReportReview();
                             return true;
                         } else {
                             return false;
