@@ -3,6 +3,7 @@ package com.tokopedia.digital.product.adapter;
 import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -18,6 +19,7 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,12 +36,16 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int TYPE_HOLDER_PRODUCT_PROMO =
             R.layout.view_holder_product_promo;
 
-
     private Fragment hostFragment;
     private List<Product> productList;
     private String productStyleView;
     private ActionListener actionListener;
-    private View mainAdapterView;
+
+    public interface ActionListener {
+        void onProductItemSelected(Product product);
+
+        void onProductLinkClicked(String url);
+    }
 
     public ProductChooserAdapter(Fragment hostFragment,
                                  List<Product> productList,
@@ -53,14 +59,14 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mainAdapterView = LayoutInflater.from(
+        View view = LayoutInflater.from(
                 hostFragment.getActivity()).inflate(viewType, parent, false);
         if (viewType == TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM) {
-            return new ItemDescAndPriceHolder(mainAdapterView);
+            return new ItemDescAndPriceHolder(view);
         } else if (viewType == TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC) {
-            return new ItemPriceAdmin(mainAdapterView);
+            return new ItemPriceAdmin(view);
         } else if (viewType == TYPE_HOLDER_PRODUCT_PROMO) {
-            return new ItemHolderPromoProduct(mainAdapterView);
+            return new ItemHolderPromoProduct(view);
         }
         return null;
     }
@@ -69,60 +75,13 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final int type = getItemViewType(position);
         final Product product = productList.get(position);
-        TextView emptyStockLabel = null;
         if (type == TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM) {
-            setViewPriceDescription((ItemDescAndPriceHolder) holder, product);
-            emptyStockLabel = ((ItemDescAndPriceHolder) holder).emptyStockNotification;
+            ((ItemDescAndPriceHolder) holder).bind(product);
         } else if (type == TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC) {
-            setViewPriceAdditionalFee((ItemPriceAdmin) holder, product);
-            emptyStockLabel = ((ItemPriceAdmin) holder).emptyStockNotification;
+            ((ItemPriceAdmin) holder).bind(product);
         } else if (type == TYPE_HOLDER_PRODUCT_PROMO) {
-            setViewPromo((ItemHolderPromoProduct) holder, product);
-            emptyStockLabel = ((ItemHolderPromoProduct) holder).emptyStockNotification;
+            ((ItemHolderPromoProduct) holder).bind(product);
         }
-        setProductAvailability(holder, product, emptyStockLabel);
-    }
-
-    private void setViewPriceDescription(ItemDescAndPriceHolder holder, Product product) {
-        holder.tvTitlePrice.setText(product.getDesc());
-        holder.tvPrice.setText(product.getPrice());
-    }
-
-    private void setViewPriceAdditionalFee(ItemPriceAdmin holder, Product product) {
-        holder.tvProductPrice.setText(product.getDesc());
-
-        CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
-        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
-        for (final URLSpan span : urls) {
-            int start = strBuilder.getSpanStart(span);
-            int end = strBuilder.getSpanEnd(span);
-            int flags = strBuilder.getSpanFlags(span);
-            ClickableSpan clickable = new ClickableSpan() {
-                public void onClick(View view) {
-                    actionListener.onProductLinkClicked(span.getURL());
-                }
-            };
-            strBuilder.setSpan(clickable, start, end, flags);
-            strBuilder.removeSpan(span);
-        }
-        holder.tvProductDescription.setText(strBuilder);
-        holder.tvProductDescription.setMovementMethod(LinkMovementMethod.getInstance());
-
-        holder.tvProductTotalPrice.setText(product.getPrice());
-    }
-
-    private void setViewPromo(ItemHolderPromoProduct holder, Product product) {
-        holder.tvProductPromoTitle.setText(product.getDesc());
-        if (product.getPromo().getBonusText().isEmpty())
-            holder.tvProductPromoDescription.setVisibility(View.GONE);
-        holder.tvProductPromoDescription.setText(product.getPromo()
-                .getBonusText());
-        holder.tvPromoProductPrice.setText(product.getPromo().getNewPrice());
-        holder.tvProductPromoOldPrice.setText(product.getPrice());
-        holder.tvProductPromoOldPrice
-                .setPaintFlags(holder.tvProductPromoOldPrice.getPaintFlags()
-                        | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     @Override
@@ -139,7 +98,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return productList.size();
     }
 
-    static class ItemDescAndPriceHolder extends RecyclerView.ViewHolder {
+    class ItemDescAndPriceHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.title_price)
         TextView tvTitlePrice;
         @BindView(R2.id.tv_price)
@@ -151,9 +110,42 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+        public void bind(Product product) {
+            setViewPriceDescription(product);
+            setProductAvailability(product);
+        }
+
+        private void setViewPriceDescription(Product product) {
+            tvTitlePrice.setText(product.getDesc());
+            tvPrice.setText(product.getPrice());
+        }
+
+        private void setProductAvailability(final Product product) {
+            if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
+                disableView(itemView);
+                emptyStockNotification.setVisibility(View.VISIBLE);
+                emptyStockNotification.setTextColor(hostFragment
+                        .getResources().getColor(R.color.white));
+            } else {
+                enableView();
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                });
+                emptyStockNotification.setVisibility(View.GONE);
+            }
+        }
+
+        private void enableView() {
+            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.grey_800));
+            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.grey_800));
+        }
     }
 
-    static class ItemPriceAdmin extends RecyclerView.ViewHolder {
+    class ItemPriceAdmin extends RecyclerView.ViewHolder {
         @BindView(R2.id.product_price_no_addition)
         TextView tvProductPrice;
         @BindView(R2.id.product_plain_description)
@@ -167,9 +159,48 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+        public void bind(Product product) {
+            setViewPriceAdditionalFee(product);
+            setProductAvailability(product);
+        }
+
+        private void setViewPriceAdditionalFee(Product product) {
+            tvProductPrice.setText(product.getDesc());
+            CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+            tvProductDescription.setText(sequence);
+            tvProductTotalPrice.setText(product.getPrice());
+        }
+
+        private void setProductAvailability(final Product product) {
+            if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
+                disableView(itemView);
+                emptyStockNotification.setVisibility(View.VISIBLE);
+                emptyStockNotification.setTextColor(hostFragment
+                        .getResources().getColor(R.color.white));
+            } else {
+                enableView();
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                });
+                emptyStockNotification.setVisibility(View.GONE);
+            }
+        }
+
+        private void enableView() {
+            tvProductDescription.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_800));
+            tvProductPrice.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_800));
+            tvProductTotalPrice.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_800));
+        }
     }
 
-    static class ItemHolderPromoProduct extends RecyclerView.ViewHolder {
+    class ItemHolderPromoProduct extends RecyclerView.ViewHolder {
         @BindView(R2.id.product_promo_title)
         TextView tvProductPromoTitle;
         @BindView(R2.id.product_promo_description)
@@ -185,47 +216,76 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+        void bind(Product product) {
+            setViewPromo(product);
+            setProductAvailability(product);
+        }
+
+        private void setViewPromo(Product product) {
+            tvProductPromoTitle.setText(product.getDesc());
+            CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+            if (!product.getDetail().isEmpty()) {
+                tvProductPromoDescription.setText(sequence);
+            } else {
+                tvProductPromoDescription.setVisibility(View.GONE);
+            }
+            tvPromoProductPrice.setText(product.getPromo().getNewPrice());
+            tvProductPromoOldPrice.setText(product.getPrice());
+            tvProductPromoOldPrice
+                    .setPaintFlags(tvProductPromoOldPrice.getPaintFlags()
+                            | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
+        private void setProductAvailability(final Product product) {
+            if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
+                disableView(itemView);
+                emptyStockNotification.setVisibility(View.VISIBLE);
+                emptyStockNotification.setTextColor(hostFragment
+                        .getResources().getColor(R.color.white));
+            } else {
+                enableView();
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                });
+                emptyStockNotification.setVisibility(View.GONE);
+            }
+        }
+
+        private void enableView() {
+            tvProductPromoTitle.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_800));
+            tvProductPromoDescription.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_800));
+            tvProductPromoOldPrice.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_800));
+            tvPromoProductPrice.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.orange_900));
+        }
     }
 
-    public interface ActionListener {
-        void onProductItemSelected(Product product);
-
-        void onProductLinkClicked(String url);
-    }
-
-    private void setProductAvailability(final RecyclerView.ViewHolder holder,
-                                        final Product product,
-                                        final TextView emptyStockLabel) {
-        if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
-            for (int i = 0; i < ((ViewGroup) mainAdapterView).getChildCount(); i++) {
-                View adapterElement = ((ViewGroup) mainAdapterView).getChildAt(i);
-                adapterElement.setEnabled(false);
-                if (adapterElement instanceof TextView) {
-                    disableTextView((TextView) adapterElement);
-                } else if (adapterElement instanceof ViewGroup) {
-                    for (int j = 0; j < ((ViewGroup) adapterElement).getChildCount(); j++) {
-                        if (((ViewGroup) adapterElement).getChildAt(j) instanceof TextView) {
-                            disableTextView(((TextView) ((ViewGroup) adapterElement)
-                                    .getChildAt(j)));
-                        }
+    private void disableView(View itemView) {
+        for (int i = 0; i < ((ViewGroup) itemView).getChildCount(); i++) {
+            View adapterElement = ((ViewGroup) itemView).getChildAt(i);
+            adapterElement.setEnabled(false);
+            if (adapterElement instanceof TextView) {
+                disableTextView((TextView) adapterElement);
+            } else if (adapterElement instanceof ViewGroup) {
+                for (int j = 0; j < ((ViewGroup) adapterElement).getChildCount(); j++) {
+                    if (((ViewGroup) adapterElement).getChildAt(j) instanceof TextView) {
+                        disableTextView(((TextView) ((ViewGroup) adapterElement)
+                                .getChildAt(j)));
                     }
                 }
             }
-            emptyStockLabel.setVisibility(View.VISIBLE);
-            emptyStockLabel.setTextColor(hostFragment
-                    .getResources().getColor(R.color.white));
-        } else {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    actionListener.onProductItemSelected(product);
-                }
-            });
-            emptyStockLabel.setVisibility(View.GONE);
         }
     }
 
     private void disableTextView(TextView textViewToDisable) {
         textViewToDisable.setTextColor(hostFragment.getResources().getColor(R.color.grey));
     }
+
 }
