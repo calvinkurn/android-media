@@ -3,12 +3,21 @@ import {PosCacheModule} from 'NativeModules'
 
 // Product list action and action creators
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
-export const fetchProducts = (shopId, start, rows, etalaseId) => {
+export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryText) => {
   const eId = +etalaseId || 0
   let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=${rows}&shop_id=${shopId}&start=${start}`
 
   if (eId) {
     url += `&etalase=${eId}`
+  }
+
+  if (productId) {
+    url += `&id=${productId}`
+  }
+
+  if (queryText) {
+    const text = queryText.replace(' ', '+')
+    url += `&q=${text}`
   }
 
   return {
@@ -139,9 +148,14 @@ export const onSearchQueryType = (queryText) => {
 }
 
 export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
-export const fetchSearchProduct = (queryText) => {
+export const fetchSearchProduct = (eId, queryText) => {
   const text = queryText.replace(' ', '+')
   let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=1987772&start=0&q=${text}`
+  
+  const etalaseId = +eId || 0
+  if (etalaseId) {
+    url += `&etalase=${etalaseId}`
+  }
   return {
     type: FETCH_SEARCH_PRODUCT,
     payload: axios.get(url),
@@ -160,6 +174,29 @@ export const CLEAR_SEARCH_RESULTS = 'CLEAR_SEARCH_RESULTS'
 export const clearSearchResults = () => {
   return {
     type: CLEAR_SEARCH_RESULTS,
+  }
+}
+
+export const SET_SEARCH_TEXT = 'SET_SEARCH_TEXT'
+export const setSearchText = (q) => {
+  return {
+    type: SET_SEARCH_TEXT,
+    payload: q,
+  }
+}
+
+export const ON_SUBMIT_FETCH_SEARCH_PRODUCT = 'ON_SUBMIT_FETCH_SEARCH_PRODUCT'
+export const onSubmitFetchSearchProduct = (queryText, eId) => {
+  const text = queryText.replace(' ', '+')
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=1987772&start=0&q=${text}`
+  const etalaseId = +eId || 0
+  if (etalaseId) {
+    url += `&etalase=${etalaseId}`
+  }
+  return {
+    type: ON_SUBMIT_FETCH_SEARCH_PRODUCT,
+    payload: axios.get(url),
+    queryText: queryText,
   }
 }
 
