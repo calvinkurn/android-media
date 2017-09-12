@@ -10,7 +10,7 @@ import PasswordPopup from './components/PasswordPopup'
 import POS from './components/POS'
 import { StackNavigator } from 'react-navigation';
 
-// TODO: FOR UI testing purpose
+// // TODO: FOR UI testing purpose
 const App = StackNavigator({
   POS: {screen: POS},
   BankSelection : { screen: PaymentBank },
@@ -24,11 +24,19 @@ const App = StackNavigator({
 
 class Root extends Component {
   render() {
-    return (
-      <Provider store={store}>
-        <App />
-      </Provider>
-    )
+    if (this.props.data.Screen === 'pos'){
+      return (
+        <Provider store={store}>
+          <App />
+        </Provider>
+      )
+    } else if (this.props.data.Screen === 'bankselection'){
+      return (
+        <Provider store={store}>
+          <PaymentBank />
+        </Provider>
+      )
+    }
   }
 }
 export default Root

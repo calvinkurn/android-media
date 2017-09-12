@@ -162,7 +162,7 @@ class PaymentBank extends Component {
                     this.props.navigation.navigate('Payment', {})
                 }
             />
-            < /View>
+            </View>
             <ScrollView>
               <View style={styles.containers} >
                 <View style={[styles.row, styles.row1]} >

@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native'
 import PropTypes from 'prop-types'
-import { NavigationModule, NetworkModule } from 'NativeModules'
+import { NavigationModule } from 'NativeModules'
 
 class Product extends PureComponent {
   render() {
