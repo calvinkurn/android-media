@@ -108,19 +108,6 @@ export default class POS extends Component {
                 show: 'always'
               },]}
             onActionSelected={this.onActionSelected}>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                backgroundColor: 'white',
-                borderRadius: 3,
-                width: 350,
-                borderColor: 'white'
-              }}
-              tintColor='red'
-              caretHidden={false}
-              placeholder='tokopedia                                                                    '
-              underlineColorAndroid='transparent'
-            />
           </ToolbarAndroid>
           <Ticker />
           <VisibleProductList />

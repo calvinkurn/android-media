@@ -18,15 +18,16 @@ const mapStateToProps = (state, ownProps) => {
     items: state.search.items,
     queryText: state.search.query,
     isFetching: state.search.isFetching,
+    etalaseId: state.etalase.selected
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSearch: (text) => {
+    onSearch: (text, eid) => {
       const trimText = text.trim() || ''
       if (trimText) {
-        dispatch(fetchSearchProduct(trimText))
+        dispatch(fetchSearchProduct(eid, trimText))
       }
     },
     onClearSearch: () => {
@@ -40,9 +41,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(resetProductList())
       dispatch(fetchProducts(1987772, 0, 25, 0, p.id))
     },
-    onSubmit: (text) => {
+    onSubmit: (text, eid) => {
       dispatch(resetProductList())
-      dispatch(onSubmitFetchSearchProduct(text))
+      dispatch(onSubmitFetchSearchProduct(text, eid))
     }
   }
 }
