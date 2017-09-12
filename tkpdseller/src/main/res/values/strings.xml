@@ -134,6 +134,7 @@
     <string name="product_list_picker_max_has_been_reached">Jumlah produk yang ditambahkan sudah mencapai maksimum</string>
     <string name="title_activity_product_list_picker">Pilih Produk Unggulan</string>
     <string name="product_list_picker_variant_count">%1$d Produk Unggulan terpilih</string>
+    <string name="product_list_featured_max_limit">%1$d batas maksimum produk unggulan</string>
 
     <!-- featured product -->
     <string name="featured_product_activity_title">Featured Product</string>

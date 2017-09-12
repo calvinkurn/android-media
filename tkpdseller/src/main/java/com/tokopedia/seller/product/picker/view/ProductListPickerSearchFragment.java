@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.picker.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SimpleArrayMap;
 import android.view.View;
 
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
@@ -127,6 +128,18 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     }
 
     @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        productListPickerMultipleItem.validateFooterAndInfoView();
+    }
+
+    @Override
+    protected void showViewSearchNoResult() {
+        super.showViewSearchNoResult();
+        productListPickerMultipleItem.validateFooterAndInfoView();
+    }
+
+    @Override
     public void onSuccessGetProductList(ProductListSellerModelView productListSellerModelView) {
         onSearchLoaded(productListSellerModelView.getProductListPickerViewModels(), productListSellerModelView.getProductListPickerViewModels().size());
         hasNextPage = productListSellerModelView.isHasNextPage();
@@ -171,5 +184,9 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     public void deselectItem(ProductListPickerViewModel productListPickerViewModel) {
         ((BaseMultipleCheckListAdapter<ProductListPickerViewModel>) adapter).setChecked(String.valueOf(productListPickerViewModel.getId()), false);
         adapter.notifyDataSetChanged();
+    }
+
+    public List<ProductListPickerViewModel> getItemList() {
+        return adapter.getData();
     }
 }
