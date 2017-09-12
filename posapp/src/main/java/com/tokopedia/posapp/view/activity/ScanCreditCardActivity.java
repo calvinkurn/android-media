@@ -1,27 +1,42 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.deeplink.Constants;
 
 import io.card.payment.CardIOActivity;
-import io.card.payment.CreditCard;
 
 /**
  * Created by okasurya on 8/14/17.
  */
 
-public class PaymentActivity extends BasePresenterActivity {
+public class ScanCreditCardActivity extends BasePresenterActivity {
 
     public static final int REQUEST_CARD_SCANNER = 7001;
+    public static final String BANK_ID = "bank_id";
+    public static final String TERM = "term";
 
     private LinearLayout cardScanner;
+
+    @DeepLink(Constants.Applinks.PAYMENT_SCAN_CC)
+    public static Intent getIntentFromDeeplink(Context context, Bundle bundle) {
+        String bankId = bundle.getString(BANK_ID, "");
+        String term = bundle.getString(TERM, "");
+
+        Uri uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon().build();
+        return new Intent(context, ScanCreditCardActivity.class)
+                .setData(uri)
+                .putExtras(bundle);
+    }
+
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -40,7 +55,7 @@ public class PaymentActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_payment;
+        return R.layout.activity_scan_cc;
     }
 
     @Override

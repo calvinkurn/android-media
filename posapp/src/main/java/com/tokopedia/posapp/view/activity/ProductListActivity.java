@@ -1,10 +1,13 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -91,5 +94,23 @@ public class ProductListActivity extends DrawerPresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_product_list, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_credit_card) {
+            startActivity(new Intent(this, SelectBankActivity.class));
+            return true;
+        } else if(item.getItemId() == R.id.action_cart) {
+            startActivity(new Intent(this, LocalCartActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -7,20 +7,15 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.react.PosReactConst;
 
 /**
- * Created by okasurya on 8/24/17.
+ * Created by okasurya on 9/12/17.
  */
 
-public class ProductListFragment extends ReactNativeFragmentV2 {
-
-    public static final String SHOP_ID = "SHOP_ID";
-    public static final String ETALASE_ID = "ETALASE_ID";
-
-    public static ProductListFragment newInstance(String shopId, String etalaseId) {
+public class LocalCartFragment extends ReactNativeFragmentV2 {
+    public static LocalCartFragment newInstance() {
         Bundle args = new Bundle();
-        args.putString(SHOP_ID, shopId);
-        args.putString(ETALASE_ID, etalaseId);
-        args.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.PRODUCT_LIST);
-        ProductListFragment fragment = new ProductListFragment();
+        args.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.LOCAL_CART);
+
+        LocalCartFragment fragment = new LocalCartFragment();
         fragment.setArguments(args);
         return fragment;
     }

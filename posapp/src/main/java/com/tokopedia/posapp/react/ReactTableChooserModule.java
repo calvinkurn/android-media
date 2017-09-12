@@ -16,16 +16,16 @@ public abstract class ReactTableChooserModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getProductTable(Promise promise) {
-        promise.resolve(ReactConst.CacheTable.PRODUCT);
+        promise.resolve(PosReactConst.CacheTable.PRODUCT);
     }
 
     @ReactMethod
     public void getCartTable(Promise promise) {
-        promise.resolve(ReactConst.CacheTable.CART);
+        promise.resolve(PosReactConst.CacheTable.CART);
     }
 
     @ReactMethod
     public void getBankTable(Promise promise) {
-        promise.resolve(ReactConst.CacheTable.BANK);
+        promise.resolve(PosReactConst.CacheTable.BANK);
     }
 }

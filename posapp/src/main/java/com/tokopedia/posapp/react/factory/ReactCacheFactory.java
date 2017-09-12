@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.react.factory;
 
-import com.tokopedia.posapp.react.ReactConst;
+import com.tokopedia.posapp.react.PosReactConst;
 import com.tokopedia.posapp.react.datasource.cache.ReactBankCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactCartCacheSource;
@@ -16,11 +16,11 @@ public class ReactCacheFactory {
 
     public ReactCacheSource createCacheDataSource(String tableName) throws TableNotFoundException {
         switch (tableName) {
-            case ReactConst.CacheTable.CART:
+            case PosReactConst.CacheTable.CART:
                 return new ReactCartCacheSource();
-            case ReactConst.CacheTable.PRODUCT:
+            case PosReactConst.CacheTable.PRODUCT:
                 return new ReactProductCacheSource();
-            case ReactConst.CacheTable.BANK:
+            case PosReactConst.CacheTable.BANK:
                 return new ReactBankCacheSource();
             default:
                 throw new TableNotFoundException();

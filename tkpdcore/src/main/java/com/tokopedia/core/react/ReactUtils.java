@@ -70,7 +70,7 @@ public class ReactUtils {
         );
     }
 
-    private static void sendEmittEvent(ReactContext reactContext,
+    protected static void sendEmittEvent(ReactContext reactContext,
                                        String eventName,
                                        @Nullable WritableMap params) {
         if(reactContext != null) {

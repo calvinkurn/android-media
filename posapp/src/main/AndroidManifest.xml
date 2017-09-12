@@ -50,13 +50,19 @@
             android:name=".view.activity.InstallmentSimulationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.PaymentActivity"
+            android:name=".view.activity.ScanCreditCardActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.CardDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.ProductListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.LocalCartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.SelectBankActivity"
             android:screenOrientation="portrait" />
     </application>
 
