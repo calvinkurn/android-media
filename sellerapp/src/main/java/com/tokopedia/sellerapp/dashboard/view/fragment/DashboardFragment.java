@@ -14,11 +14,10 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
@@ -176,12 +175,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     @Override
-    public void onSuccessGetShopInfoAndScore(Info shopModelInfo,
-                                             boolean isOpen,
-                                             ShopTxStats shopTxStats,
-                                             ReputationView.ReputationViewModel reputationViewModel,
-                                             ShopScoreViewModel shopScoreViewModel) {
+    public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
         // TODO update view
+        Info shopModelInfo = shopModel.info;
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
         shopNameTextView.setText(shopModelInfo.getShopName());
         if (shopModelInfo.isShopIsGoldBadge()) {

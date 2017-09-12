@@ -66,17 +66,8 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                 ShopScoreViewModel shopScoreViewModel = ShopScoreMapper.map(shopScoreMainDomainModel);
 
                 ShopModel shopModel = ShopInfoWithScoreModel.getShopModel();
-
-                ReputationView.ReputationViewModel reputationViewModel = new ReputationView.ReputationViewModel();
-                reputationViewModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
-                reputationViewModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
-                reputationViewModel.reputationPoints = shopModel.stats.shopReputationScore;
-                reputationViewModel.stats = shopModel.stats;
                 getView().onSuccessGetShopInfoAndScore(
-                        shopModel.info,
-                        shopModel.isOpen > 0,
-                        shopModel.shopTxStats,
-                        reputationViewModel,
+                        shopModel,
                         shopScoreViewModel);
             }
         };
