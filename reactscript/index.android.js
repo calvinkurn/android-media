@@ -9,7 +9,6 @@ import {
   Text,
   AppState,
   UIManager,
-  AsyncStorage,
   View
 } from 'react-native';
 // import { HotList_ } from './src/configs/router';
