@@ -29,7 +29,8 @@ public class GetInboxReputationUseCase extends GetFirstTimeInboxReputationUseCas
         return reputationRepository.getInboxReputationFromCloud(requestParams);
     }
 
-    public static RequestParams getParam(int page, String keyword, String timeFilter, int tab) {
+    public static RequestParams getParam(int page, String keyword, String timeFilter,
+                                         String readStatusFilter, int tab) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
         params.putInt(PARAM_PAGE, page);
@@ -38,7 +39,9 @@ public class GetInboxReputationUseCase extends GetFirstTimeInboxReputationUseCas
             params.putString(PARAM_KEYWORD, keyword);
         params.putString(PARAM_TIME_FILTER, !TextUtils.isEmpty(timeFilter) ? timeFilter :
                 DEFAULT_TIME_FILTER);
-
+        if (!TextUtils.isEmpty(readStatusFilter))
+            params.putString(PARAM_READ_STATUS, !TextUtils.isEmpty(readStatusFilter) ?
+                    readStatusFilter : DEFAULT_READ_STATUS);
         params.putInt(PARAM_STATUS, getStatus(tab));
         return params;
     }

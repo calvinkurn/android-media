@@ -33,8 +33,6 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     public static final String PARAM_FILE_TO_UPLOAD = "PARAM_FILE_TO_UPLOAD";
 
     public static final String PARAM_IMAGE_ID = "id";
-    public static final String PARAM_TOKEN = "token";
-
     private static final String PARAM_WEB_SERVICE = "web_service";
 
     private static final String PARAM_USER_ID = "user_id";
@@ -86,6 +84,7 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
                         paramsMap.get(PARAM_DEVICE_ID)));
         RequestBody osType = RequestBody.create(MediaType.parse("text/plain"),
                 paramsMap.get(PARAM_OS_TYPE));
+
         RequestBody hash = RequestBody.create(MediaType.parse("text/plain"),
                 paramsMap.get(PARAM_HASH));
         RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"),
@@ -94,9 +93,6 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
                 requestParams.getString(PARAM_IMAGE_ID, ""));
         RequestBody webservice = RequestBody.create(MediaType.parse("text/plain"),
                 requestParams.getString(PARAM_WEB_SERVICE, "1"
-                ));
-        RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
-                requestParams.getString(PARAM_TOKEN, ""
                 ));
 
         Map<String, RequestBody> requestBodyMap = new HashMap<>();
@@ -107,7 +103,6 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
         requestBodyMap.put(PARAM_TIMESTAMP, deviceTime);
         requestBodyMap.put(PARAM_IMAGE_ID, imageId);
         requestBodyMap.put(PARAM_WEB_SERVICE, webservice);
-        //        requestBodyMap.put(PARAM_TOKEN, token);
         return requestBodyMap;
     }
 

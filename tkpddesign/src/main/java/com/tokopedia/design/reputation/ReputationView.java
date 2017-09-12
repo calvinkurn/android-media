@@ -1,4 +1,4 @@
-package com.tokopedia.design.card;
+package com.tokopedia.design.reputation;
 
 /**
  * Created by stevenfredian on 8/16/17.
@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.card.ToolTipUtils;
 
 ;
 
@@ -29,10 +30,7 @@ public class ReputationView extends BaseCustomView {
     public final static int ROLE_SELLER = 2;
 
     private TextView percent;
-    private String defaultText;
-    private Drawable defaultIcon;
     private ImageView iconView;
-    private String defaultView;
     private int viewType;
     private LinearLayout layout;
 
@@ -54,15 +52,6 @@ public class ReputationView extends BaseCustomView {
 
     private void init(AttributeSet attrs) {
         init();
-
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ReputationView);
-        try {
-            defaultView = styledAttributes.getString(R.styleable.ReputationView_rep_layout);
-            defaultIcon = styledAttributes.getDrawable(R.styleable.ReputationView_rep_icon);
-            defaultText = styledAttributes.getString(R.styleable.ReputationView_rep_title_text);
-        } finally {
-            styledAttributes.recycle();
-        }
     }
 
     private void init() {

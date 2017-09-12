@@ -19,11 +19,13 @@ import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
@@ -34,11 +36,13 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdet
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -292,6 +296,26 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     public void finishRefresh() {
         swipeToRefresh.setRefreshing(false);
 
+    }
+
+    @Override
+    public void goToPreviewImage(int position, ArrayList<ImageUpload> list) {
+        if (MainApplication.getAppContext() instanceof PdpRouter) {
+            ArrayList<String> listLocation = new ArrayList<>();
+            ArrayList<String> listDesc = new ArrayList<>();
+
+            for (ImageUpload image : list) {
+                listLocation.add(image.getPicSrcLarge());
+                listDesc.add(image.getDescription());
+            }
+
+            ((PdpRouter) MainApplication.getAppContext()).openImagePreview(
+                    getActivity(),
+                    listLocation,
+                    listDesc,
+                    position
+            );
+        }
     }
 
     @Override

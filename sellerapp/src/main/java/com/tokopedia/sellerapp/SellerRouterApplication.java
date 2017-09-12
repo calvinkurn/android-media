@@ -23,6 +23,8 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -59,16 +61,16 @@ import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -209,9 +211,9 @@ public class SellerRouterApplication extends MainApplication
     public Intent getHomeIntent(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            if(SessionHandler.isUserSeller(context)){
+            if (SessionHandler.isUserSeller(context)) {
                 return new Intent(context, SellerHomeActivity.class);
-            }else{
+            } else {
                 return intent;
             }
         } else {
@@ -328,6 +330,14 @@ public class SellerRouterApplication extends MainApplication
         fragment.startActivityForResult(intent, requestCode);
     }
 
+    @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 ArrayList<String> imageDesc, int position) {
+        Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
+                position);
+        context.startActivity(intent);
+    }
+
     private void goToDefaultRoute(Context context) {
         Intent intent = new Intent(context,
                 SellerHomeActivity.class);
@@ -406,26 +416,26 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
             );

@@ -64,9 +64,34 @@ public class InboxReputationDetailItemViewHolder extends
         giveReview = itemView.findViewById(R.id.add_review_layout);
         adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
         adapter.setCanUpload(false);
+        adapter.setListener(onImageClicked());
         reviewAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         reviewAttachment.setAdapter(adapter);
+    }
+
+    private ImageUploadAdapter.ProductImageListener onImageClicked() {
+        return new ImageUploadAdapter.ProductImageListener() {
+            @Override
+            public View.OnClickListener onUploadClicked(int position) {
+                return new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                };
+            }
+
+            @Override
+            public View.OnClickListener onImageClicked(final int position, ImageUpload imageUpload) {
+                return new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewListener.goToPreviewImage(position, adapter.getList());
+                    }
+                };
+            }
+        };
     }
 
     @Override

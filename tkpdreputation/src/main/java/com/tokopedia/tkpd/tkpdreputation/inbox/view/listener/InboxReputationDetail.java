@@ -3,10 +3,12 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +53,7 @@ public interface InboxReputationDetail {
 
         void finishRefresh();
 
+        void goToPreviewImage(int position, ArrayList<ImageUpload> list);
     }
 
     interface Presenter extends CustomerPresenter<View> {

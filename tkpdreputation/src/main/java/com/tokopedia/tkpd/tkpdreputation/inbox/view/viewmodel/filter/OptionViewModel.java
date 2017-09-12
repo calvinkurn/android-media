@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel;
+package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter;
 
 import android.os.Parcel;
 import android.os.Parcelable;

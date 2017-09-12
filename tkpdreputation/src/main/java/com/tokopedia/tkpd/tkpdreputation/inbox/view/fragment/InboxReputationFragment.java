@@ -44,7 +44,7 @@ import javax.inject.Inject;
 public class InboxReputationFragment extends BaseDaggerFragment
         implements InboxReputation.View {
 
-    private final static String PARAM_TAB = "tab";
+    public final static String PARAM_TAB = "tab";
     private static final int REQUEST_OPEN_DETAIL = 101;
     private static final int REQUEST_FILTER = 102;
 
@@ -53,6 +53,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private LinearLayoutManager layoutManager;
     private InboxReputationAdapter adapter;
     private String timeFilter;
+    private String statusFilter;
 
     @Inject
     InboxReputationPresenter presenter;
@@ -109,12 +110,14 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     private void openFilter() {
 
-        Intent intent = InboxReputationFilterActivity.createIntent(getActivity(), timeFilter);
+        Intent intent = InboxReputationFilterActivity.createIntent(getActivity(),
+                timeFilter, statusFilter, getTab());
         startActivityForResult(intent, REQUEST_FILTER);
     }
 
     private void initVar() {
         timeFilter = "";
+        statusFilter = "";
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(this);
         adapter = new InboxReputationAdapter(typeFactory);
@@ -159,7 +162,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!adapter.isLoading())
                     presenter.getNextPage(lastItemPosition, visibleItem, "",
-                            timeFilter, getTab
+                            timeFilter, statusFilter, getTab
                                     ());
             }
         };
@@ -304,7 +307,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getFilteredInboxReputation(getQuery(), timeFilter, getTab());
+                presenter.getFilteredInboxReputation(getQuery(), timeFilter, statusFilter, getTab());
             }
         }).showRetrySnackbar();
     }
@@ -329,11 +332,14 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 && resultCode == Activity.RESULT_OK
                 && data.getStringExtra(
                 InboxReputationFilterFragment.SELECTED_TIME_FILTER) != null) {
-            timeFilter = data.getStringExtra(InboxReputationFilterFragment.SELECTED_TIME_FILTER);
-
+            timeFilter = data.getStringExtra(
+                    InboxReputationFilterFragment.SELECTED_TIME_FILTER);
+            statusFilter = data.getStringExtra(InboxReputationFilterFragment
+                    .SELECTED_STATUS_FILTER);
             presenter.getFilteredInboxReputation(
                     getQuery(),
                     timeFilter,
+                    statusFilter,
                     getTab()
             );
         } else

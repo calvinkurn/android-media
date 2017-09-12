@@ -21,7 +21,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.tokopedia.profilecompletion.view.util;
+package com.tokopedia.core.customView;
 
 import android.content.Context;
 import android.content.res.ColorStateList;

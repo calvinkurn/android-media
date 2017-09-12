@@ -15,15 +15,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFilterFragment;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 
 /**
  * @author by nisie on 8/21/17.
@@ -35,12 +35,15 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
         void resetFilter();
     }
 
-    public static final String CACHE_INBOX_REPUTATION_FILTER = "CACHE_INBOX_REPUTATION_FILTER";
     ResetListener listener;
 
-    public static Intent createIntent(Context context, String timeFilter) {
+    public static Intent createIntent(Context context, String timeFilter,
+                                      String statusFilter,
+                                      int tab) {
         Intent intent = new Intent(context, InboxReputationFilterActivity.class);
         intent.putExtra(InboxReputationFilterFragment.SELECTED_TIME_FILTER, timeFilter);
+        intent.putExtra(InboxReputationFilterFragment.SELECTED_STATUS_FILTER, statusFilter);
+        intent.putExtra(InboxReputationFragment.PARAM_TAB, tab);
         return intent;
     }
 
@@ -75,13 +78,21 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_reset, menu);
+        menu.add(Menu.NONE, R.id.action_reset, 0, "");
+        MenuItem menuItem = menu.findItem(R.id.action_reset);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setIcon(getResetMenu());
         return true;
     }
 
+    private Drawable getResetMenu() {
+        TextDrawable drawable = new TextDrawable(this);
+        drawable.setText(getResources().getString(R.string.action_reset));
+        drawable.setTextColor(R.color.black_70b);
+        return drawable;
+    }
+
     @Override
-
-
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_reset
                 && listener != null) {
@@ -96,6 +107,11 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
     protected void initView() {
         String timeFilter = getIntent().getStringExtra(InboxReputationFilterFragment
                 .SELECTED_TIME_FILTER);
+        String statusFilter = getIntent().getStringExtra(InboxReputationFilterFragment
+                .SELECTED_STATUS_FILTER);
+        int tab = getIntent().getIntExtra(InboxReputationFragment
+                .PARAM_TAB, -1);
+
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -106,7 +122,7 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
                 (InboxReputationFilterFragment
                         .class.getSimpleName());
         if (fragment == null) {
-            fragment = InboxReputationFilterFragment.createInstance(timeFilter);
+            fragment = InboxReputationFilterFragment.createInstance(timeFilter, statusFilter, tab);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,

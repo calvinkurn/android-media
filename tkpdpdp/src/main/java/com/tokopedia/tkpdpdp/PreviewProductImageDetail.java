@@ -58,6 +58,7 @@ public class PreviewProductImageDetail extends TActivity {
 
     public static final String FILELOC = "fileloc";
     public static final String IMG_POSITION = "img_pos";
+    private static final String IMAGE_DESC = "image_desc";
     private TouchViewPager vpImage;
     private Button tvDownload;
     private ImageView closeButton;
@@ -367,4 +368,14 @@ public class PreviewProductImageDetail extends TActivity {
         PreviewProductImageDetailPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    public static Intent getCallingIntent(Context context, ArrayList<String> images,
+                                          ArrayList<String> imageDesc, int position) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
+        bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
+        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
+        intent.putExtras(bundle);
+        return intent;
+    }
 }

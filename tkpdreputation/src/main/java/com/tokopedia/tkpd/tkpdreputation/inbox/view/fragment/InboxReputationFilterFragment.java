@@ -8,19 +8,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationFilterAdapter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.OptionViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter.HeaderOptionViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter.OptionViewModel;
 
 import java.util.ArrayList;
 
@@ -37,16 +37,27 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     private static final String FILTER_THIS_MONTH = "3";
     private static final String FILTER_LAST_3_MONTH = "4";
 
+    private static final String FILTER_GIVEN_REPUTATION = "1";
+    private static final String FILTER_NO_REPUTATION = "2";
+
+
     public static final String SELECTED_TIME_FILTER = "SELECTED_TIME_FILTER";
+    public static final String SELECTED_STATUS_FILTER = "SELECTED_STATUS_FILTER";
 
     RecyclerView list;
+    Button saveButton;
     InboxReputationFilterAdapter adapter;
     ArrayList<OptionViewModel> listOption;
 
-    public static Fragment createInstance(String timeFilter) {
+    String timeFilter;
+    String statusFilter;
+
+    public static Fragment createInstance(String timeFilter, String statusFilter, int tab) {
         InboxReputationFilterFragment fragment = new InboxReputationFilterFragment();
         Bundle bundle = new Bundle();
         bundle.putString(SELECTED_TIME_FILTER, timeFilter);
+        bundle.putString(SELECTED_STATUS_FILTER, statusFilter);
+        bundle.putInt(InboxReputationFragment.PARAM_TAB, tab);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -71,6 +82,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation_filter, container,
                 false);
         list = (RecyclerView) parentView.findViewById(R.id.list);
+        saveButton = (Button) parentView.findViewById(R.id.save_button);
         prepareView();
         return parentView;
 
@@ -81,10 +93,22 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
                 LinearLayoutManager.VERTICAL, false));
         adapter = InboxReputationFilterAdapter.createInstance(this, listOption);
         list.setAdapter(adapter);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent data = new Intent();
+                data.putExtra(SELECTED_TIME_FILTER, timeFilter);
+                data.putExtra(SELECTED_STATUS_FILTER, statusFilter);
+                getActivity().setResult(Activity.RESULT_OK, data);
+                getActivity().finish();
+
+            }
+        });
     }
 
     private void initData() {
-        listOption = createListFilterTime();
+        listOption = createListOption();
         setSelected(listOption);
     }
 
@@ -93,16 +117,9 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         return AppScreen.SCREEN_INBOX_REPUTATION_FILTER;
     }
 
-    @Override
-    public void onFilterSelected(OptionViewModel optionViewModel) {
-        Intent data = new Intent();
-        data.putExtra(SELECTED_TIME_FILTER, optionViewModel.getValue());
-        getActivity().setResult(Activity.RESULT_OK, data);
-        getActivity().finish();
-    }
-
-    private ArrayList<OptionViewModel> createListFilterTime() {
+    private ArrayList<OptionViewModel> createListOption() {
         ArrayList<OptionViewModel> list = new ArrayList<OptionViewModel>();
+        list.add(new HeaderOptionViewModel(getString(R.string.filter_time)));
         list.add(new OptionViewModel(getString(R.string.filter_all_time),
                 GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_ALL_TIME, list.size
                 ()));
@@ -115,6 +132,19 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         list.add(new OptionViewModel(getString(R.string.filter_last_3_month),
                 GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_LAST_3_MONTH, list.size
                 ()));
+
+        if (getArguments() != null
+                && getArguments().getInt(InboxReputationFragment.PARAM_TAB) ==
+                InboxReputationActivity.TAB_BUYER_REVIEW) {
+            list.add(new HeaderOptionViewModel(getString(R.string.filter_status)));
+            list.add(new OptionViewModel(getString(R.string.filter_given_reputation),
+                    GetFirstTimeInboxReputationUseCase.PARAM_READ_STATUS, FILTER_GIVEN_REPUTATION, list
+                    .size
+                            ()));
+            list.add(new OptionViewModel(getString(R.string.filter_no_reputation),
+                    GetFirstTimeInboxReputationUseCase.PARAM_READ_STATUS, FILTER_NO_REPUTATION, list.size
+                    ()));
+        }
         return list;
     }
 
@@ -122,8 +152,17 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     private void setSelected(ArrayList<OptionViewModel> listOption) {
         if (!getArguments().getString(SELECTED_TIME_FILTER, "").equals("")) {
             for (OptionViewModel optionViewModel : listOption) {
-                if (optionViewModel.getValue().equals(
+                if (optionViewModel.getKey().equals(
+                        GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)
+                        && optionViewModel.getValue().equals(
                         getArguments().getString(SELECTED_TIME_FILTER))) {
+                    optionViewModel.setSelected(true);
+                }
+
+                if (optionViewModel.getKey().equals(
+                        GetFirstTimeInboxReputationUseCase.PARAM_READ_STATUS)
+                        && optionViewModel.getValue().equals(
+                        getArguments().getString(SELECTED_STATUS_FILTER))) {
                     optionViewModel.setSelected(true);
                 }
             }
@@ -132,6 +171,16 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
 
     @Override
     public void resetFilter() {
+        adapter.resetFilter();
+    }
 
+    @Override
+    public void onFilterSelected(OptionViewModel optionViewModel) {
+        if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
+            timeFilter = optionViewModel.getValue();
+        } else if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase
+                .PARAM_READ_STATUS)) {
+            statusFilter = optionViewModel.getValue();
+        }
     }
 }

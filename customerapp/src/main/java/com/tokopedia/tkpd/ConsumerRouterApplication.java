@@ -48,10 +48,10 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
@@ -65,10 +65,12 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -155,6 +157,14 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 ArrayList<String> imageDesc, int position) {
+        Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
+                position);
+        context.startActivity(intent);
+    }
+
+    @Override
     public Fragment getRechargeCategoryFragment() {
         Bundle bundle = new Bundle();
         return RechargeCategoryFragment.newInstance(bundle);
@@ -193,26 +203,26 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
             );

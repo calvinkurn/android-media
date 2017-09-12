@@ -23,6 +23,10 @@ public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationD
     protected static final int DEFAULT_PER_PAGE = 10;
     public static final String PARAM_TIME_FILTER = "time_filter";
     public static final String PARAM_STATUS = "status";
+    public static final String PARAM_READ_STATUS = "read_status";
+    protected static final String DEFAULT_READ_STATUS = "1";
+    protected static final int UNREAD = 1;
+    protected static final int READ = 2;
 
     protected static final int STATUS_UNASSESSED_REPUTATION = 1;
     protected static final int STATUS_UPDATED_REPUTATION = 2;
