@@ -48,7 +48,7 @@ public class UserReputationView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_user_reputation, this);
+        View view = inflate(getContext(), R.layout.widget_reputation_user, this);
         imageViewIcon = (ImageView) view.findViewById(R.id.image_view_icon);
         percentageTextView = (TextView) view.findViewById(R.id.text_view_percentage);
     }
@@ -65,7 +65,7 @@ public class UserReputationView extends BaseCustomView {
             imageViewIcon.setImageResource(R.drawable.ic_smiley_empty);
             percentageTextView.setVisibility(GONE);
         } else {
-            imageViewIcon.setImageResource(R.drawable.ic_smiley_good);
+            imageViewIcon.setImageResource(R.drawable.ic_smiley_positive);
             percentageTextView.setVisibility(VISIBLE);
             percentageTextView.setText(String.valueOf(percentageValue));
             if (showTooltip) {
@@ -90,13 +90,13 @@ public class UserReputationView extends BaseCustomView {
     }
 
     private View setViewToolTip(final int positive, final int neutral, final int negative) {
-        return ToolTipUtils.setToolTip(getContext(), R.layout.tooltip_reputation,
+        return ToolTipUtils.setToolTip(getContext(), R.layout.item_tooltip_user_reputation,
                 new ToolTipUtils.ToolTipListener() {
                     @Override
                     public void setView(View view) {
-                        TextView smileTextView = (TextView) view.findViewById(R.id.text_smile);
-                        TextView neutralTextView = (TextView) view.findViewById(R.id.text_netral);
-                        TextView negativeTextView = (TextView) view.findViewById(R.id.text_bad);
+                        TextView smileTextView = (TextView) view.findViewById(R.id.text_view_positive);
+                        TextView neutralTextView = (TextView) view.findViewById(R.id.text_view_neutral);
+                        TextView negativeTextView = (TextView) view.findViewById(R.id.text_view_negative);
                         smileTextView.setText(String.valueOf(positive));
                         neutralTextView.setText(String.valueOf(neutral));
                         negativeTextView.setText(String.valueOf(negative));

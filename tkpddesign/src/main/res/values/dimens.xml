@@ -59,7 +59,7 @@
     <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="padding_ms">8dp</dimen>
     <dimen name="padding_small">10dp</dimen>
-    <dimen name="med_dp">20dp</dimen>
+    <dimen name="padding_med">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
 
     <dimen name="text_input_margin_offset">-4dp</dimen>
@@ -68,7 +68,5 @@
     <dimen name="height_widget_ticker">90dp</dimen>
     <dimen name="image_medal_size">20dp</dimen>
 
-    <dimen name="padding_med">20dp</dimen>
-    <dimen name="smiley_size">35dp</dimen>
-    <dimen name="font_small">14sp</dimen>
+    <dimen name="image_smiley_size">35dp</dimen>
 </resources>

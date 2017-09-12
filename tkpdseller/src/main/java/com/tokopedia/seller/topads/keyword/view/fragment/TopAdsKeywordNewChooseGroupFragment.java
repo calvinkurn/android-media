@@ -93,7 +93,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         if (bundle != null) {
             isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE, true);
         }
-        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_top_ads_autocomplete_text);
+        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
     }
 
     @Nullable

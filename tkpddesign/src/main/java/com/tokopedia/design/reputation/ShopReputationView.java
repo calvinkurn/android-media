@@ -94,8 +94,8 @@ public class ShopReputationView extends BaseCustomView {
         reputationLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                View popup = View.inflate(getContext(), R.layout.popup_reputation, null);
-                TextView pointTextView = (TextView) popup.findViewById(R.id.point);
+                View popup = View.inflate(getContext(), R.layout.item_tooltip_shop_reputation, null);
+                TextView pointTextView = (TextView) popup.findViewById(R.id.text_view_point);
                 pointTextView.setText(getContext().getString(R.string.reputation_shop_point, point));
                 final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
                 popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
