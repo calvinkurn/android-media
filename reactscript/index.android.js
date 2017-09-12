@@ -6,6 +6,7 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
+  UIManager,
   AppState,
   AsyncStorage,
   View
@@ -17,6 +18,7 @@ import Pos from './src/pages/pos/setup'
 
 
 // let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class Home extends Component {
   // componentWillMount() {
