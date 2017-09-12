@@ -9,10 +9,12 @@ import {
   Text,
   TouchableNativeFeedback,
   Image,
+  TextInput,
 } from 'react-native'
 import Picker from '../components/product/EtalaseSelectPopUp'
 import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList } from '../actions/index'
 import Product from '../components/product/Product'
+import SearchContainer from '../containers/SearchContainer'
 
 class VisibleProductList extends Component {
   constructor(props) {
@@ -29,16 +31,18 @@ class VisibleProductList extends Component {
     if (etalaseId == this.props.etalases.selected || this.props.products.isFetching) {
       return
     }
+    const queryText = this.props.queryText
     this.props.dispatch(onEtalaseChange(etalaseId))
     this.props.dispatch(resetProductList())
-    this.props.dispatch(fetchProducts(1987772, 0, 25, value))
+    this.props.dispatch(fetchProducts(1987772, 0, 25, value, null, queryText))
   }
 
   componentDidMount() {
     const { dispatch } = this.props
     const { start, rows } = this.props.products.pagination
+    const queryText = this.props.queryText
     dispatch(fetchEtalase(1987772))
-    this.props.dispatch(fetchProducts(1987772, 0, 25, 0))
+    this.props.dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
   }
 
   renderProduct = ({ item }) => {
@@ -49,17 +53,18 @@ class VisibleProductList extends Component {
     if (this.props.products.isFetching || !this.props.products.canLoadMore) {
       return
     }
+    const queryText = this.props.queryText
     const { start, rows } = this.props.products.pagination
     const etalaseId = this.props.etalases.selected
-    this.props.dispatch(fetchProducts(1987772, start, rows, etalaseId))
+    this.props.dispatch(fetchProducts(1987772, start, rows, etalaseId, null, queryText))
   }
 
   handleRefresh = () => {
     const { dispatch } = this.props
     const selectedEtalaseId = this.props.etalases.selected
-
+    const queryText = this.props.queryText
     dispatch(pullToRefresh())
-    dispatch(fetchProducts(1987772, 0, 25, selectedEtalaseId))
+    dispatch(fetchProducts(1987772, 0, 25, selectedEtalaseId, null, queryText))
     dispatch(fetchEtalase(1987772))
   }
 
@@ -80,13 +85,18 @@ class VisibleProductList extends Component {
           value={selectedEtalaseId}
           options={etalases} />
         <View style={styles.productListHeader}>
-          <Text style={styles.etalaseText}>Etalase: </Text>
-          <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
-            <View style={styles.etalasePicker}>
-              <Text style={{ fontSize: 18, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
-              <Image source={require('../components/img/arrow-down-grey.png')} />
-            </View>
-          </TouchableNativeFeedback>
+          <View style={{ width: '55%', }}>
+            <SearchContainer />
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', width: '45%', justifyContent: 'flex-end' }}>
+            <Text style={styles.etalaseText}>Etalase: </Text>
+            <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
+              <View style={styles.etalasePicker}>
+                <Text style={{ fontSize: 18, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
+                <Image source={require('../components/img/arrow-down-grey.png')} />
+              </View>
+            </TouchableNativeFeedback>
+          </View>
         </View>
         {products.length > 0 && <FlatList
           data={products}
@@ -113,10 +123,11 @@ class VisibleProductList extends Component {
 const mapStateToProps = state => {
   const products = state.products
   const etalases = state.etalase
-
+  const queryText = state.search.query
   return {
     products,
-    etalases
+    etalases,
+    queryText
   }
 }
 
@@ -129,7 +140,7 @@ const styles = StyleSheet.create({
   productListHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    // justifyContent: 'flex-end',
     marginTop: 14,
     marginBottom: 14,
     paddingRight: 5
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     marginLeft: 20,
-  }
+  },
 })
 
 export default connect(mapStateToProps)(VisibleProductList)
