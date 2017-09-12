@@ -5,7 +5,6 @@ import {
   TouchableNativeFeedback,
   TouchableOpacity,
   Platform,
-  AsyncStorage,
   Text,
   View,
 } from 'react-native'
