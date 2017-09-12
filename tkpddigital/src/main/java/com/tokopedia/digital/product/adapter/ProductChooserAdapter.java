@@ -167,8 +167,25 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void setViewPriceAdditionalFee(Product product) {
             tvProductPrice.setText(product.getDesc());
+
             CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-            tvProductDescription.setText(sequence);
+            SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+            URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+            for (final URLSpan span : urls) {
+                int start = strBuilder.getSpanStart(span);
+                int end = strBuilder.getSpanEnd(span);
+                int flags = strBuilder.getSpanFlags(span);
+                ClickableSpan clickable = new ClickableSpan() {
+                    public void onClick(View view) {
+                        actionListener.onProductLinkClicked(span.getURL());
+                    }
+                };
+                strBuilder.setSpan(clickable, start, end, flags);
+                strBuilder.removeSpan(span);
+            }
+            tvProductDescription.setText(strBuilder);
+            tvProductDescription.setMovementMethod(LinkMovementMethod.getInstance());
+
             tvProductTotalPrice.setText(product.getPrice());
         }
 
@@ -224,12 +241,10 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void setViewPromo(Product product) {
             tvProductPromoTitle.setText(product.getDesc());
-            CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-            if (!product.getDetail().isEmpty()) {
-                tvProductPromoDescription.setText(sequence);
-            } else {
+            if (product.getPromo().getBonusText().isEmpty())
                 tvProductPromoDescription.setVisibility(View.GONE);
-            }
+            tvProductPromoDescription.setText(product.getPromo()
+                    .getBonusText());
             tvPromoProductPrice.setText(product.getPromo().getNewPrice());
             tvProductPromoOldPrice.setText(product.getPrice());
             tvProductPromoOldPrice
