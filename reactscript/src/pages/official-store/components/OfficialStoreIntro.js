@@ -25,9 +25,10 @@ const OfficialStoreIntro = () => {
   return (
     <View style={styles.osIntro}>
       <View style={styles.osIntroInner}>
-        <Image source={ icons.icon_usp } style={styles.osIntroImage}/>
+        <Image source={{ uri : 'https://ecs7.tokopedia.net/img/android_offstore/icon-usp.png' }} style={styles.osIntroImage}/>
         <View style={styles.osIntroTextWrap}>
           <Text style={styles.uspHeadingTitle}>{'Official Store Tokopedia'.toUpperCase()}</Text>
+          <Image source={{ uri : 'https://0.academia-photos.com/3725124/1334622/1651969/s200_fatahillah.alvarisi.jpg' }} style={styles.osIntroImage}/>
           <View style={styles.uspTextInner} onLayout={this.getWidthofView}>
           {
             uspText.map((usp, idx) => (
