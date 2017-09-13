@@ -5,6 +5,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType;
 import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.seller.goldmerchant.featured.helper.OnStartDragListener;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
@@ -17,7 +19,7 @@ import java.util.List;
  * Created by normansyahputa on 9/6/17.
  */
 
-public class FeaturedProductAdapter extends BaseListAdapter<FeaturedProductModel> implements ItemTouchHelperAdapter, FeaturedProductViewHolder.PostDataListener {
+public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<FeaturedProductModel> implements ItemTouchHelperAdapter, FeaturedProductViewHolder.PostDataListener {
 
     private final OnStartDragListener mDragStartListener;
     private UseCaseListener useCaseListener;
@@ -34,19 +36,9 @@ public class FeaturedProductAdapter extends BaseListAdapter<FeaturedProductModel
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case FeaturedProductModel.TYPE:
-                return new FeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), mDragStartListener, (FeaturedProductViewHolder.PostDataListener) this);
+                return new FeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), mDragStartListener, this);
             default:
                 return super.onCreateViewHolder(parent, viewType);
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
-        switch (getItemViewType(position)) {
-            case FeaturedProductModel.TYPE:
-                ((FeaturedProductViewHolder) holder).bindData(data.get(position));
-                break;
         }
     }
 
@@ -70,7 +62,18 @@ public class FeaturedProductAdapter extends BaseListAdapter<FeaturedProductModel
         }
     }
 
+    @Override
+    public int getFeaturedProductType() {
+        if(useCaseListener != null){
+            return useCaseListener.getFeaturedProductType();
+        }else{
+            return FeaturedProductType.DEFAULT_DISPLAY;
+        }
+    }
+
     public interface UseCaseListener {
         void postData(List<FeaturedProductModel> data);
+
+        int getFeaturedProductType();
     }
 }
