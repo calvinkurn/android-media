@@ -1,0 +1,100 @@
+package com.tokopedia.core.product.model.productdetail.promowidget;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Created by alifa on 9/13/17.
+ */
+
+public class PromoAttributes {
+
+    @SerializedName("cache_expire")
+    @Expose
+    private Integer cacheExpire;
+    @SerializedName("code")
+    @Expose
+    private String code;
+    @SerializedName("code_html")
+    @Expose
+    private String codeHtml;
+    @SerializedName("target_url")
+    @Expose
+    private String targetUrl;
+    @SerializedName("short_desc")
+    @Expose
+    private String shortDesc;
+    @SerializedName("short_desc_html")
+    @Expose
+    private String shortDescHtml;
+    @SerializedName("short_cond")
+    @Expose
+    private String shortCond;
+    @SerializedName("short_cond_html")
+    @Expose
+    private String shortCondHtml;
+
+    public Integer getCacheExpire() {
+        return cacheExpire;
+    }
+
+    public void setCacheExpire(Integer cacheExpire) {
+        this.cacheExpire = cacheExpire;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCodeHtml() {
+        return codeHtml;
+    }
+
+    public void setCodeHtml(String codeHtml) {
+        this.codeHtml = codeHtml;
+    }
+
+    public String getTargetUrl() {
+        return targetUrl;
+    }
+
+    public void setTargetUrl(String targetUrl) {
+        this.targetUrl = targetUrl;
+    }
+
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
+    }
+
+    public String getShortDescHtml() {
+        return shortDescHtml;
+    }
+
+    public void setShortDescHtml(String shortDescHtml) {
+        this.shortDescHtml = shortDescHtml;
+    }
+
+    public String getShortCond() {
+        return shortCond;
+    }
+
+    public void setShortCond(String shortCond) {
+        this.shortCond = shortCond;
+    }
+
+    public String getShortCondHtml() {
+        return shortCondHtml;
+    }
+
+    public void setShortCondHtml(String shortCondHtml) {
+        this.shortCondHtml = shortCondHtml;
+    }
+}

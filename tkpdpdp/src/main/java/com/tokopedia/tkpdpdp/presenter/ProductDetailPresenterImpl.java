@@ -43,6 +43,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
@@ -81,6 +82,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
+import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
+import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_LOGIN_USER;
+import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_MERCHANT;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_ACTIVE;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
@@ -308,6 +313,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context,productDetailData.getInfo().getProductId().toString());
+                            getPromoWidget(context,generatePromoTargetType(productDetailData,context),SessionHandler.isV4Login(context)?SessionHandler.getLoginID(context):"0");
                         }
 
                         @Override
@@ -789,6 +795,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getProductCampaign(context, data.getInfo().getProductId().toString());
                         getMostHelpfulReview(context,data.getInfo().getProductId().toString());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
+                        getPromoWidget(context,generatePromoTargetType(data,context),SessionHandler.isV4Login(context)?SessionHandler.getLoginID(context):"0");
                     }
 
                     @Override
@@ -815,6 +822,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.showFullScreenError();
                     }
                 });
+    }
+
+    public String generatePromoTargetType(ProductDetailData productData, Context context) {
+        if (productData.getShopInfo().getShopIsOwner() == 1 && productData.getShopInfo().getShopIsGold() == 1) {
+            return VALUE_TARGET_GOLD_MERCHANT;
+        } else if (productData.getShopInfo().getShopIsOwner() == 1) {
+            return VALUE_TARGET_MERCHANT;
+        } else if (SessionHandler.isV4Login(context)){
+            return VALUE_TARGET_LOGIN_USER;
+        }
+        return  VALUE_TARGET_GUEST;
     }
 
     private void getOtherProductFromNetwork(Context context, final Map<String, String> param) {
@@ -868,6 +886,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (productDetailData.getShopInfo().getShopIsGold() == 1) {
             requestVideo(context, productDetailData.getInfo().getProductId().toString());
         }
+    }
+
+    public void getPromoWidget(@NonNull Context context, @NonNull String targetType, @NonNull String userId) {
+        retrofitInteractor.getPromo(context, targetType, userId,
+                new RetrofitInteractor.PromoListener() {
+                    @Override
+                    public void onSucccess(PromoAttributes promoAttributes) {
+                        viewListener.showPromoWidget(promoAttributes);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                    }
+                }
+        );
     }
 
     public void getProductCampaign(@NonNull Context context, @NonNull String id) {

@@ -11,6 +11,8 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
+import com.tokopedia.core.network.apiservices.galadriel.GaladrielApi;
+import com.tokopedia.core.network.apiservices.galadriel.Galadrielservice;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
@@ -20,7 +22,6 @@ import com.tokopedia.core.network.apiservices.product.ProductService;
 import com.tokopedia.core.network.apiservices.product.PromoTopAdsService;
 import com.tokopedia.core.network.apiservices.product.ReputationReviewService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
-import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -40,6 +41,9 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.MostHelpfulReviewResponse;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidgetResponse;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.productother.ProductOtherData;
@@ -56,7 +60,6 @@ import org.json.JSONObject;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,6 +93,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final GoldMerchantService goldMerchantService;
     private final MojitoService mojitoService;
     private final ReputationReviewService reputationReviewService;
+    private final Galadrielservice galadrielservice;
     private final KunyitService kunyitService;
     private final PromoTopAdsService promoTopAdsService;
     private final int SERVER_ERROR_CODE = 500;
@@ -112,6 +116,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.threadExecutor = new JobExecutor();
         this.postExecutionThread = new UIThread();
         this.promoTopAdsService = new PromoTopAdsService();
+        this.galadrielservice = new Galadrielservice();
     }
 
     @Override
@@ -826,6 +831,50 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 .map(mapper)
                 .subscribe(subscriber)
         );
+    }
+
+    @Override
+    public void getPromo(@NonNull Context context,
+                                     @NonNull String targetType, @NonNull String userId,
+                                     final @NonNull PromoListener listener) {
+        Observable<Response<PromoWidgetResponse>> observable = galadrielservice
+                .getApi().getPromoWidget(GaladrielApi.VALUE_PDP_WIDGET,targetType,GaladrielApi.VALUE_DEVICE,GaladrielApi.VALUE_LANG,userId);
+
+        Subscriber<PromoAttributes> subscriber = new Subscriber<PromoAttributes>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(PromoAttributes promoWidget) {
+                listener.onSucccess(promoWidget);
+            }
+        };
+
+        Func1<Response<PromoWidgetResponse>, PromoAttributes> mapper =
+                new Func1<Response<PromoWidgetResponse>, PromoAttributes>() {
+                    @Override
+                    public PromoAttributes call(Response<PromoWidgetResponse> promoWidgetRespone) {
+                        if (!promoWidgetRespone.body().getData().getPromoWidgetList().isEmpty()) {
+                            return promoWidgetRespone.body().getData().getPromoWidgetList().get(0).getPromoAttributes();
+                        }
+                        return null;
+                    }
+                };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(mapper)
+                        .subscribe(subscriber)
+        );
+
     }
 
     @Override

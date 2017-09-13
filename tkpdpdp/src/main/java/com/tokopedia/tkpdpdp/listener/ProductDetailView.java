@@ -9,6 +9,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -277,6 +278,8 @@ public interface ProductDetailView extends ViewListener {
     void moveToEditFragment(boolean isEdit, String productId);
 
     void showSuccessWishlistSnackBar();
+
+    void showPromoWidget(PromoAttributes promoAttributes);
 
     void showProductCampaign(ProductCampaign productCampaign);
 

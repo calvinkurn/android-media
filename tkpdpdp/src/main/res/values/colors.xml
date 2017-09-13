@@ -63,6 +63,7 @@
 
     <color name="colorBlue">#4D90FE</color>
 
+
     <color name="fab_background_tint">#FFEEEEEE</color>
     <color name="fab_drawable_tint">@android:color/white</color>
     <color name="mini_fab_drawable_tint">@android:color/black</color>
@@ -87,5 +88,7 @@
     <color name="grey_toolbar_icon">#666666</color>
     <color name="price_pdp">#ff5722</color>
     <color name="empty_stock_pdp">#c0000000</color>
+
+    <color name="promo_widget_pdp">#f8f8f8</color>
 
 </resources>
