@@ -30,11 +30,8 @@ import rx.functions.Func1;
  */
 
 public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain> {
-    private static final String PARAM_POST_KEY = "post_key";
-    private static final String PARAM_FILE_UPLOADED = "file_uploaded";
 
-    public static final String IMAGE = "image";
-
+    public static final String ORDER_ID = "order_id";
     private static final String PARAM_LIST_ATTACHMENT = "LIST_ATTACHMENT";
 
     private CreateValidateUseCase createValidateUseCase;
@@ -58,6 +55,7 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
     @Override
     public Observable<CreateSubmitDomain> createObservable(RequestParams requestParams) {
         final CreateResoRequestDomain createResoRequestDomain = new CreateResoRequestDomain();
+        createResoRequestDomain.setOrderId(requestParams.getString(ORDER_ID,""));
         return getObservableValidateCreateReso(requestParams, createResoRequestDomain)
                 .flatMap(getObservableGenerateHost(requestParams))
                 .flatMap(addGenerateHostResultToRequestModel(createResoRequestDomain))
@@ -147,9 +145,9 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
     private Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>> getObservableCreateSubmitReso(CreateResoRequestDomain createResoRequestDomain) {
         return new Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>>() {
             @Override
-            public Observable<CreateSubmitDomain> call(CreateResoRequestDomain createResoRequestDomain1) {
+            public Observable<CreateSubmitDomain> call(CreateResoRequestDomain createResoRequestDomain) {
                 return createSubmitUseCase.createObservable(
-                        CreateSubmitUseCase.createResoSubmitParams(createResoRequestDomain1));
+                        CreateSubmitUseCase.createResoSubmitParams(createResoRequestDomain));
             }
         };
     }
