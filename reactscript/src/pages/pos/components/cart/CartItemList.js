@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Modal, View, Text, TouchableWithoutFeedback, Image, ScrollView } from 'react-native'
+import { Modal, View, Text, TouchableWithoutFeedback, Image, TouchableOpacity, ScrollView } from 'react-native'
 import CartItem from './CartItem'
 import Button from '../../common/TKPPrimaryBtn'
 import PopUp from '../../common/TKPPopupModal'
 import {NavigationModule} from 'NativeModules'
+import BtnLargeOrange from '../button/BtnLargeOrange'
 
 export default class CartItemList extends Component {
   constructor(props) {
@@ -11,6 +12,7 @@ export default class CartItemList extends Component {
     this.state = {
       showPopUp: false
     }
+    // this.paymentCheckoutClicked = this.paymentCheckoutClicked.bind(this)
   }
 
   toggleScreen = (visible) => {
@@ -20,11 +22,10 @@ export default class CartItemList extends Component {
   remove = () => {
     this.setState({ showPopUp: false })
     this.props.onRemoveAllFromCart()
-
-    this.onCheckoutClicked()
+    console.log("remove clicked")
   }
 
-  onCheckoutClicked = () => {
+  paymentCheckoutClicked = () => {
     console.log("checkout clicked")
     NavigationModule.navigate("posapp://payment/bank", "")
   }
@@ -97,7 +98,7 @@ export default class CartItemList extends Component {
                 <Button
                   content='Checkout'
                   type='medium'
-                  onPress={ this.onCheckoutClicked }
+                  onTap={() => {this.paymentCheckoutClicked()}}
                 />
               </View>
             </View></View> :
