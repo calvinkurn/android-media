@@ -10,6 +10,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.UploadDo
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 
@@ -33,5 +34,12 @@ public class GenerateHostUploadRepositoryImpl implements GenerateHostUploadRepos
     @Override
     public Observable<UploadDomain> upload(String url, Map<String, RequestBody> requestBodyMap, RequestBody generateFile) {
         return createResolutionFactory.getUploadCloudSource().uploadImage(url, requestBodyMap, generateFile);
+    }
+
+    @Override
+    public Observable<UploadDomain> uploadVideo(String url, Map<String, RequestBody>
+            requestBodyMap, MultipartBody.Part videoFile) {
+        return createResolutionFactory.getUploadCloudSource().uploadVideo(url, requestBodyMap,
+                videoFile);
     }
 }

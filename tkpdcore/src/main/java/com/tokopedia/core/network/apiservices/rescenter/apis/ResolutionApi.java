@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -109,7 +110,10 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> replyResolutionSubmit(@Path("resolution_id") String resolutionID,
                                                              @FieldMap TKPDMapParam<String, Object> params);
 
-
-
+    @Multipart
+    @POST("")
+    Observable<Response<TkpdResponse>> uploadVideo(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params,
+                                                   @Part MultipartBody.Part file);
 
 }

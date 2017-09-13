@@ -7,9 +7,7 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
-import com.tokopedia.core.network.apiservices.upload.apis.UploadImageActApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.inbox.rescenter.createreso.data.factory.CreateResolutionFactory;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mapper;
@@ -20,6 +18,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep1Repository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep1RepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep2Repository;
@@ -41,7 +40,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateValidateUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.UploadUseCase;
-
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.UploadVideoUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -128,7 +127,9 @@ public class CreateResoModule {
                                                          GenerateHostMapper generateHostMapper,
                                                          UploadMapper uploadMapper,
                                                          CreateSubmitMapper createSubmitMapper,
-                                                         ResolutionApi resolutionApi) {
+                                                         ResolutionApi resolutionApi,
+                                                         ResCenterActService resCenterActService,
+                                                         UploadVideoMapper uploadVideoMapper) {
         return new CreateResolutionFactory(context,
                 getProductProblemMapper,
                 solutionMapper,
@@ -138,7 +139,10 @@ public class CreateResoModule {
                 generateHostMapper,
                 uploadMapper,
                 createSubmitMapper,
-                resolutionApi);
+                resolutionApi,
+                resCenterActService,
+                uploadVideoMapper
+        );
     }
 
     @CreateResoScope
@@ -200,8 +204,8 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     UploadUseCase provideUploadUseCase(ThreadExecutor threadExecutor,
-                                             PostExecutionThread postExecutionThread,
-                                             GenerateHostUploadRepository generateHostUploadRepository) {
+                                       PostExecutionThread postExecutionThread,
+                                       GenerateHostUploadRepository generateHostUploadRepository) {
         return new UploadUseCase(threadExecutor,
                 postExecutionThread,
                 generateHostUploadRepository);
@@ -210,8 +214,8 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     CreateSubmitUseCase provideCreateSubmitUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     CreateValidateSubmitRepository createValidateSubmitRepository) {
+                                                   PostExecutionThread postExecutionThread,
+                                                   CreateValidateSubmitRepository createValidateSubmitRepository) {
         return new CreateSubmitUseCase(threadExecutor,
                 postExecutionThread,
                 createValidateSubmitRepository);
@@ -224,13 +228,16 @@ public class CreateResoModule {
                                                                            CreateValidateUseCase createValidateUseCase,
                                                                            GenerateHostUseCase generateHostUseCase,
                                                                            UploadUseCase uploadUseCase,
-                                                                           CreateSubmitUseCase createSubmitUseCase) {
+                                                                           CreateSubmitUseCase createSubmitUseCase,
+                                                                           UploadVideoUseCase uploadVideoUseCase) {
         return new CreateResoWithAttachmentUseCase(threadExecutor,
                 postExecutionThread,
                 createValidateUseCase,
                 generateHostUseCase,
                 uploadUseCase,
-                createSubmitUseCase);
+                createSubmitUseCase,
+                uploadVideoUseCase
+        );
     }
 
     @CreateResoScope
@@ -272,5 +279,28 @@ public class CreateResoModule {
                 postExecutionThread,
                 productProblemRepository);
     }
+
+    @CreateResoScope
+    @Provides
+    UploadVideoUseCase provideUploadVideoUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 GenerateHostUploadRepository generateHostUploadRepository) {
+        return new UploadVideoUseCase(threadExecutor,
+                postExecutionThread,
+                generateHostUploadRepository);
+    }
+
+    @CreateResoScope
+    @Provides
+    UploadVideoMapper provideUploadVideoMapper() {
+        return new UploadVideoMapper();
+    }
+
+    @CreateResoScope
+    @Provides
+    ResCenterActService provideResCenterActService() {
+        return new ResCenterActService();
+    }
+
 
 }

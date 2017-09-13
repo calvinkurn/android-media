@@ -4,9 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep2Repository;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoRequestDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep2Domain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
@@ -15,10 +13,9 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateValidateUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.UploadUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.UploadVideoUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -33,6 +30,7 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
 
     public static final String ORDER_ID = "order_id";
     private static final String PARAM_LIST_ATTACHMENT = "LIST_ATTACHMENT";
+    private final UploadVideoUseCase uploadVideoUseCase;
 
     private CreateValidateUseCase createValidateUseCase;
     private GenerateHostUseCase generateHostUseCase;
@@ -44,12 +42,14 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
                                            CreateValidateUseCase createValidateUseCase,
                                            GenerateHostUseCase generateHostUseCase,
                                            UploadUseCase uploadUseCase,
-                                           CreateSubmitUseCase createSubmitUseCase) {
+                                           CreateSubmitUseCase createSubmitUseCase,
+                                           UploadVideoUseCase uploadVideoUseCase) {
         super(threadExecutor, postExecutionThread);
         this.createValidateUseCase = createValidateUseCase;
         this.generateHostUseCase = generateHostUseCase;
         this.uploadUseCase = uploadUseCase;
         this.createSubmitUseCase = createSubmitUseCase;
+        this.uploadVideoUseCase = uploadVideoUseCase;
     }
 
     @Override
@@ -119,12 +119,21 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
                         .flatMap(new Func1<AttachmentViewModel, Observable<UploadDomain>>() {
                             @Override
                             public Observable<UploadDomain> call(AttachmentViewModel attachmentViewModel) {
-                                return uploadUseCase.createObservable(
-                                        UploadUseCase.getParam(
-                                                createResoRequestDomain,
-                                                attachmentViewModel.getImageUUID(),
-                                                attachmentViewModel.getFileLoc()
-                                        ));
+                                if(attachmentViewModel.isImage()) {
+                                    return uploadUseCase.createObservable(
+                                            UploadUseCase.getParam(
+                                                    createResoRequestDomain,
+                                                    attachmentViewModel.getAttachmentId(),
+                                                    attachmentViewModel.getFileLoc()
+                                            ));
+                                }else{
+                                    return uploadVideoUseCase.createObservable(
+                                            UploadUseCase.getParam(
+                                                    createResoRequestDomain,
+                                                    attachmentViewModel.getAttachmentId(),
+                                                    attachmentViewModel.getFileLoc()
+                                            ));
+                                }
                             }
                         }).toList();
             }

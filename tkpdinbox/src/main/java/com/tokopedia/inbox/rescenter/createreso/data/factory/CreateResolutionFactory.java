@@ -14,6 +14,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoStep1CloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoStep2CloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateSubmitCloudSource;
@@ -28,6 +29,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.UploadCloudSou
  */
 
 public class CreateResolutionFactory {
+    private final UploadVideoMapper uploadVideoMapper;
     private Context context;
     private GetProductProblemMapper productProblemMapper;
     private SolutionMapper solutionMapper;
@@ -49,7 +51,9 @@ public class CreateResolutionFactory {
                                    GenerateHostMapper generateHostMapper,
                                    UploadMapper uploadMapper,
                                    CreateSubmitMapper createSubmitMapper,
-                                   ResolutionApi resolutionApi) {
+                                   ResolutionApi resolutionApi,
+                                   ResCenterActService resCenterActService,
+                                   UploadVideoMapper uploadVideoMapper) {
         this.context = context;
         this.productProblemMapper = productProblemMapper;
         this.solutionMapper = solutionMapper;
@@ -60,7 +64,8 @@ public class CreateResolutionFactory {
         this.uploadMapper = uploadMapper;
         this.createSubmitMapper = createSubmitMapper;
         this.resolutionApi = resolutionApi;
-        resCenterActService = new ResCenterActService();
+        this.resCenterActService = resCenterActService;
+        this.uploadVideoMapper = uploadVideoMapper;
     }
 
     public GetProductProblemCloudSource getProductProblemCloudSource() {
@@ -88,7 +93,7 @@ public class CreateResolutionFactory {
     }
 
     public UploadCloudSource getUploadCloudSource() {
-        return new UploadCloudSource(uploadMapper, resolutionApi);
+        return new UploadCloudSource(uploadMapper, resolutionApi, uploadVideoMapper);
     }
 
     public CreateSubmitCloudSource createSubmitCloudSource() {

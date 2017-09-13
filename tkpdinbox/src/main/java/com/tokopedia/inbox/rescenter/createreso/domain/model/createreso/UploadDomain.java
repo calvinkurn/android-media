@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 
 public class UploadDomain {
 
+    private final boolean isVideo;
+
     @Nullable
     private String picObj;
     @Nullable
@@ -19,9 +21,10 @@ public class UploadDomain {
     @Nullable
     private String successMessage;
 
-    public UploadDomain(String picObj, String picSrc) {
+    public UploadDomain(String picObj, String picSrc, boolean isVideo) {
         this.picObj = picObj;
         this.picSrc = picSrc;
+        this.isVideo = isVideo;
     }
 
     @Nullable
@@ -58,5 +61,9 @@ public class UploadDomain {
 
     public void setSuccessMessage(@Nullable String successMessage) {
         this.successMessage = successMessage;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
     }
 }

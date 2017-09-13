@@ -61,7 +61,7 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
         resultViewModel.message.remark = attachment.information;
         int i = 0;
         for (AttachmentViewModel attachmentViewModel : attachment.attachmentViewModelList) {
-            attachmentViewModel.setImageUUID(String.valueOf(i));
+            attachmentViewModel.setAttachmentId(String.valueOf(i));
             i++;
         }
         resultViewModel.attachmentList = attachment.attachmentViewModelList;
