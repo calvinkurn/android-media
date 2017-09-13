@@ -8,7 +8,7 @@ public interface Constants {
     interface Applinks {
         String PRODUCT_INFO = "tokopedia://product/{productId}";
         String CREDIT_CARD_INSTALLMENT = "posapp://installment";
-        String PAYMENT_SCAN_CC = "posapp://payment/scan/{bank_id}/{term}";
         String PAYMENT_BANK = "posapp://payment/bank";
+        String PAYMENT_SCAN_CC = "posapp://payment/scan/{bank_id}/{term}";
     }
 }

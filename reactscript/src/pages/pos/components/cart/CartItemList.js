@@ -3,6 +3,7 @@ import { Modal, View, Text, TouchableWithoutFeedback, Image, ScrollView } from '
 import CartItem from './CartItem'
 import Button from '../../common/TKPPrimaryBtn'
 import PopUp from '../../common/TKPPopupModal'
+import {NavigationModule} from 'NativeModules'
 
 export default class CartItemList extends Component {
   constructor(props) {
@@ -19,6 +20,13 @@ export default class CartItemList extends Component {
   remove = () => {
     this.setState({ showPopUp: false })
     this.props.onRemoveAllFromCart()
+
+    this.onCheckoutClicked()
+  }
+
+  onCheckoutClicked = () => {
+    console.log("checkout clicked")
+    NavigationModule.navigate("posapp://payment/bank", "")
   }
 
   render() {
@@ -89,6 +97,7 @@ export default class CartItemList extends Component {
                 <Button
                   content='Checkout'
                   type='medium'
+                  onPress={ this.onCheckoutClicked }
                 />
               </View>
             </View></View> :

@@ -13,9 +13,6 @@ public interface PosReactConst {
     interface Page {
         String PRODUCT_LIST = "POS";
         String PAYMENT = "PAYMENT";
-        String PAYMENT_BANK = "PAYMENT_BANK";
-        String PAYMENT_PROCESSING = "PAYMENT_PROCESSING";
-        String THANK_YOU = "THANK_YOU";
         String LOCAL_CART = "LOCAL_CART";
     }
 

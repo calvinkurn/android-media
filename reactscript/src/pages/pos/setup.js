@@ -35,7 +35,7 @@ class Root extends Component {
   render() {
     if (this.props.data.POS_PAGE === 'POS'){
       return <Setup_pos />
-    } else if (this.props.data.POS_PAGE === 'PAYMENT_BANK'){
+    } else if (this.props.data.POS_PAGE === 'PAYMENT'){
       return <Setup_payment />
     } else if (this.props.data.POS_PAGE === 'LOCAL_CART'){
       return <Setup_cart />

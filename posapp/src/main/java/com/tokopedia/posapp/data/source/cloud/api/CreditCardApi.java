@@ -19,4 +19,7 @@ public interface CreditCardApi {
     @GET(TkpdBaseURL.Payment.PATH_INSTALLMENT_TERMS +
             PosConstants.Payment.MERCHANT_CODE + "/" + PosConstants.Payment.PROFILE_CODE)
     Observable<Response<BankInstallmentResponse>> getBankInstallment(@QueryMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.Payment.PATH_CC_BIN)
+    Observable<Response<BankInstallmentResponse>> getBins(@QueryMap Map<String, String> params);
 }

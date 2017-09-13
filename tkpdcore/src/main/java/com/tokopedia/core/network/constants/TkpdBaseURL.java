@@ -820,6 +820,7 @@ public class TkpdBaseURL {
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
 
         public static final String PATH_INSTALLMENT_TERMS = "installment/terms/";
+        public static final String PATH_CC_BIN = "credit-cards/bins";
     }
 
     public static class FinTech {

@@ -55,7 +55,7 @@ public class SelectBankActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        PaymentFragment fragment = PaymentFragment.newInstance(PosReactConst.Page.PAYMENT_BANK);
+        PaymentFragment fragment = PaymentFragment.newInstance(PosReactConst.Page.PAYMENT);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getSupportFragmentManager().findFragmentByTag(
