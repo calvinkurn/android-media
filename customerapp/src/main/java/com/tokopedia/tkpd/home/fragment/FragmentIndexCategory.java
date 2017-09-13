@@ -45,7 +45,6 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.RechargeEditText;
 import com.tokopedia.core.customView.WrapContentViewPager;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
@@ -81,6 +80,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
@@ -110,6 +110,7 @@ import com.tokopedia.tkpd.home.presenter.TokoCashPresenterImpl;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenter;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
@@ -1102,7 +1103,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     config.activateFetched();
                     holder.tokoCashHeaderView.renderData(tokoCashData, config
                             .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
