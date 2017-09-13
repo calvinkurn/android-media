@@ -7,11 +7,10 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateValidateSubmitRepository;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoRequestDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.UploadDomain;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import rx.Observable;
@@ -46,15 +45,22 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
         try {
             submitObject.put(PARAM_CACHE_KEY, createResoRequestDomain.getCreateValidateDomain().getCacheKey());
             JSONArray imageArrayList = new JSONArray();
+            JSONArray videoArrayList = new JSONArray();
+
             for (UploadDomain uploadDomain : createResoRequestDomain.getUploadDomain()) {
-                imageArrayList.put(uploadDomain.getPicObj());
+                if (uploadDomain.isVideo()) {
+                    videoArrayList.put(uploadDomain.getPicObj());
+                } else {
+                    imageArrayList.put(uploadDomain.getPicObj());
+                }
             }
             submitObject.put(PARAM_PICTURES, imageArrayList);
+            submitObject.put(PARAM_VIDEOS, videoArrayList);
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, createResoRequestDomain.getOrderId());
             params.putString(PARAM_JSON, submitObject.toString());
             return params;
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;

@@ -45,10 +45,10 @@ public class UploadUseCase extends UseCase<UploadDomain> {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
 
-    private static final String HTTP = "http://";
+    protected static final String HTTP = "http://";
     private static final String UPLOAD_ATTACHMENT = "/upload/attachment";
 
-    private GenerateHostUploadRepository generateHostUploadRepository;
+    protected GenerateHostUploadRepository generateHostUploadRepository;
 
     public UploadUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
@@ -65,13 +65,13 @@ public class UploadUseCase extends UseCase<UploadDomain> {
         );
     }
 
-    private String generateUrl(RequestParams requestParams) {
+    protected String generateUrl(RequestParams requestParams) {
         return HTTP
                 + requestParams.getString(PARAM_GENERATED_HOST, "")
                 + UPLOAD_ATTACHMENT;
     }
 
-    private Map<String, RequestBody> generateRequestBody(RequestParams requestParams) {
+    protected Map<String, RequestBody> generateRequestBody(RequestParams requestParams) {
         Map<String, String> paramsMap = AuthUtil.generateParams(
                 requestParams.getString(PARAM_USER_ID,
                         SessionHandler.getLoginID(MainApplication.getAppContext())),

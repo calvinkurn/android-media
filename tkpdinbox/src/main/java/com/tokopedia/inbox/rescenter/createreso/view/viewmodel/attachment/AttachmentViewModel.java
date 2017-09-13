@@ -20,7 +20,7 @@ public class AttachmentViewModel implements Parcelable{
     private UploadedFileViewModel uploadedFile;
     private int isVideo;
     // start --------------------> New Upload Attachment
-    public String imageUUID;
+    public String attachmentId;
     public String picSrc;
     public String picObj;
     // end   --------------------> New Upload Attachment
@@ -84,12 +84,12 @@ public class AttachmentViewModel implements Parcelable{
         this.imgLarge = imgLarge;
     }
 
-    public String getImageUUID() {
-        return imageUUID;
+    public String getAttachmentId() {
+        return attachmentId;
     }
 
-    public void setImageUUID(String imageUUID) {
-        this.imageUUID = imageUUID;
+    public void setAttachmentId(String attachmentId) {
+        this.attachmentId = attachmentId;
     }
 
     public String getPicSrc() {
@@ -186,7 +186,7 @@ public class AttachmentViewModel implements Parcelable{
         dest.writeInt(this.fileType);
         dest.writeParcelable(this.uploadedFile, flags);
         dest.writeInt(this.isVideo);
-        dest.writeString(this.imageUUID);
+        dest.writeString(this.attachmentId);
         dest.writeString(this.picSrc);
         dest.writeString(this.picObj);
     }
@@ -199,7 +199,7 @@ public class AttachmentViewModel implements Parcelable{
         this.fileType = in.readInt();
         this.uploadedFile = in.readParcelable(UploadedFileViewModel.class.getClassLoader());
         this.isVideo = in.readInt();
-        this.imageUUID = in.readString();
+        this.attachmentId = in.readString();
         this.picSrc = in.readString();
         this.picObj = in.readString();
     }
