@@ -121,9 +121,9 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         );
     }
 
-    private List<ImageAttachmentViewModel>
+    private ArrayList<ImageAttachmentViewModel>
     convertToImageAttachmentViewModel(List<ImageAttachmentDomain> reviewImageUrl) {
-        List<ImageAttachmentViewModel> list = new ArrayList<>();
+        ArrayList<ImageAttachmentViewModel> list = new ArrayList<>();
         for (ImageAttachmentDomain domain : reviewImageUrl) {
             list.add(new ImageAttachmentViewModel(
                     domain.getAttachmentId(),

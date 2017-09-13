@@ -26,17 +26,14 @@ import rx.functions.Func1;
 
 public class SendReviewUseCase extends UseCase<SendReviewDomain> {
 
-    private static final String PARAM_POST_KEY = "post_key";
-    private static final String PARAM_FILE_UPLOADED = "file_uploaded";
-
     public static final String IMAGE = "image";
 
-    private static final String PARAM_LIST_IMAGE = "LIST_IMAGE";
-    private static final String PARAM_LIST_DELETED_IMAGE = "PARAM_LIST_DELETED_IMAGE";
+    protected static final String PARAM_LIST_IMAGE = "LIST_IMAGE";
+    protected static final String PARAM_LIST_DELETED_IMAGE = "PARAM_LIST_DELETED_IMAGE";
 
     private final SendReviewValidateUseCase sendReviewValidateUseCase;
-    private final GenerateHostUseCase generateHostUseCase;
-    private final UploadImageUseCase uploadImageUseCase;
+    protected final GenerateHostUseCase generateHostUseCase;
+    protected final UploadImageUseCase uploadImageUseCase;
     private final SendReviewSubmitUseCase sendReviewSubmitUseCase;
 
     public SendReviewUseCase(ThreadExecutor threadExecutor,
@@ -50,6 +47,17 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         this.generateHostUseCase = generateHostUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
         this.sendReviewSubmitUseCase = sendReviewSubmitUseCase;
+    }
+
+    public SendReviewUseCase(ThreadExecutor threadExecutor,
+                             PostExecutionThread postExecutionThread,
+                             GenerateHostUseCase generateHostUseCase,
+                             UploadImageUseCase uploadImageUseCase) {
+        super(threadExecutor, postExecutionThread);
+        this.sendReviewSubmitUseCase = null;
+        this.sendReviewValidateUseCase = null;
+        this.generateHostUseCase = generateHostUseCase;
+        this.uploadImageUseCase = uploadImageUseCase;
     }
 
     @Override
@@ -69,7 +77,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
                 .flatMap(mappingResultToDomain());
     }
 
-    private Func1<SendReviewSubmitDomain, Observable<SendReviewRequestModel>>
+    protected Func1<SendReviewSubmitDomain, Observable<SendReviewRequestModel>>
     addSubmitImageResultToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<SendReviewSubmitDomain, Observable<SendReviewRequestModel>>() {
             @Override
@@ -81,7 +89,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    private Func1<SendReviewRequestModel, Observable<SendReviewSubmitDomain>> getObservableSubmitReview(SendReviewRequestModel sendReviewRequestModel) {
+    protected Func1<SendReviewRequestModel, Observable<SendReviewSubmitDomain>> getObservableSubmitReview(SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<SendReviewRequestModel, Observable<SendReviewSubmitDomain>>() {
             @Override
             public Observable<SendReviewSubmitDomain> call(SendReviewRequestModel sendReviewRequestModel) {
@@ -91,7 +99,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    private RequestParams getParamSendReviewValidation(RequestParams requestParams) {
+    protected RequestParams getParamSendReviewValidation(RequestParams requestParams) {
         return SendReviewValidateUseCase.getParamWithImage(
                 requestParams.getString(SendReviewValidateUseCase.PARAM_REVIEW_ID, ""),
                 requestParams.getString(SendReviewValidateUseCase.PARAM_PRODUCT_ID, ""),
@@ -104,7 +112,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         );
     }
 
-    private Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>
+    protected Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>
     addListImageUploadToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>() {
             @Override
@@ -120,11 +128,11 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    private List<ImageUpload> getListImage(RequestParams requestParams) {
+    protected List<ImageUpload> getListImage(RequestParams requestParams) {
         return (List<ImageUpload>) requestParams.getObject(PARAM_LIST_IMAGE);
     }
 
-    private Func1<SendReviewRequestModel, Observable<List<UploadImageDomain>>>
+    protected Func1<SendReviewRequestModel, Observable<List<UploadImageDomain>>>
     getObservableUploadImages(final List<ImageUpload> listImage) {
         return new Func1<SendReviewRequestModel, Observable<List<UploadImageDomain>>>() {
             @Override
@@ -145,7 +153,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    private Func1<SendReviewRequestModel, Observable<GenerateHostDomain>>
+    protected Func1<SendReviewRequestModel, Observable<GenerateHostDomain>>
     getObservableGenerateHost(final RequestParams param) {
         return new Func1<SendReviewRequestModel, Observable<GenerateHostDomain>>() {
             @Override
@@ -155,7 +163,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    private Func1<GenerateHostDomain, Observable<SendReviewRequestModel>>
+    protected Func1<GenerateHostDomain, Observable<SendReviewRequestModel>>
     addGenerateHostResultToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<GenerateHostDomain, Observable<SendReviewRequestModel>>() {
             @Override
@@ -167,7 +175,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    private Func1<SendReviewRequestModel, Observable<SendReviewDomain>> mappingResultToDomain() {
+    protected Func1<SendReviewRequestModel, Observable<SendReviewDomain>> mappingResultToDomain() {
         return new Func1<SendReviewRequestModel, Observable<SendReviewDomain>>() {
             @Override
             public Observable<SendReviewDomain> call(
@@ -179,13 +187,13 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    private Observable<SendReviewRequestModel> getObservableValidateReview(
+    protected Observable<SendReviewRequestModel> getObservableValidateReview(
             RequestParams requestParams, final SendReviewRequestModel sendReviewRequestModel) {
         return sendReviewValidateUseCase.createObservable(requestParams)
                 .flatMap(addValidateResultToRequestModel(sendReviewRequestModel));
     }
 
-    private Func1<SendReviewValidateDomain, Observable<SendReviewRequestModel>>
+    protected Func1<SendReviewValidateDomain, Observable<SendReviewRequestModel>>
     addValidateResultToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<SendReviewValidateDomain, Observable<SendReviewRequestModel>>() {
             @Override

@@ -20,7 +20,7 @@ import rx.Observable;
 
 public class SendReviewSubmitUseCase extends UseCase<SendReviewSubmitDomain> {
 
-    private ReputationRepository reputationRepository;
+    protected ReputationRepository reputationRepository;
     private static final String PARAM_POST_KEY = "post_key";
     private static final String PARAM_FILE_UPLOADED = "file_uploaded";
 

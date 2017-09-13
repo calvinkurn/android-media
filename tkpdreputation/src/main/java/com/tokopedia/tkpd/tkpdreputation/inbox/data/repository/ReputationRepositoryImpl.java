@@ -69,4 +69,18 @@ public class ReputationRepositoryImpl implements ReputationRepository {
                 .createCloudSkipReviewDataSource()
                 .skipReview(requestParams);
     }
+
+    @Override
+    public Observable<SendReviewValidateDomain> editReviewValidation(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudSendReviewValidationDataSource()
+                .editReviewValidation(requestParams);
+    }
+
+    @Override
+    public Observable<SendReviewSubmitDomain> editReviewSubmit(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudSendReviewSubmitDataSource()
+                .editReviewSubmit(requestParams);
+    }
 }

@@ -19,6 +19,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInb
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewSubmitUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewSubmitUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
@@ -313,5 +316,34 @@ public class ReputationModule {
     @Provides
     SkipReviewMapper provideSkipReviewMapper() {
         return new SkipReviewMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    EditReviewValidateUseCase provideEditReviewValidateUseCase(ThreadExecutor threadExecutor,
+                                                               PostExecutionThread postExecutionThread,
+                                                               ReputationRepository reputationRepository) {
+        return new EditReviewValidateUseCase(threadExecutor, postExecutionThread, reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    EditReviewSubmitUseCase provideEditReviewSubmitUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           ReputationRepository reputationRepository) {
+        return new EditReviewSubmitUseCase(threadExecutor, postExecutionThread, reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    EditReviewUseCase provideEditReviewUseCase(ThreadExecutor threadExecutor,
+                                               PostExecutionThread postExecutionThread,
+                                               EditReviewValidateUseCase editReviewValidateUseCase,
+                                               GenerateHostUseCase generateHostUseCase,
+                                               UploadImageUseCase uploadImageUseCase,
+                                               EditReviewSubmitUseCase editReviewSubmitUseCase) {
+        return new EditReviewUseCase(threadExecutor, postExecutionThread,
+                editReviewValidateUseCase, generateHostUseCase,
+                uploadImageUseCase, editReviewSubmitUseCase);
     }
 }

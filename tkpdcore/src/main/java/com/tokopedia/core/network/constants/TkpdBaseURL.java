@@ -818,12 +818,15 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/inbox";
         public static final String PATH_GET_DETAIL_INBOX_REPUTATION = "review/api/"
                 + REPUTATION_VERSION + "/list";
-        public static final String PATH_SEND_REPUTATION_SMILEY = "repuation";
+        public static final String PATH_SEND_REPUTATION_SMILEY = "reputation";
         public static final String PATH_SEND_REVIEW_VALIDATE = "review/api/"
                 + REPUTATION_VERSION + "/insert/validate";
         public static final String PATH_SEND_REVIEW_SUBMIT = "review/api/"
                 + REPUTATION_VERSION + "/insert/submit";
-
         public static final String PATH_SKIP_REVIEW = "review/api/" + REPUTATION_VERSION + "/skip";
+        public static final String PATH_EDIT_REVIEW_VALIDATE = "review/api/"
+                + REPUTATION_VERSION + "/edit/validate";
+        public static final String PATH_EDIT_REVIEW_SUBMIT = "review/api/"
+                + REPUTATION_VERSION + "/edit/submit";
     }
 }

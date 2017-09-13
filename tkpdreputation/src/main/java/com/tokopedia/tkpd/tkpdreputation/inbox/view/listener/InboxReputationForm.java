@@ -32,6 +32,10 @@ public interface InboxReputationForm {
         void onErrorSkipReview(String errorMessage);
 
         void onSuccessSkipReview();
+
+        void onErrorEditReview(String errorMessage);
+
+        void onSuccessEditReview();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -51,5 +55,9 @@ public interface InboxReputationForm {
         void restoreFormFromCache();
 
         void skipReview(String reputationId, String shopId, String productId);
+
+        void editReview(String reviewId, String reputationId, String productId, String shopId,
+                        String review, float rating, ArrayList<ImageUpload> list,
+                        List<ImageUpload> deletedList, boolean shareFb, boolean anonymous);
     }
 }

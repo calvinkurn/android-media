@@ -31,4 +31,12 @@ public class CloudSendReviewDataSource {
                         MainApplication.getAppContext(), requestParams.getParameters()))
                 .map(sendReviewValidateMapper);
     }
+
+    public Observable<SendReviewValidateDomain> editReviewValidation(RequestParams requestParams) {
+        return reputationService
+                .getApi()
+                .editReviewValidate(AuthUtil.generateParamsNetwork2(
+                        MainApplication.getAppContext(), requestParams.getParameters()))
+                .map(sendReviewValidateMapper);
+    }
 }

@@ -38,6 +38,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
@@ -55,6 +56,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         implements InboxReputationDetail.View, ReputationAdapter.ReputationListener {
 
     private static final int REQUEST_GIVE_REVIEW = 101;
+    private static final int REQUEST_EDIT_REVIEW = 102;
     private RecyclerView listProduct;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;
@@ -226,8 +228,17 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onEditReview() {
-
+    public void onEditReview(InboxReputationDetailItemViewModel element) {
+        startActivityForResult(
+                InboxReputationFormActivity.getEditReviewIntent(getActivity(),
+                        element.getReviewId(),
+                        passModel.getReputationId(),
+                        element.getProductId(),
+                        String.valueOf(element.getShopId()),
+                        element.getReviewStar(),
+                        element.getReview(),
+                        element.getReviewAttachment()),
+                REQUEST_EDIT_REVIEW);
     }
 
     @Override
@@ -374,6 +385,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
+            refreshPage();
+            getActivity().setResult(Activity.RESULT_OK);
+        } else if (requestCode == REQUEST_EDIT_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
         } else

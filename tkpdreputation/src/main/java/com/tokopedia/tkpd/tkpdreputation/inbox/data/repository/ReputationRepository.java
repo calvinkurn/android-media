@@ -29,4 +29,8 @@ public interface ReputationRepository {
     Observable<SendReviewSubmitDomain> sendReviewSubmit(RequestParams requestParams);
 
     Observable<SkipReviewDomain> skipReview(RequestParams requestParams);
+
+    Observable<SendReviewValidateDomain> editReviewValidation(RequestParams requestParams);
+
+    Observable<SendReviewSubmitDomain> editReviewSubmit(RequestParams requestParams);
 }

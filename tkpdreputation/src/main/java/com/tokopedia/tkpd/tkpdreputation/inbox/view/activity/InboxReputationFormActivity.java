@@ -16,6 +16,9 @@ import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 8/19/17.
@@ -34,6 +37,11 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     public static final String ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID";
     public static final String ARGS_SHOP_ID = "ARGS_SHOP_ID";
     private static final String ARGS_IS_SKIPPABLE = "ARGS_IS_SKIPPABLE";
+
+    public static final String ARGS_IS_EDIT = "ARGS_IS_EDIT";
+    public static final String ARGS_RATING = "ARGS_RATING";
+    public static final String ARGS_REVIEW = "ARGS_REVIEW";
+    public static final String ARGS_REVIEW_IMAGES = "ARGS_REVIEW_IMAGES";
 
     SkipListener listener;
 
@@ -95,10 +103,17 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         String productId = getIntent().getExtras().getString(ARGS_PRODUCT_ID, "");
         String shopId = getIntent().getExtras().getString(ARGS_SHOP_ID, "");
 
+        int rating = getIntent().getExtras().getInt(ARGS_RATING);
+        String review = getIntent().getExtras().getString(ARGS_REVIEW, "");
+        ArrayList<ImageAttachmentViewModel> listImage = getIntent().getExtras()
+                .getParcelableArrayList(ARGS_REVIEW_IMAGES);
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (InboxReputationFormFragment.class.getSimpleName());
-        if (fragment == null) {
+        if (fragment == null && getIntent().getExtras().getBoolean(ARGS_IS_EDIT, false)) {
+            fragment = InboxReputationFormFragment.createInstanceEdit(reviewId, reputationId,
+                    productId, shopId, rating, review, listImage);
+        }else if (fragment == null) {
             fragment = InboxReputationFormFragment.createInstance(reviewId, reputationId,
                     productId, shopId);
         }
@@ -141,6 +156,25 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_REVIEW_ID, reviewId);
         intent.putExtra(ARGS_SHOP_ID, shopId);
         intent.putExtra(ARGS_IS_SKIPPABLE, reviewIsSkippable);
+        intent.putExtra(ARGS_IS_EDIT, false);
+
+        return intent;
+    }
+
+    public static Intent getEditReviewIntent(Context context, String reviewId,
+                                             String reputationId, String productId,
+                                             String shopId, int reviewStar, String review,
+                                             ArrayList<ImageAttachmentViewModel> reviewAttachment) {
+        Intent intent = new Intent(context, InboxReputationFormActivity.class);
+        intent.putExtra(ARGS_PRODUCT_ID, productId);
+        intent.putExtra(ARGS_REPUTATION_ID, reputationId);
+        intent.putExtra(ARGS_REVIEW_ID, reviewId);
+        intent.putExtra(ARGS_SHOP_ID, shopId);
+        intent.putExtra(ARGS_IS_SKIPPABLE, false);
+        intent.putExtra(ARGS_IS_EDIT, true);
+        intent.putExtra(ARGS_RATING, reviewStar);
+        intent.putExtra(ARGS_REVIEW, review);
+        intent.putParcelableArrayListExtra(ARGS_REVIEW_IMAGES, reviewAttachment);
         return intent;
     }
 

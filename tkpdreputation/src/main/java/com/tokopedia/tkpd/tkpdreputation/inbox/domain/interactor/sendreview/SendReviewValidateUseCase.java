@@ -16,6 +16,7 @@ import java.util.List;
 
 import rx.Observable;
 
+import static com.google.zxing.integration.android.IntentIntegrator.DEFAULT_NO;
 import static com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase.IMAGE;
 
 /**
@@ -39,7 +40,11 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
     private static final String PARAM_ATTACHMENT_ID = "attachment_id";
     private static final String PARAM_FILE_DESC = "file_desc";
     private static final String PARAM_IS_DELETED = "is_deleted";
-    private ReputationRepository reputationRepository;
+
+    private static final String DEFAULT_NO_IMAGE = "0";
+    private static final String DEFAULT_HAS_IMAGE = "1";
+
+    protected ReputationRepository reputationRepository;
 
     public SendReviewValidateUseCase(ThreadExecutor threadExecutor, PostExecutionThread
             postExecutionThread, ReputationRepository reputationRepository) {
@@ -66,6 +71,8 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_RATING, rating);
         params.putString(PARAM_RATING_2, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
+        params.putString(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_NO_IMAGE);
+
         return params;
     }
 
@@ -85,7 +92,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_RATING, rating);
         params.putString(PARAM_RATING_2, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
-        params.putString(PARAM_HAS_PRODUCT_REVIEW_PHOTO, "1");
+        params.putString(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_HAS_IMAGE);
         params.putString(PARAM_REVIEW_PHOTO_ALL, getReviewPhotos(list, deletedList));
         params.putString(PARAM_REVIEW_PHOTO_OBJ, getReviewPhotosObj(list, deletedList));
         return params;

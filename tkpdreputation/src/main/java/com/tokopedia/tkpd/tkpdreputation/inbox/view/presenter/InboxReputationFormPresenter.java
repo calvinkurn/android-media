@@ -4,12 +4,16 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewValidateUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.EditReviewSubscriber;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.EditReviewWithoutImageSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SkipReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
@@ -36,6 +40,8 @@ public class InboxReputationFormPresenter
     private final SendReviewValidateUseCase sendReviewValidateUseCase;
     private final SkipReviewUseCase skipReviewUseCase;
     private final SessionHandler sessionHandler;
+    private final EditReviewUseCase editReviewUseCase;
+    private final EditReviewValidateUseCase editReviewValidateUseCase;
     private InboxReputationForm.View viewListener;
     private ImageUploadHandler imageUploadHandler;
 
@@ -46,12 +52,16 @@ public class InboxReputationFormPresenter
                                  SetReviewFormCacheUseCase setReviewFormCacheUseCase,
                                  GetSendReviewFormUseCase getSendReviewFormUseCase,
                                  SkipReviewUseCase skipReviewUseCase,
+                                 EditReviewUseCase editReviewUseCase,
+                                 EditReviewValidateUseCase editReviewValidateUseCase,
                                  SessionHandler sessionHandler) {
         this.sendReviewValidateUseCase = sendReviewValidateUseCase;
         this.sendReviewUseCase = sendReviewUseCase;
         this.setReviewFormCacheUseCase = setReviewFormCacheUseCase;
         this.getSendReviewFormUseCase = getSendReviewFormUseCase;
         this.skipReviewUseCase = skipReviewUseCase;
+        this.editReviewUseCase = editReviewUseCase;
+        this.editReviewValidateUseCase = editReviewValidateUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -157,8 +167,42 @@ public class InboxReputationFormPresenter
     public void skipReview(String reputationId, String shopId, String productId) {
         viewListener.showLoadingProgress();
         skipReviewUseCase.execute(SkipReviewUseCase.getParam(reputationId, shopId, productId,
-                sessionHandler.getLoginID()), new
-                SkipReviewSubscriber
-                (viewListener));
+                sessionHandler.getLoginID()), new SkipReviewSubscriber(viewListener));
+    }
+
+    @Override
+    public void editReview(String reviewId, String reputationId, String productId,
+                           String shopId, String review, float rating,
+                           ArrayList<ImageUpload> list, List<ImageUpload> deletedList,
+                           boolean shareFb, boolean anonymous) {
+        viewListener.showLoadingProgress();
+        if (list.isEmpty()) {
+            editReviewWithoutImage(reviewId, reputationId, productId, shopId, review, rating);
+        } else {
+            editReviewWithImage(reviewId, reputationId, productId, shopId, review, rating, list,
+                    deletedList, shareFb, anonymous);
+        }
+    }
+
+    private void editReviewWithImage(String reviewId, String reputationId, String productId,
+                                     String shopId, String review, float rating,
+                                     ArrayList<ImageUpload> list,
+                                     List<ImageUpload> deletedList,
+                                     boolean shareFb, boolean anonymous) {
+        editReviewUseCase.execute(EditReviewUseCase.getParam(
+                reviewId, productId, reputationId, shopId,
+                String.valueOf(rating), review, list, deletedList
+        ), new EditReviewSubscriber(viewListener));
+
+    }
+
+    private void editReviewWithoutImage(String reviewId, String reputationId,
+                                        String productId, String shopId,
+                                        String review, float rating) {
+        editReviewValidateUseCase.execute(EditReviewValidateUseCase.getParam(
+                reviewId, productId,
+                reputationId, shopId,
+                String.valueOf(rating), review),
+                new EditReviewWithoutImageSubscriber(viewListener));
     }
 }

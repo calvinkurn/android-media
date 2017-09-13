@@ -177,7 +177,7 @@ public class InboxReputationDetailItemViewHolder extends
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.menu_edit) {
-                            viewListener.onEditReview();
+                            viewListener.onEditReview(element);
                             return true;
                         } else  if (item.getItemId() == R.id.menu_report) {
                             viewListener.onReportReview();

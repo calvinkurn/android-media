@@ -7,9 +7,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -45,6 +47,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationForm
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationFormPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
@@ -95,6 +98,24 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId);
         bundle.putString(InboxReputationFormActivity.ARGS_REVIEW_ID, reviewId);
         bundle.putString(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static Fragment createInstanceEdit(String reviewId, String reputationId,
+                                              String productId, String shopId,
+                                              int rating, String review,
+                                              ArrayList<ImageAttachmentViewModel> listImage) {
+        InboxReputationFormFragment fragment = new InboxReputationFormFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId);
+        bundle.putString(InboxReputationFormActivity.ARGS_REVIEW_ID, reviewId);
+        bundle.putString(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId);
+        bundle.putInt(InboxReputationFormActivity.ARGS_RATING, rating);
+        bundle.putString(InboxReputationFormActivity.ARGS_REVIEW, review);
+        bundle.putParcelableArrayList(InboxReputationFormActivity.ARGS_REVIEW_IMAGES, listImage);
+        bundle.putBoolean(InboxReputationFormActivity.ARGS_IS_EDIT, true);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -265,19 +286,59 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.sendReview(
-                        getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
-                        getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                        getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                        review.getText().toString(),
-                        rating.getRating(),
-                        adapter.getList(),
-                        adapter.getDeletedList(),
-                        shareFbSwitch.isChecked(),
-                        anomymousSwitch.isChecked());
+                if (getArguments() != null
+                        && getArguments().getBoolean(InboxReputationFormActivity.ARGS_IS_EDIT)) {
+                    presenter.editReview(
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                            review.getText().toString(),
+                            rating.getRating(),
+                            adapter.getList(),
+                            adapter.getDeletedList(),
+                            shareFbSwitch.isChecked(),
+                            anomymousSwitch.isChecked());
+                } else {
+                    presenter.sendReview(
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                            review.getText().toString(),
+                            rating.getRating(),
+                            adapter.getList(),
+                            adapter.getDeletedList(),
+                            shareFbSwitch.isChecked(),
+                            anomymousSwitch.isChecked());
+                }
             }
         });
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getArguments() != null && getArguments().getBoolean(InboxReputationFormActivity
+                .ARGS_IS_EDIT)) {
+            review.setText(getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW));
+            rating.setRating(getArguments().getInt(InboxReputationFormActivity.ARGS_RATING));
+            adapter.addList(convertToImageList(getArguments().<ImageAttachmentViewModel>getParcelableArrayList
+                    (InboxReputationFormActivity.ARGS_REVIEW_IMAGES)));
+        }
+    }
+
+    private ArrayList<ImageUpload> convertToImageList(ArrayList<ImageAttachmentViewModel> parcelableArrayList) {
+        ArrayList<ImageUpload> list = new ArrayList<>();
+        for (ImageAttachmentViewModel imageAttachmentViewModel : parcelableArrayList) {
+            list.add(new ImageUpload(
+                    imageAttachmentViewModel.getUriThumbnail(),
+                    imageAttachmentViewModel.getUriLarge(),
+                    imageAttachmentViewModel.getDescription(),
+                    String.valueOf(imageAttachmentViewModel.getAttachmentId())
+            ));
+        }
+        return list;
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -387,6 +448,16 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     public void onSuccessSkipReview() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+    }
+
+    @Override
+    public void onErrorEditReview(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessEditReview() {
+
     }
 
 

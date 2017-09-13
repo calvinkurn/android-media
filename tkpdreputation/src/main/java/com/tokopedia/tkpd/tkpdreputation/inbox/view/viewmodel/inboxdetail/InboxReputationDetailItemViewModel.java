@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class InboxReputationDetailItemViewModel implements
     String productAvatar;
     String reviewerName;
     String reviewTime;
-    List<ImageAttachmentViewModel> reviewAttachment;
+    ArrayList<ImageAttachmentViewModel> reviewAttachment;
     String review;
     int reviewStar;
     boolean reviewIsSkipped;
@@ -35,7 +36,7 @@ public class InboxReputationDetailItemViewModel implements
     public InboxReputationDetailItemViewModel(String productId, String productName,
                                               String productAvatar, String reviewId,
                                               String reviewerName, String reviewTime,
-                                              List<ImageAttachmentViewModel> reviewAttachment,
+                                              ArrayList<ImageAttachmentViewModel> reviewAttachment,
                                               String review, int reviewStar,
                                               boolean reviewHasReviewed,
                                               boolean reviewIsEditable,
@@ -84,7 +85,7 @@ public class InboxReputationDetailItemViewModel implements
         return reviewTime;
     }
 
-    public List<ImageAttachmentViewModel> getReviewAttachment() {
+    public ArrayList<ImageAttachmentViewModel> getReviewAttachment() {
         return reviewAttachment;
     }
 
