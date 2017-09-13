@@ -152,7 +152,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
     }
 
     @Override
