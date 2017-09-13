@@ -138,8 +138,7 @@
 
     <!-- featured product -->
     <string name="featured_product_activity_title">Featured Product</string>
-
-    <!-- featured product -->
-    <string name="featured_product_activity_title">Featured Product</string>
+    <string name="menu_featured_product_delete">Hapus Produk</string>
+    <string name="menu_featured_product_arrange">Atur Urutan Produk</string>
 
 </resources>

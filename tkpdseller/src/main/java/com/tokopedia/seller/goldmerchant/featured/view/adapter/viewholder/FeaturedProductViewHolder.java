@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType;
 import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperViewHolder;
 import com.tokopedia.seller.goldmerchant.featured.helper.OnStartDragListener;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
@@ -18,7 +20,7 @@ import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedPro
  * Created by normansyahputa on 9/8/17.
  */
 
-public class FeaturedProductViewHolder extends RecyclerView.ViewHolder implements
+public class FeaturedProductViewHolder extends BaseMultipleCheckViewHolder<FeaturedProductModel> implements
         ItemTouchHelperViewHolder {
     private final AppCompatImageView icGMFeaturedProduct;
     private final TextView textProductName;
@@ -35,8 +37,9 @@ public class FeaturedProductViewHolder extends RecyclerView.ViewHolder implement
         icGMFeaturedProduct = (AppCompatImageView) itemView.findViewById(R.id.ic_gm_featured_product);
         textProductName = (TextView) itemView.findViewById(R.id.text_product_name_gm_featured_product);
         textPrice = (TextView) itemView.findViewById(R.id.text_price_gm_featured_product);
-        checkBoxGM = (AppCompatCheckBox) itemView.findViewById(R.id.check_box_gm_featured_product);
+        checkBoxGM = (AppCompatCheckBox) itemView.findViewById(R.id.check_box);
         this.mDragStartListener = mDragStartListener;
+
         this.useCaseListener = useCaseListener;
     }
 
@@ -56,8 +59,6 @@ public class FeaturedProductViewHolder extends RecyclerView.ViewHolder implement
                 return false;
             }
         });
-
-        // TODO check box
     }
 
     @Override
@@ -72,7 +73,56 @@ public class FeaturedProductViewHolder extends RecyclerView.ViewHolder implement
         }
     }
 
+    @Override
+    public void bindObject(FeaturedProductModel featuredProductModel) {
+        bindData(featuredProductModel);
+    }
+
+    @Override
+    public void bindObject(final FeaturedProductModel featuredProductModel, boolean checked) {
+        bindData(featuredProductModel);
+        setChecked(checked);
+
+        switch (useCaseListener.getFeaturedProductType()){
+            case FeaturedProductType.DELETE_DISPLAY:
+                checkBoxGM.setVisibility(View.VISIBLE);
+                checkBoxGM.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(checkedCallback != null){
+                            checkedCallback.onItemChecked(featuredProductModel, checkBoxGM.isChecked());
+                        }
+                    }
+                });
+                dragAndDropGMFeaturedProduct.setVisibility(View.GONE);
+                break;
+            case FeaturedProductType.ARRANGE_DISPLAY:
+                checkBoxGM.setVisibility(View.GONE);
+                checkBoxGM.setOnClickListener(null);
+                dragAndDropGMFeaturedProduct.setVisibility(View.VISIBLE);
+                break;
+            case FeaturedProductType.DEFAULT_DISPLAY:
+            default:
+                checkBoxGM.setVisibility(View.GONE);
+                dragAndDropGMFeaturedProduct.setVisibility(View.GONE);
+                checkBoxGM.setOnClickListener(null);
+                break;
+        }
+    }
+
+    @Override
+    public boolean isChecked() {
+        return checkBoxGM.isChecked();
+    }
+
+    @Override
+    public void setChecked(boolean checked) {
+        checkBoxGM.setChecked(checked);
+    }
+
     public interface PostDataListener {
         void postData();
+
+        int getFeaturedProductType();
     }
 }

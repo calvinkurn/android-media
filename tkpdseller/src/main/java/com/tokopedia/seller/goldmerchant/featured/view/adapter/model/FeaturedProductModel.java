@@ -1,18 +1,25 @@
 package com.tokopedia.seller.goldmerchant.featured.view.adapter.model;
 
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.base.view.adapter.ItemIdType;
 
 /**
  * Created by normansyahputa on 9/6/17.
  */
 
-public class FeaturedProductModel implements ItemType {
+public class FeaturedProductModel implements ItemIdType {
     public static final int TYPE = 128391;
     private long productId;
 
     private String productName;
     private String productPrice;
     private String imageUrl;
+
+    public FeaturedProductModel(long productId, String productName, String productPrice, String imageUrl) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.imageUrl = imageUrl;
+    }
 
     public FeaturedProductModel() {
     }
@@ -52,5 +59,26 @@ public class FeaturedProductModel implements ItemType {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String getId() {
+        return Long.toString(productId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FeaturedProductModel that = (FeaturedProductModel) o;
+
+        return productId == that.productId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (productId ^ (productId >>> 32));
     }
 }
