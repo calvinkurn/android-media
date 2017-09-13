@@ -372,6 +372,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
+
+            // Need to stop previous scrolling if promo list going to update
+            // and start with a fresh scrolling
+            stopAutoScrollBanner();
+
             if(bannerPagerAdapter ==null) {
                 bannerPagerAdapter = new BannerPagerAdapter(promoList);
             }else {
