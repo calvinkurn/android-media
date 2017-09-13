@@ -9,6 +9,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDo
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.SolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
@@ -32,7 +33,6 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
 
     private SolutionListFragmentListener.View mainView;
     private GetSolutionUseCase getSolutionUseCase;
-    private SolutionResponseDomain solutionResponseDomain;
     private ResultViewModel resultViewModel;
 
 
@@ -51,30 +51,14 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
     public void initResultViewModel(final ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
         mainView.showLoading();
-        getSolutionUseCase.execute(getSolutionUseCase.getSolutionUseCaseParams(resultViewModel), new Subscriber<SolutionResponseDomain>() {
-            @Override
-            public void onCompleted() {
+        getSolutionUseCase.execute(getSolutionUseCase.getSolutionUseCaseParams(resultViewModel), new SolutionSubscriber(mainView));
+    }
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                mainView.showErrorGetSolution(ErrorHandler.getErrorMessage(e));
-
-            }
-
-            @Override
-            public void onNext(SolutionResponseDomain responseDomain) {
-                if (responseDomain != null) {
-                    solutionResponseDomain = responseDomain;
-                    if (solutionResponseDomain.getRequire() != null) {
-                        resultViewModel.isAttachmentRequired = solutionResponseDomain.getRequire().isAttachment();
-                    }
-                    mainView.populateDataToView(mappingSolutionResponseViewModel(solutionResponseDomain));
-                }
-            }
-        });
+    @Override
+    public void updateLocalData(SolutionResponseViewModel solutionResponseViewModel) {
+        if (solutionResponseViewModel.getRequire() != null) {
+            resultViewModel.isAttachmentRequired = solutionResponseViewModel.getRequire().isAttachment();
+        }
     }
 
     @Override
@@ -87,36 +71,6 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
         } else {
             mainView.moveToSolutionDetail(solutionViewModel);
         }
-    }
-
-    private SolutionResponseViewModel mappingSolutionResponseViewModel(SolutionResponseDomain domain) {
-        return new SolutionResponseViewModel(
-                domain.getSolutions() != null ? mappingSolutionViewModelList(domain.getSolutions()) : new ArrayList<SolutionViewModel>(),
-                domain.getRequire() != null ? mappingRequireViewModel(domain.getRequire()) : null,
-                domain.getFreeReturn() != null ? mappingFreeReturnViewModel(domain.getFreeReturn()) : null);
-    }
-
-    private List<SolutionViewModel> mappingSolutionViewModelList(List<SolutionDomain> domainList) {
-        List<SolutionViewModel> viewModelList = new ArrayList<>();
-        for (SolutionDomain solutionDomain : domainList) {
-            viewModelList.add(new SolutionViewModel(
-                    solutionDomain.getId(),
-                    solutionDomain.getName(),
-                    solutionDomain.getAmount() != null ? mappingAmountViewModel(solutionDomain.getAmount()) : null));
-        }
-        return viewModelList;
-    }
-
-    private RequireViewModel mappingRequireViewModel(RequireDomain domain) {
-        return new RequireViewModel(domain.isAttachment());
-    }
-
-    private AmountViewModel mappingAmountViewModel(AmountDomain domain) {
-        return new AmountViewModel(domain.getIdr(), domain.getInteger());
-    }
-
-    private FreeReturnViewModel mappingFreeReturnViewModel(FreeReturnDomain domain) {
-        return new FreeReturnViewModel(domain.getInfo());
     }
 
 }

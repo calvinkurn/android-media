@@ -374,6 +374,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         dismissProgressBar();
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         context.startActivity(DetailResCenterActivity.newInstance(context, String.valueOf(resolutionId)));
+        getActivity().finish();
     }
 
     @Override

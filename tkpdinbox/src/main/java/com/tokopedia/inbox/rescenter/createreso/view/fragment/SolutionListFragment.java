@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     SolutionListAdapter adapter;
     LinearLayout llFreeReturn;
     TextView tvFreeReturn;
+    ProgressBar progressBar;
 
     @Inject
     SolutionListFragmentPresenter presenter;
@@ -77,6 +79,7 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         presenter.attachView(this);
+        progressBar = new ProgressBar(context);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -134,6 +137,12 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     }
 
     @Override
+    public void showSuccessGetSolution(SolutionResponseViewModel solutionResponseViewModel) {
+        hideLoading();
+        presenter.updateLocalData(solutionResponseViewModel);
+    }
+
+    @Override
     public void moveToSolutionDetail(SolutionViewModel solutionViewModel) {
         Intent intent = new Intent(getActivity(), SolutionDetailActivity.class);
         intent.putExtra(SOLUTION_DATA, solutionViewModel);
@@ -176,9 +185,17 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
 
     @Override
     public void showLoading() {
-
+        if (progressBar.getVisibility() == View.GONE) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
     }
 
+    @Override
+    public void hideLoading() {
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
