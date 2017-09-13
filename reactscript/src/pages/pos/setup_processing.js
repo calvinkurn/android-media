@@ -1,55 +1,36 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { StyleSheet, Text, View, Button, Image, TouchableWithoutFeedback} from 'react-native';
+import React, { Component } from 'react'
+import { Provider } from 'react-redux'
+import store from './store/Store'
+// import PaymentBank from './components/PaymentBank'
+// import Payment from './components/Payment'
+// import PaymentProcessing from './components/PaymentProcessing'
+// import PaymentInvoice from './components/PaymentInvoice'
+// import TransactionHistory from './components/TransactionHistory'
+// import PasswordPopup from './components/PasswordPopup'
+// import POS from './components/POS'
+// import CartContainer from './containers/CartContainer'
+// import { StackNavigator } from 'react-navigation';
+import Setup_processing from './setup_processing'
+import Setup_invoice from './setup_paymentinvoice'
 
-class PaymentProcessing extends Component {
-//   componentDidMount(){
-//     setTimeout(
-//       () => { 
-//         this.props.navigation.navigate('PaymentInvoice', {})
-//       }, 
-//       4000
-//     );
-//   }
+// // // TODO: FOR UI testing purpose
+const App = StackNavigator({
+    Setup_processing: {screen: Setup_processing},
+    Setup_invoice : { screen: Setup_invoice }
+}, {headerMode: 'none'});
 
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <View style={{
-        height: 55,
-        backgroundColor: '#42b549',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around'
-        }}>
-          <View style={{ width: '10%', left: 10 }}>
-          </View>
-          <View style={{ width: '80%', left: 10 }}>
-            <Text style={{ fontSize: 18, color: '#fff' }}>Pembayaran</Text>
-          </View>
-          <View style={{ width: '10%' }}>
-          </View>
-        </View>
-        
-        <View style={{ width: "100%", marginTop: "60%", flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
-          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/loading.gif' }} />
-              <Text style={{fontSize:17, marginTop:"2%"}}>Pembayaran sedang diproses...</Text>
-        </View>
-      </View>
-    )
-  }
 
-  static navigationOptions = {
-    title: 'Payment Processing',
-  };
+class Root extends Component {
+    componentWillMount() {
+        console.log(this.props)
+    }
 
+    render() {
+        return (
+            <Provider store={store}>
+                <App />
+            </Provider>
+        )
+    }
 }
-
-// const mapStateToProps = state => {
-//   return {
-//     ...state.payment,
-//   }
-// }
-
-// export default connect(mapStateToProps)(PaymentProcessing)
-export default PaymentProcessing
+export default Root
