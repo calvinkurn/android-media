@@ -31,6 +31,11 @@ public class GetFilteredInboxReputationSubscriber extends GetFirstTimeInboxReput
     @Override
     public void onNext(InboxReputationDomain inboxReputationDomain) {
         viewListener.finishRefresh();
-        viewListener.onSuccessGetFilteredInboxReputation();
+
+        if (inboxReputationDomain.getInboxReputation().isEmpty()) {
+            viewListener.onShowEmptyFilteredInboxReputation();
+        } else {
+            viewListener.onSuccessGetFilteredInboxReputation(mappingToViewModel(inboxReputationDomain));
+        }
     }
 }

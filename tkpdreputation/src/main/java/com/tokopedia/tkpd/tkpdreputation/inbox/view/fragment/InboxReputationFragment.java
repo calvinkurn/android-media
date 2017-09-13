@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -48,6 +50,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final int REQUEST_OPEN_DETAIL = 101;
     private static final int REQUEST_FILTER = 102;
 
+    SearchView searchView;
     private RecyclerView mainList;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;
@@ -131,17 +134,42 @@ public class InboxReputationFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation, container, false);
         mainList = (RecyclerView) parentView.findViewById(R.id.review_list);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
+        searchView = (SearchView) parentView.findViewById(R.id.search);
         prepareView();
         presenter.attachView(this);
         return parentView;
     }
 
     private void prepareView() {
+        KeyboardHandler.DropKeyboard(getActivity(), searchView);
+
         mainList.setLayoutManager(layoutManager);
         mainList.setAdapter(adapter);
 
         mainList.addOnScrollListener(onScroll());
         swipeToRefresh.setOnRefreshListener(onRefresh());
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                presenter.getFilteredInboxReputation(query,
+                        timeFilter,
+                        statusFilter,
+                        getTab());
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() == 0) {
+                    presenter.getFilteredInboxReputation("",
+                            timeFilter,
+                            statusFilter,
+                            getTab());
+                }
+                return false;
+            }
+        });
     }
 
     private SwipeRefreshLayout.OnRefreshListener onRefresh() {
@@ -202,6 +230,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
+        searchView.setVisibility(View.VISIBLE);
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
@@ -246,6 +275,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel) {
+        adapter.removeEmpty();
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
@@ -298,8 +328,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetFilteredInboxReputation() {
-
+    public void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
+        adapter.removeEmptySearch();
+        adapter.setList(inboxReputationViewModel.getList());
+        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
 
     @Override
@@ -319,9 +351,22 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onShowEmpty() {
+        searchView.setVisibility(View.GONE);
         adapter.clearList();
         adapter.showEmpty();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onShowEmptyFilteredInboxReputation() {
+        adapter.clearList();
+        adapter.showEmptySearch();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResetSearch() {
+        searchView.setQuery("", true);
     }
 
     @Override
@@ -347,6 +392,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private String getQuery() {
-        return "";
+        return searchView.getQuery().toString();
     }
 }

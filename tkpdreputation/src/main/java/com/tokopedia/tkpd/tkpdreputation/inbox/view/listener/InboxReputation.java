@@ -38,7 +38,7 @@ public interface InboxReputation {
 
         void showRefreshing();
 
-        void onSuccessGetFilteredInboxReputation();
+        void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel);
 
         void onErrorGetFilteredInboxReputation(String errorMessage);
 
@@ -46,6 +46,9 @@ public interface InboxReputation {
 
         void onShowEmpty();
 
+        void onShowEmptyFilteredInboxReputation();
+
+        void onResetSearch();
     }
 
     interface Presenter extends CustomerPresenter<View> {

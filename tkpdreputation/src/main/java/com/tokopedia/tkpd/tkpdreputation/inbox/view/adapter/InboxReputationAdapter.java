@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.EmptySearchModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
 
     private List<Visitable> list;
     private EmptyModel emptyModel;
+    private EmptySearchModel emptySearchModel;
     private LoadingModel loadingModel;
     private final InboxReputationTypeFactory typeFactory;
 
@@ -32,6 +34,7 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
+        this.emptySearchModel = new EmptySearchModel();
     }
 
     @Override
@@ -98,4 +101,13 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
     public void clearList() {
         this.list.clear();
     }
+
+    public void showEmptySearch() {
+        this.list.add(emptySearchModel);
+    }
+
+    public void removeEmptySearch() {
+        this.list.remove(emptySearchModel);
+    }
+
 }

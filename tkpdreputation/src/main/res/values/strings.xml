@@ -56,5 +56,7 @@
     <string name="menu_report">Laporkan</string>
     <string name="dialog_skip_review_confirmation">Apakah Anda ingin lewatkan ulasan ini ?</string>
     <string name="title_skip_review">Lewati Ulasan</string>
+    <string name="search_not_found">Hasil pencarian tidak ditemukan</string>
+    <string name="see_all_review">Lihat Semua Ulasan</string>
 
 </resources>

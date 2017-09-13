@@ -1,7 +1,19 @@
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:background="@drawable/cards_ui"
+        android:hint="@string/hint_search_review"
+        android:iconifiedByDefault="false"
+        app:iconifiedByDefault="false"/>
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -18,4 +30,4 @@
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
