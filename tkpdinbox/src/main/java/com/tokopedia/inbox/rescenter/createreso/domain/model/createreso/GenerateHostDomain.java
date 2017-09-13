@@ -11,7 +11,9 @@ public class GenerateHostDomain {
     @Nullable
     private String serverId;
     @Nullable
-    private String url;
+    private String uploadHost;
+    @Nullable
+    private String token;
 
     @Nullable
     private boolean isSuccess;
@@ -19,9 +21,10 @@ public class GenerateHostDomain {
     @Nullable
     private String successMessage;
 
-    public GenerateHostDomain(@Nullable String serverId, @Nullable String url) {
+    public GenerateHostDomain(String serverId, String uploadHost, String token) {
         this.serverId = serverId;
-        this.url = url;
+        this.uploadHost = uploadHost;
+        this.token = token;
     }
 
     @Nullable
@@ -34,12 +37,21 @@ public class GenerateHostDomain {
     }
 
     @Nullable
-    public String getUrl() {
-        return url;
+    public String getUploadHost() {
+        return uploadHost;
     }
 
-    public void setUrl(@Nullable String url) {
-        this.url = url;
+    public void setUploadHost(@Nullable String uploadHost) {
+        this.uploadHost = uploadHost;
+    }
+
+    @Nullable
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(@Nullable String token) {
+        this.token = token;
     }
 
     @Nullable

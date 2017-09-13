@@ -29,7 +29,8 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
         try {
             GenerateHostResponse generateHostResponse = response.body().convertDataObj(GenerateHostResponse.class);
             GenerateHostDomain model = new GenerateHostDomain(generateHostResponse.getServerId(),
-                    generateHostResponse.getUrl());
+                    generateHostResponse.getUploadHost(),
+                    generateHostResponse.getToken());
             if (response.isSuccessful()) {
                 if (response.raw().code() == ResponseStatus.SC_OK) {
                     model.setSuccess(true);

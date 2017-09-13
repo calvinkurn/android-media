@@ -13,9 +13,13 @@ public class GenerateHostResponse {
     @Expose
     private String serverId;
 
-    @SerializedName("url")
+    @SerializedName("upload_host")
     @Expose
-    private String url;
+    private String uploadHost;
+
+    @SerializedName("token")
+    @Expose
+    private String token;
 
     public String getServerId() {
         return serverId;
@@ -25,19 +29,28 @@ public class GenerateHostResponse {
         this.serverId = serverId;
     }
 
-    public String getUrl() {
-        return url;
+    public String getUploadHost() {
+        return uploadHost;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUploadHost(String uploadHost) {
+        this.uploadHost = uploadHost;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
         return "GenerateHostResponse{" +
                 "serverId='" + serverId + '\'' +
-                "url='" + url + '\'' +
+                "uploadHost='" + uploadHost + '\'' +
+                "token='" + token + '\'' +
                 '}';
     }
 

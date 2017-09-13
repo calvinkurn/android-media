@@ -34,10 +34,6 @@ public interface ResolutionApi {
 
     //Version 2
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Upload.PATH_GENERATE_HOST_V2)
-    Observable<Response<TkpdResponse>> generateHost(@FieldMap Map<String, Object> params);
-
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_STEP_1)
     Observable<Response<TkpdResponse>> getProductProblemList(@Path("order_id") String orderId,
                                                              @QueryMap TKPDMapParam<String, Object> params);

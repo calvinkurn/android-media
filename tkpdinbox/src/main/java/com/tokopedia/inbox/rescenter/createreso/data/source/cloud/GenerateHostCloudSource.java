@@ -2,7 +2,10 @@ package com.tokopedia.inbox.rescenter.createreso.data.source.cloud;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
+import com.tokopedia.core.network.apiservices.upload.apis.UploadImageActApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
@@ -17,19 +20,19 @@ import rx.Observable;
 public class GenerateHostCloudSource {
     private Context context;
     private GenerateHostMapper generateHostMapper;
-    private ResolutionApi resolutionApi;
+    private ResCenterActService resCenterActService;
 
     public GenerateHostCloudSource(Context context,
                                    GenerateHostMapper generateHostMapper,
-                                   ResolutionApi resolutionApi) {
+                                   ResCenterActService resCenterActService) {
         this.context = context;
         this.generateHostMapper = generateHostMapper;
-        this.resolutionApi = resolutionApi;
+        this.resCenterActService = resCenterActService;
     }
 
     public Observable<GenerateHostDomain> generateHost(TKPDMapParam<String, Object> params) {
         try {
-            return resolutionApi.generateHost(AuthUtil.generateParamsNetwork2(context, params))
+            return resCenterActService.getApi().generateTokenHost(AuthUtil.generateParamsNetwork2(context, params))
                     .map(generateHostMapper);
         } catch (Exception e) {
             e.printStackTrace();

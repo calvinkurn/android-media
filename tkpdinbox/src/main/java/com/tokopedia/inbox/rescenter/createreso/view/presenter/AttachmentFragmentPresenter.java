@@ -59,6 +59,11 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
     @Override
     public void btnContinueClicked() {
         resultViewModel.message.remark = attachment.information;
+        int i = 0;
+        for (AttachmentViewModel attachmentViewModel : attachment.attachmentViewModelList) {
+            attachmentViewModel.setImageUUID(String.valueOf(i));
+            i++;
+        }
         resultViewModel.attachmentList = attachment.attachmentViewModelList;
         resultViewModel.attachmentCount = attachment.attachmentViewModelList.size();
         mainView.submitData(resultViewModel);

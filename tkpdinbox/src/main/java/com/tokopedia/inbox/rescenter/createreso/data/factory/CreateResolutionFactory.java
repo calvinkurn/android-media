@@ -2,7 +2,10 @@ package com.tokopedia.inbox.rescenter.createreso.data.factory;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
+import com.tokopedia.core.network.apiservices.upload.apis.UploadImageActApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep2Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
@@ -35,6 +38,7 @@ public class CreateResolutionFactory {
     private UploadMapper uploadMapper;
     private CreateSubmitMapper createSubmitMapper;
     private ResolutionApi resolutionApi;
+    private ResCenterActService resCenterActService;
 
     public CreateResolutionFactory(Context context,
                                    GetProductProblemMapper productProblemMapper,
@@ -56,6 +60,7 @@ public class CreateResolutionFactory {
         this.uploadMapper = uploadMapper;
         this.createSubmitMapper = createSubmitMapper;
         this.resolutionApi = resolutionApi;
+        resCenterActService = new ResCenterActService();
     }
 
     public GetProductProblemCloudSource getProductProblemCloudSource() {
@@ -79,7 +84,7 @@ public class CreateResolutionFactory {
     }
 
     public GenerateHostCloudSource generateHostCloudSource() {
-        return new GenerateHostCloudSource(context, generateHostMapper, resolutionApi);
+        return new GenerateHostCloudSource(context, generateHostMapper, resCenterActService);
     }
 
     public UploadCloudSource getUploadCloudSource() {

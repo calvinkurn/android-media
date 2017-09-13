@@ -126,7 +126,7 @@ public class UploadUseCase extends UseCase<UploadDomain> {
     public static RequestParams getParam(CreateResoRequestDomain createResoRequestDomain,
                                          String imageId, String fileLoc) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_GENERATED_HOST, createResoRequestDomain.getGenerateHostDomain().getUrl());
+        params.putString(PARAM_GENERATED_HOST, createResoRequestDomain.getGenerateHostDomain().getUploadHost());
         params.putString(UploadUseCase.PARAM_IMAGE_ID,
                 imageId);
         params.putString(UploadUseCase.PARAM_FILE_TO_UPLOAD,
