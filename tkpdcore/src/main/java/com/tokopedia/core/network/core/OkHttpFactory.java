@@ -204,7 +204,8 @@ public class OkHttpFactory {
                                                      TkpdAuthInterceptor tkpdAuthInterceptor,
                                                      OkHttpRetryPolicy okHttpRetryPolicy,
                                                      ChuckInterceptor chuckInterceptor,
-                                                     DebugInterceptor debugInterceptor, ApiCacheInterceptor apiCacheInterceptor) {
+                                                     DebugInterceptor debugInterceptor,
+                                                     ApiCacheInterceptor apiCacheInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(apiCacheInterceptor)
