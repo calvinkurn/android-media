@@ -4,12 +4,14 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReportReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudInboxReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudInboxReputationDetailDataSource;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudReportReviewDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendReviewDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendReviewSubmitDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendSmileyReputationDataSource;
@@ -29,7 +31,7 @@ public class ReputationFactory {
     private final SendReviewValidateMapper sendReviewValidateMapper;
     private final SendReviewSubmitMapper sendReviewSubmitMapper;
     private final SkipReviewMapper skipReviewMapper;
-
+    private final ReportReviewMapper reportReviewMapper;
 
     public ReputationFactory(ReputationService reputationService,
                              InboxReputationMapper inboxReputationMapper,
@@ -38,6 +40,7 @@ public class ReputationFactory {
                              SendReviewValidateMapper sendReviewValidateMapper,
                              SendReviewSubmitMapper sendReviewSubmitMapper,
                              SkipReviewMapper skipReviewMapper,
+                             ReportReviewMapper reportReviewMapper,
                              GlobalCacheManager globalCacheManager) {
         this.reputationService = reputationService;
         this.globalCacheManager = globalCacheManager;
@@ -47,6 +50,7 @@ public class ReputationFactory {
         this.sendReviewValidateMapper = sendReviewValidateMapper;
         this.sendReviewSubmitMapper = sendReviewSubmitMapper;
         this.skipReviewMapper = skipReviewMapper;
+        this.reportReviewMapper = reportReviewMapper;
     }
 
     public CloudInboxReputationDataSource createCloudInboxReputationDataSource() {
@@ -76,5 +80,10 @@ public class ReputationFactory {
     public CloudSkipReviewDataSource createCloudSkipReviewDataSource() {
         return new CloudSkipReviewDataSource(reputationService,
                 skipReviewMapper);
+    }
+
+    public CloudReportReviewDataSource createCloudReportReviewDataSource() {
+        return new CloudReportReviewDataSource(reputationService,
+                reportReviewMapper);
     }
 }

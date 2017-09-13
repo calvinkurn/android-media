@@ -43,7 +43,6 @@ public interface ReputationApi {
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> skipReview(@FieldMap Map<String, Object> params);
 
-
     @POST(TkpdBaseURL.Reputation.PATH_EDIT_REVIEW_VALIDATE)
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> editReviewValidate(@FieldMap Map<String, Object> params);
@@ -51,4 +50,8 @@ public interface ReputationApi {
     @POST(TkpdBaseURL.Reputation.PATH_EDIT_REVIEW_SUBMIT)
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> editReviewSubmit(@FieldMap Map<String, Object> params);
+
+    @POST(TkpdBaseURL.Reputation.PATH_REPORT_REVIEW)
+    @FormUrlEncoded
+    Observable<Response<TkpdResponse>> reportReview(@FieldMap Map<String, Object> params);
 }

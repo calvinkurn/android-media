@@ -828,5 +828,7 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/edit/validate";
         public static final String PATH_EDIT_REVIEW_SUBMIT = "review/api/"
                 + REPUTATION_VERSION + "/edit/submit";
+        public static final String PATH_REPORT_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/report";
     }
 }

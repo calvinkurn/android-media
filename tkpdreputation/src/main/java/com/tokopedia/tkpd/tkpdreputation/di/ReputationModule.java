@@ -9,6 +9,7 @@ import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReportReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
@@ -18,6 +19,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationReposit
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.ReportReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewSubmitUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
@@ -92,11 +94,12 @@ public class ReputationModule {
             SendReviewValidateMapper sendReviewValidateMapper,
             SendReviewSubmitMapper sendReviewSubmitMapper,
             SkipReviewMapper skipReviewMapper,
+            ReportReviewMapper reportReviewMapper,
             GlobalCacheManager globalCacheManager) {
         return new ReputationFactory(reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
-                skipReviewMapper,
+                skipReviewMapper, reportReviewMapper,
                 globalCacheManager);
     }
 
@@ -346,4 +349,19 @@ public class ReputationModule {
                 editReviewValidateUseCase, generateHostUseCase,
                 uploadImageUseCase, editReviewSubmitUseCase);
     }
+
+    @ReputationScope
+    @Provides
+    ReportReviewMapper provideReportReviewMapper() {
+        return new ReportReviewMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    ReportReviewUseCase provideReportReviewUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   ReputationRepository reputationRepository) {
+        return new ReportReviewUseCase(threadExecutor, postExecutionThread, reputationRepository);
+    }
+
 }

@@ -10,31 +10,33 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationReportFragment;
 
-import static com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity.ARGS_REPUTATION_ID;
 
 /**
- * @author by nisie on 8/19/17.
+ * @author by nisie on 9/13/17.
  */
 
-public class InboxReputationDetailActivity extends BasePresenterActivity implements HasComponent {
+public class InboxReputationReportActivity extends BasePresenterActivity
+        implements HasComponent {
 
-    public static final String ARGS_POSITION = "ARGS_POSITION";
-    public static final String ARGS_TAB = "ARGS_TAB";
-    public static final String ARGS_PASS_DATA = "ARGS_PASS_DATA";
+    public static final String ARGS_SHOP_ID = "ARGS_SHOP_ID";
+    public static final String ARGS_REVIEW_ID = "ARGS_REVIEW_ID";
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -58,29 +60,25 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
 
     @Override
     protected void initView() {
-        InboxReputationDetailPassModel model = null;
-        int tab = -1;
-        if (getIntent().getExtras().getParcelable
-                (ARGS_PASS_DATA) != null) {
-            model = getIntent().getExtras().getParcelable
-                    (ARGS_PASS_DATA);
-        }
 
-        if (getIntent().getExtras().getInt(ARGS_TAB, -1) != -1) {
-            tab = getIntent().getExtras().getInt(ARGS_TAB);
-        }
+        String reviewId = getIntent().getExtras().getString(ARGS_REVIEW_ID, "");
+        int shopId = getIntent().getExtras().getInt(ARGS_SHOP_ID);
 
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(InboxReputationDetailFragment
-                .class.getSimpleName());
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (InboxReputationReportFragment.class.getSimpleName());
         if (fragment == null) {
-            fragment = InboxReputationDetailFragment.createInstance(model, tab);
+            fragment = InboxReputationReportFragment.createInstance(reviewId, shopId);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,
                 fragment,
                 fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -99,35 +97,8 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
-    }
-
-    public static Intent getCallingIntent(Context context,
-                                          InboxReputationDetailPassModel inboxReputationDetailPassModel,
-                                          int adapterPosition, int tab) {
-        Intent intent = new Intent(context, InboxReputationDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, inboxReputationDetailPassModel);
-        bundle.putInt(InboxReputationDetailActivity.ARGS_POSITION, adapterPosition);
-        bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        if (getIntent().getExtras().getParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA) !=
-                null) {
-            InboxReputationDetailPassModel model = getIntent().getExtras().getParcelable
-                    (InboxReputationDetailActivity.ARGS_PASS_DATA);
-
-            if (toolbar != null && model.getInvoice() != null)
-                toolbar.setTitle(model.getInvoice());
-            if (toolbar != null && model.getCreateTime() != null)
-                toolbar.setSubtitle(model.getCreateTime());
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = getWindow().getDecorView();
@@ -142,7 +113,7 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
                 .getColor(R.color.white)));
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_500));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_300));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
@@ -157,5 +128,12 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
         }
     }
 
-
+    public static Intent getCallingIntent(Context context, int shopId, String reviewId) {
+        Intent intent = new Intent(context, InboxReputationReportActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARGS_SHOP_ID, shopId);
+        bundle.putString(ARGS_REVIEW_ID, reviewId);
+        intent.putExtras(bundle);
+        return intent;
+    }
 }

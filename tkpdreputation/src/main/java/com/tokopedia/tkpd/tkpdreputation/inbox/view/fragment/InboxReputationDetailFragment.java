@@ -30,6 +30,7 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetailAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
@@ -57,6 +58,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     private static final int REQUEST_GIVE_REVIEW = 101;
     private static final int REQUEST_EDIT_REVIEW = 102;
+    private static final int REQUEST_REPORT_REVIEW = 103;
     private RecyclerView listProduct;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;
@@ -242,11 +244,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSkipReview(String reviewId) {
-
-    }
-
-    @Override
     public void onGoToGiveReview(String reviewId, String productId,
                                  int shopId, boolean reviewIsSkippable) {
         startActivityForResult(
@@ -338,8 +335,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onReportReview() {
-
+    public void onGoToReportReview(int shopId, String reviewId) {
+        startActivityForResult(InboxReputationReportActivity.getCallingIntent(
+                getActivity(),
+                shopId,
+                reviewId),
+                REQUEST_REPORT_REVIEW);
     }
 
     @Override
@@ -390,6 +391,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_EDIT_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
+        } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
+                    .success_report_review));
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }

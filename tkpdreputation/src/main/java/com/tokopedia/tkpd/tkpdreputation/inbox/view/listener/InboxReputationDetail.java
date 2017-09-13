@@ -32,8 +32,6 @@ public interface InboxReputationDetail {
 
         void onEditReview(InboxReputationDetailItemViewModel element);
 
-        void onSkipReview(String reviewId);
-
         void onGoToGiveReview(String reviewId, String productId, int shopId, boolean reviewIsSkippable);
 
         void onErrorSendSmiley(String errorMessage);
@@ -58,7 +56,7 @@ public interface InboxReputationDetail {
 
         int getTab();
 
-        void onReportReview();
+        void onGoToReportReview(int shopId, String reviewId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

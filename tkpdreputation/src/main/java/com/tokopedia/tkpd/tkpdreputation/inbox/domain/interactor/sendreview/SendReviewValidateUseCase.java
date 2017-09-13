@@ -30,8 +30,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
     public static final String PARAM_SHOP_ID = "shop_id";
     public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_REVIEW_MESSAGE = "review_message";
-    public static final String PARAM_RATING = "rate_quality";
-    public static final String PARAM_RATING_2 = "rate_accuracy";
+    public static final String PARAM_RATING = "rating";
 
     private static final String PARAM_HAS_PRODUCT_REVIEW_PHOTO = "has_product_review_photo";
     private static final String PARAM_REVIEW_PHOTO_ALL = "product_review_photo_all";
@@ -69,7 +68,6 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_REPUTATION_ID, reputationId);
         params.putString(PARAM_SHOP_ID, shopId);
         params.putString(PARAM_RATING, rating);
-        params.putString(PARAM_RATING_2, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
         params.putString(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_NO_IMAGE);
 
@@ -90,7 +88,6 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_REPUTATION_ID, reputationId);
         params.putString(PARAM_SHOP_ID, shopId);
         params.putString(PARAM_RATING, rating);
-        params.putString(PARAM_RATING_2, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
         params.putString(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_HAS_IMAGE);
         params.putString(PARAM_REVIEW_PHOTO_ALL, getReviewPhotos(list, deletedList));

@@ -58,5 +58,11 @@
     <string name="title_skip_review">Lewati Ulasan</string>
     <string name="search_not_found">Hasil pencarian tidak ditemukan</string>
     <string name="see_all_review">Lihat Semua Ulasan</string>
+    <string name="title_report">Laporkan</string>
+    <string name="review_report_question">Bantu kami memahami apa yang terjadi. Mengapa Anda melaporkan ulasan ini?</string>
+    <string name="report_option_spam">Ini adalah spam</string>
+    <string name="report_option_sara">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/normal sosial</string>
+    <string name="hint_input_reason">Isi alasan disini</string>
+    <string name="success_report_review">Sukses mengirim laporan</string>
 
 </resources>

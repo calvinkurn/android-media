@@ -151,7 +151,8 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     public void setOverflowButton(InboxReputationDetailItemViewModel element) {
-        if (element.isReviewIsEditable()) {
+        if (element.isReviewIsEditable()
+                || element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
             reviewOverflow.setVisibility(View.VISIBLE);
             reviewOverflow.setOnClickListener(onOverflowClicked(element));
         } else {
@@ -179,8 +180,11 @@ public class InboxReputationDetailItemViewHolder extends
                         if (item.getItemId() == R.id.menu_edit) {
                             viewListener.onEditReview(element);
                             return true;
-                        } else  if (item.getItemId() == R.id.menu_report) {
-                            viewListener.onReportReview();
+                        } else if (item.getItemId() == R.id.menu_report) {
+                            viewListener.onGoToReportReview(
+                                    element.getShopId(),
+                                    element.getReviewId()
+                            );
                             return true;
                         } else {
                             return false;

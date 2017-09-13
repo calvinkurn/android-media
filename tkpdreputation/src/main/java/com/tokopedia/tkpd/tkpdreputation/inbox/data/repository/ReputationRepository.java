@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReportReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
@@ -33,4 +34,6 @@ public interface ReputationRepository {
     Observable<SendReviewValidateDomain> editReviewValidation(RequestParams requestParams);
 
     Observable<SendReviewSubmitDomain> editReviewSubmit(RequestParams requestParams);
+
+    Observable<ReportReviewDomain> reportReview(RequestParams requestParams);
 }

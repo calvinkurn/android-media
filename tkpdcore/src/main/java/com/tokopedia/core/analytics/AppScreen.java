@@ -82,6 +82,7 @@ public final class AppScreen {
     public static final String SCREEN_INBOX_REPUTATION_DETAIL = "Inbox detail reputation";
     public static final String SCREEN_INBOX_REPUTATION_REVIEW_DETAIL = "Inbox Detail Reputation " +
             "Review";
+    public static final String SCREEN_INBOX_REPUTATION_REPORT = "Inbox Reputation - Report";
     public static final String SCREEN_INBOX_RESOLUTION_CENTER_DETAIL = "Inbox resolution center detail";
     public static final String SCREEN_INBOX_TICKET_DETAIL = "Inbox Ticket Detail";
     public static final String SCREEN_BROWSE_HOT = "Browse hot list detail";
