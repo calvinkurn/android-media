@@ -19,7 +19,7 @@ public interface ProductProblemDetailFragment {
 
         void updateArriveStatusButton(boolean isDelivered, boolean canShowInfo);
 
-        void populateReasonSpinner(String[] reasonStringArray);
+        void populateReasonSpinner(String[] reasonStringArray, int position);
 
         void updateComplainReasonView(boolean isSuccess, String message);
 

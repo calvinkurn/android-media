@@ -26,6 +26,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     private ProblemResult problemResult;
     private ProductProblemViewModel productProblemViewModel;
     private HashMap<String, Integer> troubleHashMap = new HashMap<>();
+    private int currentTroublePos = 0;
 
     public ProductProblemDetailFragmentPresenter(Context context) {
         this.context = context;
@@ -51,6 +52,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
 
     public void updateProblemResult(ProblemResult problemResult) {
         this.problemResult = problemResult;
+        currentTroublePos = problemResult.trouble;
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
         mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
         mainView.updateComplainReasonValue(problemResult.remark);
@@ -91,10 +93,10 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     @Override
     public void updateSpinner(boolean isDelivered) {
         troubleHashMap = new HashMap<>();
+        int pos = 0;
         for (StatusViewModel statusViewModel : productProblemViewModel.getStatusList()) {
             if (isDelivered == statusViewModel.isDelivered()) {
                 String[] troubleStringArray = new String[isDelivered ? statusViewModel.getTrouble().size() + 1 : statusViewModel.getTrouble().size()];
-                problemResult.trouble = statusViewModel.getTrouble().get(0).getId();
                 int i = 0;
                 if (isDelivered) {
                     troubleHashMap.put("Pilih Masalah", 0);
@@ -103,10 +105,17 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
                 }
                 for (StatusTroubleViewModel statusTroubleViewModel : statusViewModel.getTrouble()) {
                     troubleHashMap.put(statusTroubleViewModel.getName(), statusTroubleViewModel.getId());
+                    if (currentTroublePos == statusTroubleViewModel.getId()) {
+                        pos = i;
+                    }
                     troubleStringArray[i] = statusTroubleViewModel.getName();
                     i++;
                 }
-                mainView.populateReasonSpinner(troubleStringArray);
+                problemResult.trouble = statusViewModel.getTrouble().get(0).getId();
+                if (isDelivered) {
+                    problemResult.trouble = 0;
+                }
+                mainView.populateReasonSpinner(troubleStringArray, pos);
             }
         }
     }
@@ -159,7 +168,7 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
     }
 
     public void validateMainButton() {
-        mainView.updateBottomMainButton((!problemResult.remark.equals("") && problemResult.trouble != 0));
+        mainView.updateBottomMainButton(problemResult.trouble != 0 && !problemResult.remark.equals(""));
     }
 
     @Override

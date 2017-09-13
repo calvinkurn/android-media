@@ -42,7 +42,8 @@ public class SolutionDetailFragmentPresenter extends BaseDaggerPresenter<Solutio
         if (!amount.equals("")) {
             int intAmount = Integer.parseInt(amount);
             if (intAmount > solutionViewModel.getAmount().getInteger()) {
-                resultViewModel.refundAmount = 0;
+                resultViewModel.refundAmount = solutionViewModel.getAmount().getInteger();
+                mainView.updatePriceEditText(String.valueOf(solutionViewModel.getAmount().getInteger()));
             } else {
                 resultViewModel.refundAmount = intAmount;
             }

@@ -21,7 +21,7 @@ public interface SolutionDetailFragmentListener {
 
         void submitData(ResultViewModel resultViewModel);
 
-        void showSuccessToast();
+        void updatePriceEditText(String price);
 
         void showErrorToast(String error);
     }

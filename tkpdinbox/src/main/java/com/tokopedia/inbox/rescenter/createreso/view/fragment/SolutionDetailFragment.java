@@ -144,6 +144,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     }
 
     @Override
+    public void updatePriceEditText(String price) {
+        etAmount.setText(price);
+    }
+
+    @Override
     public void updateAmountError(String message) {
         tilAmount.setError(message);
     }
@@ -171,10 +176,6 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         button.setTextColor(ContextCompat.getColor(context, R.color.black_70));
     }
 
-    @Override
-    public void showSuccessToast() {
-
-    }
 
     @Override
     public void showErrorToast(String error) {

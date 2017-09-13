@@ -264,12 +264,13 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public void populateReasonSpinner(String[] reasonStringArray) {
+    public void populateReasonSpinner(String[] reasonStringArray, int position) {
         if (reasonStringArray != null) {;
             stvProblem.setValues(reasonStringArray);
             stvProblem.setEntries(reasonStringArray, 0);
             stvProblem.setEnabled(reasonStringArray.length != 1);
         }
+        stvProblem.setSpinnerPosition(position);
     }
 
     @Override
