@@ -369,8 +369,13 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                         adapter.addData(featuredProductModel);
                     }
                 }
+
+                featuredProductPresenter.postData(
+                        FeaturedProductPOSTUseCase.createParam(
+                                adapter.getData()
+                        )
+                );
             }
-            searchMode = true;
         }
     }
 

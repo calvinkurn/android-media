@@ -4,11 +4,11 @@
     <item
         android:id="@+id/menu_arrange"
         android:icon="@drawable/ic_sort_white"
-        android:title="@string/sort"
-        app:showAsAction="always"/>
+        android:title="@string/menu_featured_product_arrange"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/menu_delete"
         android:icon="@drawable/ic_sort_white"
-        android:title="@string/sort"
-        app:showAsAction="always"/>
+        android:title="@string/menu_featured_product_delete"
+        app:showAsAction="never"/>
 </menu>
