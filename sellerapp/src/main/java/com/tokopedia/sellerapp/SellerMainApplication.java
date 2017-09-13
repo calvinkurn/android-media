@@ -153,7 +153,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomainList = super.getAddedWhiteList();
-        cacheApiWhiteListDomainList.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN,
+        cacheApiWhiteListDomainList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO
                 , 300));
         return cacheApiWhiteListDomainList;
