@@ -178,7 +178,11 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         Log.d(TAG, "displayAds list size " + list.size());
         adsItems = list;
         if (isFeed) {
-            setTopAds(adsItems, itemList, getItemCount());
+            if (getItemCount() > 4) {
+                setTopAds(adsItems, itemList, getItemCount() - 4);
+            } else {
+                setTopAds(adsItems, itemList, getItemCount());
+            }
         } else {
             if (hasHeader && !headerPlaced) {
                 headerPlaced = true;
