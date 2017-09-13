@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView} from 'react-native';
-import { emailValidation } from './lib/utility'
+import { emailValidation } from '../lib/utility'
 import PopupDialog, {DialogTitle} from 'react-native-popup-dialog';
 import { NavigationModule } from 'NativeModules'
 
-import PopUp from './common/TKPPopupModal'
+import PopUp from '../common/TKPPopupModal'
 
 class PaymentInvoice extends Component {
 

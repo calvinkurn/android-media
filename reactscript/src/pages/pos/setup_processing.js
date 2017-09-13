@@ -9,9 +9,9 @@ import store from './store/Store'
 // import PasswordPopup from './components/PasswordPopup'
 // import POS from './components/POS'
 // import CartContainer from './containers/CartContainer'
-// import { StackNavigator } from 'react-navigation';
-import Setup_processing from './setup_processing'
-import Setup_invoice from './setup_paymentinvoice'
+import { StackNavigator } from 'react-navigation';
+import Setup_processing from './wyz/setup_processing'
+import Setup_invoice from './wyz/setup_paymentinvoice'
 
 // // // TODO: FOR UI testing purpose
 const App = StackNavigator({
