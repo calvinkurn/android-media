@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView} from 'react-native';
 import { emailValidation } from '../lib/utility'
 import PopupDialog, {DialogTitle} from 'react-native-popup-dialog';
+import { NavigationModule } from 'NativeModules'
 
 import PopUp from '../common/TKPPopupModal'
 
@@ -110,7 +111,8 @@ class PaymentInvoice extends Component {
                     { this.state.emailErrorMessage }
                   </Text>
                   <View style={{ flexDirection:'row',flex:1,justifyContent:'space-between', alignItems:'center', marginTop: "5%"}} >
-                    <TouchableNativeFeedback>
+                    <TouchableNativeFeedback 
+                      onPress={() => NavigationModule.navigate("posapp://product", "")}>
                       <View style={[styles.button, {backgroundColor: "#FFFFFF", borderColor:"#F3F3F3"}]}>
                         <Text style={[styles.buttonText, {color: "#888888"}]}> Lewati </Text>
                       </View>

@@ -3,6 +3,14 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Button, Image, TouchableWithoutFeedback} from 'react-native';
 
 class PaymentProcessing extends Component {
+  componentDidMount(){
+    setTimeout(
+      () => { 
+        this.props.navigation.navigate('PaymentInvoice', {})
+      }, 
+      4000
+    );
+  }
 
   render() {
     return (

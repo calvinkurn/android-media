@@ -3,7 +3,7 @@ import { Modal, View, Text, TouchableWithoutFeedback, Image, TouchableOpacity, S
 import CartItem from './CartItem'
 import Button from '../../common/TKPPrimaryBtn'
 import PopUp from '../../common/TKPPopupModal'
-import {NavigationModule} from 'NativeModules'
+import { NavigationModule } from 'NativeModules'
 import BtnLargeOrange from '../button/BtnLargeOrange'
 
 export default class CartItemList extends Component {
