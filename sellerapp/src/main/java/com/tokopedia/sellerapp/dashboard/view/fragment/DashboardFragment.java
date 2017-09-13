@@ -5,23 +5,23 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.shop.model.shopinfo.ShopInfo;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
@@ -32,7 +32,6 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
 
@@ -222,7 +221,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void updateViewShopOpen(ShopModel shopModel){
         View vShopClose = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
-        if (shopModel.isOpen == ShopModel.IS_OPEN) {
+        if (shopModel.isOpen != ShopModel.IS_CLOSED) {
             if (vShopClose!= null) {
                 vgHeaderLabelLayout.removeView(vShopClose);
             }
@@ -233,6 +232,26 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                                 vgHeaderLabelLayout, false);
                 vgHeaderLabelLayout.addView(vShopClose);
             }
+            TextView tvCloseTitle = (TextView) vShopClose.findViewById(R.id.tv_closed_title);
+            String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
+                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                    shopModel.closedInfo.until);
+            if (!TextUtils.isEmpty(shopCloseUntilString)) {
+                tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopModel.closedInfo.until));
+                tvCloseTitle.setVisibility(View.VISIBLE);
+            } else {
+                tvCloseTitle.setVisibility(View.GONE);
+            }
+
+            TextView tvCloseDesc = (TextView) vShopClose.findViewById(R.id.tv_closed_description);
+            String note = shopModel.closedInfo.note;
+            if (!TextUtils.isEmpty(note)) {
+                tvCloseDesc.setText(note);
+                tvCloseDesc.setVisibility(View.VISIBLE);
+            } else {
+                tvCloseDesc.setVisibility(View.GONE);
+            }
+
         }
     }
 

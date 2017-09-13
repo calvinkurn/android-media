@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/vg_shop_close"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
         android:id="@+id/iv_close"
         android:layout_width="@dimen/image_width_xs"
         android:layout_height="@dimen/image_width_xs"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/icon_closed" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,25 +24,27 @@
         android:paddingRight="@dimen/margin_vs">
 
         <TextView
-            style="@style/TextView.Body1"
+            android:id="@+id/tv_closed_title"
+            style="@style/TextView.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Toko Anda tutup sampai tanggal 19 Juli 2017" />
+            android:text="@string/dashboard_your_shop_is_closed_until_xx" />
 
         <TextView
+            android:id="@+id/tv_closed_description"
+            android:layout_marginTop="@dimen/margin_vs"
             style="@style/TextView.Caption.BlackSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="@dimen/margin_ms"
-            android:text="Mohon Maaf" />
+            tools:text="Closed Description" />
 
         <TextView
             android:id="@+id/tv_open_shop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_ms"
             android:background="@drawable/rect_stroke_light_gray"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"

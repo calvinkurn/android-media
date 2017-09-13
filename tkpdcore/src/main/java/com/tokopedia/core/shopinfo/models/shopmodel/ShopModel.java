@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 public class ShopModel {
 
     public static final int IS_OPEN = 1; //FROM API
+    public static final int IS_CLOSED = 2; //FROM API
+    public static final int IS_SCHEDULED_CLOSED = 3; //FROM API
 
     @SerializedName("owner")
     @Expose

@@ -20,6 +20,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.prototype.ShopCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
+import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.ShopEditService;
 import com.tokopedia.seller.shop.constant.ShopEditServiceConstant;
 import com.tokopedia.seller.shop.fragment.ShopScheduleDialog;
@@ -242,6 +243,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                                 view.finishActivity();
                             }
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                         }
                         break;
                     case ShopEditServiceConstant.UPDATE_SHOP_IMAGE:
@@ -251,6 +253,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                         }
                         if(updateShopImageModel.getData().getIs_success() == 1){
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                             ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context);
                             cacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
                             shopEditorModel.setUploadingAvatar(false);
@@ -275,6 +278,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                                 getShopData();
                             }
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                         }
 
                         break;
@@ -335,6 +339,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                 break;
         }// end of status download service
     }
+
 
     @Override
     public void unSubscribe() {

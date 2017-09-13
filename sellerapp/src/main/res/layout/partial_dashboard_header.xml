@@ -76,10 +76,11 @@
                 android:background="?attr/selectableItemBackgroundBorderless"/>
         </LinearLayout>
 
-        <include layout="@layout/layout_dashboard_shop_close"
+        <!-- will be added programmatically -->
+        <!--<include layout="@layout/layout_dashboard_shop_close"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs" />
+            android:layout_marginTop="@dimen/margin_vs" />-->
 
     </LinearLayout>
 
