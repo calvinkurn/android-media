@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity;
@@ -164,8 +165,18 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     }
 
     @Override
-    public void showErrorToast(String error) {
-        Toast.makeText(getActivity(), "error : " + error, Toast.LENGTH_SHORT).show();
+    public void showErrorGetSolution(String error) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.initResultViewModel(resultViewModel);
+            }
+        });
+    }
+
+    @Override
+    public void showLoading() {
+
     }
 
 

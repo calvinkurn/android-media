@@ -21,7 +21,9 @@ public interface SolutionListFragmentListener {
 
         void showSuccessToast();
 
-        void showErrorToast(String error);
+        void showErrorGetSolution(String error);
+
+        void showLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {
