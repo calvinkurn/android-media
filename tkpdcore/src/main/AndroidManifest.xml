@@ -360,7 +360,7 @@
             android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".app.ReactNativeActivity"
+            android:name="com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity"
             android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
 
