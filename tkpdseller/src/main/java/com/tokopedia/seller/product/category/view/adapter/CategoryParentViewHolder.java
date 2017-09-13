@@ -39,7 +39,7 @@ class CategoryParentViewHolder extends CategoryPickerViewHolder  {
         progressBar.setVisibility(View.GONE);
         imageChevron.setVisibility(View.VISIBLE);
         if (isSelected){
-            setView(context.getResources().getColor(R.color.font_top_ads_green), context
+            setView(context.getResources().getColor(R.color.tkpd_main_green), context
                     .getResources()
                     .getDrawable(R.drawable.chevron_up));
         } else {

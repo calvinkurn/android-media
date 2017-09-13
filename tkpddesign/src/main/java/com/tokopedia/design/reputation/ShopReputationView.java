@@ -1,9 +1,5 @@
 package com.tokopedia.design.reputation;
 
-/**
- * Created by stevenfredian on 8/16/17.
- */
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -20,7 +16,6 @@ import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-
 
 /**
  * Created by stevenfredian on 8/16/17.
@@ -57,7 +52,7 @@ public class ShopReputationView extends BaseCustomView {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ShopReputationView);
         try {
-            showTooltip = styledAttributes.getBoolean(R.styleable.ShopReputationView_rsv_show_tooltip, false);
+            showTooltip = styledAttributes.getBoolean(R.styleable.ShopReputationView_srv_show_tooltip, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -99,8 +94,8 @@ public class ShopReputationView extends BaseCustomView {
         reputationLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                View popup = View.inflate(getContext(), R.layout.popup_reputation, null);
-                TextView pointTextView = (TextView) popup.findViewById(R.id.point);
+                View popup = View.inflate(getContext(), R.layout.item_tooltip_shop_reputation, null);
+                TextView pointTextView = (TextView) popup.findViewById(R.id.text_view_point);
                 pointTextView.setText(getContext().getString(R.string.reputation_shop_point, point));
                 final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
                 popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

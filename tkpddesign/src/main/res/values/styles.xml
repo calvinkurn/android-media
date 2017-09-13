@@ -26,7 +26,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textColorHighlight">@color/font_top_ads_green</item>
+        <item name="android:textColorHighlight">@color/tkpd_main_green</item>
         <item name="android:textColor">@drawable/color_state_disable_text</item>
     </style>
 
@@ -94,7 +94,7 @@
     <style name="TextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
         <item name="android:textColorHint">@color/font_black_secondary_54</item>
         <item name="colorControlNormal">@color/colorGray</item>
-        <item name="colorControlActivated">@color/font_top_ads_green</item>
-        <item name="colorControlHighlight">@color/font_top_ads_green</item>
+        <item name="colorControlActivated">@color/tkpd_main_green</item>
+        <item name="colorControlHighlight">@color/tkpd_main_green</item>
     </style>
 </resources>
