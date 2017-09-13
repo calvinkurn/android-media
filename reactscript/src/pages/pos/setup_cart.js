@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
-import Setup_pos from './setup_pos'
-import Setup_payment from './setup_payment'
-import Setup_cart from './setup_cart'
-// import { Provider } from 'react-redux'
-// import store from './store/Store'
+import { Provider } from 'react-redux'
+import store from './store/Store'
 // import PaymentBank from './components/PaymentBank'
 // import Payment from './components/Payment'
 // import PaymentProcessing from './components/PaymentProcessing'
@@ -12,10 +8,10 @@ import Setup_cart from './setup_cart'
 // import TransactionHistory from './components/TransactionHistory'
 // import PasswordPopup from './components/PasswordPopup'
 // import POS from './components/POS'
-// import CartContainer from './containers/CartContainer'
+import CartContainer from './containers/CartContainer'
 // import { StackNavigator } from 'react-navigation';
 
-// // TODO: FOR UI testing purpose
+// // // TODO: FOR UI testing purpose
 // const App = StackNavigator({
 //   POS: {screen: POS},
 //   BankSelection : { screen: PaymentBank },
@@ -28,18 +24,15 @@ import Setup_cart from './setup_cart'
 
 
 class Root extends Component {
-  componentWillMount() {
-    console.log(this.props)
-  }
-
-  render() {
-    if (this.props.data.POS_PAGE === 'POS'){
-      return <Setup_pos />
-    } else if (this.props.data.POS_PAGE === 'PAYMENT_BANK'){
-      return <Setup_payment />
-    } else if (this.props.data.POS_PAGE === 'LOCAL_CART'){
-      return <Setup_cart />
+    componentWillMount() {
+        console.log(this.props)
     }
-  }
+    render() {
+        return (
+            <Provider store={store}>
+                <CartContainer />
+            </Provider>
+        )
+    }
 }
 export default Root
