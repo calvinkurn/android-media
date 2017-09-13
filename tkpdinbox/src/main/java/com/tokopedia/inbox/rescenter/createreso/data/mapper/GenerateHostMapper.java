@@ -26,7 +26,6 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
     }
 
     private GenerateHostDomain mappingResponse(Response<TkpdResponse> response) {
-        try {
             GenerateHostResponse generateHostResponse = response.body().convertDataObj(GenerateHostResponse.class);
             GenerateHostDomain model = new GenerateHostDomain(generateHostResponse.getServerId(),
                     generateHostResponse.getUploadHost(),
@@ -51,9 +50,5 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
                 throw new RuntimeException(String.valueOf(response.code()));
             }
             return model;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

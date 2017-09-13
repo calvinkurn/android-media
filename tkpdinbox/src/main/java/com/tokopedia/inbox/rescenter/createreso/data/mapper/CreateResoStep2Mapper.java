@@ -28,9 +28,11 @@ public class CreateResoStep2Mapper implements Func1<Response<TkpdResponse>, Crea
     }
 
     private CreateResoStep2Domain mappingResponse(Response<TkpdResponse> response) {
-        try {
-            CreateResoStep2Response createResoStep2Response = response.body().convertDataObj(CreateResoStep2Response.class);
-            CreateResoStep2Domain model = new CreateResoStep2Domain(createResoStep2Response.getResolution() != null ? mappingResolutionDomain(createResoStep2Response.getResolution()) : null,
+            CreateResoStep2Response createResoStep2Response =
+                    response.body().convertDataObj(CreateResoStep2Response.class);
+            CreateResoStep2Domain model = new CreateResoStep2Domain(
+                    createResoStep2Response.getResolution() != null ?
+                            mappingResolutionDomain(createResoStep2Response.getResolution()) : null,
                     createResoStep2Response.getSuccessMessage());
             if (response.isSuccessful()) {
                 if (response.raw().code() == ResponseStatus.SC_OK) {
@@ -52,10 +54,6 @@ public class CreateResoStep2Mapper implements Func1<Response<TkpdResponse>, Crea
                 throw new RuntimeException(String.valueOf(response.code()));
             }
             return model;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {

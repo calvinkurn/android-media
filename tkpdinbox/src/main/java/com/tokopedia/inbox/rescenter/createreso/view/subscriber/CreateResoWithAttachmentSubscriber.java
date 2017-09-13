@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 
 import rx.Subscriber;
@@ -25,11 +25,13 @@ public class CreateResoWithAttachmentSubscriber extends Subscriber<CreateSubmitD
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        mainView.errorCreateResoWithAttachment(e.getLocalizedMessage());
+        mainView.errorCreateResoWithAttachment(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(CreateSubmitDomain createSubmitDomain) {
-        mainView.successCreateResoWithAttachment(String.valueOf(createSubmitDomain.getResolution().getId()), createSubmitDomain.getSuccessMessage());
+        mainView.successCreateResoWithAttachment(String.valueOf(
+                createSubmitDomain.getResolution().getId()),
+                createSubmitDomain.getSuccessMessage());
     }
 }

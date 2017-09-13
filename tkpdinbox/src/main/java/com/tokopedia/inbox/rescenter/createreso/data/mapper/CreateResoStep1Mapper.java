@@ -28,35 +28,33 @@ public class CreateResoStep1Mapper implements Func1<Response<TkpdResponse>, Crea
     }
 
     private CreateResoStep1Domain mappingResponse(Response<TkpdResponse> response) {
-        try {
-            CreateResoStep1Response createResoStep1Response = response.body().convertDataObj(CreateResoStep1Response.class);
-            CreateResoStep1Domain model = new CreateResoStep1Domain(createResoStep1Response.getResolution() != null ? mappingResolutionDomain(createResoStep1Response.getResolution()) : null,
-                    createResoStep1Response.getCacheKey(),
-                    createResoStep1Response.getSuccessMessage());
-            if (response.isSuccessful()) {
-                if (response.raw().code() == ResponseStatus.SC_OK) {
-                    model.setSuccess(true);
-                } else {
-                    try {
-                        String msgError = "";
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                        JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            msgError += jsonArray.get(i).toString() + " ";
-                        }
-                        throw new ErrorMessageException(msgError);
-                    } catch (Exception e) {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
-                }
+        CreateResoStep1Response createResoStep1Response =
+                response.body().convertDataObj(CreateResoStep1Response.class);
+        CreateResoStep1Domain model = new CreateResoStep1Domain(
+                createResoStep1Response.getResolution() != null ?
+                        mappingResolutionDomain(createResoStep1Response.getResolution()) : null,
+                createResoStep1Response.getCacheKey(),
+                createResoStep1Response.getSuccessMessage());
+        if (response.isSuccessful()) {
+            if (response.raw().code() == ResponseStatus.SC_OK) {
+                model.setSuccess(true);
             } else {
-                throw new RuntimeException(String.valueOf(response.code()));
+                try {
+                    String msgError = "";
+                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        msgError += jsonArray.get(i).toString() + " ";
+                    }
+                    throw new ErrorMessageException(msgError);
+                } catch (Exception e) {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
+                }
             }
-            return model;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
         }
-        return null;
+        return model;
     }
 
     private ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {

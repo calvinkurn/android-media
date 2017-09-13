@@ -343,6 +343,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void errorCreateResoStep1(String error) {
+        dismissProgressBar();
         NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
@@ -353,6 +354,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void errorCreateResoStep2(String error) {
+        dismissProgressBar();
         NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
@@ -363,7 +365,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void errorCreateResoWithAttachment(String error) {
-
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     private void finishResolution(String resolutionId, String message) {

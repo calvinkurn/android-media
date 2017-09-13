@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -33,7 +32,6 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Stat
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,51 +52,51 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
     public GetProductProblemMapper(Gson gson) {
         this.gson = gson;
     }
+
     @Override
     public ProductProblemResponseDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
     }
 
     private ProductProblemResponseDomain mappingResponse(Response<TkpdResponse> response) {
-        try {
-//            JSONObject responseObject = new JSONObject(response.body().getStrResponse());
-//            Type collectionType = new TypeToken<List<ProductProblemResponse>>(){}.getType();
-//            List<ProductProblemResponse> productProblemListResponse = gson.fromJson(responseObject.getJSONArray("data").toString(), collectionType);
-//            ProductProblemResponseDomain model = new ProductProblemResponseDomain(mappingProductProblemListDomain(productProblemListResponse));
-            ProductProblemListResponse productProblemListResponse = response.body().convertDataObj(ProductProblemListResponse.class);
-            ProductProblemResponseDomain model = new ProductProblemResponseDomain(mappingProductProblemListDomain(productProblemListResponse.getProductProblemResponseList()));
-            if (response.isSuccessful()) {
-                if (response.raw().code() == ResponseStatus.SC_OK) {
-                    model.setSuccess(true);
-                } else {
-                    try {
-                        String msgError = "";
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                        JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            msgError += jsonArray.get(i).toString() + " ";
-                        }
-                        throw new ErrorMessageException(msgError);
-                    } catch (Exception e) {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
-                }
+        ProductProblemListResponse productProblemListResponse = response.body().convertDataObj(
+                ProductProblemListResponse.class);
+        ProductProblemResponseDomain model = new ProductProblemResponseDomain(
+                mappingProductProblemListDomain(
+                        productProblemListResponse.getProductProblemResponseList()));
+        if (response.isSuccessful()) {
+            if (response.raw().code() == ResponseStatus.SC_OK) {
+                model.setSuccess(true);
             } else {
-                throw new RuntimeException(String.valueOf(response.code()));
+                try {
+                    String msgError = "";
+                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        msgError += jsonArray.get(i).toString() + " ";
+                    }
+                    throw new ErrorMessageException(msgError);
+                } catch (Exception e) {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
+                }
             }
-            return model;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
         }
-        return null;
+        return model;
     }
 
-    private List<ProductProblemDomain> mappingProductProblemListDomain(List<ProductProblemResponse> response) {
+    private List<ProductProblemDomain> mappingProductProblemListDomain(
+            List<ProductProblemResponse> response) {
         List<ProductProblemDomain> domainList = new ArrayList<>();
         for (ProductProblemResponse productProblemResponse : response) {
-            ProductProblemDomain domain = new ProductProblemDomain(productProblemResponse.getProblem() != null ? mappingProblemDomain(productProblemResponse.getProblem()) :null,
-                    productProblemResponse.getOrder() != null ? mappingOrderDomain( productProblemResponse.getOrder()) : null,
-                    productProblemResponse.getStatusList() != null ? mappingStatusDomain( productProblemResponse.getStatusList()) : null);
+            ProductProblemDomain domain = new ProductProblemDomain(
+                    productProblemResponse.getProblem() != null ?
+                            mappingProblemDomain(productProblemResponse.getProblem()) : null,
+                    productProblemResponse.getOrder() != null ?
+                            mappingOrderDomain(productProblemResponse.getOrder()) : null,
+                    productProblemResponse.getStatusList() != null ?
+                            mappingStatusDomain(productProblemResponse.getStatusList()) : null);
             domainList.add(domain);
         }
         return domainList;
@@ -131,6 +129,7 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
                 orderProductResponse.getAmount() != null ? mappingAmountDomain(orderProductResponse.getAmount()) : null);
         return domain;
     }
+
     private AmountDomain mappingAmountDomain(AmountResponse amountResponse) {
         AmountDomain domain = new AmountDomain(amountResponse.getIdr(),
                 amountResponse.getInteger());
@@ -150,7 +149,6 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
                 shippingDetailResponse.getName());
         return domain;
     }
-
 
 
     private List<StatusDomain> mappingStatusDomain(List<StatusResponse> statusResponseList) {
