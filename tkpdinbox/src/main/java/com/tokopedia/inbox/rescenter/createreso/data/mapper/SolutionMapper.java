@@ -46,36 +46,35 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
 
 
     private SolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
-        try {
-            SolutionResponseResponse solutionResponseResponse = response.body().convertDataObj(SolutionResponseResponse.class);
-            SolutionResponseDomain model = new SolutionResponseDomain(
-                    solutionResponseResponse.getSolution().size() != 0 ? mappingSolutionDomain(solutionResponseResponse.getSolution()) : new ArrayList<SolutionDomain>(),
-                    mappingRequireDomain(solutionResponseResponse.getRequire()),
-                    solutionResponseResponse.getFreeReturn() != null ? mappingFreeReturnDomain(solutionResponseResponse.getFreeReturn()) : null);
-            if (response.isSuccessful()) {
-                if (response.raw().code() == ResponseStatus.SC_OK) {
-                    model.setSuccess(true);
-                } else {
-                    try {
-                        String msgError = "";
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                        JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            msgError += jsonArray.get(i).toString() + " ";
-                        }
-                        throw new ErrorMessageException(msgError);
-                    } catch (Exception e) {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
-                }
+        SolutionResponseResponse solutionResponseResponse =
+                response.body().convertDataObj(SolutionResponseResponse.class);
+        SolutionResponseDomain model = new SolutionResponseDomain(
+                solutionResponseResponse.getSolution().size() != 0 ?
+                        mappingSolutionDomain(solutionResponseResponse.getSolution()) :
+                        new ArrayList<SolutionDomain>(),
+                mappingRequireDomain(solutionResponseResponse.getRequire()),
+                solutionResponseResponse.getFreeReturn() != null ?
+                        mappingFreeReturnDomain(solutionResponseResponse.getFreeReturn()) : null);
+        if (response.isSuccessful()) {
+            if (response.raw().code() == ResponseStatus.SC_OK) {
+                model.setSuccess(true);
             } else {
-                throw new RuntimeException(String.valueOf(response.code()));
+                try {
+                    String msgError = "";
+                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        msgError += jsonArray.get(i).toString() + " ";
+                    }
+                    throw new ErrorMessageException(msgError);
+                } catch (Exception e) {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
+                }
             }
-            return model;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
         }
-        return null;
+        return model;
     }
 
     private List<SolutionDomain> mappingSolutionDomain(List<SolutionResponse> response) {
@@ -83,7 +82,8 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
         for (SolutionResponse solutionResponse : response) {
             SolutionDomain solutionDomain = new SolutionDomain(solutionResponse.getId(),
                     solutionResponse.getName(),
-                    solutionResponse.getAmount() != null ? mappingAmountDomain(solutionResponse.getAmount()) : null);
+                    solutionResponse.getAmount() != null ?
+                            mappingAmountDomain(solutionResponse.getAmount()) : null);
             domainList.add(solutionDomain);
         }
         return domainList;

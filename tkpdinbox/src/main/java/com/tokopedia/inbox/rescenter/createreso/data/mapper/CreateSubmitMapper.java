@@ -28,34 +28,32 @@ public class CreateSubmitMapper implements Func1<Response<TkpdResponse>, CreateS
     }
 
     private CreateSubmitDomain mappingResponse(Response<TkpdResponse> response) {
-        try {
-            CreateSubmitResponse createSubmitResponse = response.body().convertDataObj(CreateSubmitResponse.class);
-            CreateSubmitDomain model = new CreateSubmitDomain(createSubmitResponse.getResolution() != null ? mappingResolutionDomain(createSubmitResponse.getResolution()) : null,
-                    createSubmitResponse.getSuccessMessage());
-            if (response.isSuccessful()) {
-                if (response.raw().code() == ResponseStatus.SC_OK) {
-                    model.setSuccess(true);
-                } else {
-                    try {
-                        String msgError = "";
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                        JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            msgError += jsonArray.get(i).toString() + " ";
-                        }
-                        throw new ErrorMessageException(msgError);
-                    } catch (Exception e) {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
-                }
+        CreateSubmitResponse createSubmitResponse = response.body()
+                .convertDataObj(CreateSubmitResponse.class);
+        CreateSubmitDomain model = new CreateSubmitDomain(
+                createSubmitResponse.getResolution() != null ?
+                        mappingResolutionDomain(createSubmitResponse.getResolution()) : null,
+                createSubmitResponse.getSuccessMessage());
+        if (response.isSuccessful()) {
+            if (response.raw().code() == ResponseStatus.SC_OK) {
+                model.setSuccess(true);
             } else {
-                throw new RuntimeException(String.valueOf(response.code()));
+                try {
+                    String msgError = "";
+                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        msgError += jsonArray.get(i).toString() + " ";
+                    }
+                    throw new ErrorMessageException(msgError);
+                } catch (Exception e) {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
+                }
             }
-            return model;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
         }
-        return null;
+        return model;
     }
 
     private ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {
