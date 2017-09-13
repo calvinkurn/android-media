@@ -12,7 +12,7 @@ const BackToTop = (props) => {
         underlayColor='#fff' onPress={props.onTap}>
         <View style={{ flex: 1, flexDirection: 'row', padding: 10, alignSelf: 'center', justifyContent: 'center', }}>
           <Text style={{ color: 'rgba(0,0,0,.7)', textAlign: 'center', fontSize: 13}}>Kembali ke atas</Text>
-          <Image source={ icons.chevron_thin_up } style={{width:15, height:10, marginLeft:7, marginTop:3}} />
+          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_offstore/chevron_thin_up.png' }} style={{width:15, height:10, marginLeft:7, marginTop:3}} />
         </View>
       </TouchableOpacity>
     </View>
