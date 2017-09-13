@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
@@ -26,7 +27,8 @@ import rx.Subscriber;
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionListFragmentListener.View> implements SolutionListFragmentListener.Presenter {
+public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionListFragmentListener.View>
+        implements SolutionListFragmentListener.Presenter {
 
     private SolutionListFragmentListener.View mainView;
     private GetSolutionUseCase getSolutionUseCase;
@@ -48,6 +50,7 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
     @Override
     public void initResultViewModel(final ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
+        mainView.showLoading();
         getSolutionUseCase.execute(getSolutionUseCase.getSolutionUseCaseParams(resultViewModel), new Subscriber<SolutionResponseDomain>() {
             @Override
             public void onCompleted() {
@@ -57,7 +60,7 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                mainView.showErrorToast(e.getLocalizedMessage());
+                mainView.showErrorGetSolution(ErrorHandler.getErrorMessage(e));
 
             }
 
