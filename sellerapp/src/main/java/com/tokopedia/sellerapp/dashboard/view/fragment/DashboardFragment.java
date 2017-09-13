@@ -223,8 +223,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             gmIconImageView.setVisibility(View.GONE);
             gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
         }
+        if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
+            ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
+        } else {
+            shopIconImageView.setImageResource(R.drawable.placeholder_shop);
+        }
         //TODO shopModel.info.shopLucky
-        ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
     }
 
     private void updateViewShopOpen(ShopModel shopModel){

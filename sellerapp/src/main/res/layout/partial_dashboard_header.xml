@@ -21,12 +21,23 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/image_view_shop_icon"
+            <FrameLayout
                 android:layout_width="@dimen/dashboard_icon_shop_height"
                 android:layout_height="@dimen/dashboard_icon_shop_height"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/placeholder_shop" />
+                android:background="@drawable/rect_gray_round">
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/image_view_shop_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/placeholder_shop"
+                    android:padding="1dp"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rect_stroke_light_gray" />
+
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -51,7 +62,8 @@
                         android:id="@+id/image_view_gm_icon"
                         android:layout_width="@dimen/image_width_xxs"
                         android:layout_height="@dimen/image_width_xxs"
-                        app:srcCompat="@drawable/ic_goldmerchant_drawer"
+                        app:srcCompat="@drawable/ic_shop_gold"
+                        android:layout_gravity="center_vertical"
                         android:visibility="gone"
                         tools:visibility="visible"/>
 
@@ -60,7 +72,8 @@
                         style="@style/TextView.Body1"
                         android:layout_marginLeft="@dimen/margin_vs"
                         android:layout_marginStart="@dimen/margin_vs"
-                        tools:text="Regular Merchant" />
+                        tools:text="Regular Merchant"
+                        android:layout_gravity="center_vertical"/>
                 </LinearLayout>
 
             </LinearLayout>
