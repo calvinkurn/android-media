@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,12 +10,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.view.fragment.ProductListFragment;
 
 /**
@@ -24,6 +27,13 @@ import com.tokopedia.posapp.view.fragment.ProductListFragment;
 public class ProductListActivity extends DrawerPresenterActivity {
     LocalCacheHandler drawerCache;
     DrawerHelper drawerHelper;
+
+    @DeepLink(Constants.Applinks.PRODUCT_LIST)
+    public static Intent getApplinkIntent(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+        return new Intent(context, ProductListActivity.class)
+                .setData(uri);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
