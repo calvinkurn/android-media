@@ -114,7 +114,7 @@ public class ProductListActivity extends DrawerPresenterActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_credit_card) {
-            startActivity(new Intent(this, PaymentActivity.class));
+            startActivity(new Intent(this, InstallmentSimulationActivity.class));
             return true;
         } else if(item.getItemId() == R.id.action_cart) {
             startActivity(new Intent(this, LocalCartActivity.class));
