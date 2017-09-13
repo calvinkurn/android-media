@@ -17,25 +17,20 @@ import java.util.List;
 public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecyclerViewAdapter {
 
 
-    public List<T> getData() {
-        return data;
-    }
-
-    public interface Callback<T> {
-
-        void onItemClicked(T t);
-    }
-
     protected List<T> data;
     protected Callback<T> callback;
-
-    public void setCallback(Callback<T> callback) {
-        this.callback = callback;
-    }
 
     public BaseListAdapter() {
         super();
         this.data = new ArrayList<>();
+    }
+
+    public List<T> getData() {
+        return data;
+    }
+
+    public void setCallback(Callback<T> callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -113,8 +108,20 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         }
     }
 
+    public void addData(T data) {
+        if (data != null) {
+            this.data.add(data);
+            notifyDataSetChanged();
+        }
+    }
+
     public void clearData() {
         this.data.clear();
         notifyDataSetChanged();
+    }
+
+    public interface Callback<T> {
+
+        void onItemClicked(T t);
     }
 }
