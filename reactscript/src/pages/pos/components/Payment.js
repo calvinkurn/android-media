@@ -56,7 +56,12 @@ class payment extends Component {
     this.setState({
       errorMessage
     });
+
+    this.props.navigation.navigate('PaymentProcessing', {})
   };
+
+
+
 
   _cardType = () => {
     const cardType = getCardType(this.props.ccNum);

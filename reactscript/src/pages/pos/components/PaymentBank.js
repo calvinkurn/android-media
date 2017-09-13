@@ -5,6 +5,7 @@ import { StyleSheet, Text,TextInput, View, KeyboardAvoidingView, Button, Image, 
 import PopupDialog, {DialogTitle} from 'react-native-popup-dialog';
 import { StackNavigator } from 'react-navigation';
 import {getBankList, selectBank, getEmiList, selectEmi } from '../actions/index';
+import { NavigationModule } from 'NativeModules'
 
 
 class PaymentBank extends Component {
@@ -26,8 +27,13 @@ class PaymentBank extends Component {
   }
 
   _handleButtonPress = () => {
-
+    if (this.state.paymentMethod === 'SCAN'){
+      NavigationModule.navigate("posapp://payment/scan/3/6", "")
+    } else {
+      this.props.navigation.navigate('Payment', {})
+    }
   };
+
 
   _renderPopRow(rowData: string, sectionID: number, rowID: number) {
     if(rowData.id > 9){
@@ -155,13 +161,13 @@ class PaymentBank extends Component {
     return (
         <View style={styles.mainContainers} >
           <View style={styles.header}>
-            <Button
+            {/* <Button
                 title="Go to Payment page ->"
                 color="#42B549"
                 onPress={() =>
                     this.props.navigation.navigate('Payment', {})
                 }
-            />
+            /> */}
             </View>
             <ScrollView>
               <View style={styles.containers} >
