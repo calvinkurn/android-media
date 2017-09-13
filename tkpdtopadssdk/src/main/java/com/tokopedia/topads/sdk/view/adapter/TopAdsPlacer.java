@@ -157,6 +157,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = 0;
         mPage = 1;
         itemList.clear();
+        adsItems.clear();
         setShouldLoadAds(true);
         if (hasHeader)
             headerPlaced = false;
