@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +23,11 @@ import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.facade.FacadePromo;
+import com.tokopedia.tkpd.home.customview.BannerView;
 
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by hangnadi on 7/24/17.
@@ -38,10 +36,10 @@ import java.util.Locale;
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
     private static final String TAG = BannerPagerAdapter.class.getSimpleName();
-    private List<FacadePromo.PromoItem> bannerList;
+    private List<BannerView.PromoItem> bannerList;
     private GetShopInfoRetrofit getShopInfoRetrofit;
 
-    public BannerPagerAdapter(List<FacadePromo.PromoItem> promoList) {
+    public BannerPagerAdapter(List<BannerView.PromoItem> promoList) {
         this.bannerList = promoList;
     }
 
