@@ -301,7 +301,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_weight">Berat</string>
     <string name="title_insurance">Asuransi</string>
     <string name="title_condition">Kondisi</string>
-    <string name="title_success_rate">Transaksi Sukses</string>
+    <string name="title_success_rate">Transaksi Berhasil</string>
     <string name="title_category">Kategori</string>
     <string name="title_etalase">Etalase</string>
     <string name="title_catalog">Katalog</string>
@@ -313,7 +313,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_speed">Kecepatan</string>
     <string name="title_accuracy">Akurasi</string>
     <string name="title_service">Pelayanan</string>
-    <string name="title_last_update_price">Last Update Price :</string>
+    <string name="title_last_update_price">Perubahan Harga Terakhir :</string>
     <string name="message_add_new_talk">Berhasil menambahkan Diskusi Produk</string>
     <string name="title_sending">Sedang mengirim...</string>
     <string name="title_dialog_delete">Apakah Anda ingin menghapus tkpd ini ?</string>
@@ -325,7 +325,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="message_prod_depository">Produk ini disimpan di gudang.</string>
     <string name="message_prod_depository_2">Produk ini tidak dapat dibeli sementara. Mohon hubungi pemilik Toko untuk lebih lanjut.</string>
     <string name="message_shop_moderated">Toko ini sedang dimoderasi</string>
-    <string name="title_buy">BELI</string>
+    <string name="title_buy">Beli</string>
     <string name="title_promo_topads">Promo TopAds</string>
     <string name="title_pre_order">PREORDER</string>
     <string name="title_total_prod">Total Produk : </string>
