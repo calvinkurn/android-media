@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text,TextInput, TouchableNativeFeedback, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions} from 'react-native';
 import {selectPaymentOptions} from '../actions/index';
 import { ccFormat, getCardType } from '../lib/utility'
+import {NavigationModule} from 'NativeModules'
 
 class payment extends Component {
 
@@ -58,7 +59,7 @@ class payment extends Component {
     });
 
     // this.props.navigation.navigate('PaymentProcessing', {})
-    this.props.navigation.navigate('posapp://payment/process', {})
+    NavigationModule.navigate('posapp://payment/process', '')
   };
 
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Button, Image, TouchableWithoutFeedback} from 'react-native';
 
 class PaymentProcessing extends Component {
