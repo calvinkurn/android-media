@@ -39,6 +39,8 @@ public class PriceRangeInputView extends BaseCustomView {
     private View maxButton;
 
     private OnValueChangedListener onValueChangedListener;
+    private NumberTextWatcher minTextWatcher;
+    private NumberTextWatcher maxTextWatcher;
 
     private int seekbarButtonSize;
     private int minBound = 0;
@@ -96,8 +98,11 @@ public class PriceRangeInputView extends BaseCustomView {
         minButton = rootView.findViewById(R.id.min_button);
         maxButton = rootView.findViewById(R.id.max_button);
 
-        minValueInput.addTextChangedListener(new NumberTextWatcher(minValueInput));
-        maxValueInput.addTextChangedListener(new NumberTextWatcher(maxValueInput));
+        minTextWatcher = new NumberTextWatcher(minValueInput);
+        maxTextWatcher = new NumberTextWatcher(maxValueInput);
+
+        minValueInput.addTextChangedListener(minTextWatcher);
+        maxValueInput.addTextChangedListener(maxTextWatcher);
         minValueInput.setOnFocusChangeListener(new MinInputListener());
         maxValueInput.setOnFocusChangeListener(new MaxInputListener());
     }
@@ -180,11 +185,28 @@ public class PriceRangeInputView extends BaseCustomView {
     }
 
     private void refreshInputText() {
-        minValueInput.setText(Integer.toString(minValue));
-        maxValueInput.setText(Integer.toString(maxValue));
+        disableTextWatcher();
+        minValueInput.setText(formatToRupiah(minValue));
+        maxValueInput.setText(formatToRupiah(maxValue));
         minValueInput.setSelection(minValueInput.length());
         maxValueInput.setSelection(maxValueInput.length());
         onValueChangedListener.onValueChanged(minValue, maxValue);
+        enableTextWatcher();
+    }
+
+    private void disableTextWatcher() {
+        minValueInput.removeTextChangedListener(minTextWatcher);
+        maxValueInput.removeTextChangedListener(maxTextWatcher);
+    }
+
+    private void enableTextWatcher() {
+        minValueInput.addTextChangedListener(minTextWatcher);
+        maxValueInput.addTextChangedListener(maxTextWatcher);
+    }
+
+    private String formatToRupiah(int value) {
+        return NumberFormat.getCurrencyInstance(Locale.US)
+                .format(value).replace("$", "").replace(".00","");
     }
 
     private int getMinValue() {
