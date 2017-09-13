@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
@@ -230,20 +229,21 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 vShopClose = LayoutInflater.from(getContext())
                         .inflate(R.layout.layout_dashboard_shop_close,
                                 vgHeaderLabelLayout, false);
+
                 vgHeaderLabelLayout.addView(vShopClose);
             }
-            TextView tvCloseTitle = (TextView) vShopClose.findViewById(R.id.tv_closed_title);
+            TextView tvCloseTitle = (TextView) vShopClose.findViewById(R.id.tv_title);
             String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                     DateFormatUtils.FORMAT_DD_MMMM_YYYY,
                     shopModel.closedInfo.until);
             if (!TextUtils.isEmpty(shopCloseUntilString)) {
-                tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopModel.closedInfo.until));
+                tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
                 tvCloseTitle.setVisibility(View.VISIBLE);
             } else {
                 tvCloseTitle.setVisibility(View.GONE);
             }
 
-            TextView tvCloseDesc = (TextView) vShopClose.findViewById(R.id.tv_closed_description);
+            TextView tvCloseDesc = (TextView) vShopClose.findViewById(R.id.tv_description);
             String note = shopModel.closedInfo.note;
             if (!TextUtils.isEmpty(note)) {
                 tvCloseDesc.setText(note);

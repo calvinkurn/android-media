@@ -11,7 +11,7 @@
     android:layout_marginTop="@dimen/padding_ms">
 
     <ImageView
-        android:id="@+id/iv_close"
+        android:id="@+id/iv_icon"
         android:layout_width="@dimen/image_width_xs"
         android:layout_height="@dimen/image_width_xs"
         android:src="@drawable/icon_closed" />
@@ -24,7 +24,7 @@
         android:paddingRight="@dimen/margin_vs">
 
         <TextView
-            android:id="@+id/tv_closed_title"
+            android:id="@+id/tv_title"
             style="@style/TextView.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:text="@string/dashboard_your_shop_is_closed_until_xx" />
 
         <TextView
-            android:id="@+id/tv_closed_description"
+            android:id="@+id/tv_description"
             android:layout_marginTop="@dimen/margin_vs"
             style="@style/TextView.Caption.BlackSecondary"
             android:layout_width="match_parent"
@@ -41,7 +41,7 @@
             tools:text="Closed Description" />
 
         <TextView
-            android:id="@+id/tv_open_shop"
+            android:id="@+id/tv_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_ms"
@@ -49,7 +49,7 @@
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
-            android:padding="@dimen/gm_unfinished_margin_top"
+            android:padding="@dimen/margin_ms"
             android:text="@string/open_shop"
             android:textColor="@color/wholesale_color"
             android:textSize="@dimen/font_button"
