@@ -19,11 +19,11 @@
             <com.tokopedia.design.ticker.TickerView
                 android:id="@+id/ticker_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/ticker_height"
-                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
                 android:layout_marginLeft="@dimen/margin_sm"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="@dimen/margin_sm"
                 android:visibility="gone"
                 app:tckv_indicator_off_color="@color/grey"
                 app:tckv_indicator_on_color="@color/tkpd_main_green" />
