@@ -141,8 +141,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        KeyboardHandler.DropKeyboard(getActivity(), searchView);
-
         mainList.setLayoutManager(layoutManager);
         mainList.setAdapter(adapter);
 
@@ -393,5 +391,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     private String getQuery() {
         return searchView.getQuery().toString();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        KeyboardHandler.DropKeyboard(getActivity(), searchView);
     }
 }

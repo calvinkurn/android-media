@@ -21,7 +21,7 @@ public class ReportReviewUseCase extends UseCase<ReportReviewDomain> {
     public static final int REPORT_SARA = 2;
     public static final int REPORT_OTHER = 3;
 
-    private static final String PARAM_REVIEW_ID = "element_id";
+    private static final String PARAM_REVIEW_ID = "review_id";
     private static final String PARAM_SHOP_ID = "shop_id";
     private static final String PARAM_REASON = "reason";
     private static final String PARAM_OTHER_REASON = "otherreason";

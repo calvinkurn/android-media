@@ -132,9 +132,11 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     }
 
     private void setSendButton() {
-        if (reportRadioGroup.getCheckedRadioButtonId() != 0
+        if (reportRadioGroup.getCheckedRadioButtonId() == R.id.report_spam
+                || reportRadioGroup.getCheckedRadioButtonId() == R.id.report_sara
                 || (reportRadioGroup.getCheckedRadioButtonId() == R.id.report_other
-                && !TextUtils.isEmpty(otherReason.getText().toString().trim()))) {
+                && !TextUtils.isEmpty(otherReason.getText().toString().trim()))
+                ) {
             sendButton.setEnabled(true);
             sendButton.setTextColor(getResources().getColor(R.color.white));
             MethodChecker.setBackground(sendButton,
