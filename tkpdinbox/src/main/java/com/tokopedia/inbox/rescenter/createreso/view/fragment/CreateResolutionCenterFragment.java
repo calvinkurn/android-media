@@ -361,6 +361,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void successCreateResoWithAttachment(String resolutionId, String message) {
 
+        finishResolution(resolutionId, message);
     }
 
     @Override
@@ -370,6 +371,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     private void finishResolution(String resolutionId, String message) {
+        dismissProgressBar();
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         context.startActivity(DetailResCenterActivity.newInstance(context, String.valueOf(resolutionId)));
     }
@@ -430,6 +432,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     presenter.callCreateResolutionAPIWithAttachment();
                 else
                     presenter.callCreateResolutionAPI();
+                dialog.dismiss();
             }
         });
 
