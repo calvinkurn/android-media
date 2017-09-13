@@ -71,12 +71,14 @@ public class ProductListPickerViewModel implements ItemPickerType, Parcelable {
         dest.writeString(this.productName);
         dest.writeString(this.imageUrl);
         dest.writeString(this.productId);
+        dest.writeString(this.productPrice);
     }
 
     protected ProductListPickerViewModel(Parcel in) {
         this.productName = in.readString();
         this.imageUrl = in.readString();
         this.productId = in.readString();
+        this.productPrice = in.readString();
     }
 
     public static final Creator<ProductListPickerViewModel> CREATOR = new Creator<ProductListPickerViewModel>() {
