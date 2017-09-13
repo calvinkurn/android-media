@@ -113,6 +113,15 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
     }
 
     @Override
+    public void confirmCancelTransaction(Context context, String paymentId) {
+        TKPDMapParam<String, String> cancelTransactionParams = new TKPDMapParam<>();
+        cancelTransactionParams.put("payment_id", paymentId);
+        netInteractor.cancelTransaction(AuthUtil.generateParamsNetwork(
+                context, cancelTransactionParams
+        ), confirmCancelTransactionListener());
+    }
+
+    @Override
     public void uploadProofImageWSV4(Context context, String imagePath, TxVerData txVerData) {
         if (imagePath == null || imagePath.isEmpty()) {
             viewListener.showToastMessage(context.getString(
@@ -167,26 +176,57 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
 
     }
 
-    private TxOrderNetInteractor.CancelTransactionDialogListener dialogListener(String paymentId) {
+    private TxOrderNetInteractor.CancelTransactionDialogListener dialogListener(final String paymentId) {
         return new TxOrderNetInteractor.CancelTransactionDialogListener() {
             @Override
             public void onSuccess(String message) {
-                viewListener.
+                viewListener.showCancelTransactionDialog(message, paymentId);
             }
 
             @Override
             public void onError(String message) {
-
+                viewListener.showSnackbarWithMessage(message);
             }
 
             @Override
             public void onTimeout(String message) {
-
+                viewListener.showSnackbarWithMessage(message);
             }
 
             @Override
             public void onNoConnection(String message) {
+                viewListener.showSnackbarWithMessage(message);
+            }
+        };
+    }
 
+    private TxOrderNetInteractor.CancelTransactionListener confirmCancelTransactionListener() {
+        return new TxOrderNetInteractor.CancelTransactionListener() {
+            @Override
+            public void onSuccess(String message) {
+                viewListener.resetData();
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onPaymentExpired(String message) {
+                viewListener.resetData();
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onError(String message) {
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onTimeout(String message) {
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onNoConnection(String message) {
+                viewListener.showSnackbarWithMessage(message);
             }
         };
     }

@@ -30,5 +30,7 @@ public interface TxVerViewListener extends IBaseView {
 
     void showProcessGetData(int typeRequest);
 
+    void showSnackbarWithMessage(String message);
+
     void resetData();
 }

@@ -99,9 +99,14 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     private void showPopUp(View view, final TxVerData data) {
         PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
-        int menuId = data.getButton().getButtonUploadProof() == 0
-                ? R.menu.menu_transaction_payment
-                : R.menu.menu_transaction_payment_upload;
+        int menuId;
+        if(getTypePaymentMethod(data) == 1 || getTypePaymentMethod(data) == 2) {
+            menuId = R.menu.menu_transaction_payment_delete;
+        } else if(data.getButton().getButtonUploadProof() == 0) {
+            menuId = R.menu.menu_transaction_payment;
+        } else {
+            menuId = R.menu.menu_transaction_payment_upload;
+        }
         inflater.inflate(menuId, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -133,7 +138,6 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
 
     private void renderUnchangeableHolder(TxVerData item, ViewHolder holder) {
         holder.holderNormalPayment.setVisibility(View.GONE);
-        holder.btnOverflow.setVisibility(View.GONE);
         holder.holderUnchangeablePayment.setVisibility(View.VISIBLE);
         holder.tvSpecialPaymentMethod.setText(MessageFormat.format("Kode {0} : {1}",
                 item.getBankName(), item.getUserAccountName()));
@@ -141,7 +145,6 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
 
     private void renderKlikBCAHolder(TxVerData item, ViewHolder holder) {
         holder.holderNormalPayment.setVisibility(View.GONE);
-        holder.btnOverflow.setVisibility(View.GONE);
         holder.holderUnchangeablePayment.setVisibility(View.VISIBLE);
         holder.tvSpecialPaymentMethod.setText(item.getBankName());
     }

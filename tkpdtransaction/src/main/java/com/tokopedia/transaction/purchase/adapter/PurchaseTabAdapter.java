@@ -16,6 +16,7 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
 
     private final int tabCount;
     private final Listener listener;
+    private TxVerificationFragment verificationFragment;
 
     public PurchaseTabAdapter(FragmentManager fm, int tabCount, Listener listener) {
         super(fm);
@@ -29,7 +30,8 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
                 return TxSummaryFragment.createInstancePurchase();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
-                return TxVerificationFragment.createInstance();
+                verificationFragment = TxVerificationFragment.createInstance();
+                return verificationFragment;
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
                 return TxListFragment.instanceStatusOrder();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
@@ -48,5 +50,9 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
 
     public interface Listener {
         String getFilterCaseAllTransaction();
+    }
+
+    public TxVerificationFragment getVerificationFragment() {
+        return verificationFragment;
     }
 }
