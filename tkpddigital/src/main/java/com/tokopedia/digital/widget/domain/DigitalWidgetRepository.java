@@ -39,7 +39,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_OPERATOR";
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
-    private static int CACHE_DURATION = 60 * 5;
+    private static int CACHE_DURATION = 60 * 30;
 
     private final RechargeService rechargeService;
     private final DigitalEndpointService digitalEndpointService;

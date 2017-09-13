@@ -79,7 +79,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             @Override
             public void onNext(Status status) {
                 if (status != null) {
-                    view.hideRechargeWidget();
                     if (SessionHandler.isV4Login(activity)) {
                         fetchRecentNumberList();
                     }
