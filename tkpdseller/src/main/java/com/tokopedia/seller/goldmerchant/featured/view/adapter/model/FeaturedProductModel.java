@@ -65,4 +65,20 @@ public class FeaturedProductModel implements ItemIdType {
     public String getId() {
         return Long.toString(productId);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FeaturedProductModel that = (FeaturedProductModel) o;
+
+        return productId == that.productId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (productId ^ (productId >>> 32));
+    }
 }

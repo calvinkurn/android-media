@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType;
 import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperAdapter;
@@ -68,6 +67,18 @@ public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<Feature
             return useCaseListener.getFeaturedProductType();
         }else{
             return FeaturedProductType.DEFAULT_DISPLAY;
+        }
+    }
+
+    public void removeSelections() {
+        for (int i = 0; i < data.size(); i++) {
+            FeaturedProductModel featuredProductModel = data.get(i);
+            if (hashSet.contains(featuredProductModel.getId())) {
+                hashSet.remove(featuredProductModel.getId());
+
+                data.remove(i);
+                notifyItemRemoved(i);
+            }
         }
     }
 

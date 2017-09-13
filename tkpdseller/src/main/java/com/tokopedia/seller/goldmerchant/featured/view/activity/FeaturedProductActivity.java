@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -36,13 +35,11 @@ import rx.schedulers.Schedulers;
 
 public class FeaturedProductActivity extends BaseSimpleActivity implements HasComponent<GoldMerchantComponent>{
 
+    private static final String TAG = "FeaturedProductActivity";
     @Inject
     SessionHandler sessionHandler;
-
     @Inject
     FeaturedProductApi featuredProductApi;
-
-    private static final String TAG = "FeaturedProductActivity";
 
     @Override
     protected Fragment getNewFragment() {
@@ -138,9 +135,7 @@ public class FeaturedProductActivity extends BaseSimpleActivity implements HasCo
             switch (featuredProductType){
                 case FeaturedProductType.ARRANGE_DISPLAY:
                 case FeaturedProductType.DELETE_DISPLAY:
-                    ((FeaturedProductFragment) fragment).setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
                     ((FeaturedProductFragment) fragment).showOtherActionDialog();
-                    if(getSupportActionBar()!= null) getSupportActionBar().setTitle(R.string.featured_product_activity_title);
                     break;
                 default:
                     super.onBackPressed();

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -18,7 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
@@ -37,10 +40,10 @@ import com.tokopedia.seller.goldmerchant.featured.view.presenter.FeaturedProduct
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -58,10 +61,11 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     FeaturedProductPresenterImpl featuredProductPresenter;
     @FeaturedProductType
     int featuredProductType = FeaturedProductType.DEFAULT_DISPLAY;
-    Random random = new Random();
     private ItemTouchHelper mItemTouchHelper;
     private int MAX_ITEM = 5;
     private int delete_selection_count = 0;
+    private List<FeaturedProductModel> onActivityForResulDatas = new ArrayList<>();
+    private boolean isActivityForResult = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,38 +128,42 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<ProductListPickerViewModel> productListPickerViewModels =
-                        new ArrayList<>();
-                for (FeaturedProductModel featuredProductModel : adapter.getData()) {
-                    ProductListPickerViewModel productListPickerViewModel =
-                            new ProductListPickerViewModel();
-                    productListPickerViewModel.setId(featuredProductModel.getId());
-                    productListPickerViewModel.setProductPrice(featuredProductModel.getProductPrice());
-                    productListPickerViewModel.setTitle(featuredProductModel.getProductName());
-                    productListPickerViewModel.setImageUrl(featuredProductModel.getImageUrl());
-
-                    productListPickerViewModels.add(productListPickerViewModel);
-                }
-
-
-                Intent intent = ProductListPickerActivity.createIntent(
-                        FeaturedProductFragment.this.getActivity(), productListPickerViewModels
-
-                );
-                FeaturedProductFragment.this.startActivityForResult(intent, 12314);
+                moveToProductPicker();
             }
         });
         return view;
     }
 
+    protected void moveToProductPicker() {
+        List<ProductListPickerViewModel> productListPickerViewModels =
+                new ArrayList<>();
+        for (FeaturedProductModel featuredProductModel : adapter.getData()) {
+            ProductListPickerViewModel productListPickerViewModel =
+                    new ProductListPickerViewModel();
+            productListPickerViewModel.setId(featuredProductModel.getId());
+            productListPickerViewModel.setProductPrice(featuredProductModel.getProductPrice());
+            productListPickerViewModel.setTitle(featuredProductModel.getProductName());
+            productListPickerViewModel.setImageUrl(featuredProductModel.getImageUrl());
+
+            productListPickerViewModels.add(productListPickerViewModel);
+        }
+
+
+        Intent intent = ProductListPickerActivity.createIntent(
+                FeaturedProductFragment.this.getActivity(), productListPickerViewModels
+
+        );
+        FeaturedProductFragment.this.startActivityForResult(intent, REQUEST_CODE);
+    }
+
     @Override
     public void onSearchLoaded(@NonNull List<FeaturedProductModel> list, int totalItem) {
-        list = new ArrayList<FeaturedProductModel>(){{
-            add(new FeaturedProductModel(1+random.nextInt(1000), "", "makan", ""));
-            add(new FeaturedProductModel(1+random.nextInt(1000), "", "nasi", ""));
-            add(new FeaturedProductModel(1+random.nextInt(1000), "", "enak", ""));
-            add(new FeaturedProductModel(1+random.nextInt(1000), "", "banget", ""));
-        }};
+        if (isActivityForResult) {
+            list.addAll(new ArrayList<>(onActivityForResulDatas));
+            onActivityForResulDatas.clear();
+
+            isActivityForResult = false;
+        }
 
         super.onSearchLoaded(list, list.size());
     }
@@ -182,10 +190,19 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     }
 
     public void updateTitleView(int itemCount, int maxItemCount){
+        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (supportActionBar != null) {
+                supportActionBar.setTitle(String.format("%d / %d Item", itemCount, maxItemCount));
+            }
+        }
+    }
+
+    public void updateTitleView(@StringRes int text) {
         if(getActivity() != null && getActivity() instanceof AppCompatActivity){
             ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if( supportActionBar != null){
-                supportActionBar.setTitle(String.format("%d / %d Item", itemCount, maxItemCount));
+                supportActionBar.setTitle(text);
             }
         }
     }
@@ -258,6 +275,18 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                switch (featuredProductType) {
+                    case FeaturedProductType.DELETE_DISPLAY:
+                        ((FeaturedProductAdapter) adapter).removeSelections();
+                        break;
+                    default:
+                        break;
+                }
+
+                setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
+                updateTitleView(R.string.featured_product_activity_title);
+
+
                 featuredProductPresenter.postData(
                         FeaturedProductPOSTUseCase.createParam(
                                 adapter.getData()
@@ -323,6 +352,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE && intent != null) {
             List<ProductListPickerViewModel> productListPickerViewModels = intent.getParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT);
+            isActivityForResult = true;
 
             if (productListPickerViewModels != null) {
                 for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModels) {
@@ -332,11 +362,35 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                     featuredProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
                     featuredProductModel.setProductName(productListPickerViewModel.getTitle());
 
-                    if (adapter.getData().contains(featuredProductModel)) {
+
+                    if (!adapter.getData().contains(featuredProductModel)) {
+                        onActivityForResulDatas.add(featuredProductModel);
+
                         adapter.addData(featuredProductModel);
                     }
                 }
             }
+            searchMode = true;
         }
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
+        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
+        emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+                moveToProductPicker();
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                moveToProductPicker();
+            }
+        });
+        return emptyGroupAdsDataBinder;
     }
 }
