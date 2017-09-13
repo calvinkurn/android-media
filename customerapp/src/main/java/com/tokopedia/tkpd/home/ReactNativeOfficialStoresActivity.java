@@ -20,8 +20,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;

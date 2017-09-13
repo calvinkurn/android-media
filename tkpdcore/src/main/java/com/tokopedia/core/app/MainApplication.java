@@ -68,7 +68,6 @@ public class MainApplication extends TkpdMultiDexApplication{
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
     private LocationUtils locationUtils;

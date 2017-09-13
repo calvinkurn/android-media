@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.util.SessionHandler;
 
 /**
  * @author ricoharisin .
