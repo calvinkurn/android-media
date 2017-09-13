@@ -84,28 +84,14 @@ public class CategoryProductStyle1View extends
     @Override
     protected void onInitialDataRendered() {
         tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
-        if (!data.getOperatorStyle().equals(CategoryData.STYLE_PRODUCT_CATEGORY_99)) {
-            if (!data.getClientNumberList().isEmpty()) {
-                renderClientNumberInputForm();
-            } else {
-                for (Operator operator : data.getOperatorList()) {
-                    if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
-                        operatorSelected = operator;
-                        renderProductChooserOptions();
-                        break;
-                    }
-                }
-            }
+        if (!data.getClientNumberList().isEmpty()) {
+            renderClientNumberInputForm();
         } else {
-            if (!data.getOperatorList().get(0).getClientNumberList().isEmpty()) {
-                renderClientNumberInputFormFromOperator();
-            } else {
-                for (Operator operator : data.getOperatorList()) {
-                    if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
-                        operatorSelected = operator;
-                        renderProductChooserOptions();
-                        break;
-                    }
+            for (Operator operator : data.getOperatorList()) {
+                if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
+                    operatorSelected = operator;
+                    renderProductChooserOptions();
+                    break;
                 }
             }
         }
@@ -177,26 +163,6 @@ public class CategoryProductStyle1View extends
         } else {
             cbInstantCheckout.setChecked(false);
             cbInstantCheckout.setVisibility(GONE);
-        }
-    }
-
-    private void renderClientNumberInputFormFromOperator() {
-        final ClientNumber clientNumber = data.getOperatorList().get(0)
-                .getClientNumberList().get(0);
-        clearHolder(holderClientNumber);
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-        clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
-        clientNumberInputView.renderData(clientNumber);
-        holderClientNumber.addView(clientNumberInputView);
-        clientNumberInputView.resetInputTyped();
-
-        String lastClientNumberHistory = "";
-        if (hasLastOrderHistoryData())
-            lastClientNumberHistory = historyClientNumber.getLastOrderClientNumber().getClientNumber();
-        if (!TextUtils.isEmpty(lastClientNumberHistory)) {
-            clientNumberInputView.setText(lastClientNumberHistory);
         }
     }
 
@@ -345,34 +311,24 @@ public class CategoryProductStyle1View extends
             public void onClientNumberInputValid(String tempClientNumber) {
                 String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
                 outerLoop:
-                if (!data.getOperatorStyle().equals(CategoryData.STYLE_PRODUCT_CATEGORY_99)) {
-                    for (Operator operator : data.getOperatorList()) {
-                        for (String prefix : operator.getPrefixList()) {
-                            if (validClientNumber.startsWith(prefix)) {
-                                operatorSelected = operator;
-                                clientNumberInputView.enableImageOperator(operator.getImage());
-                                if (operatorSelected.getRule().getProductViewStyle() == 99) {
-                                    renderDefaultProductSelected();
-                                } else {
-                                    renderProductChooserOptions();
-                                }
-                                break outerLoop;
+                for (Operator operator : data.getOperatorList()) {
+                    for (String prefix : operator.getPrefixList()) {
+                        if (validClientNumber.startsWith(prefix)) {
+                            operatorSelected = operator;
+                            clientNumberInputView.enableImageOperator(operator.getImage());
+                            if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                                renderDefaultProductSelected();
                             } else {
-                                clientNumberInputView.disableImageOperator();
-                                productSelected = null;
-                                clearHolder(holderChooserProduct);
-                                clearHolder(holderAdditionalInfoProduct);
-                                clearHolder(holderPriceInfoProduct);
+                                renderProductChooserOptions();
                             }
+                            break outerLoop;
+                        } else {
+                            clientNumberInputView.disableImageOperator();
+                            productSelected = null;
+                            clearHolder(holderChooserProduct);
+                            clearHolder(holderAdditionalInfoProduct);
+                            clearHolder(holderPriceInfoProduct);
                         }
-                    }
-                } else {
-                    operatorSelected = data.getOperatorList().get(0);
-                    clientNumberInputView.enableImageOperator(operatorSelected.getImage());
-                    if (operatorSelected.getRule().getProductViewStyle() == 99) {
-                        renderDefaultProductSelected();
-                    } else {
-                        renderProductChooserOptions();
                     }
                 }
             }
