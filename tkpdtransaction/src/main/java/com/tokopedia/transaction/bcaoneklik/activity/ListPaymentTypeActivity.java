@@ -234,7 +234,6 @@ public class ListPaymentTypeActivity extends TActivity
 
             @Override
             public void onError(Throwable e) {
-                rootView.setVisibility(View.VISIBLE);
                 if(e instanceof ResponseRuntimeException) {
                     NetworkErrorHelper.createSnackbarWithAction(ListPaymentTypeActivity.this,
                             e.getMessage(),
@@ -249,7 +248,6 @@ public class ListPaymentTypeActivity extends TActivity
 
             @Override
             public void onNext(PaymentListModel paymentListModel) {
-                rootView.setVisibility(View.VISIBLE);
                 mainProgressDialog.dismiss();
                 refreshHandler.finishRefresh();
                 if(paymentListModel.getBcaOneClickUserModels() == null) {
@@ -257,6 +255,8 @@ public class ListPaymentTypeActivity extends TActivity
                     bcaOneClickRecyclerView.setVisibility(View.GONE);
                     bcaOneClickRegisterLayout.setVisibility(View.GONE);
                 } else {
+                    bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
+                    quickPaymentTitle.setVisibility(View.VISIBLE);
                     paymentModels = paymentListModel;
                     bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
                             paymentListModel.getBcaOneClickUserModels(),

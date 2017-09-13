@@ -25,7 +25,6 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:background="@drawable/ic_icon_repsis_dislike_active"
-            android:backgroundTint="@color/colorPrimary"
             />
         
         <TextView
@@ -45,7 +44,6 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:background="@drawable/ic_icon_repsis_like_active"
-            android:backgroundTint="@color/colorPrimary"
             />
 
         <TextView

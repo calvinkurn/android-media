@@ -30,10 +30,8 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
@@ -70,6 +68,7 @@ public class MainApplication extends TkpdMultiDexApplication{
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
+    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
     private LocationUtils locationUtils;
@@ -309,12 +308,14 @@ public class MainApplication extends TkpdMultiDexApplication{
         });
     }
 
+
+    /**
+     * leave empty for mainapplication.
+     *
+     * @return
+     */
     protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
-        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
-        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
-        return cacheApiWhitelists;
+        return new ArrayList<>();
     }
 
     @Override

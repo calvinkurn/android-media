@@ -131,5 +131,6 @@
     <string name="product_variant_add_new_x">Tambah %1$s baru</string>
     <string name="product_variant_max_limit">%1$d batas maksimum varian</string>
     <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
+    <string name="product_variant_search_x">Cari %1$s</string>
 
 </resources>

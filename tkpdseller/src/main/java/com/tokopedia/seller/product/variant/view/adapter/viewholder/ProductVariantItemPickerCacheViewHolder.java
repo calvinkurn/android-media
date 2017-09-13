@@ -46,9 +46,9 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
                 imageView.setVisibility(View.VISIBLE);
             }
         } else {
-            if (!TextUtils.isEmpty(productVariantViewModel.getImageUrl())) {
+            if (!TextUtils.isEmpty(productVariantViewModel.getIcon())) {
                 imageView.clearColorFilter();
-                Glide.with(imageView.getContext()).load(productVariantViewModel.getImageUrl())
+                Glide.with(imageView.getContext()).load(productVariantViewModel.getIcon())
                         .transform(new CircleTransform(imageView.getContext())).into(imageView);
                 imageView.setVisibility(View.VISIBLE);
             } else { // no url

@@ -50,6 +50,7 @@ public final class AppScreen {
     public static final String SCREEN_CONFIG_P_PASSWORD = "People Edit Password";
     public static final String SCREEN_SHOP = "Shop Info";
     public static final String SCREEN_OFFICIAL_STORE = "Official Store";
+    public static final String SCREEN_OFFICIAL_STORE_REACT = "Official Store React";
     public static final String SCREEN_SHOP_SEND_MESSAGE = "Shop Send Message";
     public static final String SCREEN_SHOP_DETAIL = "Shop Info Detail";
     public static final String SCREEN_SHOP_DETAIL_STATS = "Shop Info Detail Statistic";

@@ -53,4 +53,9 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
                     .actionApplink(this.getCurrentActivity(), Constants.Applinks.LOGIN);
         }
     }
+
+    @ReactMethod
+    public void getCurrentUserId(Promise promise) {
+        promise.resolve(SessionHandler.getLoginID(context));
+    }
 }

@@ -8,5 +8,5 @@ public interface ItemPickerType extends ItemIdType {
 
     String getTitle();
 
-    String getImageUrl();
+    String getIcon();
 }

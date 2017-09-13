@@ -310,7 +310,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onForceLogout() {
-        //if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
+        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
     }
 
     @Override
