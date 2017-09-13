@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
@@ -163,10 +164,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
                 sellerDashboardPresenter.refreshShopInfo();
             }
         });
+        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
+        sellerDashboardPresenter.getTicker();
     }
 
     @Override
@@ -187,9 +191,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onResume() {
         super.onResume();
-        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         sellerDashboardPresenter.getShopInfoWithScore();
-        sellerDashboardPresenter.getTicker();
         sellerDashboardPresenter.getNotification();
     }
 
@@ -203,19 +205,26 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         swipeRefreshLayout.setRefreshing(false);
 
         // TODO update view
-        Info shopModelInfo = shopModel.info;
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+
+        updateShopInfo(shopModel);
+        shopReputationView.setValue(0, 0, 0);
+        updateViewShopOpen(shopModel);
+        shopScoreWidget.renderView(shopScoreViewModel);
+    }
+
+    private void updateShopInfo(ShopModel shopModel) {
+        Info shopModelInfo = shopModel.info;
         shopNameTextView.setText(shopModelInfo.getShopName());
-        if (shopModelInfo.isShopIsGoldBadge()) {
+        if (shopModelInfo.shopIsGold == 1) {
             gmIconImageView.setVisibility(View.VISIBLE);
+            gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
         } else {
             gmIconImageView.setVisibility(View.GONE);
+            gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
         }
-        shopReputationView.setValue(0, 0, 0);
-
-        updateViewShopOpen(shopModel);
-
-        shopScoreWidget.renderView(shopScoreViewModel);
+        //TODO shopModel.info.shopLucky
+        ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
     }
 
     private void updateViewShopOpen(ShopModel shopModel){
