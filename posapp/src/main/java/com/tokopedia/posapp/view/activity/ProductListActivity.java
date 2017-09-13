@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -105,7 +104,7 @@ public class ProductListActivity extends DrawerPresenterActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_credit_card) {
-            startActivity(new Intent(this, SelectBankActivity.class));
+            startActivity(new Intent(this, PaymentActivity.class));
             return true;
         } else if(item.getItemId() == R.id.action_cart) {
             startActivity(new Intent(this, LocalCartActivity.class));

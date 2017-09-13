@@ -62,7 +62,7 @@
             android:name=".view.activity.LocalCartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.SelectBankActivity"
+            android:name=".view.activity.PaymentActivity"
             android:screenOrientation="portrait" />
     </application>
 

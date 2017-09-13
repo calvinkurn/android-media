@@ -3,6 +3,7 @@ package com.tokopedia.posapp.data.source.cloud.api;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.posapp.PosConstants;
 import com.tokopedia.posapp.data.pojo.BankInstallmentResponse;
+import com.tokopedia.posapp.data.pojo.CreditCardBinResponse;
 
 import java.util.Map;
 
@@ -18,8 +19,8 @@ import rx.Observable;
 public interface CreditCardApi {
     @GET(TkpdBaseURL.Payment.PATH_INSTALLMENT_TERMS +
             PosConstants.Payment.MERCHANT_CODE + "/" + PosConstants.Payment.PROFILE_CODE)
-    Observable<Response<BankInstallmentResponse>> getBankInstallment(@QueryMap Map<String, String> params);
+    Observable<Response<BankInstallmentResponse>> getBankInstallment();
 
     @GET(TkpdBaseURL.Payment.PATH_CC_BIN)
-    Observable<Response<BankInstallmentResponse>> getBins(@QueryMap Map<String, String> params);
+    Observable<Response<CreditCardBinResponse>> getBins();
 }

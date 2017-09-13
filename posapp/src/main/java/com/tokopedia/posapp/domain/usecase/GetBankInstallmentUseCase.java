@@ -26,6 +26,6 @@ public class GetBankInstallmentUseCase extends UseCase<BankInstallmentDomain>{
 
     @Override
     public Observable<BankInstallmentDomain> createObservable(RequestParams requestParams) {
-        return bankRepository.getBankInstallment(requestParams);
+        return bankRepository.getBankInstallment();
     }
 }

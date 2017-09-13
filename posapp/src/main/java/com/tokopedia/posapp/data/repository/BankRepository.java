@@ -11,7 +11,7 @@ import rx.Observable;
  */
 
 public interface BankRepository {
-    Observable<BankInstallmentDomain> getBankInstallment(RequestParams params);
+    Observable<BankInstallmentDomain> getBankInstallment();
 
     Observable<BankSavedResult> storeBankToCache(BankInstallmentDomain data);
 }

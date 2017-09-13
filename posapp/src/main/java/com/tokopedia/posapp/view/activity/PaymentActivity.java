@@ -18,11 +18,11 @@ import com.tokopedia.posapp.view.fragment.PaymentFragment;
  * Created by okasurya on 9/12/17.
  */
 
-public class SelectBankActivity extends BasePresenterActivity {
-    @DeepLink(Constants.Applinks.PAYMENT_BANK)
+public class PaymentActivity extends BasePresenterActivity {
+    @DeepLink(Constants.Applinks.PAYMENT_CHECKOUT)
     public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-        return new Intent(context, SelectBankActivity.class)
+        return new Intent(context, PaymentActivity.class)
                 .setData(uri)
                 .putExtras(extras);
     }
@@ -30,7 +30,6 @@ public class SelectBankActivity extends BasePresenterActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

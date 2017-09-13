@@ -19,8 +19,8 @@ public class BankRepositoryImpl implements BankRepository {
     }
 
     @Override
-    public Observable<BankInstallmentDomain> getBankInstallment(RequestParams params) {
-        return bankFactory.cloud().getBankInstallment(params);
+    public Observable<BankInstallmentDomain> getBankInstallment() {
+        return bankFactory.cloud().getBankInstallment();
     }
 
     @Override

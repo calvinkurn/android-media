@@ -131,7 +131,7 @@ public class CachePresenter implements Cache.Presenter {
     private void getBankList() {
 //        compositeSubscription.add(
             getBankInstallmentUseCase
-                    .createObservable(RequestParams.create())
+                    .createObservable(null)
                     .observeOn(Schedulers.newThread())
                     .flatMap(storeBankToCache())
                     .subscribeOn(Schedulers.newThread())
