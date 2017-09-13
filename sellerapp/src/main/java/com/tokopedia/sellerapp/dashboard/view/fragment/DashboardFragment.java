@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
@@ -44,6 +45,8 @@ import javax.inject.Inject;
  */
 
 public class DashboardFragment extends BaseDaggerFragment implements SellerDashboardView {
+
+    private ViewGroup vgHeaderLabelLayout;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -90,6 +93,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onViewCreated(view, savedInstanceState);
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
+        vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
@@ -216,10 +220,18 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void updateViewShopOpen(ShopModel shopModel){
+        View vShopClose = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
         if (shopModel.isOpen == ShopModel.IS_OPEN) {
-            //TODO remove the close shop if any
+            if (vShopClose!= null) {
+                vgHeaderLabelLayout.removeView(vShopClose);
+            }
         } else {
-            //TODO add the close shop if any
+            if (vShopClose== null) {
+                vShopClose = LayoutInflater.from(getContext())
+                        .inflate(R.layout.layout_dashboard_shop_close,
+                                vgHeaderLabelLayout, false);
+                vgHeaderLabelLayout.addView(vShopClose);
+            }
         }
     }
 
@@ -255,7 +267,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetNotification(DrawerNotification drawerNotification) {
-        // TODO drawer nofitication
         int newOrderCount = drawerNotification.getSellingNewOrder();
         int shippingConfirmation = drawerNotification.getSellingShippingConfirmation();
         int shippingStatus = drawerNotification.getSellingShippingStatus();
