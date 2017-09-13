@@ -10,6 +10,7 @@ import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.home.view.ReputationView;
+import com.tokopedia.seller.product.edit.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
@@ -30,14 +31,17 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase;
     private GetTickerUseCase getTickerUseCase;
     private NotificationUseCase notificationUseCase;
+    private DeleteShopInfoUseCase deleteShopInfoUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
                                     GetTickerUseCase getTickerUseCase,
-                                    NotificationUseCase notificationUseCase) {
+                                    NotificationUseCase notificationUseCase,
+                                    DeleteShopInfoUseCase deleteShopInfoUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.notificationUseCase = notificationUseCase;
+        this.deleteShopInfoUseCase = deleteShopInfoUseCase;
     }
 
     public void getShopInfoWithScore(){
@@ -71,6 +75,25 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                         shopScoreViewModel);
             }
         };
+    }
+
+    public void refreshShopInfo(){
+        deleteShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getShopInfoWithScore();
+            }
+        });
     }
 
     public void getTicker(){

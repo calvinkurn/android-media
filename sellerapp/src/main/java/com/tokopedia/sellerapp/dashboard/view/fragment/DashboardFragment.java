@@ -47,6 +47,7 @@ import javax.inject.Inject;
 public class DashboardFragment extends BaseDaggerFragment implements SellerDashboardView {
 
     private ViewGroup vgHeaderLabelLayout;
+    private SwipeToRefresh swipeRefreshLayout;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -160,13 +161,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             }
         });
 
-        final SwipeToRefresh swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //TODO
-                //this is after refresh success
-                swipeRefreshLayout.setRefreshing(false);
+                sellerDashboardPresenter.refreshShopInfo();
             }
         });
 
@@ -203,6 +202,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
+        swipeRefreshLayout.setRefreshing(false);
+
         // TODO update view
         Info shopModelInfo = shopModel.info;
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);

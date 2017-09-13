@@ -12,6 +12,5 @@ import rx.Observable;
 public interface ShopInfoRepository {
     Observable<AddProductShopInfoDomainModel> getAddProductShopInfo();
     String getShopId();
-    Observable<Boolean> clearCacheShopInfo();
     Observable<ShopModel> getShopInfo();
 }

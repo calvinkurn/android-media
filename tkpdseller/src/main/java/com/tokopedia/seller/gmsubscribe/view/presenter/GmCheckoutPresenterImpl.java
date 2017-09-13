@@ -102,7 +102,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
     @Override
     public void clearCacheShopInfo() {
-        deleteShopInfoUseCase.execute(RequestParams.create(), getSubscriberClearCacheShopInfo());
+        deleteShopInfoUseCase.execute(RequestParams.EMPTY, getSubscriberClearCacheShopInfo());
     }
 
     private Subscriber<Boolean> getSubscriberClearCacheShopInfo() {
