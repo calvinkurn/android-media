@@ -21,10 +21,6 @@ public class PaymentActivity extends ReactNativeActivity {
     public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
 
-        extras.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
-        extras.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.PAYMENT);
-        extras.putString(USER_ID, SessionHandler.getLoginID(context));
-
         return new Intent(context, PaymentActivity.class)
                 .setData(uri)
                 .putExtras(extras);
@@ -32,14 +28,17 @@ public class PaymentActivity extends ReactNativeActivity {
 
     @Override
     protected Bundle getPropsBundle() {
-        Bundle extras = getIntent().getExtras();
         Bundle bundle = new Bundle();
-        if(extras != null) {
-            bundle.putString(ReactConst.KEY_SCREEN, extras.getString(ReactConst.KEY_SCREEN));
-            bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE, extras.getString(PosReactConst.Screen.PARAM_POS_PAGE));
-            bundle.putString(USER_ID, extras.getString(USER_ID));
-        }
+        bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
+        bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE,  PosReactConst.Page.PAYMENT);
+        bundle.putString(USER_ID,  SessionHandler.getLoginID(this));
+
 
         return bundle;
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

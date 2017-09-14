@@ -72,9 +72,6 @@
                     android:host="pospayment" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.activity.PaymentProcessActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -3,9 +3,11 @@ package com.tokopedia.posapp.react.datasource.cache;
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.posapp.data.pojo.Paging;
 import com.tokopedia.posapp.data.pojo.ShopProductResponse;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.database.model.ProductDb;
+import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +55,16 @@ public class ReactProductCacheSource implements ReactCacheSource {
         }
         shopProductResponse.setList(productList);
         shopProductResponse.setTotalData(productDbs.size());
+        shopProductResponse.setPaging(new Paging());
 
-        return Observable.just(shopProductResponse)
-                .map(new Func1<ShopProductResponse, String>() {
+        final CacheResult<ShopProductResponse> response = new CacheResult<>();
+        response.data = shopProductResponse;
+
+        return Observable.just(response)
+                .map(new Func1<CacheResult, String>() {
                     @Override
-                    public String call(ShopProductResponse shopProductResponse) {
-                        return gson.toJson(shopProductResponse);
+                    public String call(CacheResult response) {
+                        return gson.toJson(response);
                     }
                 });
     }

@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.react.datasource.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -8,5 +10,7 @@ import java.util.List;
 
 public class CacheResult<T> {
     public List<T> datas;
+
+    @SerializedName("data")
     public T data;
 }
