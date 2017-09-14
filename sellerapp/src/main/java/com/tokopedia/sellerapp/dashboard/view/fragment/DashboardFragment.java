@@ -230,7 +230,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private void updateShopInfo(ShopModel shopModel) {
         Info shopModelInfo = shopModel.info;
         shopNameTextView.setText(shopModelInfo.getShopName());
-        if (shopModelInfo.shopIsGold == 1) {
+        if (shopModelInfo.isGoldMerchant()) {
             gmIconImageView.setVisibility(View.VISIBLE);
             gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
         } else {
@@ -240,7 +240,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
         } else {
-            shopIconImageView.setImageResource(R.drawable.placeholder_shop);
+            shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
         //TODO shopModel.info.shopLucky
     }

@@ -22,7 +22,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@drawable/line_separator"
+                android:divider="@drawable/bg_line_separator"
                 android:orientation="vertical"
                 android:showDividers="middle">
 
