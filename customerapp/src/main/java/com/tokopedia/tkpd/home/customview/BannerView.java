@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.customview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -34,6 +35,8 @@ import java.util.List;
 public class BannerView extends BaseCustomView {
 
     private static final long SLIDE_DELAY = 5000;
+    private static final String SAVED = "instance state BannerView.class";
+    private static final String SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress";
 
     private RecyclerView bannerRecyclerView;
     private ViewGroup bannerIndicator;
@@ -75,6 +78,7 @@ public class BannerView extends BaseCustomView {
         bannerSeeAll = view.findViewById(R.id.promo_link);
         indicatorItems = new ArrayList<>();
         impressionStatusList = new ArrayList<>();
+        promoList = new ArrayList<>();
     }
 
     @Override
@@ -232,6 +236,34 @@ public class BannerView extends BaseCustomView {
 
     public boolean isAutoScrollOnProgress() {
         return autoScrollOnProgress;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            setAutoScrollOnProgress(bundle.getBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS));
+            if (isAutoScrollOnProgress()) {
+                startAutoScrollBanner();
+            } else {
+                stopAutoScrollBanner();
+            }
+            state = bundle.getParcelable(SAVED);
+        }
+        super.onRestoreInstanceState(state);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SAVED, super.onSaveInstanceState());
+        bundle.putBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS, isAutoScrollOnProgress());
+        return bundle;
+    }
+
+    public void restartAutoScrollBanner() {
+        resetImpressionStatus();
+        startAutoScrollBanner();
     }
 
     public static class PromoItem implements Parcelable {

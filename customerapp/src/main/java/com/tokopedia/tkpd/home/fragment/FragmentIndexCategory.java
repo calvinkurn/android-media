@@ -373,8 +373,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void restartAutoScrollBanner() {
-        holder.bannerView.resetImpressionStatus();
-        holder.bannerView.startAutoScrollBanner();
+        holder.bannerView.restartAutoScrollBanner();
     }
 
     private void stopAutoScrollBanner() {
@@ -455,6 +454,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (isTickerRotating()) {
             startSlideTicker();
         }
+        if (!holder.bannerView.isAutoScrollOnProgress()) {
+            restartAutoScrollBanner();
+        }
         super.onStart();
     }
 
@@ -472,6 +474,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onStop() {
         if (isTickerRotating()) {
             stopSlideTicker();
+        }
+        if (holder.bannerView.isAutoScrollOnProgress()) {
+            stopAutoScrollBanner();
         }
         super.onStop();
     }
@@ -857,8 +862,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
-            stopAutoScrollBanner();
-            restartAutoScrollBanner();
+            if (!holder.bannerView.isAutoScrollOnProgress()) {
+                restartAutoScrollBanner();
+            }
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();
@@ -882,7 +888,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
         tokoCashPresenter.onDestroy();
-        stopAutoScrollBanner();
+
         getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
