@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
 import android.view.View;
 
+import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
@@ -21,6 +23,7 @@ import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel
 import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.List;
 
@@ -32,8 +35,7 @@ import javax.inject.Inject;
 
 public class ProductListPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductListPickerViewModel>
         implements BasePickerItemSearchList<ProductListPickerViewModel>, ProductListPickerSearchView,
-        BaseMultipleCheckListAdapter.CheckedCallback<ProductListPickerViewModel>,
-        BaseEmptyDataBinder.Callback{
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductListPickerViewModel>{
 
     @Inject
     ProductListPickerSearchPresenter productListPickerSearchPresenter;
@@ -124,7 +126,8 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
 
     @Override
     public void onErrorGetProductList(Throwable e) {
-
+        onLoadSearchError(e);
+        productListPickerMultipleItem.validateFooterAndInfoView();
     }
 
     @Override
@@ -140,6 +143,14 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     }
 
     @Override
+    public void onLoadSearchError(Throwable t) {
+        super.onLoadSearchError(t);
+        if (adapter.getDataSize() < 1) {
+            showSearchView(false);
+        }
+    }
+
+    @Override
     public void onSuccessGetProductList(ProductListSellerModelView productListSellerModelView) {
         onSearchLoaded(productListSellerModelView.getProductListPickerViewModels(), productListSellerModelView.getProductListPickerViewModels().size());
         hasNextPage = productListSellerModelView.isHasNextPage();
@@ -148,22 +159,13 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     @Override
     protected void showViewList(@NonNull List<ProductListPickerViewModel> list) {
         super.showViewList(list);
+        showSearchView(true);
         productListPickerMultipleItem.validateFooterAndInfoView();
     }
 
     @Override
     protected boolean hasNextPage() {
         return hasNextPage;
-    }
-
-    @Override
-    public void onEmptyContentItemTextClicked() {
-
-    }
-
-    @Override
-    public void onEmptyButtonClicked() {
-
     }
 
     @Override
