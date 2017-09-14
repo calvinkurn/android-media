@@ -27,7 +27,7 @@ export default class CartItemList extends Component {
 
   paymentCheckoutClicked = () => {
     console.log("checkout clicked")
-    NavigationModule.navigate("posapp://payment/checkout", "")
+    NavigationModule.navigateAndFinish("posapp://payment/checkout", "")
   }
 
   render() {

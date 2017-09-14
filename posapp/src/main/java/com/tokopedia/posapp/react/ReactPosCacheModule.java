@@ -78,7 +78,7 @@ public class ReactPosCacheModule extends ReactContextBaseJavaModule {
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
-a
+
                     }
 
                     @Override
