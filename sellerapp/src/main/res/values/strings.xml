@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">TopSeller</string>
-    <string name="block_gm_subscribe_title">Tidak dapat mengakses\nGold Merchant</string>
-    <string name="block_gm_subscribe_desc">Maaf, pembelian Gold Merchant tidak dapat\ndilakukan pada Android Jelly Bean (4.3)\nkebawah. Silahkan lakukan pembelian atau\nperpanjangan Gold Merchant melalui\nbrowser Anda</string>
-    <string name="button_gm_subscribe">Buka Browser</string>
     <string name="extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
     <string name="payment_and_topup">Pembayaran dan Top Up</string>
@@ -27,6 +24,7 @@
     <string name="dashboard_label_regular_merchant">Regular Merchant</string>
     <string name="dashboard_label_gold_merchant">Gold Merchant</string>
     <string name="dashboard_shop_score_point">%1s poin</string>
+    <string name="dashboard_shop_success_rate">%1s%%</string>
     <string name="open_shop">Buka Toko</string>
 
 </resources>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:divider="@drawable/line_separator_medium"
-    android:showDividers="middle"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:showDividers="middle">
 
     <LinearLayout
-        style="@style/LabelLayout"
         android:id="@+id/label_layout_header"
+        style="@style/LabelLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view_shop_icon"
                 android:layout_width="@dimen/dashboard_icon_shop_height"
@@ -31,11 +32,11 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/text_view_shop_name"
@@ -51,9 +52,9 @@
                         android:id="@+id/image_view_gm_icon"
                         android:layout_width="@dimen/image_width_xxs"
                         android:layout_height="@dimen/image_width_xxs"
-                        app:srcCompat="@drawable/ic_goldmerchant_drawer"
                         android:visibility="gone"
-                        tools:visibility="visible"/>
+                        app:srcCompat="@drawable/ic_goldmerchant_drawer"
+                        tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/text_view_gm_status"
@@ -68,15 +69,16 @@
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="@dimen/image_width_xs"
                 android:layout_height="@dimen/image_width_xs"
-                android:layout_marginBottom="@dimen/margin_ms"
-                app:srcCompat="@drawable/icon_setting"
                 android:layout_gravity="top"
+                android:layout_marginBottom="@dimen/margin_ms"
                 android:layout_marginTop="@dimen/margin_ms"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                app:srcCompat="@drawable/icon_setting" />
         </LinearLayout>
 
-        <include layout="@layout/layout_dashboard_shop_close"
+        <include
+            layout="@layout/layout_dashboard_shop_close"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vs" />
@@ -109,11 +111,13 @@
             <com.tokopedia.design.reputation.ShopReputationView
                 android:id="@+id/shop_reputation_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small" />
 
             <TextView
                 android:id="@+id/text_view_reputation_point"
                 style="@style/TextView.Caption.BlackDisabled"
+                android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/label_empty_value" />
         </LinearLayout>
 
@@ -136,6 +140,7 @@
             <TextView
                 android:id="@+id/text_view_transaction_success"
                 style="@style/TextView.Display1"
+                android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/label_empty_value" />
         </LinearLayout>
     </LinearLayout>

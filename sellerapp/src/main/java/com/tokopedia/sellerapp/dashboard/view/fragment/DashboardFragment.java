@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.shop.model.shopinfo.ShopInfo;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.design.loading.LoadingStateView;
@@ -31,7 +29,6 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
 
@@ -199,7 +196,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
-        // TODO update view
         Info shopModelInfo = shopModel.info;
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
         shopNameTextView.setText(shopModelInfo.getShopName());
@@ -208,8 +204,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         } else {
             gmIconImageView.setVisibility(View.GONE);
         }
-        shopReputationView.setValue(0, 0, 0);
-
+        shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
+                shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
+        reputationPointTextView.setText(String.valueOf(shopModel.getStats().getShopReputationScore()));
+        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate, String.valueOf(shopModel.getStats().getRateSuccess())));
         updateViewShopOpen(shopModel);
 
         shopScoreWidget.renderView(shopScoreViewModel);

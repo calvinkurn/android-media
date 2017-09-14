@@ -71,7 +71,7 @@ public class ShopReputationView extends BaseCustomView {
     }
 
     public void setValue(int medalType, int level, int point) {
-        removeAllViews();
+        reputationLayout.removeAllViews();
         int imageResource = getIconResource(medalType);
         if (medalType == MEDAL_TYPE_0) {
             level = 1;
