@@ -13,6 +13,7 @@ import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -106,9 +107,10 @@ public class DeviceUtil {
     }
 
     public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam() {
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         RequestBodyAppsFlyer requestBodyAppsFlyer = new RequestBodyAppsFlyer();
         requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId());
-        requestBodyAppsFlyer.setDeviceId(TrackingUtils.getAdsId());
+        requestBodyAppsFlyer.setDeviceId(analHandler.getAdsId());
         return requestBodyAppsFlyer;
     }
 
