@@ -34,7 +34,8 @@ import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.reputation.view.activity.SellerReputationActivity;
+import com.tokopedia.seller.shop.ShopEditorActivity;
+import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
@@ -42,6 +43,7 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
 
@@ -55,9 +57,7 @@ import javax.inject.Inject;
 
 public class DashboardFragment extends BaseDaggerFragment implements SellerDashboardView {
 
-    private ViewGroup vgHeaderLabelLayout;
     private SwipeToRefresh swipeRefreshLayout;
-    private View ivSettingIcon;
     private View reputationLabelLayout;
     private View transactionlabelLayout;
 
@@ -108,12 +108,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onViewCreated(view, savedInstanceState);
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
-        vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
+        ViewGroup vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
-        ivSettingIcon = view.findViewById(R.id.iv_setting);
+        View ivSettingIcon = view.findViewById(R.id.iv_setting);
         shopWarningTickerView = (ShopWarningTickerView) view.findViewById(R.id.shop_warning_ticker_view);
 
         reputationLabelLayout = view.findViewById(R.id.reputation_label_layout);
@@ -204,8 +204,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onRefresh() {
                 headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
                 sellerDashboardPresenter.refreshShopInfo();
+
+                //TODO loading state for notification
+                sellerDashboardPresenter.getNotification();
             }
         });
+
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
         sellerDashboardPresenter.getTicker();
@@ -296,17 +300,20 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         } else {
             shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
-        //TODO shopModel.info.shopLucky
+        //TODO need shopModel.info.shopLucky?
     }
 
     private void updateViewShopOpen(ShopModel shopModel) {
+        switch (shopModel.getInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
                 showShopClosed(shopModel);
                 break;
             case ShopStatusDef.MODERATED:
+                //TODO moderated state
                 shopWarningTickerView.setVisibility(View.GONE);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
+                //TODO not active state
                 shopWarningTickerView.setVisibility(View.GONE);
                 break;
             default:
@@ -326,7 +333,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
                 intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-                UnifyTracking.eventManageShopInfo();
                 startActivityForResult(intent, 0);
             }
         });
