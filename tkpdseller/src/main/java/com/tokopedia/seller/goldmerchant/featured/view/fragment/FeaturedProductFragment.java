@@ -252,6 +252,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     public void setFeaturedProductType(@FeaturedProductType int featuredProductType) {
         this.featuredProductType = featuredProductType;
+        getActivity().invalidateOptionsMenu();
         adapter.notifyDataSetChanged();
     }
 
@@ -259,6 +260,21 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_gm_featured_product, menu);
+        if(featuredProductType == FeaturedProductType.DELETE_DISPLAY){
+            setVisibleMenuModeDelete(menu, true);
+        }else{
+            setVisibleMenuModeDelete(menu, false);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    void setVisibleMenuModeDelete(Menu menu, boolean isMenuModeDeleteVisible) {
+        MenuItem menuItemDeleteMode = menu.findItem(R.id.menu_delete_mode);
+        MenuItem menuItemArrange = menu.findItem(R.id.menu_arrange);
+        MenuItem menuItemDelete = menu.findItem(R.id.menu_delete);
+        menuItemDeleteMode.setVisible(isMenuModeDeleteVisible);
+        menuItemArrange.setVisible(!isMenuModeDeleteVisible);
+        menuItemDelete.setVisible(!isMenuModeDeleteVisible);
     }
 
     @Override
@@ -271,6 +287,8 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
             setFeaturedProductType(FeaturedProductType.DELETE_DISPLAY);
             hideFab();
             return true;
+        }else if(item.getItemId() == R.id.menu_delete_mode){
+            showOtherActionDialog();
         }
         return super.onOptionsItemSelected(item);
     }
