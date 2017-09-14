@@ -19,6 +19,9 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -113,43 +116,50 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(getActivity());
+                startActivity(intent);
             }
         });
         deliveryConfirmationLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionConfirmShipping(getActivity());
+                startActivity(intent);
             }
         });
         deliveryStatusLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionShippingStatus(getActivity());
+                startActivity(intent);
             }
         });
         opportunityLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity());
+                startActivity(intent);
             }
         });
         messageLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = InboxRouter.getInboxMessageActivityIntent(getActivity());
+                startActivity(intent);
             }
         });
         discussionLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
+                startActivity(intent);
             }
         });
         reviewLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
+                startActivity(intent);
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
