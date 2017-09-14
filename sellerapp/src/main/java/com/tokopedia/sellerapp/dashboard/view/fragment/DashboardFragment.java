@@ -193,12 +193,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         });
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
-        transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO
-            }
-        });
         sellerDashboardPresenter.getTicker();
     }
 
