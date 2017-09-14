@@ -16,6 +16,7 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -25,6 +26,9 @@ import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -146,6 +150,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }else{
             return false;
         }
+    }
 
+    @Override
+    protected List<CacheApiWhiteListDomain> getWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
+        return cacheApiWhiteList;
     }
 }
