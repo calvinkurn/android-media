@@ -17,9 +17,9 @@ public interface TkpdInboxRouter {
     Intent getAskSellerIntent(Context context, String toShopId,
                               String shopName, String customSubject, String customMessage);
 
-    Intent getAskSellerIntent(Context context, String shopId, String shopName);
+    Intent getAskSellerIntent(Context context, String toShopId, String shopName);
 
-    Intent getAskUserIntent(Context context, String userId, String userName);
+    Intent getAskUserIntent(Context context, String toUserId, String userName);
 
     Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject);
 }

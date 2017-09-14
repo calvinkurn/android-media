@@ -491,4 +491,27 @@ public class SellerRouterApplication extends MainApplication
         return SendMessageActivity.getAskBuyerIntent(context, toUserId, ownerFullName,
                 customSubject, customMessage);
     }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String customMessage) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, customMessage);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName);
+    }
+
+    @Override
+    public Intent getAskUserIntent(Context context, String userId, String userName) {
+        return SendMessageActivity.getAskUserIntent(context, userId, userName);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId,
+                                     String shopName, String customSubject) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject);
+    }
 }
