@@ -93,7 +93,7 @@ class VisibleProductList extends Component {
             <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
               <View style={styles.etalasePicker}>
                 <Text style={{ fontSize: 18, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
-                <Image source={require('../components/img/arrow-down-grey.png')} />
+                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow-down-grey.png' }} />
               </View>
             </TouchableNativeFeedback>
           </View>

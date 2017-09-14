@@ -69,13 +69,13 @@ class payment extends Component {
     const cardType = getCardType(this.props.ccNum);
     switch(cardType) {
       case 'MASTER':
-        return ( <Image source={require('./img/Logo-MasterCard.png')}
+        return ( <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }}
                 style={styles.cardLogo} resizeMode={'contain'} />);
       case 'VISA':
-        return ( <Image source={require('./img/Logo-Visa.png')}
+        return ( <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }}
                 style={styles.cardLogo} resizeMode={'contain'} />);
       case 'JCB':
-        return (<Image source={require('./img/Logo-JCB.png')}
+        return (<Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }}
                 style={styles.cardLogo} resizeMode={'contain'} />);
     }
   };
@@ -128,7 +128,7 @@ class payment extends Component {
               </Text>
             </View>
             <View  style={{flex:0.5, alignItems:'flex-end'}}>
-              <Image source={require('./img/secure-guarantee.png')} style={{width:75,height:55}} resizeMode={'contain'}/>
+              <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/secure-guarantee.png' }} style={{width:75,height:55}} resizeMode={'contain'}/>
             </View>
           </View>
 
@@ -151,19 +151,19 @@ class payment extends Component {
             <View style={{flex:0.5,height:60,flexDirection:'row',alignItems:'flex-end',justifyContent:'flex-end',borderBottomWidth:2,borderBottomColor:'#F0F0F0'}}>
               {
                 (getCardType(this.props.ccNum) === 'MASTER') ?
-                  <Image source={require('./img/Logo-MasterCard.png')} style={{width:60,height:60,flex:0.2}} resizeMode={'contain'} />
+                  <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }} style={{width:60,height:60,flex:0.2}} resizeMode={'contain'} />
                 :
                   (getCardType(this.props.ccNum) === 'VISA') ?
-                    <Image source={require('./img/Logo-Visa.png')}  style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                    <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
                     :
                       (getCardType(this.props.ccNum) === 'JCB') ?
-                      <Image source={require('./img/Logo-JCB.png')}  style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                      <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
                       :
                       (
                         <View style={{flexDirection:'row',marginRight:-10}}>
-                          <Image source={require('./img/Logo-MasterCard.png')} style={styles.cardLogo} resizeMode={'contain'} />
-                          <Image source={require('./img/Logo-Visa.png')}  style={styles.cardLogo}  resizeMode={'contain'} />
-                          <Image source={require('./img/Logo-JCB.png')}  style={styles.cardLogo}  resizeMode={'contain'} />
+                          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }} style={styles.cardLogo} resizeMode={'contain'} />
+                          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }} style={styles.cardLogo}  resizeMode={'contain'} />
+                          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }} style={styles.cardLogo}  resizeMode={'contain'} />
                         </View>
                       )
               }
@@ -239,7 +239,7 @@ class payment extends Component {
                   onChangeText={(text) => this.props.dispatch(selectPaymentOptions('cvv', text))}
                 />
                 <View style={{flex:1,marginBottom:-5}}>
-                  <Image source={require('./img/cvv-icon.png')} style={styles.cvvLogo} resizeMode={'contain'}/>
+                  <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/cvv-icon.png' }} style={styles.cvvLogo} resizeMode={'contain'}/>
                 </View>
               </View>
             </View>

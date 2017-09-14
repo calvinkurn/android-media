@@ -40,7 +40,7 @@ class CartItem extends Component {
         <View style={{ width: '8%' }}>
           <TouchableWithoutFeedback
             onPress={() => { this.togglePopUp(true) }} >
-            <Image source={require('../img/trash.png')} style={styles.trashImage} />
+            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/trash.png' }} style={styles.trashImage} />
           </TouchableWithoutFeedback>
         </View>
         <View style={{ width: '20%' }}>
@@ -57,7 +57,7 @@ class CartItem extends Component {
               disabled={item.qty === 1}
               onPress={() => { onDecr(item.id) }}>
               <View>
-                <Image source={require('../img/btn_minus.png')} style={styles.qtyControlImage}></Image>
+                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/btn_minus.png' }} style={styles.qtyControlImage}></Image>
               </View>
             </TouchableWithoutFeedback>
             <View style={styles.qty}>
@@ -66,7 +66,7 @@ class CartItem extends Component {
             <TouchableWithoutFeedback
               onPress={() => { onIncr(item.id) }}>
               <View>
-                <Image source={require('../img/btn_plus.png')} style={styles.qtyControlImage}></Image>
+                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/btn_plus.png' }} style={styles.qtyControlImage}></Image>
               </View>
             </TouchableWithoutFeedback>
           </View>

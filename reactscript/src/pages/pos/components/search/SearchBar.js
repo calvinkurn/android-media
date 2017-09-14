@@ -100,7 +100,7 @@ class SearchBar extends Component {
               this.props.onClearSearch()
               this.toggleResults(false)
             }}>
-              <Image source={require('../img/close-icon.png')} />
+              <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/close-icon.png' }} />
             </TouchableWithoutFeedback>
           </View>
         </View>

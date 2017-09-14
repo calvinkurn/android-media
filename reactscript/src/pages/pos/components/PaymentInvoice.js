@@ -67,7 +67,7 @@ class PaymentInvoice extends Component {
          <ScrollView>
               <View style={styles.containers} >
                 <View style={[styles.row, styles.row1]} >
-                  <Image style={{width: 111, height: 85}} source={require('./img/Success_icon.png')} />
+                  <Image style={{width: 111, height: 85}} source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Success_icon.png' }} />
                   <Text style={styles.text1}> Transaksi Berhasil! </Text>
                   <Text style={styles.text2}> Terima kasih telah berbelanja di toko kami</Text>
                   <Text style={styles.text3}> IVR/20170609/XVII/VI/13461162</Text>

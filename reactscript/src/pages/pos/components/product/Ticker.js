@@ -6,7 +6,7 @@ const Ticker = () => {
     <View style={styles.container}>
       <View>
         <View style={styles.imageWrapper}>
-          <Image source={require('../img/toped.png')} style={styles.imageIcon} />
+          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/toped.png' }} style={styles.imageIcon} />
         </View>
       </View>
       <View style={styles.textContainer}>
