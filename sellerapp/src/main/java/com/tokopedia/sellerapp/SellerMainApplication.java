@@ -25,6 +25,7 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -153,9 +154,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomainList = super.getAddedWhiteList();
-        cacheApiWhiteListDomainList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
-                TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO
-                , 300));
-        return cacheApiWhiteListDomainList;
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
+        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
+        cacheApiWhitelists.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, 300));
+        return cacheApiWhitelists;
     }
 }

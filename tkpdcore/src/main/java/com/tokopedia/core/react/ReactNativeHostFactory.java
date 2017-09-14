@@ -2,6 +2,7 @@ package com.tokopedia.core.react;
 
 import android.app.Application;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -85,7 +86,16 @@ public class ReactNativeHostFactory {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),
-                new CodePush(ReactConst.CODE_PUSH_DEPLOYMENT_KEY, application, GlobalConfig.isAllowDebuggingTools())
+                new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
         );
+    }
+
+    @NonNull
+    private static String getCodePushDeploymentKey() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            return ReactConst.CODE_PUSH_DEPLOYMENT_KEY_STAGING;
+        }else {
+            return ReactConst.CODE_PUSH_DEPLOYMENT_KEY;
+        }
     }
 }

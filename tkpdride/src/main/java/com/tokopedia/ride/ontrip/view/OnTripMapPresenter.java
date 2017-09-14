@@ -373,7 +373,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
                 getView().hideCurrentLocationIndicator();
-                updatePolylineBetweenDriverAndDestination(result);
+                if (result.getLocation() != null) {
+                    updatePolylineBetweenDriverAndDestination(result);
+                } else {
+                    updatePolylineIfResetedByUiLifecycle(result);
+                }
                 break;
             case RideStatus.DRIVER_CANCELED:
                 getView().hideRequestLoadingLayout();

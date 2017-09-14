@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DeviceEventEmitter, AsyncStorage } from 'react-native'
+import { DeviceEventEmitter } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import LoadMore from '../components/LoadMore'
@@ -38,7 +38,7 @@ class BrandContainer extends Component {
     })
 
     this.checkLoginBrand = DeviceEventEmitter.addListener('Login', (res) => {
-      this.props.resetBrandsAfterLogin(limit, offset, res.user_id, 'REFRESH')
+      this.props.resetBrandsAfterLogin(limit, offset, res.user_id)
     })
   }
 
