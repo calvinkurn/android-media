@@ -27,5 +27,6 @@
     <string name="dashboard_shop_success_rate">%1s%%</string>
     <string name="open_shop">Buka Toko</string>
     <string name="dashboard_your_shop_is_closed_until_xx">Toko Anda tutup sampai dengan %1$s</string>
+    <string name="dashboard_x_points">%1$s poin</string>
 
 </resources>

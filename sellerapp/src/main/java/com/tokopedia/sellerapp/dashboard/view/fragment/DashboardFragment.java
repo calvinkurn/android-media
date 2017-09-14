@@ -12,13 +12,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
@@ -29,12 +33,17 @@ import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
+import com.tokopedia.seller.shop.ShopEditorActivity;
+import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
 
@@ -48,8 +57,9 @@ import javax.inject.Inject;
 
 public class DashboardFragment extends BaseDaggerFragment implements SellerDashboardView {
 
-    private ViewGroup vgHeaderLabelLayout;
     private SwipeToRefresh swipeRefreshLayout;
+    private View reputationLabelLayout;
+    private View transactionlabelLayout;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -79,6 +89,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView discussionLabelView;
     private LabelView reviewLabelView;
 
+    private ShopWarningTickerView shopWarningTickerView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,13 +108,19 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onViewCreated(view, savedInstanceState);
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
-        vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
+        ViewGroup vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
+        View ivSettingIcon = view.findViewById(R.id.iv_setting);
+        shopWarningTickerView = (ShopWarningTickerView) view.findViewById(R.id.shop_warning_ticker_view);
+
+        reputationLabelLayout = view.findViewById(R.id.reputation_label_layout);
         reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
         shopReputationView = (ShopReputationView) view.findViewById(R.id.shop_reputation_view);
+
+        transactionlabelLayout = view.findViewById(R.id.transaction_label_layout);
         transactionSuccessTextView = (TextView) view.findViewById(R.id.text_view_transaction_success);
 
         newOrderLabelView = (LabelView) view.findViewById(R.id.label_view_new_order);
@@ -115,6 +133,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
 
         viewShopStatus = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
+
+        ivSettingIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ManageShopActivity.class);
+                startActivity(intent);
+            }
+        });
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,8 +204,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onRefresh() {
                 headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
                 sellerDashboardPresenter.refreshShopInfo();
+
+                //TODO loading state for notification
+                sellerDashboardPresenter.getNotification();
             }
         });
+
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
         sellerDashboardPresenter.getTicker();
@@ -216,15 +246,44 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-
         updateShopInfo(shopModel);
-        shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
-                shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
-        reputationPointTextView.setText(String.valueOf(shopModel.getStats().getShopReputationScore()));
-        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate, String.valueOf(shopModel.getStats().getRateSuccess())));
+        updateReputation(shopModel);
+        updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void updateReputation(final ShopModel shopModel) {
+        reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO Inbox reputation now has 2 tabs, need activity for 1 tab only?
+                Intent intent = new Intent(getContext(), InboxReputationActivity.class);
+                intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
+                startActivity(intent);
+            }
+        });
+        shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
+                shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
+        String formattedScore = KMNumbers.formatDecimalString(shopModel.getStats().getShopReputationScore(), false);
+        reputationPointTextView.setText(getString(R.string.dashboard_x_points, formattedScore));
+    }
+
+    private void updateTransaction(final ShopModel shopModel) {
+        transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String shopInfo = CacheUtil.convertModelToString(shopModel,
+                        new TypeToken<ShopModel>() {
+                        }.getType());
+                Intent intent = new Intent(getContext(), ShopStatisticDetail.class);
+                intent.putExtra(ShopStatisticDetail.EXTRA_SHOP_INFO, shopInfo);
+                getContext().startActivity(intent);
+            }
+        });
+        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
+                String.valueOf(shopModel.getStats().getRateSuccess())));
     }
 
     private void updateShopInfo(ShopModel shopModel) {
@@ -242,7 +301,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         } else {
             shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
-        //TODO shopModel.info.shopLucky
+        //TODO need shopModel.info.shopLucky?
     }
 
     private void updateViewShopOpen(ShopModel shopModel) {
@@ -251,39 +310,34 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 showShopClosed(shopModel);
                 break;
             case ShopStatusDef.MODERATED:
+                //TODO moderated state
+                shopWarningTickerView.setVisibility(View.GONE);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
+                //TODO not active state
+                shopWarningTickerView.setVisibility(View.GONE);
                 break;
             default:
-                if (viewShopStatus != null) {
-                    vgHeaderLabelLayout.removeView(viewShopStatus);
-                }
+                shopWarningTickerView.setVisibility(View.GONE);
         }
     }
 
     private void showShopClosed(ShopModel shopModel) {
-        if (viewShopStatus == null) {
-            viewShopStatus = LayoutInflater.from(getContext()).inflate(R.layout.layout_dashboard_shop_close, vgHeaderLabelLayout, false);
-            vgHeaderLabelLayout.addView(viewShopStatus);
-        }
-        TextView tvCloseTitle = (TextView) viewShopStatus.findViewById(R.id.tv_title);
         String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
-                DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopModel.closedInfo.until);
-        if (!TextUtils.isEmpty(shopCloseUntilString)) {
-            tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
-            tvCloseTitle.setVisibility(View.VISIBLE);
-        } else {
-            tvCloseTitle.setVisibility(View.GONE);
-        }
-        TextView tvCloseDesc = (TextView) viewShopStatus.findViewById(R.id.tv_description);
-        String note = shopModel.closedInfo.note;
-        if (!TextUtils.isEmpty(note)) {
-            tvCloseDesc.setText(note);
-            tvCloseDesc.setVisibility(View.VISIBLE);
-        } else {
-            tvCloseDesc.setVisibility(View.GONE);
-        }
+        shopWarningTickerView.setIcon(R.drawable.icon_closed);
+        shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
+        shopWarningTickerView.setDescription(shopModel.closedInfo.note);
+        shopWarningTickerView.setAction(getString(R.string.open_shop), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
+                intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+                startActivityForResult(intent, 0);
+            }
+        });
+        shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -326,14 +380,18 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         int discussCount = drawerNotification.getInboxTalk();
         int reviewCount = drawerNotification.getInboxReview();
 
-        newOrderLabelView.setContent(String.valueOf(newOrderCount));
-        deliveryConfirmationLabelView.setContent(String.valueOf(shippingConfirmation));
-        deliveryStatusLabelView.setContent(String.valueOf(shippingStatus));
+        setCounterIfNotEmpty(newOrderLabelView, newOrderCount);
+        setCounterIfNotEmpty(deliveryConfirmationLabelView, shippingConfirmation);
+        setCounterIfNotEmpty(deliveryStatusLabelView, shippingStatus);
 
-        messageLabelView.setContent(String.valueOf(inboxCount));
-        discussionLabelView.setContent(String.valueOf(discussCount));
-        reviewLabelView.setContent(String.valueOf(reviewCount));
+        setCounterIfNotEmpty(messageLabelView, inboxCount);
+        setCounterIfNotEmpty(discussionLabelView, discussCount);
+        setCounterIfNotEmpty(reviewLabelView, reviewCount);
 
+    }
+
+    private void setCounterIfNotEmpty(LabelView labelView, int counter){
+        labelView.setContent(counter > 0? String.valueOf(counter) : null);
     }
 
     @Override

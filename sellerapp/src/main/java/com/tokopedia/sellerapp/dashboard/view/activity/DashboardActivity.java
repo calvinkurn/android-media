@@ -7,12 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+
+//import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+//import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
 /**
  * Created by nathan on 9/5/17.
