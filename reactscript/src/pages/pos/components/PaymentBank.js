@@ -34,7 +34,7 @@ class PaymentBank extends Component {
     }
   };
 
-  
+
   _renderPopRow(rowData: string, sectionID: number, rowID: number) {
     if(rowData.id > 9){
       return (
@@ -147,9 +147,10 @@ class PaymentBank extends Component {
   }
 
 
-  static navigationOptions = {
-    title: 'Bank Selection Page',
-  };
+  // static navigationOptions = {
+  //   title: 'Bank Selection Page',
+  //   headerMode: 'none'
+  // };
 
   _choosePaymentMethod(paymentMethod){
     this.setState({
@@ -160,15 +161,15 @@ class PaymentBank extends Component {
   render() {
     return (
         <View style={styles.mainContainers} >
-          <View style={styles.header}>
-            {/* <Button
+          {/* <View style={styles.header}>
+            <Button
                 title="Go to Payment page ->"
                 color="#42B549"
                 onPress={() =>
                     this.props.navigation.navigate('Payment', {})
                 }
-            /> */}
-            </View>
+            />
+          </View> */}
             <ScrollView>
               <View style={styles.containers} >
                 <View style={[styles.row, styles.row1]} >
