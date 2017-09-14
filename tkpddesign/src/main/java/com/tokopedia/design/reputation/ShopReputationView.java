@@ -131,7 +131,7 @@ public class ShopReputationView extends BaseCustomView {
             case MEDAL_TYPE_3:
                 return R.drawable.ic_icon_repsis_medal_gold;
             case MEDAL_TYPE_4:
-                return R.drawable.ic_icon_repsis_medal_diamond;
+                return R.drawable.ic_badge_diamond;
             default:
                 return R.drawable.ic_icon_repsis_medal;
         }

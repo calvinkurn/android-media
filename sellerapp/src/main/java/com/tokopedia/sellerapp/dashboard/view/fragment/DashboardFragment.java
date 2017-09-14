@@ -19,7 +19,6 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
@@ -28,6 +27,7 @@ import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
+import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.sellerapp.R;
@@ -70,7 +70,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
     private TextView transactionSuccessTextView;
-
+    private View viewShopStatus;
     private LabelView newOrderLabelView;
     private LabelView deliveryConfirmationLabelView;
     private LabelView deliveryStatusLabelView;
@@ -113,6 +113,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
         shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
+
+        viewShopStatus = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,13 +209,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onErrorShopInfoAndScore(Throwable t) {
-        //TODO snackbar error
+        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
-        swipeRefreshLayout.setRefreshing(false);
-
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
 
         updateShopInfo(shopModel);
@@ -223,6 +224,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate, String.valueOf(shopModel.getStats().getRateSuccess())));
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void updateShopInfo(ShopModel shopModel) {
@@ -243,40 +245,44 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         //TODO shopModel.info.shopLucky
     }
 
-    private void updateViewShopOpen(ShopModel shopModel){
-        View vShopClose = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
-        if (shopModel.isOpen != ShopModel.IS_CLOSED) {
-            if (vShopClose!= null) {
-                vgHeaderLabelLayout.removeView(vShopClose);
-            }
+    private void updateViewShopOpen(ShopModel shopModel) {
+        switch (shopModel.getInfo().getShopStatus()) {
+            case ShopStatusDef.CLOSED:
+                showShopClosed(shopModel);
+                break;
+            case ShopStatusDef.MODERATED:
+                break;
+            case ShopStatusDef.NOT_ACTIVE:
+                break;
+            default:
+                if (viewShopStatus != null) {
+                    vgHeaderLabelLayout.removeView(viewShopStatus);
+                }
+        }
+    }
+
+    private void showShopClosed(ShopModel shopModel) {
+        if (viewShopStatus == null) {
+            viewShopStatus = LayoutInflater.from(getContext()).inflate(R.layout.layout_dashboard_shop_close, vgHeaderLabelLayout, false);
+            vgHeaderLabelLayout.addView(viewShopStatus);
+        }
+        TextView tvCloseTitle = (TextView) viewShopStatus.findViewById(R.id.tv_title);
+        String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
+                DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                shopModel.closedInfo.until);
+        if (!TextUtils.isEmpty(shopCloseUntilString)) {
+            tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
+            tvCloseTitle.setVisibility(View.VISIBLE);
         } else {
-            if (vShopClose== null) {
-                vShopClose = LayoutInflater.from(getContext())
-                        .inflate(R.layout.layout_dashboard_shop_close,
-                                vgHeaderLabelLayout, false);
-
-                vgHeaderLabelLayout.addView(vShopClose);
-            }
-            TextView tvCloseTitle = (TextView) vShopClose.findViewById(R.id.tv_title);
-            String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
-                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                    shopModel.closedInfo.until);
-            if (!TextUtils.isEmpty(shopCloseUntilString)) {
-                tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
-                tvCloseTitle.setVisibility(View.VISIBLE);
-            } else {
-                tvCloseTitle.setVisibility(View.GONE);
-            }
-
-            TextView tvCloseDesc = (TextView) vShopClose.findViewById(R.id.tv_description);
-            String note = shopModel.closedInfo.note;
-            if (!TextUtils.isEmpty(note)) {
-                tvCloseDesc.setText(note);
-                tvCloseDesc.setVisibility(View.VISIBLE);
-            } else {
-                tvCloseDesc.setVisibility(View.GONE);
-            }
-
+            tvCloseTitle.setVisibility(View.GONE);
+        }
+        TextView tvCloseDesc = (TextView) viewShopStatus.findViewById(R.id.tv_description);
+        String note = shopModel.closedInfo.note;
+        if (!TextUtils.isEmpty(note)) {
+            tvCloseDesc.setText(note);
+            tvCloseDesc.setVisibility(View.VISIBLE);
+        } else {
+            tvCloseDesc.setVisibility(View.GONE);
         }
     }
 
