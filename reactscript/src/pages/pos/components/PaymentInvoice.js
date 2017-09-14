@@ -33,15 +33,15 @@ class PaymentInvoice extends Component {
 
   _renderProductList(rowData: string, sectionID: number, rowID: number) {
     return (  
-      <View style={{flex: 1, flexDirection: 'row',justifyContent: 'space-between', marginTop: '6%'}}>
-          <View style={{width: "20%", height: '20%'}}>
+       <View style={{flex: 1, flexDirection: 'row',justifyContent: 'space-between', marginTop: '1%'}}>
+          <View style={{width: "15%", height: '20%'}}>
               <Image source={ {uri: rowData.imageUrl} } style={styles.productImage} ></Image>
           </View>
-          <View style={{width: '60%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start'}}>
-              <Text style={{fontSize: 22, fontWeight: 'bold', width: '80%'}}>{rowData.name} </Text> 
-              <Text style={{fontSize: 20, color: '#C8C8C8', marginTop: 10}}>Jumlah Barang: {rowData.qty}</Text> 
+          <View style={{width: '70%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start'}}>
+              <Text style={[styles.font14, styles.fontcolor71, {width: '80%'}]}>{rowData.name} </Text> 
+              <Text style={[styles.font13, styles.fontcolor61, {marginTop: 10}]}>Jumlah Barang: {rowData.qty}</Text> 
           </View>
-          <Text style={{fontSize: 22, fontWeight: 'bold'}}>{rowData.price}</Text> 
+          <Text style={[styles.font14, styles.fontcolor71]}>{rowData.price}</Text> 
       </View>
     );
 }
@@ -70,7 +70,7 @@ class PaymentInvoice extends Component {
          <ScrollView>
               <View style={styles.containers} >
                 <View style={[styles.row, styles.row1]} >
-                  <Image source={require('./img/Success_icon.png')} />
+                  <Image style={{width: 111, height: 85}} source={require('./img/Success_icon.png')} />
                   <Text style={styles.text1}> Transaksi Berhasil! </Text>
                   <Text style={styles.text2}> Terima kasih telah berbelanja di toko kami</Text>
                   <Text style={styles.text3}> IVR/20170609/XVII/VI/13461162</Text>
@@ -84,37 +84,41 @@ class PaymentInvoice extends Component {
 
                 <View style={[styles.row, styles.row4]} >
                    <View style={{flexDirection: 'column'}}>
-                    <Text style={{fontSize: 20}}>Metode Pembayaran</Text>
+                    <Text style={{fontSize: 13, color: '#00000061'}}>Metode Pembayaran</Text>
                     <View style={{flexDirection: 'row', alignItems: 'center' }}>
-                      <Image source={require('./img/Logo-BCA.png')} style={{height: 50, width: 110, resizeMode: 'cover'}} >
+                      <Image source={require('./img/Logo-BCA.png')} style={{height: 48, width: 24, resizeMode: 'cover'}} >
                       </Image>
-                      <Text style={{fontSize: 22, marginLeft: 10}}>BCA</Text>
+                      <Text style={{fontSize: 15,color: '#0000008a', marginLeft: 10}}>BCA</Text>
                     </View>
                    </View>
                     <View style={{flexDirection: 'row'}}>
-                      <Text style={{fontSize: 25}}>Total Pembayaran</Text>
-                      <Text style={{fontSize: 25, fontWeight: 'bold'}}> {this.props.totalPrice}</Text>
+                      <Text style={{fontSize: 16, color: '#0000008a'}}>Total Pembayaran</Text>
+                      <Text style={{fontSize: 16, color: '#000000b3'}}> {this.props.totalPrice}</Text>
                     </View>
                 </View>
 
                 <View style={[styles.row, styles.row3]} >
                   <Text style={styles.row3text1}> Bukti Pembayaran </Text>
                    <TextInput
-                      style={{fontSize:25, width:"100%", marginTop:10}}
+                      style={{fontSize:16, width:"100%", marginTop:10}}
                       placeholder="Email"
-                      underlineColorAndroid="#C6C6C6"
-                      placeholderTextColor = "#C6C6C6"
+                      underlineColorAndroid="#e0e0e0"
+                      placeholderTextColor = "#00000042"
                       onChangeText={(email) => this.setState({email})}
                     />
-                  <Text style={styles.row3text2}> Masukan email untuk kirim bukti pembayaran</Text>
-                  <Text style={[styles.row3text2, styles.errorText, {marginTop:5}]}> 
-                    { this.state.emailErrorMessage }
-                  </Text>
+                    {(this.state.emailErrorMessage == "") ? 
+
+                      <Text style={styles.row3text2}> Masukan email untuk kirim bukti pembayaran</Text>
+                    : 
+                       <Text style={[styles.row3text2, styles.errorText, {marginTop:5}]}> 
+                      { this.state.emailErrorMessage }
+                    </Text>
+                  }
                   <View style={{ flexDirection:'row',flex:1,justifyContent:'space-between', alignItems:'center', marginTop: "5%"}} >
-                    <TouchableNativeFeedback 
+                    <TouchableNativeFeedback
                       onPress={() => NavigationModule.navigate("posapp://product", "")}>
-                      <View style={[styles.button, {backgroundColor: "#FFFFFF", borderColor:"#F3F3F3"}]}>
-                        <Text style={[styles.buttonText, {color: "#888888"}]}> Lewati </Text>
+                      <View style={[styles.button, {backgroundColor: "#FFFFFF", borderColor:"#e0e0e0", marginLeft:"10%"}]}>
+                        <Text style={[styles.buttonText, {color: "#0000008a"}]}> Lewati </Text>
                       </View>
                     </TouchableNativeFeedback>
                      <TouchableNativeFeedback onPress={this._handleButtonPress}>
@@ -130,20 +134,17 @@ class PaymentInvoice extends Component {
           <PopupDialog
                 dialogTitle={
                   <View style={{flexDirection:'row', justifyContent: 'flex-end', padding: 10}}> 
-                    <TouchableWithoutFeedback onPress={() => { this.popupDialog.dismiss()}}>
-                    <Image source={require('../common/img/close-icon.png')} />
-                    </TouchableWithoutFeedback>
                   </View>
                 }
                 dialogStyle={{borderRadius: 10}}
-                width = {700}
-                height= {300}
+                width = {504}
+                height= {232}
                 ref={(popupDialog) => { this.popupDialog = popupDialog; }}>
               <View style={{padding: 30, paddingTop: 0, flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
-                <Text style={{fontSize: 25, fontWeight: 'bold'}}>
+                <Text style={{fontSize: 20, color: '#000000b3'}}>
                   Bukti Pembayaran
                 </Text>
-                <Text style={{fontSize: 22}}>
+                <Text style={{fontSize: 14, color: '#000000b3'}}>
                   Bukti pembayaran sudah terkirim ke email Anda
                 </Text>
                 <TouchableNativeFeedback onPress={() => { this.popupDialog.dismiss()}}>
@@ -201,60 +202,81 @@ const styles = StyleSheet.create({
         padding: "3%",
       },
       text1: {
-        fontSize: 25,
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: '#000000b3',
         marginTop: 10
       },
       text2: {
-        fontSize: 25,
-        color:"#C8C8C8"
+        fontSize: 16,
+        color:"#00000061"
       },
       text3: {
         marginTop: 10,
-        fontSize: 22,
-        fontWeight: 'bold'
+        fontSize: 14,
+        color:"#000000b3"
       },
       row3text1: {
-        fontSize: 22,
-        fontWeight: 'bold',
+        fontSize: 12,
+        color: '#000000b3',
         marginTop: 10
       },
       row3text2: {
-        fontSize: 20,
-        color:"#C8C8C8"
+        fontSize: 12,
+        color:"#00000061"
       },
        button: {
-        height: 50,
-        width: "48%",
-        backgroundColor: '#41B548',
+        height: 40,
+        width: 252,
+        backgroundColor: '#42b549',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 3,
         borderWidth: 3,
-        borderColor: '#41B548',
+        borderColor: '#42b549',
       },
       popupButton: {
-        height: 50,
-        width: "90%",
-        backgroundColor: '#41B548',
+        height: 40,
+        width: 432,
+        backgroundColor: '#42b549',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 3,
         borderWidth: 3,
-        borderColor: '#41B548',
+        borderColor: '#42b549',
       },
       buttonText: {
         color: '#FFFFFF',
-        fontSize: 22,
+        fontSize: 13,
       },
       errorText : {
         color: '#D50000'
       },
       productImage: {
         borderRadius: 3,
-        width: 100,
-        height: 100,
+        width: 62,
+        height: 62,
         resizeMode: 'cover'
+      },
+        font13 : {
+        fontSize: 13
+      },
+      fontcolor61 : {
+        color: "#00000061"
+      },
+      font15 : {
+        fontSize: 15
+      },
+      font14 : {
+        fontSize: 14
+      },
+      font16 : {
+        fontSize: 16
+      },
+      fontcolor54 : {
+        color: "#0000008a"
+      },
+      fontcolor70 : {
+        color: "#000000b3"
       },
   });
 

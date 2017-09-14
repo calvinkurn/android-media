@@ -31,35 +31,32 @@ class PasswordPopup extends Component {
      <PopupDialog
         dialogTitle={
           <View style={{flexDirection:'row', justifyContent: 'flex-end', padding: 10}}> 
-            <TouchableWithoutFeedback onPress={() => { this.popupDialog.dismiss()}}>
-            <Image source={require('../common/img/close-icon.png')} />
-            </TouchableWithoutFeedback>
           </View>
         }
         dialogStyle={{borderRadius: 10}}
-        width = {600}
-        height= {300}
+        width = {550}
+        height= {250}
         ref={(popupDialog) => { this.popupDialog = popupDialog; }}>
-      <View style={{padding: 30, paddingTop: 0, flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
-        <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+      <View style={{padding: 30, paddingTop: 0, flex: 1,flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
+        <Text style={{fontSize: 20, color:"#000000b3"}}>
           Riwayat Transaksi
         </Text>
-        <View style={{padding: 10, width: '100%', marginTop: 10}}>
-            <Text style={{fontSize: 16}}> Masukkan Password </Text>
+        <View style={{padding: 20, width: '100%', marginTop: 30, paddingBottom: 0}}>
+            <Text style={{fontSize: 12, color:"#0000008a"}}> Masukkan Password </Text>
             <TextInput
-              style={{fontSize:20, width:"100%", marginTop:10}}
+              style={{fontSize:16, width:"100%", marginTop:-10}}
               secureTextEntry={true}
               value={this.state.password}
-              underlineColorAndroid="#C6C6C6"
-              placeholderTextColor = "#C6C6C6"
+              underlineColorAndroid="#e0e0e0"
+              placeholderTextColor = "#e0e0e0"
               onChangeText={(password) => this.setState({password})}
             />
-             <Text style={{fontSize: 16, color: '#D50000'}}> {this.state.errorMessage} </Text>
+             <Text style={{fontSize: 12, color: '#D50000'}}> {this.state.errorMessage} </Text>
         </View>
-        <View style={{padding: 30, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{padding: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableNativeFeedback onPress={() => { this.popupDialog.dismiss()}}>
-              <View style={[styles.popupButton, {backgroundColor: "#FFFFFF", borderColor:"#F3F3F3"}]}>
-                <Text style={[styles.buttonText, {color: "#888888"}]}> Batal </Text>
+              <View style={[styles.popupButton, {backgroundColor: "#FFFFFF", borderColor:"#e0e0e0"}]}>
+                <Text style={[styles.buttonText, {color: "#0000008a"}]}> Batal </Text>
             </View>
           </TouchableNativeFeedback>
             <TouchableNativeFeedback onPress={() => {
@@ -84,9 +81,9 @@ class PasswordPopup extends Component {
 
 const styles = StyleSheet.create({
   popupButton: {
-        height: 50,
-        width: "45%",
-        backgroundColor: '#41B548',
+        height: 40,
+        width:207,
+        backgroundColor: '#42b549',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 3,
@@ -95,7 +92,7 @@ const styles = StyleSheet.create({
       },
   buttonText: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 13,
   }
 
 })
