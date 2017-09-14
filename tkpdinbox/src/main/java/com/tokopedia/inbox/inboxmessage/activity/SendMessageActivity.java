@@ -17,10 +17,6 @@ import com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment;
  */
 public class SendMessageActivity extends BasePresenterActivity {
 
-    private static final String TX_ASK_SELLER = "tx_ask_seller";
-    private static final String TX_ASK_BUYER = "tx_ask_buyer";
-
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_PEOPLE_SEND_MESSAGE;
@@ -74,19 +70,20 @@ public class SendMessageActivity extends BasePresenterActivity {
 
     }
 
-    public static Intent getAskSellerIntent(Context context, String toShopId, String shopName) {
+    public static Intent getAskSellerIntent(Context context, String toShopId,
+                                            String shopName, String source) {
         Intent intent = new Intent(context, SendMessageActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(SendMessageFragment.PARAM_SHOP_ID, toShopId);
         bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, shopName);
-        bundle.putString(SendMessageFragment.PARAM_SOURCE, TX_ASK_SELLER);
+        bundle.putString(SendMessageFragment.PARAM_SOURCE, source);
         intent.putExtras(bundle);
         return intent;
     }
 
     public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                            String customSubject, String customMessage) {
-        Intent intent = getAskSellerIntent(context, toShopId, shopName, customSubject);
+                                            String customSubject, String customMessage, String source) {
+        Intent intent = getAskSellerIntent(context, toShopId, shopName, customSubject, source);
         Bundle bundle = intent.getExtras();
         bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);
         intent.putExtras(bundle);
@@ -94,8 +91,8 @@ public class SendMessageActivity extends BasePresenterActivity {
     }
 
     public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                            String customSubject) {
-        Intent intent = getAskSellerIntent(context, toShopId, shopName);
+                                            String customSubject, String source) {
+        Intent intent = getAskSellerIntent(context, toShopId, shopName, source);
         Bundle bundle = intent.getExtras();
         bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
         intent.putExtras(bundle);
@@ -103,19 +100,20 @@ public class SendMessageActivity extends BasePresenterActivity {
         return intent;
     }
 
-    public static Intent getAskUserIntent(Context context, String userId, String userName) {
+    public static Intent getAskUserIntent(Context context, String userId,
+                                          String userName, String source) {
         Intent intent = new Intent(context, SendMessageActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(SendMessageFragment.PARAM_USER_ID, userId);
         bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, userName);
-        bundle.putString(SendMessageFragment.PARAM_SOURCE, TX_ASK_BUYER);
+        bundle.putString(SendMessageFragment.PARAM_SOURCE, source);
         intent.putExtras(bundle);
         return intent;
     }
 
     public static Intent getAskBuyerIntent(Context context, String toUserId, String
-            customerName, String customSubject, String customMessage) {
-        Intent intent = getAskUserIntent(context, toUserId, customerName);
+            customerName, String customSubject, String customMessage, String source) {
+        Intent intent = getAskUserIntent(context, toUserId, customerName, source);
         Bundle bundle = intent.getExtras();
         bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
         bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);

@@ -27,8 +27,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int VIEW_LAYOUT = 344;
     private static final float MARGIN_CARD = 10;
     private static final float WIDTH_CARD = 285;
-    private static final int SCALE_LARGE_PROMO_IMAGE = 2;
-    private static final int SCALE_SMALL_PROMO_IMAGE = 3;
+    private static final float SCALE_LARGE_PROMO_IMAGE = 1.9f;
+    private static final float SCALE_SMALL_PROMO_IMAGE = 2.8f;
 
     private ArrayList<PromoViewModel> list;
 
@@ -74,7 +74,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 temp.container.setLayoutParams(params);
 
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup
-                        .LayoutParams.MATCH_PARENT, (Resources.getSystem().getDisplayMetrics()
+                        .LayoutParams.MATCH_PARENT, Math.round(Resources.getSystem()
+                        .getDisplayMetrics()
                         .widthPixels / SCALE_LARGE_PROMO_IMAGE));
                 temp.imageView.setLayoutParams(lp);
             } else {
@@ -85,7 +86,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 params.setMargins(marginPixels, marginPixels, 0, marginPixels);
                 temp.container.setLayoutParams(params);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup
-                        .LayoutParams.MATCH_PARENT, (Resources.getSystem().getDisplayMetrics()
+                        .LayoutParams.MATCH_PARENT, Math.round(Resources.getSystem().getDisplayMetrics()
                         .widthPixels / SCALE_SMALL_PROMO_IMAGE));
                 temp.imageView.setLayoutParams(lp);
             }

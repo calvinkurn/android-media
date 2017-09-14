@@ -336,7 +336,9 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
                                     MethodChecker.fromHtml(
                                             getString(R.string.custom_content_message_ask_seller)
                                                     .replace("XXX",
-                                                            orderShippingList.getOrderDetail().getDetailPdfUri())).toString());
+                                                            orderShippingList.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER);
                     startActivity(intent);
                 }
             }

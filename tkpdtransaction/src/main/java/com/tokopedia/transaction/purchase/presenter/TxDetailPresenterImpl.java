@@ -166,7 +166,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                             MethodChecker.fromHtml(
                                     context.getString(R.string.custom_content_message_ask_seller)
                                             .replace("XXX",
-                                                    orderData.getOrderDetail().getDetailPdfUri())).toString());
+                                                    orderData.getOrderDetail().getDetailPdfUri())
+                            ).toString(),
+                            TkpdInboxRouter.TX_ASK_SELLER);
             viewListener.navigateToActivity(intent);
         }
     }

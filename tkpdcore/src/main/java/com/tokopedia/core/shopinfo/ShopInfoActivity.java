@@ -49,7 +49,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -849,7 +848,8 @@ public class ShopInfoActivity extends BaseActivity
                 intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
-                                shopModel.info.shopName);
+                                shopModel.info.shopName,
+                                TkpdInboxRouter.SHOP);
                 startActivity(intent);
             }
         } else {

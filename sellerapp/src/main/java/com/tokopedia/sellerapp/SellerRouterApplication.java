@@ -487,31 +487,33 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getAskBuyerIntent(Context context, String toUserId, String ownerFullName, String customSubject, String customMessage) {
-        return SendMessageActivity.getAskBuyerIntent(context, toUserId, ownerFullName,
-                customSubject, customMessage);
+    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
+                                    String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+                customSubject, customMessage, source);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                     String customSubject, String customMessage) {
+                                     String customSubject, String customMessage, String source) {
         return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage);
+                customSubject, customMessage, source);
     }
 
     @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName);
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
     }
 
     @Override
-    public Intent getAskUserIntent(Context context, String userId, String userName) {
-        return SendMessageActivity.getAskUserIntent(context, userId, userName);
+    public Intent getAskUserIntent(Context context, String userId, String userName, String source) {
+        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
     }
 
     @Override
-    public Intent getAskSellerIntent(Context context, String toShopId,
-                                     String shopName, String customSubject) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject);
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, source);
     }
 }

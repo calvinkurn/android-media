@@ -33,7 +33,6 @@ import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -316,7 +315,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                                     MethodChecker.fromHtml(
                                             getString(R.string.custom_content_message_ask_seller)
                                                     .replace("XXX",
-                                                            presenter.getOrderData().getOrderDetail().getDetailPdfUri())).toString());
+                                                            presenter.getOrderData().getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER);
                     startActivity(intent);
                 }
             }

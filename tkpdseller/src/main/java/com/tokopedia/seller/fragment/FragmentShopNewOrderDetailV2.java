@@ -462,7 +462,9 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                                     MethodChecker.fromHtml(
                                             getString(R.string.custom_content_message_ask_seller)
                                                     .replace("XXX",
-                                                            order.getOrderDetail().getDetailPdfUri())).toString());
+                                                            order.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER);
                     startActivity(intent);
                 }
 
