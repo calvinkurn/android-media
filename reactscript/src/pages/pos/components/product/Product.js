@@ -13,29 +13,22 @@ import { NavigationModule } from 'NativeModules'
 class Product extends PureComponent {
   render() {
     const product = this.props.product
+    console.log(product)
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(`tokopedia://product/${product.id}`, '')}>
+        <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(`posapp://product/${product.product_id}`, '')}>
           <View>
             <View style={styles.productImageWrapper}>
-              <Image source={{ uri: product.image_url }} style={styles.productImage} />
+              <Image source={{ uri: product.product_image_300 }} style={styles.productImage} />
             </View>
-            <View
-              style={{
-                borderBottomColor: '#e0e0e0',
-                borderBottomWidth: 1,
-              }}
-            />
+            <View style={{ borderBottomColor: '#e0e0e0', borderBottomWidth: 1 }} />
             <View style={{ height: 50 }}>
-              <Text
-                style={styles.productName}
-                ellipsizeMode='tail'
-                numberOfLines={3}>{product.name}</Text>
+              <Text style={styles.productName} ellipsizeMode='tail' numberOfLines={3}>{product.product_name}</Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
         <View style={styles.priceWrapper}>
-          <Text style={styles.price}>{product.price}</Text>
+          <Text style={styles.price}>{product.product_price}</Text>
         </View>
       </View>
     )

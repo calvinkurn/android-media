@@ -25,6 +25,7 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
     payload: PosCacheModule.getDataAll("PRODUCT")
              .then(response => {
                const jsonResponse = JSON.parse(response)
+               console.log(jsonResponse)
                return jsonResponse;
              })
              .catch(error => {})
