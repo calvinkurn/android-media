@@ -203,6 +203,8 @@ public class TkpdCache {
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
 
         public static final String VERSION_NAME_IN_CACHE = "VERSION_NAME_IN_CACHE";
+
+        public static final String KEY_PDP_PROMO_WIDGET_DATA = "KEY_PDP_PROMO_WIDGET_DATA";
     }
 
 }

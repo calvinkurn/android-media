@@ -1,13 +1,17 @@
 package com.tokopedia.core.product.interactor;
 
 
+import android.location.Location;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -192,6 +196,30 @@ public class CacheInteractorImpl implements CacheInteractor {
 
                     }
                 });
+    }
+
+    @Override
+    public PromoAttributes getPromoWidgetCache(@NonNull String targetType, @NonNull String userId) {
+        try {
+            PromoAttributes promoAttributes =  new GlobalCacheManager()
+                    .getConvertObjData(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA, PromoAttributes.class);
+            if (promoAttributes!=null && targetType.equals(promoAttributes.getTargetType()) &&
+                    userId.equals(promoAttributes.getUserId())) return promoAttributes;
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public void storePromoWidget(String targetType, String userId, PromoAttributes promoAttributes) {
+        promoAttributes.setTargetType(targetType);
+        promoAttributes.setUserId(userId);
+        new GlobalCacheManager()
+                .setKey(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA)
+                .setCacheDuration(promoAttributes.getCacheExpire())
+                .setValue(new Gson().toJson(promoAttributes))
+                .store();
     }
 
     @Override

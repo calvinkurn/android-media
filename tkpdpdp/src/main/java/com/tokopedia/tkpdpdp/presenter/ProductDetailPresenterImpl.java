@@ -888,19 +888,25 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
     }
 
-    public void getPromoWidget(@NonNull Context context, @NonNull String targetType, @NonNull String userId) {
-        retrofitInteractor.getPromo(context, targetType, userId,
-                new RetrofitInteractor.PromoListener() {
-                    @Override
-                    public void onSucccess(PromoAttributes promoAttributes) {
-                        viewListener.showPromoWidget(promoAttributes);
-                    }
+    public void getPromoWidget(@NonNull Context context, @NonNull final String targetType, @NonNull final String userId) {
+        PromoAttributes promoAttributes = cacheInteractor.getPromoWidgetCache(targetType,userId);
+        if (promoAttributes!=null) {
+            viewListener.showPromoWidget(promoAttributes);
+        } else {
+            retrofitInteractor.getPromo(context, targetType, userId,
+                    new RetrofitInteractor.PromoListener() {
+                        @Override
+                        public void onSucccess(PromoAttributes promoAttributes) {
+                            cacheInteractor.storePromoWidget(targetType,userId,promoAttributes);
+                            viewListener.showPromoWidget(promoAttributes);
+                        }
 
-                    @Override
-                    public void onError(String error) {
+                        @Override
+                        public void onError(String error) {
+                        }
                     }
-                }
-        );
+            );
+        }
     }
 
     public void getProductCampaign(@NonNull Context context, @NonNull String id) {

@@ -34,6 +34,15 @@ public class PromoAttributes {
     @Expose
     private String shortCondHtml;
 
+    //belot two attributes is used only for caching
+    @SerializedName("target_type")
+    @Expose
+    private String targetType="";
+    @SerializedName("user_id")
+    @Expose
+    private String userId="";
+
+
     public Integer getCacheExpire() {
         return cacheExpire;
     }
@@ -96,5 +105,21 @@ public class PromoAttributes {
 
     public void setShortCondHtml(String shortCondHtml) {
         this.shortCondHtml = shortCondHtml;
+    }
+
+    public String getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

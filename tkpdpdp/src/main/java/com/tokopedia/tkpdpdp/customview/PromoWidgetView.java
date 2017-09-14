@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.util.MethodChecker;
@@ -78,6 +81,15 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(data.getCode(), data.getCode());
                 clipboard.setPrimaryClip(clip);
+            }
+        });
+        promoTitle.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, BannerWebView.class);
+                intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
+                intent.putExtra(BannerWebView.EXTRA_URL, data.getTargetUrl());
+                context.startActivity(intent);
             }
         });
         setVisibility(VISIBLE);
