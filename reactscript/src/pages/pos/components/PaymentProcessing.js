@@ -15,21 +15,18 @@ class PaymentProcessing extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{
-        height: 55,
-        backgroundColor: '#42b549',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around'
-        }}>
-          <View style={{ width: '10%', left: 10 }}>
-          </View>
+        {/* <View style={{
+          height: 55,
+          backgroundColor: '#42b549',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around' }}>
+          <View style={{ width: '10%', left: 10 }}></View>
           <View style={{ width: '80%', left: 10 }}>
             <Text style={{ fontSize: 18, color: '#fff' }}>Pembayaran</Text>
           </View>
-          <View style={{ width: '10%' }}>
-          </View>
-        </View>
+          <View style={{ width: '10%' }}></View>
+        </View> */}
         
         <View style={{ width: "100%", marginTop: "60%", flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
           <Image source={require('./img/loading.gif')} />

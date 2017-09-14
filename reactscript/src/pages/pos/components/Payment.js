@@ -58,8 +58,8 @@ class payment extends Component {
       errorMessage
     });
 
-    // this.props.navigation.navigate('PaymentProcessing', {})
-    NavigationModule.navigate('posapp://payment/process', '')
+    this.props.navigation.navigate('PaymentProcessing', {})
+    // NavigationModule.navigate('posapp://payment/process', '')
   };
 
 
