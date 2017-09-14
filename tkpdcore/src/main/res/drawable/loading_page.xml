@@ -2,23 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent"/>
-            <size android:width="100dp"
-                android:height="100dp"/>
-        </shape>
-    </item>
-
-
-    <item android:width="26dp"
-        android:gravity="center"
-        android:height="20dp"
-        android:drawable="@drawable/ic_loading_toped_new">
-
-    </item>
-    <!--<item>
-
-    <item>
         <inset
             android:drawable="@drawable/ic_loading_toped_new"
             android:insetBottom="@dimen/small_dp"
@@ -26,7 +9,7 @@
             android:insetRight="@dimen/small_dp"
             android:insetTop="@dimen/small_dp"
             />
-    </item>-->
+    </item>
    
 
 </layer-list>
