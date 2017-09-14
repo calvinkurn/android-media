@@ -21,7 +21,7 @@ public interface GaladrielApi {
 
     String VALUE_PDP_WIDGET = "pdp_widget";
 
-    String VALUE_TARGET_GUEST = "login_user";
+    String VALUE_TARGET_GUEST = "guest";
     String VALUE_TARGET_LOGIN_USER = "login_user";
     String VALUE_TARGET_MERCHANT = "merchant";
     String VALUE_TARGET_GOLD_MERCHANT = "gold_merchant";

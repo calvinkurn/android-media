@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -829,7 +830,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             return VALUE_TARGET_GOLD_MERCHANT;
         } else if (productData.getShopInfo().getShopIsOwner() == 1) {
             return VALUE_TARGET_MERCHANT;
-        } else if (SessionHandler.isV4Login(context)){
+        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))){
             return VALUE_TARGET_LOGIN_USER;
         }
         return  VALUE_TARGET_GUEST;
