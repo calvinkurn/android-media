@@ -3,6 +3,7 @@ package com.tokopedia.posapp.react.datasource.cache;
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.posapp.data.pojo.ShopProductResponse;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.database.model.ProductDb;
 
@@ -38,22 +39,26 @@ public class ReactProductCacheSource implements ReactCacheSource {
     @Override
     public Observable<String> getAllData() {
         List<ProductDb> productDbs = productDbManager.getAllData();
-        ProductModel productModel = new ProductModel();
+        ShopProductResponse shopProductResponse = new ShopProductResponse();
         List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
         for(ProductDb productDb : productDbs) {
             com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
             item.productName = productDb.getProductName();
             item.productPrice = productDb.getProductPrice();
             item.productId = productDb.getProductId();
+            item.productImage = productDb.getProductImage();
+            item.productImage300 = productDb.getProductImage300();
+            item.productImageFull = productDb.getProductImageFull();
             productList.add(item);
         }
-        productModel.list = productList;
+        shopProductResponse.setList(productList);
+        shopProductResponse.setTotalData(productDbs.size());
 
-        return Observable.just(productModel)
-                .map(new Func1<ProductModel, String>() {
+        return Observable.just(shopProductResponse)
+                .map(new Func1<ShopProductResponse, String>() {
                     @Override
-                    public String call(ProductModel productModel) {
-                        return gson.toJson(productModel);
+                    public String call(ShopProductResponse shopProductResponse) {
+                        return gson.toJson(shopProductResponse);
                     }
                 });
     }

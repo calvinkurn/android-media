@@ -112,7 +112,7 @@ public class ProductDetailActivity extends BasePresenterActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_payment) {
+        if(item.getItemId() == R.id.action_installment) {
             Intent intent = new Intent(this, ScanCreditCardActivity.class);
             startActivity(intent);
         }
