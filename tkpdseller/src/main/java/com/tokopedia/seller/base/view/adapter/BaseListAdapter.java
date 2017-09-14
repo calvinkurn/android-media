@@ -108,13 +108,6 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         }
     }
 
-    public void addData(T data) {
-        if (data != null) {
-            this.data.add(data);
-            notifyDataSetChanged();
-        }
-    }
-
     public void clearData() {
         this.data.clear();
         notifyDataSetChanged();
