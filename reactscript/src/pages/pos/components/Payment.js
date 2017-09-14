@@ -82,6 +82,11 @@ class payment extends Component {
 
   static navigationOptions = {
     title: 'Payment Page',
+    headerTintColor: '#FFF',
+    headerStyle: {
+        backgroundColor: '#42B549'
+    }
+    // headerMode: 'none'
   };
 
   _getCreditCardType(){

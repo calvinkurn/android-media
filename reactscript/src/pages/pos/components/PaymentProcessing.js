@@ -38,7 +38,13 @@ class PaymentProcessing extends Component {
 
   static navigationOptions = {
     title: 'Payment Processing',
+    headerTintColor: '#FFF',
+    headerStyle: {
+        backgroundColor: '#42B549'
+    }
+    // headerMode: 'none'
   };
+  
 
 }
 

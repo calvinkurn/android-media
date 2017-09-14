@@ -15,7 +15,6 @@ import { StackNavigator } from 'react-navigation';
 const PaymentApp = StackNavigator({
     BankSelection : { screen: PaymentBank },
     Payment: { screen: Payment },
-    // PaymentProcessing: {screen: PaymentProcessing},
     PaymentProcessing: {
       screen: PaymentProcessing,
       path: 'PaymentProcessing',
@@ -23,7 +22,19 @@ const PaymentApp = StackNavigator({
     PaymentInvoice: {screen: PaymentInvoice},
     TransactionHistory: {screen: TransactionHistory},
     PasswordPopup: {screen: PasswordPopup}
-}, {headerMode: 'none'});
+});
+// const PaymentApp = StackNavigator({
+//     BankSelection : { screen: PaymentBank },
+//     Payment: { screen: Payment },
+//     // PaymentProcessing: {screen: PaymentProcessing},
+//     PaymentProcessing: {
+//       screen: PaymentProcessing,
+//       path: 'PaymentProcessing',
+//     },
+//     PaymentInvoice: {screen: PaymentInvoice},
+//     TransactionHistory: {screen: TransactionHistory},
+//     PasswordPopup: {screen: PasswordPopup}
+// }, {headerMode: 'none'});
 
 
 class Root extends Component {
