@@ -103,7 +103,7 @@ export default class CartItemList extends Component {
               </View>
             </View></View> :
           <View style={styles.emptyContainer}>
-            <View style={styles.headerContainer}>
+            {/* <View style={styles.headerContainer}>
               <View style={{ width: '10%', left: 10 }}>
                 <TouchableWithoutFeedback onPress={onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
@@ -114,7 +114,7 @@ export default class CartItemList extends Component {
               </View>
               <View style={{ width: '10%' }}>
               </View>
-            </View>
+            </View> */}
             <View style={styles.emptyList}>
               <View style={{
                 alignItems: 'center',
@@ -122,7 +122,7 @@ export default class CartItemList extends Component {
                 height: '40%',
                 backgroundColor: '#fff'
               }}>
-                <Image source={require('../img/shopping-basket.png')} style={{ width: 100, height: 100 }} />
+                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/shopping-basket.png' }} style={{ width: 100, height: 100 }} />
                 <Text>Tidak Ada barang dalam keranjang</Text>
               </View>
               <View style={{ marginTop: 20 }}>
