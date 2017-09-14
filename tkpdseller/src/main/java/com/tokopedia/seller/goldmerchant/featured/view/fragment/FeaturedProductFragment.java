@@ -120,6 +120,11 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         hideFab();
     }
 
+    @Override
+    protected void setAndSearchForPage(int page) {
+        featuredProductPresenter.loadData();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -175,18 +180,26 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     @Override
     public void onResume() {
         super.onResume();
-        if (productModelsTemp != null && productModelsTemp.size() > 0) {
-            featuredProductPresenter.postData(
-                    FeaturedProductPOSTUseCase.createParam(
-                            Collections.unmodifiableList(productModelsTemp)
-                    )
-            );
+        switch (featuredProductType) {
+            case FeaturedProductType.DEFAULT_DISPLAY:
+                if (productModelsTemp != null && productModelsTemp.size() > 0) {
+                    featuredProductPresenter.postData(
+                            FeaturedProductPOSTUseCase.createParam(
+                                    Collections.unmodifiableList(productModelsTemp)
+                            )
+                    );
+                } else {
+                    featuredProductPresenter.loadData();
+                }
+                break;
+            default:
+                break;
         }
     }
 
     @Override
     protected void searchForPage(int page) {
-        featuredProductPresenter.loadData();
+
     }
 
     public void updateTitleView(int itemCount, int maxItemCount){
@@ -209,9 +222,16 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     public void onPostSuccess() {
-        adapter.clearData();
-        onSearchLoaded(productModelsTemp, productModelsTemp.size());
-        productModelsTemp.clear();
+        switch (featuredProductType) {
+            case FeaturedProductType.DEFAULT_DISPLAY:
+                adapter.clearData();
+                onSearchLoaded(productModelsTemp, productModelsTemp.size());
+                productModelsTemp.clear();
+                break;
+            default:
+                break;
+        }
+        setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
     }
 
     @Override
@@ -222,7 +242,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     public void postData(List<FeaturedProductModel> data) {
-        featuredProductPresenter.postData(FeaturedProductPOSTUseCase.createParam(data));
+        // do nothing
     }
 
     @Override
@@ -245,9 +265,11 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_arrange) {
             setFeaturedProductType(FeaturedProductType.ARRANGE_DISPLAY);
+            hideFab();
             return true;
         }else if(item.getItemId() == R.id.menu_delete){
             setFeaturedProductType(FeaturedProductType.DELETE_DISPLAY);
+            hideFab();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -285,9 +307,8 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                         break;
                 }
 
-                setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
                 updateTitleView(R.string.featured_product_activity_title);
-
+                showFab();
 
                 featuredProductPresenter.postData(
                         FeaturedProductPOSTUseCase.createParam(
