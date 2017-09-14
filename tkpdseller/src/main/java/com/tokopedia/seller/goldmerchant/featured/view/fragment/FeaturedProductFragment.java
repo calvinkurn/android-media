@@ -183,6 +183,8 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                                     Collections.unmodifiableList(productModelsTemp)
                             )
                     );
+                } else {
+                    featuredProductPresenter.loadData();
                 }
                 break;
             default:
@@ -192,7 +194,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     protected void searchForPage(int page) {
-        featuredProductPresenter.loadData();
+
     }
 
     public void updateTitleView(int itemCount, int maxItemCount){
