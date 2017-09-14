@@ -18,21 +18,19 @@ import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSo
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailEditShopActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter> {
+public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter, ShopAd> {
 
     public static final String SHOP_AD_PARCELABLE = "SHOP_AD_PARCELABLE";
     private MenuItem deleteMenuItem;
-    private ShopAd shopAd;
 
     public static Fragment createInstance(ShopAd shopAd, String adId) {
         Fragment fragment = new TopAdsDetailShopFragment();
@@ -46,7 +44,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailShopPresenterImpl(getActivity(), this,
+        presenter = new TopAdsDetailShopViewPresenterImpl(getActivity(), this,
                 new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));
     }
@@ -73,19 +71,19 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(shopAd.getId());
+        presenter.turnOnAds(ad.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(shopAd.getId());
+        presenter.turnOffAds(ad.getId());
     }
 
     @Override
     protected void refreshAd() {
-        if (shopAd != null) {
-            presenter.refreshAd(startDate, endDate, shopAd.getId());
+        if (ad != null) {
+            presenter.refreshAd(startDate, endDate, ad.getId());
         } else {
             presenter.refreshAd(startDate, endDate, adId);
         }
@@ -93,22 +91,14 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
 
     @Override
     protected void editAd() {
-        if (shopAd != null) {
-            Intent intent = new Intent(getActivity(), TopAdsDetailEditShopActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, shopAd.getName());
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(shopAd.getId()));
+        if (ad != null) {
+            Intent intent = TopAdsEditShopMainPageActivity.createIntent(getActivity(), ad.getId());
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
     }
 
-    @Override
-    public void onAdLoaded(Ad ad) {
-        shopAd = (ShopAd) ad;
-        super.onAdLoaded(ad);
-    }
-
     void onNameClicked() {
-        DeepLinkChecker.openShop(shopAd.getShopUri(), getActivity());
+        DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
     }
 
     @Override
@@ -116,18 +106,5 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
         super.onCreateOptionsMenu(menu, inflater);
         deleteMenuItem = menu.findItem(R.id.menu_delete);
         deleteMenuItem.setVisible(false);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(SHOP_AD_PARCELABLE, shopAd);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedInstanceState) {
-        super.onRestoreState(savedInstanceState);
-        shopAd = savedInstanceState.getParcelable(SHOP_AD_PARCELABLE);
-        onAdLoaded(shopAd);
     }
 }

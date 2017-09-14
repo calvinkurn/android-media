@@ -22,13 +22,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
-
+            <LinearLayout
+                android:id="@+id/holder_check_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_banner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/digital_padding_16"
                 android:padding="@dimen/padding_vvvs"/>
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

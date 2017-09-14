@@ -43,7 +43,7 @@
         app:elevation="16dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <include layout="@layout/bottom_sheet_content_view"/>
+        <include layout="@layout/partial_top_ads_bottom_sheet_content"/>
     </FrameLayout>
 
     <FrameLayout

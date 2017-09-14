@@ -32,6 +32,7 @@ import com.tokopedia.inbox.inboxticket.InboxTicketConstant;
 import com.tokopedia.inbox.inboxticket.adapter.ImageUploadAdapter;
 import com.tokopedia.inbox.inboxticket.adapter.InboxTicketDetailAdapter;
 import com.tokopedia.inbox.inboxticket.listener.InboxTicketDetailFragmentView;
+import com.tokopedia.inbox.inboxticket.model.InboxTicketParam;
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail;
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
@@ -55,6 +56,12 @@ import permissions.dispatcher.RuntimePermissions;
 public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicketDetailFragmentPresenter>
         implements InboxTicketDetailFragmentView, InboxTicketConstant {
 
+
+    private View noView;
+    private View yesView;
+    private String commentId;
+    private View noTView;
+    private View yesTView;
 
     public interface DoActionInboxTicketListener {
         void sendRating(Bundle param);
@@ -80,6 +87,9 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @BindView(R2.id.add_comment_area)
     View commentView;
+
+    @BindView(R2.id.menu_help)
+    View helpfulView;
 
     @BindView(R2.id.loading_layout)
     View loading;
@@ -150,6 +160,11 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @Override
     protected void initView(View view) {
+        noView = view.findViewById(R.id.icon_dislike);
+        yesView = view.findViewById(R.id.icon_like);
+        noTView = view.findViewById(R.id.counter_dislike);
+        yesTView = view.findViewById(R.id.counter_like);
+
         adapter = InboxTicketDetailAdapter.createAdapter(getActivity(), presenter);
         listTicket.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listTicket.setAdapter(adapter);
@@ -209,6 +224,38 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
                 dialog.show();
             }
         });
+
+        yesView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating(InboxTicketParam.YES_HELPFUL);
+            }
+        });
+
+        noView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating(InboxTicketParam.NO_HELPFUL);
+            }
+        });
+
+        yesTView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating(InboxTicketParam.YES_HELPFUL);
+            }
+        });
+
+        noTView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.commentRating(InboxTicketParam.NO_HELPFUL);
+            }
+        });
+    }
+
+    private void commentRating(String isHelpful){
+        presenter.commentRating(isHelpful);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -259,9 +306,18 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         listTicket.setVisibility(View.VISIBLE);
         adapter.setData(result);
         if (result.getTicket().getTicketStatus() == TICKET_OPEN) {
-            commentView.setVisibility(View.VISIBLE);
+            if(result.isShowRating()){
+                int replySize = result.getTicketReply().getTicketReplyData().size();
+                commentId = result.getTicketReply().getTicketReplyData().get(replySize-1).getTicketDetailId();
+                commentView.setVisibility(View.GONE);
+                helpfulView.setVisibility(View.VISIBLE);
+            }else {
+                commentView.setVisibility(View.VISIBLE);
+                helpfulView.setVisibility(View.GONE);
+            }
         } else {
             commentView.setVisibility(View.GONE);
+            helpfulView.setVisibility(View.GONE);
         }
 
         setStatus(result.getTicket().getTicketStatus());
@@ -333,6 +389,17 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     @Override
     public String getComment() {
         return comment.getText().toString();
+    }
+
+    @Override
+    public String getCommentId() {
+        return commentId;
+    }
+
+    @Override
+    public void showCommentView() {
+        commentView.setVisibility(View.VISIBLE);
+        helpfulView.setVisibility(View.GONE);
     }
 
     @Override

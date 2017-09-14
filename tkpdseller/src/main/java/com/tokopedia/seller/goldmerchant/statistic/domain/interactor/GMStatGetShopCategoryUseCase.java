@@ -1,6 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -15,7 +15,7 @@ import rx.Observable;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class GMStatGetShopCategoryUseCase extends CompositeUseCase<GetShopCategory> {
+public class GMStatGetShopCategoryUseCase extends UseCase<GetShopCategory> {
     public static final String START_DATE = "sdt";
     public static final String END_DATE = "edt";
 

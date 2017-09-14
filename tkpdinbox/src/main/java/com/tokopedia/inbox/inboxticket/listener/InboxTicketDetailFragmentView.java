@@ -55,4 +55,8 @@ public interface InboxTicketDetailFragmentView {
     void setResultSuccess();
 
     void removeError();
+
+    String getCommentId();
+
+    void showCommentView();
 }
