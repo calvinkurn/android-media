@@ -1,7 +1,9 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.os.Build;
 import android.util.Base64;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
@@ -9,6 +11,7 @@ import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUse
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
@@ -18,7 +21,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.functions.Action1;
 import rx.functions.Func1;
-
 
 /**
  * Created by ricoharisin on 3/10/17.
@@ -42,11 +44,35 @@ public class FingerprintInterceptor implements Interceptor {
     }
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
-        GetFingerprintUseCase getFingerprintUseCase;
-        FingerprintRepository fpRepo = new FingerprintDataRepository();
-        getFingerprintUseCase = new GetFingerprintUseCase(fpRepo);
         String json = "";
+
+        boolean sellerAppAndKitkat = GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT;
+        if (!sellerAppAndKitkat) {
+            json = getFingerPrintJson();
+        }
+
+        SessionHandler session = new SessionHandler(MainApplication.getAppContext());
+        newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
+        if (session.isV4Login()) {
+            newRequest.addHeader(KEY_USER_ID, session.getLoginID());
+            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + session.getLoginID()));
+        } else {
+            newRequest.addHeader(KEY_USER_ID, "0");
+            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + "0"));
+        }
+        newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken(MainApplication.getAppContext()));
+        newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
+
+        return newRequest;
+    }
+
+    private String getFingerPrintJson() {
+        String json = "";
+        CommonUtils.dumper("Fingerpint is running");
         try {
+            GetFingerprintUseCase getFingerprintUseCase;
+            FingerprintRepository fpRepo = new FingerprintDataRepository();
+            getFingerprintUseCase = new GetFingerprintUseCase(fpRepo);
             json = getFingerprintUseCase.execute(null)
                     .map(new Func1<String, String>() {
                         @Override
@@ -75,22 +101,9 @@ public class FingerprintInterceptor implements Interceptor {
                             return throwable.toString();
                         }
                     }).toBlocking().single();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
-
-        SessionHandler session = new SessionHandler(MainApplication.getAppContext());
-        newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
-        if (session.isV4Login()) {
-            newRequest.addHeader(KEY_USER_ID, session.getLoginID());
-            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + session.getLoginID()));
-        } else {
-            newRequest.addHeader(KEY_USER_ID, "0");
-            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + "0"));
-        }
-        newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken(MainApplication.getAppContext()));
-        newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-
-        return newRequest;
+        return json;
     }
 }

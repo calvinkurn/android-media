@@ -9,18 +9,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.react.ReactConst;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 
@@ -32,19 +32,16 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
         return ReactNativeOfficialStoresActivity.createReactNativeActivity(
                 context, ReactConst.Screen.OFFICIAL_STORE,
-                SessionHandler.getLoginID(context),
                 context.getString(com.tokopedia.tkpd.R.string.react_native_banner_official_title)
         ).putExtras(bundle);
     }
 
     public static Intent createReactNativeActivity(Context context,
                                                    String reactScreenName,
-                                                   String userId,
                                                    String pageTitle) {
         Intent intent = new Intent(context, ReactNativeOfficialStoresActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
-        extras.putString(USER_ID, userId);
         extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
         return intent;
@@ -127,5 +124,10 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_OFFICIAL_STORE_REACT;
     }
 }

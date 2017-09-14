@@ -51,6 +51,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     protected TopAdsRadioExpandView viewRadioNotInGroup;
     private Button buttonNext;
+    protected TextView titleChoosePromo;
 
     private TopAdsAutoCompleteAdapter adapterChooseGroup;
     private ArrayList<String> groupNames = new ArrayList<>();
@@ -119,6 +120,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         viewRadioNewGroup = (TopAdsRadioExpandView) view.findViewById(R.id.view_radio_new_group);
         viewRadioChooseGroup = (TopAdsRadioExpandView) view.findViewById(R.id.view_radio_choose_group);
         viewRadioNotInGroup = (TopAdsRadioExpandView) view.findViewById(R.id.view_radio_not_in_group);
+        titleChoosePromo = (TextView) view.findViewById(R.id.title_choose_promo);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         buttonNext.setText(getTitleButtonNext());
@@ -249,6 +251,16 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     public void onGroupNotExistOnSubmitNewGroup() {
         onGroupNotExist();
         onSubmitFormNewGroup(inputNewGroup.getText().toString());
+    }
+
+    @Override
+    public void showErrorGroupNameNotValid() {
+        textInputLayoutNewGroup.setError(getString(R.string.top_ads_title_group_name_not_valid));
+    }
+
+    @Override
+    public void hideErrorGroupNameNotValid() {
+        textInputLayoutNewGroup.setError(null);
     }
 
     private View.OnClickListener onClickNext() {

@@ -1786,6 +1786,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventAddProductEdit(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
+                label
+        ).getEvent());
+    }
+
     public static void eventAddProductAddMore(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
