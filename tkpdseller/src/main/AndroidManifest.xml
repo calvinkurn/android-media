@@ -290,8 +290,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.variant.view.activity.ProductVariantDetailActivity"
-            android:label="@string/product_variant_label_title"
             android:exported="true"
+            android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
 
         <activity
@@ -308,6 +308,10 @@
             android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity"
             android:exported="true"
             android:label="@string/list_sold_product_text" />
+        <activity
+            android:name=".goldmerchant.featured.view.activity.FeaturedProductActivity"
+            android:exported="true"
+            android:label="@string/featured_product_activity_title" />
         <activity
             android:name=".goldmerchant.statistic.view.activity.GMStatisticDatePickerActivity"
             android:exported="true"
@@ -427,6 +431,11 @@
         <activity
             android:name=".shopsettings.notes.activity.ManageShopNotesActivity"
             android:label="@string/title_activity_manage_shop_notes"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.picker.view.ProductListPickerActivity"
+            android:label="@string/title_activity_product_list_picker"
             android:screenOrientation="portrait" />
 
         <service
