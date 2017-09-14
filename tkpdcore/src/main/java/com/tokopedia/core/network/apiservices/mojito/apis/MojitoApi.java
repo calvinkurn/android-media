@@ -37,7 +37,7 @@ public interface MojitoApi {
     Observable<Response<String>> getHomeCategoryMenu(@Header("X-User-ID") String user_id,
                                                      @Header(AuthUtil.HEADER_X_TKPD_APP_NAME) String appName);
 
-    @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
+    @GET(TkpdBaseURL.Mojito.API_V3_BRANDS)
     Observable<Response<Brands>> getBrands();
 
     @GET(TkpdBaseURL.Mojito.API_V1_BRANDS_CATEGORY)
