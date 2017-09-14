@@ -79,12 +79,11 @@
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/iv_setting"
                 android:layout_width="@dimen/image_width_xs"
                 android:layout_height="@dimen/image_width_xs"
-                android:layout_marginBottom="@dimen/margin_ms"
                 app:srcCompat="@drawable/icon_setting"
                 android:layout_gravity="top"
-                android:layout_marginTop="@dimen/margin_ms"
                 android:clickable="true"
                 android:background="?attr/selectableItemBackgroundBorderless"/>
         </LinearLayout>
@@ -111,10 +110,13 @@
 
         <LinearLayout
             style="@style/LabelLayout"
+            android:id="@+id/reputation_label_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <TextView
                 style="@style/TextView.Body1.Bold"
@@ -129,8 +131,11 @@
             <TextView
                 android:id="@+id/text_view_reputation_point"
                 style="@style/TextView.Caption.BlackDisabled"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@string/label_empty_value" />
+                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginStart="@dimen/padding_vs"
+                android:layout_marginLeft="@dimen/padding_vs"
+                android:text="@string/label_empty_value"
+                tools:text="50.000 poin"/>
         </LinearLayout>
 
         <View
@@ -140,10 +145,13 @@
 
         <LinearLayout
             style="@style/LabelLayout"
+            android:id="@+id/transaction_label_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <TextView
                 style="@style/TextView.Body1.Bold"
@@ -152,8 +160,8 @@
             <TextView
                 android:id="@+id/text_view_transaction_success"
                 style="@style/TextView.Display1"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@string/label_empty_value" />
+                android:text="@string/label_empty_value"
+                tools:text="80%"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

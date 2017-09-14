@@ -12,13 +12,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -26,7 +30,10 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
+import com.tokopedia.seller.reputation.view.activity.SellerReputationActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
@@ -47,6 +54,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private ViewGroup vgHeaderLabelLayout;
     private SwipeToRefresh swipeRefreshLayout;
+    private View ivSettingIcon;
+    private View reputationLabelLayout;
+    private View transactionlabelLayout;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -98,8 +108,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
+        ivSettingIcon = view.findViewById(R.id.iv_setting);
+
+        reputationLabelLayout = view.findViewById(R.id.reputation_label_layout);
         reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
         shopReputationView = (ShopReputationView) view.findViewById(R.id.shop_reputation_view);
+
+        transactionlabelLayout = view.findViewById(R.id.transaction_label_layout);
         transactionSuccessTextView = (TextView) view.findViewById(R.id.text_view_transaction_success);
 
         newOrderLabelView = (LabelView) view.findViewById(R.id.label_view_new_order);
@@ -110,6 +125,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
         shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
+
+        ivSettingIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ManageShopActivity.class);
+                startActivity(intent);
+            }
+        });
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,6 +193,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         });
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
+        transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO
+            }
+        });
         sellerDashboardPresenter.getTicker();
     }
 
@@ -201,18 +230,46 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     @Override
-    public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
+    public void onSuccessGetShopInfoAndScore(final ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
         swipeRefreshLayout.setRefreshing(false);
 
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-
         updateShopInfo(shopModel);
-        shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
-                shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
-        reputationPointTextView.setText(String.valueOf(shopModel.getStats().getShopReputationScore()));
-        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate, String.valueOf(shopModel.getStats().getRateSuccess())));
+        updateReputation(shopModel);
+        updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
+    }
+
+    private void updateReputation(final ShopModel shopModel) {
+        reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), InboxReputationActivity.class);
+                intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
+                startActivity(intent);
+            }
+        });
+        shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
+                shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
+        String formattedScore = KMNumbers.formatDecimalString(shopModel.getStats().getShopReputationScore(), false);
+        reputationPointTextView.setText(formattedScore);
+    }
+
+    private void updateTransaction(final ShopModel shopModel) {
+        transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String shopInfo = CacheUtil.convertModelToString(shopModel,
+                        new TypeToken<ShopModel>() {
+                        }.getType());
+                Intent intent = new Intent(getContext(), ShopStatisticDetail.class);
+                intent.putExtra(ShopStatisticDetail.EXTRA_SHOP_INFO, shopInfo);
+                getContext().startActivity(intent);
+            }
+        });
+        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
+                String.valueOf(shopModel.getStats().getRateSuccess())));
     }
 
     private void updateShopInfo(ShopModel shopModel) {
@@ -310,14 +367,18 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         int discussCount = drawerNotification.getInboxTalk();
         int reviewCount = drawerNotification.getInboxReview();
 
-        newOrderLabelView.setContent(String.valueOf(newOrderCount));
-        deliveryConfirmationLabelView.setContent(String.valueOf(shippingConfirmation));
-        deliveryStatusLabelView.setContent(String.valueOf(shippingStatus));
+        setCounterIfNotEmpty(newOrderLabelView, newOrderCount);
+        setCounterIfNotEmpty(deliveryConfirmationLabelView, shippingConfirmation);
+        setCounterIfNotEmpty(deliveryStatusLabelView, shippingStatus);
 
-        messageLabelView.setContent(String.valueOf(inboxCount));
-        discussionLabelView.setContent(String.valueOf(discussCount));
-        reviewLabelView.setContent(String.valueOf(reviewCount));
+        setCounterIfNotEmpty(messageLabelView, inboxCount);
+        setCounterIfNotEmpty(discussionLabelView, discussCount);
+        setCounterIfNotEmpty(reviewLabelView, reviewCount);
 
+    }
+
+    private void setCounterIfNotEmpty(LabelView labelView, int counter){
+        labelView.setContent(counter > 0? String.valueOf(counter) : null);
     }
 
     @Override
