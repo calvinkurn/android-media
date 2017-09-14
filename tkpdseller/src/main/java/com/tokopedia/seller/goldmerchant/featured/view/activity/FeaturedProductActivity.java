@@ -36,10 +36,6 @@ import rx.schedulers.Schedulers;
 public class FeaturedProductActivity extends BaseSimpleActivity implements HasComponent<GoldMerchantComponent>{
 
     private static final String TAG = "FeaturedProductActivity";
-    @Inject
-    SessionHandler sessionHandler;
-    @Inject
-    FeaturedProductApi featuredProductApi;
 
     @Override
     protected Fragment getNewFragment() {
@@ -49,74 +45,6 @@ public class FeaturedProductActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected String getTagFragment() {
         return TAG;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(getApplication() != null && getApplication() instanceof SellerModuleRouter){
-            DaggerFeaturedProductComponent
-                    .builder()
-                    .goldMerchantComponent(((SellerModuleRouter) getApplication()).getGoldMerchantComponent())
-                    .build().inject(this);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        featuredProductApi.getFeaturedProduct(sessionHandler.getShopID())
-                .flatMap(new Func1<Response<FeaturedProductGETModel>, Observable<Response<FeaturedProductGETModel>>>() {
-                    @Override
-                    public Observable<Response<FeaturedProductGETModel>> call(Response<FeaturedProductGETModel> featuredProductGETModelResponse) {
-
-                        PostFeaturedProductModel postFeaturedProductModel = new PostFeaturedProductModel();
-                        postFeaturedProductModel.setShopId(sessionHandler.getShopID());
-                        ArrayList<PostFeaturedProductModel.ItemsFeatured> itemsFeatureds = new ArrayList<>();
-                        List<FeaturedProductGETModel.Datum> data = featuredProductGETModelResponse.body().getData();
-                        int i=1, size = data.size();
-                        for (FeaturedProductGETModel.Datum datum : data) {
-                            PostFeaturedProductModel.ItemsFeatured itemsFeatured
-                                    = new PostFeaturedProductModel.ItemsFeatured();
-                            itemsFeatured.setProductId(datum.getProductId());
-                            if(i > size){
-                                itemsFeatured.setOrder(1);
-                            }else{
-                                itemsFeatured.setOrder(++i);
-                            }
-                            itemsFeatured.setType(1);
-
-                            itemsFeatureds.add(itemsFeatured);
-                            i++;
-                        }
-
-                        postFeaturedProductModel.setItemsFeatured(itemsFeatureds);
-
-                        Response<FeaturedProductPOSTModel> first = featuredProductApi.postFeaturedProduct(postFeaturedProductModel).toBlocking().first();
-                        Log.d(TAG, first.toString());
-
-
-                        return Observable.just(featuredProductGETModelResponse);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<FeaturedProductGETModel>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, e.toString());
-                    }
-
-                    @Override
-                    public void onNext(Response<FeaturedProductGETModel> featuredProductGETModelResponse) {
-                        Log.d(TAG, featuredProductGETModelResponse.toString());
-                    }
-                });
     }
 
     @Override

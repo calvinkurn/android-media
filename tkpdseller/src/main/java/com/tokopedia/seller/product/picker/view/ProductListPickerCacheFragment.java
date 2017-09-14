@@ -6,6 +6,8 @@ import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
 import com.tokopedia.seller.product.picker.view.adapter.ProductListPickerCacheAdapter;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 
+import java.util.Iterator;
+
 /**
  * Created by zulfikarrahman on 9/7/17.
  */
@@ -24,5 +26,18 @@ public class ProductListPickerCacheFragment extends BaseCacheListFragment<Produc
         itemList.remove(productListPickerViewModel);
         pickerMultipleItem.removeItemFromCache(productListPickerViewModel);
         resetPageAndSearch();
+    }
+
+    @Override
+    public void removeItem(ProductListPickerViewModel productListPickerViewModel) {
+        Iterator<ProductListPickerViewModel> itemListTemp = itemList.iterator();
+
+        while (itemListTemp.hasNext()) {
+            ProductListPickerViewModel productListPickerViewModelTemp = itemListTemp.next();
+            if(productListPickerViewModel.getId().equals(productListPickerViewModelTemp.getId())) {
+                itemListTemp.remove();
+                resetPageAndSearch();
+            }
+        }
     }
 }
