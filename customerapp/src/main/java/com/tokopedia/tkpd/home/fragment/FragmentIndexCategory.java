@@ -363,14 +363,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         List<BannerView.PromoItem> list = new ArrayList<>();
         for (FacadePromo.PromoItem item : promoList) {
             BannerView.PromoItem toItem = new BannerView.PromoItem();
-            toItem.imgUrl = item.imgUrl;
-            toItem.promoUrl = item.promoUrl;
+            toItem.setImgUrl(item.imgUrl);
+            toItem.setPromoId(item.id);
+            toItem.setPromoTitle(item.title);
+            toItem.setPromoUrl(item.promoUrl);
             list.add(toItem);
         }
         return list;
     }
 
-    private void startAutoScrollBanner() {
+    private void restartAutoScrollBanner() {
+        holder.bannerView.resetImpressionStatus();
         holder.bannerView.startAutoScrollBanner();
     }
 
@@ -855,7 +858,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
             stopAutoScrollBanner();
-            startAutoScrollBanner();
+            restartAutoScrollBanner();
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();

@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.app.MainApplication;
@@ -193,6 +194,24 @@ public class GTMContainer implements IGTMContainer {
         )));
 
         return this;
+    }
+
+    @Override
+    public void eventBannerImpression(Promotion promotion) {
+        Log.i("Tag Manager", "UA-98016xx-xx: Send Banner Impression");
+        Log.i("Tag Manager", "UA-98016xx-xx: " + promotion.getPromotionImpressionEvent());
+        GTMDataLayer
+                .pushEvent(context, "promoView",
+                        DataLayer.mapOf(
+                                "ecommerce",
+                                DataLayer.mapOf("promotions", promotion.getPromotionImpressionEvent())
+                        )
+                );
+    }
+
+    @Override
+    public void eventBannerClick() {
+
     }
 
     @Override

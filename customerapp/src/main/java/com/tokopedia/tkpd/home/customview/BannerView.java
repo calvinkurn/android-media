@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.design.base.BaseCustomView;
@@ -39,6 +41,7 @@ public class BannerView extends BaseCustomView {
     private List<PromoItem> promoList;
 
     private ArrayList<ImageView> indicatorItems;
+    private ArrayList<Boolean> impressionStatusList;
 
     private int currentPosition;
 
@@ -70,6 +73,7 @@ public class BannerView extends BaseCustomView {
         bannerIndicator = (ViewGroup) view.findViewById(R.id.indicator_banner_container);
         bannerSeeAll = view.findViewById(R.id.promo_link);
         indicatorItems = new ArrayList<>();
+        impressionStatusList = new ArrayList<>();
     }
 
     @Override
@@ -99,6 +103,8 @@ public class BannerView extends BaseCustomView {
     public void buildView() {
         setVisibility(VISIBLE);
 
+        resetImpressionStatus();
+
         BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoList);
 
         bannerRecyclerView.setHasFixedSize(true);
@@ -124,15 +130,10 @@ public class BannerView extends BaseCustomView {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int firstCompleteVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-                currentPosition = firstCompleteVisibleItemPosition;
-                for (int i = 0; i < indicatorItems.size(); i++) {
-                    if (firstCompleteVisibleItemPosition != i) {
-                        indicatorItems.get(i).setImageResource(R.drawable.indicator);
-                    } else {
-                        indicatorItems.get(i).setImageResource(R.drawable.indicator_focus);
-                    }
-                }
+                currentPosition =
+                        ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                setCurrentIndicator();
+                trackingImpression();
             }
 
             @Override
@@ -169,6 +170,47 @@ public class BannerView extends BaseCustomView {
         startAutoScrollBanner();
     }
 
+    private void trackingImpression() {
+        if (!isCurrentPositionHasImpression(currentPosition)) {
+            impressionStatusList.set(currentPosition, true);
+
+            Promotion promotion = new Promotion();
+            promotion.setPromotionID(promoList.get(currentPosition).getPromoId());
+            promotion.setPromotionName(promoList.get(currentPosition).getPromoTitle());
+            promotion.setPromotionAlias(promoList.get(currentPosition).getPromoTitle());
+            promotion.setPromotionPosition(currentPosition);
+
+            GTMContainer gtmContainer = GTMContainer.newInstance(getContext());
+            gtmContainer.eventBannerImpression(promotion);
+
+        }
+    }
+
+    private void setCurrentIndicator() {
+        for (int i = 0; i < indicatorItems.size(); i++) {
+            if (currentPosition != i) {
+                indicatorItems.get(i).setImageResource(R.drawable.indicator);
+            } else {
+                indicatorItems.get(i).setImageResource(R.drawable.indicator_focus);
+            }
+        }
+    }
+
+    private boolean isCurrentPositionHasImpression(int currentPosition) {
+        if (currentPosition >= 0 && currentPosition <= impressionStatusList.size()) {
+            return impressionStatusList.get(currentPosition);
+        } else {
+            return true;
+        }
+    }
+
+    public void resetImpressionStatus() {
+        impressionStatusList.clear();
+        for (int i = 0; i < promoList.size(); i++) {
+            impressionStatusList.add(false);
+        }
+    }
+
     public void startAutoScrollBanner() {
         if (bannerHandler != null && runnableScrollBanner != null) {
             bannerHandler.postDelayed(runnableScrollBanner, SLIDE_DELAY);
@@ -184,6 +226,43 @@ public class BannerView extends BaseCustomView {
     public static class PromoItem implements Parcelable {
         public String imgUrl;
         public String promoUrl;
+        public String promoId;
+        public String promoTitle;
+
+        public String getImgUrl() {
+            return imgUrl;
+        }
+
+        public void setImgUrl(String imgUrl) {
+            this.imgUrl = imgUrl;
+        }
+
+        public String getPromoUrl() {
+            return promoUrl;
+        }
+
+        public void setPromoUrl(String promoUrl) {
+            this.promoUrl = promoUrl;
+        }
+
+        public String getPromoId() {
+            return promoId;
+        }
+
+        public void setPromoId(String promoId) {
+            this.promoId = promoId;
+        }
+
+        public String getPromoTitle() {
+            return promoTitle;
+        }
+
+        public void setPromoTitle(String promoTitle) {
+            this.promoTitle = promoTitle;
+        }
+
+        public PromoItem() {
+        }
 
         @Override
         public int describeContents() {
@@ -194,17 +273,18 @@ public class BannerView extends BaseCustomView {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.imgUrl);
             dest.writeString(this.promoUrl);
-        }
-
-        public PromoItem() {
+            dest.writeString(this.promoId);
+            dest.writeString(this.promoTitle);
         }
 
         protected PromoItem(Parcel in) {
             this.imgUrl = in.readString();
             this.promoUrl = in.readString();
+            this.promoId = in.readString();
+            this.promoTitle = in.readString();
         }
 
-        public static final Parcelable.Creator<PromoItem> CREATOR = new Parcelable.Creator<PromoItem>() {
+        public static final Creator<PromoItem> CREATOR = new Creator<PromoItem>() {
             @Override
             public PromoItem createFromParcel(Parcel source) {
                 return new PromoItem(source);
