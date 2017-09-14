@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parent_view"
+    android:id="@+id/vg_shop_close"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_green_ticker">
+    android:background="@drawable/bg_green_ticker"
+    android:orientation="horizontal"
+    android:padding="@dimen/margin_small_sm"
+    android:layout_marginTop="@dimen/padding_ms">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/ticker_background"
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/image_width_xs"
+        android:layout_height="@dimen/image_width_xs"
+        android:src="@drawable/icon_closed" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/padding_small">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/margin_vs"
+        android:paddingRight="@dimen/margin_vs">
 
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
-            android:src="@mipmap/ic_launcher"/>
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/TextView.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/margin_vs"
-            android:paddingRight="@dimen/margin_vs">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/TextView.Body1"
-                android:layout_gravity="center_vertical"
-                android:text="Toko Anda tutup sampai tanggal 19 Juli 2017"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/TextView.Caption.BlackSecondary"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/margin_ms"
-                android:text="Mohon Maaf"/>
-            <TextView
-                android:id="@+id/tv_open_shop"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rect_stroke_light_gray"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="@dimen/gm_unfinished_margin_top"
-                android:text="@string/open_shop"
-                android:textColor="@color/wholesale_color"
-                android:textSize="@dimen/font_button"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:layout_gravity="center_vertical"
+            android:text="@string/dashboard_your_shop_is_closed_until_xx" />
 
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_marginTop="@dimen/margin_vs"
+            style="@style/TextView.Caption.BlackSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="Closed Description" />
 
-
+        <TextView
+            android:id="@+id/tv_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_ms"
+            android:background="@drawable/rect_stroke_light_gray"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="@dimen/margin_ms"
+            android:text="@string/open_shop"
+            android:textColor="@color/wholesale_color"
+            android:textSize="@dimen/font_button"
+            android:textStyle="bold" />
     </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

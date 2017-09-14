@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
@@ -19,6 +21,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
@@ -41,6 +44,9 @@ import javax.inject.Inject;
  */
 
 public class DashboardFragment extends BaseDaggerFragment implements SellerDashboardView {
+
+    private ViewGroup vgHeaderLabelLayout;
+    private SwipeToRefresh swipeRefreshLayout;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -87,6 +93,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onViewCreated(view, savedInstanceState);
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
+        vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
@@ -153,16 +160,17 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             }
         });
 
-        final SwipeToRefresh swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //TODO
-                //this is after refresh success
-                swipeRefreshLayout.setRefreshing(false);
+                headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+                sellerDashboardPresenter.refreshShopInfo();
             }
         });
+        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
+        sellerDashboardPresenter.getTicker();
     }
 
     @Override
@@ -183,9 +191,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onResume() {
         super.onResume();
-        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         sellerDashboardPresenter.getShopInfoWithScore();
-        sellerDashboardPresenter.getTicker();
         sellerDashboardPresenter.getNotification();
     }
 
@@ -196,28 +202,71 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
-        Info shopModelInfo = shopModel.info;
+        swipeRefreshLayout.setRefreshing(false);
+
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        shopNameTextView.setText(shopModelInfo.getShopName());
-        if (shopModelInfo.isShopIsGoldBadge()) {
-            gmIconImageView.setVisibility(View.VISIBLE);
-        } else {
-            gmIconImageView.setVisibility(View.GONE);
-        }
+
+        updateShopInfo(shopModel);
         shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
                 shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
         reputationPointTextView.setText(String.valueOf(shopModel.getStats().getShopReputationScore()));
         transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate, String.valueOf(shopModel.getStats().getRateSuccess())));
         updateViewShopOpen(shopModel);
-
         shopScoreWidget.renderView(shopScoreViewModel);
     }
 
-    private void updateViewShopOpen(ShopModel shopModel){
-        if (shopModel.isOpen == ShopModel.IS_OPEN) {
-            //TODO remove the close shop if any
+    private void updateShopInfo(ShopModel shopModel) {
+        Info shopModelInfo = shopModel.info;
+        shopNameTextView.setText(shopModelInfo.getShopName());
+        if (shopModelInfo.shopIsGold == 1) {
+            gmIconImageView.setVisibility(View.VISIBLE);
+            gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
         } else {
-            //TODO add the close shop if any
+            gmIconImageView.setVisibility(View.GONE);
+            gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
+        }
+        if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
+            ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
+        } else {
+            shopIconImageView.setImageResource(R.drawable.placeholder_shop);
+        }
+        //TODO shopModel.info.shopLucky
+    }
+
+    private void updateViewShopOpen(ShopModel shopModel){
+        View vShopClose = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
+        if (shopModel.isOpen != ShopModel.IS_CLOSED) {
+            if (vShopClose!= null) {
+                vgHeaderLabelLayout.removeView(vShopClose);
+            }
+        } else {
+            if (vShopClose== null) {
+                vShopClose = LayoutInflater.from(getContext())
+                        .inflate(R.layout.layout_dashboard_shop_close,
+                                vgHeaderLabelLayout, false);
+
+                vgHeaderLabelLayout.addView(vShopClose);
+            }
+            TextView tvCloseTitle = (TextView) vShopClose.findViewById(R.id.tv_title);
+            String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
+                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                    shopModel.closedInfo.until);
+            if (!TextUtils.isEmpty(shopCloseUntilString)) {
+                tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
+                tvCloseTitle.setVisibility(View.VISIBLE);
+            } else {
+                tvCloseTitle.setVisibility(View.GONE);
+            }
+
+            TextView tvCloseDesc = (TextView) vShopClose.findViewById(R.id.tv_description);
+            String note = shopModel.closedInfo.note;
+            if (!TextUtils.isEmpty(note)) {
+                tvCloseDesc.setText(note);
+                tvCloseDesc.setVisibility(View.VISIBLE);
+            } else {
+                tvCloseDesc.setVisibility(View.GONE);
+            }
+
         }
     }
 
@@ -253,7 +302,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetNotification(DrawerNotification drawerNotification) {
-        // TODO drawer nofitication
         int newOrderCount = drawerNotification.getSellingNewOrder();
         int shippingConfirmation = drawerNotification.getSellingShippingConfirmation();
         int shippingStatus = drawerNotification.getSellingShippingStatus();

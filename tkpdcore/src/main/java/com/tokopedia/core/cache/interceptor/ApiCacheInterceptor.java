@@ -1,6 +1,8 @@
 package com.tokopedia.core.cache.interceptor;
 
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -21,11 +23,15 @@ import com.tokopedia.core.cache.domain.interactor.SaveToDbUseCase;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.HashMap;
 
+import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -61,7 +67,8 @@ public class ApiCacheInterceptor implements Interceptor {
         SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, request.url().toString());
+
+        requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, getFullRequestURL(request));
         requestParams.putString(BaseApiCacheInterceptorUseCase.METHOD, request.method());
 
         String cacheData = getCacheDataUseCase.createObservableSync(requestParams).defaultIfEmpty(null).toBlocking().firstOrDefault(null);
@@ -92,7 +99,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 builder.body(ResponseBody.create(MediaType.parse("application/json"), cacheData));
                 return builder.build();
             }
-        }else{
+        } else {
             Log.d(LOG_TAG, String.format("%s just hit another network !!", request.url().toString()));
             Response response;
             try {
@@ -105,5 +112,28 @@ public class ApiCacheInterceptor implements Interceptor {
         }
     }
 
+    private String getFullRequestURL(Request request){
+        String s = "";
+        if (request.method().equals("POST")) {
+            RequestBody requestBody = request.body();
+            if (requestBody instanceof FormBody) {
+                int size = ((FormBody) requestBody).size();
+                for (int i = 0; i < size; i++) {
+                    String key = ((FormBody) requestBody).encodedName(i);
+                    if (key.equals("hash") || key.equals("device_time")) {
+                        continue;
+                    }
 
+                    String value = ((FormBody) requestBody).encodedValue(i);
+                    if (TextUtils.isEmpty(s)) {
+                        s += "?";
+                    } else {
+                        s += "&";
+                    }
+                    s += key + "=" + value;
+                }
+            }
+        }
+        return request.url().toString() + s;
+    }
 }

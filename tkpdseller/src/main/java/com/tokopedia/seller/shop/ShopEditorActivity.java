@@ -17,9 +17,14 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;
+import com.tokopedia.seller.shop.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
@@ -41,19 +46,24 @@ import java.io.File;
 import java.util.ArrayList;
 
 
+import javax.inject.Inject;
+
 import static com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
 /**
  * Created by Zulfikar on 5/19/2016.
  */
 public class ShopEditorActivity extends TActivity implements
-        ShopSettingView {
+        ShopSettingView, ShopEditorFragment.OnShopEditorFragmentListener {
 
     FragmentManager supportFragmentManager;
     String FRAGMENT;
 
     FrameLayout container;
     private String onBack;
+
+    @Inject
+    DeleteShopInfoUseCase deleteShopInfoUseCase;
 
     @Override
     public String getScreenName() {
@@ -70,8 +80,11 @@ public class ShopEditorActivity extends TActivity implements
         fetchExtras(getIntent(), savedInstanceState);
 
         supportFragmentManager = getSupportFragmentManager();
-        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
+        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null) {
             initFragment(FRAGMENT);
+        }
+        DeleteCacheComponent deleteCacheComponent = DaggerDeleteCacheComponent.builder().appComponent(getApplicationComponent()).build();
+        deleteCacheComponent.inject(this);
     }
 
     @Override
@@ -252,5 +265,10 @@ public class ShopEditorActivity extends TActivity implements
         outState.putString(FRAGMENT_TO_SHOW, FRAGMENT);
         outState.putString(ON_BACK, onBack);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void deleteCacheShopInfov2() {
+        deleteShopInfoUseCase.execute(RequestParams.EMPTY);
     }
 }
