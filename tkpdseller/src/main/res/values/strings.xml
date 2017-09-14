@@ -150,4 +150,6 @@
     <string name="product_draft_error_delete_draft">Terjadi kesalahan dalam menghapus semua draft. Silakan coba kembali.</string>
     <string name="product_draft_success_delete_draft">Semua draft Produk berhasil dihapus</string>
 
+    <string name="shop_score_point_value">%1s poin</string>
+    <string name="shop_score_title_widget_home">Performa Toko</string>
 </resources>

@@ -1,9 +1,9 @@
-package com.tokopedia.sellerapp.home.view.mapper;
+package com.tokopedia.seller.shopscore.view.mapper;
 
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreSummaryDomainModelData;
-import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModelData;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModelData;
 
 /**
  * @author sebastianuskh on 2/24/17.

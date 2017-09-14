@@ -44,8 +44,8 @@ import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
-import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
+import com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget;
 
 import java.util.ArrayList;
 

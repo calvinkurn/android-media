@@ -9,14 +9,13 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="drawer_title_top_ads">TopAds</string>
-    <string name="title_shop_score_widget_home">Performa Toko</string>
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
 
     <string name="dashboard_label_regular_merchant">Regular Merchant</string>
     <string name="dashboard_label_gold_merchant">Gold Merchant</string>
-    <string name="dashboard_shop_score_point">%1s poin</string>
+
     <string name="dashboard_shop_success_rate">%1s%%</string>
     <string name="open_shop">Buka Toko</string>
     <string name="dashboard_your_shop_is_closed_until_xx">Toko Anda tutup sampai dengan %1$s</string>

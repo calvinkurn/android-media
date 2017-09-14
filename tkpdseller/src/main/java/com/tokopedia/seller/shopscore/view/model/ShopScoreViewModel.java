@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.home.view.model;
+package com.tokopedia.seller.shopscore.view.model;
 
 /**
  * @author sebastianuskh on 2/24/17.

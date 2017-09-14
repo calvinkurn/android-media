@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.home.view.widget;
+package com.tokopedia.seller.shopscore.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,8 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.shopscore.view.widget.ShopScoreMainProgressBarWithLimit;
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 
 /**
  * @author sebastianuskh on 2/24/17.
@@ -53,7 +52,7 @@ public class ShopScoreMainDetailView extends RelativeLayout {
 
     public void setProgress(float progress) {
         progressBar.setProgress(progress);
-        shopScoreTextView.setText(shopScoreTextView.getContext().getString(R.string.dashboard_shop_score_point, String.valueOf(Math.round(progress))));
+        shopScoreTextView.setText(shopScoreTextView.getContext().getString(R.string.shop_score_point_value, String.valueOf(Math.round(progress))));
     }
 
     public void setLimit(float limit) {

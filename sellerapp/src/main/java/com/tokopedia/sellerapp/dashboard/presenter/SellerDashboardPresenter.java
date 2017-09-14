@@ -15,8 +15,8 @@ import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
-import com.tokopedia.sellerapp.home.view.mapper.ShopScoreMapper;
-import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
+import com.tokopedia.seller.shopscore.view.mapper.ShopScoreMapper;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
 
 import javax.inject.Inject;
 

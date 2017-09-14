@@ -1,16 +1,14 @@
-package com.tokopedia.sellerapp.home.view.widget;
+package com.tokopedia.seller.shopscore.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModelData;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModelData;
 
 /**
  * @author sebastianuskh on 2/23/17.

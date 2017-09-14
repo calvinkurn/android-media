@@ -16,7 +16,7 @@
             style="@style/TextView.Body1.Bold"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="@string/title_shop_score_widget_home" />
+            android:text="@string/shop_score_title_widget_home" />
 
         <TextView
             android:id="@+id/text_view_shop_score"
