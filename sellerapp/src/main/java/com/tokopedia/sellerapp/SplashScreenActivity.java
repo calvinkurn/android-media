@@ -16,7 +16,6 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
  * Created by normansyahputa on 11/29/16.

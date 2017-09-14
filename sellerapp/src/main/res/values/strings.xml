@@ -10,16 +10,9 @@
 
     <string name="drawer_title_top_ads">TopAds</string>
     <string name="title_shop_score_widget_home">Performa Toko</string>
-    <string name="view_shop_score_per_cent">/100</string>
-    <string name="action_shop_score_go_to_detail">Lihat Detail</string>
-    <string name="decription_shop_score_summary_30days_info">Skor dihitung berdasarkan performa toko dalam 30 hari terakhir.</string>
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
-    <string name="home_seller_manage_product">Atur Produk</string>
-    <string name="home_seller_add_product">Tambah Produk</string>
-    <string name="home_seller_etalase">Etalase</string>
-    <string name="home_seller_setting">Pengaturan</string>
 
     <string name="dashboard_label_regular_merchant">Regular Merchant</string>
     <string name="dashboard_label_gold_merchant">Gold Merchant</string>
