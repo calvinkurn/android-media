@@ -19,6 +19,7 @@ public class PosReactPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ReactPosCacheModule(reactContext));
+        modules.add(new ReactSessionModule(reactContext));
         return modules;
     }
 
