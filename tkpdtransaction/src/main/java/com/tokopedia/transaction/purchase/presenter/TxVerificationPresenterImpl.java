@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.fragment.TxVerificationFragment;
@@ -109,7 +110,7 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
         netInteractor
                 .showCancelTransactionDialog(AuthUtil.generateParamsNetwork(
                         context, cancelTransactionParams
-                ), dialogListener(data.getPaymentId()));
+                ), dialogListener(context, data.getPaymentId()));
     }
 
     @Override
@@ -176,10 +177,16 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
 
     }
 
-    private TxOrderNetInteractor.CancelTransactionDialogListener dialogListener(final String paymentId) {
+    private TxOrderNetInteractor.CancelTransactionDialogListener dialogListener (
+            final Context context,
+            final String paymentId
+    ) {
         return new TxOrderNetInteractor.CancelTransactionDialogListener() {
             @Override
             public void onSuccess(String message) {
+                if(message.isEmpty()) {
+                    message = context.getString(R.string.question_cancel_transaction);
+                }
                 viewListener.showCancelTransactionDialog(message, paymentId);
             }
 
