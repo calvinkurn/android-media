@@ -34,10 +34,10 @@ public class SellerRouter {
 
 
     public final static int TAB_POSITION_SELLING_NEW_ORDER = 1;
-    public final static int TAB_POSITION_SELLING_CONFIRM_SHIPPING = 2;
-    public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 3;
-    public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 4;
-    private static final int TAB_POSITION_SELLING_OPPORTUNITY = 5;
+    public static final int TAB_POSITION_SELLING_OPPORTUNITY = 2;
+    public final static int TAB_POSITION_SELLING_CONFIRM_SHIPPING = 3;
+    public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 4;
+    public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
 
     public interface ShopSettingConstant{
         String FRAGMENT_TO_SHOW = "FragmentToShow";

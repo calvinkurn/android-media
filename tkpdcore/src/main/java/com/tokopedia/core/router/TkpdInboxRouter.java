@@ -1,10 +1,7 @@
 package com.tokopedia.core.router;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 /**
  * @author by nisie on 9/14/17.

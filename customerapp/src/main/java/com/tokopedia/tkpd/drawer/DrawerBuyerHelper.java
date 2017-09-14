@@ -201,6 +201,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SHOP,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 getTotalSellerNotif());
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_opportunity),
+                0,
+                TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_order),
                 TkpdState.DrawerPosition.SHOP_NEW_ORDER,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false),
@@ -216,10 +220,6 @@ public class DrawerBuyerHelper extends DrawerHelper
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_list_selling),
                 0,
                 TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST,
-                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_opportunity),
-                0,
-                TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         return sellerMenu;
     }
