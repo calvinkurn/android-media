@@ -226,11 +226,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processToSendMessage(@NonNull Context context, @NonNull Bundle bundle) {
+    public void processToSendMessage(@NonNull Context context, @NonNull Intent sendMessageIntent) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {
-            intent = InboxRouter.getSendMessageActivityIntent(context).putExtras(bundle);
-            viewListener.navigateToActivity(intent);
+            viewListener.navigateToActivity(sendMessageIntent);
         } else {
             intent = SessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY,

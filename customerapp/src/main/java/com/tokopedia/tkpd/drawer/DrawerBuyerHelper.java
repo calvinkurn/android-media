@@ -47,7 +47,6 @@ import com.tokopedia.tkpd.R;
 
 import java.util.ArrayList;
 
-import static com.bca.xco.widget.connection.httpclient.f.R;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_INBOX_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_PEOPLE_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_SHOP_OPENED;
@@ -144,8 +143,8 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(getBuyerMenu());
         if (!SessionHandler.getShopID(context).equals("0")
                 && !SessionHandler.getShopID(context).equals("")) {
-            data.add(getProductMenu());
             data.add(getSellerMenu());
+            data.add(getProductMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,

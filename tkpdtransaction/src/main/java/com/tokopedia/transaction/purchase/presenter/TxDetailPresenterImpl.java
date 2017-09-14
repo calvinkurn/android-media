@@ -18,11 +18,13 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
@@ -154,21 +156,19 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @SuppressWarnings("deprecation")
     @Override
     public void processAskSeller(Context context, OrderData orderData) {
-        Intent intent = InboxRouter.getSendMessageActivityIntent(context);
-        Bundle bundle = new Bundle();
-        bundle.putString(InboxRouter.PARAM_SHOP_ID,
-                orderData.getOrderShop().getShopId());
-        bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME,
-                orderData.getOrderShop().getShopName());
-        bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                orderData.getOrderDetail().getDetailInvoice());
-        bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                MethodChecker.fromHtml(
-                        context.getString(R.string.custom_content_message_ask_seller)
-                                .replace("XXX",
-                                        orderData.getOrderDetail().getDetailPdfUri())).toString()
-        );
-        viewListener.navigateToActivity(intent.putExtras(bundle));
+
+        if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                    .getAskSellerIntent(context,
+                            orderData.getOrderShop().getShopId(),
+                            orderData.getOrderShop().getShopName(),
+                            orderData.getOrderDetail().getDetailInvoice(),
+                            MethodChecker.fromHtml(
+                                    context.getString(R.string.custom_content_message_ask_seller)
+                                            .replace("XXX",
+                                                    orderData.getOrderDetail().getDetailPdfUri())).toString());
+            viewListener.navigateToActivity(intent);
+        }
     }
 
     @Override

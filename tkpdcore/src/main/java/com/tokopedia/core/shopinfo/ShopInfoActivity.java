@@ -39,6 +39,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -52,6 +53,7 @@ import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -843,11 +845,13 @@ public class ShopInfoActivity extends BaseActivity
         Intent intent;
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
-            intent = InboxRouter.getSendMessageActivityIntent(ShopInfoActivity.this);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                        .getAskSellerIntent(this,
+                                shopModel.info.shopId,
+                                shopModel.info.shopName);
+                startActivity(intent);
+            }
         } else {
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
