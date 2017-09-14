@@ -2,7 +2,7 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.support.annotation.Nullable;
 
-import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
@@ -16,15 +16,15 @@ public class ReactUtils {
     private static
     @javax.annotation.Nullable
     ReactUtils reactUtils;
-    private ReactApplication reactApplication;
+    private ReactInstanceManager reactInstanceManager;
 
-    private ReactUtils(ReactApplication application) {
-        this.reactApplication = application;
+    private ReactUtils(ReactInstanceManager reactInstanceManager) {
+        this.reactInstanceManager = reactInstanceManager;
     }
 
     private ReactContext getCurrentReactContext() {
-        if (reactApplication != null) {
-            return reactApplication.getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
+        if (reactInstanceManager != null) {
+            return reactInstanceManager.getCurrentReactContext();
         }
         return null;
     }
@@ -102,9 +102,9 @@ public class ReactUtils {
         );
     }
 
-    public static ReactUtils init(ReactApplication application) {
+    public static ReactUtils init(ReactInstanceManager reactInstanceManager) {
         if (reactUtils == null)
-            reactUtils = new ReactUtils(application);
+            reactUtils = new ReactUtils(reactInstanceManager);
         return reactUtils;
     }
 }

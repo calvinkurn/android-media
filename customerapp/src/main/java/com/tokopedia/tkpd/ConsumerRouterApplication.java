@@ -72,15 +72,19 @@ import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
+import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.tkpdreactnative.react.ReactNativeHostFactory;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
+import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -97,8 +101,13 @@ public class ConsumerRouterApplication extends MainApplication implements
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
     private DaggerProductComponent.Builder daggerProductBuilder;
+    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private ProductComponent productComponent;
-    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
+    private ReactNativeComponent reactNativeComponent;
+    @Inject
+    ReactNativeHost reactNativeHost;
+    @Inject
+    ReactUtils reactUtils;
 
     public GoldMerchantComponent getGoldMerchantComponent() {
         throw new RuntimeException("method used in sellerapp only");
@@ -108,10 +117,18 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void onCreate() {
         super.onCreate();
         initializeDagger();
+        initDaggerInjector();
+    }
+
+    private void initDaggerInjector() {
+        getReactNativeComponent().inject(this);
     }
 
     private void initializeDagger() {
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
+        daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
+                .appComponent(getApplicationComponent())
+        .reactNativeModule(new ReactNativeModule(this));
     }
 
     @Override
@@ -482,35 +499,48 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
+
     }
 
     @Override
     public void sendAddWishlistEmitter(String productId, String userId) {
-        ReactUtils.init(ConsumerRouterApplication.this).sendAddWishlistEmitter(productId, userId);
+        reactUtils.sendAddWishlistEmitter(productId, userId);
+//        ReactUtils.init(ConsumerRouterApplication.this).sendAddWishlistEmitter(productId, userId);
     }
 
     @Override
     public void sendRemoveWishlistEmitter(String productId, String userId) {
-        ReactUtils.init(ConsumerRouterApplication.this).sendRemoveWishlistEmitter(productId, userId);
+        reactUtils.sendRemoveWishlistEmitter(productId, userId);
+//        ReactUtils.init(ConsumerRouterApplication.this).sendRemoveWishlistEmitter(productId, userId);
     }
 
     @Override
     public void sendRemoveFavoriteEmitter(String shopId, String userId) {
-        ReactUtils.init(ConsumerRouterApplication.this).sendRemoveFavoriteEmitter(shopId, userId);
+        reactUtils.sendRemoveFavoriteEmitter(shopId, userId);
+//        ReactUtils.init(ConsumerRouterApplication.this).sendRemoveFavoriteEmitter(shopId, userId);
     }
 
     @Override
     public void sendLoginEmitter(String userId) {
-        ReactUtils.init(ConsumerRouterApplication.this).sendLoginEmitter(userId);
+        reactUtils.sendLoginEmitter(userId);
+//        ReactUtils.init(ConsumerRouterApplication.this).sendLoginEmitter(userId);
     }
 
     @Override
     public void sendAddFavoriteEmitter(String shopId, String userId) {
-        ReactUtils.init(ConsumerRouterApplication.this).sendAddFavoriteEmitter(shopId, userId);
+        reactUtils.sendAddFavoriteEmitter(shopId, userId);
+//        ReactUtils.init(ConsumerRouterApplication.this).sendAddFavoriteEmitter(shopId, userId);
+    }
+
+    private ReactNativeComponent getReactNativeComponent() {
+        if (reactNativeComponent == null)
+            reactNativeComponent = daggerReactNativeBuilder.build();
+        return reactNativeComponent;
     }
 
     @Override
     public ReactNativeHost getReactNativeHost() {
+        if (reactNativeHost == null) initDaggerInjector();
         return reactNativeHost;
     }
 }
