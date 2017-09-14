@@ -204,11 +204,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
         swipeRefreshLayout.setRefreshing(false);
 
-        // TODO update view
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
 
         updateShopInfo(shopModel);
-        shopReputationView.setValue(0, 0, 0);
+        shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
+                shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
+        reputationPointTextView.setText(String.valueOf(shopModel.getStats().getShopReputationScore()));
+        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate, String.valueOf(shopModel.getStats().getRateSuccess())));
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
     }

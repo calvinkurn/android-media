@@ -46,4 +46,47 @@ public class ShopModel {
     @Expose
     public int useAce;
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public Info getInfo() {
+        return info;
+    }
+
+    public List<Payment> getPayment() {
+        return payment;
+    }
+
+    public Stats getStats() {
+        return stats;
+    }
+
+    public ShopTxStats getShopTxStats() {
+        return shopTxStats;
+    }
+
+    public ClosedInfo getClosedInfo() {
+        return closedInfo;
+    }
+
+    public List<Shipment> getShipment() {
+        return shipment;
+    }
+
+    public Ratings getRatings() {
+        return ratings;
+    }
+
+    public int getIsOpen() {
+        return isOpen;
+    }
+
+    public List<Address> getAddress() {
+        return address;
+    }
+
+    public int getUseAce() {
+        return useAce;
+    }
 }
