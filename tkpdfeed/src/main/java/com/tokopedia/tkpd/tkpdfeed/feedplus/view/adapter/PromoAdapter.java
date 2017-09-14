@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int VIEW_BIG = 134;
     private static final int VIEW_MORE = 234;
     private static final int VIEW_LAYOUT = 344;
     private static final float MARGIN_CARD = 10;
@@ -47,10 +46,6 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.promo_more_layout, parent, false);
                 return new ViewMoreViewHolder(view);
-            case VIEW_BIG:
-                view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.promo_item_layout, parent, false);
-                return new LayoutViewHolder(view);
             default:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.promo_item_layout, parent, false);
@@ -158,9 +153,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (list.size() == 1) {
-            return VIEW_BIG;
-        } else if (list.size() > 1 && position == getItemCount() - 1) {
+        if (list.size() > 1 && position == getItemCount() - 1) {
             return VIEW_MORE;
         } else {
             return VIEW_LAYOUT;
