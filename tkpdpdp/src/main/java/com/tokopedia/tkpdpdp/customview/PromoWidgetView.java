@@ -8,10 +8,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.util.MethodChecker;
@@ -24,10 +24,11 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView> {
 
-    private TextView promoTitle;
-    private TextView promoDesc;
-    private TextView promoCode;
-    private TextView copyCode;
+    private TextView textPromoTitle;
+    private TextView textPromoDesc;
+    private TextView textPromoCode;
+    private TextView btnCopyCode;
+    private LinearLayout btnCodeCopied;
     private Context context;
 
     public PromoWidgetView(Context context) {
@@ -42,10 +43,11 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
     protected void initView(Context context) {
         super.initView(context);
         this.context = context;
-        promoTitle = (TextView) findViewById(R.id.promo_widget_title);
-        promoDesc = (TextView) findViewById(R.id.promo_widget_desc);
-        promoCode = (TextView) findViewById(R.id.promo_widget_code);
-        copyCode = (TextView) findViewById(R.id.text_copy_code);
+        textPromoTitle = (TextView) findViewById(R.id.promo_widget_title);
+        textPromoDesc = (TextView) findViewById(R.id.promo_widget_desc);
+        textPromoCode = (TextView) findViewById(R.id.promo_widget_code);
+        btnCopyCode = (TextView) findViewById(R.id.text_copy_code);
+        btnCodeCopied = (LinearLayout) findViewById(R.id.btn_copied);
 
     }
 
@@ -72,18 +74,20 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
     @Override
     @SuppressLint("DefaultLocale")
     public void renderData(@NonNull final PromoAttributes data) {
-        promoTitle.setText(MethodChecker.fromHtml(data.getShortDesc()));
-        promoDesc.setText(MethodChecker.fromHtml(data.getShortCond()));
-        promoCode.setText(MethodChecker.fromHtml(data.getCode()));
-        copyCode.setOnClickListener(new OnClickListener() {
+        textPromoTitle.setText(MethodChecker.fromHtml(data.getShortDesc()));
+        textPromoDesc.setText(MethodChecker.fromHtml(data.getShortCond()));
+        textPromoCode.setText(MethodChecker.fromHtml(data.getCode()));
+        btnCopyCode.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(data.getCode(), data.getCode());
                 clipboard.setPrimaryClip(clip);
+                btnCopyCode.setVisibility(GONE);
+                btnCodeCopied.setVisibility(VISIBLE);
             }
         });
-        promoTitle.setOnClickListener(new OnClickListener() {
+        textPromoTitle.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, BannerWebView.class);

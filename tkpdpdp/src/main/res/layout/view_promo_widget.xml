@@ -68,6 +68,28 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/black_38"
                 android:text="@string/title_copy_promo_code"/>
+
+            <LinearLayout
+                android:id="@+id/btn_copied"
+                style="@style/FavButtonPDP"
+                android:layout_width="105dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="-5dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/shape_promo_pdp_right"
+                android:visibility="gone"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:drawableLeft="@drawable/ic_check_green_24dp"
+                    android:textColor="@color/tkpd_main_green"
+                    android:text="@string/title_copied"/>
+            </LinearLayout>
+
             
         </LinearLayout>
 
