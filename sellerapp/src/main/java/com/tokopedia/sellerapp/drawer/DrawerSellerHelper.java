@@ -305,25 +305,6 @@ public class DrawerSellerHelper extends DrawerHelper
         adapter.notifyDataSetChanged();
     }
 
-    private void checkExpand(String key, int idPosition) {
-        if (drawerCache.getBoolean(key, false)) {
-            DrawerGroup group = findGroup(idPosition);
-            if (group != null)
-                adapter.getData().addAll(group.getPosition() + 1, group.getList());
-        }
-    }
-
-    private DrawerGroup findGroup(int id) {
-        for (int i = 0; i < adapter.getData().size(); i++) {
-            if (adapter.getData().get(i) instanceof DrawerGroup
-                    && adapter.getData().get(i).getId() == id) {
-                adapter.getData().get(i).setPosition(i);
-                return (DrawerGroup) adapter.getData().get(i);
-            }
-        }
-        return null;
-    }
-
     @Override
     public void onItemClicked(DrawerItem item) {
         if (item.getId() == selectedPosition) {
