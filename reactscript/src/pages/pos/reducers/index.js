@@ -36,9 +36,10 @@ const products = (state = {
         isFetching: true,
       }
     case `${FETCH_PRODUCTS}_${FULFILLED}`:
-      const products = action.payload.data.data.products || []
+      // const products = action.payload.data.data.products || []
+      const products = action.payload.data.list || []
       const items = [...state.items, ...products]
-      const nextUrl = action.payload.data.data.paging.uri_next
+      const nextUrl = action.payload.data.paging.uri_next
       const pagination = {
         ...state.pagination,
         start: items.length
