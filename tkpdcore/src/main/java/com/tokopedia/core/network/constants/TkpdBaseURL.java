@@ -801,6 +801,13 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_STEP_1 = BASE_RESOLUTION_CREATE + "/step1";
         public static final String POST_RESOLUTION_STEP_2_3 = BASE_RESOLUTION_CREATE + "/step2_3";
 
+        public static final String BASE_RESOLUTION_EDIT = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
+        public static final String GET_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
+        public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
+
+
+
+
     }
 
     public static class Replacement {

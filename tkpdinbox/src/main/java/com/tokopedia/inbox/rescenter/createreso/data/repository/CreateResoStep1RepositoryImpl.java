@@ -20,6 +20,7 @@ public class CreateResoStep1RepositoryImpl implements CreateResoStep1Repository 
 
     @Override
     public Observable<CreateResoStep1Domain> createResoStep1(RequestParams requestParams) {
-        return createResolutionFactory.createResoStep1CloudSource().createResoStep1Response(requestParams);
+        return createResolutionFactory.createResoStep1CloudSource().
+                createResoStep1Response(requestParams);
     }
 }

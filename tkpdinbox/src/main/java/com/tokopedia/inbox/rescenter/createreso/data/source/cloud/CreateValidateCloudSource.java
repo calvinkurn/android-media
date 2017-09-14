@@ -24,7 +24,8 @@ public class CreateValidateCloudSource {
 
     public Observable<CreateValidateDomain> createValidate(RequestParams requestParams) {
         try {
-            return resolutionApi.postCreateValidateResolution(requestParams.getString(CreateResoStep1UseCase.ORDER_ID, ""),
+            return resolutionApi.postCreateValidateResolution(requestParams.getString(
+                    CreateResoStep1UseCase.ORDER_ID, ""),
                     requestParams.getString(CreateResoStep1UseCase.PARAM_RESULT, ""))
                     .map(createValidateMapper);
         } catch (Exception e) {

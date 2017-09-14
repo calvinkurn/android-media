@@ -151,7 +151,8 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
         };
     }
 
-    private Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>> getObservableCreateSubmitReso(CreateResoRequestDomain createResoRequestDomain) {
+    private Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>>
+    getObservableCreateSubmitReso(CreateResoRequestDomain createResoRequestDomain) {
         return new Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>>() {
             @Override
             public Observable<CreateSubmitDomain> call(CreateResoRequestDomain createResoRequestDomain) {

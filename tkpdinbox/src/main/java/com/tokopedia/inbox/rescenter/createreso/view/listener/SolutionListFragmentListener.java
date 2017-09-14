@@ -4,6 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
@@ -33,6 +34,8 @@ public interface SolutionListFragmentListener {
 
     interface Presenter extends CustomerPresenter<View> {
         void initResultViewModel(ResultViewModel resultViewModel);
+
+        void initEditAppeal(EditAppealSolutionModel editAppealSolutionModel);
 
         void updateLocalData(SolutionResponseViewModel solutionResponseViewModel);
 

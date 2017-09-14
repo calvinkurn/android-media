@@ -109,9 +109,16 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
     }
 
     private OrderDomain mappingOrderDomain(OrderResponse orderResponse) {
-        OrderDomain orderDomain = new OrderDomain(orderResponse.getDetail() != null ? mappingOrderDetailDomain(orderResponse.getDetail()) : null,
-                orderResponse.getProduct() != null ? mappingOrderProductDomain(orderResponse.getProduct()) : null,
-                orderResponse.getShipping() != null ? mappingShippingDomain(orderResponse.getShipping()) : null);
+        OrderDomain orderDomain = new OrderDomain(
+                orderResponse.getDetail() != null ?
+                        mappingOrderDetailDomain(orderResponse.getDetail()) :
+                        null,
+                orderResponse.getProduct() != null ?
+                        mappingOrderProductDomain(orderResponse.getProduct()) :
+                        null,
+                orderResponse.getShipping() != null ?
+                        mappingShippingDomain(orderResponse.getShipping()) :
+                        null);
         return orderDomain;
     }
 
@@ -126,7 +133,9 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
                 orderProductResponse.getThumb(),
                 orderProductResponse.getVariant(),
                 orderProductResponse.getQuantity(),
-                orderProductResponse.getAmount() != null ? mappingAmountDomain(orderProductResponse.getAmount()) : null);
+                orderProductResponse.getAmount() != null ?
+                        mappingAmountDomain(orderProductResponse.getAmount()) :
+                        null);
         return domain;
     }
 
@@ -139,13 +148,17 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
     private ShippingDomain mappingShippingDomain(ShippingResponse shippingResponse) {
         ShippingDomain domain = new ShippingDomain(shippingResponse.getId(),
                 shippingResponse.getName(),
-                shippingResponse.getDetail() != null ? mappingShippingDetailDomain(shippingResponse.getDetail()) : null);
+                shippingResponse.getDetail() != null ?
+                        mappingShippingDetailDomain(shippingResponse.getDetail()) :
+                        null);
 
         return domain;
     }
 
-    private ShippingDetailDomain mappingShippingDetailDomain(ShippingDetailResponse shippingDetailResponse) {
-        ShippingDetailDomain domain = new ShippingDetailDomain(shippingDetailResponse.getId(),
+    private ShippingDetailDomain mappingShippingDetailDomain(
+            ShippingDetailResponse shippingDetailResponse) {
+        ShippingDetailDomain domain = new ShippingDetailDomain(
+                shippingDetailResponse.getId(),
                 shippingDetailResponse.getName());
         return domain;
     }
@@ -155,19 +168,26 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
         List<StatusDomain> statusDomainList = new ArrayList<>();
 
         for (StatusResponse statusResponse : statusResponseList) {
-            StatusDomain domain = new StatusDomain(statusResponse.isDelivered(),
+            StatusDomain domain = new StatusDomain(
+                    statusResponse.isDelivered(),
                     statusResponse.getName(),
-                    statusResponse.getTrouble() != null ? mappingStatusTrouble(statusResponse.getTrouble()) : null,
-                    statusResponse.getInfo() != null ? mappingStatusInfoDomain(statusResponse.getInfo()) : null);
+                    statusResponse.getTrouble() != null ?
+                            mappingStatusTrouble(statusResponse.getTrouble()) :
+                            null,
+                    statusResponse.getInfo() != null ?
+                            mappingStatusInfoDomain(statusResponse.getInfo()) :
+                            null);
             statusDomainList.add(domain);
         }
         return statusDomainList;
     }
 
-    private List<StatusTroubleDomain> mappingStatusTrouble(List<StatusTroubleResponse> statusTroubleResponseList) {
+    private List<StatusTroubleDomain> mappingStatusTrouble(
+            List<StatusTroubleResponse> statusTroubleResponseList) {
         List<StatusTroubleDomain> domainList = new ArrayList<>();
         for (StatusTroubleResponse statusTroubleResponse : statusTroubleResponseList) {
-            StatusTroubleDomain domain = new StatusTroubleDomain(statusTroubleResponse.getId(),
+            StatusTroubleDomain domain = new StatusTroubleDomain(
+                    statusTroubleResponse.getId(),
                     statusTroubleResponse.getName());
             domainList.add(domain);
         }
@@ -175,7 +195,8 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
     }
 
     private StatusInfoDomain mappingStatusInfoDomain(StatusInfoResponse statusInfoResponse) {
-        StatusInfoDomain domain = new StatusInfoDomain(statusInfoResponse.isShow(),
+        StatusInfoDomain domain = new StatusInfoDomain(
+                statusInfoResponse.isShow(),
                 statusInfoResponse.getDate());
         return domain;
     }

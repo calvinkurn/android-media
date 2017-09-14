@@ -11,7 +11,9 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
  * Created by yoasfs on 28/08/17.
  */
 
-public class SolutionDetailFragmentPresenter extends BaseDaggerPresenter<SolutionDetailFragmentListener.View> implements SolutionDetailFragmentListener.Presenter {
+public class SolutionDetailFragmentPresenter
+        extends BaseDaggerPresenter<SolutionDetailFragmentListener.View>
+        implements SolutionDetailFragmentListener.Presenter {
 
     Context context;
     SolutionDetailFragmentListener.View mainView;

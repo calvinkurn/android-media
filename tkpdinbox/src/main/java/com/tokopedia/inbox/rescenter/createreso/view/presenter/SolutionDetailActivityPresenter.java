@@ -14,11 +14,13 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionDetailActivityPresenter implements SolutionDetailActivityListener.Presenter {
+public class SolutionDetailActivityPresenter
+        implements SolutionDetailActivityListener.Presenter {
     Context context;
     SolutionDetailActivityListener.View mainView;
 
-    public SolutionDetailActivityPresenter(Context context, SolutionDetailActivityListener.View mainView) {
+    public SolutionDetailActivityPresenter(Context context,
+                                           SolutionDetailActivityListener.View mainView) {
         this.context = context;
         this.mainView = mainView;
     }

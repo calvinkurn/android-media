@@ -25,7 +25,8 @@ public class CreateSubmitCloudSource {
 
     public Observable<CreateSubmitDomain> createSubmit(RequestParams requestParams) {
         try {
-            return resolutionApi.postCreateSubmitResolution(requestParams.getString(GetSolutionUseCase.ORDER_ID, ""),
+            return resolutionApi.postCreateSubmitResolution(requestParams.getString(
+                    GetSolutionUseCase.ORDER_ID, ""),
                     requestParams.getString(CreateSubmitUseCase.PARAM_JSON, ""))
                     .map(createSubmitMapper);
         } catch (Exception e) {

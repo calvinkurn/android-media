@@ -43,7 +43,8 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
     public static RequestParams createResoSubmitParams(CreateResoRequestDomain createResoRequestDomain) {
         JSONObject submitObject = new JSONObject();
         try {
-            submitObject.put(PARAM_CACHE_KEY, createResoRequestDomain.getCreateValidateDomain().getCacheKey());
+            submitObject.put(PARAM_CACHE_KEY,
+                    createResoRequestDomain.getCreateValidateDomain().getCacheKey());
             JSONArray imageArrayList = new JSONArray();
             JSONArray videoArrayList = new JSONArray();
 

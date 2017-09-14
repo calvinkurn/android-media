@@ -48,7 +48,8 @@ import rx.Subscriber;
  * Created by yoasfs on 11/08/17.
  */
 
-public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateResolutionCenter.View> implements CreateResolutionCenter.Presenter {
+public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateResolutionCenter.View>
+        implements CreateResolutionCenter.Presenter {
     private CreateResolutionCenter.View mainView;
     private GetProductProblemUseCase getProductProblemUseCase;
     private CreateResoStep1UseCase createResoStep1UseCase;
@@ -82,7 +83,8 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         mainView.showLoading();
         resultViewModel.orderId = orderId;
         this.orderId = orderId;
-        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId), new LoadProductSubscriber(mainView));
+        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId),
+                new LoadProductSubscriber(mainView));
     }
 
     @Override
@@ -96,7 +98,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         for (ProblemResult problemResult : resultViewModel.problem) {
             problemResults.add(problemResult);
         }
-        mainView.transitionToChooseProductAndProblemPage(mappingDomainToViewModel(productProblemResponseDomain), problemResults);
+        mainView.transitionToChooseProductAndProblemPage(mappingDomainToViewModel(
+                productProblemResponseDomain),
+                problemResults);
     }
 
     @Override
@@ -138,12 +142,15 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void callCreateResolutionAPI() {
-        createResoStep1UseCase.execute(createResoStep1UseCase.createResoStep1Params(resultViewModel), new CreateResoStep1Subscriber(mainView));
+        createResoStep1UseCase.execute(createResoStep1UseCase.createResoStep1Params(resultViewModel),
+                new CreateResoStep1Subscriber(mainView));
     }
 
     @Override
     public void callCreateResolutionAPIWithAttachment() {
-        createResoWithAttachmentUseCase.execute(createResoWithAttachmentUseCase.createResoWithAttachmentRequestParams(resultViewModel), new CreateResoWithAttachmentSubscriber(mainView));
+        createResoWithAttachmentUseCase.execute(createResoWithAttachmentUseCase.
+                        createResoWithAttachmentRequestParams(resultViewModel),
+                new CreateResoWithAttachmentSubscriber(mainView));
     }
 
     private ProductProblemListViewModel mappingDomainToViewModel(ProductProblemResponseDomain responseDomain) {
@@ -152,15 +159,22 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
             if (responseDomain.getProductProblemDomainList() != null) {
                 for (ProductProblemDomain productProblemDomain : responseDomain.getProductProblemDomainList()) {
                     ProductProblemViewModel productProblemViewModel = new ProductProblemViewModel(
-                            productProblemDomain.getProblemDomain() != null ? mappingProblemViewModel(productProblemDomain.getProblemDomain()) : null,
-                            productProblemDomain.getOrderDomain() != null ? mappingOrderViewModel(productProblemDomain.getOrderDomain()) : null,
-                            productProblemDomain.getStatusDomainList() != null ? mappingStatusViewModel(productProblemDomain.getStatusDomainList()) : null
+                            productProblemDomain.getProblemDomain() != null ?
+                                    mappingProblemViewModel(productProblemDomain.getProblemDomain()) :
+                                    null,
+                            productProblemDomain.getOrderDomain() != null ?
+                                    mappingOrderViewModel(productProblemDomain.getOrderDomain()) :
+                                    null,
+                            productProblemDomain.getStatusDomainList() != null ?
+                                    mappingStatusViewModel(productProblemDomain.getStatusDomainList()) :
+                                    null
                     );
                     modelList.add(productProblemViewModel);
                 }
             }
         }
-        ProductProblemListViewModel productProblemListViewModel = new ProductProblemListViewModel(modelList);
+        ProductProblemListViewModel productProblemListViewModel =
+                new ProductProblemListViewModel(modelList);
         return productProblemListViewModel;
     }
 
@@ -172,9 +186,15 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     private OrderViewModel mappingOrderViewModel(OrderDomain orderDomain) {
         return new OrderViewModel(
-                orderDomain.getDetailDomain() != null ? mappingOrderDetailViewModel(orderDomain.getDetailDomain()) : null,
-                orderDomain.getProductDomain() != null ? mappingOrderProductViewModel(orderDomain.getProductDomain()) : null,
-                orderDomain.getShippingDomain() != null ? mappingShippingViewModel(orderDomain.getShippingDomain()) : null);
+                orderDomain.getDetailDomain() != null ?
+                        mappingOrderDetailViewModel(orderDomain.getDetailDomain()) :
+                        null,
+                orderDomain.getProductDomain() != null ?
+                        mappingOrderProductViewModel(orderDomain.getProductDomain()) :
+                        null,
+                orderDomain.getShippingDomain() != null ?
+                        mappingShippingViewModel(orderDomain.getShippingDomain()) :
+                        null);
     }
 
     private OrderDetailViewModel mappingOrderDetailViewModel(OrderDetailDomain orderDetailDomain) {
@@ -188,7 +208,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
                 orderProductDomain.getThumb(),
                 orderProductDomain.getVariant(),
                 orderProductDomain.getQuantity(),
-                orderProductDomain.getAmountDomain() != null ? mappingAmountViewModel(orderProductDomain.getAmountDomain()) : null);
+                orderProductDomain.getAmountDomain() != null ?
+                        mappingAmountViewModel(orderProductDomain.getAmountDomain()) :
+                        null);
     }
 
     private AmountViewModel mappingAmountViewModel(AmountDomain amountDomain) {
@@ -200,7 +222,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private ShippingViewModel mappingShippingViewModel(ShippingDomain shippingDomain) {
         return new ShippingViewModel(shippingDomain.getId(),
                 shippingDomain.getName(),
-                shippingDomain.getDetailDomain() != null ? mappingShippingDetailViewModel(shippingDomain.getDetailDomain()) : null);
+                shippingDomain.getDetailDomain() != null ?
+                        mappingShippingDetailViewModel(shippingDomain.getDetailDomain()) :
+                        null);
     }
 
     private ShippingDetailViewModel mappingShippingDetailViewModel(ShippingDetailDomain shippingDetailDomain) {
@@ -215,8 +239,12 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
             StatusViewModel statusViewModel = new StatusViewModel(
                     statusDomain.isDelivered(),
                     statusDomain.getName(),
-                    statusDomain.getStatusTroubleDomainList() != null ? mappingStatusTroubleViewModel(statusDomain.getStatusTroubleDomainList()) : null,
-                    statusDomain.getStatusInfoDomain() !=null ? mappingStatusInfoViewModel(statusDomain.getStatusInfoDomain()) : null);
+                    statusDomain.getStatusTroubleDomainList() != null ?
+                            mappingStatusTroubleViewModel(statusDomain.getStatusTroubleDomainList()) :
+                            null,
+                    statusDomain.getStatusInfoDomain() !=null ?
+                            mappingStatusInfoViewModel(statusDomain.getStatusInfoDomain()) :
+                            null);
             statusViewModelList.add(statusViewModel);
         }
         return statusViewModelList;

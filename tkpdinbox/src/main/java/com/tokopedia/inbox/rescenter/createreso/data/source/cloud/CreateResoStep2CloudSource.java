@@ -29,7 +29,8 @@ public class CreateResoStep2CloudSource {
 
     public Observable<CreateResoStep2Domain> createResoStep2Response(RequestParams requestParams) {
         try {
-            return resolutionApi.postCreateResolution(requestParams.getString(GetSolutionUseCase.ORDER_ID, ""),
+            return resolutionApi.postCreateResolution(requestParams.getString(
+                    GetSolutionUseCase.ORDER_ID, ""),
                     requestParams.getString(GetSolutionUseCase.PARAM_PROBLEM, ""))
                     .map(createResoStep2Mapper);
         } catch (Exception e) {

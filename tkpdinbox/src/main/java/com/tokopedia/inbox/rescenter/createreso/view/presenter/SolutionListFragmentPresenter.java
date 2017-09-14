@@ -7,11 +7,14 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturn
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.SolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.RequireViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
@@ -28,17 +31,21 @@ import rx.Subscriber;
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionListFragmentListener.View>
+public class SolutionListFragmentPresenter
+        extends BaseDaggerPresenter<SolutionListFragmentListener.View>
         implements SolutionListFragmentListener.Presenter {
 
     private SolutionListFragmentListener.View mainView;
     private GetSolutionUseCase getSolutionUseCase;
+    private GetEditSolutionUseCase getEditSolutionUseCase;
     private ResultViewModel resultViewModel;
 
 
     @Inject
-    public SolutionListFragmentPresenter(GetSolutionUseCase getSolutionUseCase){
+    public SolutionListFragmentPresenter(GetSolutionUseCase getSolutionUseCase,
+                                         GetEditSolutionUseCase getEditSolutionUseCase) {
         this.getSolutionUseCase = getSolutionUseCase;
+        this.getEditSolutionUseCase = getEditSolutionUseCase;
     }
 
     @Override
@@ -51,7 +58,16 @@ public class SolutionListFragmentPresenter extends BaseDaggerPresenter<SolutionL
     public void initResultViewModel(final ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
         mainView.showLoading();
-        getSolutionUseCase.execute(getSolutionUseCase.getSolutionUseCaseParams(resultViewModel), new SolutionSubscriber(mainView));
+        getSolutionUseCase.execute(getSolutionUseCase.getSolutionUseCaseParams(resultViewModel),
+                new SolutionSubscriber(mainView));
+    }
+
+    @Override
+    public void initEditAppeal(EditAppealSolutionModel editAppealSolutionModel) {
+        mainView.showLoading();
+        getEditSolutionUseCase.execute(getEditSolutionUseCase.getEditSolutionUseCaseParams(
+                editAppealSolutionModel.resolutionId),
+                new EditSolutionSubscriber(mainView));
     }
 
     @Override

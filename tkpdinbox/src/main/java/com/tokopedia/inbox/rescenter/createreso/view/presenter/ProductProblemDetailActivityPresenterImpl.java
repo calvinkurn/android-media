@@ -13,7 +13,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Pr
  * Created by yoasfs on 15/08/17.
  */
 
-public class ProductProblemDetailActivityPresenterImpl implements ProductProblemDetailActivityPresenter {
+public class ProductProblemDetailActivityPresenterImpl
+        implements ProductProblemDetailActivityPresenter {
     private Context context;
     private ProductProblemDetailActivityView mainView;
 

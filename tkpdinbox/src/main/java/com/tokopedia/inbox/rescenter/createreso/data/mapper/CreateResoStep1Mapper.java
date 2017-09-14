@@ -32,7 +32,8 @@ public class CreateResoStep1Mapper implements Func1<Response<TkpdResponse>, Crea
                 response.body().convertDataObj(CreateResoStep1Response.class);
         CreateResoStep1Domain model = new CreateResoStep1Domain(
                 createResoStep1Response.getResolution() != null ?
-                        mappingResolutionDomain(createResoStep1Response.getResolution()) : null,
+                        mappingResolutionDomain(createResoStep1Response.getResolution()) :
+                        null,
                 createResoStep1Response.getCacheKey(),
                 createResoStep1Response.getSuccessMessage());
         if (response.isSuccessful()) {

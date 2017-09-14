@@ -25,6 +25,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapte
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
@@ -34,20 +35,24 @@ import javax.inject.Inject;
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionListFragment extends BaseDaggerFragment implements SolutionListFragmentListener.View, SolutionListAdapterListener {
+public class SolutionListFragment extends BaseDaggerFragment
+        implements SolutionListFragmentListener.View, SolutionListAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
+    public static final String EDIT_APPEAL_MODEL_DATA = "result_view_model_data";
     public static final String SOLUTION_DATA = "solution_data";
 
     public static final int REQUEST_SOLUTION = 1001;
 
     ResultViewModel resultViewModel;
-
+    EditAppealSolutionModel editAppealSolutionModel;
     RecyclerView rvSolution;
     SolutionListAdapter adapter;
     LinearLayout llFreeReturn;
     TextView tvFreeReturn;
     ProgressBar progressBar;
+
+    boolean isEditAppeal;
 
     @Inject
     SolutionListFragmentPresenter presenter;
@@ -56,6 +61,13 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
         SolutionListFragment fragment = new SolutionListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+    public static SolutionListFragment newEditAppealInstance(EditAppealSolutionModel editAppealSolutionModel) {
+        SolutionListFragment fragment = new SolutionListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EDIT_APPEAL_MODEL_DATA, editAppealSolutionModel);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -105,7 +117,12 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
+        if (arguments.getParcelable(RESULT_VIEW_MODEL_DATA) instanceof ResultViewModel) {
+            resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
+        } else if (arguments.getParcelable(EDIT_APPEAL_MODEL_DATA) instanceof EditAppealSolutionModel){
+            editAppealSolutionModel = arguments.getParcelable(EDIT_APPEAL_MODEL_DATA);
+            isEditAppeal = true;
+        }
     }
 
     @Override
@@ -122,8 +139,10 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
         llFreeReturn.setVisibility(View.GONE);
 
         rvSolution.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        presenter.initResultViewModel(resultViewModel);
+        if (!isEditAppeal)
+            presenter.initResultViewModel(resultViewModel);
+        else
+            presenter.initEditAppeal(editAppealSolutionModel);
     }
 
     @Override
@@ -140,6 +159,7 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
     public void showSuccessGetSolution(SolutionResponseViewModel solutionResponseViewModel) {
         hideLoading();
         presenter.updateLocalData(solutionResponseViewModel);
+        populateDataToView(solutionResponseViewModel);
     }
 
     @Override
@@ -152,7 +172,9 @@ public class SolutionListFragment extends BaseDaggerFragment implements Solution
 
     @Override
     public void populateDataToView(SolutionResponseViewModel solutionResponseViewModel) {
-        adapter = new SolutionListAdapter(getActivity(), solutionResponseViewModel.getSolutionViewModelList(), this);
+        adapter = new SolutionListAdapter(getActivity(),
+                solutionResponseViewModel.getSolutionViewModelList(),
+                this);
         rvSolution.setAdapter(adapter);
         if (solutionResponseViewModel.getFreeReturn() != null) {
             llFreeReturn.setVisibility(View.VISIBLE);

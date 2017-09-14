@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.rescenter.createreso.view.activity;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,12 +12,39 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListActivityListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListActivityPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 
 /**
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionListActivity extends BasePresenterActivity<SolutionListActivityListener.Presenter> implements SolutionListActivityListener.View, HasComponent {
+public class SolutionListActivity extends BasePresenterActivity<SolutionListActivityListener.Presenter>
+        implements SolutionListActivityListener.View, HasComponent {
+
+    private static final String ARGS_PARAM_PASS_DATA = "ARGS_PARAM_PASS_DATA";
+    private static final String ARGS_PARAM_FLAG_EDIT = "ARGS_PARAM_FLAG_EDIT";
+
+    private EditAppealSolutionModel editAppealSolutionModel;
+
+    public static Intent newBuyerEditInstance(Context context,
+                                          String resolutionID) {
+        Intent intent = new Intent(context, SolutionListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGS_PARAM_PASS_DATA,
+                generateEditPassData(true, resolutionID, false));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newSellerEditInstance(Context context,
+                                          String resolutionID) {
+        Intent intent = new Intent(context, SolutionListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGS_PARAM_PASS_DATA,
+                generateEditPassData(true, resolutionID, true));
+        intent.putExtras(bundle);
+        return intent;
+    }
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
 
@@ -28,7 +57,12 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
+        if (extras.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
+            resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
+        } else {
+            editAppealSolutionModel = extras.getParcelable(ARGS_PARAM_PASS_DATA);
+        }
+
     }
 
     @Override
@@ -43,8 +77,11 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
 
     @Override
     protected void initView() {
-
-        presenter.initFragment(resultViewModel);
+        if (resultViewModel != null) {
+            presenter.initFragment(resultViewModel);
+        } else {
+            presenter.initEditAppealFragment(editAppealSolutionModel);
+        }
     }
 
     @Override
@@ -74,5 +111,11 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     @Override
     public Object getComponent() {
         return getApplicationComponent();
+    }
+
+    public static EditAppealSolutionModel generateEditPassData(boolean isEdit,
+                                                               String resolutionId,
+                                                               boolean isSeller) {
+        return new EditAppealSolutionModel(isEdit, resolutionId, isSeller);
     }
 }

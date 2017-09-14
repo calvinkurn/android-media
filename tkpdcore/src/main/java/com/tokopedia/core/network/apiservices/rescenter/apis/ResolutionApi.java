@@ -60,6 +60,9 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> postCreateResolutionCache(@Path("order_id") String orderId,
                                                             @Body String object);
 
+    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_EDIT)
+    Observable<Response<TkpdResponse>> getEditSolution(@Path("resolution_id") String resoId);
+
     @Multipart
     @POST("")
     Observable<Response<TkpdResponse>> uploadImage(@Url String url,

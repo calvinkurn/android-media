@@ -14,18 +14,21 @@ import java.util.ArrayList;
  * Created by yoasfs on 15/08/17.
  */
 
-public class ProductProblemListActivityPresenterImpl implements ProductProblemListActivityPresenter {
+public class ProductProblemListActivityPresenterImpl
+        implements ProductProblemListActivityPresenter {
     private Context context;
     private ProductProblemListActivityView mainView;
     private ChooseProductAndProblemFragment chooseProductAndProblemFragment;
 
-    public ProductProblemListActivityPresenterImpl(Context context, ProductProblemListActivityView productProblemListActivityView) {
+    public ProductProblemListActivityPresenterImpl(Context context,
+                                                   ProductProblemListActivityView productProblemListActivityView) {
         this.context = context;
         this.mainView = productProblemListActivityView;
     }
 
     @Override
-    public void initFragment(ProductProblemListViewModel productProblemListViewModel, ArrayList<ProblemResult> problemResultList) {
+    public void initFragment(ProductProblemListViewModel productProblemListViewModel,
+                             ArrayList<ProblemResult> problemResultList) {
         chooseProductAndProblemFragment = ChooseProductAndProblemFragment.newInstance(productProblemListViewModel, problemResultList);
         mainView.inflateFragment(chooseProductAndProblemFragment,
                 ChooseProductAndProblemFragment.class.getSimpleName());

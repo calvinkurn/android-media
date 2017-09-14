@@ -32,7 +32,8 @@ public class GenerateHostCloudSource {
 
     public Observable<GenerateHostDomain> generateHost(TKPDMapParam<String, Object> params) {
         try {
-            return resCenterActService.getApi().generateTokenHost(AuthUtil.generateParamsNetwork2(context, params))
+            return resCenterActService.getApi().generateTokenHost(
+                    AuthUtil.generateParamsNetwork2(context, params))
                     .map(generateHostMapper);
         } catch (Exception e) {
             e.printStackTrace();

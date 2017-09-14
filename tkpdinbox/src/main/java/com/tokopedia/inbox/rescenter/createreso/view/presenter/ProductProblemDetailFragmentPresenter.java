@@ -16,7 +16,9 @@ import java.util.HashMap;
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<ProductProblemDetailFragment.View> implements ProductProblemDetailFragment.Presenter {
+public class ProductProblemDetailFragmentPresenter
+        extends BaseDaggerPresenter<ProductProblemDetailFragment.View>
+        implements ProductProblemDetailFragment.Presenter {
 
     public static final int RESULT_SAVE = 2001;
     public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
@@ -54,7 +56,8 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
         this.problemResult = problemResult;
         currentTroublePos = problemResult.trouble;
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
-        mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
+        mainView.updatePlusMinusButton(problemResult.quantity,
+                productProblemViewModel.getOrder().getProduct().getQuantity());
         mainView.updateComplainReasonValue(problemResult.remark);
         validateMainButton();
 
@@ -72,7 +75,8 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
         problemResult.name = productProblemViewModel.getProblem().getName();
         problemResult.order.detail.id = productProblemViewModel.getOrder().getDetail().getId();
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
-        mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
+        mainView.updatePlusMinusButton(problemResult.quantity,
+                productProblemViewModel.getOrder().getProduct().getQuantity());
     }
 
     @Override
@@ -96,7 +100,9 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
         int pos = 0;
         for (StatusViewModel statusViewModel : productProblemViewModel.getStatusList()) {
             if (isDelivered == statusViewModel.isDelivered()) {
-                String[] troubleStringArray = new String[isDelivered ? statusViewModel.getTrouble().size() + 1 : statusViewModel.getTrouble().size()];
+                String[] troubleStringArray = new String[isDelivered ?
+                        statusViewModel.getTrouble().size() + 1 :
+                        statusViewModel.getTrouble().size()];
                 int i = 0;
                 if (isDelivered) {
                     troubleHashMap.put("Pilih Masalah", 0);
@@ -164,7 +170,8 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
 
     public void updatePlusMinusView(int diff) {
         problemResult.quantity += diff;
-        mainView.updatePlusMinusButton(problemResult.quantity, productProblemViewModel.getOrder().getProduct().getQuantity());
+        mainView.updatePlusMinusButton(problemResult.quantity,
+                productProblemViewModel.getOrder().getProduct().getQuantity());
     }
 
     public void validateMainButton() {
@@ -173,6 +180,8 @@ public class ProductProblemDetailFragmentPresenter extends BaseDaggerPresenter<P
 
     @Override
     public void btnSaveClicked(boolean isSaveAndChooseOtherButton) {
-        mainView.saveData(problemResult, isSaveAndChooseOtherButton ? RESULT_SAVE_AND_CHOOSE_OTHER : RESULT_SAVE);
+        mainView.saveData(problemResult, isSaveAndChooseOtherButton ?
+                RESULT_SAVE_AND_CHOOSE_OTHER :
+                RESULT_SAVE);
     }
 }

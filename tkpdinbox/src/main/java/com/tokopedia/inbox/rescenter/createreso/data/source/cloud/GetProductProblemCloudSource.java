@@ -30,7 +30,9 @@ public class GetProductProblemCloudSource {
     }
 
     public Observable<ProductProblemResponseDomain> getProductProblemList(RequestParams requestParams) {
-       return resolutionApi.getProductProblemList(requestParams.getString(GetProductProblemUseCase.ORDER_ID, ""), new TKPDMapParam<String, Object>())
+       return resolutionApi.getProductProblemList(
+               requestParams.getString(GetProductProblemUseCase.ORDER_ID, ""),
+               new TKPDMapParam<String, Object>())
                .map(productProblemMapper);
     }
 }

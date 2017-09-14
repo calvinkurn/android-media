@@ -23,7 +23,8 @@ import java.util.Locale;
  * Created by yoasfs on 31/08/17.
  */
 
-public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentFragmentListener.View> implements AttachmentFragmentListener.Presenter {
+public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentFragmentListener.View>
+        implements AttachmentFragmentListener.Presenter {
 
     private static final int MAXIMAL_VIDEO_CONTENT_ALLOW = 1;
 
@@ -37,7 +38,9 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
             "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
     };
 
-    public AttachmentFragmentPresenter(Context context, AttachmentFragmentListener.View mainView, ImageUploadHandler imageUploadHandler) {
+    public AttachmentFragmentPresenter(Context context,
+                                       AttachmentFragmentListener.View mainView,
+                                       ImageUploadHandler imageUploadHandler) {
         this.context = context;
         this.mainView = mainView;
         attachment = new Attachment();
@@ -74,14 +77,16 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
         switch (resultCode) {
             case GalleryBrowser.RESULT_CODE:
                 if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL), AttachmentViewModel.FILE_IMAGE);
+                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL),
+                            AttachmentViewModel.FILE_IMAGE);
                 } else {
                     onFailedAddAttachment();
                 }
                 break;
             case Activity.RESULT_OK:
                 if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(), AttachmentViewModel.FILE_IMAGE);
+                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(),
+                            AttachmentViewModel.FILE_IMAGE);
                 } else {
                     onFailedAddAttachment();
                 }

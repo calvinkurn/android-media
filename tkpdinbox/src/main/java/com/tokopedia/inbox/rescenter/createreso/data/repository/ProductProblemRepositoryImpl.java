@@ -19,7 +19,9 @@ public class ProductProblemRepositoryImpl implements ProductProblemRepository {
     }
 
     @Override
-    public Observable<ProductProblemResponseDomain> getProductProblemFromCloud(RequestParams requestParams) {
-        return createResolutionFactory.getProductProblemCloudSource().getProductProblemList(requestParams);
+    public Observable<ProductProblemResponseDomain> getProductProblemFromCloud(
+            RequestParams requestParams) {
+        return createResolutionFactory.getProductProblemCloudSource().
+                getProductProblemList(requestParams);
     }
 }

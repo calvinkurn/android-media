@@ -2,13 +2,12 @@ package com.tokopedia.inbox.rescenter.createreso.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
@@ -25,10 +24,10 @@ import rx.Subscriber;
  * Created by yoasfs on 04/09/17.
  */
 
-public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
+public class EditSolutionSubscriber extends Subscriber<EditSolutionResponseDomain> {
     private final SolutionListFragmentListener.View mainView;
 
-    public SolutionSubscriber(SolutionListFragmentListener.View mainView) {
+    public EditSolutionSubscriber(SolutionListFragmentListener.View mainView) {
         this.mainView = mainView;
     }
 
@@ -44,44 +43,43 @@ public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
     }
 
     @Override
-    public void onNext(SolutionResponseDomain solutionResponseDomain) {
-        if (solutionResponseDomain != null) {
-            mainView.showSuccessGetSolution(mappingSolutionResponseViewModel(solutionResponseDomain));
+    public void onNext(EditSolutionResponseDomain editSolutionResponseDomain) {
+        if (editSolutionResponseDomain != null) {
+            mainView.showSuccessGetSolution(
+                    mappingSolutionResponseViewModel(
+                            editSolutionResponseDomain));
         }
     }
 
-    private SolutionResponseViewModel mappingSolutionResponseViewModel(SolutionResponseDomain domain) {
+    private SolutionResponseViewModel mappingSolutionResponseViewModel(
+            EditSolutionResponseDomain domain) {
         return new SolutionResponseViewModel(
                 domain.getSolutions() != null ?
                         mappingSolutionViewModelList(domain.getSolutions()) :
                         new ArrayList<SolutionViewModel>(),
-                domain.getRequire() != null ?
-                        mappingRequireViewModel(domain.getRequire()) :
-                        null,
+                null,
                 domain.getFreeReturn() != null ?
                         mappingFreeReturnViewModel(domain.getFreeReturn()) :
                         null);
     }
 
-    private List<SolutionViewModel> mappingSolutionViewModelList(List<SolutionDomain> domainList) {
+    private List<SolutionViewModel> mappingSolutionViewModelList(
+            List<EditSolutionDomain> domainList) {
         List<SolutionViewModel> viewModelList = new ArrayList<>();
-        for (SolutionDomain solutionDomain : domainList) {
+        for (EditSolutionDomain solutionDomain : domainList) {
             viewModelList.add(new SolutionViewModel(
                     solutionDomain.getId(),
                     solutionDomain.getName(),
-                    solutionDomain.getAmount() != null ?
-                            mappingAmountViewModel(solutionDomain.getAmount()) :
+                    solutionDomain.getRefundAmount() != null ?
+                            mappingAmountViewModel(solutionDomain.getRefundAmount()) :
                             null));
         }
         return viewModelList;
     }
 
-    private RequireViewModel mappingRequireViewModel(RequireDomain domain) {
-        return new RequireViewModel(domain.isAttachment());
-    }
-
     private AmountViewModel mappingAmountViewModel(AmountDomain domain) {
-        return new AmountViewModel(domain.getIdr(), domain.getInteger());
+        return new AmountViewModel(domain.getIdr(),
+                domain.getInteger());
     }
 
     private FreeReturnViewModel mappingFreeReturnViewModel(FreeReturnDomain domain) {

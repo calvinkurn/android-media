@@ -18,6 +18,7 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
@@ -458,11 +459,15 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         boolean isReceived = getViewData().getDetailData().isReceived();
 
         if (isSeller()) {
-            return EditResCenterActivity
-                    .newSellerInstance(getActivity(), resolutionID, orderID, isReceived);
+//            return EditResCenterActivity
+//                    .newSellerInstance(getActivity(), resolutionID, orderID, isReceived);
+            return SolutionListActivity.newSellerEditInstance(getActivity(),
+                    resolutionID);
         } else {
-            return EditResCenterActivity
-                    .newBuyerInstance(getActivity(), resolutionID, orderID, isReceived);
+//            return EditResCenterActivity
+//                    .newBuyerInstance(getActivity(), resolutionID, orderID, isReceived);
+            return SolutionListActivity.newBuyerEditInstance(getActivity(),
+                    resolutionID);
         }
     }
 
