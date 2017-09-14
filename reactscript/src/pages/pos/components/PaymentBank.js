@@ -147,10 +147,14 @@ class PaymentBank extends Component {
   }
 
 
-  // static navigationOptions = {
-  //   title: 'Bank Selection Page',
-  //   headerMode: 'none'
-  // };
+  static navigationOptions = {
+    title: 'Bank Selection Page',
+    headerTintColor: '#FFF',
+    headerStyle: {
+        backgroundColor: '#42B549'
+    }
+    // headerMode: 'none'
+  };
 
   _choosePaymentMethod(paymentMethod){
     this.setState({
