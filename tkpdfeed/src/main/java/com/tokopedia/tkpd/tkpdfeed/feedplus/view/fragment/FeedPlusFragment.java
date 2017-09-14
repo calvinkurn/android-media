@@ -112,7 +112,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
-    private static final String TOPADS_ITEM = "4";
+    private static final String TOPADS_ITEM = "4,1";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
 
