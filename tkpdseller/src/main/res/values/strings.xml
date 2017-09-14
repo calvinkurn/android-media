@@ -140,5 +140,6 @@
     <string name="featured_product_activity_title">Featured Product</string>
     <string name="menu_featured_product_delete">Hapus Produk</string>
     <string name="menu_featured_product_arrange">Atur Urutan Produk</string>
+    <string name="featured_product_title">Produk Unggulan</string>
 
 </resources>
