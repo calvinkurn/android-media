@@ -34,7 +34,7 @@ class PaymentBank extends Component {
     }
   };
 
-
+  
   _renderPopRow(rowData: string, sectionID: number, rowID: number) {
     if(rowData.id > 9){
       return (
@@ -172,22 +172,22 @@ class PaymentBank extends Component {
             <ScrollView>
               <View style={styles.containers} >
                 <View style={[styles.row, styles.row1]} >
-                  <Text>
+                  <Text style={[styles.font16, styles.fontColor70]}>
                     Total Pembayaran
                   </Text>
-                  <Text style={styles.row1Text}>
+                  <Text style={[styles.font16, styles.fontColor70]}>
                     Rp 34.697.000
                   </Text>
                 </View>
 
                 <View style={[styles.row, styles.row2]} >
-                  <Text style={styles.row2Text}>
+                  <Text style={styles.font13}>
                     Minimum Purchase Rp 500.000
                   </Text>
                 </View>
 
                 <View style={[styles.row, styles.row3]} >
-                  <Text style={styles.row1Text}>
+                  <Text style={[styles.font14, styles.fontColorcc]}>
                     Pilih Bank
                   </Text>
                 </View>
@@ -270,8 +270,6 @@ class PaymentBank extends Component {
                     Pilih Metode Pembayaran
                   </Text>
                 </View>
-
-
                 <View style={[styles.row, styles.row1]} >
                   <Text>
                     Nominal
@@ -478,11 +476,31 @@ class PaymentBank extends Component {
         },
           popupText : {
           marginTop: width*.015, fontSize:15
-        }
+        },
+          fon13 : {
+          fontSize: 13
+        },
+        fon14 : {
+          fontSize: 14
+        },
+        fon16 : {
+          fontSize: 16
+        },
+        font20 : {
+          fontSize: 20
+        },
+        fontColor70: {
+          color: '#000000b3'
+        },
+        fontColor54: {
+          color: '#0000008a'
+        },
+        fontColorcc: {
+          color: '#000000cc'
+        },
         });
 
-const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2 });
+const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 const mapStateToProps = state => {
   const bankList = ds.cloneWithRows(state.payment.items);
