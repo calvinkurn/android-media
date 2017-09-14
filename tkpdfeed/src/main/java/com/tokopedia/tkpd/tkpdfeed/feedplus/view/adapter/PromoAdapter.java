@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
+import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,9 +27,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int VIEW_LAYOUT = 344;
     private static final float MARGIN_CARD = 10;
     private static final float WIDTH_CARD = 285;
-    private static final int HEIGHT_LARGE_PROMO_IMAGE = 750;
-    private static final int HEIGHT_SMALL_PROMO_IMAGE = 550;
-
+    private static final int SCALE_LARGE_PROMO_IMAGE = 2;
+    private static final int SCALE_SMALL_PROMO_IMAGE = 3;
 
     private ArrayList<PromoViewModel> list;
 
@@ -72,8 +72,10 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 int marginPixels = (int) (MARGIN_CARD * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
                 temp.container.setLayoutParams(params);
+
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup
-                        .LayoutParams.MATCH_PARENT, HEIGHT_LARGE_PROMO_IMAGE);
+                        .LayoutParams.MATCH_PARENT, (Resources.getSystem().getDisplayMetrics()
+                        .widthPixels / SCALE_LARGE_PROMO_IMAGE));
                 temp.imageView.setLayoutParams(lp);
             } else {
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
@@ -83,7 +85,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 params.setMargins(marginPixels, marginPixels, 0, marginPixels);
                 temp.container.setLayoutParams(params);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup
-                        .LayoutParams.MATCH_PARENT, HEIGHT_SMALL_PROMO_IMAGE);
+                        .LayoutParams.MATCH_PARENT, (Resources.getSystem().getDisplayMetrics()
+                        .widthPixels / SCALE_SMALL_PROMO_IMAGE));
                 temp.imageView.setLayoutParams(lp);
             }
             ImageHandler.LoadImage(temp.imageView, list.get(position).getImageUrl());

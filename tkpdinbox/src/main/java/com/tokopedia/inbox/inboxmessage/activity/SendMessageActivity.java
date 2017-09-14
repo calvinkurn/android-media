@@ -87,14 +87,19 @@ public class SendMessageActivity extends BasePresenterActivity {
     public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                             String customSubject, String customMessage) {
         Intent intent = getAskSellerIntent(context, toShopId, shopName, customSubject);
-        intent.getExtras().putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);
+        intent.putExtras(bundle);
         return intent;
     }
 
     public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                             String customSubject) {
         Intent intent = getAskSellerIntent(context, toShopId, shopName);
-        intent.getExtras().putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
+        intent.putExtras(bundle);
+
         return intent;
     }
 
@@ -111,8 +116,10 @@ public class SendMessageActivity extends BasePresenterActivity {
     public static Intent getAskBuyerIntent(Context context, String toUserId, String
             customerName, String customSubject, String customMessage) {
         Intent intent = getAskUserIntent(context, toUserId, customerName);
-        intent.getExtras().putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
-        intent.getExtras().putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);
+        intent.putExtras(bundle);
         return intent;
     }
 
