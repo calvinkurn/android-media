@@ -11,6 +11,8 @@ import java.util.List;
 
 public class Info {
 
+    private static final int SHOP_GOLD_MERCHANT_VALUE = 1;
+
     @SerializedName("shop_status_title")
     @Expose
     public String shopStatusTitle;
@@ -153,8 +155,8 @@ public class Info {
         return shopHasTerms;
     }
 
-    public int getShopIsGold() {
-        return shopIsGold;
+    public boolean isGoldMerchant() {
+        return shopIsGold == SHOP_GOLD_MERCHANT_VALUE;
     }
 
     public boolean isShopIsGoldBadge() {

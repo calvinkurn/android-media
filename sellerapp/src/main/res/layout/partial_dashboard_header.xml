@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@drawable/line_separator_medium"
+    android:divider="@drawable/bg_line_separator"
     android:orientation="vertical"
     android:showDividers="middle">
 
@@ -21,18 +21,21 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <FrameLayout
                 android:layout_width="@dimen/dashboard_icon_shop_height"
                 android:layout_height="@dimen/dashboard_icon_shop_height"
                 android:background="@drawable/rect_gray_round">
+
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/image_view_shop_icon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:padding="1dp"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/placeholder_shop"
-                    android:padding="1dp"/>
-                <ImageView
+                    app:srcCompat="@drawable/ic_placeholder_shop_with_padding" />
+
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rect_stroke_light_gray" />
@@ -62,18 +65,18 @@
                         android:id="@+id/image_view_gm_icon"
                         android:layout_width="@dimen/image_width_xxs"
                         android:layout_height="@dimen/image_width_xxs"
-                        app:srcCompat="@drawable/ic_shop_gold"
                         android:layout_gravity="center_vertical"
                         android:visibility="gone"
+                        app:srcCompat="@drawable/ic_shop_gold"
                         tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/text_view_gm_status"
                         style="@style/TextView.Body1"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/margin_vs"
                         android:layout_marginStart="@dimen/margin_vs"
-                        tools:text="Regular Merchant"
-                        android:layout_gravity="center_vertical"/>
+                        tools:text="Regular Merchant" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -82,10 +85,11 @@
                 android:id="@+id/iv_setting"
                 android:layout_width="@dimen/image_width_xs"
                 android:layout_height="@dimen/image_width_xs"
-                app:srcCompat="@drawable/icon_setting"
                 android:layout_gravity="top"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                app:srcCompat="@drawable/icon_setting" />
         </LinearLayout>
 
         <com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView
@@ -139,10 +143,7 @@
                 tools:text="50.000 poin"/>
         </LinearLayout>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:background="@color/grey_300" />
+        <include layout="@layout/partial_separator_vertical" />
 
         <LinearLayout
             style="@style/LabelLayout"

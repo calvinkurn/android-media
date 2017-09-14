@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ActivityIndicator, DeviceEventEmitter, AsyncStorage } from 'react-native'
+import { DeviceEventEmitter } from 'react-native'
 import { connect } from 'react-redux'
 import { fetchCampaigns, addWishlistFromPdp, removeWishlistFromPdp } from '../actions/actions'
 import CampaignList from '../components/campaignList'
@@ -30,28 +30,12 @@ class CampaignContainer extends Component {
         this.removeWishlist.remove()
         this.checkLoginCampaign.remove()
     }
-    
-    renderCampaign = (campaigns) => {
-        let uuid;
-        AsyncStorage.getItem('user_id').then(val => { uuid: val })
-        const userid = uuid === '' ? this.props.screenProps.User_ID : uuid
 
-        return (
-            this.props.campaigns.isFetching ? 
-            <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
-                <ActivityIndicator size="large" />
-            </View> : 
-            <CampaignList campaigns={campaigns} />
-        )
-    }
-    
     render() {
         const campaigns = this.props.campaigns.items
-        if (campaigns.length == 1){
-            return this.renderCampaign(campaigns[0])
-        } else {
-            return this.renderCampaign(campaigns)
-        }
+        return (
+          this.props.campaigns.isFetching ? null : <CampaignList campaigns={campaigns} />
+        )
     }
 }
 

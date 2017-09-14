@@ -31,13 +31,21 @@
             <com.tokopedia.design.loading.LoadingStateView
                 android:id="@+id/loading_state_view_header"
                 style="@style/CardViewLayoutMatchParent"
+                app:lsv_error_layout="@layout/partial_dashboard_header_error_view"
                 app:lsv_loading_layout="@layout/partial_dashboard_header_loading_view">
 
                 <include layout="@layout/partial_dashboard_header" />
 
             </com.tokopedia.design.loading.LoadingStateView>
 
-            <include layout="@layout/partial_dashboard_navigation_list" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_med">
+
+                <include layout="@layout/partial_dashboard_navigation_list" />
+
+            </FrameLayout>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

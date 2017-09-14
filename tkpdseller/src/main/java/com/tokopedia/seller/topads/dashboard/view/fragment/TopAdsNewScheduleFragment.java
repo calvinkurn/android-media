@@ -323,6 +323,11 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
         //do nothing
     }
 
+    @Override
+    public void onErrorLoadTopAdsProduct(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
     protected void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener) {
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
     }

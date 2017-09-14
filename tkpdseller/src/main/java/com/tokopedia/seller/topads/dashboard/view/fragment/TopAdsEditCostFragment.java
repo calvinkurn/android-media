@@ -92,6 +92,11 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
         //do nothing
     }
 
+    @Override
+    public void onErrorLoadTopAdsProduct(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
     protected void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener) {
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
     }

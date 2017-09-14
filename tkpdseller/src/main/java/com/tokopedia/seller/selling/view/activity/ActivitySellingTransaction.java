@@ -32,6 +32,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
@@ -457,8 +459,8 @@ public class ActivitySellingTransaction extends TkpdActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!GlobalConfig.isSellerApp()) {
             getMenuInflater().inflate(R.menu.cart_and_search, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
-            int CartCache = Cache.getInt("is_has_cart");
+            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
             } else {

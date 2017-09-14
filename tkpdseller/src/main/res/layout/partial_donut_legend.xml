@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/gm_unfinished_margin_top"
         android:layout_marginLeft="16dp"
-        android:background="@drawable/line_separator_medium" />
+        android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.seller.goldmerchant.statistic.view.widget.CircleTextView
         android:id="@+id/ctv_res_center_count"

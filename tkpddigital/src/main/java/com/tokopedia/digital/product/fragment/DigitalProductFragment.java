@@ -94,6 +94,11 @@ import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +177,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ActionListener actionListener;
 
     private USSDBroadcastReceiver ussdBroadcastReceiver;
+    private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
 
@@ -428,6 +434,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 checkPulsaBalanceView.setActionListener(this);
                 checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber);
                 holderCheckBalance.addView(checkPulsaBalanceView);
+                startShowCaseUSSD();
             }
         }
 
@@ -1029,6 +1036,53 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         } else {
             showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
         }
+    }
+
+    private void startShowCaseUSSD() {
+        final String showCaseTag = DigitalProductFragment.class.getName();
+        if (ShowCasePreference.hasShown(getActivity(), showCaseTag)) {
+            return;
+        }
+        if (showCaseDialog != null) {
+            return;
+        }
+        showCaseDialog = createShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        showCaseObjectList.add(new ShowCaseObject(
+                holderCheckBalance,
+                getString(R.string.title_showcase_ussd),
+                getString(R.string.message_showcase_ussd),
+                ShowCaseContentPosition.UNDEFINED,
+                R.color.tkpd_main_green));
+        showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_layout_showcase)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .prevStringRes(R.string.navigate_back)
+                .nextStringRes(R.string.next)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
     }
 
 

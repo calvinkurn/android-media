@@ -23,12 +23,15 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
+import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationActivity;
@@ -77,7 +80,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
     private TextView transactionSuccessTextView;
-
+    private View viewShopStatus;
     private LabelView newOrderLabelView;
     private LabelView deliveryConfirmationLabelView;
     private LabelView deliveryStatusLabelView;
@@ -129,6 +132,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
         shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
 
+        viewShopStatus = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
+
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,43 +144,50 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(getActivity());
+                startActivity(intent);
             }
         });
         deliveryConfirmationLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionConfirmShipping(getActivity());
+                startActivity(intent);
             }
         });
         deliveryStatusLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionShippingStatus(getActivity());
+                startActivity(intent);
             }
         });
         opportunityLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity());
+                startActivity(intent);
             }
         });
         messageLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = InboxRouter.getInboxMessageActivityIntent(getActivity());
+                startActivity(intent);
             }
         });
         discussionLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
+                startActivity(intent);
             }
         });
         reviewLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
+                startActivity(intent);
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
@@ -223,19 +235,19 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onErrorShopInfoAndScore(Throwable t) {
-        //TODO snackbar error
+        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void onSuccessGetShopInfoAndScore(final ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
-        swipeRefreshLayout.setRefreshing(false);
-
+    public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
         updateShopInfo(shopModel);
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void updateReputation(final ShopModel shopModel) {
@@ -272,7 +284,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private void updateShopInfo(ShopModel shopModel) {
         Info shopModelInfo = shopModel.info;
         shopNameTextView.setText(shopModelInfo.getShopName());
-        if (shopModelInfo.shopIsGold == 1) {
+        if (shopModelInfo.isGoldMerchant()) {
             gmIconImageView.setVisibility(View.VISIBLE);
             gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
         } else {
@@ -282,33 +294,43 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
         } else {
-            shopIconImageView.setImageResource(R.drawable.placeholder_shop);
+            shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
         //TODO shopModel.info.shopLucky
     }
 
-    private void updateViewShopOpen(ShopModel shopModel){
-        if (shopModel.isOpen != ShopModel.IS_CLOSED) {
-            shopWarningTickerView.setVisibility(View.GONE);
-        } else {
-            String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
-                    DateFormatUtils.FORMAT_D_MMMM_YYYY,
-                    shopModel.closedInfo.until);
-            shopWarningTickerView.setIcon(R.drawable.icon_closed);
-            shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
-            shopWarningTickerView.setDescription(shopModel.closedInfo.note);
-            shopWarningTickerView.setAction(getString(R.string.open_shop), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
-                    intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-                    UnifyTracking.eventManageShopInfo();
-                    startActivityForResult(intent, 0);
-                }
-            });
-            shopWarningTickerView.setVisibility(View.VISIBLE);
-
+    private void updateViewShopOpen(ShopModel shopModel) {
+            case ShopStatusDef.CLOSED:
+                showShopClosed(shopModel);
+                break;
+            case ShopStatusDef.MODERATED:
+                shopWarningTickerView.setVisibility(View.GONE);
+                break;
+            case ShopStatusDef.NOT_ACTIVE:
+                shopWarningTickerView.setVisibility(View.GONE);
+                break;
+            default:
+                shopWarningTickerView.setVisibility(View.GONE);
         }
+    }
+
+    private void showShopClosed(ShopModel shopModel) {
+        String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
+                DateFormatUtils.FORMAT_D_MMMM_YYYY,
+                shopModel.closedInfo.until);
+        shopWarningTickerView.setIcon(R.drawable.icon_closed);
+        shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
+        shopWarningTickerView.setDescription(shopModel.closedInfo.note);
+        shopWarningTickerView.setAction(getString(R.string.open_shop), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
+                intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+                UnifyTracking.eventManageShopInfo();
+                startActivityForResult(intent, 0);
+            }
+        });
+        shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
     @Override

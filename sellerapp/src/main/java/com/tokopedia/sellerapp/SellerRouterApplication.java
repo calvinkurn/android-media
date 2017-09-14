@@ -85,7 +85,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  * Created by normansyahputa on 12/15/16.
  */
 
-public class SellerRouterApplication extends MainApplication
+public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
         IPaymentModuleRouter, IDigitalModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";

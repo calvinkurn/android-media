@@ -89,7 +89,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  * @author normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements
+public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter {
 

@@ -114,6 +114,7 @@ import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 import com.tokopedia.tkpd.home.tokocash.BottomSheetTokoCash;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,6 +141,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private static final long TICKER_DELAY = 5000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
+    private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
 
     private ViewHolder holder;
 
@@ -170,6 +172,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private Runnable runnableScrollBanner;
     private Handler bannerHandler;
 
+    RemoteConfigFetcher remoteConfigFetcher;
+    FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Override
     public void onTopUpTokoCashClicked() {
@@ -278,6 +282,23 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
+        fetchRemoteConfig();
+    }
+
+    private void fetchRemoteConfig() {
+        remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
+        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
+            @Override
+            public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
+                FragmentIndexCategory.this.firebaseRemoteConfig = firebaseRemoteConfig;
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+                FragmentIndexCategory.this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+            }
+        });
     }
 
     private void getAnnouncement() {
@@ -740,19 +761,23 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (SessionHandler.isV4Login(getContext())) {
+                if (SessionHandler.isV4Login(getContext())) {
                     UnifyTracking.eventViewAllOSLogin();
                 } else {
                     UnifyTracking.eventViewAllOSNonLogin();
                 }
 
-                openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);*/
-                getActivity().startActivity(
-                        ReactNativeOfficialStoresActivity.createReactNativeActivity(
-                                getActivity(), ReactConst.Screen.OFFICIAL_STORE,
-                                getString(R.string.react_native_banner_official_title)
-                        )
-                );
+                if(firebaseRemoteConfig != null
+                        && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
+                    getActivity().startActivity(
+                            ReactNativeOfficialStoresActivity.createReactNativeActivity(
+                                    getActivity(), ReactConst.Screen.OFFICIAL_STORE,
+                                    getString(R.string.react_native_banner_official_title)
+                            )
+                    );
+                } else {
+                    openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+                }
             }
         };
     }

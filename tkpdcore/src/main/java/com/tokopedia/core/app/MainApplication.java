@@ -33,17 +33,14 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,7 +53,7 @@ import rx.Subscriber;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication implements ReactApplication{
+public abstract class MainApplication extends TkpdMultiDexApplication implements ReactApplication{
 
 
 	public static final int DATABASE_VERSION = 7;
@@ -75,12 +72,19 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
+    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
-    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+
+    /**
+     * Get list of white list
+     *
+     * @return
+     */
+    protected abstract List<CacheApiWhiteListDomain> getWhiteList();
 
     public static MainApplication getInstance() {
         return instance;
@@ -297,7 +301,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
     }
 
     public void addToWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
         cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
@@ -318,14 +322,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         });
     }
 
-    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
-        cacheApiWhitelists.add(new CacheApiWhiteListDomain(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
-        cacheApiWhitelists.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
-        return cacheApiWhitelists;
-    }
-    
     @Override
     public void onTerminate() {
         super.onTerminate();

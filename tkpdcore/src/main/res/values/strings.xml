@@ -4,8 +4,8 @@
     <item name="group_pos" type="id" />
     <item name="child_pos" type="id" />
 
-    <string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>
-    <!--<string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>-->
+    <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
+    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
     <string name="action_settings">Pengaturan</string>
@@ -342,7 +342,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="promo_dink_success">Promo pada produk %1$s telah berhasil!</string>
     <string name="toast_promo_error1">Anda belum dapat menggunakan fitur promo pada saat ini. Fitur Promo berlaku 60 menit sekali untuk masing-masing toko.</string>
     <string name="toast_promo_error2">Yuk, pakai TopAds untuk Promo tanpa batas waktu!</string>
-    <string name="toast_promo_error_cache">Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
+    <string name="toast_promo_error_cache">Fitur Promo berlaku setiap 60 menit sekali\nuntuk masing-masing toko.</string>
     <string name="dink_expired">Berlaku sampai %1$s</string>
     <string name="learn_topads">Pelajari TopAds</string>
     <string name="toast_success_promo1">Promo pada produk</string>
