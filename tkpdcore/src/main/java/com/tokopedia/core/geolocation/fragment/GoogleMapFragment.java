@@ -41,10 +41,12 @@ import com.tokopedia.core.geolocation.listener.GoogleMapView;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
+import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
 import butterknife.BindView;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created on 1/29/16.
@@ -164,7 +166,10 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     }
 
     @Override
-    public void initAutoCompleteAdapter(GoogleApiClient googleApiClient, LatLngBounds latLngBounds) {
+    public void initAutoCompleteAdapter(GoogleApiClient googleApiClient, LatLngBounds latLngBounds,
+                                        ) {
+        MapService service = new MapService();
+        CompositeSubscription compositeSubscription = new CompositeSubscription();
         adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, latLngBounds, null);
     }
 

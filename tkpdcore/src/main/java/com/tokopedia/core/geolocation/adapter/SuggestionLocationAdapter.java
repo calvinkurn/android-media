@@ -26,9 +26,12 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.network.apiservices.maps.MapService;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hangnadi on 2/2/16.
@@ -42,6 +45,10 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
      * Current results returned by this adapter.
      */
     private ArrayList<AutocompletePrediction> mResultList;
+
+    private MapService mapService;
+
+    private CompositeSubscription compositeSubscription;
 
     /**
      * Handles autocomplete requests.
@@ -64,12 +71,15 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
      * @see android.widget.ArrayAdapter#ArrayAdapter(android.content.Context, int)
      */
     public SuggestionLocationAdapter(Context context, GoogleApiClient googleApiClient,
-                                        LatLngBounds bounds, AutocompleteFilter filter) {
+                                     LatLngBounds bounds, AutocompleteFilter filter,
+                                     MapService mapService,
+                                     CompositeSubscription compositeSubscription) {
         super(context, R.layout.layout_autocomplete_search_location, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
         mPlaceFilter = filter;
         mResultList = new ArrayList<>();
+        this.mapService = mapService;
     }
 
     /**
@@ -126,6 +136,8 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
                 if (constraint != null) {
                     if (constraint.length() >= 3) {
                         // Query the autocomplete API for the (constraint) search string.
+                        //TODO call service here
+                        compositeSubscription.add();
                         mResultList = getAutocomplete(constraint);
                         if (mResultList != null) {
                             // The API successfully returned results.
