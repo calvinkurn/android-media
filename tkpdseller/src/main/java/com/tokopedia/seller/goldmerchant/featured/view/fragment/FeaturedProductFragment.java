@@ -120,6 +120,11 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         hideFab();
     }
 
+    @Override
+    protected void setAndSearchForPage(int page) {
+        featuredProductPresenter.loadData();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -217,9 +222,16 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     public void onPostSuccess() {
-        adapter.clearData();
-        onSearchLoaded(productModelsTemp, productModelsTemp.size());
-        productModelsTemp.clear();
+        switch (featuredProductType) {
+            case FeaturedProductType.DEFAULT_DISPLAY:
+                adapter.clearData();
+                onSearchLoaded(productModelsTemp, productModelsTemp.size());
+                productModelsTemp.clear();
+                break;
+            default:
+                break;
+        }
+        setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
     }
 
     @Override
@@ -230,7 +242,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     public void postData(List<FeaturedProductModel> data) {
-        featuredProductPresenter.postData(FeaturedProductPOSTUseCase.createParam(data));
+        // do nothing
     }
 
     @Override
@@ -295,7 +307,6 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                         break;
                 }
 
-                setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
                 updateTitleView(R.string.featured_product_activity_title);
                 showFab();
 
