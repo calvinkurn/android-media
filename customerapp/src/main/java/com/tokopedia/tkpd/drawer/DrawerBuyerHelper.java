@@ -146,14 +146,12 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(getBuyerMenu());
         if (!SessionHandler.getShopID(context).equals("0")
                 && !SessionHandler.getShopID(context).equals("")) {
+            data.add(getProductMenu());
             data.add(getSellerMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
                     false));
-        }
-        if (!SessionHandler.getShopID(context).equals("0")
-                && !SessionHandler.getShopID(context).equals("")) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                     R.drawable.ic_top_ads,
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
@@ -177,6 +175,28 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
+    }
+
+    private DrawerItem getProductMenu() {
+        DrawerGroup sellerMenu = new DrawerGroup(context.getString(R.string.drawer_title_product),
+                R.drawable.ic_manage_produk,
+                TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND,
+                drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_OPENED, false),
+                0);
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_add_product),
+                TkpdState.DrawerPosition.ADD_PRODUCT,
+                true));
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_product_list),
+                TkpdState.DrawerPosition.MANAGE_PRODUCT,
+                true));
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_draft_list),
+                TkpdState.DrawerPosition.DRAFT_PRODUCT,
+                true));
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_etalase_list),
+                TkpdState.DrawerPosition.MANAGE_ETALASE,
+                true));
+
+        return sellerMenu;
     }
 
     private DrawerGroup getSellerMenu() {
@@ -204,19 +224,6 @@ public class DrawerBuyerHelper extends DrawerHelper
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_opportunity),
                 0,
                 TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
-                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerSeparator(drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_product_list),
-                0,
-                TkpdState.DrawerPosition.MANAGE_PRODUCT,
-                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_etalase_list),
-                0,
-                TkpdState.DrawerPosition.MANAGE_ETALASE,
-                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_draft_product),
-                0,
-                TkpdState.DrawerPosition.MANAGE_DRAFT_PRODUCT,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         return sellerMenu;
     }

@@ -155,8 +155,6 @@ public class DrawerSellerHelper extends DrawerHelper
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_opportunity),
                 TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
                 drawerCache.getBoolean(DrawerAdapter.IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerSeparator(drawerCache.getBoolean(DrawerAdapter.IS_SHOP_OPENED, false)));
-
         return sellerMenu;
     }
 
