@@ -20,7 +20,11 @@ public class ProductPhotoListViewModel {
     }
 
     public void setPhotos(List<ImageProductInputViewModel> photos) {
-        this.photos = photos;
+        if (photos == null) {
+            this.photos = new ArrayList<>();
+        } else {
+            this.photos = photos;
+        }
     }
 
     public int getProductDefaultPicture() {
