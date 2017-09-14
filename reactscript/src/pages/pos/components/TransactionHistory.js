@@ -52,20 +52,17 @@ class PaymentInvoice extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{
-        height: 55,
-        backgroundColor: '#42b549',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around'
-        }}>
-          <View style={{ width: '5%', left: 10 }}>
-            
-          </View>
+        {/* <View style={{
+          height: 55,
+          backgroundColor: '#42b549',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around' }}>
+          <View style={{ width: '5%', left: 10 }}></View>
           <View style={{ width: '90%'}}>
             <Text style={{ fontSize: 20, color: '#fff' }}>Invoice</Text>
           </View>
-        </View>
+        </View> */}
          <ScrollView>
               <View style={styles.containers} >
                 <View style={[styles.row, styles.row1]} >
@@ -156,9 +153,9 @@ class PaymentInvoice extends Component {
     )
   }
 
-  static navigationOptions = {
-    title: 'Payment Invoice',
-  };
+  // static navigationOptions = {
+  //   title: 'Payment Invoice',
+  // };
 
 }
 

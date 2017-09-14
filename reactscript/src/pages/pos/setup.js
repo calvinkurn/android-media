@@ -11,7 +11,7 @@ import Setup_processing from './setup_processing'
 // import Payment from './components/Payment'
 // import PaymentProcessing from './components/PaymentProcessing'
 // import PaymentInvoice from './components/PaymentInvoice'
-// import TransactionHistory from './components/TransactionHistory'
+import TransactionHistory from './components/TransactionHistory'
 // import PasswordPopup from './components/PasswordPopup'
 // import POS from './components/POS'
 // import CartContainer from './containers/CartContainer'
@@ -44,7 +44,9 @@ class Root extends Component {
       return <Setup_cart />
     } else if (POS_PAGE === 'PROCESSING'){
       return <Setup_processing />
-    } 
+    } else if (POS_PAGE === 'HISTORY'){
+      return <TransactionHistory />
+    }
   }
 }
 export default Root
