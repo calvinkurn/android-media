@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView} from 'react-native';
 import { emailValidation } from '../lib/utility'
 import PopupDialog, {DialogTitle} from 'react-native-popup-dialog';
@@ -31,20 +31,20 @@ class PaymentInvoice extends Component {
     });
   };
 
-  _renderProductList(rowData: string, sectionID: number, rowID: number) {
-    return (  
-      <View style={{flex: 1, flexDirection: 'row',justifyContent: 'space-between', marginTop: '6%'}}>
-          <View style={{width: "20%", height: '20%'}}>
-              {/* <Image source={ {uri: rowData.imageUrl} } style={styles.productImage} ></Image> */}
-          </View>
-          <View style={{width: '60%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start'}}>
-              <Text style={{fontSize: 22, fontWeight: 'bold', width: '80%'}}>{rowData.name} </Text> 
-              <Text style={{fontSize: 20, color: '#C8C8C8', marginTop: 10}}>Jumlah Barang: {rowData.qty}</Text> 
-          </View>
-          <Text style={{fontSize: 22, fontWeight: 'bold'}}>{rowData.price}</Text> 
-      </View>
-    );
-}
+//   _renderProductList(rowData: string, sectionID: number, rowID: number) {
+//     return (  
+//       <View style={{flex: 1, flexDirection: 'row',justifyContent: 'space-between', marginTop: '6%'}}>
+//           <View style={{width: "20%", height: '20%'}}>
+//               {/* <Image source={ {uri: rowData.imageUrl} } style={styles.productImage} ></Image> */}
+//           </View>
+//           <View style={{width: '60%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start'}}>
+//               <Text style={{fontSize: 22, fontWeight: 'bold', width: '80%'}}>{rowData.name} </Text> 
+//               <Text style={{fontSize: 20, color: '#C8C8C8', marginTop: 10}}>Jumlah Barang: {rowData.qty}</Text> 
+//           </View>
+//           <Text style={{fontSize: 22, fontWeight: 'bold'}}>{rowData.price}</Text> 
+//       </View>
+//     );
+// }
 
   toggleScreen = (visible) => {
     this.setState({ showPopUp: visible })
@@ -269,4 +269,4 @@ const ds = new ListView.DataSource({
 // }
 
 // export default connect(mapStateToProps)(PaymentInvoice)
-export default connect(PaymentInvoice)
+export default PaymentInvoice
