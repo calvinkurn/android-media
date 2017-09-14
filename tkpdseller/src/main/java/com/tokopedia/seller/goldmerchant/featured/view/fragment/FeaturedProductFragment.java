@@ -175,12 +175,18 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     @Override
     public void onResume() {
         super.onResume();
-        if (productModelsTemp != null && productModelsTemp.size() > 0) {
-            featuredProductPresenter.postData(
-                    FeaturedProductPOSTUseCase.createParam(
-                            Collections.unmodifiableList(productModelsTemp)
-                    )
-            );
+        switch (featuredProductType) {
+            case FeaturedProductType.DEFAULT_DISPLAY:
+                if (productModelsTemp != null && productModelsTemp.size() > 0) {
+                    featuredProductPresenter.postData(
+                            FeaturedProductPOSTUseCase.createParam(
+                                    Collections.unmodifiableList(productModelsTemp)
+                            )
+                    );
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -245,9 +251,11 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_arrange) {
             setFeaturedProductType(FeaturedProductType.ARRANGE_DISPLAY);
+            hideFab();
             return true;
         }else if(item.getItemId() == R.id.menu_delete){
             setFeaturedProductType(FeaturedProductType.DELETE_DISPLAY);
+            hideFab();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -287,7 +295,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
                 setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
                 updateTitleView(R.string.featured_product_activity_title);
-
+                showFab();
 
                 featuredProductPresenter.postData(
                         FeaturedProductPOSTUseCase.createParam(
