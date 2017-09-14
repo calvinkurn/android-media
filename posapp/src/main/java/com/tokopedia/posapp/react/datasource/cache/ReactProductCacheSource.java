@@ -3,6 +3,7 @@ package com.tokopedia.posapp.react.datasource.cache;
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.database.model.ProductDb;
 
 import java.util.ArrayList;
@@ -16,10 +17,12 @@ import rx.functions.Func1;
  */
 
 public class ReactProductCacheSource implements ReactCacheSource {
-   private Gson gson;
+    private Gson gson;
+    private ProductDbManager productDbManager;
 
     public ReactProductCacheSource() {
         gson = new Gson();
+        productDbManager = new ProductDbManager();
     }
 
     @Override
@@ -34,7 +37,7 @@ public class ReactProductCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> getAllData() {
-        List<ProductDb> productDbs = SQLite.select().from(ProductDb.class).queryList();
+        List<ProductDb> productDbs = productDbManager.getAllData();
         ProductModel productModel = new ProductModel();
         List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
         for(ProductDb productDb : productDbs) {

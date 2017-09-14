@@ -115,8 +115,8 @@ class PaymentInvoice extends Component {
                     </Text>
                   }
                   <View style={{ flexDirection:'row',flex:1,justifyContent:'space-between', alignItems:'center', marginTop: "5%"}} >
-                    <TouchableNativeFeedback
-                      onPress={() => NavigationModule.navigate("posapp://product", "")}>
+                    <TouchableNativeFeedback 
+                      onPress={() => { NavigationModule.navigateAndFinish("posapp://product", "") }}>
                       <View style={[styles.button, {backgroundColor: "#FFFFFF", borderColor:"#e0e0e0", marginLeft:"10%"}]}>
                         <Text style={[styles.buttonText, {color: "#0000008a"}]}> Lewati </Text>
                       </View>
