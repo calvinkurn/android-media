@@ -83,7 +83,8 @@ public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<Feature
     }
 
     public void removeSelections() {
-        for (int i = 0; i < data.size(); i++) {
+        int size = data.size();
+        for (int i = 0; i < size; i++) {
             FeaturedProductModel featuredProductModel = data.get(i);
             if (hashSet.contains(featuredProductModel.getId())) {
                 Log.d(TAG, String.format("i %d contains %s", i, featuredProductModel.getId()));
