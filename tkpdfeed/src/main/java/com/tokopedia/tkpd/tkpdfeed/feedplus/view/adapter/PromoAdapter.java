@@ -27,8 +27,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int VIEW_LAYOUT = 344;
     private static final float MARGIN_CARD = 10;
     private static final float WIDTH_CARD = 285;
-    private static final int HEIGHT_LARGE_PROMO_IMAGE = 300;
-    private static final int HEIGHT_SMALL_PROMO_IMAGE = 250;
+    private static final int HEIGHT_LARGE_PROMO_IMAGE = 750;
+    private static final int HEIGHT_SMALL_PROMO_IMAGE = 550;
 
 
     private ArrayList<PromoViewModel> list;
