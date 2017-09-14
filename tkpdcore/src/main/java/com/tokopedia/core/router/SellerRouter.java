@@ -33,8 +33,8 @@ public class SellerRouter {
     public static final String EXTRA_USER_ID = "user_id";
 
 
-    public final static int TAB_POSITION_SELLING_NEW_ORDER = 1;
-    public static final int TAB_POSITION_SELLING_OPPORTUNITY = 2;
+    public static final int TAB_POSITION_SELLING_OPPORTUNITY = 1;
+    public final static int TAB_POSITION_SELLING_NEW_ORDER = 2;
     public final static int TAB_POSITION_SELLING_CONFIRM_SHIPPING = 3;
     public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 4;
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
