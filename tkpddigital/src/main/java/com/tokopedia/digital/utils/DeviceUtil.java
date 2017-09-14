@@ -12,12 +12,14 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Validation;
+import com.tokopedia.digital.utils.data.RequestBodyAppsFlyer;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.net.InetAddress;
@@ -101,6 +103,13 @@ public class DeviceUtil {
         requestBodyIdentifier.setUserId(SessionHandler.getLoginID(context));
         requestBodyIdentifier.setOsType("1");
         return requestBodyIdentifier;
+    }
+
+    public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam() {
+        RequestBodyAppsFlyer requestBodyAppsFlyer = new RequestBodyAppsFlyer();
+        requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId());
+        requestBodyAppsFlyer.setDeviceId(TrackingUtils.getAdsId());
+        return requestBodyAppsFlyer;
     }
 
     public static String validatePrefixClientNumber(String phoneNumber) {
