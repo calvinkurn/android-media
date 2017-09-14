@@ -53,6 +53,10 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         updateBottomSheetInfo();
     }
 
+    public String getVariantName(){
+        return productVariantByCatModel.getName();
+    }
+
     @Override
     protected Fragment getInitialSearchListFragment() {
         return new ProductVariantPickerSearchFragment();
