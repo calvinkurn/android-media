@@ -102,7 +102,7 @@ class payment extends Component {
 
     return (
       <View style={styles.mainContainers} >
-        <View style={styles.header} />
+        {/* <View style={styles.header} /> */}
         <ScrollView>
 
         <View style={styles.containers} >
