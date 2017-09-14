@@ -88,11 +88,12 @@
                 android:background="?attr/selectableItemBackgroundBorderless"/>
         </LinearLayout>
 
-        <!-- will be added programmatically -->
-        <!--<include layout="@layout/layout_dashboard_shop_close"
+        <com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView
+            android:id="@+id/shop_warning_ticker_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs" />-->
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 

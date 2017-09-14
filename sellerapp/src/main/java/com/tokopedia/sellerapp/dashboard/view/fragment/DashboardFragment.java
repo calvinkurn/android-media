@@ -86,6 +86,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView discussionLabelView;
     private LabelView reviewLabelView;
 
+    private ShopWarningTickerView shopWarningTickerView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +111,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
         ivSettingIcon = view.findViewById(R.id.iv_setting);
+        shopWarningTickerView = (ShopWarningTickerView) view.findViewById(R.id.shop_warning_ticker_view);
 
         reputationLabelLayout = view.findViewById(R.id.reputation_label_layout);
         reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
@@ -247,7 +250,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
                 shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
         String formattedScore = KMNumbers.formatDecimalString(shopModel.getStats().getShopReputationScore(), false);
-        reputationPointTextView.setText(formattedScore);
+        reputationPointTextView.setText(getString(R.string.dashboard_x_points, formattedScore));
     }
 
     private void updateTransaction(final ShopModel shopModel) {
@@ -285,38 +288,25 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void updateViewShopOpen(ShopModel shopModel){
-        View vShopClose = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
         if (shopModel.isOpen != ShopModel.IS_CLOSED) {
-            if (vShopClose!= null) {
-                vgHeaderLabelLayout.removeView(vShopClose);
-            }
+            shopWarningTickerView.setVisibility(View.GONE);
         } else {
-            if (vShopClose== null) {
-                vShopClose = LayoutInflater.from(getContext())
-                        .inflate(R.layout.layout_dashboard_shop_close,
-                                vgHeaderLabelLayout, false);
-
-                vgHeaderLabelLayout.addView(vShopClose);
-            }
-            TextView tvCloseTitle = (TextView) vShopClose.findViewById(R.id.tv_title);
             String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
-                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                    DateFormatUtils.FORMAT_D_MMMM_YYYY,
                     shopModel.closedInfo.until);
-            if (!TextUtils.isEmpty(shopCloseUntilString)) {
-                tvCloseTitle.setText(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
-                tvCloseTitle.setVisibility(View.VISIBLE);
-            } else {
-                tvCloseTitle.setVisibility(View.GONE);
-            }
-
-            TextView tvCloseDesc = (TextView) vShopClose.findViewById(R.id.tv_description);
-            String note = shopModel.closedInfo.note;
-            if (!TextUtils.isEmpty(note)) {
-                tvCloseDesc.setText(note);
-                tvCloseDesc.setVisibility(View.VISIBLE);
-            } else {
-                tvCloseDesc.setVisibility(View.GONE);
-            }
+            shopWarningTickerView.setIcon(R.drawable.icon_closed);
+            shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
+            shopWarningTickerView.setDescription(shopModel.closedInfo.note);
+            shopWarningTickerView.setAction(getString(R.string.open_shop), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
+                    intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+                    UnifyTracking.eventManageShopInfo();
+                    startActivityForResult(intent, 0);
+                }
+            });
+            shopWarningTickerView.setVisibility(View.VISIBLE);
 
         }
     }
