@@ -93,7 +93,7 @@ public interface IGTMContainer {
 
     void eventBannerImpression(Promotion promotion);
 
-    void eventBannerClick();
+    void eventBannerClick(Promotion promotion);
 
     void clearTransactionDataLayer(Purchase purchase);
 

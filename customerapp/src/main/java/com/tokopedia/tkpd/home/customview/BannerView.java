@@ -47,6 +47,7 @@ public class BannerView extends BaseCustomView {
 
     private Handler bannerHandler;
     private Runnable runnableScrollBanner;
+    private boolean autoScrollOnProgress;
 
     public BannerView(@NonNull Context context) {
         super(context);
@@ -213,14 +214,24 @@ public class BannerView extends BaseCustomView {
 
     public void startAutoScrollBanner() {
         if (bannerHandler != null && runnableScrollBanner != null) {
+            setAutoScrollOnProgress(true);
             bannerHandler.postDelayed(runnableScrollBanner, SLIDE_DELAY);
         }
     }
 
     public void stopAutoScrollBanner() {
         if (bannerHandler != null && runnableScrollBanner != null) {
+            setAutoScrollOnProgress(false);
             bannerHandler.removeCallbacks(runnableScrollBanner);
         }
+    }
+
+    public void setAutoScrollOnProgress(boolean autoScrollOnProgress) {
+        this.autoScrollOnProgress = autoScrollOnProgress;
+    }
+
+    public boolean isAutoScrollOnProgress() {
+        return autoScrollOnProgress;
     }
 
     public static class PromoItem implements Parcelable {

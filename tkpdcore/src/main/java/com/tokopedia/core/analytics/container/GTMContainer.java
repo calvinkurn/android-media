@@ -210,8 +210,16 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void eventBannerClick() {
-
+    public void eventBannerClick(Promotion promotion) {
+        Log.i("Tag Manager", "UA-98016xx-xx: Send Banner Action");
+        Log.i("Tag Manager", "UA-98016xx-xx: " + promotion.getPromotionImpressionEvent());
+        GTMDataLayer
+                .pushEvent(context, "promoView",
+                        DataLayer.mapOf(
+                                "ecommerce",
+                                DataLayer.mapOf("promotions", promotion.getPromotionImpressionEvent())
+                        )
+                );
     }
 
     @Override

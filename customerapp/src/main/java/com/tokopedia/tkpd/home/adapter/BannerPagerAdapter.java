@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -70,7 +72,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         if (bannerList.get(position).imgUrl!=null &&
                 bannerList.get(position).promoUrl.length()>0) {
             holder.bannerImage.setOnClickListener(
-                    getBannerImageOnClickListener(bannerList.get(position).promoUrl)
+                    getBannerImageOnClickListener(position)
             );
         }
 
@@ -107,10 +109,16 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         return bannerList.size();
     }
 
-    private View.OnClickListener getBannerImageOnClickListener(final String url) {
+    private View.OnClickListener getBannerImageOnClickListener(final int currentPosition) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                BannerView.PromoItem item = bannerList.get(currentPosition);
+
+                trackingBannerClick(view.getContext(), item, currentPosition);
+
+                String url = item.getPromoUrl();
                 try {
                     UnifyTracking.eventSlideBannerClicked(url);
                     Uri uri = Uri.parse(url);
@@ -133,6 +141,17 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 }
             }
         };
+    }
+
+    private void trackingBannerClick(Context context, BannerView.PromoItem item, int currentPosition) {
+        Promotion promotion = new Promotion();
+        promotion.setPromotionID(item.getPromoId());
+        promotion.setPromotionName(item.getPromoTitle());
+        promotion.setPromotionAlias(item.getPromoTitle());
+        promotion.setPromotionPosition(currentPosition);
+
+        GTMContainer gtmContainer = GTMContainer.newInstance(context);
+        gtmContainer.eventBannerClick(promotion);
     }
 
     private boolean isBaseHost(String host) {
