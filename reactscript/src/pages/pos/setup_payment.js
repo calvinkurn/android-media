@@ -13,12 +13,16 @@ import { StackNavigator } from 'react-navigation';
 
 // // TODO: FOR UI testing purpose
 const PaymentApp = StackNavigator({
-  BankSelection : { screen: PaymentBank },
-  Payment: { screen: Payment },
-  PaymentProcessing: {screen: PaymentProcessing},
-  PaymentInvoice: {screen: PaymentInvoice},
-  TransactionHistory: {screen: TransactionHistory},
-  PasswordPopup: {screen: PasswordPopup}
+    BankSelection : { screen: PaymentBank },
+    Payment: { screen: Payment },
+    // PaymentProcessing: {screen: PaymentProcessing},
+    PaymentProcessing: {
+      screen: PaymentProcessing,
+      path: 'PaymentProcessing',
+    },
+    PaymentInvoice: {screen: PaymentInvoice},
+    TransactionHistory: {screen: TransactionHistory},
+    PasswordPopup: {screen: PasswordPopup}
 }, {headerMode: 'none'});
 
 
