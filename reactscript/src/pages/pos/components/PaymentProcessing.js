@@ -41,8 +41,9 @@ class PaymentProcessing extends Component {
     // headerTintColor: '#FFF',
     // headerStyle: {
     //     backgroundColor: '#42B549'
-    // }
-    headerMode: 'none'
+    // },
+    header: null
+    // headerMode: 'none'
   };
   
 

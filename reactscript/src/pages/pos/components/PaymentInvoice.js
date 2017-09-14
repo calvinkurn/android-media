@@ -156,12 +156,7 @@ class PaymentInvoice extends Component {
   }
 
   static navigationOptions = {
-    title: 'Payment Invoice',
-    headerTintColor: '#FFF',
-    headerStyle: {
-        backgroundColor: '#42B549'
-    }
-    // headerMode: 'none'
+    header: null
   };
 
 }

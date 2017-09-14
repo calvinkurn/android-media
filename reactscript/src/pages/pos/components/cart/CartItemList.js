@@ -49,7 +49,7 @@ export default class CartItemList extends Component {
         onRequestClose={onBackPress}>
         {items.length > 0 ?
           <View style={{ flex: 1 }}>
-            {/* <View style={styles.headerContainer}>
+            <View style={styles.headerContainer}>
               <View style={{ width: '10%' }}>
                 <TouchableWithoutFeedback onPress={onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
@@ -63,7 +63,7 @@ export default class CartItemList extends Component {
                   <Image source={require('../img/trash-all.png')} />
                 </TouchableWithoutFeedback>
               </View>
-            </View> */}
+            </View>
             <View style={styles.container}>
               <View>
                 <PopUp
