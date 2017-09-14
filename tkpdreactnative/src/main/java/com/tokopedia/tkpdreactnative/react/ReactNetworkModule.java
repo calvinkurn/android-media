@@ -4,13 +4,19 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
+import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -21,11 +27,19 @@ import rx.schedulers.Schedulers;
  */
 public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
-    private ReactNetworkRepository reactNetworkRepository;
+    @Inject
+    ReactNetworkRepository reactNetworkRepository;
+    ReactNativeNetworkComponent daggerRnNetworkComponent;
 
     public ReactNetworkModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        reactNetworkRepository = new ReactNetworkDependencies(reactContext).createReactNetworkRepository();
+//        reactNetworkRepository = new ReactNetworkDependencies(reactContext).createReactNetworkRepository();
+        if (reactContext.getApplicationContext() instanceof MainApplication){
+            AppComponent appComponent = ((MainApplication) reactContext.getApplicationContext()).getApplicationComponent();
+            daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
+                    .appComponent(appComponent).build();
+            daggerRnNetworkComponent.inject(this);
+        }
     }
 
     @Override
