@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,14 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+
+import javax.inject.Inject;
 
 /**
  * Created by yoasfs on 28/08/17.
@@ -28,19 +39,23 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
 public class SolutionDetailFragment extends BaseDaggerFragment implements SolutionDetailFragmentListener.View {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
+    public static final String EDIT_APPEAL_MODEL_DATA = "edit_appeal_model_data";
     public static final String SOLUTION_DATA = "solution_data";
 
     TkpdTextInputLayout tilAmount;
     EditText etAmount;
     Button btnContinue;
 
-
-    SolutionDetailFragmentPresenter presenter;
     SolutionViewModel solutionViewModel;
+    EditAppealSolutionModel editAppealSolutionModel;
     ResultViewModel resultViewModel;
 
+    @Inject
+    SolutionDetailFragmentPresenter presenter;
 
-    public static SolutionDetailFragment newInstance(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel) {
+
+    public static SolutionDetailFragment newInstance(ResultViewModel resultViewModel,
+                                                     SolutionViewModel solutionViewModel) {
         SolutionDetailFragment fragment = new SolutionDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(SOLUTION_DATA, solutionViewModel);
@@ -49,9 +64,18 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         return fragment;
     }
 
+    public static SolutionDetailFragment newEditAppealDetailInstance(EditAppealSolutionModel editAppealSolutionModel,
+                                                             SolutionViewModel solutionViewModel) {
+        SolutionDetailFragment fragment = new SolutionDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SOLUTION_DATA, solutionViewModel);
+        bundle.putParcelable(EDIT_APPEAL_MODEL_DATA, editAppealSolutionModel);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        presenter = new SolutionDetailFragmentPresenter(getActivity());
         presenter.attachView(this);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -63,7 +87,13 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
     @Override
     protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        DaggerCreateResoComponent daggerCreateResoComponent =
+                (DaggerCreateResoComponent) DaggerCreateResoComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
 
+        daggerCreateResoComponent.inject(this);
     }
 
     @Override
@@ -89,7 +119,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     protected void setupArguments(Bundle arguments) {
         solutionViewModel = arguments.getParcelable(SOLUTION_DATA);
-        resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
+        if (arguments.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
+            resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
+        } else {
+            editAppealSolutionModel = arguments.getParcelable(EDIT_APPEAL_MODEL_DATA);
+        }
     }
 
     @Override
@@ -102,7 +136,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         tilAmount = (TkpdTextInputLayout) view.findViewById(R.id.til_amount);
         etAmount = (EditText) view.findViewById(R.id.et_amount);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
-        presenter.initResultViewModel(resultViewModel, solutionViewModel);
+        if (resultViewModel != null) {
+            presenter.initResultViewModel(resultViewModel, solutionViewModel);
+        } else {
+            presenter.initEditAppealSolutionModel(editAppealSolutionModel, solutionViewModel);
+        }
 
         tilAmount.setHint(context.getResources().getString(R.string.string_money_amount_returned));
 
@@ -154,12 +192,26 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     }
 
     @Override
-    public void updateBottomButton(ResultViewModel resultViewModel) {
-        if (resultViewModel.refundAmount == 0) {
+    public void updateBottomButton(int refundAmount) {
+        if (refundAmount == 0) {
             buttonDisabled(btnContinue);
         } else {
             buttonSelected(btnContinue);
         }
+    }
+
+    @Override
+    public void successEditSolution() {
+        Toast.makeText(context, "Sukses mengubah solusi", Toast.LENGTH_SHORT).show();
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+
+    }
+
+    @Override
+    public void errorEditSolution(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+
     }
 
     public void buttonSelected(Button button) {
@@ -176,6 +228,46 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         button.setTextColor(ContextCompat.getColor(context, R.color.black_70));
     }
 
+    @Override
+    public void showDialogCompleteEditAppeal(EditAppealSolutionModel editAppealSolutionModel) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.layout_edit_solution);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnEditSolution = (Button) dialog.findViewById(R.id.btn_edit_solution);
+
+        updateSolutionString(editAppealSolutionModel, tvSolution);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnEditSolution.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.submitEditAppeal();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void updateSolutionString(EditAppealSolutionModel editAppealSolutionModel, TextView textView) {
+        textView.setText(editAppealSolutionModel.refundAmount != 0 ?
+                "Kembalikan Rp " + editAppealSolutionModel.refundAmount + " ke Pembeli" :
+                editAppealSolutionModel.solutionName);
+    }
 
     @Override
     public void showErrorToast(String error) {

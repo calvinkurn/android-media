@@ -5,23 +5,29 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailActivityListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailActivityPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
 /**
  * Created by yoasfs on 28/08/17.
  */
 
-public class SolutionDetailActivity extends BasePresenterActivity<SolutionDetailActivityListener.Presenter> implements SolutionDetailActivityListener.View {
+public class SolutionDetailActivity extends
+        BasePresenterActivity<SolutionDetailActivityListener.Presenter>
+        implements SolutionDetailActivityListener.View, HasComponent {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     public static final String SOLUTION_DATA = "solution_data";
+    public static final String EDIT_APPEAL_MODEL_DATA = "edit_appeal_model_data";
 
     SolutionViewModel solutionViewModel;
     ResultViewModel resultViewModel;
+    EditAppealSolutionModel editAppealSolutionModel;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -31,7 +37,11 @@ public class SolutionDetailActivity extends BasePresenterActivity<SolutionDetail
     @Override
     protected void setupBundlePass(Bundle extras) {
         solutionViewModel = extras.getParcelable(SOLUTION_DATA);
-        resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
+        if (extras.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
+            resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
+        } else {
+            editAppealSolutionModel = extras.getParcelable(EDIT_APPEAL_MODEL_DATA);
+        }
     }
 
     @Override
@@ -46,7 +56,13 @@ public class SolutionDetailActivity extends BasePresenterActivity<SolutionDetail
 
     @Override
     protected void initView() {
-        presenter.initFragment(resultViewModel, solutionViewModel);
+        if (resultViewModel != null) {
+            presenter.initFragment(resultViewModel,
+                    solutionViewModel);
+        } else {
+            presenter.initEditAppealFragment(editAppealSolutionModel,
+                    solutionViewModel);
+        }
     }
 
     @Override
@@ -71,5 +87,10 @@ public class SolutionDetailActivity extends BasePresenterActivity<SolutionDetail
                     .add(R.id.container, fragment, TAG)
                     .commit();
         }
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
     }
 }

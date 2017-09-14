@@ -14,6 +14,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mappe
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep2Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
@@ -30,6 +31,8 @@ import com.tokopedia.inbox.rescenter.createreso.data.repository.EditSolutionRepo
 import com.tokopedia.inbox.rescenter.createreso.data.repository.EditSolutionRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.GenerateHostUploadRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.GenerateHostUploadRepositoryImpl;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.PostEditSolutionRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.PostEditSolutionRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
@@ -40,6 +43,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAtt
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateSubmitUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateValidateUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.GenerateHostUseCase;
@@ -71,6 +75,13 @@ public class CreateResoModule {
     ResolutionApi provideResolutionService(@ResolutionQualifier Retrofit retrofit) {
         return retrofit.create(ResolutionApi.class);
     }
+
+    @CreateResoScope
+    @Provides
+    EditAppealResolutionResponseMapper provideEditAppealResolutionResponseMapper() {
+        return new EditAppealResolutionResponseMapper();
+    }
+
 
     @CreateResoScope
     @Provides
@@ -140,7 +151,8 @@ public class CreateResoModule {
                                                          ResolutionApi resolutionApi,
                                                          ResCenterActService resCenterActService,
                                                          UploadVideoMapper uploadVideoMapper,
-                                                         EditSolutionMapper editSolutionMapper) {
+                                                         EditSolutionMapper editSolutionMapper,
+                                                         EditAppealResolutionResponseMapper editAppealResolutionResponseMapper) {
         return new CreateResolutionFactory(context,
                 getProductProblemMapper,
                 solutionMapper,
@@ -153,13 +165,20 @@ public class CreateResoModule {
                 resolutionApi,
                 resCenterActService,
                 uploadVideoMapper,
-                editSolutionMapper
+                editSolutionMapper,
+                editAppealResolutionResponseMapper
         );
     }
 
     @CreateResoScope
     @Provides
-    EditSolutionRepository provideCEditSolutionRepository(CreateResolutionFactory createResolutionFactory) {
+    PostEditSolutionRepository providePostEditSolutionRepository(CreateResolutionFactory createResolutionFactory) {
+        return new PostEditSolutionRepositoryImpl(createResolutionFactory);
+    }
+
+    @CreateResoScope
+    @Provides
+    EditSolutionRepository provideEditSolutionRepository(CreateResolutionFactory createResolutionFactory) {
         return new EditSolutionRepositoryImpl(createResolutionFactory);
     }
 
@@ -296,6 +315,16 @@ public class CreateResoModule {
         return new GetSolutionUseCase(threadExecutor,
                 postExecutionThread,
                 solutionRepository);
+    }
+
+    @CreateResoScope
+    @Provides
+    PostEditSolutionUseCase providePostEditSolutionUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 PostEditSolutionRepository postEditSolutionRepository) {
+        return new PostEditSolutionUseCase(threadExecutor,
+                postExecutionThread,
+                postEditSolutionRepository);
     }
 
     @CreateResoScope

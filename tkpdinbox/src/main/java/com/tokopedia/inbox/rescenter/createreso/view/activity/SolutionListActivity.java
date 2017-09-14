@@ -22,6 +22,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
         implements SolutionListActivityListener.View, HasComponent {
 
     private static final String ARGS_PARAM_PASS_DATA = "ARGS_PARAM_PASS_DATA";
+    public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     private static final String ARGS_PARAM_FLAG_EDIT = "ARGS_PARAM_FLAG_EDIT";
 
     private EditAppealSolutionModel editAppealSolutionModel;
@@ -46,7 +47,6 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
         return intent;
     }
 
-    public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
 
     ResultViewModel resultViewModel;
 

@@ -8,6 +8,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailActi
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListActivityListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
 /**
@@ -38,6 +39,15 @@ public class SolutionDetailActivityPresenter
     @Override
     public void initFragment(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel) {
         mainView.inflateFragment(SolutionDetailFragment.newInstance(resultViewModel, solutionViewModel),
+                SolutionDetailFragment.class.getSimpleName());
+    }
+
+    @Override
+    public void initEditAppealFragment(EditAppealSolutionModel editAppealSolutionModel,
+                                       SolutionViewModel solutionViewModel) {
+        mainView.inflateFragment(SolutionDetailFragment.newEditAppealDetailInstance(
+                editAppealSolutionModel,
+                solutionViewModel),
                 SolutionDetailFragment.class.getSimpleName());
     }
 }

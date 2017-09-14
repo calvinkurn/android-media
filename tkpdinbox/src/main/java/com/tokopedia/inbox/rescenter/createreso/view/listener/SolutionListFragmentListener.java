@@ -30,6 +30,13 @@ public interface SolutionListFragmentListener {
         void showLoading();
 
         void hideLoading();
+
+        void successEditSolution();
+
+        void errorEditSolution(String error);
+
+        void showDialogCompleteEditAppeal(SolutionViewModel solutionViewModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -40,5 +47,7 @@ public interface SolutionListFragmentListener {
         void updateLocalData(SolutionResponseViewModel solutionResponseViewModel);
 
         void solutionClicked(SolutionViewModel solutionViewModel);
+
+        void submitEditAppeal(SolutionViewModel solutionViewModel);
     }
 }

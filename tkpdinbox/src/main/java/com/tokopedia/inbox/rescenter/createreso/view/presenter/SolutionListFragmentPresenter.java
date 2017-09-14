@@ -9,6 +9,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDo
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.SolutionSubscriber;
@@ -38,14 +39,21 @@ public class SolutionListFragmentPresenter
     private SolutionListFragmentListener.View mainView;
     private GetSolutionUseCase getSolutionUseCase;
     private GetEditSolutionUseCase getEditSolutionUseCase;
+    private PostEditSolutionUseCase postEditSolutionUseCase;
+
     private ResultViewModel resultViewModel;
+    private EditAppealSolutionModel editAppealSolutionModel;
+
+    private boolean isEditAppeal;
 
 
     @Inject
     public SolutionListFragmentPresenter(GetSolutionUseCase getSolutionUseCase,
-                                         GetEditSolutionUseCase getEditSolutionUseCase) {
+                                         GetEditSolutionUseCase getEditSolutionUseCase,
+                                         PostEditSolutionUseCase postEditSolutionUseCase) {
         this.getSolutionUseCase = getSolutionUseCase;
         this.getEditSolutionUseCase = getEditSolutionUseCase;
+        this.postEditSolutionUseCase = postEditSolutionUseCase;
     }
 
     @Override
@@ -64,7 +72,9 @@ public class SolutionListFragmentPresenter
 
     @Override
     public void initEditAppeal(EditAppealSolutionModel editAppealSolutionModel) {
+        this.editAppealSolutionModel = editAppealSolutionModel;
         mainView.showLoading();
+        isEditAppeal = true;
         getEditSolutionUseCase.execute(getEditSolutionUseCase.getEditSolutionUseCaseParams(
                 editAppealSolutionModel.resolutionId),
                 new EditSolutionSubscriber(mainView));
@@ -78,15 +88,30 @@ public class SolutionListFragmentPresenter
     }
 
     @Override
+    public void submitEditAppeal(SolutionViewModel solutionViewModel) {
+        editAppealSolutionModel.solutionName = solutionViewModel.getName();
+        editAppealSolutionModel.solution = solutionViewModel.getId();
+        postEditSolutionUseCase.execute(PostEditSolutionUseCase.
+                postEditSolutionUseCaseParamsWithoutRefund(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.solution));
+    }
+
+    @Override
     public void solutionClicked(SolutionViewModel solutionViewModel) {
         if (solutionViewModel.getAmount() == null) {
-            resultViewModel.solution = solutionViewModel.getId();
-            resultViewModel.solutionName = solutionViewModel.getName();
-            resultViewModel.refundAmount = 0;
-            mainView.submitData(resultViewModel);
+            if (!isEditAppeal) {
+                resultViewModel.solution = solutionViewModel.getId();
+                resultViewModel.solutionName = solutionViewModel.getName();
+                resultViewModel.refundAmount = 0;
+                mainView.submitData(resultViewModel);
+            } else {
+                mainView.showDialogCompleteEditAppeal(solutionViewModel);
+            }
         } else {
             mainView.moveToSolutionDetail(solutionViewModel);
         }
+
     }
 
 }
