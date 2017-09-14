@@ -100,8 +100,6 @@ public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
             public void onNext(FeaturedProductPOSTDomainModel featuredProductPOSTDomainModel) {
                 revealPOSTData(featuredProductPOSTDomainModel);
             }
-
-
         });
     }
 

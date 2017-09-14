@@ -5,6 +5,152 @@ import com.tokopedia.core.R;
 
 public class TkpdState {
 
+    public static class ResCenterSolution {
+        public static final int SOLUTION_REFUND = 1;
+        public static final int SOLUTION_RETUR = 2;
+        public static final int SOLUTION_RETUR_REFUND = 3;
+        public static final int SOLUTION_SELLER_WIN = 4;
+        public static final int SOLUTION_SEND_REMAINING = 5;
+        private static final int SOLUTION_CHECK_COURIER_AGENT = 6;
+
+        public static int getStringRes(int state) {
+            switch (state) {
+                case SOLUTION_RETUR:
+                    return R.string.msg_res_retur;
+                case SOLUTION_REFUND:
+                    return R.string.msg_res_refund;
+                case SOLUTION_RETUR_REFUND:
+                    return R.string.msg_res_retur_refund;
+                case SOLUTION_SEND_REMAINING:
+                    return R.string.msg_res_remaining;
+                case SOLUTION_CHECK_COURIER_AGENT:
+                    return R.string.msg_res_check_courier_agent;
+                default:
+                    return R.string.msg_res_refund;
+            }
+        }
+    }
+
+    public static class ResCenterTrouble {
+        public static final int TROUBLE_DIFF_DESCRIPTION = 1;
+        public static final int TROUBLE_BROKEN = 2;
+        public static final int TROUBLE_DIFF_QUANTITY = 3;
+        public static final int TROUBLE_DIFF_CARRIER = 4;
+        public static final int TROUBLE_PRODUCT_NOT_RECEIVED = 5;
+
+        public static int getStringRes(int state) {
+            switch (state) {
+                case TROUBLE_DIFF_DESCRIPTION:
+                    return R.string.rescenter_trouble_diff_desc;
+                case TROUBLE_BROKEN:
+                    return R.string.rescenter_trouble_broken;
+                case TROUBLE_DIFF_QUANTITY:
+                    return R.string.rescenter_trouble_diff_quantity;
+                case TROUBLE_DIFF_CARRIER:
+                    return R.string.rescenter_trouble_diff_carrier;
+                case TROUBLE_PRODUCT_NOT_RECEIVED:
+                    return R.string.rescenter_trouble_not_received;
+                default:
+                    return R.string.rescenter_trouble_undefined;
+            }
+        }
+
+    }
+
+    public static class ResCenterActionBy {
+        public static final int BUYER = 1;
+        public static final int SELLER = 2;
+        public static final int ADMIN = 3;
+
+        public static int getStringRes(int state) {
+            switch (state) {
+                case BUYER:
+                    return R.string.title_buyer;
+                case SELLER:
+                    return R.string.title_seller;
+                case ADMIN:
+                    return R.string.title_admin;
+                default:
+                    return 0;
+            }
+        }
+    }
+
+    public static class ResCenterAct {
+        public static final int ACCEPT = 1;
+        public static final int INPUT = 2;
+        public static final int FINISH = 3;
+        public static final int ACCEPT_ADMIN = 4;
+        public static final int APPEAL = 5;
+
+        public static int getStringRes(int state) {
+            switch (state) {
+                case ACCEPT:
+                    return R.string.msg_accept_sol;
+                case FINISH:
+                    return R.string.msg_rescen_finish;
+                case ACCEPT_ADMIN:
+                    return R.string.msg_accept_admin;
+                case APPEAL:
+                    return R.string.msg_appeal_sol;
+                default:
+                    return 0;
+            }
+        }
+    }
+
+    public static class ResCenterStatus {
+        public static final int RESOLUTION_CANCELED = 0;
+        public static final int RESOLUTION_OPEN = 100;
+        public static final int RESOLUTION_DO_ACTION = 200;
+        public static final int RESOLUTION_CS_ANSWERED = 300;
+        public static final int RESOLUTION_APPEAL = 400;
+        public static final int RESOLUTION_FINISHED = 500;
+
+        public static int getStringRes(int state) {
+            switch (state) {
+                case RESOLUTION_CANCELED:
+                    return R.string.title_rescenter_canceled;
+                case RESOLUTION_OPEN:
+                    return R.string.title_rescenter_open;
+                case RESOLUTION_DO_ACTION:
+                    return R.string.title_rescenter_action;
+                case RESOLUTION_CS_ANSWERED:
+                    return R.string.title_rescenter_solution;
+                case RESOLUTION_APPEAL:
+                    return R.string.title_rescenter_appeal;
+                case RESOLUTION_FINISHED:
+                    return R.string.title_rescenter_canceled;
+                default:
+                    return 0;
+            }
+        }
+
+        public static int getColorStatus(int state) {
+            switch (state) {
+                case RESOLUTION_FINISHED:
+                    return R.color.tkpd_dark_gray;
+                case RESOLUTION_CANCELED:
+                    return R.color.tkpd_dark_gray;
+                default:
+                    return R.color.tkpd_dark_orange;
+            }
+        }
+
+    }
+
+    public static class InboxResCenter {
+        public static int RESO_ALL = 2;
+        public static int RESO_MINE = 0;
+        public static int RESO_BUYER = 1;
+    }
+
+    public static class StateView {
+        public static final int GRID_3 = 0;
+        public static final int GRID_2 = 1;
+        public static final int LIST = 2;
+    }
+
     public class RequestCode {
         public static final int CODE_OPEN_DETAIL_REPUTATION = 100;
         public static final int CODE_OPEN_DETAIL_PRODUCT_REVIEW = 1;
@@ -91,6 +237,7 @@ public class TkpdState {
         public static final int SHOP_OPPORTUNITY_LIST = 52;
 
         public static final int CATEGORY_NAVIGATION = 54;
+        public static final int FEATURED_PRODUCT = 99;
     }
 
     public class Application {
@@ -153,77 +300,6 @@ public class TkpdState {
         public static final int PRODUCT = 2;
     }
 
-    public static class ResCenterSolution {
-        public static final int SOLUTION_REFUND = 1;
-        public static final int SOLUTION_RETUR = 2;
-        public static final int SOLUTION_RETUR_REFUND = 3;
-        public static final int SOLUTION_SELLER_WIN = 4;
-        public static final int SOLUTION_SEND_REMAINING = 5;
-        private static final int SOLUTION_CHECK_COURIER_AGENT = 6;
-
-        public static int getStringRes(int state) {
-            switch (state) {
-                case SOLUTION_RETUR:
-                    return R.string.msg_res_retur;
-                case SOLUTION_REFUND:
-                    return R.string.msg_res_refund;
-                case SOLUTION_RETUR_REFUND:
-                    return R.string.msg_res_retur_refund;
-                case SOLUTION_SEND_REMAINING:
-                    return R.string.msg_res_remaining;
-                case SOLUTION_CHECK_COURIER_AGENT:
-                    return R.string.msg_res_check_courier_agent;
-                default:
-                    return R.string.msg_res_refund;
-            }
-        }
-    }
-
-    public static class ResCenterTrouble {
-        public static final int TROUBLE_DIFF_DESCRIPTION = 1;
-        public static final int TROUBLE_BROKEN = 2;
-        public static final int TROUBLE_DIFF_QUANTITY = 3;
-        public static final int TROUBLE_DIFF_CARRIER = 4;
-        public static final int TROUBLE_PRODUCT_NOT_RECEIVED = 5;
-
-        public static int getStringRes(int state) {
-            switch (state) {
-                case TROUBLE_DIFF_DESCRIPTION:
-                    return R.string.rescenter_trouble_diff_desc;
-                case TROUBLE_BROKEN:
-                    return R.string.rescenter_trouble_broken;
-                case TROUBLE_DIFF_QUANTITY:
-                    return R.string.rescenter_trouble_diff_quantity;
-                case TROUBLE_DIFF_CARRIER:
-                    return R.string.rescenter_trouble_diff_carrier;
-                case TROUBLE_PRODUCT_NOT_RECEIVED:
-                    return R.string.rescenter_trouble_not_received;
-                default:
-                    return R.string.rescenter_trouble_undefined;
-            }
-        }
-
-    }
-
-    public static class ResCenterActionBy {
-        public static final int BUYER = 1;
-        public static final int SELLER = 2;
-        public static final int ADMIN = 3;
-
-        public static int getStringRes(int state) {
-            switch (state) {
-                case BUYER:
-                    return R.string.title_buyer;
-                case SELLER:
-                    return R.string.title_seller;
-                case ADMIN:
-                    return R.string.title_admin;
-                default:
-                    return 0;
-            }
-        }
-    }
-
     public class ResCenterCase {
         public static final int ACCEPT = 1;
         public static final int INPUT = 2;
@@ -234,85 +310,10 @@ public class TkpdState {
 
     }
 
-    public static class ResCenterAct {
-        public static final int ACCEPT = 1;
-        public static final int INPUT = 2;
-        public static final int FINISH = 3;
-        public static final int ACCEPT_ADMIN = 4;
-        public static final int APPEAL = 5;
-
-        public static int getStringRes(int state) {
-            switch (state) {
-                case ACCEPT:
-                    return R.string.msg_accept_sol;
-                case FINISH:
-                    return R.string.msg_rescen_finish;
-                case ACCEPT_ADMIN:
-                    return R.string.msg_accept_admin;
-                case APPEAL:
-                    return R.string.msg_appeal_sol;
-                default:
-                    return 0;
-            }
-        }
-    }
-
-    public static class ResCenterStatus {
-        public static final int RESOLUTION_CANCELED = 0;
-        public static final int RESOLUTION_OPEN = 100;
-        public static final int RESOLUTION_DO_ACTION = 200;
-        public static final int RESOLUTION_CS_ANSWERED = 300;
-        public static final int RESOLUTION_APPEAL = 400;
-        public static final int RESOLUTION_FINISHED = 500;
-
-        public static int getStringRes(int state) {
-            switch (state) {
-                case RESOLUTION_CANCELED:
-                    return R.string.title_rescenter_canceled;
-                case RESOLUTION_OPEN:
-                    return R.string.title_rescenter_open;
-                case RESOLUTION_DO_ACTION:
-                    return R.string.title_rescenter_action;
-                case RESOLUTION_CS_ANSWERED:
-                    return R.string.title_rescenter_solution;
-                case RESOLUTION_APPEAL:
-                    return R.string.title_rescenter_appeal;
-                case RESOLUTION_FINISHED:
-                    return R.string.title_rescenter_canceled;
-                default:
-                    return 0;
-            }
-        }
-
-        public static int getColorStatus(int state) {
-            switch (state) {
-                case RESOLUTION_FINISHED:
-                    return R.color.tkpd_dark_gray;
-                case RESOLUTION_CANCELED:
-                    return R.color.tkpd_dark_gray;
-                default:
-                    return R.color.tkpd_dark_orange;
-            }
-        }
-
-    }
-
-    public static class InboxResCenter {
-        public static int RESO_ALL = 2;
-        public static int RESO_MINE = 0;
-        public static int RESO_BUYER = 1;
-    }
-
     public class UpdateState {
         public static final int NO_UPDATE = 0;
         public static final int MUST_UPDATE = 1;
         public static final int OPTIONAL_UPDATE = 2;
-    }
-
-    public static class StateView {
-        public static final int GRID_3 = 0;
-        public static final int GRID_2 = 1;
-        public static final int LIST = 2;
     }
 
     public class TrackerState {
