@@ -29,7 +29,7 @@ class PaymentProcessing extends Component {
         </View> */}
         
         <View style={{ width: "100%", marginTop: "60%", flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
-          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/loading.gif' }} />
+          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/loading.gif' }}  style={{width: 110, height: 110}} />
           <Text style={{fontSize:17, marginTop:"2%"}}>Pembayaran sedang diproses...</Text>
         </View>
       </View>
@@ -37,12 +37,12 @@ class PaymentProcessing extends Component {
   }
 
   static navigationOptions = {
-    title: 'Payment Processing',
-    headerTintColor: '#FFF',
-    headerStyle: {
-        backgroundColor: '#42B549'
-    }
-    // headerMode: 'none'
+    // title: 'Payment Processing',
+    // headerTintColor: '#FFF',
+    // headerStyle: {
+    //     backgroundColor: '#42B549'
+    // }
+    headerMode: 'none'
   };
   
 
