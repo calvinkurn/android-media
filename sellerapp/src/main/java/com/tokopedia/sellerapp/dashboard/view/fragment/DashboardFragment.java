@@ -258,6 +258,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO Inbox reputation now has 2 tabs, need activity for 1 tab only?
                 Intent intent = new Intent(getContext(), InboxReputationActivity.class);
                 intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
                 startActivity(intent);
