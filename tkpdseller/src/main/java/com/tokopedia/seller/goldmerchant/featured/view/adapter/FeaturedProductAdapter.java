@@ -42,6 +42,16 @@ public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<Feature
     }
 
     @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
+        switch (getItemViewType(position)) {
+            case FeaturedProductModel.TYPE:
+                ((FeaturedProductViewHolder) holder).bindData(data.get(position));
+                break;
+        }
+    }
+
+    @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
         Collections.swap(data, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);

@@ -43,6 +43,7 @@ import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -61,11 +62,10 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     FeaturedProductPresenterImpl featuredProductPresenter;
     @FeaturedProductType
     int featuredProductType = FeaturedProductType.DEFAULT_DISPLAY;
+    List<FeaturedProductModel> productModelsTemp = new ArrayList<>();
     private ItemTouchHelper mItemTouchHelper;
     private int MAX_ITEM = 5;
     private int delete_selection_count = 0;
-    private List<FeaturedProductModel> onActivityForResulDatas = new ArrayList<>();
-    private boolean isActivityForResult = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,18 +157,6 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     }
 
     @Override
-    public void onSearchLoaded(@NonNull List<FeaturedProductModel> list, int totalItem) {
-        if (isActivityForResult) {
-            list.addAll(new ArrayList<>(onActivityForResulDatas));
-            onActivityForResulDatas.clear();
-
-            isActivityForResult = false;
-        }
-
-        super.onSearchLoaded(list, list.size());
-    }
-
-    @Override
     protected void setViewListener() {
         super.setViewListener();
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter) adapter, this);
@@ -182,6 +170,18 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         featuredProductAdapter.setUseCaseListener(this);
         featuredProductAdapter.setCheckedCallback(this);
         return featuredProductAdapter;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (productModelsTemp != null && productModelsTemp.size() > 0) {
+            featuredProductPresenter.postData(
+                    FeaturedProductPOSTUseCase.createParam(
+                            Collections.unmodifiableList(productModelsTemp)
+                    )
+            );
+        }
     }
 
     @Override
@@ -209,7 +209,9 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     public void onPostSuccess() {
-
+        adapter.clearData();
+        onSearchLoaded(productModelsTemp, productModelsTemp.size());
+        productModelsTemp.clear();
     }
 
     @Override
@@ -352,9 +354,10 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE && intent != null) {
             List<ProductListPickerViewModel> productListPickerViewModels = intent.getParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT);
-            isActivityForResult = true;
 
             if (productListPickerViewModels != null) {
+
+                productModelsTemp = new ArrayList<>();
                 for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModels) {
                     FeaturedProductModel featuredProductModel = new FeaturedProductModel();
                     featuredProductModel.setProductId(Long.valueOf(productListPickerViewModel.getId()));
@@ -362,19 +365,8 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                     featuredProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
                     featuredProductModel.setProductName(productListPickerViewModel.getTitle());
 
-
-                    if (!adapter.getData().contains(featuredProductModel)) {
-                        onActivityForResulDatas.add(featuredProductModel);
-
-                        adapter.addData(featuredProductModel);
-                    }
+                    productModelsTemp.add(featuredProductModel);
                 }
-
-                featuredProductPresenter.postData(
-                        FeaturedProductPOSTUseCase.createParam(
-                                adapter.getData()
-                        )
-                );
             }
         }
     }
