@@ -418,9 +418,9 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
         ProductEmptyDataBinder emptyGroupAdsDataBinder = new ProductEmptyDataBinder(adapter);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
-        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.app_name));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.app_name));
+        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.app_name));
         emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {

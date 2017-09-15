@@ -25,7 +25,7 @@
     <string name="label_top_ads_groups">Grup</string>
     <string name="label_top_ads_items">Produk</string>
     <string name="label_top_ads_keyword">Kata Kunci</string>
-    <string name="label_top_ads_choose_credit">Pilih</string>
+
     <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
     <string name="label_top_ads_next">Selanjutnya</string>
     <string name="label_top_ads_save">Simpan</string>
@@ -40,7 +40,7 @@
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="label_manage_group">Atur Grup</string>
     <string name="label_edit">Ubah</string>
-    <string name="label_delete">Hapus</string>
+
     <string name="title_product_ad_detail">Detil Promo Produk</string>
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
     <string name="title_group_ad_detail">Detil Promo Grup</string>
@@ -156,7 +156,7 @@
     <string name="top_ads_label_total_selected_product"><![CDATA[<b>%02d/50</b> Produk Terpilih]]></string>
     <string name="top_ads_label_total_selected_product_zero"><![CDATA[<b>%1$d/50</b> Produk Terpilih]]></string>
     <string name="top_ads_label_count_product_group">%1d Produk</string>
-    <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
+
     <string name="top_ads_label_choose_product">Pilih Produk</string>
     <string name="top_ads_label_choose_product_desc_empty">Pilih produk yang akan dimasukkan ke grup promo.</string>
     <string name="top_ads_label_choose_product_desc_empty_without_group">Pengaturan dilakukan per promo.</string>
@@ -169,8 +169,7 @@
     <string name="error_top_ads_daily_budget_cannot_empyt">Anggaran tidak boleh kosong</string>
 
     <string name="title_activity_top_ads_list">Pilih Produk</string>
-    <string name="title_activity_category_picker">Pilih Kategori</string>
-    <string name="title_activity_catalog_picker">Pilih Katalog</string>
+
 
     <string name="search_product">Cari Produk</string>
     <string name="filter_top_ads">Filter Top Ads</string>
@@ -179,9 +178,7 @@
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
     <string name="promoted">Promoted</string>
-    <string name="next">Selanjutnya</string>
-    <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
-    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
+
     <string name="top_ads_title_group_name_not_valid">Nama grup tidak valid.</string>
 
     <!-- Top Ads Keyword -->

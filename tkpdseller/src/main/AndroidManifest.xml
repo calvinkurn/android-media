@@ -38,7 +38,7 @@
 
         <activity
             android:name=".common.datepicker.view.activity.DatePickerActivity"
-            android:label="@string/top_ads_title_dashboard"
+            android:label="@string/title_date_setting"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
