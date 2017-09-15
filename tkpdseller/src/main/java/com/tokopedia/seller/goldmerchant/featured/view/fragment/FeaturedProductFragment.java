@@ -325,20 +325,24 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     public void showOtherActionDialog() {
         String title;
         String message;
+        String labelAction;
 
         switch(featuredProductType){
             case FeaturedProductType.ARRANGE_DISPLAY:
                 title = getString(R.string.featured_product_sort_title);
                 message = getString(R.string.featured_product_sort_desc);
+                labelAction = getString(R.string.action_sort);
                 break;
             case FeaturedProductType.DELETE_DISPLAY:
                 // TODO change this according to type.
                 title = getString(R.string.featured_product_delete_title);
                 message = getString(R.string.featured_product_delete_desc, ((FeaturedProductAdapter)adapter).getSelectedSize());
+                labelAction = getString(R.string.label_delete);
                 break;
             default:
                 title = getString(R.string.featured_product_sort_title);
                 message = getString(R.string.featured_product_sort_desc);
+                labelAction = getString(R.string.action_sort);
                 break;
         }
 
