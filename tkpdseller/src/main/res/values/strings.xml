@@ -152,4 +152,7 @@
 
     <string name="shop_score_point_value">%1s poin</string>
     <string name="shop_score_title_widget_home">Performa Toko</string>
+    <string name="featured_product_title_empty">Tidak ada produk di Produk Unggulan</string>
+    <string name="featured_product_description_empty">Tambahkan hingga 5 produk terbaik Anda ke dalam Produk Unggulan untuk tampil lebih spesial pada halaman Toko Anda.</string>
+    <string name="featured_product_add_title_empty">Tambah Produk Unggulan</string>
 </resources>

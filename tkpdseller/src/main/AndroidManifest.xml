@@ -311,7 +311,7 @@
         <activity
             android:name=".goldmerchant.featured.view.activity.FeaturedProductActivity"
             android:exported="true"
-            android:label="@string/featured_product_activity_title" />
+            android:label="@string/featured_product_title" />
         <activity
             android:name=".goldmerchant.statistic.view.activity.GMStatisticDatePickerActivity"
             android:exported="true"

@@ -24,6 +24,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -417,10 +418,10 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
-        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
+        EmptyDataBinder emptyGroupAdsDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.featured_product_title_empty));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.featured_product_description_empty));
+        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.featured_product_add_title_empty));
         emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
