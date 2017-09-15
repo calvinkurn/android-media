@@ -24,4 +24,12 @@ public interface SellerDashboardView extends CustomerView {
     void onErrorGetNotifiction(String message);
 
     void onSuccessGetNotification(DrawerNotification drawerNotification);
+
+    void showLoading();
+
+    void hideLoading();
+
+    void onSuccessOpenShop();
+
+    void onErrorOpenShop();
 }

@@ -10,6 +10,8 @@ import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
+import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
@@ -27,20 +29,23 @@ import rx.Subscriber;
  */
 
 public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboardView> {
-    private GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase;
-    private GetTickerUseCase getTickerUseCase;
-    private NotificationUseCase notificationUseCase;
-    private DeleteShopInfoUseCase deleteShopInfoUseCase;
+    private final GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase;
+    private final GetTickerUseCase getTickerUseCase;
+    private final NotificationUseCase notificationUseCase;
+    private final DeleteShopInfoUseCase deleteShopInfoUseCase;
+    private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
                                     GetTickerUseCase getTickerUseCase,
                                     NotificationUseCase notificationUseCase,
-                                    DeleteShopInfoUseCase deleteShopInfoUseCase) {
+                                    DeleteShopInfoUseCase deleteShopInfoUseCase,
+                                    UpdateShopScheduleUseCase updateShopScheduleUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.notificationUseCase = notificationUseCase;
         this.deleteShopInfoUseCase = deleteShopInfoUseCase;
+        this.updateShopScheduleUseCase = updateShopScheduleUseCase;
     }
 
     public void getShopInfoWithScore(){
@@ -135,10 +140,41 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         };
     }
 
+    public void openShop() {
+        getView().showLoading();
+        updateShopScheduleUseCase.execute(UpdateShopScheduleUseCase.cerateRequestParams("", "", "", ShopCloseAction.OPEN_SHOP), getSubscriberOpenShop());
+    }
+
+    private Subscriber<Boolean> getSubscriberOpenShop() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideLoading();
+                getView().onErrorOpenShop();
+            }
+
+            @Override
+            public void onNext(Boolean isSuccess) {
+                getView().hideLoading();
+                if(isSuccess){
+                    getView().onSuccessOpenShop();
+                }else{
+                    getView().onErrorOpenShop();
+                }
+            }
+        };
+    }
+
     @Override
     public void detachView() {
         super.detachView();
         getShopInfoWithScoreUseCase.unsubscribe();
         getTickerUseCase.unsubscribe();
+        updateShopScheduleUseCase.unsubscribe();
     }
 }

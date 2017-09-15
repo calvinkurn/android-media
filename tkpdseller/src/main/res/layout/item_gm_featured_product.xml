@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/ic_gm_featured_product"
+        android:layout_toStartOf="@+id/check_box"
         android:layout_toLeftOf="@+id/check_box"
         android:layout_toRightOf="@id/ic_gm_featured_product"
         android:orientation="vertical">
