@@ -3,10 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.data.source.cloud;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 
 import rx.Observable;
@@ -15,20 +12,20 @@ import rx.Observable;
  * Created by yoasfs on 16/08/17.
  */
 
-public class PostEditSolutionCloudSource {
+public class PostAppealSolutionCloudSource {
     private EditAppealResolutionResponseMapper mapper;
     private ResolutionApi resolutionApi;
 
-    public PostEditSolutionCloudSource(EditAppealResolutionResponseMapper mapper,
-                                       ResolutionApi resolutionApi) {
+    public PostAppealSolutionCloudSource(EditAppealResolutionResponseMapper mapper,
+                                         ResolutionApi resolutionApi) {
         this.mapper = mapper;
         this.resolutionApi = resolutionApi;
     }
 
     public Observable<EditAppealResolutionSolutionDomain>
-    postEditSolutionCloudSource(RequestParams requestParams) {
+    postAppealSolutionCloudSource(RequestParams requestParams) {
         try {
-            return resolutionApi.postEditSolution(
+            return resolutionApi.postAppealSolution(
                     requestParams.getString(PostEditSolutionUseCase.RESO_ID, ""),
                     requestParams.getParameters())
                     .map(mapper);

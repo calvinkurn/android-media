@@ -43,7 +43,7 @@ public class EditAppealResolutionResponseMapper
 
 
     private EditAppealResolutionSolutionDomain mappingResponse(Response<TkpdResponse> response) {
-        EditAppealResolutionSolutionDomain model =
+            EditAppealResolutionSolutionDomain model =
                 new EditAppealResolutionSolutionDomain(response.isSuccessful());
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {

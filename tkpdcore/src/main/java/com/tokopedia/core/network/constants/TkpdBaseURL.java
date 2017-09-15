@@ -804,6 +804,8 @@ public class TkpdBaseURL {
         public static final String BASE_RESOLUTION_EDIT = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
         public static final String GET_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
         public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
+        public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
+        public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
 
 
 

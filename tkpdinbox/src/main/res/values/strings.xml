@@ -109,4 +109,8 @@
     <string name="ticker_minute">Menit</string>
     <string name="ticker_second">Detik</string>
 
+    <!--edit appeal solution-->
+    <string name="string_edit_title">Ubah Solusi</string>
+    <string name="string_edit_message">Tekan \"Ubah\" untuk mengubah solusi menjadi:</string>
+    <string name="string_edit_button">Ubah</string>
 </resources>

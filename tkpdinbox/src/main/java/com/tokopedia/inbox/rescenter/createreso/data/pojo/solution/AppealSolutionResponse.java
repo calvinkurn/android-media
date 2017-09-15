@@ -8,7 +8,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountR
  * Created by yoasfs on 14/08/17.
  */
 
-public class EditSolutionResponse {
+public class AppealSolutionResponse {
     @SerializedName("id")
     @Expose
     private int id;
@@ -45,7 +45,7 @@ public class EditSolutionResponse {
 
     @Override
     public String toString() {
-        return "EditSolutionResponse{" +
+        return "AppealSolutionResponse{" +
                 "id='" + id + '\'' +
                 "name='" + name + '\'' +
                 "amount='" + amount.toString() + '\'' +

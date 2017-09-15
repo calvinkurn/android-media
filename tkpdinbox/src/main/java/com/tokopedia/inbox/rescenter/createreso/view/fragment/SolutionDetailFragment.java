@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
     TkpdTextInputLayout tilAmount;
     EditText etAmount;
+    ProgressBar progressBar;
     Button btnContinue;
 
     SolutionViewModel solutionViewModel;
@@ -136,6 +138,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         tilAmount = (TkpdTextInputLayout) view.findViewById(R.id.til_amount);
         etAmount = (EditText) view.findViewById(R.id.et_amount);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
+        progressBar = new ProgressBar(context);
         if (resultViewModel != null) {
             presenter.initResultViewModel(resultViewModel, solutionViewModel);
         } else {
@@ -265,13 +268,27 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
     public void updateSolutionString(EditAppealSolutionModel editAppealSolutionModel, TextView textView) {
         textView.setText(editAppealSolutionModel.refundAmount != 0 ?
-                "Kembalikan Rp " + editAppealSolutionModel.refundAmount + " ke Pembeli" :
+                editAppealSolutionModel.solutionName + " sebesar " + editAppealSolutionModel.refundAmount :
                 editAppealSolutionModel.solutionName);
     }
 
     @Override
     public void showErrorToast(String error) {
 
+    }
+
+    @Override
+    public void showLoading() {
+        if (progressBar.getVisibility() == View.GONE) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

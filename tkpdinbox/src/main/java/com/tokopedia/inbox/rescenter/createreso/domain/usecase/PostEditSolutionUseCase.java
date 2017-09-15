@@ -21,7 +21,7 @@ public class PostEditSolutionUseCase extends UseCase<EditAppealResolutionSolutio
     public static final String RESO_ID = "reso_id";
     public static final String OBJECT_RESULT = "object_result";
     public static final String PARAM_SOLUTION = "solution";
-    public static final String PARAM_REFUND_AMOUNT = "refundAmount";
+    public static final String PARAM_REFUND_AMOUNT = "refund_amount";
 
     private PostEditSolutionRepository postEditSolutionRepository;
 
@@ -40,33 +40,19 @@ public class PostEditSolutionUseCase extends UseCase<EditAppealResolutionSolutio
     public static RequestParams postEditSolutionUseCaseParams(String resoId,
                                                               int solutionId,
                                                               long refundAmount) {
-        try {
-            JSONObject object = new JSONObject();
-            object.put(PARAM_SOLUTION, solutionId);
-            object.put(PARAM_REFUND_AMOUNT, refundAmount);
-            RequestParams params = RequestParams.create();
-            params.putString(RESO_ID, resoId);
-            params.putString(OBJECT_RESULT, object.toString());
-            return params;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        RequestParams params = RequestParams.create();
+        params.putInt(PARAM_SOLUTION, solutionId);
+        params.putLong(PARAM_REFUND_AMOUNT, refundAmount);
+        params.putString(RESO_ID, resoId);
+        return params;
     }
 
     public static RequestParams postEditSolutionUseCaseParamsWithoutRefund(String resoId,
                                                                            int solutionId) {
-        try {
-            JSONObject object = new JSONObject();
-            object.put(PARAM_SOLUTION, solutionId);
-            RequestParams params = RequestParams.create();
-            params.putString(RESO_ID, resoId);
-            params.putObject(OBJECT_RESULT, object);
-            return params;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        RequestParams params = RequestParams.create();
+        params.putInt(PARAM_SOLUTION, solutionId);
+        params.putString(RESO_ID, resoId);
+        return params;
     }
 
 }

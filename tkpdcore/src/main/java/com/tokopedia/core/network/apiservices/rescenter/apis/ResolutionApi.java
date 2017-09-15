@@ -63,9 +63,18 @@ public interface ResolutionApi {
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_EDIT)
     Observable<Response<TkpdResponse>> getEditSolution(@Path("resolution_id") String resoId);
 
+    @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_EDIT)
     Observable<Response<TkpdResponse>> postEditSolution(@Path("resolution_id") String resoId,
-                                                       @Body String object);
+                                                        @FieldMap TKPDMapParam<String, Object> params);
+
+    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_APPEAL)
+    Observable<Response<TkpdResponse>> getAppealSolution(@Path("resolution_id") String resoId);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_APPEAL)
+    Observable<Response<TkpdResponse>> postAppealSolution(@Path("resolution_id") String resoId,
+                                                        @FieldMap TKPDMapParam<String, Object> params);
 
     @Multipart
     @POST("")
