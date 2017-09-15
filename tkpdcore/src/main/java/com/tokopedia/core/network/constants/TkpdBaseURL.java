@@ -273,7 +273,8 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP_ETALASE = BASE_DOMAIN + PATH_MY_SHOP_ETALASE;
         public static final String PATH_ACTION_MY_SHOP_ETALASE = "v4/action/myshop-etalase/";
         public static final String URL_MY_SHOP_ETALASE_ACTION = BASE_DOMAIN + PATH_ACTION_MY_SHOP_ETALASE;
-        public static final String URL_MY_SHOP_INFO_ACTION = BASE_DOMAIN + "v4/action/myshop-info/";
+        public static final String PATH_MY_SHOP_INFO = "v4/action/myshop-info/";
+        public static final String URL_MY_SHOP_INFO_ACTION = BASE_DOMAIN + PATH_MY_SHOP_INFO;
         public static final String URL_MY_SHOP_INFO = BASE_DOMAIN + "v4/myshop-info/";
         public static final String URL_MY_SHOP_NOTE = BASE_DOMAIN + "v4/myshop-note/";
         public static final String URL_MY_SHOP_NOTE_ACTION = BASE_DOMAIN + "v4/action/myshop-note/";
