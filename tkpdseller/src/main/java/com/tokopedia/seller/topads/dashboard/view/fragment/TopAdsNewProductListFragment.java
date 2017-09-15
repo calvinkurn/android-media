@@ -248,6 +248,12 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         getActivity().finish();
     }
 
+    @Override
+    public void onDestroy() {
+        daggerPresenter.detachView();
+        super.onDestroy();
+    }
+
     protected boolean isHideExistingGroup() {
         return true;
     }
