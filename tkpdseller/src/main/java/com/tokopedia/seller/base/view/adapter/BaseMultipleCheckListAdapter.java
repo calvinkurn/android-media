@@ -12,21 +12,15 @@ import java.util.HashSet;
  */
 public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends BaseListAdapter<T> {
 
-    public interface CheckedCallback<T> {
-
-        void onItemChecked(T t, boolean checked);
-    }
-
+    protected HashSet<String> hashSet;
     private CheckedCallback<T> checkedCallback;
-    private HashSet<String> hashSet;
-
-    public void setCheckedCallback(CheckedCallback<T> checkedCallback) {
-        this.checkedCallback = checkedCallback;
-    }
-
     public BaseMultipleCheckListAdapter() {
         super();
         hashSet = new HashSet<>();
+    }
+
+    public void setCheckedCallback(CheckedCallback<T> checkedCallback) {
+        this.checkedCallback = checkedCallback;
     }
 
     private boolean isChecked(String id) {
@@ -74,5 +68,10 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         if (checkedCallback != null) {
             checkedCallback.onItemChecked(t, checked);
         }
+    }
+
+    public interface CheckedCallback<T> {
+
+        void onItemChecked(T t, boolean checked);
     }
 }

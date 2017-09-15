@@ -34,6 +34,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.goldmerchant.featured.view.activity.FeaturedProductActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
@@ -255,6 +256,10 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0));
+        gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
+                TkpdState.DrawerPosition.FEATURED_PRODUCT,
+                true
+        ));
         return gmMenu;
     }
 
@@ -404,6 +409,10 @@ public class DrawerSellerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads();
                     intent = new Intent(context, TopAdsDashboardActivity.class);
+                    context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.FEATURED_PRODUCT:
+                    intent = new Intent(context, FeaturedProductActivity.class);
                     context.startActivity(intent);
                     break;
                 default:
