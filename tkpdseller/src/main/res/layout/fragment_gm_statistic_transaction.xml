@@ -130,7 +130,7 @@
         </com.tokopedia.design.card.TitleCardView>
 
         <android.support.v7.widget.CardView
-            android:layout_marginTop="@dimen/product_margin_cards"
+            android:layout_marginTop="@dimen/margin_med"
             style="@style/CardViewLayoutMatchParent">
 
             <com.tokopedia.seller.common.widget.LabelView
