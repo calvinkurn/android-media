@@ -24,6 +24,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -83,6 +84,12 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     }
 
     @Override
+    protected void initialVar() {
+        super.initialVar();
+        updateSubtitleCounterProduct();
+    }
+
+    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_featured_product;
     }
@@ -106,18 +113,29 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         }else{
             hideFab();
         }
+        updateSubtitleCounterProduct();
+    }
+
+    private void updateSubtitleCounterProduct() {
+        if(featuredProductType == FeaturedProductType.DELETE_DISPLAY){
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle("");
+        }else if(getActivity() instanceof AppCompatActivity) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle(getString(R.string.featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
+        }
     }
 
     @Override
     protected void showViewEmptyList() {
         super.showViewEmptyList();
         hideFab();
+        updateSubtitleCounterProduct();
     }
 
     @Override
     protected void showViewSearchNoResult() {
         super.showViewSearchNoResult();
         hideFab();
+        updateSubtitleCounterProduct();
     }
 
     @Override
@@ -259,6 +277,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
             swipeToRefresh.setEnabled(true);
         }
         adapter.notifyDataSetChanged();
+        updateSubtitleCounterProduct();
     }
 
     @Override
@@ -330,7 +349,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                         break;
                 }
 
-                updateTitleView(R.string.featured_product_activity_title);
+                updateTitleView(R.string.featured_product_title);
                 showFab();
 
                 featuredProductPresenter.postData(
@@ -411,16 +430,17 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
                     productModelsTemp.add(featuredProductModel);
                 }
+                updateSubtitleCounterProduct();
             }
         }
     }
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
-        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
+        EmptyDataBinder emptyGroupAdsDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.featured_product_title_empty));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.featured_product_description_empty));
+        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.featured_product_add_title_empty));
         emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
