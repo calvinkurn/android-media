@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -67,6 +69,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     private ItemTouchHelper mItemTouchHelper;
     private int MAX_ITEM = 5;
     private int delete_selection_count = 0;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,6 +151,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout_parent);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,6 +251,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                 productModelsTemp.clear();
                 break;
             default:
+                showViewEmptyList();
                 break;
         }
         setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
@@ -324,7 +329,6 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         switch(featuredProductType){
             case FeaturedProductType.ARRANGE_DISPLAY:
             case FeaturedProductType.DELETE_DISPLAY:
-                // TODO change this according to type.
                 title = getString(R.string.product_title_confirmation_delete_video);
                 message = getString(R.string.product_confirmation_delete_video);
                 break;
@@ -344,6 +348,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                 switch (featuredProductType) {
                     case FeaturedProductType.DELETE_DISPLAY:
                         ((FeaturedProductAdapter) adapter).removeSelections();
+
                         break;
                     default:
                         break;
@@ -453,5 +458,10 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
             }
         });
         return emptyGroupAdsDataBinder;
+    }
+
+    @Override
+    protected void initSnackbarRetry(NetworkErrorHelper.RetryClickedListener listener) {
+        snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout, listener);
     }
 }

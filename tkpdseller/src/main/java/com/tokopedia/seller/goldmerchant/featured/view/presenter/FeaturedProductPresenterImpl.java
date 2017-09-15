@@ -45,7 +45,7 @@ public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG, e.toString());
+                showError(e);
             }
 
             @Override
@@ -53,6 +53,13 @@ public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
                 revealGETData(featuredProductDomainModel);
             }
         });
+    }
+
+    protected void showError(Throwable e) {
+        Log.d(TAG, e.toString());
+        if (isViewAttached()) {
+            getView().onLoadSearchError(e);
+        }
     }
 
     private void revealGETData(FeaturedProductDomainModel featuredProductDomainModel) {
@@ -93,7 +100,7 @@ public class FeaturedProductPresenterImpl extends FeaturedProductPresenter {
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG, e.toString());
+                showError(e);
             }
 
             @Override
