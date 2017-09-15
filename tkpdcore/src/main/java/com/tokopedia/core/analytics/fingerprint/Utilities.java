@@ -130,8 +130,8 @@ public class Utilities {
         if (networkInfo != null) {
             if (networkInfo.isConnected()) {
                 if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                    final WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                    WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    WifiInfo connectionInfo = wifiManager.getConnectionInfo();
                     if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
                         ssid = connectionInfo.getSSID();
                     }
