@@ -15,5 +15,7 @@ public interface FeaturedProductView extends CustomerView {
 
     void onSearchLoaded(@NonNull List<FeaturedProductModel> list, int totalItem);
 
+    void onLoadSearchError(Throwable t);
+
     void onPostSuccess();
 }

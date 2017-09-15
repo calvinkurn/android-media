@@ -43,16 +43,16 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     protected int totalItem;
     protected boolean searchMode;
     protected int currentPage;
-    private SnackbarRetry snackBarRetry;
+    protected SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
 
-    protected int getCurrentPage() {
-        return currentPage;
-    }
-
     public BaseListFragment() {
         // Required empty public constructor
+    }
+
+    protected int getCurrentPage() {
+        return currentPage;
     }
 
     protected abstract BaseListAdapter<T> getNewAdapter();
@@ -252,10 +252,14 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
 
     private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
         if (snackBarRetry == null) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
+            initSnackbarRetry(listener);
             snackBarRetry.showRetrySnackbar();
             snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
+    }
+
+    protected void initSnackbarRetry(NetworkErrorHelper.RetryClickedListener listener) {
+        snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
     }
 
     private void hideSnackBarRetry() {
