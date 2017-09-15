@@ -3,11 +3,6 @@ package com.tokopedia.digital.product.adapter;
 import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +14,6 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -167,26 +161,9 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void setViewPriceAdditionalFee(Product product) {
             tvProductPrice.setText(product.getDesc());
-
-            CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-            SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
-            URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
-            for (final URLSpan span : urls) {
-                int start = strBuilder.getSpanStart(span);
-                int end = strBuilder.getSpanEnd(span);
-                int flags = strBuilder.getSpanFlags(span);
-                ClickableSpan clickable = new ClickableSpan() {
-                    public void onClick(View view) {
-                        actionListener.onProductLinkClicked(span.getURL());
-                    }
-                };
-                strBuilder.setSpan(clickable, start, end, flags);
-                strBuilder.removeSpan(span);
-            }
-            tvProductDescription.setText(strBuilder);
-            tvProductDescription.setMovementMethod(LinkMovementMethod.getInstance());
-
             tvProductTotalPrice.setText(product.getPrice());
+            CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+            tvProductDescription.setText(sequence);
         }
 
         private void setProductAvailability(final Product product) {
@@ -220,6 +197,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     class ItemHolderPromoProduct extends RecyclerView.ViewHolder {
         @BindView(R2.id.product_promo_title)
         TextView tvProductPromoTitle;
+        @BindView(R2.id.product_promo_tag)
+        TextView tvProductPromoTag;
         @BindView(R2.id.product_promo_description)
         TextView tvProductPromoDescription;
         @BindView(R2.id.product_promo_price)
@@ -241,10 +220,14 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void setViewPromo(Product product) {
             tvProductPromoTitle.setText(product.getDesc());
-            if (product.getPromo().getBonusText().isEmpty())
+            if (product.getDetail().isEmpty()) {
                 tvProductPromoDescription.setVisibility(View.GONE);
-            tvProductPromoDescription.setText(product.getPromo()
-                    .getBonusText());
+            } else {
+                tvProductPromoDescription.setVisibility(View.VISIBLE);
+                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+                tvProductPromoDescription.setText(sequence);
+            }
+            tvProductPromoTag.setText(product.getPromo().getTag());
             tvPromoProductPrice.setText(product.getPromo().getNewPrice());
             tvProductPromoOldPrice.setText(product.getPrice());
             tvProductPromoOldPrice

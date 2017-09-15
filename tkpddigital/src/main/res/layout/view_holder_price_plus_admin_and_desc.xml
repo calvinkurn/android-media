@@ -32,7 +32,7 @@
             android:layout_below="@id/product_price_no_addition"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:linksClickable="true"
+            android:autoLink="none"
             android:paddingBottom="@dimen/digital_padding_2"
             android:paddingTop="@dimen/digital_padding_2"
             tools:text="plaim desc"
