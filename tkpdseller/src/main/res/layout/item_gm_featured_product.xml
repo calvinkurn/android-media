@@ -10,11 +10,12 @@
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/ic_drag_and_drop_gm_featured_product"
         android:layout_width="9dp"
-        android:layout_height="10dp"
+        android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/margin_small"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_group" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="15dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_group"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/ic_gm_featured_product"

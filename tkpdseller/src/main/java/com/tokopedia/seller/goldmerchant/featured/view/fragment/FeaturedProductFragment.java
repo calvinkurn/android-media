@@ -284,6 +284,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
             hideFab();
             return true;
         }else if(item.getItemId() == R.id.menu_delete){
+            ((FeaturedProductAdapter) adapter).clearSelections();
             setFeaturedProductType(FeaturedProductType.DELETE_DISPLAY);
             hideFab();
             return true;

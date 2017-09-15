@@ -1,7 +1,6 @@
 package com.tokopedia.seller.goldmerchant.featured.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
@@ -82,11 +81,15 @@ public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<Feature
         }
     }
 
+    public void clearSelections() {
+        hashSet.clear();
+    }
+
     public void removeSelections() {
-        for (int i = 0; i < data.size(); i++) {
+        int size = data.size();
+        for (int i = 0; i < size; i++) {
             FeaturedProductModel featuredProductModel = data.get(i);
             if (hashSet.contains(featuredProductModel.getId())) {
-                Log.d(TAG, String.format("i %d contains %s", i, featuredProductModel.getId()));
                 hashSet.remove(featuredProductModel.getId());
 
                 data.remove(i);

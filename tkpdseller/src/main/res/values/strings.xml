@@ -141,5 +141,6 @@
     <string name="menu_featured_product_delete">Hapus Produk</string>
     <string name="menu_featured_product_arrange">Atur Urutan Produk</string>
     <string name="product_variant_search_x">Cari %1$s</string>
+    <string name="featured_product_title">Produk Unggulan</string>
 
 </resources>
