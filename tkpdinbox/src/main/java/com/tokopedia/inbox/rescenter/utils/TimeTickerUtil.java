@@ -36,6 +36,10 @@ public class TimeTickerUtil {
         hour = (TextView) timeTickerView.findViewById(R.id.hour);
         minute = (TextView) timeTickerView.findViewById(R.id.minute);
         second = (TextView) timeTickerView.findViewById(R.id.second);
+        day.setText("0");
+        hour.setText("0");
+        minute.setText("0");
+        second.setText("0");
         this.listener = listener;
     }
 

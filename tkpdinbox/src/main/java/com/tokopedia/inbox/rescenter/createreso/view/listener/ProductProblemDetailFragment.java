@@ -5,6 +5,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
 
 import java.util.List;
 
@@ -54,5 +55,11 @@ public interface ProductProblemDetailFragment {
         void decreaseQty();
 
         void btnSaveClicked(boolean isSaveAndChooseOtherButton);
+
+        long getDuration(String deliveryDate);
+
+        String getDeliveryDate(List<StatusViewModel> statusList);
+
+        void onDisableInfoView();
     }
 }
