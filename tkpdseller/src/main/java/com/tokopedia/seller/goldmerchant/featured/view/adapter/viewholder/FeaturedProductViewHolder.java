@@ -48,7 +48,11 @@ public class FeaturedProductViewHolder extends BaseMultipleCheckViewHolder<Featu
 
         textPrice.setText(featuredProductModel.getProductPrice());
 
-        ImageHandler.LoadImage(icGMFeaturedProduct, featuredProductModel.getImageUrl());
+        ImageHandler.loadImageRounded2(
+                icGMFeaturedProduct.getContext(),
+                icGMFeaturedProduct,
+                featuredProductModel.getImageUrl()
+        );
 
         dragAndDropGMFeaturedProduct.setOnTouchListener(new View.OnTouchListener() {
             @Override
