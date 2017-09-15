@@ -12,6 +12,7 @@ import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedPro
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.viewholder.FeaturedProductViewHolder;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -86,15 +87,16 @@ public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<Feature
     }
 
     public void removeSelections() {
-        int size = data.size();
-        for (int i = 0; i < size; i++) {
-            FeaturedProductModel featuredProductModel = data.get(i);
+        int i = 0;
+        for(Iterator<FeaturedProductModel> iterator = data.iterator(); iterator.hasNext(); ){
+            FeaturedProductModel featuredProductModel = iterator.next();
             if (hashSet.contains(featuredProductModel.getId())) {
                 hashSet.remove(featuredProductModel.getId());
 
-                data.remove(i);
+                iterator.remove();
                 notifyItemRemoved(i);
             }
+            i++;
         }
     }
 
