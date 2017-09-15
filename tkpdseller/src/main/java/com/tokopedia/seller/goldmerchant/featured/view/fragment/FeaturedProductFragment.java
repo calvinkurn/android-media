@@ -318,19 +318,22 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     }
 
     public void showOtherActionDialog() {
-        String title = getString(R.string.product_title_confirmation_delete_video);
-        String message = getString(R.string.product_confirmation_delete_video);
+        String title;
+        String message;
 
         switch(featuredProductType){
             case FeaturedProductType.ARRANGE_DISPLAY:
+                title = getString(R.string.featured_product_sort_title);
+                message = getString(R.string.featured_product_sort_desc);
+                break;
             case FeaturedProductType.DELETE_DISPLAY:
                 // TODO change this according to type.
-                title = getString(R.string.product_title_confirmation_delete_video);
-                message = getString(R.string.product_confirmation_delete_video);
+                title = getString(R.string.featured_product_delete_title);
+                message = getString(R.string.featured_product_delete_desc, ((FeaturedProductAdapter)adapter).getSelectedSize());
                 break;
             default:
-                title = getString(R.string.product_title_confirmation_delete_video);
-                message = getString(R.string.product_confirmation_delete_video);
+                title = getString(R.string.featured_product_sort_title);
+                message = getString(R.string.featured_product_sort_desc);
                 break;
         }
 
@@ -339,7 +342,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         builder.setTitle(title);
         builder.setMessage(message);
         builder.setCancelable(true);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 switch (featuredProductType) {
                     case FeaturedProductType.DELETE_DISPLAY:
@@ -361,9 +364,10 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                 dialog.cancel();
             }
         });
-        builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
+                setFeaturedProductType(FeaturedProductType.DEFAULT_DISPLAY);
             }
         });
 
