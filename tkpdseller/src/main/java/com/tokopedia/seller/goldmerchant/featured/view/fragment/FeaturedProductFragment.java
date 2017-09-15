@@ -253,6 +253,11 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     public void setFeaturedProductType(@FeaturedProductType int featuredProductType) {
         this.featuredProductType = featuredProductType;
         getActivity().invalidateOptionsMenu();
+        if(featuredProductType == FeaturedProductType.DELETE_DISPLAY || featuredProductType == FeaturedProductType.ARRANGE_DISPLAY){
+            swipeToRefresh.setEnabled(false);
+        }else{
+            swipeToRefresh.setEnabled(true);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -265,7 +270,6 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         }else{
             setVisibleMenuModeDelete(menu, false);
         }
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     void setVisibleMenuModeDelete(Menu menu, boolean isMenuModeDeleteVisible) {
@@ -274,7 +278,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         MenuItem menuItemDelete = menu.findItem(R.id.menu_delete);
         menuItemDeleteMode.setVisible(isMenuModeDeleteVisible);
         menuItemArrange.setVisible(!isMenuModeDeleteVisible);
-        menuItemDeleteMode.setVisible(!isMenuModeDeleteVisible);
+        menuItemDelete.setVisible(!isMenuModeDeleteVisible);
     }
 
     @Override
