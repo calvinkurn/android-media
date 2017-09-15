@@ -74,9 +74,9 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
     @Override
     @SuppressLint("DefaultLocale")
     public void renderData(@NonNull final PromoAttributes data) {
-        textPromoTitle.setText(MethodChecker.fromHtml(data.getShortDesc()));
-        textPromoDesc.setText(MethodChecker.fromHtml(data.getShortCond()));
-        textPromoCode.setText(MethodChecker.fromHtml(data.getCode()));
+        textPromoTitle.setText(MethodChecker.fromHtml(data.getShortDescHtml()));
+        textPromoDesc.setText(MethodChecker.fromHtml(data.getShortCondHtml()));
+        textPromoCode.setText(MethodChecker.fromHtml(data.getCodeHtml()));
         btnCopyCode.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
