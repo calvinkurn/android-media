@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.LinearLayout;
 
@@ -70,8 +69,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void initialVariable() {
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(new CompositeSubscription(),
                 new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService()));
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
@@ -134,7 +132,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 String temp = s.toString();
                 temp = validateTextPrefix(temp);
 
-                if (temp.isEmpty()) {
+                if (before == 1 && count == 0) {
                     widgetClientNumberView.setImgOperatorInvisible();
                     clearHolder(holderWidgetSpinnerProduct);
                     clearHolder(holderWidgetWrapperBuy);
@@ -237,6 +235,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                     Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
 
+                    storeLastStateTabSelected();
                     presenter.storeLastClientNumberTyped(String.valueOf(category.getId()),
                             widgetClientNumberView.getText(), selectedProduct);
 
@@ -292,8 +291,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             renderLastOrder();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
-                && !TextUtils.isEmpty(lastClientNumberTyped)
-                && lastOperatorSelected.equals(selectedOperatorId)) {
+                && !TextUtils.isEmpty(lastClientNumberTyped)) {
             widgetClientNumberView.setText(lastClientNumberTyped);
         } else if (SessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
@@ -327,9 +325,11 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderDataProducts(List<Product> products) {
         clearHolder(holderWidgetSpinnerProduct);
-        widgetProductChoserView.setListener(getProductChoserListener());
-        widgetProductChoserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
-        holderWidgetSpinnerProduct.addView(widgetProductChoserView);
+        if(!TextUtils.isEmpty(widgetClientNumberView.getText())) {
+            widgetProductChoserView.setListener(getProductChoserListener());
+            widgetProductChoserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
+            holderWidgetSpinnerProduct.addView(widgetProductChoserView);
+        }
     }
 
     @Override
@@ -340,17 +340,19 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderDataOperator(RechargeOperatorModel operatorModel) {
         clearHolder(holderWidgetWrapperBuy);
-        selectedOperator = operatorModel;
-        selectedOperatorId = String.valueOf(selectedOperator.operatorId);
-        minLengthDefaultOperator = operatorModel.minimumLength;
-        widgetClientNumberView.setImgOperator(operatorModel.image);
-        widgetClientNumberView.setFilterMaxLength(operatorModel.maximumLength);
-        widgetClientNumberView.setImgOperatorVisible();
-        widgetClientNumberView.setInputType(operatorModel.allowAlphanumeric);
-        widgetProductChoserView.setTitleProduct(operatorModel.nominalText);
-        widgetProductChoserView.setVisibilityProduct(operatorModel.showProduct);
-        if (!operatorModel.showPrice) showPrice = false;
-        holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
+        if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
+            selectedOperator = operatorModel;
+            selectedOperatorId = String.valueOf(operatorModel.operatorId);
+            minLengthDefaultOperator = operatorModel.minimumLength;
+            widgetClientNumberView.setImgOperator(operatorModel.image);
+            widgetClientNumberView.setFilterMaxLength(operatorModel.maximumLength);
+            widgetClientNumberView.setImgOperatorVisible();
+            widgetClientNumberView.setInputType(operatorModel.allowAlphanumeric);
+            widgetProductChoserView.setTitleProduct(operatorModel.nominalText);
+            widgetProductChoserView.setVisibilityProduct(operatorModel.showProduct);
+            if (!operatorModel.showPrice) showPrice = false;
+            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
+        }
     }
 
     @Override

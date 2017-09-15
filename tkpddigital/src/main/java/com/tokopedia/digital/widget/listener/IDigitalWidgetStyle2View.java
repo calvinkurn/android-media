@@ -22,4 +22,6 @@ public interface IDigitalWidgetStyle2View {
     void renderDataRecent(List<String> results);
 
     void renderProduct(Product product);
+
+    void renderOperator(RechargeOperatorModel rechargeOperatorModel);
 }

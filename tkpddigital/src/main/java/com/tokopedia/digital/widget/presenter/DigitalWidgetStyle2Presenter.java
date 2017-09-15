@@ -44,7 +44,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -79,6 +79,30 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
+    public void getOperatorById(String operatorId) {
+        widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
+    }
+
+    private Subscriber<RechargeOperatorModel> getOperatorModelSubscriber() {
+        return new Subscriber<RechargeOperatorModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
+                view.renderOperator(rechargeOperatorModel);
+            }
+        };
+    }
+
+    @Override
     public void validateOperatorWithProducts(int categoryId, String operatorId) {
         widgetInteractor.getProductsFromOperator(getListProductSubscriber(), categoryId, operatorId);
     }
@@ -97,7 +121,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override

@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.util.SessionHandler;
@@ -72,7 +71,7 @@ public class WidgetOperatorChoserView extends LinearLayout {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                listener.initDataView(operators.get(i));
+                listener.onCheckChangeOperator(operators.get(i));
             }
 
             @Override
@@ -87,7 +86,7 @@ public class WidgetOperatorChoserView extends LinearLayout {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_UP) {
-                    listener.trackingOperator();
+                    listener.onTrackingOperator();
                 }
                 return false;
             }
@@ -119,8 +118,8 @@ public class WidgetOperatorChoserView extends LinearLayout {
     }
 
     public interface OperatorChoserListener {
-        void initDataView(RechargeOperatorModel rechargeOperatorModel);
-
-        void trackingOperator();
+        void onCheckChangeOperator(RechargeOperatorModel rechargeOperatorModel);
+        void onResetOperator();
+        void onTrackingOperator();
     }
 }

@@ -20,12 +20,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.model.WidgetContact;
 
@@ -102,14 +104,14 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        initialViewRendered();
+        initialVariable();
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialViewRendered();
     }
 
     @Override
@@ -151,6 +153,8 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     }
 
     public abstract int getLayout();
+
+    public abstract void initialVariable();
 
     public abstract void initialViewRendered();
 
@@ -244,6 +248,7 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
 
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void doLaunchContactPicker() {
+        storeLastStateTabSelected();
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -339,4 +344,12 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     }
 
     protected abstract void trackingOnClientNumberFocusListener();
+
+    protected void storeLastStateTabSelected() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
+                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+        );
+        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED, currentPosition);
+        localCacheHandler.applyEditor();
+    }
 }

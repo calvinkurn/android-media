@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -55,7 +57,7 @@ public class WidgetRadioChoserView extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void renderDataView(final List<RechargeOperatorModel> operators, LastOrder lastOrder,
+    public void renderDataView(final List<RechargeOperatorModel> operators, final LastOrder lastOrder,
                                String lastOperatorSelected) {
         radioGroup = new RadioGroup(getContext());
         radioGroupContainer.addView(radioGroup);
@@ -74,9 +76,11 @@ public class WidgetRadioChoserView extends LinearLayout {
         RechargeOperatorModel modelll = operators.get(radioGroup.getChildAt(0).getId());
         listener.onCheckChange(modelll);
         checkRadioButtonBasedOnLastOrder(operators, radioGroup, lastOrder, lastOperatorSelected);
+        radioGroup.setOnTouchListener(getOnTouchListener());
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                listener.onResetClientNumber();
                 listener.onCheckChange(operators.get(i));
             }
         });
@@ -105,7 +109,21 @@ public class WidgetRadioChoserView extends LinearLayout {
         }
     }
 
+    private View.OnTouchListener getOnTouchListener() {
+        return new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    listener.onTrackingOperator();
+                }
+                return false;
+            }
+        };
+    }
+
     public interface RadioChoserListener {
         void onCheckChange(RechargeOperatorModel selectedOperator);
+        void onResetClientNumber();
+        void onTrackingOperator();
     }
 }

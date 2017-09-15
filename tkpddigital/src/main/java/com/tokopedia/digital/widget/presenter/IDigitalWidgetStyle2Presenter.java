@@ -8,6 +8,8 @@ public interface IDigitalWidgetStyle2Presenter {
 
     void fetchRecentNumber(int categoryId);
 
+    void getOperatorById(String operatorId);
+
     void validateOperatorWithProducts(int categoryId, String operatorId);
 
     void fetchDefaultProduct(String categoryId, String operatorId, String productId);
