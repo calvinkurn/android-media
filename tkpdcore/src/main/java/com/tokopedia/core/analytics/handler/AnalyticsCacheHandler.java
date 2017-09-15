@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.handler;
 
+import android.text.TextUtils;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -62,6 +64,16 @@ public class AnalyticsCacheHandler {
                     @Override
                     public String call(String s) {
                         return cacheManager.getValueString(s);
+                    }
+                }).toBlocking().value();
+    }
+
+    public boolean isAdsIdAvailable(){
+        return Single.just(ADS_ID)
+                .map(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        return !TextUtils.isEmpty(cacheManager.getValueString(s));
                     }
                 }).toBlocking().value();
     }

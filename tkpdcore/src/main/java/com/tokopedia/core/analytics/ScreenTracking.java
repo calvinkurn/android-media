@@ -126,7 +126,9 @@ public class ScreenTracking extends TrackingUtils {
                 values.put(AFInAppEventParameterName.PRICE, productPrice);
                 values.put(AFInAppEventParameterName.CURRENCY, "IDR");
                 values.put(AFInAppEventParameterName.QUANTITY, 1);
-                analHandler.setAdsId(adsID);
+                if(!analHandler.isAdsIdAvailable()){
+                    analHandler.setAdsId(adsID);
+                }
 
                 CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
                 getAFEngine().sendTrackEvent(eventName, values);
