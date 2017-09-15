@@ -73,7 +73,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -82,9 +82,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                     if (SessionHandler.isV4Login(activity)) {
                         fetchRecentNumberList();
                     }
-                    if (status.getData().getAttributes().getIsMaintenance()) {
-                        view.failedRenderDataRechargeCategory();
-                    } else if (!isVersionMatch(status)) {
+                    if (status.getData().getAttributes().getIsMaintenance() || !isVersionMatch(status)) {
                         view.failedRenderDataRechargeCategory();
                     } else {
                         rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
@@ -103,7 +101,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override

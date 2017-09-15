@@ -165,11 +165,6 @@ public class RechargeCategoryFragment extends
 
     }
 
-    @Override
-    public void hideRechargeWidget() {
-        ((LinearLayout) tabLayoutRecharge.getParent()).setVisibility(View.GONE);
-    }
-
     @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
