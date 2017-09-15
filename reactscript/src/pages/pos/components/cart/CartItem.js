@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
 import PopUp from '../../common/TKPPopupModal'
+import { icons } from '../icon'
 
 class CartItem extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class CartItem extends Component {
         <View style={{ width: '8%' }}>
           <TouchableWithoutFeedback
             onPress={() => { this.togglePopUp(true) }} >
-            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/trash.png' }} style={styles.trashImage} />
+            <Image source={{ uri: icons.logo_trash }} style={styles.trashImage} />
           </TouchableWithoutFeedback>
         </View>
         <View style={{ width: '20%' }}>
