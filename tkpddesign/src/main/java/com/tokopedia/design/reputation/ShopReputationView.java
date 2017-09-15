@@ -125,15 +125,15 @@ public class ShopReputationView extends BaseCustomView {
     private int getIconResource(int type) {
         switch (type) {
             case MEDAL_TYPE_1:
-                return R.drawable.ic_icon_repsis_medal_bronze;
+                return R.drawable.ic_badge_bronze;
             case MEDAL_TYPE_2:
-                return R.drawable.ic_icon_repsis_medal_silver;
+                return R.drawable.ic_badge_silver;
             case MEDAL_TYPE_3:
-                return R.drawable.ic_icon_repsis_medal_gold;
+                return R.drawable.ic_badge_gold;
             case MEDAL_TYPE_4:
                 return R.drawable.ic_badge_diamond;
             default:
-                return R.drawable.ic_icon_repsis_medal;
+                return R.drawable.ic_badge_none;
         }
     }
 }
