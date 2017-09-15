@@ -5,9 +5,11 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
@@ -52,14 +54,19 @@ public class CancelTransactionDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.cancel_transaction_dialog, container, false);
         TextView dialogMessage = (TextView) view.findViewById(R.id.message_cancel_transaction);
         TextView confirmDeleteTransaction = (TextView) view
                 .findViewById(R.id.confirm_delete_transaction_button);
         TextView cancelDelete = (TextView) view
                 .findViewById(R.id.cancel_button);
+        TextView cancelDialogTitle = (TextView) view
+                .findViewById(R.id.cancel_transaction_dialog_title);
+
         //TODO once minimum API > 17
         //listener = (CancelPaymentDialogListener) getParentFragment();
+
         confirmDeleteTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,9 +80,12 @@ public class CancelTransactionDialog extends DialogFragment {
                 dismiss();
             }
         });
-        dialogMessage.setText(getArguments().getString(MESSAGE_KEY));
-
-
+        String message = getArguments().getString(MESSAGE_KEY);
+        if(message == null || message.isEmpty()) {
+            cancelDialogTitle.setVisibility(View.GONE);
+            message = getActivity().getString(R.string.question_cancel_transaction);
+        }
+        dialogMessage.setText(Html.fromHtml(message));
         return view;
     }
 

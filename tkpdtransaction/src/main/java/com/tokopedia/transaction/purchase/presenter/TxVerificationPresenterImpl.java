@@ -110,7 +110,7 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
         netInteractor
                 .showCancelTransactionDialog(AuthUtil.generateParamsNetwork(
                         context, cancelTransactionParams
-                ), dialogListener(context, data.getPaymentId()));
+                ), dialogListener(data.getPaymentId()));
     }
 
     @Override
@@ -178,15 +178,11 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
     }
 
     private TxOrderNetInteractor.CancelTransactionDialogListener dialogListener (
-            final Context context,
             final String paymentId
     ) {
         return new TxOrderNetInteractor.CancelTransactionDialogListener() {
             @Override
             public void onSuccess(String message) {
-                if(message.isEmpty()) {
-                    message = context.getString(R.string.question_cancel_transaction);
-                }
                 viewListener.showCancelTransactionDialog(message, paymentId);
             }
 
