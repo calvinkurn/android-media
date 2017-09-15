@@ -54,7 +54,8 @@ public class TkpdBaseURL {
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
-    public static String MAPS_DOMAIN = "aaaaaaaa";
+    //TODO change later
+    public static String MAPS_DOMAIN = "api-staging.tokopedia.com";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -826,8 +827,14 @@ public class TkpdBaseURL {
         public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
 
     }
+
     public class TkpdCart {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
+    }
+
+    public class Maps {
+        public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
+        public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
     }
 }
