@@ -13,7 +13,6 @@ import { NavigationModule } from 'NativeModules'
 class Product extends PureComponent {
   render() {
     const product = this.props.product
-    console.log(product)
     return (
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(`posapp://product/${product.product_id}`, '')}>
