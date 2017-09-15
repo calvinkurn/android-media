@@ -34,7 +34,7 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
         ImageHandler.loadImageRounded2(
                 imageProduct.getContext(),
                 imageProduct,
-                productListPickerViewModel.getImageUrl()
+                productListPickerViewModel.getIcon()
         );
         nameProduct.setText(productListPickerViewModel.getTitle());
         priceProduct.setText(productListPickerViewModel.getProductPrice());

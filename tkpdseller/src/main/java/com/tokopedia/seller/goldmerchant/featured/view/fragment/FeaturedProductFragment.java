@@ -274,7 +274,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         MenuItem menuItemDelete = menu.findItem(R.id.menu_delete);
         menuItemDeleteMode.setVisible(isMenuModeDeleteVisible);
         menuItemArrange.setVisible(!isMenuModeDeleteVisible);
-        menuItemDelete.setVisible(!isMenuModeDeleteVisible);
+        menuItemDeleteMode.setVisible(!isMenuModeDeleteVisible);
     }
 
     @Override
@@ -400,7 +400,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                 for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModels) {
                     FeaturedProductModel featuredProductModel = new FeaturedProductModel();
                     featuredProductModel.setProductId(Long.valueOf(productListPickerViewModel.getId()));
-                    featuredProductModel.setImageUrl(productListPickerViewModel.getImageUrl());
+                    featuredProductModel.setImageUrl(productListPickerViewModel.getIcon());
                     featuredProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
                     featuredProductModel.setProductName(productListPickerViewModel.getTitle());
 
