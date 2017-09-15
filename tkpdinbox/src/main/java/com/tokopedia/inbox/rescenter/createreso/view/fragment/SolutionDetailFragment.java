@@ -298,4 +298,10 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         getActivity().setResult(Activity.RESULT_OK, output);
         getActivity().finish();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

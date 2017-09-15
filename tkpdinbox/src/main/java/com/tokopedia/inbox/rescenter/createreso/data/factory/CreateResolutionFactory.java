@@ -3,12 +3,9 @@ package com.tokopedia.inbox.rescenter.createreso.data.factory;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
-import com.tokopedia.core.network.apiservices.upload.apis.UploadImageActApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.AppealSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep2Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
@@ -19,7 +16,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoStep1CloudSource;
-import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoStep2CloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateSubmitCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateValidateCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GenerateHostCloudSource;
@@ -27,6 +23,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetAppealSolut
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetEditSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetProductProblemCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetSolutionCloudSource;
+import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.PostAppealSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.PostEditSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.UploadCloudSource;
 
@@ -40,7 +37,6 @@ public class CreateResolutionFactory {
     private GetProductProblemMapper productProblemMapper;
     private SolutionMapper solutionMapper;
     private CreateResoStep1Mapper createResoStep1Mapper;
-    private CreateResoStep2Mapper createResoStep2Mapper;
     private CreateValidateMapper createValidateMapper;
     private GenerateHostMapper generateHostMapper;
     private UploadMapper uploadMapper;
@@ -55,7 +51,6 @@ public class CreateResolutionFactory {
                                    GetProductProblemMapper productProblemMapper,
                                    SolutionMapper solutionMapper,
                                    CreateResoStep1Mapper createResoStep1Mapper,
-                                   CreateResoStep2Mapper createResoStep2Mapper,
                                    CreateValidateMapper createValidateMapper,
                                    GenerateHostMapper generateHostMapper,
                                    UploadMapper uploadMapper,
@@ -70,7 +65,6 @@ public class CreateResolutionFactory {
         this.productProblemMapper = productProblemMapper;
         this.solutionMapper = solutionMapper;
         this.createResoStep1Mapper = createResoStep1Mapper;
-        this.createResoStep2Mapper = createResoStep2Mapper;
         this.createValidateMapper = createValidateMapper;
         this.generateHostMapper = generateHostMapper;
         this.uploadMapper = uploadMapper;
@@ -93,10 +87,6 @@ public class CreateResolutionFactory {
 
     public CreateResoStep1CloudSource createResoStep1CloudSource() {
         return new CreateResoStep1CloudSource(context, createResoStep1Mapper, resolutionApi);
-    }
-
-    public CreateResoStep2CloudSource createResoStep2CloudSource() {
-        return new CreateResoStep2CloudSource(context, createResoStep2Mapper, resolutionApi);
     }
 
     public CreateValidateCloudSource getCreateValidateCloudSource() {
@@ -125,5 +115,9 @@ public class CreateResolutionFactory {
 
     public PostEditSolutionCloudSource postEditSolutionDataSource() {
         return new PostEditSolutionCloudSource(editAppealResolutionResponseMapper, resolutionApi);
+    }
+
+    public PostAppealSolutionCloudSource postAppealSolutionCloudSource() {
+        return new PostAppealSolutionCloudSource(editAppealResolutionResponseMapper, resolutionApi);
     }
 }

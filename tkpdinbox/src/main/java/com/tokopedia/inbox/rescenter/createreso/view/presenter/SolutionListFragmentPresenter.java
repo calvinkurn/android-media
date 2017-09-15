@@ -10,9 +10,11 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionRe
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.AppealSolutionSubscriber;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.AppealSolutionWithoutRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionWithoutRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.SolutionSubscriber;
@@ -44,6 +46,7 @@ public class SolutionListFragmentPresenter
     private GetEditSolutionUseCase getEditSolutionUseCase;
     private PostEditSolutionUseCase postEditSolutionUseCase;
     private GetAppealSolutionUseCase getAppealSolutionUseCase;
+    private PostAppealSolutionUseCase postAppealSolutionUseCase;
 
     private ResultViewModel resultViewModel;
     private EditAppealSolutionModel editAppealSolutionModel;
@@ -55,11 +58,13 @@ public class SolutionListFragmentPresenter
     public SolutionListFragmentPresenter(GetSolutionUseCase getSolutionUseCase,
                                          GetEditSolutionUseCase getEditSolutionUseCase,
                                          PostEditSolutionUseCase postEditSolutionUseCase,
-                                         GetAppealSolutionUseCase getAppealSolutionUseCase) {
+                                         GetAppealSolutionUseCase getAppealSolutionUseCase,
+                                         PostAppealSolutionUseCase postAppealSolutionUseCase) {
         this.getSolutionUseCase = getSolutionUseCase;
         this.getEditSolutionUseCase = getEditSolutionUseCase;
         this.postEditSolutionUseCase = postEditSolutionUseCase;
         this.getAppealSolutionUseCase = getAppealSolutionUseCase;
+        this.postAppealSolutionUseCase = postAppealSolutionUseCase;
     }
 
     @Override
@@ -103,11 +108,20 @@ public class SolutionListFragmentPresenter
     public void submitEditAppeal(SolutionViewModel solutionViewModel) {
         editAppealSolutionModel.solutionName = solutionViewModel.getName();
         editAppealSolutionModel.solution = solutionViewModel.getId();
-        postEditSolutionUseCase.execute(PostEditSolutionUseCase.
-                postEditSolutionUseCaseParamsWithoutRefund(
-                        editAppealSolutionModel.resolutionId,
-                        editAppealSolutionModel.solution),
-                new EditSolutionWithoutRefundSubscriber(mainView));
+        if (editAppealSolutionModel.isEdit) {
+            postEditSolutionUseCase.execute(PostEditSolutionUseCase.
+                            postEditSolutionUseCaseParamsWithoutRefund(
+                                    editAppealSolutionModel.resolutionId,
+                                    editAppealSolutionModel.solution),
+                    new EditSolutionWithoutRefundSubscriber(mainView));
+        }
+         else {
+            postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
+                    postAppealSolutionUseCaseParamsWithoutRefund(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.solution),
+                    new AppealSolutionWithoutRefundSubscriber(mainView));
+        }
     }
 
     @Override
@@ -133,5 +147,6 @@ public class SolutionListFragmentPresenter
         getSolutionUseCase.unsubscribe();
         getEditSolutionUseCase.unsubscribe();
         postEditSolutionUseCase.unsubscribe();
+        postAppealSolutionUseCase.unsubscribe();
     }
 }

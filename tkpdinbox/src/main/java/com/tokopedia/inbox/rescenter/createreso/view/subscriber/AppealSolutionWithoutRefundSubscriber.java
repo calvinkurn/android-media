@@ -10,10 +10,10 @@ import rx.Subscriber;
  * Created by yoasfs on 04/09/17.
  */
 
-public class EditSolutionWithoutRefundSubscriber extends Subscriber<EditAppealResolutionSolutionDomain> {
+public class AppealSolutionWithoutRefundSubscriber extends Subscriber<EditAppealResolutionSolutionDomain> {
     private final SolutionListFragmentListener.View mainView;
 
-    public EditSolutionWithoutRefundSubscriber(SolutionListFragmentListener.View mainView) {
+    public AppealSolutionWithoutRefundSubscriber(SolutionListFragmentListener.View mainView) {
         this.mainView = mainView;
     }
 

@@ -5,13 +5,9 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Amou
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.RequireViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 

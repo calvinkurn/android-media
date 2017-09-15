@@ -14,14 +14,12 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Stat
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusInfoDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep1UseCase;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep2UseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoStep1Subscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.CreateResoStep2ViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
@@ -42,8 +40,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
-
 /**
  * Created by yoasfs on 11/08/17.
  */
@@ -53,7 +49,6 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private CreateResolutionCenter.View mainView;
     private GetProductProblemUseCase getProductProblemUseCase;
     private CreateResoStep1UseCase createResoStep1UseCase;
-    private CreateResoStep2UseCase createResoStep2UseCase;
     private CreateResoWithAttachmentUseCase createResoWithAttachmentUseCase;
     private ProductProblemResponseDomain productProblemResponseDomain;
 
@@ -63,11 +58,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
                                            CreateResoStep1UseCase createResoStep1UseCase,
-                                           CreateResoStep2UseCase createResoStep2UseCase,
                                            CreateResoWithAttachmentUseCase createResoWithAttachmentUseCase) {
         this.getProductProblemUseCase = getProductProblemUseCase;
         this.createResoStep1UseCase = createResoStep1UseCase;
-        this.createResoStep2UseCase = createResoStep2UseCase;
         this.createResoWithAttachmentUseCase = createResoWithAttachmentUseCase;
         resultViewModel = new ResultViewModel();
     }

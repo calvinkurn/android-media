@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -8,17 +7,10 @@ import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountR
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditFreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponseResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.FreeReturnResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.RequireResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

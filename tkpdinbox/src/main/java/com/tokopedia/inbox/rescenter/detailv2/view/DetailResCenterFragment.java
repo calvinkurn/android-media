@@ -37,7 +37,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFrag
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.activity.ResCenterDiscussionActivity;
-import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity;
 import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
 import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity;
@@ -433,13 +432,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAppealClick() {
-        String orderID = getViewData().getDetailData().getOrderID();
-        boolean isReceived = getViewData().getDetailData().isReceived();
-
-//        startActivityForResult(
-//                EditResCenterActivity.newAppealInstance(getActivity(), resolutionID, orderID, isSeller(), isReceived),
-//                REQUEST_APPEAL_SOLUTION);
-
         startActivityForResult(
                 SolutionListActivity.newAppealInstance(getActivity(), resolutionID),
                 REQUEST_APPEAL_SOLUTION);
@@ -459,9 +451,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     private Intent getIntentEditResCenter() {
-        String orderID = getViewData().getDetailData().getOrderID();
-        boolean isReceived = getViewData().getDetailData().isReceived();
-
         if (isSeller()) {
             return SolutionListActivity.newSellerEditInstance(getActivity(),
                     resolutionID);

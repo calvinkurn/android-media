@@ -1,10 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
-import android.content.Context;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.AppealSolutionWithRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionWithRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
@@ -24,12 +25,14 @@ public class SolutionDetailFragmentPresenter
     SolutionViewModel solutionViewModel;
     ResultViewModel resultViewModel;
     EditAppealSolutionModel editAppealSolutionModel;
-
     PostEditSolutionUseCase postEditSolutionUseCase;
+    PostAppealSolutionUseCase postAppealSolutionUseCase;
 
     @Inject
-    public SolutionDetailFragmentPresenter(PostEditSolutionUseCase postEditSolutionUseCase) {
+    public SolutionDetailFragmentPresenter(PostEditSolutionUseCase postEditSolutionUseCase,
+                                           PostAppealSolutionUseCase postAppealSolutionUseCase) {
         this.postEditSolutionUseCase = postEditSolutionUseCase;
+        this.postAppealSolutionUseCase = postAppealSolutionUseCase;
     }
 
 
@@ -96,10 +99,26 @@ public class SolutionDetailFragmentPresenter
 
     @Override
     public void submitEditAppeal() {
-        postEditSolutionUseCase.execute(PostEditSolutionUseCase.
-                postEditSolutionUseCaseParams(editAppealSolutionModel.resolutionId,
-                        editAppealSolutionModel.solution,
-                        editAppealSolutionModel.refundAmount),
-                new EditSolutionWithRefundSubscriber(mainView));
+        if (editAppealSolutionModel.isEdit) {
+            postEditSolutionUseCase.execute(PostEditSolutionUseCase.
+                            postEditSolutionUseCaseParams(editAppealSolutionModel.resolutionId,
+                                    editAppealSolutionModel.solution,
+                                    editAppealSolutionModel.refundAmount),
+                    new EditSolutionWithRefundSubscriber(mainView));
+        } else {
+            postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
+                    postAppealSolutionUseCaseParams(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.solution,
+                            editAppealSolutionModel.refundAmount),
+                    new AppealSolutionWithRefundSubscriber(mainView));
+        }
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        postEditSolutionUseCase.unsubscribe();
+        postAppealSolutionUseCase.unsubscribe();
     }
 }

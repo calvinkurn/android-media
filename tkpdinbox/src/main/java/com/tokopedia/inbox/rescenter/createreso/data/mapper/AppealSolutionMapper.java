@@ -7,14 +7,9 @@ import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountR
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealFreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealSolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealSolutionResponseResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditFreeReturnResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
 
 import org.json.JSONArray;
