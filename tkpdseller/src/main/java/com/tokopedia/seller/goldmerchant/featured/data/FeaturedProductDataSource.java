@@ -1,10 +1,10 @@
 package com.tokopedia.seller.goldmerchant.featured.data;
 
-import com.tokopedia.core.common.mapper.SimpleResponseMapper;
 import com.tokopedia.seller.goldmerchant.featured.data.cloud.api.FeaturedProductApi;
 import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
 import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;
 import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;
 
@@ -23,10 +23,10 @@ public class FeaturedProductDataSource {
     }
 
     public Observable<FeaturedProductGETModel> productGETModelObservable(String shopId) {
-        return featuredProductApi.getFeaturedProduct(shopId).map(new SimpleResponseMapper<FeaturedProductGETModel>());
+        return featuredProductApi.getFeaturedProduct(shopId).map(new GetData<FeaturedProductGETModel>());
     }
 
     public Observable<FeaturedProductPOSTModel> productPOSTModelObservable(PostFeaturedProductModel postFeaturedProductModel) {
-        return featuredProductApi.postFeaturedProduct(postFeaturedProductModel).map(new SimpleResponseMapper<FeaturedProductPOSTModel>());
+        return featuredProductApi.postFeaturedProduct(postFeaturedProductModel).map(new GetData<FeaturedProductPOSTModel>());
     }
 }

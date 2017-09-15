@@ -94,10 +94,10 @@ public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<Feature
                 hashSet.remove(featuredProductModel.getId());
 
                 iterator.remove();
-                notifyItemRemoved(i);
             }
             i++;
         }
+        notifyDataSetChanged();
     }
 
     public int getSelectedSize() {
