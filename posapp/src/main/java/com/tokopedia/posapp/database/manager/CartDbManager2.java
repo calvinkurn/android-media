@@ -9,6 +9,7 @@ import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import com.tokopedia.posapp.database.PosDatabase;
 import com.tokopedia.posapp.database.model.CartDb;
+import com.tokopedia.posapp.database.model.CartDb_Table;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
 
 import java.util.List;
@@ -45,9 +46,7 @@ public class CartDbManager2 implements DbOperation<CartDomain> {
                                 }).success(new Transaction.Success() {
                                     @Override
                                     public void onSuccess(Transaction transaction) {
-                                        DbStatus dbStatus = new DbStatus();
-                                        dbStatus.setStatus(DbStatus.OK);
-                                        subscriber.onNext(dbStatus);
+                                        subscriber.onNext(DbStatus.createOkResult());
                                     }
                                 }).error(new Transaction.Error() {
                                     @Override
@@ -78,7 +77,38 @@ public class CartDbManager2 implements DbOperation<CartDomain> {
 
     @Override
     public Observable<DbStatus> delete(ConditionGroup conditions) {
-        return null;
+        return Observable.just(conditions)
+                .flatMap(new Func1<ConditionGroup, Observable<DbStatus>>() {
+                    @Override
+                    public Observable<DbStatus> call(final ConditionGroup conditions) {
+                        return Observable.create(new Observable.OnSubscribe<DbStatus>() {
+                            @Override
+                            public void call(final Subscriber<? super DbStatus> subscriber) {
+                                Transaction transaction = database.beginTransactionAsync(new ITransaction() {
+                                    @Override
+                                    public void execute(DatabaseWrapper databaseWrapper) {
+                                        Delete.table(CartDb.class, conditions);
+                                    }
+                                }).success(new Transaction.Success() {
+                                    @Override
+                                    public void onSuccess(Transaction transaction) {
+                                        subscriber.onNext(DbStatus.createOkResult());
+                                    }
+                                }).error(new Transaction.Error() {
+                                    @Override
+                                    public void onError(Transaction transaction, Throwable error) {
+                                        DbStatus dbStatus = new DbStatus();
+                                        dbStatus.setStatus(DbStatus.ERROR);
+                                        dbStatus.setMessage(error.getMessage());
+                                        subscriber.onNext(dbStatus);
+                                    }
+                                }).build();
+
+                                transaction.execute();
+                            }
+                        });
+                    }
+                });
     }
 
     @Override

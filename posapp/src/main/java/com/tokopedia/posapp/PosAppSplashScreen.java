@@ -19,7 +19,6 @@ public class PosAppSplashScreen extends SplashScreen {
             startActivity(LoginActivity.getPosLoginIntent(this));
         } else {
             startActivity(new Intent(this, OutletActivity.class));
-            startService(CacheService.getServiceIntent(this));
         }
         finish();
     }
