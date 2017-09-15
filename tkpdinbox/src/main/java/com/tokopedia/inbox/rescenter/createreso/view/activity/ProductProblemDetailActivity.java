@@ -17,7 +17,9 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Pr
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductProblemDetailActivity extends BasePresenterActivity<ProductProblemDetailActivityPresenter> implements ProductProblemDetailActivityView, HasComponent {
+public class ProductProblemDetailActivity
+        extends BasePresenterActivity<ProductProblemDetailActivityPresenter>
+        implements ProductProblemDetailActivityView, HasComponent {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
     public static final String PROBLEM_RESULT_DATA = "problem_result_data";

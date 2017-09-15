@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.upload.apis.UploadImageActApi;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.AppealSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep2Mapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
@@ -22,6 +23,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoStep
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateSubmitCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateValidateCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GenerateHostCloudSource;
+import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetAppealSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetEditSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetProductProblemCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetSolutionCloudSource;
@@ -46,6 +48,7 @@ public class CreateResolutionFactory {
     private ResolutionApi resolutionApi;
     private ResCenterActService resCenterActService;
     private EditSolutionMapper editSolutionMapper;
+    private AppealSolutionMapper appealSolutionMapper;
     private EditAppealResolutionResponseMapper editAppealResolutionResponseMapper;
 
     public CreateResolutionFactory(Context context,
@@ -61,6 +64,7 @@ public class CreateResolutionFactory {
                                    ResCenterActService resCenterActService,
                                    UploadVideoMapper uploadVideoMapper,
                                    EditSolutionMapper editSolutionMapper,
+                                   AppealSolutionMapper appealSolutionMapper,
                                    EditAppealResolutionResponseMapper editAppealResolutionResponseMapper) {
         this.context = context;
         this.productProblemMapper = productProblemMapper;
@@ -75,6 +79,7 @@ public class CreateResolutionFactory {
         this.resCenterActService = resCenterActService;
         this.uploadVideoMapper = uploadVideoMapper;
         this.editSolutionMapper = editSolutionMapper;
+        this.appealSolutionMapper = appealSolutionMapper;
         this.editAppealResolutionResponseMapper = editAppealResolutionResponseMapper;
     }
 
@@ -112,6 +117,10 @@ public class CreateResolutionFactory {
 
     public GetEditSolutionCloudSource createEditSolutionCloudSource() {
         return new GetEditSolutionCloudSource(editSolutionMapper, resolutionApi);
+    }
+
+    public GetAppealSolutionCloudSource createAppealSolutionCloudSource() {
+        return new GetAppealSolutionCloudSource(appealSolutionMapper, resolutionApi);
     }
 
     public PostEditSolutionCloudSource postEditSolutionDataSource() {

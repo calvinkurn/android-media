@@ -104,4 +104,8 @@
     <string name="string_create_complain">Buat Komplain</string>
     <string name="string_return">Kembali</string>
 
+    <!--edit appeal solution-->
+    <string name="string_edit_title">Ubah Solusi</string>
+    <string name="string_edit_message">Tekan \"Ubah\" untuk mengubah solusi menjadi:</string>
+    <string name="string_edit_button">Ubah</string>
 </resources>

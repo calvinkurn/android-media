@@ -228,6 +228,7 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     @Override
     public void successEditSolution() {
+        hideLoading();
         Toast.makeText(context, "Sukses mengubah solusi", Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
@@ -265,6 +266,7 @@ public class SolutionListFragment extends BaseDaggerFragment
         btnEditSolution.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showLoading();
                 presenter.submitEditAppeal(solutionViewModel);
                 dialog.dismiss();
             }
@@ -287,9 +289,16 @@ public class SolutionListFragment extends BaseDaggerFragment
                 if (data != null) {
                     submitData((ResultViewModel) data.getParcelableExtra(RESULT_VIEW_MODEL_DATA));
                 } else {
+                    getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

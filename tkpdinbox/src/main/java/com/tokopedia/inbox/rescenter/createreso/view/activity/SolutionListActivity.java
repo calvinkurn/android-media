@@ -47,6 +47,16 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
         return intent;
     }
 
+    public static Intent newAppealInstance(Context context,
+                                              String resolutionID) {
+        Intent intent = new Intent(context, SolutionListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGS_PARAM_PASS_DATA,
+                generateEditPassData(false, resolutionID, false));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 
     ResultViewModel resultViewModel;
 

@@ -31,6 +31,10 @@ public interface SolutionDetailFragmentListener {
         void successEditSolution();
 
         void errorEditSolution(String error);
+
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

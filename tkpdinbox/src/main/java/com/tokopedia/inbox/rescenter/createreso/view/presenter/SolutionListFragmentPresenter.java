@@ -7,11 +7,14 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturn
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.AppealSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionSubscriber;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionWithoutRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.SolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
@@ -40,6 +43,7 @@ public class SolutionListFragmentPresenter
     private GetSolutionUseCase getSolutionUseCase;
     private GetEditSolutionUseCase getEditSolutionUseCase;
     private PostEditSolutionUseCase postEditSolutionUseCase;
+    private GetAppealSolutionUseCase getAppealSolutionUseCase;
 
     private ResultViewModel resultViewModel;
     private EditAppealSolutionModel editAppealSolutionModel;
@@ -50,10 +54,12 @@ public class SolutionListFragmentPresenter
     @Inject
     public SolutionListFragmentPresenter(GetSolutionUseCase getSolutionUseCase,
                                          GetEditSolutionUseCase getEditSolutionUseCase,
-                                         PostEditSolutionUseCase postEditSolutionUseCase) {
+                                         PostEditSolutionUseCase postEditSolutionUseCase,
+                                         GetAppealSolutionUseCase getAppealSolutionUseCase) {
         this.getSolutionUseCase = getSolutionUseCase;
         this.getEditSolutionUseCase = getEditSolutionUseCase;
         this.postEditSolutionUseCase = postEditSolutionUseCase;
+        this.getAppealSolutionUseCase = getAppealSolutionUseCase;
     }
 
     @Override
@@ -75,9 +81,15 @@ public class SolutionListFragmentPresenter
         this.editAppealSolutionModel = editAppealSolutionModel;
         mainView.showLoading();
         isEditAppeal = true;
-        getEditSolutionUseCase.execute(getEditSolutionUseCase.getEditSolutionUseCaseParams(
-                editAppealSolutionModel.resolutionId),
-                new EditSolutionSubscriber(mainView));
+        if (editAppealSolutionModel.isEdit) {
+            getEditSolutionUseCase.execute(getEditSolutionUseCase.getEditSolutionUseCaseParams(
+                    editAppealSolutionModel.resolutionId),
+                    new EditSolutionSubscriber(mainView));
+        } else {
+            getAppealSolutionUseCase.execute(getAppealSolutionUseCase.getAppealSolutionUseCaseParams(
+                    editAppealSolutionModel.resolutionId),
+                    new AppealSolutionSubscriber(mainView));
+        }
     }
 
     @Override
@@ -94,7 +106,8 @@ public class SolutionListFragmentPresenter
         postEditSolutionUseCase.execute(PostEditSolutionUseCase.
                 postEditSolutionUseCaseParamsWithoutRefund(
                         editAppealSolutionModel.resolutionId,
-                        editAppealSolutionModel.solution));
+                        editAppealSolutionModel.solution),
+                new EditSolutionWithoutRefundSubscriber(mainView));
     }
 
     @Override
@@ -114,4 +127,11 @@ public class SolutionListFragmentPresenter
 
     }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        getSolutionUseCase.unsubscribe();
+        getEditSolutionUseCase.unsubscribe();
+        postEditSolutionUseCase.unsubscribe();
+    }
 }

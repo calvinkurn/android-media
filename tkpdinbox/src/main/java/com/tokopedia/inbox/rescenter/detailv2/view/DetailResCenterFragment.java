@@ -436,8 +436,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         String orderID = getViewData().getDetailData().getOrderID();
         boolean isReceived = getViewData().getDetailData().isReceived();
 
+//        startActivityForResult(
+//                EditResCenterActivity.newAppealInstance(getActivity(), resolutionID, orderID, isSeller(), isReceived),
+//                REQUEST_APPEAL_SOLUTION);
+
         startActivityForResult(
-                EditResCenterActivity.newAppealInstance(getActivity(), resolutionID, orderID, isSeller(), isReceived),
+                SolutionListActivity.newAppealInstance(getActivity(), resolutionID),
                 REQUEST_APPEAL_SOLUTION);
     }
 
@@ -459,13 +463,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         boolean isReceived = getViewData().getDetailData().isReceived();
 
         if (isSeller()) {
-//            return EditResCenterActivity
-//                    .newSellerInstance(getActivity(), resolutionID, orderID, isReceived);
             return SolutionListActivity.newSellerEditInstance(getActivity(),
                     resolutionID);
         } else {
-//            return EditResCenterActivity
-//                    .newBuyerInstance(getActivity(), resolutionID, orderID, isReceived);
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
                     resolutionID);
         }

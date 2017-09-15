@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ganti Solusi"
+            android:text="@string/string_edit_title"
             android:textSize="@dimen/font_title"
             android:textColor="@color/black_70"
             android:gravity="center"
@@ -30,23 +30,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
-            android:layout_marginBottom="@dimen/margin_sm"
-            android:text="Pastikan anda memilih solusi dengan benar: "
-            android:textSize="@dimen/font_body2"
-            android:textColor="@color/black_54"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_sm"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
-            android:text="@string/string_create_complain_solution"
+            android:text="@string/string_edit_message"
             android:textSize="@dimen/font_body2"
-            android:textStyle="bold"
             android:textColor="@color/black_54"/>
 
         <TextView
@@ -57,6 +45,7 @@
             android:layout_marginRight="@dimen/margin_med"
             android:text="@string/string_detail_create_complain"
             android:textSize="@dimen/font_body2"
+            android:textStyle="bold"
             android:textColor="@color/black_54"/>
 
         <LinearLayout
@@ -85,7 +74,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textAllCaps="false"
-                android:text="Ganti Solusi"
+                android:text="@string/string_edit_button"
                 android:background="@drawable/bg_button_enable"
                 android:textColor="@color/white"/>
 
