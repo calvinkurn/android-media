@@ -22,8 +22,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -54,7 +54,6 @@ import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
@@ -63,8 +62,6 @@ import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -78,7 +75,6 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -376,6 +372,11 @@ public class ConsumerRouterApplication extends MainApplication implements
         );
 
         getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
+    }
+
+    @Override
+    public boolean isSupportAppLinks(String appLinkScheme) {
+        return isSupportedDelegateDeepLink(appLinkScheme);
     }
 
     @Override

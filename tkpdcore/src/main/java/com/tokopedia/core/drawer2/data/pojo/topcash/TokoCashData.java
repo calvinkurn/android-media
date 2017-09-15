@@ -18,6 +18,9 @@ public class TokoCashData {
     @SerializedName("redirect_url")
     @Expose
     private String mRedirectUrl;
+    @SerializedName("applinks")
+    @Expose
+    private String mAppLinks;
     @SerializedName("text")
     @Expose
     private String mText;
@@ -75,5 +78,9 @@ public class TokoCashData {
 
     public void setLink(int link) {
         this.link = link;
+    }
+
+    public String getmAppLinks() {
+        return mAppLinks;
     }
 }

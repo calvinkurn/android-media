@@ -84,6 +84,7 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
@@ -205,6 +206,18 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onShowTokoCashBottomSheet() {
         bottomSheetDialogTokoCash.show();
+    }
+
+    @Override
+    public void actionAppLinkWalletHeader(String redirectUrl, String appLinkScheme) {
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            TkpdCoreRouter router = (TkpdCoreRouter) getActivity().getApplication();
+            if (router.isSupportAppLinks(appLinkScheme)) {
+                router.actionApplink(getActivity(), appLinkScheme);
+            } else {
+                startActivity(AppLinkWebsiteActivity.newInstance(getActivity(), redirectUrl));
+            }
+        }
     }
 
     private class ViewHolder {
@@ -767,7 +780,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     UnifyTracking.eventViewAllOSNonLogin();
                 }
 
-                if(firebaseRemoteConfig != null
+                if (firebaseRemoteConfig != null
                         && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
                     getActivity().startActivity(
                             ReactNativeOfficialStoresActivity.createReactNativeActivity(
@@ -1171,7 +1184,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     config.activateFetched();
                     holder.tokoCashHeaderView.renderData(tokoCashData, config
                             .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));

@@ -2,7 +2,7 @@ package com.tokopedia.core.gcm;
 
 /**
  * @author by alvarisi on 12/20/16.
- * this class contain all string used for applink/PN case
+ *         this class contain all string used for applink/PN case
  */
 
 public interface Constants {
@@ -99,8 +99,10 @@ public interface Constants {
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
+        String WALLET_ACTIVATION = "tokopedia://wallet/activation";
+        String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
 
-        interface SellerApp{
+        interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";
             String SALES = "sellerapp://sales";
             String TOPADS_CREDIT = "sellerapp://topads/buy";
