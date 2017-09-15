@@ -920,6 +920,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void onPromoWidgetCopied() {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout,context.getString(R.string.title_copied),
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(context.getString(R.string.close), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.setActionTextColor(Color.WHITE);
+        snackbar.show();
+    }
+
+    @Override
     public void showProductCampaign(ProductCampaign productCampaign) {
         this.productCampaign = productCampaign;
         headerInfoView.renderProductCampaign(this.productCampaign);

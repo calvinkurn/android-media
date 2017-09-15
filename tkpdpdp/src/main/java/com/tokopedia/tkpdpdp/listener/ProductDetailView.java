@@ -281,6 +281,8 @@ public interface ProductDetailView extends ViewListener {
 
     void showPromoWidget(PromoAttributes promoAttributes);
 
+    void onPromoWidgetCopied();
+
     void showProductCampaign(ProductCampaign productCampaign);
 
     void showMostHelpfulReview(List<Review> reviews);

@@ -28,7 +28,6 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
     private TextView textPromoDesc;
     private TextView textPromoCode;
     private TextView btnCopyCode;
-    private LinearLayout btnCodeCopied;
     private Context context;
 
     public PromoWidgetView(Context context) {
@@ -47,7 +46,6 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
         textPromoDesc = (TextView) findViewById(R.id.promo_widget_desc);
         textPromoCode = (TextView) findViewById(R.id.promo_widget_code);
         btnCopyCode = (TextView) findViewById(R.id.text_copy_code);
-        btnCodeCopied = (LinearLayout) findViewById(R.id.btn_copied);
 
     }
 
@@ -83,8 +81,7 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(data.getCode(), data.getCode());
                 clipboard.setPrimaryClip(clip);
-                btnCopyCode.setVisibility(GONE);
-                btnCodeCopied.setVisibility(VISIBLE);
+                listener.onPromoWidgetCopied();
             }
         });
         textPromoTitle.setOnClickListener(new OnClickListener() {
