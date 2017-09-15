@@ -1,8 +1,10 @@
 package com.tokopedia.seller;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 
@@ -23,4 +25,8 @@ public interface SellerModuleRouter {
     void goToProductDetail(Context context, String productUrl);
 
     void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
+
+    DataDeposit getDataDeposit(String shopId);
+
+    void goToTopAdsDashboard(Activity activity);
 }

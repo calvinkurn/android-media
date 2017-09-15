@@ -37,13 +37,13 @@ import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.seller.goldmerchant.featured.helper.OnStartDragListener;
 import com.tokopedia.seller.goldmerchant.featured.helper.SimpleItemTouchHelperCallback;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.FeaturedProductAdapter;
+import com.tokopedia.seller.goldmerchant.featured.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
 import com.tokopedia.seller.goldmerchant.featured.view.listener.FeaturedProductView;
 import com.tokopedia.seller.goldmerchant.featured.view.presenter.FeaturedProductPresenterImpl;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
 import java.util.Collections;

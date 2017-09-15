@@ -1,9 +1,9 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
 
 /**
  * Created by normansyahputa on 7/18/17.

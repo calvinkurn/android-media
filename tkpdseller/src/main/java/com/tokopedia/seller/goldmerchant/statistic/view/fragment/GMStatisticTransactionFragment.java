@@ -15,8 +15,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
@@ -28,9 +31,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTran
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
-import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import javax.inject.Inject;
 
@@ -91,7 +91,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
         super.loadDataByDate(datePickerViewModel);
         loadingState(LoadingStateView.VIEW_LOADING);
-        presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+        presenter.loadDataWithDate(getsSellerModuleRouter(), datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
     private void loadingState(int state) {
@@ -153,7 +153,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     public void loadDataByDate() {
         resetToLoading();
-        presenter.loadDataWithDate(getStartDate(), getEndDate());
+        presenter.loadDataWithDate(getsSellerModuleRouter(), getStartDate(), getEndDate());
     }
 
     private void resetToLoading(){
@@ -175,8 +175,10 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void onManageTopAdsClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
-        startActivity(intent);
+        SellerModuleRouter sellerModuleRouter = getsSellerModuleRouter();
+        if (sellerModuleRouter != null) {
+            sellerModuleRouter.goToTopAdsDashboard(getActivity());
+        }
     }
 
     @Override
@@ -194,5 +196,12 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
                 UnifyTracking.eventClickGMStatDatePickerWOCompareTransaction();
             }
         }
+    }
+
+    private SellerModuleRouter getsSellerModuleRouter() {
+        if (getActivity().getApplication() instanceof SellerModuleRouter) {
+            return (SellerModuleRouter) getActivity().getApplication();
+        }
+        return null;
     }
 }

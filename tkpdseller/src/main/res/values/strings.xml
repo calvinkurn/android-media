@@ -1,10 +1,18 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
+    <string name="label_delete">Hapus</string>
     <string name="label_add">Tambah</string>
     <string name="label_empty_value">-</string>
     <string name="label_back">Kembali</string>
     <string name="title_date_setting">Atur Tanggal</string>
+    <string name="next">Selanjutnya</string>
+    <string name="label_top_ads_choose_credit">Pilih</string>
+    <string name="title_activity_category_picker">Pilih Kategori</string>
+    <string name="title_activity_catalog_picker">Pilih Katalog</string>
+    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
+    <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
+    <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
 
     <string name="set_date">Atur Tanggal</string>
     <string name="yesterday">Kemarin</string>

@@ -19,16 +19,15 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
+import com.tokopedia.seller.common.widget.DividerItemDecoration;
 
 import java.util.List;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
@@ -152,7 +151,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new TopAdsRetryDataBinder(adapter);
+        return new BaseRetryDataBinder(adapter);
     }
 
     @Override

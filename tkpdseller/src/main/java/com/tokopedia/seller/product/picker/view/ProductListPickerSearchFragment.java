@@ -2,17 +2,14 @@ package com.tokopedia.seller.product.picker.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
 import android.view.View;
 
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.di.DaggerProductListComponent;
 import com.tokopedia.seller.product.picker.di.ProductListModule;
@@ -21,9 +18,7 @@ import com.tokopedia.seller.product.picker.view.listener.ProductListPickerMultip
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerSearchView;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.List;
 

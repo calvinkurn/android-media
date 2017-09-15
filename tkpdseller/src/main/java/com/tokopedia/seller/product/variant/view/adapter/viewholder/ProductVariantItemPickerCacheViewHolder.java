@@ -4,15 +4,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
+import com.tokopedia.seller.common.utils.CircleTransform;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
-import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
 /**
  * @author normansyahputa on 5/26/17.
