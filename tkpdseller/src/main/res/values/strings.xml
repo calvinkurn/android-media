@@ -156,4 +156,9 @@
     <string name="featured_product_description_empty">Tambahkan hingga 5 produk terbaik Anda ke dalam Produk Unggulan untuk tampil lebih spesial pada halaman Toko Anda.</string>
     <string name="featured_product_add_title_empty">Tambah Produk Unggulan</string>
     <string name="featured_product_subtitle_counter">%1$d dari %2$d</string>
+    <string name="featured_product_delete_title">Hapus Produk Unggulan</string>
+    <string name="featured_product_delete_desc">Hapus %1$d produk dari Produk Unggulan</string>
+    <string name="featured_product_sort_title">Urutkan Produk Unggulan</string>
+    <string name="featured_product_sort_desc">Yakin dengan urutan Produk Unggulan</string>
+
 </resources>

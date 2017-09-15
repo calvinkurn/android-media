@@ -100,6 +100,10 @@ public class FeaturedProductAdapter extends BaseMultipleCheckListAdapter<Feature
         notifyDataSetChanged();
     }
 
+    public int getSelectedSize() {
+        return hashSet.size();
+    }
+
     public interface UseCaseListener {
         void postData(List<FeaturedProductModel> data);
 
