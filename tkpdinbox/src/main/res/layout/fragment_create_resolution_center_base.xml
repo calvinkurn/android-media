@@ -1,37 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fafafa">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#fafafa"
+                android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="5dp"
+        android:visibility="invisible">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_12"/>
+
+        <Button
+            android:id="@+id/btn_create_resolution"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_ms"
+            android:background="@drawable/bg_button_disable"
+            android:text="@string/string_button_create_complain"
+            android:textAllCaps="false"
+            android:textColor="@color/black_38"/>
+    </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/problem_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/footer"
         android:layout_weight="1"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <FrameLayout
             android:id="@+id/ff_product_problem"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
             android:background="@drawable/bg_layout_enable"
             android:elevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_margin="@dimen/margin_sm">
+                android:layout_margin="@dimen/margin_sm"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
@@ -43,13 +71,13 @@
 
                     <TextView
                         android:id="@+id/tv_product_problem"
-                        android:layout_marginTop="@dimen/margin_vvs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
+                        android:layout_marginTop="@dimen/margin_vvs"
                         android:ellipsize="end"
-                        android:textColor="@color/black_70"
-                        android:text="@string/string_choose_product_problem"/>
+                        android:maxLines="1"
+                        android:text="@string/string_choose_product_problem"
+                        android:textColor="@color/black_70"/>
                 </LinearLayout>
 
                 <ImageView
@@ -67,41 +95,41 @@
             android:id="@+id/ff_solution"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
             android:background="@drawable/bg_layout_disable"
             android:elevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_margin="@dimen/margin_sm">
+                android:layout_margin="@dimen/margin_sm"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tv_solution_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black_38"
-                        android:text="@string/string_solution"/>
+                        android:text="@string/string_solution"
+                        android:textColor="@color/black_38"/>
 
                     <TextView
                         android:id="@+id/tv_solution"
-                        android:layout_marginTop="@dimen/margin_vvs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
+                        android:layout_marginTop="@dimen/margin_vvs"
                         android:ellipsize="end"
-                        android:textColor="@color/black_38"
-                        android:text="@string/string_choose_solution"/>
+                        android:maxLines="1"
+                        android:text="@string/string_choose_solution"
+                        android:textColor="@color/black_38"/>
 
                 </LinearLayout>
 
@@ -119,41 +147,41 @@
             android:id="@+id/ff_prove"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
             android:background="@drawable/bg_layout_disable"
             android:elevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_margin="@dimen/margin_sm">
+                android:layout_margin="@dimen/margin_sm"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tv_prove_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black_38"
-                        android:text="@string/string_prove_information"/>
+                        android:text="@string/string_prove_information"
+                        android:textColor="@color/black_38"/>
 
                     <TextView
                         android:id="@+id/tv_prove"
-                        android:layout_marginTop="@dimen/margin_vvs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
+                        android:layout_marginTop="@dimen/margin_vvs"
                         android:ellipsize="end"
-                        android:textColor="@color/black_38"
-                        android:text="@string/string_upload_prove_information"/>
+                        android:maxLines="1"
+                        android:text="@string/string_upload_prove_information"
+                        android:textColor="@color/black_38"/>
                 </LinearLayout>
 
                 <ImageView
@@ -168,27 +196,12 @@
 
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@color/white"
-        android:elevation="5dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/black_12"/>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/btn_create_resolution"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_ms"
-            android:text="@string/string_button_create_complain"
-            android:textAllCaps="false"
-            android:textColor="@color/black_38"
-            android:background="@drawable/bg_button_disable"/>
-    </FrameLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

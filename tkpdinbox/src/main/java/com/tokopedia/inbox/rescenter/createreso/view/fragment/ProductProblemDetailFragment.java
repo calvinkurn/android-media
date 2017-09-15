@@ -2,23 +2,26 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
@@ -26,6 +29,7 @@ import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
+import com.tokopedia.inbox.rescenter.utils.TimeTickerUtil;
 
 /**
  * Created by yoasfs on 21/08/17.
@@ -51,6 +55,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     EditText etComplainReason;
 
     ProductProblemDetailFragmentPresenter presenter;
+    Dialog dialog;
 
     public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
         ProductProblemDetailFragment fragment = new ProductProblemDetailFragment();
@@ -227,7 +232,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     @Override
     public void updateArriveStatusButton(boolean isArrived, boolean canShowInfo) {
         btnInfo.setVisibility(View.GONE);
-        if(canShowInfo) {
+        if (canShowInfo) {
             presenter.updateSpinner(true);
             btnInfo.setVisibility(View.VISIBLE);
             buttonDisabled(btnNotArrived);
@@ -242,6 +247,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             }
         }
     }
+
     public void buttonCanSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
@@ -265,7 +271,8 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
     @Override
     public void populateReasonSpinner(String[] reasonStringArray, int position) {
-        if (reasonStringArray != null) {;
+        if (reasonStringArray != null) {
+            ;
             stvProblem.setValues(reasonStringArray);
             stvProblem.setEntries(reasonStringArray, 0);
             stvProblem.setEnabled(reasonStringArray.length != 1);
@@ -306,28 +313,52 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
     @Override
     public void showInfoDialog(ProductProblemViewModel productProblemViewModel) {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.layout_info);
-        Button btnClose = (Button) dialog.findViewById(R.id.btn_close);
-        TextView tvCourierInfo = (TextView) dialog.findViewById(R.id.tv_courier_info);
-        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
-        String shippingName = productProblemViewModel.getOrder().getShipping().getName() + " " + productProblemViewModel.getOrder().getShipping().getDetail().getName();
-
-        tvCourierInfo.setText("[" + shippingName + "]");
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
+        if (dialog == null && !MethodChecker.isTimezoneNotAutomatic()) {
+            dialog = new Dialog(getActivity());
+            dialog.setContentView(R.layout.layout_info);
+            Button btnClose = (Button) dialog.findViewById(R.id.btn_close);
+            TextView tvCourierInfo = (TextView) dialog.findViewById(R.id.tv_courier_info);
+            ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+            String shippingName = productProblemViewModel.getOrder().getShipping().getName() + " " +
+                    productProblemViewModel.getOrder().getShipping().getDetail().getName();
+            View timeTickerView = dialog.findViewById(R.id.time_ticker);
+            final TimeTickerUtil timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
+                    getTimeTickerListener());
+            long duration = presenter.getDuration(
+                    presenter.getDeliveryDate
+                            (productProblemViewModel.getStatusList()));
+            if (duration > 0) {
+                timeTickerUtil.startTimer(duration);
+            } else {
+                setProductAlreadyArrive();
             }
-        });
+            tvCourierInfo.setText("[" + shippingName + "]");
+            btnClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
 
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+            ivClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    timeTickerUtil.destroy();
+                }
+            });
+
+            dialog.show();
+        } else if (MethodChecker.isTimezoneNotAutomatic()) {
+            ServerErrorHandler.showTimezoneErrorSnackbar();
+        } else if (dialog != null) {
+            dialog.show();
+        }
     }
 
     @Override
@@ -347,5 +378,29 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         output.putExtra(RESULT_STEP_CODE, resultStepCode);
         getActivity().setResult(Activity.RESULT_OK, output);
         getActivity().finish();
+    }
+
+    public TimeTickerUtil.TimeTickerListener getTimeTickerListener() {
+        return new TimeTickerUtil.TimeTickerListener() {
+            @Override
+            public void onStart() {
+                Log.d(ProductProblemDetailFragment.class.getSimpleName(), "onStart Ticker");
+            }
+
+            @Override
+            public void onFinish() {
+                Log.d(ProductProblemDetailFragment.class.getSimpleName(), "onFinish Ticker");
+                setProductAlreadyArrive();
+            }
+        };
+    }
+
+    private void setProductAlreadyArrive() {
+        if (dialog != null) {
+            dialog.dismiss();
+            btnInfo.setVisibility(View.GONE);
+            buttonCanSelected(btnNotArrived);
+            presenter.onDisableInfoView();
+        }
     }
 }

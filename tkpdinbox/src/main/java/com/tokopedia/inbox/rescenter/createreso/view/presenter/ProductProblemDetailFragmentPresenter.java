@@ -9,8 +9,13 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Pr
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by yoasfs on 14/08/17.
@@ -183,5 +188,34 @@ public class ProductProblemDetailFragmentPresenter
         mainView.saveData(problemResult, isSaveAndChooseOtherButton ?
                 RESULT_SAVE_AND_CHOOSE_OTHER :
                 RESULT_SAVE);
+    }
+
+    @Override
+    public long getDuration(String deliveryDate) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date date = sdf.parse(deliveryDate);
+            Date currentTime = new Date();
+            long duration = date.getTime() - currentTime.getTime();
+            return duration;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    @Override
+    public String getDeliveryDate(List<StatusViewModel> statusList) {
+        for(StatusViewModel statusViewModel : statusList){
+            if(!statusViewModel.isDelivered() && statusViewModel.getInfo() != null){
+                return statusViewModel.getInfo().getDate();
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public void onDisableInfoView() {
+        problemResult.canShowInfo = false;
     }
 }

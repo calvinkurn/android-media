@@ -55,9 +55,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     TextView tvChooseProductProblem, tvChooseProductProblemTitle, tvSolution, tvSolutionTitle, tvUploadProve, tvUploadProveTitle;
     ImageView ivChooseProductProblem, ivSolution, ivUploadProve;
     Button btnCreateResolution;
-    ProgressBar progressBar;
-
+    View problemView, footer;
     String orderId = "";
+    ProgressBar progressBar;
 
     @Inject
     CreateResolutionCenterPresenter presenter;
@@ -133,6 +133,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     protected void initView(View view) {
 
+        problemView = view.findViewById(R.id.problem_view);
+        footer = view.findViewById(R.id.footer);
         ffChooseProductProblem = (FrameLayout) view.findViewById(R.id.ff_product_problem);
         ffSolution = (FrameLayout) view.findViewById(R.id.ff_solution);
         ffUploadProve = (FrameLayout) view.findViewById(R.id.ff_prove);
@@ -150,7 +152,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         btnCreateResolution = (Button) view.findViewById(R.id.btn_create_resolution);
 
-        progressBar = new ProgressBar(context);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         updateView(new ResultViewModel());
         presenter.loadProductProblem(orderId);
@@ -299,6 +301,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     public void showProgressBar() {
+        problemView.setVisibility(View.INVISIBLE);
+        footer.setVisibility(View.INVISIBLE);
         if (progressBar.getVisibility() == View.GONE) {
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -316,6 +320,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void successLoadProductProblemData(ProductProblemResponseDomain responseDomain) {
+        problemView.setVisibility(View.VISIBLE);
+        footer.setVisibility(View.VISIBLE);
         dismissProgressBar();
         presenter.updateProductProblemResponseDomain(responseDomain);
     }

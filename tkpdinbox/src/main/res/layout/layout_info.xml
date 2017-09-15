@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_small"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/margin_small">
 
         <ImageView
             android:id="@+id/iv_close"
@@ -21,50 +22,56 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/string_info_information"
-            android:textSize="@dimen/font_title"
-            android:textColor="@color/black_70"
             android:gravity="center"
+            android:text="@string/string_info_information"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/font_title"
             />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
+            android:gravity="center"
             android:text="@string/string_info_1"
-            android:textSize="@dimen/font_subheading"
             android:textColor="@color/black_54"
-            android:gravity="center"/>
+            android:textSize="@dimen/font_subheading"/>
 
         <TextView
             android:id="@+id/tv_courier_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vs"
-            android:textSize="@dimen/font_subheading"
+            android:gravity="center"
             android:textColor="@color/black_70"
-            android:gravity="center"/>
+            android:textSize="@dimen/font_subheading"/>
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:gravity="center"
             android:text="@string/string_info_2"
-            android:textSize="@dimen/font_subheading"
             android:textColor="@color/black_54"
-            android:gravity="center"/>
-        
+            android:textSize="@dimen/font_subheading"/>
+
+        <include
+            android:id="@+id/time_ticker"
+            layout="@layout/layout_time_ticker"/>
+
         <Button
             android:id="@+id/btn_close"
-            android:layout_marginTop="@dimen/margin_large"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:textAllCaps="false"
-            android:text="@string/string_btn_close"
-            android:background="@drawable/bg_button_enable"
-            android:textColor="@color/white"
+            android:layout_marginBottom="@dimen/margin_large"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginRight="@dimen/margin_sm"
-            android:layout_marginBottom="@dimen/margin_large"/>
+            android:layout_marginTop="@dimen/margin_large"
+            android:background="@drawable/bg_button_enable"
+            android:text="@string/string_btn_close"
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 </LinearLayout>
