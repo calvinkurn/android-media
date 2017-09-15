@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.data.model.request;
+package com.tokopedia.topads.dashboard.data.model.request;
 
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 
 import java.util.HashMap;
 

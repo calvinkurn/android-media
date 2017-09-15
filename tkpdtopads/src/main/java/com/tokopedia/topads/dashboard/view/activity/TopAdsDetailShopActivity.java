@@ -1,13 +1,13 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDetailShopFragment;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailShopFragment;
 
 public class TopAdsDetailShopActivity extends TActivity {
 

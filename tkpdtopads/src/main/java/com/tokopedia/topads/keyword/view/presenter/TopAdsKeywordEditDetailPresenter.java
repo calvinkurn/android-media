@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.keyword.view.presenter;
+package com.tokopedia.topads.keyword.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/26/17.

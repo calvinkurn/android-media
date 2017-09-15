@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.data.model.response;
+package com.tokopedia.topads.dashboard.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Meta;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Page;
+import com.tokopedia.topads.dashboard.data.model.data.Meta;
+import com.tokopedia.topads.dashboard.data.model.data.Page;
 
 /**
  * Created by Nathaniel on 12/28/2016.

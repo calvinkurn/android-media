@@ -1,10 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,24 +14,21 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
-import com.tokopedia.seller.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
-import com.tokopedia.seller.util.ShowCaseDialogFactory;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
+import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
+import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 

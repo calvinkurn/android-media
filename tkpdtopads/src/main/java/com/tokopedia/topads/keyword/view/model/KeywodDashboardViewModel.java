@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.keyword.view.model;
+package com.tokopedia.topads.keyword.view.model;
 
-import com.tokopedia.seller.topads.keyword.domain.model.Page;
+import com.tokopedia.topads.keyword.domain.model.Page;
 
 import java.util.List;
 

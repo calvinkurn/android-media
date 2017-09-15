@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 
 import java.util.List;
 

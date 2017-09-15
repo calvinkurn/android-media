@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,25 +13,26 @@ import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
-import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
-import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
-import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
-import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
-import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
-import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
+import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
+import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
+import com.tokopedia.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordAdapter;
+import com.tokopedia.topads.keyword.view.listener.KeywordListListener;
+import com.tokopedia.topads.keyword.view.model.BaseKeywordParam;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 
 import java.util.List;
 
@@ -135,7 +136,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
-            selectedPosition = intent.getIntExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
+            selectedPosition = intent.getIntExtra(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION, 0);
             resetPageAndSearch();
         }
 
@@ -161,7 +162,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
+        intent.putExtra(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SHOW_STATUS, isStatusShown());
         startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
     }

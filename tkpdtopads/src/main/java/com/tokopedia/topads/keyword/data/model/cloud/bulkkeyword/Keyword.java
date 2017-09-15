@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.topads.keyword.data.model.cloud.bulkkeyword;
+package com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 
 public class TopAdsStatisticShopActivity extends TopAdsStatisticActivity {
 

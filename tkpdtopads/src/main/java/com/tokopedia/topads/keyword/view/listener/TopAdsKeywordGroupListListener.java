@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.keyword.view.listener;
+package com.tokopedia.topads.keyword.view.listener;
 
-import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
+import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
 
 /**
  * Created by normansyahputa on 6/5/17.

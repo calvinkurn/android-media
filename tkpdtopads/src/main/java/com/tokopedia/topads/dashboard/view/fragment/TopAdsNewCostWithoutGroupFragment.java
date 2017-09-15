@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -8,16 +8,16 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
+import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
 import java.util.ArrayList;
 

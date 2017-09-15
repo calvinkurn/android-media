@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.helper;
+package com.tokopedia.topads.dashboard.view.helper;
 
 import android.support.design.widget.BottomSheetBehavior;
 import android.view.View;

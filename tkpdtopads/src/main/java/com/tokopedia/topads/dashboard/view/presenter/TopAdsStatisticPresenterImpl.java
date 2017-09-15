@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticViewListener;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticViewListener;
 
 /**
  * Created by zulfikarrahman on 1/6/17.

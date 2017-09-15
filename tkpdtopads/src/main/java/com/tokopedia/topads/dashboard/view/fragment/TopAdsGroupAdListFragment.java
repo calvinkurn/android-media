@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -6,18 +6,18 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupAdListPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupAdListPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsProductAdListActivity;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenterImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 /**
  * Created by zulfikarrahman on 12/22/16.

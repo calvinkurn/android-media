@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter.viewholder;
+package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

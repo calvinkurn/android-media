@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,17 +11,16 @@ import android.view.View;
 
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
+import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -45,7 +44,8 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailShopViewPresenterImpl(getActivity(), this,
-                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())),
+                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
+                        new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));
     }
 

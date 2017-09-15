@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.keyword.view.model;
+package com.tokopedia.topads.keyword.view.model;
 
-import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
+import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 
 /**
  * Created by normansyahputa on 5/23/17.

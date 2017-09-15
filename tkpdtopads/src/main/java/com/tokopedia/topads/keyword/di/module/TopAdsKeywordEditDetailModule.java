@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.di.module;
+package com.tokopedia.topads.keyword.di.module;
 
 import android.content.Context;
 
@@ -10,14 +10,14 @@ import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
-import com.tokopedia.seller.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
-import com.tokopedia.seller.topads.keyword.data.source.KeywordDashboardDataSouce;
-import com.tokopedia.seller.topads.keyword.data.source.cloud.api.KeywordApi;
-import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordRepository;
-import com.tokopedia.seller.topads.keyword.domain.interactor.EditTopAdsKeywordDetailUseCase;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenterImpl;
+import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
+import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
+import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
+import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
+import com.tokopedia.topads.keyword.domain.TopAdsKeywordRepository;
+import com.tokopedia.topads.keyword.domain.interactor.EditTopAdsKeywordDetailUseCase;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

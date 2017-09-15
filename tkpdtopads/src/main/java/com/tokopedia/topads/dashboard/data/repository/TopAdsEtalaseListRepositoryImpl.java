@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.dashboard.data.repository;
+package com.tokopedia.topads.dashboard.data.repository;
 
-import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsEtalaseFactory;
-import com.tokopedia.seller.topads.dashboard.data.source.TopAdsEtalaseDataSource;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsEtalaseListRepository;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
+import com.tokopedia.topads.dashboard.data.factory.TopAdsEtalaseFactory;
+import com.tokopedia.topads.dashboard.data.source.TopAdsEtalaseDataSource;
+import com.tokopedia.topads.dashboard.domain.TopAdsEtalaseListRepository;
+import com.tokopedia.topads.dashboard.data.model.data.Etalase;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.List;
 

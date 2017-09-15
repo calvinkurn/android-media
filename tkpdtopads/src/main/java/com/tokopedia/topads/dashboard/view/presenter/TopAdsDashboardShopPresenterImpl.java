@@ -1,15 +1,15 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.ShopRequest;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardFragmentListener;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardStoreFragmentListener;
+import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
+import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
+import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.topads.dashboard.data.model.request.ShopRequest;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardFragmentListener;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardStoreFragmentListener;
 
 import java.util.Date;
 

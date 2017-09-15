@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.keyword.di.module;
+package com.tokopedia.topads.keyword.di.module;
 
-import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
-import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordAddUseCase;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordAddPresenterImpl;
+import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
+import com.tokopedia.topads.keyword.domain.interactor.KeywordAddUseCase;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordAddPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

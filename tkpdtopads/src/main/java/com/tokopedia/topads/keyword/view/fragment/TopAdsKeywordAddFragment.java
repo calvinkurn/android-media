@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -30,15 +30,15 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
-import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
-import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordAddModule;
-import com.tokopedia.seller.topads.keyword.view.adapter.KeywordAdapter;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordAddView;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
-import com.tokopedia.seller.topads.keyword.view.widget.KeywordRecyclerView;
+import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
+import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
+import com.tokopedia.topads.keyword.di.module.TopAdsKeywordAddModule;
+import com.tokopedia.topads.keyword.view.adapter.KeywordAdapter;
+import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordAddView;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
+import com.tokopedia.topads.keyword.view.widget.KeywordRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;

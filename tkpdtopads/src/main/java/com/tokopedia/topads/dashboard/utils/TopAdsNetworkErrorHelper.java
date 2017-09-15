@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.utils;
+package com.tokopedia.topads.dashboard.utils;
 
 import android.app.Activity;
 import android.support.v4.content.ContextCompat;
@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 
 /**
  * Created by normansyahputa on 2/25/17.

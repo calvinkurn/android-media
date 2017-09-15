@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter.viewholder;
+package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import android.content.res.Resources;
 import android.text.TextUtils;
@@ -8,9 +8,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.listener.BindViewHolder;
-import com.tokopedia.seller.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.view.listener.BindViewHolder;
+import com.tokopedia.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
 
 /**
  * @author normansyahputa on 3/6/17.

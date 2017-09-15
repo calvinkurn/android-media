@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.widget;
+package com.tokopedia.topads.dashboard.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,7 +12,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 
 /**
  * Created by Hendry on 3/9/2017.

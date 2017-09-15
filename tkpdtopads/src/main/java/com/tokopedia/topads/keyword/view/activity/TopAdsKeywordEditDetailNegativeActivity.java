@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.keyword.view.activity;
+package com.tokopedia.topads.keyword.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordEditDetailNegativeFragment;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordEditDetailNegativeFragment;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/30/17.

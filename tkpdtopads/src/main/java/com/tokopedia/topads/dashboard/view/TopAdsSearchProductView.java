@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view;
+package com.tokopedia.topads.dashboard.view;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.base.view.adapter.ItemType;

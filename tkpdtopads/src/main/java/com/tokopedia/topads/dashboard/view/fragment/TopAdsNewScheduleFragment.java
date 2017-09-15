@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -13,20 +13,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.dialog.DatePickerDialog;
-import com.tokopedia.seller.topads.dashboard.view.dialog.TimePickerdialog;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.dialog.DatePickerDialog;
+import com.tokopedia.topads.dashboard.view.dialog.TimePickerdialog;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

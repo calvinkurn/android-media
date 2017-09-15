@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductListStepperModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenter;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductListStepperModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenter;
 
 /**
  * Created by zulfikarrahman on 8/7/17.

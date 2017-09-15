@@ -1,16 +1,16 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAdAction;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdAction;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
+import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
 /**
  * Created by hendry on 3/3/17.

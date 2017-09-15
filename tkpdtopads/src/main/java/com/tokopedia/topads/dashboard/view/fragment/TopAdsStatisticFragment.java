@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 
 import android.app.Activity;
@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.common.williamchart.model.TooltipModel;
@@ -22,11 +22,11 @@ import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraph
 import com.tokopedia.seller.common.williamchart.util.TopAdsBaseWilliamChartConfig;
 import com.tokopedia.seller.common.williamchart.util.TopAdsTooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticViewListener;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticPresenterImpl;
+import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticViewListener;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsStatisticPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsStatisticPresenterImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

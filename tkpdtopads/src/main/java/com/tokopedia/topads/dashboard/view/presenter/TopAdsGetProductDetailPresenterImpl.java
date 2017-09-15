@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsGetProductDetailView;
-import com.tokopedia.seller.topads.dashboard.view.mapper.TopAdsProductModelMapper;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsGetProductDetailView;
+import com.tokopedia.topads.dashboard.view.mapper.TopAdsProductModelMapper;
 
 import rx.Subscriber;
 

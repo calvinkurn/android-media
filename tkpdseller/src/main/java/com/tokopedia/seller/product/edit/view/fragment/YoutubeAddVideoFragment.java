@@ -25,6 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.edit.utils.YoutubeVideoLinkUtils;
@@ -35,7 +36,6 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.edit.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.YoutubeAddVideoPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.List;
 
@@ -105,7 +105,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         recyclerViewAddUrlVideo = (RecyclerView) view.findViewById(R.id.recycler_view_add_url_video);
         addUrlVideoAdapter = new AddUrlVideoAdapter(new ImageHandler(view.getContext()));
         EmptyAddUrlVideoDataBinder emptyAddUrlVideoDataBinder = new EmptyAddUrlVideoDataBinder(addUrlVideoAdapter);
-        emptyAddUrlVideoDataBinder.setCallback(new TopAdsEmptyAdDataBinder.Callback() {
+        emptyAddUrlVideoDataBinder.setCallback(new ProductEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
                 youtubeAddVideoActView.openAddYoutubeDialog();

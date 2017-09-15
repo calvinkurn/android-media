@@ -1,15 +1,15 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 
 /**
  * Created by zulfikarrahman on 5/30/17.

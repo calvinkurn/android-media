@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.topads.keyword.data.model.cloud.bulkkeyword;
+package com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +7,9 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditCostWithoutGroupFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsEditScheduleWithoutGroupFragment;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditCostWithoutGroupFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditScheduleWithoutGroupFragment;
 
 /**
  * Created by zulfikarrahman on 8/9/17.

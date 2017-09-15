@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.common.view.fragment;
+package com.tokopedia.topads.common.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 
 import java.util.Date;
 

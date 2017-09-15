@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,7 +16,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAddCreditFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsAddCreditFragment;
 
 import java.util.List;
 

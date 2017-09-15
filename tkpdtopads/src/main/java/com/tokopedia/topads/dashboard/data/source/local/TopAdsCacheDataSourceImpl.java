@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.data.source.local;
+package com.tokopedia.topads.dashboard.data.source.local;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.di;
+package com.tokopedia.topads.dashboard.di;
 
 import android.content.Context;
 
@@ -6,29 +6,29 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsGroupAdFactory;
-import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsProductAdFactory;
-import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsShopAdFactory;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsBulkActionMapper;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailGroupDomainMapper;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailGroupMapper;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailProductMapper;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailShopMapper;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsSearchGroupMapper;
-import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
-import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsProductAdsRepositoryImpl;
-import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsShopAdsRepositoryImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsProductAdsRepository;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsShopAdsRepository;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenterImpl;
+import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
+import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
+import com.tokopedia.topads.dashboard.data.factory.TopAdsShopAdFactory;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsBulkActionMapper;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupDomainMapper;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupMapper;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailProductMapper;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailShopMapper;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsSearchGroupMapper;
+import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.repository.TopAdsProductAdsRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.repository.TopAdsShopAdsRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
+import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 3/1/17.

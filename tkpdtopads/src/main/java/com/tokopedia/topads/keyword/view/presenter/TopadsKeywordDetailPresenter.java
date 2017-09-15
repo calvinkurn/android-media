@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.keyword.view.presenter;
+package com.tokopedia.topads.keyword.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 
 import java.util.Date;
 

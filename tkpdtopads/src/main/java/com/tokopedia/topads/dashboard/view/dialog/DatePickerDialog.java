@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.dialog;
+package com.tokopedia.topads.dashboard.view.dialog;
 
 import android.content.Context;
 import android.view.Window;

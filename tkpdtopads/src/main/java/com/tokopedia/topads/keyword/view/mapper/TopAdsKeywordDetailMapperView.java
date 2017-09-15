@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.keyword.view.mapper;
+package com.tokopedia.topads.keyword.view.mapper;
 
-import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.domain.model.KeywordDetailDomain;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 /**
  * Created by zulfikarrahman on 5/30/17.

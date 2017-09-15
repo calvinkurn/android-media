@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -7,17 +7,17 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.TotalAd;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordListActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupAdListActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsProductAdListActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsStatisticProductActivity;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardProductFragmentListener;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDashboardProductPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordListActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupAdListActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsStatisticProductActivity;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardProductFragmentListener;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardProductPresenterImpl;
 
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 

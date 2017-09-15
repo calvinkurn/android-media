@@ -1,16 +1,16 @@
-package com.tokopedia.seller.topads.keyword.di.module;
+package com.tokopedia.topads.keyword.di.module;
 
-import com.tokopedia.seller.topads.keyword.data.repository.TopAdsKeywordDeleteRepositoryImpl;
-import com.tokopedia.seller.topads.keyword.data.repository.TopAdsKeywordGetDetailRepositoryImpl;
-import com.tokopedia.seller.topads.keyword.data.source.TopAdsKeywordActionBulkDataSource;
-import com.tokopedia.seller.topads.keyword.data.source.TopAdsKeywordGetDetailDataSource;
-import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordActionBulkRepository;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordGetDetailRepository;
-import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
-import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordDetailPresenterImpl;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
+import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordDeleteRepositoryImpl;
+import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordGetDetailRepositoryImpl;
+import com.tokopedia.topads.keyword.data.source.TopAdsKeywordActionBulkDataSource;
+import com.tokopedia.topads.keyword.data.source.TopAdsKeywordGetDetailDataSource;
+import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
+import com.tokopedia.topads.keyword.domain.TopAdsKeywordActionBulkRepository;
+import com.tokopedia.topads.keyword.domain.TopAdsKeywordGetDetailRepository;
+import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
+import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordDetailPresenterImpl;
+import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
 
 import dagger.Module;
 import dagger.Provides;

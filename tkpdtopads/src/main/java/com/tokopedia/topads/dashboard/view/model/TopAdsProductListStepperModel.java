@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.model;
+package com.tokopedia.topads.dashboard.view.model;
 
 import android.os.Parcel;
 

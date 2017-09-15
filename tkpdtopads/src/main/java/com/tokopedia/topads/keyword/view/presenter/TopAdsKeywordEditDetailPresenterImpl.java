@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.keyword.view.presenter;
+package com.tokopedia.topads.keyword.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
-import com.tokopedia.seller.topads.keyword.domain.interactor.EditTopAdsKeywordDetailUseCase;
-import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
-import com.tokopedia.seller.topads.keyword.view.mapper.TopAdsKeywordEditDetailMapper;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.domain.interactor.EditTopAdsKeywordDetailUseCase;
+import com.tokopedia.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
+import com.tokopedia.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
+import com.tokopedia.topads.keyword.view.mapper.TopAdsKeywordEditDetailMapper;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 import rx.Subscriber;
 

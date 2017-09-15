@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.adapter;
+package com.tokopedia.topads.keyword.view.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 
 import java.util.ArrayList;
 

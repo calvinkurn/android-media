@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter;
+package com.tokopedia.topads.dashboard.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,8 +8,8 @@ import android.widget.RadioButton;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.model.RadioButtonItem;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,19 +9,18 @@ import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDetailStatisticFragment;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
-import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
-import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailStatisticFragment;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
+import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
+import com.tokopedia.topads.keyword.di.module.TopAdsKeywordDetailModule;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
 
 import javax.inject.Inject;
 

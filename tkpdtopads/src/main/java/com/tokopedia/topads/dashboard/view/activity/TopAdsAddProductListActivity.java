@@ -1,15 +1,15 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAddProductListFragment;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsAddProductListFragment;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.domain;
+package com.tokopedia.topads.dashboard.domain;
 
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 
 import java.util.List;
 

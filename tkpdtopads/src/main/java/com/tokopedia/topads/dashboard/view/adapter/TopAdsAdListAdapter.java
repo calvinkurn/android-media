@@ -1,14 +1,14 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter;
+package com.tokopedia.topads.dashboard.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
 
 /**
  * Created by zulfikarrahman on 11/24/16.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.widget;
+package com.tokopedia.topads.dashboard.view.widget;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatRadioButton;

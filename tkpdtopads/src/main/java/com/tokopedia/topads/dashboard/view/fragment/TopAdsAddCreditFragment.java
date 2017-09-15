@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,15 +13,15 @@ import android.widget.Button;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataCredit;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddCreditPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddCreditPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsPaymentCreditActivity;
-import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsCreditAdapter;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsAddCreditFragmentListener;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenterImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditAdapter;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsAddCreditFragmentListener;
 
 import java.util.List;
 

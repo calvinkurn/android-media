@@ -1,13 +1,13 @@
-package com.tokopedia.seller.topads.dashboard.data.source.cloud;
+package com.tokopedia.topads.dashboard.data.source.cloud;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsEtalaseListMapper;
-import com.tokopedia.seller.topads.dashboard.data.source.TopAdsEtalaseDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsEtalaseCacheDataSource;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsEtalaseListMapper;
+import com.tokopedia.topads.dashboard.data.source.TopAdsEtalaseDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsEtalaseCacheDataSource;
+import com.tokopedia.topads.dashboard.data.model.data.Etalase;
 
 import java.util.HashMap;
 import java.util.List;

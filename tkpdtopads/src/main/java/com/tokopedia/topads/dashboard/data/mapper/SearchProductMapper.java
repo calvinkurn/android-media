@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.data.mapper;
+package com.tokopedia.topads.dashboard.data.mapper;
 
-import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
+import com.tokopedia.topads.dashboard.domain.model.ProductDomain;
+import com.tokopedia.topads.dashboard.data.model.data.Product;
 import com.tokopedia.seller.common.data.response.DataResponse;
 
 import java.util.ArrayList;

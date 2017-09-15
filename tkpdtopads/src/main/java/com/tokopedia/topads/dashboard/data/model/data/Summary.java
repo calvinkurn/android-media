@@ -1,100 +1,28 @@
-package com.tokopedia.seller.topads.dashboard.data.model.data;
+package com.tokopedia.topads.dashboard.data.model.data;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
  */
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.ContainerKey;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.annotation.Unique;
-import com.raizlabs.android.dbflow.annotation.UniqueGroup;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.seller.database.TkpdSellerDatabase;
+public class Summary {
 
-@Table(database = TkpdSellerDatabase.class,
-        uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.REPLACE)})
-public class Summary extends BaseModel {
-
-    @ContainerKey("id")
-    @Column
-    @Unique(unique = false)
-    @PrimaryKey(autoincrement = true)
-    public long Id;
-
-    @SerializedName("click_sum")
-    @Expose
-    @Column
-    public int clickSum;
-
-    @SerializedName("click_sum_fmt")
-    @Expose
-    public String clickSumFmt;
-
-    @SerializedName("cost_sum")
-    @Expose
-    @Column
-    public double costSum;
-
-    @SerializedName("cost_sum_fmt")
-    @Expose
-    public String costSumFmt;
-
-    @SerializedName("impression_sum")
-    @Expose
-    @Column
-    public int impressionSum;
-
-    @SerializedName("impression_sum_fmt")
-    @Expose
-    public String impressionSumFmt;
-
-    @SerializedName("ctr_percentage")
-    @Expose
-    @Column
-    public double ctrPercentage;
-
-    @SerializedName("ctr_percentage_fmt")
-    @Expose
-    public String ctrPercentageFmt;
-
-    @SerializedName("conversion_sum")
-    @Expose
-    @Column
-    public int conversionSum;
-
-    @SerializedName("conversion_sum_fmt")
-    @Expose
-    public String conversionSumFmt;
-
-    @SerializedName("cost_avg")
-    @Expose
-    @Column
-    public double costAvg;
-
-    @SerializedName("cost_avg_fmt")
-    @Expose
-    public String costAvgFmt;
-
-    @Unique(unique = false, uniqueGroups = 1)
-    @Column
-    public String shopId;
-
-    @Unique(unique = false, uniqueGroups = 1)
-    @Column
-    public int type;
-
-    @Unique(unique = false, uniqueGroups = 1)
-    @Column
-    public String startDate;
-
-    @Unique(unique = false, uniqueGroups = 1)
-    @Column
-    public String endDate;
+    private long Id;
+    private int clickSum;
+    private String clickSumFmt;
+    private double costSum;
+    private String costSumFmt;
+    private int impressionSum;
+    private String impressionSumFmt;
+    private double ctrPercentage;
+    private String ctrPercentageFmt;
+    private int conversionSum;
+    private String conversionSumFmt;
+    private double costAvg;
+    private String costAvgFmt;
+    private String shopId;
+    private int type;
+    private String startDate;
+    private String endDate;
 
     public long getId() {
         return Id;

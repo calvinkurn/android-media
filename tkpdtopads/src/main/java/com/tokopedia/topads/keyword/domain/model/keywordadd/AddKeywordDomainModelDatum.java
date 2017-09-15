@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.keyword.domain.model.keywordadd;
+package com.tokopedia.topads.keyword.domain.model.keywordadd;
 
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
+import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 
 /**
  * @author Hendry on 5/26/2017.

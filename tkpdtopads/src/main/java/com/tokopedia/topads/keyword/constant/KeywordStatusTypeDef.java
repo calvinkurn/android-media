@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.keyword.constant;
+package com.tokopedia.topads.keyword.constant;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef.KEYWORD_STATUS_ACTIVE;
-import static com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef.KEYWORD_STATUS_ALL;
-import static com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef.KEYWORD_STATUS_INACTIVE;
+import static com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef.KEYWORD_STATUS_ACTIVE;
+import static com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef.KEYWORD_STATUS_ALL;
+import static com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef.KEYWORD_STATUS_INACTIVE;
 
 /**
  * @author normansyahputa on 5/29/17.

@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.keyword.view.model;
+package com.tokopedia.topads.keyword.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**

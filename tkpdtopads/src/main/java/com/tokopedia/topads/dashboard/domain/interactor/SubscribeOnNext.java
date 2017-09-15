@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import rx.functions.Action1;
 

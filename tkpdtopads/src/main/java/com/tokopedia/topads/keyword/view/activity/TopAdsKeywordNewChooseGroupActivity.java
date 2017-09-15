@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.activity;
+package com.tokopedia.topads.keyword.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
 
 /**
  * Created by nathan on 5/17/17.

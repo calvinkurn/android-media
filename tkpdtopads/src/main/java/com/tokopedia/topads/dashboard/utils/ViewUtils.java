@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.utils;
+package com.tokopedia.topads.dashboard.utils;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -6,30 +6,15 @@ import android.os.Build;
 import android.view.Window;
 
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 
 /**
  * @author normansyahputa on 2/16/17.
  */
 
 public class ViewUtils {
-    public static void setTranslucentStatusBar(Window window) {
-        if (window == null) return;
-        int sdkInt = Build.VERSION.SDK_INT;
-        if (sdkInt >= Build.VERSION_CODES.LOLLIPOP) {
-            setTranslucentStatusBarLollipop(window);
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static void setTranslucentStatusBarLollipop(Window window) {
-        window.setStatusBarColor(
-                window.getContext()
-                        .getResources()
-                        .getColor(R.color.green_600));
-    }
 
     public static String getErrorMessage(Throwable t) {
         String errorMessage = null;

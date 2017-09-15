@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 
 import java.util.Date;
 

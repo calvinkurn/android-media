@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.content.Context;
 
@@ -8,27 +8,25 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataCredit;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataStatistic;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Summary;
-import com.tokopedia.seller.topads.dashboard.data.model.data.TotalAd;
-import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.SearchProductRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.ShopRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.StatisticRequest;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
+import com.tokopedia.topads.dashboard.data.model.data.Product;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
+import com.tokopedia.topads.dashboard.data.model.data.Summary;
+import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
+import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.topads.dashboard.data.model.request.SearchProductRequest;
+import com.tokopedia.topads.dashboard.data.model.request.ShopRequest;
+import com.tokopedia.topads.dashboard.data.model.request.StatisticRequest;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +47,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     private CompositeSubscription compositeSubscription;
     private TopAdsManagementService topAdsManagementService;
-    private TopAdsDbDataSource topAdsDbDataSource;
     private TopAdsCacheDataSourceImpl topAdsCacheDataSource;
     private Context context;
 
@@ -57,7 +54,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
         this.context = context;
         compositeSubscription = new CompositeSubscription();
         topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
-        topAdsDbDataSource = new TopAdsDbDataSourceImpl();
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }
 
@@ -71,9 +67,14 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                 .flatMap(new Func1<Response<DataResponse<DataStatistic>>, Observable<Summary>>() {
                     @Override
                     public Observable<Summary> call(Response<DataResponse<DataStatistic>> statisticResponse) {
-                        return topAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
+                        return Observable.just(statisticResponse.body().getData().getSummary());
                     }
                 }).subscribe(new SubscribeOnNext<Summary>(listener), new SubscribeOnError(listener)));
+    }
+
+    @Override
+    public DataDeposit getDeposit(String shopId) {
+        return null;
     }
 
     @Override

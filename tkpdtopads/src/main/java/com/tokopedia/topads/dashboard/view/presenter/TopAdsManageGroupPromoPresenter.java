@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
 
 /**
  * Created by zulfikarrahman on 2/16/17.

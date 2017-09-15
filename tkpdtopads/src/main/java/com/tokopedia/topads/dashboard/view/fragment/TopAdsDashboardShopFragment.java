@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -8,17 +8,17 @@ import android.widget.Button;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoShopActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailShopActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsStatisticShopActivity;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardStoreFragmentListener;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDashboardShopPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoShopActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsStatisticShopActivity;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardStoreFragmentListener;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardShopPresenterImpl;
 
 public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 

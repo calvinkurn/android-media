@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.activity;
+package com.tokopedia.topads.keyword.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,11 +11,11 @@ import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
-import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
+import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
+import com.tokopedia.topads.keyword.helper.KeywordTypeMapper;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
 
 import java.util.ArrayList;
 

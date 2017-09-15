@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.domain;
+package com.tokopedia.topads.dashboard.domain;
 
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
 
 import rx.Observable;
 

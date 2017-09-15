@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.widget;
+package com.tokopedia.topads.keyword.view.widget;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,8 @@ import android.widget.FrameLayout;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.adapter.KeywordAdapter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.keyword.view.adapter.KeywordAdapter;
 import java.util.ArrayList;
 
 /**

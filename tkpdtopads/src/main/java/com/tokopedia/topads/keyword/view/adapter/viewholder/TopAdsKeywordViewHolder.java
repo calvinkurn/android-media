@@ -1,14 +1,14 @@
-package com.tokopedia.seller.topads.keyword.view.adapter.viewholder;
+package com.tokopedia.topads.keyword.view.adapter.viewholder;
 
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.view.model.NegativeKeywordAd;
 
 /**
  * Created by normansyahputa on 5/19/17.

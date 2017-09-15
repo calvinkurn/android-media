@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,13 +8,13 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.model.StepperModel;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
 
 import javax.inject.Inject;
 

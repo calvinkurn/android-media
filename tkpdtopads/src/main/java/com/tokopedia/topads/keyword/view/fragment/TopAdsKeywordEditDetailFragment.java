@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -17,16 +17,16 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.design.text.SpinnerTextView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
-import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
-import com.tokopedia.seller.topads.dashboard.view.widget.PrefixEditText;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
+import com.tokopedia.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
+import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
+import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import javax.inject.Inject;
@@ -124,7 +124,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
                 String errorMessage =
-                        com.tokopedia.seller.topads.dashboard.utils.ViewUtils.getClickBudgetError(getActivity(), number);
+                        com.tokopedia.topads.dashboard.utils.ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     textInputLayoutCostPerClick.setError(errorMessage);
                 } else {

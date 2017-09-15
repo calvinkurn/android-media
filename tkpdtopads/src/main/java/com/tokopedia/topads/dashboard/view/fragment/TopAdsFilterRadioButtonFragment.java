@@ -1,16 +1,17 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
-import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsBasicRadioButtonAdapter;
-import com.tokopedia.seller.topads.dashboard.view.model.RadioButtonItem;
-import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsBasicRadioButtonAdapter;
+import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
+import com.tokopedia.seller.common.widget.DividerItemDecoration;
 
 import java.util.List;
 
@@ -77,13 +78,12 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedAdapterPosition);
+        outState.putInt(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION, selectedAdapterPosition);
     }
 
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
         super.onRestoreState(savedInstanceState);
-        selectedAdapterPosition = savedInstanceState.getInt(
-                TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION);
+        selectedAdapterPosition = savedInstanceState.getInt(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION);
     }
 }

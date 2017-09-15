@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter;
+package com.tokopedia.topads.dashboard.view.adapter;
 
 import android.content.Context;
 import android.util.Log;

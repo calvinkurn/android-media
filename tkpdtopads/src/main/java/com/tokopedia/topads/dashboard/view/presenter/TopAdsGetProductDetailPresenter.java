@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsGetProductDetailView;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsGetProductDetailView;
 
 /**
  * Created by zulfikarrahman on 8/15/17.

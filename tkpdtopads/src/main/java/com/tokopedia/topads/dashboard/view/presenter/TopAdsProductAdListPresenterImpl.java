@@ -1,17 +1,16 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 import java.util.Date;
@@ -26,7 +25,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
 
     public TopAdsProductAdListPresenterImpl(Context context, BaseListViewListener topadsListViewListener) {
         super(context, topadsListViewListener);
-        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(context));
+        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)), new TopAdsCacheDataSourceImpl(context));
     }
 
     @Override

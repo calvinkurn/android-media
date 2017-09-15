@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.domain.model.keywordadd;
+package com.tokopedia.topads.keyword.domain.model.keywordadd;
 
 import java.util.List;
 

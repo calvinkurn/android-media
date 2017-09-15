@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter;
+package com.tokopedia.topads.dashboard.view.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.keyword.data.repository;
+package com.tokopedia.topads.keyword.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
-import com.tokopedia.seller.topads.keyword.data.source.TopAdsKeywordGetDetailDataSource;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordGetDetailRepository;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.keyword.data.model.cloud.Datum;
+import com.tokopedia.topads.keyword.data.source.TopAdsKeywordGetDetailDataSource;
+import com.tokopedia.topads.keyword.domain.TopAdsKeywordGetDetailRepository;
 
 import java.util.List;
 

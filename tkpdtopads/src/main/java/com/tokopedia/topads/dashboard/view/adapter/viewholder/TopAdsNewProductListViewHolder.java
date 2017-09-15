@@ -1,13 +1,13 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter.viewholder;
+package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 /**
  * Created by zulfikarrahman on 8/1/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.utils;
+package com.tokopedia.topads.dashboard.utils;
 
 import android.graphics.Color;
 import android.graphics.Typeface;

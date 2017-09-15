@@ -1,21 +1,21 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 8/8/17.

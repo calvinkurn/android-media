@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 
 /**
  * Created by zulfikarrahman on 11/24/16.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,14 +8,14 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 
 import java.util.Date;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
+ *         another type of {@link com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends BaseListFragment<T, U> implements

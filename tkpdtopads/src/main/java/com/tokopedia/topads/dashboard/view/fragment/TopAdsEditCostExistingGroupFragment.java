@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,12 +6,12 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditGroupPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditGroupPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
 
 import javax.inject.Inject;
 

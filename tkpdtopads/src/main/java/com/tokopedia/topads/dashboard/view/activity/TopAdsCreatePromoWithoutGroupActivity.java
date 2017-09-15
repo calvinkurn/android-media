@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,12 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewCostWithoutGroupFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewProductListWithoutGroupFragment;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostWithoutGroupFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListWithoutGroupFragment;
+import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 
 import java.util.ArrayList;
 import java.util.List;

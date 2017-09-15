@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.activity;
+package com.tokopedia.topads.keyword.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,13 +7,14 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordGroupsFragment;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
+import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordGroupsFragment;
+import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class TopAdsKeywordFilterActivity extends BaseFilterActivity
         selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS,
                 KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
         currentGroupAd = extras.getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
-        selectedPosition = extras.getInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
+        selectedPosition = extras.getInt(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION, 0);
         showStatus = extras.getBoolean(TopAdsExtraConstant.EXTRA_FILTER_SHOW_STATUS, true);
     }
 
@@ -60,7 +61,7 @@ public class TopAdsKeywordFilterActivity extends BaseFilterActivity
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedFilterStatus);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, currentGroupAd);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
+        intent.putExtra(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SHOW_STATUS, showStatus);
         return intent;
     }

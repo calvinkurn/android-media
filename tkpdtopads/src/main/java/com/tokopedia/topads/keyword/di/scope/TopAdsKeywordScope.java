@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.di.scope;
+package com.tokopedia.topads.keyword.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

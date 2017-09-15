@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,16 +10,16 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsProductAdListActivity;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 1/3/17.

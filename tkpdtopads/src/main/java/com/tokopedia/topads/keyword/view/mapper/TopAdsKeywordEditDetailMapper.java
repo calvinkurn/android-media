@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.keyword.view.mapper;
+package com.tokopedia.topads.keyword.view.mapper;
 
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
+import com.tokopedia.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/29/17.

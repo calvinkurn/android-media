@@ -1,15 +1,15 @@
-package com.tokopedia.seller.topads.keyword.data.source;
+package com.tokopedia.topads.keyword.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.keyword.data.mapper.KeywordAddDomainDataMapper;
-import com.tokopedia.seller.topads.keyword.data.mapper.KeywordDashboardMapper;
-import com.tokopedia.seller.topads.keyword.data.mapper.TopAdsKeywordEditDetailDataMapper;
-import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
-import com.tokopedia.seller.topads.keyword.data.source.cloud.api.DashboardKeywordCloud;
-import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
-import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.topads.keyword.data.mapper.KeywordAddDomainDataMapper;
+import com.tokopedia.topads.keyword.data.mapper.KeywordDashboardMapper;
+import com.tokopedia.topads.keyword.data.mapper.TopAdsKeywordEditDetailDataMapper;
+import com.tokopedia.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
+import com.tokopedia.topads.keyword.data.source.cloud.api.DashboardKeywordCloud;
+import com.tokopedia.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
+import com.tokopedia.topads.keyword.domain.model.KeywordDashboardDomain;
+import com.tokopedia.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 
 import javax.inject.Inject;
 

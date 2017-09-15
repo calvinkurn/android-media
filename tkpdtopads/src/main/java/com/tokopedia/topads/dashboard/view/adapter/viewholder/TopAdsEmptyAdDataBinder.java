@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter.viewholder;
+package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 
 /**

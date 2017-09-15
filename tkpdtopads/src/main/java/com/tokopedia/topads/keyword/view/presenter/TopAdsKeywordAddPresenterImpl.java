@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.keyword.view.presenter;
+package com.tokopedia.topads.keyword.view.presenter;
 
-import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordAddUseCase;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.topads.keyword.domain.interactor.KeywordAddUseCase;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 
 import java.util.ArrayList;
 

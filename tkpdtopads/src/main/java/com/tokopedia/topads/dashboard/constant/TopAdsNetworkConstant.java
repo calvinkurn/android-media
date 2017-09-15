@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.constant;
+package com.tokopedia.topads.dashboard.constant;
 
 /**
  * Created by Nathaniel on 11/15/2016.

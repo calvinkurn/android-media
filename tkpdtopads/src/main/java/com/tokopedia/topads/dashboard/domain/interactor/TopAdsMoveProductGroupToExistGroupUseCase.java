@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsProductAdsRepository;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
+import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 
 import rx.Observable;
 import rx.functions.Func1;

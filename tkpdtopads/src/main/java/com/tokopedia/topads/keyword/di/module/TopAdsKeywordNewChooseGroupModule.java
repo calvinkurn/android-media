@@ -1,14 +1,14 @@
-package com.tokopedia.seller.topads.keyword.di.module;
+package com.tokopedia.topads.keyword.di.module;
 
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsGroupAdFactory;
-import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenterImpl;
+import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
+import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

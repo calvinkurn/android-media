@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
 import android.os.Build;
 import android.view.View;

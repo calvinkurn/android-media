@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.keyword.domain;
+package com.tokopedia.topads.keyword.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
-import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
+import com.tokopedia.topads.keyword.domain.model.KeywordDashboardDomain;
+import com.tokopedia.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 
 import rx.Observable;
 

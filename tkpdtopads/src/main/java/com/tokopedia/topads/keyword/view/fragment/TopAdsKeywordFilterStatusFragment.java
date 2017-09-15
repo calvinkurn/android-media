@@ -1,13 +1,13 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.SparseArrayCompat;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 
 /**
  * Created by Nathaniel on 1/31/2017.

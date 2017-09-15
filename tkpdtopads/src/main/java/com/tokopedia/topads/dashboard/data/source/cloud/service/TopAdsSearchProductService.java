@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.data.source.cloud.service;
+package com.tokopedia.topads.dashboard.data.source.cloud.service;
 
 
-import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
+import com.tokopedia.topads.dashboard.data.model.data.Product;
 import com.tokopedia.seller.common.data.response.DataResponse;
 
 import java.util.List;

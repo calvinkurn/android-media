@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 /**
  * Created by normansyahputa on 2/13/17.

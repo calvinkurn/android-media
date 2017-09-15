@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

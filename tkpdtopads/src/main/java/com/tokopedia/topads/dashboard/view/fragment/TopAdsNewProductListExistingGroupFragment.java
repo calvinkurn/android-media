@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.text.TextUtils;
@@ -7,14 +7,14 @@ import android.view.View;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresenter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
+import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresenter;
 
 /**
  * Created by zulfikarrahman on 8/7/17.

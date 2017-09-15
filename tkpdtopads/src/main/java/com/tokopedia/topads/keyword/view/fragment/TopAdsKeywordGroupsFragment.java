@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,21 +17,21 @@ import android.widget.ImageView;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
-import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
-import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListView;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
+import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
+import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
+import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
+import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListView;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 
 import java.util.List;
 

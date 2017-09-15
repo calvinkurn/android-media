@@ -51,6 +51,7 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.goldmerchant.common.di.component.DaggerGoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -72,8 +73,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -483,5 +484,17 @@ public abstract class SellerRouterApplication extends MainApplication
                 urlQuery != null ? urlQuery : "",
                 "GET",
                 AuthUtil.KEY.KEY_WSV4);
+    }
+
+    @Override
+    public DataDeposit getDataDeposit(String shopId) {
+        DashboardTopadsInteractorImpl dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(getApplicationContext());
+        return dashboardTopadsInteractor.getDeposit(shopId);
+    }
+
+    @Override
+    public void goToTopAdsDashboard(Activity activity) {
+        Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
+        startActivity(intent);
     }
 }

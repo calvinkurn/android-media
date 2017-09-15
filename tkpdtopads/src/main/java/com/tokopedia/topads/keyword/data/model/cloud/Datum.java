@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.data.model.cloud;
+package com.tokopedia.topads.keyword.data.model.cloud;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

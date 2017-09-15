@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.keyword.view.adapter;
+package com.tokopedia.topads.keyword.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordGroupViewHolder;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.keyword.view.adapter.viewholder.TopAdsKeywordGroupViewHolder;
 
 /**
  * @author normansyahputa on 5/26/17.

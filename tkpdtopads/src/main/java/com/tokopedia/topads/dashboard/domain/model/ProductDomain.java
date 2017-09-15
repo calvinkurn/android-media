@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.domain.model;
+package com.tokopedia.topads.dashboard.domain.model;
 
 /**
  * @author normansyahputa on 2/23/17.

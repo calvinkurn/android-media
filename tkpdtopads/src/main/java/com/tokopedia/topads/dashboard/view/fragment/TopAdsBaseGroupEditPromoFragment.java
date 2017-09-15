@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.di.TopAdsGroupeditPromoDI;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.TopAdsGroupeditPromoDI;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
 
 /**
  * Created by zulfikarrahman on 3/1/17.

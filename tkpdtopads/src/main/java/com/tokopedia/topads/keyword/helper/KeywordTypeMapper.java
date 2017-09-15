@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.keyword.helper;
+package com.tokopedia.topads.keyword.helper;
 
 import android.content.Context;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 
 /**
  * @author Hendry on 5/26/2017.

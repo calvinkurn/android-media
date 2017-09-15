@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,14 +8,14 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
-import com.tokopedia.seller.topads.dashboard.di.TopAdsGetEtalaseListDI;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsEtalaseListView;
-import com.tokopedia.seller.topads.dashboard.view.model.RadioButtonItem;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsEtalaseListPresenter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.Etalase;
+import com.tokopedia.topads.dashboard.di.TopAdsGetEtalaseListDI;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsEtalaseListView;
+import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsEtalaseListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

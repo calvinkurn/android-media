@@ -34,13 +34,13 @@ import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.seller.goldmerchant.featured.helper.OnStartDragListener;
 import com.tokopedia.seller.goldmerchant.featured.helper.SimpleItemTouchHelperCallback;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.FeaturedProductAdapter;
+import com.tokopedia.seller.goldmerchant.featured.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
 import com.tokopedia.seller.goldmerchant.featured.view.listener.FeaturedProductView;
 import com.tokopedia.seller.goldmerchant.featured.view.presenter.FeaturedProductPresenterImpl;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -417,7 +417,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        ProductEmptyDataBinder emptyGroupAdsDataBinder = new ProductEmptyDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));

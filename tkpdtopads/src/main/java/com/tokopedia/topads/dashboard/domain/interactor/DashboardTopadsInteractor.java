@@ -1,22 +1,22 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataCredit;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Summary;
-import com.tokopedia.seller.topads.dashboard.data.model.data.TotalAd;
-import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.SearchProductRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.ShopRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.request.StatisticRequest;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
+import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.Product;
+import com.tokopedia.topads.dashboard.data.model.data.Summary;
+import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
+import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.topads.dashboard.data.model.request.SearchProductRequest;
+import com.tokopedia.topads.dashboard.data.model.request.ShopRequest;
+import com.tokopedia.topads.dashboard.data.model.request.StatisticRequest;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,12 +24,14 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/4/16.
  */
-
+@Deprecated
 public interface DashboardTopadsInteractor {
 
     void getDashboardSummary(StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener);
 
     void getDeposit(ShopRequest shopRequest, final ListenerInteractor<DataDeposit> listener);
+
+    DataDeposit getDeposit(String shopId);
 
     void getShopInfo(ShopRequest shopRequest, final ListenerInteractor<ShopModel> listener);
 

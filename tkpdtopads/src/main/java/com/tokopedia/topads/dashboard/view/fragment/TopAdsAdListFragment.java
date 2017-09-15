@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 
 import android.app.Activity;
@@ -20,19 +20,19 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.design.label.DateLabelView;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAdListAdapter;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAdListPresenter;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
-import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
 
 import java.util.List;
 

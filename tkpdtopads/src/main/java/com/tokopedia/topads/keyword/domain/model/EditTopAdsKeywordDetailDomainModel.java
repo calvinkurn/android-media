@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.domain.model;
+package com.tokopedia.topads.keyword.domain.model;
 
 /**
  * @author sebastianuskh on 5/29/17.

@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.data.factory;
+package com.tokopedia.topads.dashboard.data.factory;
 
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsEtalaseListMapper;
-import com.tokopedia.seller.topads.dashboard.data.source.TopAdsEtalaseDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.TopAdsEtalaseCloudDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsEtalaseCacheDataSource;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsEtalaseListMapper;
+import com.tokopedia.topads.dashboard.data.source.TopAdsEtalaseDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsEtalaseCloudDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsEtalaseCacheDataSource;
 
 /**
  * Created by Hendry on 2/24/17.

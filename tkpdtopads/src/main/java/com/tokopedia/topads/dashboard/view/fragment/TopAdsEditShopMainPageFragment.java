@@ -1,24 +1,16 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditCostShopActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsEditScheduleShopActivity;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostShopActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleShopActivity;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 8/8/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter;
+package com.tokopedia.topads.dashboard.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
-import com.tokopedia.seller.topads.dashboard.view.model.ChipsEntity;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.R;
+import com.tokopedia.seller.common.utils.CircleTransform;
+import com.tokopedia.topads.dashboard.view.model.ChipsEntity;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.List;
 

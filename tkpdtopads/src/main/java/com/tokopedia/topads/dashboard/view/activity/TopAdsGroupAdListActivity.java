@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,11 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupAdListFragment;
-import com.tokopedia.seller.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
-import com.tokopedia.seller.util.ShowCaseDialogFactory;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupAdListFragment;
+import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
+import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;

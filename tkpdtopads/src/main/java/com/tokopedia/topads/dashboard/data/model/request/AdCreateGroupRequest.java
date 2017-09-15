@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.data.model.request;
+package com.tokopedia.topads.dashboard.data.model.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

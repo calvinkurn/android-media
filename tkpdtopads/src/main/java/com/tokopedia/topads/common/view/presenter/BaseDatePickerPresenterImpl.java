@@ -1,14 +1,14 @@
-package com.tokopedia.seller.topads.common.view.presenter;
+package com.tokopedia.topads.common.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 

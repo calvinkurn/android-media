@@ -44,18 +44,17 @@ import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
+import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
-import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
-import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQ
 
 @RuntimePermissions
 public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, ProductDraftViewModel>
-        implements TopAdsEmptyAdDataBinder.Callback, ProductDraftListView {
+        implements ProductEmptyDataBinder.Callback, ProductDraftListView {
 
     private FabSpeedDial fabAdd;
 

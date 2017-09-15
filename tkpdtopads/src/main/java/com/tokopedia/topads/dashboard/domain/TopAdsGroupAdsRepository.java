@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.dashboard.domain;
+package com.tokopedia.topads.dashboard.domain;
 
-import com.tokopedia.seller.topads.dashboard.data.model.request.CreateGroupRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponseCreateGroup;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;

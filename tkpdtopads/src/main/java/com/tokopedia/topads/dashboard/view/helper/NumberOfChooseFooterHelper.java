@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.view.helper;
+package com.tokopedia.topads.dashboard.view.helper;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 
 import java.util.Locale;
 

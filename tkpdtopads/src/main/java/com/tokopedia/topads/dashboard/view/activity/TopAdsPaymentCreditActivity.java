@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsPaymentCreditFragment;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsPaymentCreditFragment;
 
 /**
  * Created by Nathaniel on 11/22/2016.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,11 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewProductListNewGroupFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListNewGroupFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
+import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 
 import java.util.ArrayList;
 import java.util.List;

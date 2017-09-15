@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsEtalaseListUseCase;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsEtalaseListView;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEtalaseListUseCase;
+import com.tokopedia.topads.dashboard.data.model.data.Etalase;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsEtalaseListView;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

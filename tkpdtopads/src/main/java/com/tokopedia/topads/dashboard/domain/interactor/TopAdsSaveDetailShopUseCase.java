@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsShopAdsRepository;
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
 
 import javax.inject.Inject;
 

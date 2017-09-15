@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.constant;
+package com.tokopedia.topads.dashboard.constant;
 
 /**
  * Created by Nathaniel on 12/15/2016.
@@ -18,9 +18,6 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_AD_DELETED = "EXTRA_AD_DELETED";
     public static final String EXTRA_CHOOSEN_OPTION_GROUP = "EXTRA_CHOOSEN_OPTION_GROUP";
     public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
-
-    public static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";
-    public static final String EXTRA_ITEM_SELECTED_POSITION = "EXTRA_ITEM_SELECTED_POSITION";
 
     public static final String EXTRA_FILTER_SELECTED_POSITION_LIST = "EXTRA_FILTER_SELECTED_POSITION_LIST";
     public static final String EXTRA_FILTER_SELECTED_STATUS = "EXTRA_FILTER_SELECTED_STATUS";

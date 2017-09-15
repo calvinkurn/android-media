@@ -1,8 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.topads.dashboard.view.activity;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -15,35 +14,33 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticAvgFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticConversionFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticCtrFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticImprFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticKlikFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsStatisticSpentFragment;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticViewListener;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenterImpl;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticAvgFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticConversionFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticCtrFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticImprFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticKlikFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticSpentFragment;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticViewListener;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +70,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsStatisticActivityPresenterImpl(this, new TopAdsProductAdInteractorImpl
-                (new TopAdsManagementService(new SessionHandler(this).getAccessToken(this)), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(this)), this);
+                (new TopAdsManagementService(new SessionHandler(this).getAccessToken(this)), new TopAdsCacheDataSourceImpl(this)), this);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.text.TextUtils;
 
@@ -7,9 +7,9 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsSearchProductRepository;
-import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.domain.TopAdsSearchProductRepository;
+import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
 
 import java.util.Map;
 

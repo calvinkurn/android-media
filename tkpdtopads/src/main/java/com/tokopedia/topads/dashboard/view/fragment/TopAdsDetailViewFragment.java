@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 
 import android.app.Activity;
@@ -20,16 +20,16 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
 
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 

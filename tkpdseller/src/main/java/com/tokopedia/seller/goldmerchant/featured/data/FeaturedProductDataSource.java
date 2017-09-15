@@ -1,6 +1,6 @@
 package com.tokopedia.seller.goldmerchant.featured.data;
 
-import com.tokopedia.seller.common.data.mapper.SimpleResponseMapper;
+import com.tokopedia.core.common.mapper.SimpleResponseMapper;
 import com.tokopedia.seller.goldmerchant.featured.data.cloud.api.FeaturedProductApi;
 import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
 import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;

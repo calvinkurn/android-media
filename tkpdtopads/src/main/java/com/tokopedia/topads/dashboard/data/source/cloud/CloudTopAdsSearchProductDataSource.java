@@ -1,16 +1,16 @@
-package com.tokopedia.seller.topads.dashboard.data.source.cloud;
+package com.tokopedia.topads.dashboard.data.source.cloud;
 
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.dashboard.data.mapper.SearchProductEOFMapper;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
-import com.tokopedia.seller.topads.dashboard.data.source.TopAdsSearchProductDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
-import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.data.mapper.SearchProductEOFMapper;
+import com.tokopedia.topads.dashboard.data.model.data.Product;
+import com.tokopedia.topads.dashboard.data.source.TopAdsSearchProductDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.domain.model.ProductDomain;
+import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
 
 import java.util.ArrayList;
 import java.util.List;

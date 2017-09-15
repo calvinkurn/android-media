@@ -1,13 +1,13 @@
-package com.tokopedia.seller.topads.keyword.constant;
+package com.tokopedia.topads.keyword.constant;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_BROAD;
-import static com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_EXACT;
-import static com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_BROAD;
-import static com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT;
-import static com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE;
-import static com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_PHRASE;
+import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_BROAD;
+import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_EXACT;
+import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_BROAD;
+import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT;
+import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE;
+import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_PHRASE;
 
 /**
  * @author normansyahputa on 4/25/17.

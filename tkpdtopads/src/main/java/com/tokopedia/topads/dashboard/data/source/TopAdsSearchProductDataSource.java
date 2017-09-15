@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.data.source;
+package com.tokopedia.topads.dashboard.data.source;
 
-import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
+import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
 
 import java.util.Map;
 

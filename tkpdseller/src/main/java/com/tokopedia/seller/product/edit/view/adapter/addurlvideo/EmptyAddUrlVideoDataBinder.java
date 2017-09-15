@@ -9,20 +9,20 @@ import android.widget.Button;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 
 /**
  * @author normansyahputa on 4/27/17.
  */
 
 public class EmptyAddUrlVideoDataBinder extends NoResultDataBinder {
-    private TopAdsEmptyAdDataBinder.Callback callback;
+    private ProductEmptyDataBinder.Callback callback;
 
     public EmptyAddUrlVideoDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
     }
 
-    public void setCallback(TopAdsEmptyAdDataBinder.Callback callback) {
+    public void setCallback(ProductEmptyDataBinder.Callback callback) {
         this.callback = callback;
     }
 
@@ -50,7 +50,7 @@ public class EmptyAddUrlVideoDataBinder extends NoResultDataBinder {
         });
     }
 
-    public static class EmptyAddUrlVideoViewHolder extends TopAdsEmptyAdDataBinder.EmptyViewHolder {
+    public static class EmptyAddUrlVideoViewHolder extends ProductEmptyDataBinder.EmptyViewHolder {
 
         private final Button textAddUrlVideo;
 

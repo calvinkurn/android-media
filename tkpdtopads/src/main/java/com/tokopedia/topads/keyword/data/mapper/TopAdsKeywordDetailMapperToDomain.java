@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.keyword.data.mapper;
+package com.tokopedia.topads.keyword.data.mapper;
 
-import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
-import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.keyword.data.model.cloud.Datum;
+import com.tokopedia.topads.keyword.domain.model.KeywordDetailDomain;
 
 import java.util.List;
 

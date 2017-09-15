@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.dashboard.data.factory;
+package com.tokopedia.topads.dashboard.data.factory;
 
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsBulkActionMapper;
-import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailProductMapper;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.TopAdsProductAdsDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsBulkActionMapper;
+import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailProductMapper;
+import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsProductAdsDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 
 import javax.inject.Inject;
 

@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.dashboard.view.mapper;
+package com.tokopedia.topads.dashboard.view.mapper;
 
-import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.domain.model.ProductDomain;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 /**
  * Created by Test on 5/31/2017.

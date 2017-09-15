@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.data.model;
+package com.tokopedia.topads.keyword.data.model;
 
 
 import com.google.gson.annotations.SerializedName;

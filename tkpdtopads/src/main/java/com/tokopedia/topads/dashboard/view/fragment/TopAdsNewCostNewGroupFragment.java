@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 
 /**
  * Created by zulfikarrahman on 8/8/17.

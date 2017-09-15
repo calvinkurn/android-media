@@ -1,14 +1,14 @@
-package com.tokopedia.seller.topads.keyword.domain.interactor;
+package com.tokopedia.topads.keyword.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordRepository;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum;
+import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
+import com.tokopedia.topads.keyword.domain.TopAdsKeywordRepository;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum;
 
 import java.util.ArrayList;
 import java.util.List;

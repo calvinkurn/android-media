@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.listener;
+package com.tokopedia.topads.keyword.view.listener;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.util.SparseArrayCompat;

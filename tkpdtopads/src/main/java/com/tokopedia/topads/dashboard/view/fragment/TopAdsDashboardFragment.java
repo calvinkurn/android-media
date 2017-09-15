@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,18 +13,18 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.design.label.DateLabelView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Summary;
-import com.tokopedia.seller.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsAddCreditActivity;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardFragmentListener;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.data.Summary;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardFragmentListener;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.dashboard.view.widget.TopAdsStatisticLabelView;
 
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends

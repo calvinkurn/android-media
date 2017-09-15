@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Fragment;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.data.model.data.Cell;
 
 /**
  * Created by zulfikarrahman on 1/6/17.

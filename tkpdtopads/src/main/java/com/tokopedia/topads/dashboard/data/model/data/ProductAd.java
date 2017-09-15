@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.dashboard.data.model.data;
+package com.tokopedia.topads.dashboard.data.model.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 
 
 public class ProductAd implements Ad, Parcelable {

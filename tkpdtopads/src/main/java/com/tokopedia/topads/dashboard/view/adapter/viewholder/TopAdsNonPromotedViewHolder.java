@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter.viewholder;
+package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.listener.AdapterSelectionListener;
-import com.tokopedia.seller.topads.dashboard.view.listener.BindViewHolder;
-import com.tokopedia.seller.topads.dashboard.view.model.NonPromotedTopAdsAddProductModel;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
+import com.tokopedia.topads.dashboard.view.listener.BindViewHolder;
+import com.tokopedia.topads.dashboard.view.model.NonPromotedTopAdsAddProductModel;
 
 /**
  * @author normansyahputa on 3/6/17.

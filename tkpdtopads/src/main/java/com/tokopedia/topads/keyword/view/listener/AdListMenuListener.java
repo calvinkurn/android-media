@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.listener;
+package com.tokopedia.topads.keyword.view.listener;
 
 /**
  * Created by nathan on 6/1/17.

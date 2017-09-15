@@ -1,15 +1,13 @@
-package com.tokopedia.seller.topads.dashboard.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
+import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -26,7 +24,6 @@ public class TopAdsShopAdInteractorImpl implements TopAdsShopAdInteractor {
 
     private CompositeSubscription compositeSubscription;
     private TopAdsManagementService topAdsManagementService;
-    private TopAdsDbDataSource topAdsDbDataSource;
     private TopAdsCacheDataSourceImpl topAdsCacheDataSource;
     private Context context;
 
@@ -34,7 +31,6 @@ public class TopAdsShopAdInteractorImpl implements TopAdsShopAdInteractor {
         this.context = context;
         compositeSubscription = new CompositeSubscription();
         topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
-        topAdsDbDataSource = new TopAdsDbDataSourceImpl();
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }
 

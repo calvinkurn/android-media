@@ -1,16 +1,16 @@
-package com.tokopedia.seller.topads.keyword.data.source.cloud.api;
+package com.tokopedia.topads.keyword.data.source.cloud.api;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
-import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
-import com.tokopedia.seller.topads.keyword.data.mapper.KeywordAddDomainDataMapper;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
+import com.tokopedia.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
+import com.tokopedia.topads.keyword.data.mapper.KeywordAddDomainDataMapper;
+import com.tokopedia.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
+import com.tokopedia.topads.keyword.data.model.cloud.Datum;
+import com.tokopedia.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

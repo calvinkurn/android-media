@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.dashboard.view.mapper;
+package com.tokopedia.topads.dashboard.view.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailShopViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

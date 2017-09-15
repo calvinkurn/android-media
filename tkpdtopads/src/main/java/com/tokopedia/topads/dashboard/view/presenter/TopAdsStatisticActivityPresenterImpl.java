@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
-import com.tokopedia.seller.topads.dashboard.data.model.request.StatisticRequest;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
+import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
+import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.request.StatisticRequest;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
 
 import java.util.Date;
 import java.util.List;

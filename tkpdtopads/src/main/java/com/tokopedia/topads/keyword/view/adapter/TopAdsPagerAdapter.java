@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.adapter;
+package com.tokopedia.topads.keyword.view.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordListFragment;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordNegativeListFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordListFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNegativeListFragment;
 
 /**
  * @author normansyahputa on 5/19/17.

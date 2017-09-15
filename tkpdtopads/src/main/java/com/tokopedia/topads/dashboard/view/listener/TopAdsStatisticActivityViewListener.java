@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
-import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.Cell;
 
 import java.util.List;
 

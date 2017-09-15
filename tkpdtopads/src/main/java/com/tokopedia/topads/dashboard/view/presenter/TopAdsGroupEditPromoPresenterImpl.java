@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.topads.dashboard.utils.ViewUtils;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
 
 import rx.Subscriber;
 

@@ -1,7 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,25 +26,26 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.utils.NetworkStatus;
+import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.mapper.SearchProductEOFMapper;
-import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsSearchProductRepositoryImpl;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.topads.dashboard.utils.TopAdsNetworkErrorHelper;
-import com.tokopedia.seller.topads.dashboard.view.TopAdsSearchProductView;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsFilterProductPromoActivity;
-import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAddProductListAdapter;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.listener.AdapterSelectionListener;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.mapper.SearchProductEOFMapper;
+import com.tokopedia.topads.dashboard.data.repository.TopAdsSearchProductRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
+import com.tokopedia.topads.dashboard.utils.TopAdsNetworkErrorHelper;
+import com.tokopedia.topads.dashboard.view.TopAdsSearchProductView;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterProductPromoActivity;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsAddProductListAdapter;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
+import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -108,12 +108,12 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     private void fetchData() {
         if (topAdsAddProductListPresenter.getNetworkStatus()
-                == TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT) {
+                == NetworkStatus.ONACTIVITYFORRESULT) {
             refreshHandler.setRefreshing(true);
             topAdsAddProductListPresenter.searchProduct();
         } else {
             topAdsAddProductListPresenter.setNetworkStatus(
-                    TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                    NetworkStatus.PULLTOREFRESH);
             if (topAdsAddProductListPresenter.isFirstTime()) {
                 topAdsProductListAdapter.showLoadingFull(true);
                 swipeToRefresh.setEnabled(false);
@@ -191,7 +191,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
                 topAdsAddProductListPresenter.resetPage();
                 topAdsAddProductListPresenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                        NetworkStatus.PULLTOREFRESH);
                 searchProductNetworkCall();
             }
         });
@@ -239,7 +239,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
                 topAdsAddProductListPresenter.resetPage();
                 topAdsAddProductListPresenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                        NetworkStatus.RETRYNETWORKCALL);
                 searchProductNetworkCall();
             }
         });
@@ -267,7 +267,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                         && topAdsProductListAdapter.getDataSize() < totalItem) {
                     topAdsAddProductListPresenter.incrementPage();
                     topAdsAddProductListPresenter.setNetworkStatus(
-                            TopAdsAddProductListPresenter.NetworkStatus.LOADMORE);
+                            NetworkStatus.LOADMORE);
                     loadMoreNetworkCall();
                     topAdsProductListAdapter.showLoading(true);
                 }
@@ -391,7 +391,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                     topAdsAddProductListPresenter.putSelectedEtalaseId(
                             data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0));
 
-                    topAdsAddProductListPresenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT);
+                    topAdsAddProductListPresenter.setNetworkStatus(NetworkStatus.ONACTIVITYFORRESULT);
                 }
             }
         }
@@ -426,7 +426,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         topAdsProductListAdapter.showLoadingFull(true);
 
         topAdsAddProductListPresenter.setNetworkStatus(
-                TopAdsAddProductListPresenter.NetworkStatus.SEARCHVIEW);
+                NetworkStatus.SEARCHVIEW);
         searchProductNetworkCall();
     }
 
@@ -523,7 +523,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                                             refreshHandler.setRefreshing(true);
 
                                             topAdsAddProductListPresenter.setNetworkStatus(
-                                                    TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                                                    NetworkStatus.RETRYNETWORKCALL);
                                             loadMoreNetworkCall();
                                         }
                                     }, getActivity());

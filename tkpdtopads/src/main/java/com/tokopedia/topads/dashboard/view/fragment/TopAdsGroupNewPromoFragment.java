@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,11 +7,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity;
 
 /**
  * Created by zulfikarrahman on 2/22/17.

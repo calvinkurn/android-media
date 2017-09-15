@@ -1,15 +1,15 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailShopUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailShopUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
-import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailEditView;
-import com.tokopedia.seller.topads.dashboard.view.mapper.TopAdDetailProductMapper;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailShopUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailShopUseCase;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.topads.dashboard.utils.ViewUtils;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
+import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
 
 import rx.Subscriber;
 

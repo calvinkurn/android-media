@@ -1,14 +1,14 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailShopViewModel;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditShopPresenter;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditShopPresenter;
 
 /**
  * Created by zulfikarrahman on 8/8/17.

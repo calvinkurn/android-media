@@ -1,10 +1,10 @@
-package com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice;
+package com.tokopedia.topads.dashboard.data.source.cloud.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
 
 import retrofit2.Retrofit;
 

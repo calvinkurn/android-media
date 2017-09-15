@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.widget;
+package com.tokopedia.topads.dashboard.view.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -7,7 +7,7 @@ import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 
 /**
  * Created by zulfikarrahman on 2/23/17.

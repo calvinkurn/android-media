@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -16,16 +16,16 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.di.TopAdsAddPromoPoductDI;
-import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsManageGroupPromoPresenter;
-import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
-import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomRadioGroup;
-import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsRadioExpandView;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.di.TopAdsAddPromoPoductDI;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsManageGroupPromoPresenter;
+import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
+import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomRadioGroup;
+import com.tokopedia.topads.dashboard.view.widget.TopAdsRadioExpandView;
 
 import java.util.ArrayList;
 import java.util.List;

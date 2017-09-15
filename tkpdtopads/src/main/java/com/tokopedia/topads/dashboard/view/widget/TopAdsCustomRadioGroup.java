@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.widget;
+package com.tokopedia.topads.dashboard.view.widget;
 
 /**
  * Created by zulfikarrahman on 2/22/17.

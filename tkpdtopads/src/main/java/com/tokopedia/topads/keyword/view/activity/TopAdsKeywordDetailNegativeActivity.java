@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.activity;
+package com.tokopedia.topads.keyword.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +7,9 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordDetailNegativeFragment;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordDetailNegativeFragment;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 /**
  * Created by zulfikarrahman on 5/26/17.

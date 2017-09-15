@@ -1,14 +1,14 @@
-package com.tokopedia.seller.topads.keyword.di.module;
+package com.tokopedia.topads.keyword.di.module;
 
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
-import com.tokopedia.seller.topads.keyword.data.source.KeywordDashboardDataSouce;
-import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordRepository;
-import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
+import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
+import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
+import com.tokopedia.topads.keyword.domain.TopAdsKeywordRepository;
+import com.tokopedia.topads.keyword.domain.interactor.KeywordDashboardUseCase;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

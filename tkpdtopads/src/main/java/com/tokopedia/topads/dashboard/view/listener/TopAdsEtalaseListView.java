@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.dashboard.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
+import com.tokopedia.topads.dashboard.data.model.data.Etalase;
 
 import java.util.List;
 

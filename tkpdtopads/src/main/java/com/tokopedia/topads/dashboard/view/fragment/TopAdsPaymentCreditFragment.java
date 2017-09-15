@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,9 +14,9 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataCredit;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
 
 public class TopAdsPaymentCreditFragment extends TkpdFragment {
 

@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.dashboard.data.source;
+package com.tokopedia.topads.dashboard.data.source;
 
-import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
+import com.tokopedia.topads.dashboard.data.model.data.Etalase;
 
 import java.util.List;
 

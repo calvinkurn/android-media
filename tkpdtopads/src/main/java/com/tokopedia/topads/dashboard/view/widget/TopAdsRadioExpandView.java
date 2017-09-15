@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.widget;
+package com.tokopedia.topads.dashboard.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 
 /**
  * Created by zulfikarrahman on 2/22/17.

@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.keyword.view.presenter;
+package com.tokopedia.topads.keyword.view.presenter;
 
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
-import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
-import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
-import com.tokopedia.seller.topads.keyword.view.mapper.TopAdsKeywordDetailMapperView;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
+import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
+import com.tokopedia.topads.keyword.domain.model.KeywordDetailDomain;
+import com.tokopedia.topads.keyword.view.mapper.TopAdsKeywordDetailMapperView;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 
 import java.util.Date;
 

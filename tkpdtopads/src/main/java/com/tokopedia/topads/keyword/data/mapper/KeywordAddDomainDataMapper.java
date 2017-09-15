@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.keyword.data.mapper;
+package com.tokopedia.topads.keyword.data.mapper;
 
-import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
-import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.KeywordAddRequestDatum;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
+import com.tokopedia.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
+import com.tokopedia.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
+import com.tokopedia.topads.keyword.data.model.cloud.request.keywordadd.KeywordAddRequestDatum;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

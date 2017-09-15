@@ -1,17 +1,17 @@
-package com.tokopedia.seller.topads.dashboard.view.presenter;
+package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateNewGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
-import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
-import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
-import com.tokopedia.seller.topads.dashboard.view.mapper.TopAdDetailProductMapper;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateNewGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.topads.dashboard.utils.ViewUtils;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
+import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.List;
 

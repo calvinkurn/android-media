@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.dashboard.data.model.response;
+package com.tokopedia.topads.dashboard.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 
 import java.util.List;
 

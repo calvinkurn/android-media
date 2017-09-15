@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.topads.keyword.view.fragment;
 
 import android.view.View;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/26/17.

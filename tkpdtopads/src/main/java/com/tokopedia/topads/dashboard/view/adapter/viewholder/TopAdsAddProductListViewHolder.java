@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.adapter.viewholder;
+package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -8,11 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.dashboard.view.listener.AdapterSelectionListener;
-import com.tokopedia.seller.topads.dashboard.view.listener.BindViewHolder;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsAddProductModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
+import com.tokopedia.topads.dashboard.view.listener.BindViewHolder;
+import com.tokopedia.topads.dashboard.view.model.TopAdsAddProductModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 /**
  * Created by normansyahputa on 2/13/17.

@@ -1,12 +1,12 @@
-package com.tokopedia.seller.topads.dashboard.data.repository;
+package com.tokopedia.topads.dashboard.data.repository;
 
-import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsGroupAdFactory;
-import com.tokopedia.seller.topads.dashboard.data.model.request.CreateGroupRequest;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponseCreateGroup;
-import com.tokopedia.seller.topads.dashboard.data.source.cloud.TopAdsGroupAdsDataSource;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
+import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
+import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsGroupAdsDataSource;
+import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 
 import java.util.List;
 
