@@ -184,4 +184,8 @@ public class ProductProblemDetailFragmentPresenter
                 RESULT_SAVE_AND_CHOOSE_OTHER :
                 RESULT_SAVE);
     }
+
+    public long getDuration(ProductProblemViewModel productProblemViewModel) {
+        return 141048000;
+    }
 }

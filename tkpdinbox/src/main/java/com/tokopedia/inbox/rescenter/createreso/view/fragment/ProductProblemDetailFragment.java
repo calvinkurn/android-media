@@ -2,18 +2,19 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
+import com.tokopedia.inbox.rescenter.utils.TimeTickerUtil;
 
 /**
  * Created by yoasfs on 21/08/17.
@@ -312,7 +314,10 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         TextView tvCourierInfo = (TextView) dialog.findViewById(R.id.tv_courier_info);
         ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
         String shippingName = productProblemViewModel.getOrder().getShipping().getName() + " " + productProblemViewModel.getOrder().getShipping().getDetail().getName();
-
+        View timeTickerView = dialog.findViewById(R.id.time_ticker);
+        final TimeTickerUtil timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
+                getTimeTickerListener());
+        timeTickerUtil.startTimer(presenter.getDuration(productProblemViewModel));
         tvCourierInfo.setText("[" + shippingName + "]");
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,6 +333,12 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             }
         });
         dialog.show();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                timeTickerUtil.destroy();
+            }
+        });
     }
 
     @Override
@@ -347,5 +358,19 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         output.putExtra(RESULT_STEP_CODE, resultStepCode);
         getActivity().setResult(Activity.RESULT_OK, output);
         getActivity().finish();
+    }
+
+    public TimeTickerUtil.TimeTickerListener getTimeTickerListener() {
+        return new TimeTickerUtil.TimeTickerListener() {
+            @Override
+            public void onStart() {
+                Log.d(ProductProblemDetailFragment.class.getSimpleName(), "onStart Ticker");
+            }
+
+            @Override
+            public void onFinish() {
+                Log.d(ProductProblemDetailFragment.class.getSimpleName(), "onFinish Ticker");
+            }
+        };
     }
 }
