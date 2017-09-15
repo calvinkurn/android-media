@@ -6,11 +6,11 @@ import {
   StyleSheet,
   RefreshControl,
   ActivityIndicator,
-  Text,
   TouchableNativeFeedback,
   Image,
   TextInput,
 } from 'react-native'
+import { Text } from '../common/TKPText'
 import Picker from '../components/product/EtalaseSelectPopUp'
 import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList } from '../actions/index'
 import Product from '../components/product/Product'
@@ -92,7 +92,7 @@ class VisibleProductList extends Component {
             <Text style={styles.etalaseText}>Etalase: </Text>
             <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
               <View style={styles.etalasePicker}>
-                <Text style={{ fontSize: 18, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
+                <Text style={{ fontSize: 14, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
                 <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow-down-grey.png' }} />
               </View>
             </TouchableNativeFeedback>
@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
   productListHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'flex-end',
     marginTop: 14,
     marginBottom: 14,
     paddingRight: 5

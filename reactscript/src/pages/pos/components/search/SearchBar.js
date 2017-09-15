@@ -3,7 +3,6 @@ import {
   View,
   TextInput,
   StyleSheet,
-  Text,
   SectionList,
   TouchableWithoutFeedback,
   Image,
@@ -11,6 +10,7 @@ import {
 } from 'react-native'
 
 import NotFound from './SearchNotFound'
+import { Text } from '../../common/TKPText'
 
 class SearchBar extends Component {
   constructor(props) {
@@ -34,7 +34,7 @@ class SearchBar extends Component {
       }>
         <View>
           <Text
-            style={{ fontSize: 20 }}
+            style={{ fontSize: 14 }}
             ellipsizeMode='tail'
             numberOfLines={1}>{item.text}</Text>
         </View>
@@ -52,9 +52,9 @@ class SearchBar extends Component {
       borderBottomColor: '#e0e0e0'
     }}>
       <Text style={{
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: '400',
-        color: 'rgba(0,0,0,.38)'
+        color: '#9b9b9b'
       }}>{section.title}</Text>
     </View>
   )
@@ -76,9 +76,10 @@ class SearchBar extends Component {
             value={this.props.queryText}
             maxLength={30}
             returnKeyType='search'
+            underlineColorAndroid='transparent'
             onSubmitEditing={
               () => {
-                this.props.onSubmit(this.props.queryText ,this.props.etalaseId)
+                this.props.onSubmit(this.props.queryText, this.props.etalaseId)
                 this.toggleResults(false)
               }
             }
@@ -100,7 +101,7 @@ class SearchBar extends Component {
               this.props.onClearSearch()
               this.toggleResults(false)
             }}>
-              <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/close-icon.png' }} />
+            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/close-icon.png' }} />
             </TouchableWithoutFeedback>
           </View>
         </View>

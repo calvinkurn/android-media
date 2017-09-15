@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
+import { View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
+import { Text } from '../../common/TKPText'
 import PopUp from '../../common/TKPPopupModal'
+import { config } from '../../lib/config'
 
 class CartItem extends Component {
   constructor(props) {
@@ -24,53 +26,62 @@ class CartItem extends Component {
     const onRemove = this.props.onRemove
 
     return (
-      <View style={styles.container}>
-        <PopUp
-          visible={this.state.show}
-          animationType='fade'
-          onBackPress={() => { this.togglePopUp(false) }}
-          title='Konfirmasi Pembatalan'
-          subTitle={`${item.name} - senilai ${item.price}`}
-          onSecondOptionTap={() => { this.removeItem(item.id) }}
-          onFirstOptionTap={() => { this.togglePopUp(false) }}
-          firstOptionText='Tidak'
-          secondOptionText='Ya'
-          onCloseIconTap={() => { this.togglePopUp(false) }}
-        />
-        <View style={{ width: '8%' }}>
-          <TouchableWithoutFeedback
-            onPress={() => { this.togglePopUp(true) }} >
-            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/trash.png' }} style={styles.trashImage} />
-          </TouchableWithoutFeedback>
-        </View>
-        <View style={{ width: '20%' }}>
-          <Image source={{ uri: item.imageUrl }} style={styles.imageStyle} />
-        </View>
-        <View style={{ width: '40%' }}>
-          <Text ellipsizeMode='tail' numberOfLines={2} style={styles.productName}>{item.name}</Text>
-          <Text style={styles.price}>Rp. {item.price}</Text>
-        </View>
-        <View style={styles.qtyContainer}>
-          <Text style={styles.qtyLabel}>Qty</Text>
-          <View style={styles.qtyControlContainer}>
+      <View>
+        <View style={styles.container}>
+          <PopUp
+            visible={this.state.show}
+            animationType='fade'
+            onBackPress={() => { this.togglePopUp(false) }}
+            title='Konfirmasi Pembatalan'
+            subTitle={`${item.name} - senilai ${item.price}`}
+            onSecondOptionTap={() => { this.removeItem(item.id) }}
+            onFirstOptionTap={() => { this.togglePopUp(false) }}
+            firstOptionText='Tidak'
+            secondOptionText='Ya'
+            onCloseIconTap={() => { this.togglePopUp(false) }}
+          />
+          <View style={{ width: '8%' }}>
             <TouchableWithoutFeedback
-              disabled={item.qty === 1}
-              onPress={() => { onDecr(item.id) }}>
-              <View>
-                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/btn_minus.png' }} style={styles.qtyControlImage}></Image>
-              </View>
-            </TouchableWithoutFeedback>
-            <View style={styles.qty}>
-              <Text style={styles.qtyText}> {item.qty} </Text>
-            </View>
-            <TouchableWithoutFeedback
-              onPress={() => { onIncr(item.id) }}>
-              <View>
-                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/btn_plus.png' }} style={styles.qtyControlImage}></Image>
-              </View>
+              onPress={() => { this.togglePopUp(true) }} >
+              <Image source={{uri: config.imageBasePath + 'trash.png'}} style={styles.trashImage} />
             </TouchableWithoutFeedback>
           </View>
+          <View style={{ width: '10%' }}>
+            <Image source={{ uri: item.imageUrl }} style={styles.imageStyle} />
+          </View>
+          <View style={{ width: '50%', alignSelf: 'flex-start' }}>
+            <Text ellipsizeMode='tail' numberOfLines={2} style={styles.productName}>{item.name}</Text>
+            <Text style={styles.price}>Rp. {item.price}</Text>
+          </View>
+          <View style={styles.qtyContainer}>
+            <Text style={styles.qtyLabel}>Qty</Text>
+            <View style={styles.qtyControlContainer}>
+              <TouchableWithoutFeedback
+                disabled={item.qty === 1}
+                onPress={() => { onDecr(item.id) }}>
+                <View>
+                  <Image source={require('../img/btn_minus.png')} style={styles.qtyControlImage}></Image>
+                </View>
+              </TouchableWithoutFeedback>
+              <View style={styles.qty}>
+                <Text style={styles.qtyText}> {item.qty} </Text>
+              </View>
+              <TouchableWithoutFeedback
+                onPress={() => { onIncr(item.id) }}>
+                <View>
+                  <Image source={require('../img/btn_plus.png')} style={styles.qtyControlImage}></Image>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </View>
         </View>
+        <View
+          style={{
+            borderBottomColor: '#e0e0e0',
+            borderBottomWidth: 1,
+            marginHorizontal: '2.5%'
+          }}
+        />
       </View>
     )
   }
@@ -80,8 +91,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    borderBottomColor: '#e0e0e0',
-    borderBottomWidth: 1,
     paddingHorizontal: 5,
     paddingVertical: 30,
     alignItems: 'center',
@@ -93,9 +102,9 @@ const styles = StyleSheet.create({
   },
   price: {
     color: '#ff5722',
-    fontSize: 18,
+    fontSize: 14,
     lineHeight: 20,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   qtyControlContainer: {
     flexDirection: 'row',
@@ -110,7 +119,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   qtyContainer: {
-    width: '22%',
+    width: '20%',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -127,14 +136,12 @@ const styles = StyleSheet.create({
     height: 38
   },
   qtyLabel: {
-    fontSize: 16,
-    color: '#e0e0e0',
-    fontWeight: 'bold',
+    fontSize: 12,
   },
   qtyText: {
-    fontSize: 16,
+    fontSize: 14,
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 4.5,
   },
   trashImage: {
     width: 30,
@@ -143,7 +150,8 @@ const styles = StyleSheet.create({
     left: 10,
   },
   productName: {
-    fontSize: 18
+    fontSize: 14,
+    height: 38,
   }
 })
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Modal, View, Text, StyleSheet, FlatList, TouchableNativeFeedback } from 'react-native'
+import { Modal, View, StyleSheet, FlatList, TouchableNativeFeedback } from 'react-native'
+import { Text } from '../../common/TKPText'
 
 class EtalaseSelectPopUp extends Component {
   constructor(props) {
@@ -11,14 +12,14 @@ class EtalaseSelectPopUp extends Component {
       <TouchableNativeFeedback onPress={() => {
         this.props.onChange(item.id)
         this.props.onBackTap()
-        }}>
-      <View>
-        {
-          item.id == this.props.value ? 
-            <Text style={styles.listHeaderText}>{item.name}</Text> : 
-            <Text style={styles.itemText}>{item.name}</Text>
-        }
-      </View>
+      }}>
+        <View>
+          {
+            item.id == this.props.value ?
+              <Text style={styles.listHeaderText}>{item.name}</Text> :
+              <Text style={styles.itemText}>{item.name}</Text>
+          }
+        </View>
       </TouchableNativeFeedback>
     )
   }
@@ -86,13 +87,14 @@ const styles = StyleSheet.create({
   itemText: {
     paddingLeft: 30,
     paddingVertical: 20,
-    fontSize: 18,
+    fontSize: 14,
   },
   headerText: {
-    fontSize: 18,
+    fontSize: 14,
     paddingLeft: 30,
     paddingVertical: 20,
-    color: 'black'
+    color: 'black',
+    fontFamily: 'Roboto-Medium'
   },
   listHeader: {
 
@@ -100,8 +102,8 @@ const styles = StyleSheet.create({
   listHeaderText: {
     paddingLeft: 30,
     paddingVertical: 20,
-    fontSize: 18,
+    fontSize: 14,
     color: '#42B549',
-    fontWeight: 'bold'
+    fontFamily: 'Roboto-Medium'
   }
 })
