@@ -26,7 +26,13 @@ const btnStyle = StyleSheet.create({
     borderColor: '#ff5722',
   },
   big: {
-
+    height: 52,
+    backgroundColor: '#ff5722',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#ff5722',
   }
 })
 
@@ -40,7 +46,9 @@ const btnTextStyle = StyleSheet.create({
     fontWeight: '600'
   },
   big: {
-
+    color: '#f1f1f1',
+    fontSize: 14,
+    fontWeight: '600',
   }
 })
 

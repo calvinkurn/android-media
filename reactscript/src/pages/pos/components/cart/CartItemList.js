@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Modal, View, Text, TouchableWithoutFeedback, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { Modal, View, TouchableWithoutFeedback, Image, ScrollView } from 'react-native'
 import CartItem from './CartItem'
 import Button from '../../common/TKPPrimaryBtn'
 import PopUp from '../../common/TKPPopupModal'
-import { NavigationModule } from 'NativeModules'
-import BtnLargeOrange from '../button/BtnLargeOrange'
+import { Text } from '../../common/TKPText'
 
 export default class CartItemList extends Component {
   constructor(props) {
@@ -12,7 +11,6 @@ export default class CartItemList extends Component {
     this.state = {
       showPopUp: false
     }
-    // this.paymentCheckoutClicked = this.paymentCheckoutClicked.bind(this)
   }
 
   toggleScreen = (visible) => {
@@ -22,7 +20,6 @@ export default class CartItemList extends Component {
   remove = () => {
     this.setState({ showPopUp: false })
     this.props.onRemoveAllFromCart()
-    console.log("remove clicked")
   }
 
   paymentCheckoutClicked = () => {
@@ -50,15 +47,15 @@ export default class CartItemList extends Component {
         {items.length > 0 ?
           <View style={{ flex: 1 }}>
             <View style={styles.headerContainer}>
-              <View style={{ width: '10%' }}>
+              <View>
                 <TouchableWithoutFeedback onPress={onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
                 </TouchableWithoutFeedback>
               </View>
-              <View style={{ width: '85%' }}>
-                <Text style={{ fontSize: 24, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
+              <View style={{left: -220}}>
+                <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
               </View>
-              <View style={{ width: '5%' }}>
+              <View>
                 <TouchableWithoutFeedback onPress={() => { this.toggleScreen(true) }}>
                   <Image source={require('../img/trash-all.png')} />
                 </TouchableWithoutFeedback>
@@ -97,7 +94,7 @@ export default class CartItemList extends Component {
               <View style={{ marginTop: 20 }}>
                 <Button
                   content='Checkout'
-                  type='medium'
+                  type='big'
                   onTap={() => {this.paymentCheckoutClicked()}}
                 />
               </View>
@@ -122,13 +119,13 @@ export default class CartItemList extends Component {
                 height: '40%',
                 backgroundColor: '#fff'
               }}>
-                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/shopping-basket.png' }} style={{ width: 100, height: 100 }} />
+                <Image source={require('../img/shopping-basket.png')} style={{ width: 100, height: 100 }} />
                 <Text>Tidak Ada barang dalam keranjang</Text>
               </View>
               <View style={{ marginTop: 20 }}>
                 <Button
                   content='Mulai Belanja'
-                  type='medium'
+                  type='big'
                   onTap={onBackPress}
                 />
               </View>
@@ -148,9 +145,13 @@ const styles = {
     justifyContent: 'space-between',
     paddingVertical: 20,
     paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#e0e0e0'
   },
   itemListContainer: {
     backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0'
   },
   emptyList: {
     paddingVertical: 10,
@@ -167,6 +168,8 @@ const styles = {
     paddingVertical: 30,
     paddingHorizontal: '4%',
     backgroundColor: '#f1f1f1',
+    borderWidth: 1,
+    borderColor: '#e0e0e0'
   },
   checkoutBtn: {
     height: 40,
@@ -196,7 +199,7 @@ const styles = {
     fontWeight: '300',
   },
   paymentText: {
-    fontSize: 20,
+    fontSize: 16,
     color: 'black'
   }
 }
