@@ -25,7 +25,8 @@
                     android:id="@+id/input_new_group"
                     android:hint="@string/label_top_ads_group_name"
                     android:maxLength="70"
-                    android:maxLines="1"
+                    android:inputType="text"
+                    android:singleLine="true"
                     style="@style/EditText.GreenHighlight"/>
             </android.support.design.widget.TextInputLayout>
 

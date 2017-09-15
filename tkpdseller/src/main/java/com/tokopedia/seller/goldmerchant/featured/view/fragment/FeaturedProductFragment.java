@@ -253,6 +253,11 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
     public void setFeaturedProductType(@FeaturedProductType int featuredProductType) {
         this.featuredProductType = featuredProductType;
         getActivity().invalidateOptionsMenu();
+        if(featuredProductType == FeaturedProductType.DELETE_DISPLAY || featuredProductType == FeaturedProductType.ARRANGE_DISPLAY){
+            swipeToRefresh.setEnabled(false);
+        }else{
+            swipeToRefresh.setEnabled(true);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -265,7 +270,6 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
         }else{
             setVisibleMenuModeDelete(menu, false);
         }
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     void setVisibleMenuModeDelete(Menu menu, boolean isMenuModeDeleteVisible) {
@@ -401,7 +405,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                 for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModels) {
                     FeaturedProductModel featuredProductModel = new FeaturedProductModel();
                     featuredProductModel.setProductId(Long.valueOf(productListPickerViewModel.getId()));
-                    featuredProductModel.setImageUrl(productListPickerViewModel.getImageUrl());
+                    featuredProductModel.setImageUrl(productListPickerViewModel.getIcon());
                     featuredProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
                     featuredProductModel.setProductName(productListPickerViewModel.getTitle());
 

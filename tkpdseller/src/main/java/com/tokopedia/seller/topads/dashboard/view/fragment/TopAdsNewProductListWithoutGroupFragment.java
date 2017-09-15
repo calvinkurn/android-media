@@ -2,8 +2,10 @@ package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyProductListDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenter;
 
@@ -36,5 +38,12 @@ public class TopAdsNewProductListWithoutGroupFragment extends TopAdsNewProductLi
             stepperListener.goToNextPage(stepperModel);
             hideLoading();
         }
+    }
+
+    @Override
+    protected TopAdsEmptyProductListDataBinder getEmptyViewDefaultBinder() {
+        TopAdsEmptyProductListDataBinder topAdsEmptyProductListDataBinder = super.getEmptyViewDefaultBinder();
+        topAdsEmptyProductListDataBinder.setEmptyContentText(getString(R.string.top_ads_label_choose_product_desc_empty_without_group));
+        return topAdsEmptyProductListDataBinder;
     }
 }

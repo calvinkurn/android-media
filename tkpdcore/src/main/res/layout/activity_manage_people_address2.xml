@@ -21,7 +21,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_action_filter_white_24dp"
         app:backgroundTint="@color/green_500"
-        app:layout_behavior="com.tokopedia.core.manage.people.address.customviews.ScrollAwareFABBehavior"
         />
 
 </android.support.design.widget.CoordinatorLayout>

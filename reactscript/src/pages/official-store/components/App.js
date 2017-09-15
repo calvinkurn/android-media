@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   Dimensions,
   DeviceEventEmitter,
-  AsyncStorage,
   RefreshControl 
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -24,6 +23,7 @@ import OfficialStoreIntro from '../components/OfficialStoreIntro'
 import { fetchBanners, fetchCampaigns, fetchBrands, refreshState, reloadState } from '../actions/actions'
 import NotConnect from '../NotConnect'
 
+import { NavigationModule } from 'NativeModules'
 
 
 class App extends Component {
@@ -34,11 +34,9 @@ class App extends Component {
 
   componentWillMount(){
     const { dispatch } = this.props
-    AsyncStorage.getItem('user_id').then(uid => { dispatch(reloadState()) })
-    
-    NetInfo.fetch().then((reach) => {
-      this.setState({ statusConnection: reach })
-    })
+    dispatch(reloadState())
+
+    NetInfo.fetch().then((reach) => this.setState({ statusConnection: reach }) )
     NetInfo.addEventListener('change', (res) => {
       this.setState({ statusConnection: res }) 
     });
@@ -53,13 +51,14 @@ class App extends Component {
   _onRefresh() {
     this.setState({ refreshing: true });
     const { dispatch } = this.props
-    AsyncStorage.getItem('user_id')
-      .then(uid => {
-          dispatch(refreshState())
-          dispatch(fetchBanners())
-          dispatch(fetchCampaigns(uid))
-          dispatch(fetchBrands(10, 0, uid, 'REFRESH'))
-      })
+
+    NavigationModule.getCurrentUserId().then(uuid => {
+      dispatch(reloadState())
+      dispatch(fetchBanners())
+      dispatch(fetchCampaigns(uuid))
+      dispatch(fetchBrands(10, 0, uuid))
+    })
+    
     setTimeout(() => {
       this.setState({ refreshing: false });
     }, 5000)
@@ -81,6 +80,14 @@ class App extends Component {
 
   render() {
     const statusConnection = this.state.statusConnection
+    if (statusConnection === ''){
+      return (
+        <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+          <ActivityIndicator size="large" />
+        </View>
+      )
+    } 
+    
     if (statusConnection === 'MOBILE' || statusConnection === 'WIFI'){
       return (
         <View>
@@ -94,9 +101,9 @@ class App extends Component {
                 colors={['#42b549']} />
             }>
             <OfficialStoreIntro />
-            <BannerContainer screenProps={this.props.screenProps} />
-            <CampaignContainer screenProps={this.props.screenProps} />
-            <BrandContainer screenProps={this.props.screenProps} />
+            <BannerContainer />
+            <CampaignContainer />
+            <BrandContainer />
             <Infographic /> 
             <Seo /> 
           </ScrollView>
@@ -107,13 +114,7 @@ class App extends Component {
       )
     } else if (statusConnection === 'NONE') {
       return <NotConnect />
-    } else {
-      return (
-        <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-          <ActivityIndicator size="large" />
-        </View>
-      )
-    }
+    } 
   }
 }
 

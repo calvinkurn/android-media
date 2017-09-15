@@ -41,6 +41,7 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
     @Override
     protected void initView(View view) {
         super.initView(view);
+        titleChoosePromo.setVisibility(View.GONE);
         switch(choosenOption){
             case EXIST_GROUP:
                 viewRadioChooseGroup.setChecked(true);

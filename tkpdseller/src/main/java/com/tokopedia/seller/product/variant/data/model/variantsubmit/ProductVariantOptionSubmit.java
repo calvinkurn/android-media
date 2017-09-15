@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
+
+import java.util.List;
 
 /**
  * Created by hendry on 8/15/2017.
@@ -21,6 +24,10 @@ public class ProductVariantOptionSubmit implements Parcelable {
     @SerializedName("cstm")
     @Expose
     private String customText;
+
+    @SerializedName("picture")
+    @Expose
+    private List<PictureItem> pictureItemList;
 
     /**
      * if custom, 0. if not custom, id of the variant unit value
@@ -73,6 +80,14 @@ public class ProductVariantOptionSubmit implements Parcelable {
         this.customText = customText;
     }
 
+    public List<PictureItem> getPictureItemList() {
+        return pictureItemList;
+    }
+
+    public void setPictureItemList(List<PictureItem> pictureItemList) {
+        this.pictureItemList = pictureItemList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -83,6 +98,7 @@ public class ProductVariantOptionSubmit implements Parcelable {
         dest.writeLong(this.variantUnitValueId);
         dest.writeLong(this.temporaryId);
         dest.writeString(this.customText);
+        dest.writeTypedList(this.pictureItemList);
     }
 
     public ProductVariantOptionSubmit() {
@@ -92,9 +108,10 @@ public class ProductVariantOptionSubmit implements Parcelable {
         this.variantUnitValueId = in.readLong();
         this.temporaryId = in.readLong();
         this.customText = in.readString();
+        this.pictureItemList = in.createTypedArrayList(PictureItem.CREATOR);
     }
 
-    public static final Creator<ProductVariantOptionSubmit> CREATOR = new Creator<ProductVariantOptionSubmit>() {
+    public static final Parcelable.Creator<ProductVariantOptionSubmit> CREATOR = new Parcelable.Creator<ProductVariantOptionSubmit>() {
         @Override
         public ProductVariantOptionSubmit createFromParcel(Parcel source) {
             return new ProductVariantOptionSubmit(source);
