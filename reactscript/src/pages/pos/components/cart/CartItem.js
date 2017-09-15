@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
+import { View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
+import { Text } from '../../common/TKPText'
 import PopUp from '../../common/TKPPopupModal'
-import { icons } from '../icon'
+import { config } from '../../lib/config'
 
 class CartItem extends Component {
   constructor(props) {
@@ -41,7 +42,7 @@ class CartItem extends Component {
         <View style={{ width: '8%' }}>
           <TouchableWithoutFeedback
             onPress={() => { this.togglePopUp(true) }} >
-            <Image source={{ uri: icons.logo_trash }} style={styles.trashImage} />
+            <Image source={{uri: config.imageBasePath + 'trash.png'}} style={styles.trashImage} />
           </TouchableWithoutFeedback>
         </View>
         <View style={{ width: '20%' }}>
@@ -67,7 +68,7 @@ class CartItem extends Component {
             <TouchableWithoutFeedback
               onPress={() => { onIncr(item.id) }}>
               <View>
-                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/btn_plus.png' }} style={styles.qtyControlImage}></Image>
+              <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/btn_plus.png' }} style={styles.qtyControlImage}></Image>
               </View>
             </TouchableWithoutFeedback>
           </View>
