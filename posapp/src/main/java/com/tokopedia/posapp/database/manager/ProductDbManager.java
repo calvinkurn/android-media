@@ -9,7 +9,6 @@ import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import com.tokopedia.posapp.database.PosDatabase;
 import com.tokopedia.posapp.database.model.ProductDb;
-import com.tokopedia.posapp.database.model.ProductDb_Table;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  * Created by okasurya on 8/30/17.
  */
 
-public class ProductDbManager implements DbManagerOperation<ProductDb, ProductDb> {
+public class ProductDbManager implements DbManager<ProductDb, ProductDb> {
     @Override
     public void store(ProductDb data, TransactionListener callback) {
         data.save();
@@ -57,6 +56,11 @@ public class ProductDbManager implements DbManagerOperation<ProductDb, ProductDb
     public void delete(ConditionGroup conditions, TransactionListener callback) {
         ProductDb productDb = SQLite.select().from(ProductDb.class).where(conditions).querySingle();
         if(productDb != null) productDb.delete();
+    }
+
+    @Override
+    public void delete(ProductDb data, TransactionListener callback) {
+
     }
 
     @Override

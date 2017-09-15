@@ -1,10 +1,12 @@
 package com.tokopedia.posapp.database.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ContainerKey;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.core.database.DatabaseConstant;
 import com.tokopedia.core.database.DbFlowDatabase;
@@ -16,13 +18,14 @@ import com.tokopedia.posapp.database.PosDatabase;
 
 @ModelContainer
 @Table(database = PosDatabase.class)
-public class CartDB extends BaseModel {
+public class CartDb extends BaseModel {
     @ContainerKey(DatabaseConstant.ID)
     @Column
     @PrimaryKey(autoincrement = true)
     private long id;
 
     @Column
+    @Unique(onUniqueConflict = ConflictAction.FAIL)
     private String productId;
 
     @Column

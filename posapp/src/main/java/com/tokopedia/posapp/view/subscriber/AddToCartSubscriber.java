@@ -1,8 +1,7 @@
 package com.tokopedia.posapp.view.subscriber;
 
-import com.tokopedia.posapp.domain.model.cart.AddToCartStatusDomain;
+import com.tokopedia.posapp.domain.model.cart.ATCStatusDomain;
 import com.tokopedia.posapp.view.AddToCart;
-import com.tokopedia.posapp.view.Product;
 
 import rx.Subscriber;
 
@@ -10,7 +9,7 @@ import rx.Subscriber;
  * Created by okasurya on 8/22/17.
  */
 
-public class AddToCartSubscriber extends Subscriber<AddToCartStatusDomain> {
+public class AddToCartSubscriber extends Subscriber<ATCStatusDomain> {
     AddToCart.View view;
 
     public AddToCartSubscriber(AddToCart.View view) {
@@ -28,9 +27,9 @@ public class AddToCartSubscriber extends Subscriber<AddToCartStatusDomain> {
     }
 
     @Override
-    public void onNext(AddToCartStatusDomain status) {
+    public void onNext(ATCStatusDomain status) {
         switch (status.getStatus()) {
-            case AddToCartStatusDomain.RESULT_ADD_TO_CART_SUCCESS:
+            case ATCStatusDomain.RESULT_ADD_TO_CART_SUCCESS:
                 view.onSuccessAddToCart(status.getMessage());
                 break;
             default:

@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.data.repository;
 
-import com.tokopedia.posapp.domain.model.cart.AddToCartStatusDomain;
+import com.tokopedia.posapp.domain.model.cart.ATCStatusDomain;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
 
 import rx.Observable;
@@ -10,5 +10,5 @@ import rx.Observable;
  */
 
 public interface CartRepository {
-    Observable<AddToCartStatusDomain> addToCart(CartDomain requestParams);
+    Observable<ATCStatusDomain> addToCart(CartDomain requestParams);
 }
