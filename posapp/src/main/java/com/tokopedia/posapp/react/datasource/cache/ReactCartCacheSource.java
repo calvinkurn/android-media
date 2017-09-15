@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
+import com.tokopedia.posapp.data.factory.CartFactory;
 import com.tokopedia.posapp.data.pojo.CartResponse;
 import com.tokopedia.posapp.data.source.local.CartLocalSource;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
@@ -18,27 +19,27 @@ import rx.functions.Func1;
  */
 
 public class ReactCartCacheSource implements ReactCacheSource {
-    CartLocalSource cartLocalSource;
-    Gson gson;
+    private Gson gson;
+    private CartFactory cartFactory;
 
-    public ReactCartCacheSource() {
-        this.gson = new Gson();
-        CartLocalSource cartLocalSource = new CartLocalSource();
+    public ReactCartCacheSource(CartFactory cartFactory, Gson gson) {
+        this.gson = gson;
+        this.cartFactory = cartFactory;
     }
 
     @Override
     public Observable<String> getData(String productId) {
-        return cartLocalSource.getCartProduct(productId).map(getCartMapper());
+        return cartFactory.local().getCartProduct(productId).map(getCartMapper());
     }
 
     @Override
     public Observable<String> getListData(int offset, int limit) {
-        return cartLocalSource.getCartProducts(offset, limit).map(getCartListMapper());
+        return cartFactory.local().getCartProducts(offset, limit).map(getCartListMapper());
     }
 
     @Override
     public Observable<String> getAllData() {
-        return cartLocalSource.getAllCartProducts().map(getCartListMapper());
+        return cartFactory.local().getAllCartProducts().map(getCartListMapper());
     }
 
     private Func1<CartDomain, String> getCartMapper() {

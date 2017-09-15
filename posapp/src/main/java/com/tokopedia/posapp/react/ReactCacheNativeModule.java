@@ -1,11 +1,17 @@
 package com.tokopedia.posapp.react;
 
+import android.content.Context;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.tokopedia.posapp.di.ReactCacheDependencies;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.posapp.di.component.DaggerReactCacheComponent;
 import com.tokopedia.posapp.react.domain.ReactCacheRepository;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -14,12 +20,26 @@ import rx.schedulers.Schedulers;
  * Created by okasurya on 8/25/17.
  */
 
-public class ReactPosCacheModule extends ReactContextBaseJavaModule {
+public class ReactCacheNativeModule extends ReactContextBaseJavaModule {
+    @Inject
     ReactCacheRepository reactCacheRepository;
 
-    public ReactPosCacheModule(ReactApplicationContext reactContext) {
+    private Context context;
+
+    public ReactCacheNativeModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        reactCacheRepository = new ReactCacheDependencies(reactContext).provideReactCacheRepository();
+        this.context = reactContext;
+        initInjection();
+    }
+
+    private void initInjection() {
+        AppComponent appComponent = ((MainApplication) context.getApplicationContext()).getAppComponent();
+        DaggerReactCacheComponent daggerReactCacheComponent =
+                (DaggerReactCacheComponent) DaggerReactCacheComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerReactCacheComponent.inject(this);
     }
 
     @Override

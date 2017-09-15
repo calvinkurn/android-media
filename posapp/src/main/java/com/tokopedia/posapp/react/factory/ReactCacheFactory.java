@@ -12,16 +12,26 @@ import com.tokopedia.posapp.react.exception.TableNotFoundException;
  */
 
 public class ReactCacheFactory {
-    public ReactCacheFactory() {}
+    private ReactCartCacheSource reactCartCacheSource;
+    private ReactProductCacheSource reactProductCacheSource;
+    private ReactBankCacheSource reactBankCacheSource;
+
+    public ReactCacheFactory(ReactCartCacheSource reactCartCacheSource,
+                             ReactProductCacheSource reactProductCacheSource,
+                             ReactBankCacheSource reactBankCacheSource) {
+        this.reactCartCacheSource = reactCartCacheSource;
+        this.reactProductCacheSource = reactProductCacheSource;
+        this.reactBankCacheSource = reactBankCacheSource;
+    }
 
     public ReactCacheSource createCacheDataSource(String tableName) throws TableNotFoundException {
         switch (tableName) {
             case PosReactConst.CacheTable.CART:
-                return new ReactCartCacheSource();
+                return reactCartCacheSource;
             case PosReactConst.CacheTable.PRODUCT:
-                return new ReactProductCacheSource();
+                return reactProductCacheSource;
             case PosReactConst.CacheTable.BANK:
-                return new ReactBankCacheSource();
+                return reactBankCacheSource;
             default:
                 throw new TableNotFoundException();
         }
