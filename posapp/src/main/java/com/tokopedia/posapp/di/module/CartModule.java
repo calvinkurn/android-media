@@ -23,8 +23,8 @@ public class CartModule {
     }
 
     @Provides
-    CartFactory provideCartFactory(AddToCartMapper addToCartMapper) {
-        return new CartFactory(addToCartMapper);
+    CartFactory provideCartFactory() {
+        return new CartFactory();
     }
     @Provides
     CartRepository provideCartRepository(CartFactory cartFactory) {

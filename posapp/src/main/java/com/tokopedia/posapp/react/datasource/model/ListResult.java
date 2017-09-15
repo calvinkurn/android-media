@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.react.datasource.cache;
+package com.tokopedia.posapp.react.datasource.model;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * Created by okasurya on 9/15/17.
  */
-// TODO: 9/15/17 move it to another package
-class ListResponse<T> {
+
+public class ListResult<T> {
     @SerializedName("list")
     private List<T> list;
 

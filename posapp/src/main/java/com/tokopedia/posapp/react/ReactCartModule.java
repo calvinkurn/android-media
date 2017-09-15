@@ -14,7 +14,7 @@ import com.tokopedia.posapp.data.source.local.CartLocalSource;
 public class ReactCartModule extends ReactContextBaseJavaModule {
     public ReactCartModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        CartLocalSource cartLocalSource = new CartLocalSource(new AddToCartMapper());
+        CartLocalSource cartLocalSource = new CartLocalSource();
     }
 
     @Override

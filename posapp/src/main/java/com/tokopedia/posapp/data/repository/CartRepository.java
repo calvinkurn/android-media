@@ -10,5 +10,13 @@ import rx.Observable;
  */
 
 public interface CartRepository {
-    Observable<ATCStatusDomain> addToCart(CartDomain requestParams);
+    Observable<ATCStatusDomain> storeCartProduct(CartDomain cartDomain);
+
+    Observable<ATCStatusDomain> updateCartProduct(CartDomain cartDomain);
+
+    Observable<ATCStatusDomain> deleteCartProduct(CartDomain cartDomain);
+
+    Observable<ATCStatusDomain> deleteCart();
+
+    Observable<CartDomain> getCartProduct(String productId);
 }

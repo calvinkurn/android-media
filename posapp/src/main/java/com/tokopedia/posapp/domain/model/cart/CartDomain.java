@@ -7,9 +7,18 @@ import com.tokopedia.core.base.domain.DefaultParams;
  */
 
 public class CartDomain implements DefaultParams {
+    private Long id;
     private String productId;
     private String outletId;
     private int quantity;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getProductId() {
         return productId;

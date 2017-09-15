@@ -1,12 +1,11 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.posapp.database.model.CartDb_Table;
-import com.tokopedia.posapp.database.manager.CartDbManager;
-import com.tokopedia.posapp.database.QueryParameter;
+import com.tokopedia.posapp.data.pojo.CartResponse;
+import com.tokopedia.posapp.data.source.local.CartLocalSource;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
+import com.tokopedia.posapp.react.datasource.model.ListResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,85 +18,61 @@ import rx.functions.Func1;
  */
 
 public class ReactCartCacheSource implements ReactCacheSource {
-    CartDbManager cartDbManager;
+    CartLocalSource cartLocalSource;
     Gson gson;
 
     public ReactCartCacheSource() {
-        this.cartDbManager = new CartDbManager();
         this.gson = new Gson();
+        CartLocalSource cartLocalSource = new CartLocalSource();
     }
 
     @Override
     public Observable<String> getData(String productId) {
-        return Observable.just(productId)
-                .map(getDataById());
+        return cartLocalSource.getCartProduct(productId).map(getCartMapper());
     }
 
     @Override
     public Observable<String> getListData(int offset, int limit) {
-        QueryParameter param = new QueryParameter();
-        param.setOffset(offset);
-        param.setLimit(limit);
-
-        return Observable.just(param)
-                .map(getList());
+        return cartLocalSource.getCartProducts(offset, limit).map(getCartListMapper());
     }
 
     @Override
     public Observable<String> getAllData() {
-        return Observable.just(true)
-                .map(getMockData());
+        return cartLocalSource.getAllCartProducts().map(getCartListMapper());
     }
 
-    private Func1<String, String> getDataById() {
-        return new Func1<String, String>() {
+    private Func1<CartDomain, String> getCartMapper() {
+        return new Func1<CartDomain, String>() {
             @Override
-            public String call(String productId) {
-                CartDomain cartDomain = cartDbManager.first(
-                        ConditionGroup.clause().and(CartDb_Table.productId.eq(productId))
-                );
+            public String call(CartDomain cartDomain) {
                 CacheResult<CartDomain> result = new CacheResult<>();
-                result.data = cartDomain;
+                result.setData(cartDomain);
                 return gson.toJson(result);
             }
         };
     }
 
-    private Func1<QueryParameter, String> getList() {
-        return new Func1<QueryParameter, String>() {
+    private Func1<List<CartDomain>, String> getCartListMapper() {
+        return new Func1<List<CartDomain>, String>() {
             @Override
-            public String call(QueryParameter queryParameter) {
-                List<CartDomain> cartDomains = cartDbManager.getListData(
-                        queryParameter.getOffset(), queryParameter.getLimit()
-                );
-                CacheResult<CartDomain> result = new CacheResult<>();
-                result.datas = new ArrayList<>();
-                result.datas.addAll(cartDomains);
+            public String call(List<CartDomain> cartDomains) {
+                CacheResult<ListResult<CartDomain>> result = new CacheResult<>();
+                ListResult<CartDomain> data = new ListResult<>();
+                data.setList(cartDomains);
+                result.setData(data);
+
                 return gson.toJson(result);
             }
         };
     }
 
-    private Func1<Boolean, String> getAll() {
+    private Func1<? super Boolean, ? extends String> getMockData() {
         return new Func1<Boolean, String>() {
             @Override
             public String call(Boolean aBoolean) {
-                List<CartDomain> cartDBList = cartDbManager.getAllData();
-                CacheResult<CartDomain> result = new CacheResult<>();
-                result.datas = new ArrayList<>();
-                result.datas.addAll(cartDBList);
-                return gson.toJson(result);
-            }
-        };
-    }
+                CacheResult<ListResult<CartResponse>> result = new CacheResult<>();
 
-    public Func1<? super Boolean, ? extends String> getMockData() {
-        return new Func1<Boolean, String>() {
-            @Override
-            public String call(Boolean aBoolean) {
-                CacheResult<ListResponse<CartResponse>> result = new CacheResult<>();
-
-                ListResponse<CartResponse> list = new ListResponse<>();
+                ListResult<CartResponse> list = new ListResult<>();
                 List<CartResponse> cartResponses = new ArrayList<>();
                 CartResponse cartResponse = new CartResponse();
                 cartResponse.setProductId("160551106");
@@ -124,7 +99,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
                 cartResponses.add(cartResponse);
 
                 list.setList(cartResponses);
-                result.data = list;
+                result.setData(list);
 
                 return gson.toJson(result);
             }

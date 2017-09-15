@@ -18,7 +18,27 @@ public class CartRepositoryImpl implements CartRepository {
     }
 
     @Override
-    public Observable<ATCStatusDomain> addToCart(CartDomain cartDomain) {
-        return cartFactory.local().addToCart(cartDomain);
+    public Observable<ATCStatusDomain> storeCartProduct(CartDomain cartDomain) {
+        return cartFactory.local().storeCartProduct(cartDomain);
+    }
+
+    @Override
+    public Observable<ATCStatusDomain> updateCartProduct(CartDomain cartDomain) {
+        return cartFactory.local().updateCartProduct(cartDomain);
+    }
+
+    @Override
+    public Observable<ATCStatusDomain> deleteCartProduct(CartDomain cartDomain) {
+        return cartFactory.local().deleteCartProduct(cartDomain);
+    }
+
+    @Override
+    public Observable<ATCStatusDomain> deleteCart() {
+        return cartFactory.local().deleteCart();
+    }
+
+    @Override
+    public Observable<CartDomain> getCartProduct(String productId) {
+        return cartFactory.local().getCartProduct(productId);
     }
 }

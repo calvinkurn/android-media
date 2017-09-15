@@ -1,12 +1,12 @@
-package com.tokopedia.posapp.react.datasource.cache;
+package com.tokopedia.posapp.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by okasurya on 9/15/17.
  */
-// TODO: 9/15/17 move it to another package
-class CartResponse {
+
+public class CartResponse {
     @SerializedName("product_id")
     private String productId;
 

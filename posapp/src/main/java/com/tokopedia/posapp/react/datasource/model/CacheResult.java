@@ -9,8 +9,14 @@ import java.util.List;
  */
 
 public class CacheResult<T> {
-    public List<T> datas;
-
     @SerializedName("data")
-    public T data;
+    private T data;
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
 }

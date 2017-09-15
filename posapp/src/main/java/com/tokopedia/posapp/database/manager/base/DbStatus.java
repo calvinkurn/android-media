@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.database.manager;
+package com.tokopedia.posapp.database.manager.base;
 
 /**
  * Created by okasurya on 9/15/17.
@@ -11,10 +11,17 @@ public class DbStatus {
     private int status;
     private String message;
 
-    public static DbStatus createOkResult() {
+    public static DbStatus defaultOkResult() {
         DbStatus dbStatus = new DbStatus();
         dbStatus.setStatus(OK);
         dbStatus.setMessage("OK");
+        return dbStatus;
+    }
+
+    public static DbStatus defaultErrorResult(Throwable e) {
+        DbStatus dbStatus = new DbStatus();
+        dbStatus.setStatus(ERROR);
+        dbStatus.setMessage(e.getMessage());
         return dbStatus;
     }
 

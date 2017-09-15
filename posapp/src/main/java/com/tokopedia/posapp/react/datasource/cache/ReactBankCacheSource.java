@@ -72,7 +72,7 @@ public class ReactBankCacheSource implements ReactCacheSource {
         bankListResponse.setList(bankItemResponseList);
 
         CacheResult<BankListResponse> result = new CacheResult<>();
-        result.data = bankListResponse;
+        result.setData(bankListResponse);
 
         return Observable.just(result)
                 .map(new Func1<CacheResult, String>() {

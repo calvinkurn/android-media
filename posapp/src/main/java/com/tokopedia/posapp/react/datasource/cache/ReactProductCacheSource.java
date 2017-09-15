@@ -58,7 +58,7 @@ public class ReactProductCacheSource implements ReactCacheSource {
         shopProductResponse.setPaging(new Paging());
 
         final CacheResult<ShopProductResponse> response = new CacheResult<>();
-        response.data = shopProductResponse;
+        response.setData(shopProductResponse);
 
         return Observable.just(response)
                 .map(new Func1<CacheResult, String>() {
