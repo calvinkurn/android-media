@@ -8,6 +8,8 @@ import com.tokopedia.seller.shop.setting.SettingShopConstant;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.UpdateShopScheduleRepository;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -18,6 +20,7 @@ public class UpdateShopScheduleUseCase extends UseCase<Boolean> {
 
     private final UpdateShopScheduleRepository updateShopScheduleRepository;
 
+    @Inject
     public UpdateShopScheduleUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                      UpdateShopScheduleRepository updateShopScheduleRepository) {
         super(threadExecutor, postExecutionThread);
@@ -40,12 +43,12 @@ public class UpdateShopScheduleUseCase extends UseCase<Boolean> {
                             4 ⇒ Abort Close Schedule (close_start, close_end, closed_note will be ignored)
                             5 ⇒ Extend Close Shop (close_start will be ignored)*/
     public static RequestParams cerateRequestParams(String closedNote, String closeStart,
-                                          String closeEnd, ShopCloseAction closeAction){
+                                          String closeEnd, @ShopCloseAction int closeAction){
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SettingShopConstant.CLOSED_NOTE, closedNote);
         requestParams.putString(SettingShopConstant.CLOSE_START, closeStart);
         requestParams.putString(SettingShopConstant.CLOSE_END, closeEnd);
-        requestParams.putString(SettingShopConstant.CLOSE_ACTION, closeAction.toString());
+        requestParams.putString(SettingShopConstant.CLOSE_ACTION, String.valueOf(closeAction));
         return requestParams;
     }
 }

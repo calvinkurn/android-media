@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.dashboard.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
@@ -90,6 +92,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView reviewLabelView;
 
     private ShopWarningTickerView shopWarningTickerView;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,6 +136,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
 
         viewShopStatus = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
 
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,17 +207,24 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-                sellerDashboardPresenter.refreshShopInfo();
-
-                //TODO loading state for notification
-                sellerDashboardPresenter.getNotification();
+                DashboardFragment.this.onRefresh();
             }
         });
 
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
         sellerDashboardPresenter.getTicker();
+    }
+
+    void onRefresh() {
+        if(!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+        headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+        sellerDashboardPresenter.refreshShopInfo();
+
+        //TODO loading state for notification
+        sellerDashboardPresenter.getNotification();
     }
 
     @Override
@@ -332,9 +344,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopWarningTickerView.setAction(getString(R.string.open_shop), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
-                intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-                startActivityForResult(intent, 0);
+                sellerDashboardPresenter.openShop();
             }
         });
         shopWarningTickerView.setVisibility(View.VISIBLE);
@@ -388,6 +398,26 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
 
+    }
+
+    @Override
+    public void showLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressDialog.hide();
+    }
+
+    @Override
+    public void onSuccessOpenShop() {
+        onRefresh();
+    }
+
+    @Override
+    public void onErrorOpenShop() {
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
     }
 
     private void setCounterIfNotEmpty(LabelView labelView, int counter){

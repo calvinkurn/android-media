@@ -8,6 +8,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.shop.setting.data.mapper.UpdateShopScheduleMapperSource;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.UpdateShopScheduleDataSourceCloud;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -19,6 +21,7 @@ public class UpdateShopScheduleDataSource {
     private final Context context;
     private final UpdateShopScheduleDataSourceCloud updateShopScheduleDataSourceCloud;
 
+    @Inject
     public UpdateShopScheduleDataSource(@ApplicationContext Context context, UpdateShopScheduleDataSourceCloud updateShopScheduleDataSourceCloud) {
         this.context = context;
         this.updateShopScheduleDataSourceCloud = updateShopScheduleDataSourceCloud;
