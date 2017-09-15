@@ -349,7 +349,7 @@ public class FeaturedProductFragment extends BaseListFragment<BlankPresenter, Fe
                         break;
                 }
 
-                updateTitleView(R.string.featured_product_activity_title);
+                updateTitleView(R.string.featured_product_title);
                 showFab();
 
                 featuredProductPresenter.postData(
