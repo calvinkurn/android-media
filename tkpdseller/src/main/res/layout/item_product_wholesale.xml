@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/text_range_whole_sale"
-        style="@style/TextView.Wholesale"
+        style="@style/TextView.Body1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
@@ -14,18 +14,15 @@
 
     <ImageView
         android:id="@+id/image_whole_sale"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView.Body1"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_close_grey_copy"
-        android:textColor="@color/wholesale_color"
-        android:textSize="14sp" />
+        android:src="@drawable/ic_close_grey_copy" />
 
     <TextView
         android:id="@+id/text_whole_sale_price"
-        style="@style/TextView.Wholesale"
+        style="@style/TextView.Body1"
         android:layout_centerVertical="true"
         android:layout_marginEnd="17dp"
         android:layout_marginRight="17dp"

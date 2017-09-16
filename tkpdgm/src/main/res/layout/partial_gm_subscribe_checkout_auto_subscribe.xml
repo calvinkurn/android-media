@@ -62,39 +62,39 @@
 
             <TextView
                 android:text="@string/gmsubscribe_auto_package_title"
-                style="@style/GMSubscribeContentTextviewSmall" />
+                style="@style/TextView.Caption.BlackSecondary" />
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_title"
                 android:layout_marginBottom="5dp"
-                style="@style/GMSubscribeContentTextviewMedium"/>
+                style="@style/TextView.Body1.BlackSecondary"/>
 
             <TextView
-                style="@style/GMSubscribeContentTextviewSmall"
+                style="@style/TextView.Caption.BlackSecondary"
                 android:text="@string/gmsubscribe_auto_package_price"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_price"
                 android:layout_marginBottom="5dp"
-                style="@style/GMSubscribeContentTextviewMedium"/>
+                style="@style/TextView.Body1.BlackSecondary"/>
 
             <TextView
-                style="@style/GMSubscribeContentTextviewSmall"
+                style="@style/TextView.Caption.BlackSecondary"
                 android:text="@string/gmsubscribe_auto_package_next_subscribe"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_next_subscribe"
                 android:layout_marginBottom="5dp"
-                style="@style/GMSubscribeContentTextviewMedium"/>
+                style="@style/TextView.Body1.BlackSecondary"/>
 
             <TextView
                 android:text="@string/gmsubscribe_auto_package_payment_method"
-                style="@style/GMSubscribeContentTextviewSmall"/>
+                style="@style/TextView.Caption.BlackSecondary"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_payment_method"
                 android:layout_marginBottom="5dp"
-                style="@style/GMSubscribeContentTextviewMedium"/>
+                style="@style/TextView.Body1.BlackSecondary"/>
 
         </LinearLayout>
 
