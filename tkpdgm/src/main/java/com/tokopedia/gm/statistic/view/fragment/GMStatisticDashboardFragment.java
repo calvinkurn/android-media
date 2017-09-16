@@ -104,6 +104,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             }
         });
         gmStatisticTransactionViewHolder.setListener(this);
+        gmStatisticMarketInsightViewHolder.setListener(this);
         return view;
     }
 
