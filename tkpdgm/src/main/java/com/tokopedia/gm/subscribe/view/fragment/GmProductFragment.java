@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -15,8 +14,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.seller.R;
-import com.tokopedia.gm.subscribe.di.GmProductDependencyInjection;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.component.GmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
@@ -27,8 +25,6 @@ import com.tokopedia.gm.subscribe.view.viewmodel.GmProductViewModel;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -140,7 +136,7 @@ public abstract class GmProductFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_gmsubscribe_product;
+        return R.layout.fragment_gm_subscribe_product;
     }
 
     @Override

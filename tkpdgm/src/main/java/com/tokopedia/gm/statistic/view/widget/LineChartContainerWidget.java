@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
 
 /**

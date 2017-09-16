@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.williamchart.Tools;
@@ -243,7 +243,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     @LayoutRes
     private int getTooltipResLayout() {
-        return R.layout.gm_stat_tooltip_compare;
+        return R.layout.item_gm_statistic_tooltip_compare;
     }
 
     /**

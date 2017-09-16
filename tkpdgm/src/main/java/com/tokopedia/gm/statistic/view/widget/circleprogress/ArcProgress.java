@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 
 /**
  * Created by bruce on 11/6/14.

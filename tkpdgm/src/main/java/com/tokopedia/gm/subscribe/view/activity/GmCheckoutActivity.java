@@ -15,8 +15,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.view.fragment.GmCheckoutFragment;
 import com.tokopedia.gm.subscribe.view.fragment.GmCheckoutFragmentCallback;
 
@@ -59,7 +58,7 @@ public class GmCheckoutActivity extends BasePresenterActivity implements GmCheck
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_gmsubscribe;
+        return R.layout.activity_gm_subscribe;
     }
 
     @Override

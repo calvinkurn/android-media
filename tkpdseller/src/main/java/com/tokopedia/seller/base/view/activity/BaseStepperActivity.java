@@ -51,7 +51,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_stepper_toolbar;
+        return R.layout.activity_base_stepper_toolbar;
     }
 
     @Override

@@ -63,7 +63,7 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_filter_list;
+        return R.layout.fragment_base_filter_list;
     }
 
     @Override

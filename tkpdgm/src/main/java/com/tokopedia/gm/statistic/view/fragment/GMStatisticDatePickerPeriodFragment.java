@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.expandable.ExpandableOptionSwitch;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerPeriodFragment;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;

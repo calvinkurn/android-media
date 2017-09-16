@@ -35,7 +35,7 @@
             android:exported="true"
             android:label="@string/title_date_setting" />
         <activity
-            android:name=".featured.view.activity.FeaturedProductActivity"
+            android:name=".featured.view.activity.GMFeaturedProductActivity"
             android:exported="true"
             android:label="@string/featured_product_title" />
     </application>

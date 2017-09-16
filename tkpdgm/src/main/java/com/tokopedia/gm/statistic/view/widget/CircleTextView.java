@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 
 /**
  * Created by User on 7/19/2017.

@@ -78,7 +78,7 @@ public class GMStatHeaderViewHelper {
 
         gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
 
-        greenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
+        greenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.tkpd_main_green, null);
     }
 
     public void resetToLoading() {

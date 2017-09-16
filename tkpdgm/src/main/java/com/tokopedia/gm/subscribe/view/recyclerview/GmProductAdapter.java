@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmProductViewModel;
 
 import java.util.ArrayList;

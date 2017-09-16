@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 
 /**
  * Created by sebastianuskh on 1/20/17.
@@ -62,7 +62,7 @@ public class GmMainFeatureView extends FrameLayout {
     }
 
     private void initView() {
-        View view = inflate(getContext(), R.layout.layout_gm_subscribe_main_feature, null);
+        View view = inflate(getContext(), R.layout.partial_gm_subscribe_main_feature, null);
         imageViewFeature = (ImageView) view.findViewById(R.id.image_gm_subscribe_main_feature);
         textViewTitleFeature = (TextView) view.findViewById(R.id.title_gm_subscribe_main_feature);
         textViewDescFeature = (TextView) view.findViewById(R.id.desc_gm_subscribe_main_feature);

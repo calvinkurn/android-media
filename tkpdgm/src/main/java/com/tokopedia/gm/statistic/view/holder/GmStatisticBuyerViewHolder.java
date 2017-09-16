@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.view.widget.circleprogress.DonutProgress;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
@@ -49,7 +49,7 @@ public class GmStatisticBuyerViewHolder implements GMStatisticViewHolder {
         tvMainLegendPieDesc = (TextView) buyerDataCardView.findViewById(R.id.tv_main_legend_pie_desc);
 
         genderArray = buyerDataCardView.getResources().getStringArray(R.array.gm_stat_gender);
-        redColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.arrow_down, null);
+        redColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.tkpd_main_orange, null);
         greyColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.grey_400, null);
     }
 

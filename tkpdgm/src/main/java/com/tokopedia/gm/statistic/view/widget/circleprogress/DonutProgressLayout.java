@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 
 /**
  * Created by hendry on 7/12/2017.

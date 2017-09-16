@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;

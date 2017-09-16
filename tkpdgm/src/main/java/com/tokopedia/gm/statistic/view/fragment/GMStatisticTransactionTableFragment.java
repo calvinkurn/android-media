@@ -14,17 +14,17 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.gm.statistic.di.component.DaggerGMTransactionComponent;
+import com.tokopedia.gm.statistic.di.component.DaggerGMStatisticTransactionComponent;
 import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
 import com.tokopedia.gm.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
@@ -73,9 +73,9 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected void initInjector() {
-        DaggerGMTransactionComponent
+        DaggerGMStatisticTransactionComponent
                 .builder()
-                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMComponent(getComponent(GMComponent.class))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
         transactionTablePresenter.attachView(this);
@@ -108,7 +108,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_transaction_table_list;
+        return R.layout.fragment_gm_statistic_transaction_table_list;
     }
 
     @Override

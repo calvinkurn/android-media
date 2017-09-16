@@ -3,7 +3,6 @@ package com.tokopedia.gm.subscribe.view.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,7 +12,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
 import com.tokopedia.gm.subscribe.view.presenter.GmCheckoutPresenterImpl;
@@ -111,7 +110,7 @@ public class GmCheckoutFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_gmsubscribe_checkout;
+        return R.layout.fragment_gm_subscribe_checkout;
     }
 
     @Override

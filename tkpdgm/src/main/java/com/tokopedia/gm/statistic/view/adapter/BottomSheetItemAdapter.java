@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItem;

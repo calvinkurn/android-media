@@ -18,7 +18,7 @@ public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GroupAd.TYPE:
-                return new TopAdsKeywordGroupViewHolder(getLayoutView(parent, R.layout.adapter_group_name_item));
+                return new TopAdsKeywordGroupViewHolder(getLayoutView(parent, R.layout.item_top_ads_keyword_group_name_item));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

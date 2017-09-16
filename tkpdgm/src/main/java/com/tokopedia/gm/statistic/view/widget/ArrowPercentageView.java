@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.constant.GMStatConstant;
 import com.tokopedia.seller.common.utils.KMNumbers;
 
@@ -28,8 +28,8 @@ public class ArrowPercentageView extends FrameLayout {
     private int downDrawableSrc = R.drawable.ic_rectangle_down;
     private int upDrawableSrc = R.drawable.ic_rectangle_up;
     private int stagnantDrawableSrc = 0;
-    private int redColor = R.color.arrow_down;
-    private int greenColor = R.color.arrow_up;
+    private int redColor = R.color.tkpd_main_orange;
+    private int greenColor = R.color.tkpd_main_green;
     private int greyColor = R.color.grey_400;
     private int noDataRes = R.string.gm_statistic_no_data;
 

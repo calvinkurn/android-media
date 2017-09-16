@@ -38,7 +38,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
     protected abstract Intent getDefaultIntentResult();
 
     protected int getLayoutId() {
-        return R.layout.activity_top_ads_filter;
+        return R.layout.activity_base_filter;
     }
 
     protected void initView() {

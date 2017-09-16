@@ -6,8 +6,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -22,11 +20,9 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragment;
 import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragmentCallback;
-
-import java.util.List;
 
 /**
  * Created by sebastianuskh on 11/23/16.
@@ -70,7 +66,7 @@ public class GmSubscribeHomeActivity
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_gmsubscribe;
+        return R.layout.activity_gm_subscribe;
     }
 
     @Override

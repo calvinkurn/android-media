@@ -14,19 +14,19 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
-import com.tokopedia.gm.statistic.di.component.DaggerGMTransactionComponent;
+import com.tokopedia.gm.statistic.di.component.DaggerGMStatisticTransactionComponent;
 import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticTransactionTableActivity;
 import com.tokopedia.gm.statistic.view.holder.GMTopAdsAmountViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GMTransactionGraphViewHolder;
-import com.tokopedia.gm.statistic.view.holder.UnFinishedTransactionViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GMUnFinishedTransactionViewHolder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
@@ -48,7 +48,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     private SnackbarRetry snackbarRetry;
 
     private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
-    private UnFinishedTransactionViewHolder finishedTransactionViewHolder;
+    private GMUnFinishedTransactionViewHolder finishedTransactionViewHolder;
     private GMTopAdsAmountViewHolder gmTopAdsAmountViewHolder;
 
     public static Fragment createInstance() {
@@ -57,9 +57,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     protected void initInjector() {
-        DaggerGMTransactionComponent
+        DaggerGMStatisticTransactionComponent
                 .builder()
-                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMComponent(getComponent(GMComponent.class))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
     }
@@ -72,7 +72,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(view);
         gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
         gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(view);
-        finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(view);
+        finishedTransactionViewHolder = new GMUnFinishedTransactionViewHolder(view);
 
         LabelView gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +103,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel mergeModel) {
         gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, isCompareDate());
-        finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
+        finishedTransactionViewHolder.bind(mergeModel.GMUnFinishedTransactionViewModel);
     }
 
     @Override

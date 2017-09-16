@@ -10,18 +10,16 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.gm.GMModuleRouter;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.view.fragment.GMStatisticDashboardFragment;
-import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 
 /**
  * Created by normansyahputa on 1/18/17.
  */
 
 public class GMStatisticDashboardActivity extends DrawerPresenterActivity
-        implements SessionHandler.onLogoutListener, HasComponent<GoldMerchantComponent> {
+        implements SessionHandler.onLogoutListener, HasComponent<GMComponent> {
 
     public static final String TAG = GMStatisticDashboardActivity.class.getSimpleName();
 
@@ -121,7 +119,7 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public GoldMerchantComponent getComponent() {
-        return ((GMModuleRouter) getApplication()).getGoldMerchantComponent();
+    public GMComponent getComponent() {
+        return ((GMModuleRouter) getApplication()).getGMComponent();
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.gm.subscribe.view.fragment;
 
 import android.app.Fragment;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 
 /**
  * Created by sebastianuskh on 1/26/17.

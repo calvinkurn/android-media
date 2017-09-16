@@ -3,7 +3,7 @@ package com.tokopedia.gm.statistic.view.holder;
 import android.view.View;
 
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
 import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
 import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
