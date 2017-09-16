@@ -6,6 +6,6 @@ package com.tokopedia.gm.statistic.view.model;
 
 public class GMTransactionGraphMergeModel {
     public GMTransactionGraphViewModel gmTransactionGraphViewModel;
-    public UnFinishedTransactionViewModel unFinishedTransactionViewModel;
+    public GMUnFinishedTransactionViewModel GMUnFinishedTransactionViewModel;
     public GMGraphViewModel gmTopAdsAmountViewModel;
 }

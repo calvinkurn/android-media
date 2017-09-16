@@ -14,10 +14,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -29,7 +29,7 @@ import com.tokopedia.gm.statistic.view.holder.GMStatisticProductViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GMStatisticSummaryViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GMStatisticTransactionViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GmStatisticBuyerViewHolder;
-import com.tokopedia.gm.statistic.view.holder.GmStatisticMarketInsightViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GMStatisticMarketInsightViewHolder_;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
  * created by norman 02/01/2017
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment
-        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, GmStatisticMarketInsightViewHolder.Listener {
+        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, GMStatisticMarketInsightViewHolder_.Listener {
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -55,7 +55,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GMStatisticProductViewHolder gmStatisticProductViewHolder;
     private GMStatisticTransactionViewHolder gmStatisticTransactionViewHolder;
     private GmStatisticBuyerViewHolder gmStatisticBuyerViewHolder;
-    private GmStatisticMarketInsightViewHolder gmStatisticMarketInsightViewHolder;
+    private GMStatisticMarketInsightViewHolder_ GMStatisticMarketInsightViewHolder;
 
     private SnackbarRetry snackbarRetry;
 
@@ -72,7 +72,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     protected void initInjector() {
         DaggerGMStatisticDashboardComponent
                 .builder()
-                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMComponent(getComponent(GMComponent.class))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
         gmDashboardPresenter.attachView(this);
@@ -85,7 +85,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(view);
         gmStatisticProductViewHolder = new GMStatisticProductViewHolder(view);
         gmStatisticTransactionViewHolder = new GMStatisticTransactionViewHolder(view);
-        gmStatisticMarketInsightViewHolder = new GmStatisticMarketInsightViewHolder(view);
+        GMStatisticMarketInsightViewHolder = new GMStatisticMarketInsightViewHolder_(view);
         gmStatisticBuyerViewHolder = new GmStatisticBuyerViewHolder(view);
 
         // analytic below : https://phab.tokopedia.com/T18496
@@ -104,7 +104,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             }
         });
         gmStatisticTransactionViewHolder.setListener(this);
-        gmStatisticMarketInsightViewHolder.setListener(this);
+        GMStatisticMarketInsightViewHolder.setListener(this);
         return view;
     }
 
@@ -135,7 +135,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         gmStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         gmStatisticBuyerViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        gmStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        GMStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     @Override
@@ -188,22 +188,22 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onGetShopCategoryEmpty(boolean goldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindNoShopCategory(goldMerchant);
+        GMStatisticMarketInsightViewHolder.bindNoShopCategory(goldMerchant);
     }
 
     @Override
     public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindData(getKeywords, isGoldMerchant);
+        GMStatisticMarketInsightViewHolder.bindData(getKeywords, isGoldMerchant);
     }
 
     @Override
     public void onSuccessGetCategory(String categoryName) {
-        gmStatisticMarketInsightViewHolder.bindCategory(categoryName);
+        GMStatisticMarketInsightViewHolder.bindCategory(categoryName);
     }
 
     @Override
     public void onErrorLoadMarketInsight(Throwable t) {
-        gmStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
+        GMStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         showSnackbarRetry();
     }
 

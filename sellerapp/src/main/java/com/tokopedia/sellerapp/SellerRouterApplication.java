@@ -44,9 +44,9 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
-import com.tokopedia.gm.common.di.component.DaggerGoldMerchantComponent;
-import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
-import com.tokopedia.gm.common.di.module.GoldMerchantModule;
+import com.tokopedia.gm.common.di.component.DaggerGMComponent;
+import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -96,8 +96,8 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerProductComponent.Builder daggerProductBuilder;
     private ProductComponent productComponent;
 
-    private DaggerGoldMerchantComponent.Builder daggerGoldMerchantBuilder;
-    private GoldMerchantComponent goldMerchantComponent;
+    private DaggerGMComponent.Builder daggerGMBuilder;
+    private GMComponent gmComponent;
 
     @Override
     public void onCreate() {
@@ -106,7 +106,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void initializeDagger() {
-        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder().goldMerchantModule(new GoldMerchantModule());
+        daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
     }
 
@@ -118,11 +118,11 @@ public abstract class SellerRouterApplication extends MainApplication
         return productComponent;
     }
 
-    public GoldMerchantComponent getGoldMerchantComponent() {
-        if (goldMerchantComponent == null) {
-            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent()).build();
+    public GMComponent getGMComponent() {
+        if (gmComponent == null) {
+            gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
         }
-        return goldMerchantComponent;
+        return gmComponent;
     }
 
     @Override

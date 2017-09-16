@@ -10,7 +10,7 @@ import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphViewModel;
-import com.tokopedia.gm.statistic.view.model.UnFinishedTransactionViewModel;
+import com.tokopedia.gm.statistic.view.model.GMUnFinishedTransactionViewModel;
 
 import java.util.List;
 
@@ -169,7 +169,7 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         GMTransactionGraphMergeModel gmTransactionGraphMergeModel = new GMTransactionGraphMergeModel();
         gmTransactionGraphMergeModel.gmTransactionGraphViewModel = from(getTransactionGraph);
         gmTransactionGraphMergeModel.gmTopAdsAmountViewModel = processTopAdsAmount(getTransactionGraph, getTransactionGraph.getDateGraph());
-        gmTransactionGraphMergeModel.unFinishedTransactionViewModel = processUnfinishedTransaction(getTransactionGraph);
+        gmTransactionGraphMergeModel.GMUnFinishedTransactionViewModel = processUnfinishedTransaction(getTransactionGraph);
         return gmTransactionGraphMergeModel;
     }
 
@@ -194,8 +194,8 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         return GMStatisticUtil.sumTwoGraph(adsPGraph, adsSGraph);
     }
 
-    private UnFinishedTransactionViewModel processUnfinishedTransaction(GetTransactionGraph getTransactionGraph) {
-        return new UnFinishedTransactionViewModel(
+    private GMUnFinishedTransactionViewModel processUnfinishedTransaction(GetTransactionGraph getTransactionGraph) {
+        return new GMUnFinishedTransactionViewModel(
                 getTransactionGraph.getOnholdCount(),
                 getTransactionGraph.getResoCount(),
                 getTransactionGraph.getOnholdAmt()

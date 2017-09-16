@@ -1,6 +1,6 @@
 package com.tokopedia.gm;
 
-import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.common.di.component.GMComponent;
 
 /**
  * Created by normansyahputa on 12/14/16.
@@ -8,6 +8,6 @@ import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
 
 public interface GMModuleRouter {
 
-    GoldMerchantComponent getGoldMerchantComponent();
+    GMComponent getGMComponent();
 
 }
