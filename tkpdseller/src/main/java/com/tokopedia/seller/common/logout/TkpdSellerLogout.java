@@ -20,10 +20,9 @@ public class TkpdSellerLogout {
                 .tkpdSellerLogoutModule(new TkpdSellerLogoutModule())
                 .build();
         component.getClearCategoryCacheUseCase().execute(RequestParams.EMPTY, new EmptySubscriber());
-        component.getGmStatClearUseCase().execute(RequestParams.EMPTY, new EmptySubscriber());
     }
 
-    public static class EmptySubscriber extends Subscriber<Boolean> {
+    private static class EmptySubscriber extends Subscriber<Boolean> {
         @Override
         public void onCompleted() {
 

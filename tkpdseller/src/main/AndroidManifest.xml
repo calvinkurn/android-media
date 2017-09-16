@@ -118,18 +118,6 @@
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".gmsubscribe.view.activity.GmSubscribeHomeActivity"
-            android:label="@string/gm_home_title"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".gmsubscribe.view.activity.GmProductActivity"
-            android:label="@string/gmsubscribe_current_product_selector"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".gmsubscribe.view.activity.GmCheckoutActivity"
-            android:label="@string/gmsubscribe_checkout_title"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".product.edit.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait" />
@@ -167,29 +155,6 @@
             android:exported="true"
             android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity"
-            android:label="@string/gm_statistic_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-
-        <activity
-            android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionActivity"
-            android:exported="true"
-            android:label="@string/gm_statistic_transaction_label" />
-        <activity
-            android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity"
-            android:exported="true"
-            android:label="@string/list_sold_product_text" />
-        <activity
-            android:name=".goldmerchant.featured.view.activity.FeaturedProductActivity"
-            android:exported="true"
-            android:label="@string/featured_product_title" />
-        <activity
-            android:name=".goldmerchant.statistic.view.activity.GMStatisticDatePickerActivity"
-            android:exported="true"
-            android:label="@string/title_date_setting" />
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"

@@ -43,6 +43,11 @@ import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.gm.GMModuleRouter;
+import com.tokopedia.gm.common.di.component.DaggerGoldMerchantComponent;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.common.di.module.GoldMerchantModule;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -52,10 +57,6 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
-import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.seller.goldmerchant.common.di.component.DaggerGoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.common.di.module.GoldMerchantModule;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
@@ -87,7 +88,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
+        implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, SellerFragmentReputation, PdpRouter,
         IPaymentModuleRouter, IDigitalModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
@@ -495,6 +496,12 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToTopAdsDashboard(Activity activity) {
         Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
-        startActivity(intent);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void goToGMSubscribe(Activity activity) {
+        Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
+        activity.startActivity(intent);
     }
 }

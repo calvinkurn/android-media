@@ -1,0 +1,32 @@
+package com.tokopedia.gm.featured.data;
+
+import com.tokopedia.gm.featured.data.cloud.api.FeaturedProductApi;
+import com.tokopedia.gm.featured.data.model.FeaturedProductGETModel;
+import com.tokopedia.gm.featured.data.model.FeaturedProductPOSTModel;
+import com.tokopedia.gm.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.seller.shopscore.data.common.GetData;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+
+/**
+ * Created by normansyahputa on 9/7/17.
+ */
+
+public class FeaturedProductDataSource {
+    private FeaturedProductApi featuredProductApi;
+
+    @Inject
+    public FeaturedProductDataSource(FeaturedProductApi featuredProductApi) {
+        this.featuredProductApi = featuredProductApi;
+    }
+
+    public Observable<FeaturedProductGETModel> productGETModelObservable(String shopId) {
+        return featuredProductApi.getFeaturedProduct(shopId).map(new GetData<FeaturedProductGETModel>());
+    }
+
+    public Observable<FeaturedProductPOSTModel> productPOSTModelObservable(PostFeaturedProductModel postFeaturedProductModel) {
+        return featuredProductApi.postFeaturedProduct(postFeaturedProductModel).map(new GetData<FeaturedProductPOSTModel>());
+    }
+}
