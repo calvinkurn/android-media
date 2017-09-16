@@ -1,9 +1,9 @@
-package com.tokopedia.seller.gmsubscribe.data.source.product;
+package com.tokopedia.gm.subscribe.data.source.product;
 
 
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmAutoSubscribeDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModelGroup;
+import com.tokopedia.gm.subscribe.domain.product.model.GmAutoSubscribeDomainModel;
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModel;
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModelGroup;
 
 import java.util.List;
 

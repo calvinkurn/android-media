@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.presenter;
+package com.tokopedia.gm.subscribe.view.presenter;
 
 /**
  * Created by sebastianuskh on 11/23/16.

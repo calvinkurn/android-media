@@ -1,12 +1,12 @@
-package com.tokopedia.seller.gmsubscribe.domain.product.interactor;
+package com.tokopedia.gm.subscribe.domain.product.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
-import com.tokopedia.seller.gmsubscribe.domain.product.exception.GmProductException;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
+import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
+import com.tokopedia.gm.subscribe.domain.product.exception.GmProductException;
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModel;
 
 import javax.inject.Inject;
 

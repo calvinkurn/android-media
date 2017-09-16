@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.activity;
+package com.tokopedia.gm.subscribe.view.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,8 +17,8 @@ import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmCheckoutFragment;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmCheckoutFragmentCallback;
+import com.tokopedia.gm.subscribe.view.fragment.GmCheckoutFragment;
+import com.tokopedia.gm.subscribe.view.fragment.GmCheckoutFragmentCallback;
 
 /**
  * @author sebastianuskh on 1/31/17.

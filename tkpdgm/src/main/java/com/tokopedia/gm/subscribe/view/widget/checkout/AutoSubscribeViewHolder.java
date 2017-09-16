@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.widget.checkout;
+package com.tokopedia.gm.subscribe.view.widget.checkout;
 
 import android.view.View;
 import android.widget.CheckBox;
@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmAutoSubscribeViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmAutoSubscribeViewModel;
 
 /**
  * Created by sebastianuskh on 1/30/17.

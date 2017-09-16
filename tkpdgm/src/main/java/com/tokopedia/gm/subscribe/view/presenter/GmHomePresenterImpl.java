@@ -1,11 +1,11 @@
-package com.tokopedia.seller.gmsubscribe.view.presenter;
+package com.tokopedia.gm.subscribe.view.presenter;
 
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmHomeView;
+import com.tokopedia.gm.subscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
+import com.tokopedia.gm.subscribe.view.fragment.GmHomeView;
 
 import javax.inject.Inject;
 

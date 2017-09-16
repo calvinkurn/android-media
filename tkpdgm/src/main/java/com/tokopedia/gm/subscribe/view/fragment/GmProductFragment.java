@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.fragment;
+package com.tokopedia.gm.subscribe.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,14 +16,14 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.di.GmProductDependencyInjection;
-import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
-import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
-import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
-import com.tokopedia.seller.gmsubscribe.view.presenter.GmProductPresenterImpl;
-import com.tokopedia.seller.gmsubscribe.view.recyclerview.GmProductAdapter;
-import com.tokopedia.seller.gmsubscribe.view.recyclerview.GmProductAdapterCallback;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmProductViewModel;
+import com.tokopedia.gm.subscribe.di.GmProductDependencyInjection;
+import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
+import com.tokopedia.gm.subscribe.di.component.GmSubscribeComponent;
+import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
+import com.tokopedia.gm.subscribe.view.presenter.GmProductPresenterImpl;
+import com.tokopedia.gm.subscribe.view.recyclerview.GmProductAdapter;
+import com.tokopedia.gm.subscribe.view.recyclerview.GmProductAdapterCallback;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmProductViewModel;
 
 import java.util.List;
 

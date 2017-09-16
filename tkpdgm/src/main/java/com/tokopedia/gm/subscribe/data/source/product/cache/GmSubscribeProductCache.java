@@ -1,9 +1,9 @@
-package com.tokopedia.seller.gmsubscribe.data.source.product.cache;
+package com.tokopedia.gm.subscribe.data.source.product.cache;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.model.GmServiceModel;
 
 import javax.inject.Inject;
 

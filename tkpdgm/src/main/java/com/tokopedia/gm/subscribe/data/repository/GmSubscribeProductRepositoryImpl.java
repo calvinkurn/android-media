@@ -1,10 +1,10 @@
-package com.tokopedia.seller.gmsubscribe.data.repository;
+package com.tokopedia.gm.subscribe.data.repository;
 
-import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeProductFactory;
-import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductSelectorDataSource;
-import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmAutoSubscribeDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
+import com.tokopedia.gm.subscribe.data.factory.GmSubscribeProductFactory;
+import com.tokopedia.gm.subscribe.data.source.product.GmSubscribeProductSelectorDataSource;
+import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
+import com.tokopedia.gm.subscribe.domain.product.model.GmAutoSubscribeDomainModel;
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModel;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.recyclerview;
+package com.tokopedia.gm.subscribe.view.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmProductViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmProductViewModel;
 
 /**
  * Created by sebastianuskh on 11/23/16.

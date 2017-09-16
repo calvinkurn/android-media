@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.fragment;
+package com.tokopedia.gm.subscribe.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,11 +12,11 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.di.GmHomeDependencyInjection;
-import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
-import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
-import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
-import com.tokopedia.seller.gmsubscribe.view.presenter.GmHomePresenterImpl;
+import com.tokopedia.gm.subscribe.di.GmHomeDependencyInjection;
+import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
+import com.tokopedia.gm.subscribe.di.component.GmSubscribeComponent;
+import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
+import com.tokopedia.gm.subscribe.view.presenter.GmHomePresenterImpl;
 
 
 /**

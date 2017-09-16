@@ -1,11 +1,11 @@
-package com.tokopedia.seller.gmsubscribe.data.source.cart.cloud;
+package com.tokopedia.gm.subscribe.data.source.cart.cloud;
 
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.api.GmSubscribeCartApi;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.checkout.GmCheckoutInputModel;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.voucher.VoucherCodeInputModel;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher.GmVoucherServiceModel;
-import com.tokopedia.seller.gmsubscribe.data.tools.GetResponse;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.api.GmSubscribeCartApi;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.inputmodel.checkout.GmCheckoutInputModel;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.inputmodel.voucher.VoucherCodeInputModel;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.model.voucher.GmVoucherServiceModel;
+import com.tokopedia.gm.subscribe.data.tools.GetResponse;
 
 import javax.inject.Inject;
 

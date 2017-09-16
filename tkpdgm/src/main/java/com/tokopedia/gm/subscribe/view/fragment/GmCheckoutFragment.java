@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.fragment;
+package com.tokopedia.gm.subscribe.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -14,19 +14,19 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
-import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
-import com.tokopedia.seller.gmsubscribe.view.presenter.GmCheckoutPresenterImpl;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmAutoSubscribeViewModel;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutViewModel;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmVoucherViewModel;
-import com.tokopedia.seller.gmsubscribe.view.widget.checkout.AutoSubscribeViewHolder;
-import com.tokopedia.seller.gmsubscribe.view.widget.checkout.AutoSubscribeViewHolderCallback;
-import com.tokopedia.seller.gmsubscribe.view.widget.checkout.CodeVoucherViewHolder;
-import com.tokopedia.seller.gmsubscribe.view.widget.checkout.CodeVoucherViewHolderCallback;
-import com.tokopedia.seller.gmsubscribe.view.widget.checkout.CurrentSelectedProductViewHolder;
-import com.tokopedia.seller.gmsubscribe.view.widget.checkout.CurrentSelectedProductViewHolderCallback;
+import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
+import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
+import com.tokopedia.gm.subscribe.view.presenter.GmCheckoutPresenterImpl;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmAutoSubscribeViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmVoucherViewModel;
+import com.tokopedia.gm.subscribe.view.widget.checkout.AutoSubscribeViewHolder;
+import com.tokopedia.gm.subscribe.view.widget.checkout.AutoSubscribeViewHolderCallback;
+import com.tokopedia.gm.subscribe.view.widget.checkout.CodeVoucherViewHolder;
+import com.tokopedia.gm.subscribe.view.widget.checkout.CodeVoucherViewHolderCallback;
+import com.tokopedia.gm.subscribe.view.widget.checkout.CurrentSelectedProductViewHolder;
+import com.tokopedia.gm.subscribe.view.widget.checkout.CurrentSelectedProductViewHolderCallback;
 
 /**
  * @author sebastianuskh on 2/3/17.

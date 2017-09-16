@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.di.module;
+package com.tokopedia.gm.subscribe.di.module;
 
 import android.content.Context;
 
@@ -6,15 +6,15 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeCartFactory;
-import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeProductFactory;
-import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeCartRepositoryImpl;
-import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductRepositoryImpl;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.api.GmSubscribeCartApi;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
-import com.tokopedia.seller.gmsubscribe.di.scope.GmSubscribeScope;
-import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
-import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
+import com.tokopedia.gm.subscribe.data.factory.GmSubscribeCartFactory;
+import com.tokopedia.gm.subscribe.data.factory.GmSubscribeProductFactory;
+import com.tokopedia.gm.subscribe.data.repository.GmSubscribeCartRepositoryImpl;
+import com.tokopedia.gm.subscribe.data.repository.GmSubscribeProductRepositoryImpl;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.api.GmSubscribeCartApi;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.api.GoldMerchantApi;
+import com.tokopedia.gm.subscribe.di.scope.GmSubscribeScope;
+import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
+import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;

@@ -1,6 +1,6 @@
-package com.tokopedia.seller.gmsubscribe.view.viewmodel;
+package com.tokopedia.gm.subscribe.view.viewmodel;
 
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmCheckoutDomainModel;
 
 /**
  * Created by sebastianuskh on 2/3/17.

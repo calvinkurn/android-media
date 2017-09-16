@@ -1,12 +1,12 @@
-package com.tokopedia.seller.gmsubscribe.domain.cart.interactor;
+package com.tokopedia.gm.subscribe.domain.cart.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
-import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmCheckoutCheckException;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
+import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
+import com.tokopedia.gm.subscribe.domain.cart.exception.GmCheckoutCheckException;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmCheckoutDomainModel;
 
 import javax.inject.Inject;
 

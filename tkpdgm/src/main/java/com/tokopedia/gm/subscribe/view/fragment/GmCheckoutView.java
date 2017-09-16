@@ -1,11 +1,11 @@
-package com.tokopedia.seller.gmsubscribe.view.fragment;
+package com.tokopedia.gm.subscribe.view.fragment;
 
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmAutoSubscribeViewModel;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutViewModel;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmVoucherViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmAutoSubscribeViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmVoucherViewModel;
 
 /**
  * Created by sebastianuskh on 1/27/17.

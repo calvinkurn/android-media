@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.recyclerview;
+package com.tokopedia.gm.subscribe.view.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmProductViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

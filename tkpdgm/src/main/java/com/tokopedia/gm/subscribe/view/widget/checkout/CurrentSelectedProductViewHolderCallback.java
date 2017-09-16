@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.widget.checkout;
+package com.tokopedia.gm.subscribe.view.widget.checkout;
 
 /**
  * Created by sebastianuskh on 1/27/17.

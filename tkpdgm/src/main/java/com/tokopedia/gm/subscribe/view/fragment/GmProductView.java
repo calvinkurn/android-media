@@ -1,8 +1,8 @@
-package com.tokopedia.seller.gmsubscribe.view.fragment;
+package com.tokopedia.gm.subscribe.view.fragment;
 
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmProductViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmProductViewModel;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.domain.product.model;
+package com.tokopedia.gm.subscribe.domain.product.model;
 
 import java.util.List;
 

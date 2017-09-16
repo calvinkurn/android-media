@@ -1,10 +1,10 @@
-package com.tokopedia.seller.gmsubscribe.data.factory;
+package com.tokopedia.gm.subscribe.data.factory;
 
-import com.tokopedia.seller.gmsubscribe.data.mapper.GmSubscribeCheckoutMapper;
-import com.tokopedia.seller.gmsubscribe.data.mapper.cart.GmSubscribeVoucherMapper;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeCheckoutSource;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeVoucherSource;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
+import com.tokopedia.gm.subscribe.data.mapper.GmSubscribeCheckoutMapper;
+import com.tokopedia.gm.subscribe.data.mapper.cart.GmSubscribeVoucherMapper;
+import com.tokopedia.gm.subscribe.data.source.cart.GmSubscribeCheckoutSource;
+import com.tokopedia.gm.subscribe.data.source.cart.GmSubscribeVoucherSource;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.GmSubscribeCartCloud;
 
 import javax.inject.Inject;
 

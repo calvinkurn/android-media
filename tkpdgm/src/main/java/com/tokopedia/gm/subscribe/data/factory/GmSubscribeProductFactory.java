@@ -1,7 +1,7 @@
-package com.tokopedia.seller.gmsubscribe.data.factory;
+package com.tokopedia.gm.subscribe.data.factory;
 
-import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
-import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductSelectorDataSource;
+import com.tokopedia.gm.subscribe.data.source.product.GmSubscribeProductDataSource;
+import com.tokopedia.gm.subscribe.data.source.product.GmSubscribeProductSelectorDataSource;
 
 import javax.inject.Inject;
 

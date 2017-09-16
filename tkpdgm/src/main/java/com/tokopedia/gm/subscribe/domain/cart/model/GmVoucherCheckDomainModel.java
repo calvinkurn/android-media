@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.domain.cart.model;
+package com.tokopedia.gm.subscribe.domain.cart.model;
 
 /**
  * Created by sebastianuskh on 1/31/17.

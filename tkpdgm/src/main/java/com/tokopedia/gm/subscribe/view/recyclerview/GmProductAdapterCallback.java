@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.recyclerview;
+package com.tokopedia.gm.subscribe.view.recyclerview;
 
 /**
  * Created by sebastianuskh on 1/27/17.

@@ -1,7 +1,7 @@
-package com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api;
+package com.tokopedia.gm.subscribe.data.source.product.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.model.GmServiceModel;
 
 import retrofit2.Response;
 import retrofit2.http.GET;

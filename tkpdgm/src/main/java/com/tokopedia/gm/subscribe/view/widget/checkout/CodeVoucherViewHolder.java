@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.widget.checkout;
+package com.tokopedia.gm.subscribe.view.widget.checkout;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmVoucherViewModel;
+import com.tokopedia.gm.subscribe.view.viewmodel.GmVoucherViewModel;
 
 /**
  * Created by sebastianuskh on 1/31/17.

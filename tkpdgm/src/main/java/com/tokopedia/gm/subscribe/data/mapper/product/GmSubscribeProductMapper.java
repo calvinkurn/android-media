@@ -1,9 +1,9 @@
-package com.tokopedia.seller.gmsubscribe.data.mapper.product;
+package com.tokopedia.gm.subscribe.data.mapper.product;
 
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmProductServiceModel;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModelGroup;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.model.GmProductServiceModel;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.model.GmServiceModel;
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModel;
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModelGroup;
 
 import java.util.ArrayList;
 import java.util.List;

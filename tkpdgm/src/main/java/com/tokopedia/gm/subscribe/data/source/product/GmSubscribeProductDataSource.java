@@ -1,12 +1,12 @@
-package com.tokopedia.seller.gmsubscribe.data.source.product;
+package com.tokopedia.gm.subscribe.data.source.product;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMapper;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModelGroup;
+import com.tokopedia.gm.subscribe.data.mapper.product.GmSubscribeProductMapper;
+import com.tokopedia.gm.subscribe.data.source.product.cache.GmSubscribeProductCache;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.GmSubscribeProductCloud;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.model.GmServiceModel;
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModelGroup;
 
 import javax.inject.Inject;
 

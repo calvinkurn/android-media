@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.domain.product.exception;
+package com.tokopedia.gm.subscribe.domain.product.exception;
 
 /**
  * Created by sebastianuskh on 2/16/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.activity;
+package com.tokopedia.gm.subscribe.view.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -14,10 +14,10 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmCurrentProductFragment;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmExtendProductFragment;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmProductFragment;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmProductFragmentListener;
+import com.tokopedia.gm.subscribe.view.fragment.GmCurrentProductFragment;
+import com.tokopedia.gm.subscribe.view.fragment.GmExtendProductFragment;
+import com.tokopedia.gm.subscribe.view.fragment.GmProductFragment;
+import com.tokopedia.gm.subscribe.view.fragment.GmProductFragmentListener;
 
 public class GmProductActivity extends BasePresenterActivity implements GmProductFragmentListener, HasComponent<AppComponent> {
 

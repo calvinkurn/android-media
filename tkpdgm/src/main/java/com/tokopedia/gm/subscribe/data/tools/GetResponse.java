@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.data.tools;
+package com.tokopedia.gm.subscribe.data.tools;
 
 import retrofit2.Response;
 import rx.functions.Func1;

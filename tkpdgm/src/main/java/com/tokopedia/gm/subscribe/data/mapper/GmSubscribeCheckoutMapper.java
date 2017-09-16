@@ -1,8 +1,8 @@
-package com.tokopedia.seller.gmsubscribe.data.mapper;
+package com.tokopedia.gm.subscribe.data.mapper;
 
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
-import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmCheckoutCheckException;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
+import com.tokopedia.gm.subscribe.domain.cart.exception.GmCheckoutCheckException;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmCheckoutDomainModel;
 
 import javax.inject.Inject;
 

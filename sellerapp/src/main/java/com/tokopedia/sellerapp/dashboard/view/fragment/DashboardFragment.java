@@ -34,11 +34,11 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
+import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.shop.ShopEditorActivity;
-import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
+import com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
@@ -46,8 +46,6 @@ import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget;
 
 import java.util.ArrayList;
 

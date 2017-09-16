@@ -1,7 +1,7 @@
-package com.tokopedia.seller.gmsubscribe.domain.cart;
+package com.tokopedia.gm.subscribe.domain.cart;
 
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainModel;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmCheckoutDomainModel;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmVoucherCheckDomainModel;
 
 import rx.Observable;
 

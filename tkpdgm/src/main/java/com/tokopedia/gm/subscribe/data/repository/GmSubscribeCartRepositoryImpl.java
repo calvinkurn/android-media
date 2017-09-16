@@ -1,11 +1,11 @@
-package com.tokopedia.seller.gmsubscribe.data.repository;
+package com.tokopedia.gm.subscribe.data.repository;
 
-import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeCartFactory;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeCheckoutSource;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeVoucherSource;
-import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainModel;
+import com.tokopedia.gm.subscribe.data.factory.GmSubscribeCartFactory;
+import com.tokopedia.gm.subscribe.data.source.cart.GmSubscribeCheckoutSource;
+import com.tokopedia.gm.subscribe.data.source.cart.GmSubscribeVoucherSource;
+import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmCheckoutDomainModel;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmVoucherCheckDomainModel;
 
 import rx.Observable;
 

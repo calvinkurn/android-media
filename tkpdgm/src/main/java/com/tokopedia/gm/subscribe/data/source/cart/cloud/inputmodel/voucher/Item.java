@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.voucher;
+package com.tokopedia.gm.subscribe.data.source.cart.cloud.inputmodel.voucher;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

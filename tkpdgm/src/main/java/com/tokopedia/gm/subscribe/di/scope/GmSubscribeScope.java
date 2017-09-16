@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.di.scope;
+package com.tokopedia.gm.subscribe.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

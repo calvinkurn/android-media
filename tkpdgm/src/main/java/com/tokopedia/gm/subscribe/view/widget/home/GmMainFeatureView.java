@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.widget.home;
+package com.tokopedia.gm.subscribe.view.widget.home;
 
 
 import android.content.Context;

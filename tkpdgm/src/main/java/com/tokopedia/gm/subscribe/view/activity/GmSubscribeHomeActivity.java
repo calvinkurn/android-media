@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.activity;
+package com.tokopedia.gm.subscribe.view.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,8 +23,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmHomeFragment;
-import com.tokopedia.seller.gmsubscribe.view.fragment.GmHomeFragmentCallback;
+import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragment;
+import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragmentCallback;
 
 import java.util.List;
 

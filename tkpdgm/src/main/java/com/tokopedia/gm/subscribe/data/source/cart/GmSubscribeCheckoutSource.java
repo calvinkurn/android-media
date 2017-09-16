@@ -1,9 +1,9 @@
-package com.tokopedia.seller.gmsubscribe.data.source.cart;
+package com.tokopedia.gm.subscribe.data.source.cart;
 
-import com.tokopedia.seller.gmsubscribe.data.mapper.GmSubscribeCheckoutMapper;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
+import com.tokopedia.gm.subscribe.data.mapper.GmSubscribeCheckoutMapper;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.GmSubscribeCartCloud;
+import com.tokopedia.gm.subscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
+import com.tokopedia.gm.subscribe.domain.cart.model.GmCheckoutDomainModel;
 
 import rx.Observable;
 import rx.functions.Func1;

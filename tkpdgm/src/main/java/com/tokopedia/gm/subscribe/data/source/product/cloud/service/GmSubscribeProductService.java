@@ -1,10 +1,10 @@
-package com.tokopedia.seller.gmsubscribe.data.source.product.cloud.service;
+package com.tokopedia.gm.subscribe.data.source.product.cloud.service;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
+import com.tokopedia.gm.subscribe.data.source.product.cloud.api.GoldMerchantApi;
 
 import retrofit2.Retrofit;
 
