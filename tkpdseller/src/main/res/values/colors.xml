@@ -10,7 +10,11 @@
     <color name="high_score_value">#8bc34a</color>
     
     <color name="black_twenty_five_percent">#40000000</color>
-
+    <color name="tkpd_grey_text">#60000000</color>
+    <color name="tkpd_grey">#E0E0E0</color>
+    <color name="white_fifty_percent">#F8F8F8</color>
+    <color name="color_gray">#1f000000</color>
+    <color name="lighter_grey">#1e000000</color>
     <!-- tooltip statistic-->
     <color name="grey_title_topads_statistic">#a3a3a3</color>
 

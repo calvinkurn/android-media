@@ -49,7 +49,7 @@ public class GmStatisticBuyerViewHolder implements GMStatisticViewHolder {
         tvMainLegendPieDesc = (TextView) buyerDataCardView.findViewById(R.id.tv_main_legend_pie_desc);
 
         genderArray = buyerDataCardView.getResources().getStringArray(R.array.gm_stat_gender);
-        redColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.arrow_down, null);
+        redColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.tkpd_main_orange, null);
         greyColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.grey_400, null);
     }
 

@@ -57,7 +57,7 @@
             android:layout_height="80dp"
             android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
-            app:donut_finished_color="@color/tkpd_red"
+            app:donut_finished_color="@color/tkpd_main_orange"
             app:donut_finished_stroke_width="4dp"
             app:donut_max="100"
             app:donut_show_text="false"

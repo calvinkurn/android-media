@@ -15,7 +15,7 @@ import com.tokopedia.gm.statistic.constant.GMStatConstant;
  * Created by nathan on 7/24/17.
  */
 
-public class GMStatisticSummaryView_ extends BaseCustomView {
+public class GMStatisticSummaryView extends BaseCustomView {
 
     private TextView titleTextView;
     private TextView contentTextView;
@@ -25,17 +25,17 @@ public class GMStatisticSummaryView_ extends BaseCustomView {
     private String contentText;
     private double percentage;
 
-    public GMStatisticSummaryView_(Context context) {
+    public GMStatisticSummaryView(Context context) {
         super(context);
         init();
     }
 
-    public GMStatisticSummaryView_(Context context, AttributeSet attrs) {
+    public GMStatisticSummaryView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public GMStatisticSummaryView_(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GMStatisticSummaryView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }

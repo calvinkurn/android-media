@@ -1,5 +1,6 @@
 package com.tokopedia.gm.statistic.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.R;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
@@ -223,9 +225,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onViewNotGmClicked() {
-        if (getActivity().getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
-        }
+        Intent intent = new Intent(getActivity(), GmSubscribeHomeActivity.class);
+        startActivity(intent);
     }
 
     private void showSnackbarRetry() {

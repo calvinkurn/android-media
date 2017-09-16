@@ -6,7 +6,7 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
-import com.tokopedia.gm.statistic.view.widget.GMStatisticSummaryView_;
+import com.tokopedia.gm.statistic.view.widget.GMStatisticSummaryView;
 
 /**
  * Created by nathan on 7/24/17.
@@ -18,10 +18,10 @@ public class GMStatisticSummaryViewHolder implements GMStatisticViewHolder{
     private LoadingStateView conversionLoadingStateView;
     private LoadingStateView productSeenLoadingStateView;
     private LoadingStateView productSoldLoadingStateView;
-    private GMStatisticSummaryView_ successTransactionSummaryView;
-    private GMStatisticSummaryView_ conversionSummaryView;
-    private GMStatisticSummaryView_ productSeenSummaryView;
-    private GMStatisticSummaryView_ productSoldSummaryView;
+    private GMStatisticSummaryView successTransactionSummaryView;
+    private GMStatisticSummaryView conversionSummaryView;
+    private GMStatisticSummaryView productSeenSummaryView;
+    private GMStatisticSummaryView productSoldSummaryView;
     private String errorValue;
 
     public GMStatisticSummaryViewHolder(View view) {
@@ -30,10 +30,10 @@ public class GMStatisticSummaryViewHolder implements GMStatisticViewHolder{
         conversionLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_conversion);
         productSeenLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_product_seen);
         productSoldLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_product_sold);
-        successTransactionSummaryView = (GMStatisticSummaryView_) view.findViewById(R.id.summary_view_success_transaction);
-        conversionSummaryView = (GMStatisticSummaryView_) view.findViewById(R.id.summary_view_conversion);
-        productSeenSummaryView = (GMStatisticSummaryView_) view.findViewById(R.id.summary_view_product_seen);
-        productSoldSummaryView = (GMStatisticSummaryView_) view.findViewById(R.id.summary_view_product_sold);
+        successTransactionSummaryView = (GMStatisticSummaryView) view.findViewById(R.id.summary_view_success_transaction);
+        conversionSummaryView = (GMStatisticSummaryView) view.findViewById(R.id.summary_view_conversion);
+        productSeenSummaryView = (GMStatisticSummaryView) view.findViewById(R.id.summary_view_product_seen);
+        productSoldSummaryView = (GMStatisticSummaryView) view.findViewById(R.id.summary_view_product_sold);
     }
 
     public void setData(GetProductGraph getProductGraph) {

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    android:id="@+id/vg_shop_close"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vg_shop_close"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rect_green_rounded"
-    android:layout_marginTop="@dimen/padding_ms">
+    android:layout_marginTop="@dimen/padding_ms"
+    android:background="@drawable/rect_green_rounded">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
         android:layout_marginLeft="@dimen/margin_vvvs"
         android:layout_marginRight="1dp"
-        android:layout_marginBottom="1dp"
         android:layout_marginTop="1dp"
         android:background="@drawable/bg_green_ticker"
         android:orientation="horizontal"
@@ -42,27 +42,23 @@
 
             <TextView
                 android:id="@+id/tv_description"
-                android:layout_marginTop="@dimen/margin_vs"
                 style="@style/TextView.Caption.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/margin_vs"
                 tools:text="Closed Description" />
 
             <TextView
                 android:id="@+id/tv_action"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/TextView.Body1.Bold"
                 android:layout_marginTop="@dimen/margin_ms"
                 android:background="@drawable/rect_stroke_light_gray"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center"
                 android:padding="@dimen/margin_ms"
-                android:text="@string/open_shop"
-                android:textColor="@color/wholesale_color"
-                android:textSize="@dimen/font_button"
-                android:textStyle="bold" />
+                android:text="@string/open_shop" />
         </LinearLayout>
 
 
