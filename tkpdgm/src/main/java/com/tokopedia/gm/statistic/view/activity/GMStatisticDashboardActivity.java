@@ -9,6 +9,7 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
@@ -121,6 +122,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
 
     @Override
     public GoldMerchantComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent();
+        return ((GMModuleRouter) getApplication()).getGoldMerchantComponent();
     }
 }

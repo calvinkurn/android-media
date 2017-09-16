@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
@@ -49,8 +50,8 @@ public class FeaturedProductActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     public GoldMerchantComponent getComponent() {
-        if(getApplication() != null && getApplication() instanceof SellerModuleRouter){
-            return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent();
+        if(getApplication() != null && getApplication() instanceof GMModuleRouter){
+            return ((GMModuleRouter) getApplication()).getGoldMerchantComponent();
         }
         return null;
     }
