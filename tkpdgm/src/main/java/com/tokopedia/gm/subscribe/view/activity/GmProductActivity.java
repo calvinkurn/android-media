@@ -86,7 +86,7 @@ public class GmProductActivity extends BasePresenterActivity implements GmProduc
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_gmsubscribe;
+        return R.layout.activity_gm_subscribe;
     }
 
     @Override

@@ -12,9 +12,9 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
         <include
-            layout="@layout/layout_gm_subscribe_home_header"/>
+            layout="@layout/partial_gm_subscribe_home_header"/>
 
-        <include layout="@layout/layout_gm_subscribe_home_main_features"/>
+        <include layout="@layout/partial_gm_subscribe_home_main_features"/>
 
 
         <View
@@ -23,7 +23,7 @@
             android:layout_height="1dp"
             android:background="@color/gmsubscribe_product_line_color"/>
 
-        <include layout="@layout/layout_gm_subscribe_home_sub_features"/>
+        <include layout="@layout/partial_gm_subscribe_home_sub_features"/>
 
 
         <Button

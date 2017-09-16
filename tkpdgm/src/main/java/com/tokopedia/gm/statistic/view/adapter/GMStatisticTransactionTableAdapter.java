@@ -35,7 +35,7 @@ public class GMStatisticTransactionTableAdapter extends BaseListAdapter<GMStatis
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GMStatisticTransactionTableModel.TYPE:
-                return new GMStatisticTransactionTableViewHolder(getLayoutView(parent, R.layout.item_transaction_table));
+                return new GMStatisticTransactionTableViewHolder(getLayoutView(parent, R.layout.item_gm_statistic_transaction_table));
         }
         return super.onCreateViewHolder(parent, viewType);
     }

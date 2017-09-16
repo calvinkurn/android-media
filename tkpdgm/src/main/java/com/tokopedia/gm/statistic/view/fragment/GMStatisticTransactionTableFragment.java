@@ -108,7 +108,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_transaction_table_list;
+        return R.layout.fragment_gm_statistic_transaction_table_list;
     }
 
     @Override

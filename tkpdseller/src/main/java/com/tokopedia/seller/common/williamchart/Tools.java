@@ -189,6 +189,6 @@ public class Tools {
 
     @LayoutRes
     private static int getTooltipResLayout() {
-        return R.layout.gm_stat_tooltip;
+        return R.layout.item_tooltip;
     }
 }

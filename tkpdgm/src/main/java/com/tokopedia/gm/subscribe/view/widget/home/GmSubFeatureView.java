@@ -56,7 +56,7 @@ public class GmSubFeatureView extends FrameLayout {
     }
 
     private void initView() {
-        View view = inflate(getContext(), R.layout.layout_gm_subscribe_sub_feature, null);
+        View view = inflate(getContext(), R.layout.partial_gm_subscribe_sub_feature, null);
         imageViewSubFeature = (ImageView) view.findViewById(R.id.image_gm_subscribe_sub_feature);
         textViewDescSubFeature = (TextView) view.findViewById(R.id.desc_gm_subscribe_sub_feature);
         addView(view);

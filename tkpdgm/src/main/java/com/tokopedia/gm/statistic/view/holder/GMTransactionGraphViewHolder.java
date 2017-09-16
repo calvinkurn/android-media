@@ -243,7 +243,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     @LayoutRes
     private int getTooltipResLayout() {
-        return R.layout.gm_stat_tooltip_compare;
+        return R.layout.item_gm_statistic_tooltip_compare;
     }
 
     /**

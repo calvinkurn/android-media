@@ -101,7 +101,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_youtube_addvideo, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_video, container, false);
         recyclerViewAddUrlVideo = (RecyclerView) view.findViewById(R.id.recycler_view_add_url_video);
         addUrlVideoAdapter = new AddUrlVideoAdapter(new ImageHandler(view.getContext()));
         EmptyAddUrlVideoDataBinder emptyAddUrlVideoDataBinder = new EmptyAddUrlVideoDataBinder(addUrlVideoAdapter);

@@ -22,11 +22,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/layout_gmsubscribe_checkout_selected_product" />
+            <include layout="@layout/partial_gm_subscribe_checkout_selected_product" />
 
-            <include layout="@layout/layout_gmsubscribe_checkout_auto_subscribe" />
+            <include layout="@layout/partial_gm_subscribe_checkout_auto_subscribe" />
 
-            <include layout="@layout/layout_gmsubscribe_checkout_voucher_code" />
+            <include layout="@layout/partial_gm_subscribe_checkout_voucher_code" />
 
         </LinearLayout>
 

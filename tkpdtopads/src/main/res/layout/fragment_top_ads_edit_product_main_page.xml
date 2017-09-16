@@ -24,7 +24,7 @@
 
             <include layout="@layout/partial_separator_horizontal"/>
 
-            <include layout="@layout/include_top_ads_edit_main_page" />
+            <include layout="@layout/partial_top_ads_edit_main_page" />
         </LinearLayout>
     </ScrollView>
 </com.tokopedia.core.customwidget.SwipeToRefresh>
