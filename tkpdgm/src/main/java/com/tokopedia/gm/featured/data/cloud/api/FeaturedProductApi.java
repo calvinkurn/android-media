@@ -1,9 +1,9 @@
-package com.tokopedia.seller.goldmerchant.featured.data.cloud.api;
+package com.tokopedia.gm.featured.data.cloud.api;
 
-import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedConstant;
-import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
-import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;
-import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.gm.featured.constant.FeaturedConstant;
+import com.tokopedia.gm.featured.data.model.FeaturedProductGETModel;
+import com.tokopedia.gm.featured.data.model.FeaturedProductPOSTModel;
+import com.tokopedia.gm.featured.data.model.PostFeaturedProductModel;
 
 import retrofit2.Response;
 import retrofit2.http.Body;

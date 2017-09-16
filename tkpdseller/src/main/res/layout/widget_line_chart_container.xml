@@ -46,12 +46,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.tokopedia.seller.common.widget.GMDateRangeView
+        <com.tokopedia.gm.statistic.view.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.tokopedia.seller.common.widget.GMDateRangeView
+        <com.tokopedia.gm.statistic.view.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_compare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

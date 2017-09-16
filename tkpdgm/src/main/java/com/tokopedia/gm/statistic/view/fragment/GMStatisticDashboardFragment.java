@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
+package com.tokopedia.gm.statistic.view.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,23 +15,24 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
-import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
-import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticProductViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticSummaryViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticTransactionViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GmStatisticBuyerViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GmStatisticMarketInsightViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.gm.statistic.di.component.DaggerGMStatisticDashboardComponent;
+import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
+import com.tokopedia.gm.statistic.view.holder.GMStatisticGrossViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GMStatisticProductViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GMStatisticSummaryViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GMStatisticTransactionViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GmStatisticBuyerViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GmStatisticMarketInsightViewHolder;
+import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
+import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ import javax.inject.Inject;
  * created by norman 02/01/2017
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment
-        implements GMStatisticDashboardView {
+        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, GmStatisticMarketInsightViewHolder.Listener {
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -102,6 +103,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 }
             }
         });
+        gmStatisticTransactionViewHolder.setListener(this);
         return view;
     }
 
@@ -215,6 +217,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             enableDateLabelView();
         } else {
             disableDateLabelView();
+        }
+    }
+
+    @Override
+    public void onViewNotGmClicked() {
+        if (getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
         }
     }
 

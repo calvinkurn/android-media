@@ -1,18 +1,18 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
+package com.tokopedia.gm.statistic.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
-import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.gm.statistic.constant.GMStatConstant;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetShopCategory;
+import com.tokopedia.gm.statistic.domain.KeywordModel;
+import com.tokopedia.gm.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
+import com.tokopedia.gm.statistic.domain.interactor.GMStatGetPopularProductUseCase;
+import com.tokopedia.gm.statistic.domain.interactor.GMStatGetProductGraphUseCase;
+import com.tokopedia.gm.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
+import com.tokopedia.gm.statistic.domain.interactor.GMStatMarketInsightUseCase;
+import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 

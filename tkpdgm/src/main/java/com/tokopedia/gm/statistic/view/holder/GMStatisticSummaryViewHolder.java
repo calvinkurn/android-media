@@ -1,12 +1,12 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.holder;
+package com.tokopedia.gm.statistic.view.holder;
 
 import android.view.View;
 
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.GmStatisticSummaryView;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.gm.statistic.view.widget.GmStatisticSummaryView;
 
 /**
  * Created by nathan on 7/24/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.adapter.viewholder;
+package com.tokopedia.gm.statistic.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +8,9 @@ import android.widget.TextView;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 
 /**
  * Created by normansyahputa on 7/13/17.

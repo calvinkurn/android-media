@@ -1,10 +1,10 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.builder;
+package com.tokopedia.gm.statistic.view.builder;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
+import com.tokopedia.gm.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetAdapterBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemAdapter;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -45,7 +45,7 @@ public class CheckedAdapterBottomSheetBuilder extends BottomSheetAdapterBuilder 
     @NonNull
     @Override
     protected BottomSheetItemAdapter getBottomSheetItemAdapter(BottomSheetItemClickListener itemClickListener) {
-        return new com.tokopedia.seller.goldmerchant.statistic.view.adapter.BottomSheetItemAdapter(
+        return new com.tokopedia.gm.statistic.view.adapter.BottomSheetItemAdapter(
                 mItems,
                 mMode, itemClickListener );
     }

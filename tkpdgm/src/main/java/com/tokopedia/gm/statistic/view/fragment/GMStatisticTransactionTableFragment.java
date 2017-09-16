@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
+package com.tokopedia.gm.statistic.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,19 +21,19 @@ import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
-import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatRetryDataBinder;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.gm.statistic.di.component.DaggerGMTransactionComponent;
+import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
+import com.tokopedia.gm.statistic.utils.GMStatisticDateUtils;
+import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
+import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
+import com.tokopedia.gm.statistic.view.adapter.GMStatisticTransactionTableAdapter;
+import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
+import com.tokopedia.gm.statistic.view.builder.CheckedBottomSheetBuilder;
+import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionTableView;
+import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 
 import java.util.Date;
 

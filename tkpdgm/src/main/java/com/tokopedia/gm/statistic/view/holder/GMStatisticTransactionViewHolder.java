@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.holder;
+package com.tokopedia.gm.statistic.view.holder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,19 +8,18 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticTransactionActivity;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.gm.statistic.view.widget.ArrowPercentageView;
+import com.tokopedia.gm.statistic.view.widget.config.DataTransactionChartConfig;
+import com.tokopedia.gm.statistic.view.widget.config.DataTransactionDataSetConfig;
+import com.tokopedia.gm.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.Router;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
+import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionDataSetConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
 
 import java.util.List;
 
@@ -31,6 +30,11 @@ import java.util.List;
  */
 
 public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
+
+    public interface Listener {
+        void onViewNotGmClicked();
+    }
+
     private LineChartView transactionChart;
 
     private TitleCardView transactionDataCardView;
@@ -41,6 +45,12 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
 
     private String[] monthNamesAbrev;
 
+    private Listener listener;
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
     public GMStatisticTransactionViewHolder(View view) {
         transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
         viewNotGM = transactionDataCardView.findViewById(R.id.transaction_data_container_non_gold_merchant);
@@ -48,7 +58,9 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
-                Router.goToGMSubscribe(transactionDataCardView.getContext());
+                if (listener != null) {
+                    listener.onViewNotGmClicked();
+                }
             }
         });
         transactionChart = (LineChartView) transactionDataCardView.findViewById(R.id.transaction_chart);

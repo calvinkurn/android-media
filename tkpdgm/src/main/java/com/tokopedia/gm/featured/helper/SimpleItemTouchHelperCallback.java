@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.goldmerchant.featured.helper;
+package com.tokopedia.gm.featured.helper;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;

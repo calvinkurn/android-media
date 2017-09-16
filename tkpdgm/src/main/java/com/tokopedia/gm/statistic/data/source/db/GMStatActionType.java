@@ -1,14 +1,14 @@
-package com.tokopedia.seller.goldmerchant.statistic.data.source.db;
+package com.tokopedia.gm.statistic.data.source.db;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.BUYER;
-import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.KEYWORD;
-import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.POPULAR_PRODUCT;
-import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.PROD_GRAPH;
-import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.SHOP_CAT;
-import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.TRANS_GRAPH;
-import static com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType.TRANS_TABLE;
+import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.BUYER;
+import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.KEYWORD;
+import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.POPULAR_PRODUCT;
+import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.PROD_GRAPH;
+import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.SHOP_CAT;
+import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.TRANS_GRAPH;
+import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.TRANS_TABLE;
 
 /**
  * @author normansyahputa on 4/25/17.

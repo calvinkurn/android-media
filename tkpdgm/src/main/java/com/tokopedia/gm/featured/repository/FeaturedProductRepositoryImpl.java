@@ -1,13 +1,13 @@
-package com.tokopedia.seller.goldmerchant.featured.repository;
+package com.tokopedia.gm.featured.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.goldmerchant.featured.data.FeaturedProductDataSource;
-import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
-import com.tokopedia.seller.goldmerchant.featured.domain.interactor.FeaturedProductPOSTUseCase;
-import com.tokopedia.seller.goldmerchant.featured.domain.mapper.FeaturedProductMapper;
-import com.tokopedia.seller.goldmerchant.featured.domain.mapper.FeaturedProductPOSTMapper;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductDomainModel;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductPOSTDomainModel;
+import com.tokopedia.gm.featured.data.FeaturedProductDataSource;
+import com.tokopedia.gm.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.gm.featured.domain.interactor.FeaturedProductPOSTUseCase;
+import com.tokopedia.gm.featured.domain.mapper.FeaturedProductMapper;
+import com.tokopedia.gm.featured.domain.mapper.FeaturedProductPOSTMapper;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductDomainModel;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductPOSTDomainModel;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import rx.Observable;

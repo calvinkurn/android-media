@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
+package com.tokopedia.gm.statistic.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,17 +20,17 @@ import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
-import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTopAdsAmountViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTransactionGraphViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionView;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.statistic.di.component.DaggerGMTransactionComponent;
+import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticTransactionTableActivity;
+import com.tokopedia.gm.statistic.view.holder.GMTopAdsAmountViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GMTransactionGraphViewHolder;
+import com.tokopedia.gm.statistic.view.holder.UnFinishedTransactionViewHolder;
+import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
+import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter;
 
 import javax.inject.Inject;
 

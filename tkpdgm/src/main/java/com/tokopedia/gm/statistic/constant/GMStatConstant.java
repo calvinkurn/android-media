@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.constant;
+package com.tokopedia.gm.statistic.constant;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 

@@ -1,11 +1,11 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
+package com.tokopedia.gm.statistic.view.presenter;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.gm.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
+import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 
 import rx.Subscriber;
 

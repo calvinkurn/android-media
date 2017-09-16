@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.widget;
+package com.tokopedia.gm.statistic.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
+import com.tokopedia.gm.statistic.constant.GMStatConstant;
+import com.tokopedia.seller.common.utils.KMNumbers;
 
 /**
  * Created by User on 7/10/2017.

@@ -1,15 +1,15 @@
-package com.tokopedia.seller.goldmerchant.featured.view.adapter;
+package com.tokopedia.gm.featured.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType;
-import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperAdapter;
-import com.tokopedia.seller.goldmerchant.featured.helper.OnStartDragListener;
-import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
-import com.tokopedia.seller.goldmerchant.featured.view.adapter.viewholder.FeaturedProductViewHolder;
+import com.tokopedia.gm.featured.constant.FeaturedProductType;
+import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
+import com.tokopedia.gm.featured.helper.OnStartDragListener;
+import com.tokopedia.gm.featured.view.adapter.model.FeaturedProductModel;
+import com.tokopedia.gm.featured.view.adapter.viewholder.FeaturedProductViewHolder;
 
 import java.util.Collections;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.di.scope;
+package com.tokopedia.gm.featured.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

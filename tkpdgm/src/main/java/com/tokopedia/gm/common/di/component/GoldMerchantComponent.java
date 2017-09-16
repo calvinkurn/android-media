@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.common.di.component;
+package com.tokopedia.gm.common.di.component;
 
 import android.content.Context;
 
@@ -27,8 +27,8 @@ import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
-import com.tokopedia.seller.goldmerchant.common.di.module.GoldMerchantModule;
-import com.tokopedia.seller.goldmerchant.common.di.scope.GoldMerchantScope;
+import com.tokopedia.gm.common.di.module.GoldMerchantModule;
+import com.tokopedia.gm.common.di.scope.GoldMerchantScope;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;

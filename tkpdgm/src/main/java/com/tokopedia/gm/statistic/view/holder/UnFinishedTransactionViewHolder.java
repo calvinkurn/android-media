@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.holder;
+package com.tokopedia.gm.statistic.view.holder;
 
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -7,11 +7,11 @@ import android.view.View;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.CircleTextView;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgress;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgressLayout;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.gm.statistic.view.model.UnFinishedTransactionViewModel;
+import com.tokopedia.gm.statistic.view.widget.CircleTextView;
+import com.tokopedia.gm.statistic.view.widget.circleprogress.DonutProgress;
+import com.tokopedia.gm.statistic.view.widget.circleprogress.DonutProgressLayout;
 
 /**
  * Created by normansyahputa on 7/13/17.

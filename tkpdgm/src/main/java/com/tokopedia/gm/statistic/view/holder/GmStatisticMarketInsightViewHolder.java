@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.holder;
+package com.tokopedia.gm.statistic.view.holder;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +10,9 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.view.adapter.MarketInsightAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.Router;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.MarketInsightAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +23,22 @@ import java.util.List;
 
 public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder {
 
+    public interface Listener {
+        void onViewNotGmClicked();
+    }
+
     private static final String DEFAULT_CATEGORY = "kaos";
 
     private TextView tvMarketInsightFooter;
     private TitleCardView titleCardView;
     private MarketInsightAdapter marketInsightAdapter;
-    private final View notGMView;
+    private View notGMView;
+
+    private Listener listener;
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     public GmStatisticMarketInsightViewHolder(View view) {
         titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
@@ -38,12 +47,10 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         notGMView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToGMSubscribe();
-            }
-
-            private void moveToGMSubscribe() {
                 UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
-                Router.goToGMSubscribe(titleCardView.getContext());
+                if (listener != null) {
+                    listener.onViewNotGmClicked();
+                }
             }
         });
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);

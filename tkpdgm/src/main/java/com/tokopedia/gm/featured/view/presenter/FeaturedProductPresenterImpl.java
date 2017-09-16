@@ -1,13 +1,13 @@
-package com.tokopedia.seller.goldmerchant.featured.view.presenter;
+package com.tokopedia.gm.featured.view.presenter;
 
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.goldmerchant.featured.domain.interactor.FeaturedProductPOSTUseCase;
-import com.tokopedia.seller.goldmerchant.featured.domain.interactor.FeaturedProductUseCase;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductDomainModel;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductPOSTDomainModel;
-import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
+import com.tokopedia.gm.featured.domain.interactor.FeaturedProductPOSTUseCase;
+import com.tokopedia.gm.featured.domain.interactor.FeaturedProductUseCase;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductDomainModel;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductPOSTDomainModel;
+import com.tokopedia.gm.featured.view.adapter.model.FeaturedProductModel;
 
 import java.util.ArrayList;
 import java.util.List;

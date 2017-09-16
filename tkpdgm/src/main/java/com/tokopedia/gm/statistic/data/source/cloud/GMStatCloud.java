@@ -1,17 +1,17 @@
-package com.tokopedia.seller.goldmerchant.statistic.data.source.cloud;
+package com.tokopedia.gm.statistic.data.source.cloud;
 
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.gm.statistic.data.source.cloud.api.GMStatApi;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetShopCategory;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetBuyerTable;
+import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetProductTable;
+import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetTransactionTable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table;
+package com.tokopedia.gm.statistic.domain.model.transaction.table;
 
 
 import java.util.List;

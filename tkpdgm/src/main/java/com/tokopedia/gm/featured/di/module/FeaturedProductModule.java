@@ -1,17 +1,17 @@
-package com.tokopedia.seller.goldmerchant.featured.di.module;
+package com.tokopedia.gm.featured.di.module;
 
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.seller.goldmerchant.featured.data.FeaturedProductDataSource;
-import com.tokopedia.seller.goldmerchant.featured.data.cloud.api.FeaturedProductApi;
-import com.tokopedia.seller.goldmerchant.featured.di.scope.FeaturedProductScope;
-import com.tokopedia.seller.goldmerchant.featured.domain.mapper.FeaturedProductMapper;
-import com.tokopedia.seller.goldmerchant.featured.domain.mapper.FeaturedProductPOSTMapper;
-import com.tokopedia.seller.goldmerchant.featured.repository.FeaturedProductRepository;
-import com.tokopedia.seller.goldmerchant.featured.repository.FeaturedProductRepositoryImpl;
+import com.tokopedia.gm.featured.data.FeaturedProductDataSource;
+import com.tokopedia.gm.featured.data.cloud.api.FeaturedProductApi;
+import com.tokopedia.gm.featured.di.scope.FeaturedProductScope;
+import com.tokopedia.gm.featured.domain.mapper.FeaturedProductMapper;
+import com.tokopedia.gm.featured.domain.mapper.FeaturedProductPOSTMapper;
+import com.tokopedia.gm.featured.repository.FeaturedProductRepository;
+import com.tokopedia.gm.featured.repository.FeaturedProductRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;

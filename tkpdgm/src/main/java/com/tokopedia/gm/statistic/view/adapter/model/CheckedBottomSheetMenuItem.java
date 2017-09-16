@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.adapter.model;
+package com.tokopedia.gm.statistic.view.adapter.model;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;

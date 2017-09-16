@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.utils;
+package com.tokopedia.gm.statistic.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,8 +9,9 @@ import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
-import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDatePickerActivity;
+import com.tokopedia.gm.statistic.constant.GMStatConstant;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticDatePickerActivity;
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;

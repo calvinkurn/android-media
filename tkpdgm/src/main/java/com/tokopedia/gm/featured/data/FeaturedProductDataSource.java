@@ -1,9 +1,9 @@
-package com.tokopedia.seller.goldmerchant.featured.data;
+package com.tokopedia.gm.featured.data;
 
-import com.tokopedia.seller.goldmerchant.featured.data.cloud.api.FeaturedProductApi;
-import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
-import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;
-import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.gm.featured.data.cloud.api.FeaturedProductApi;
+import com.tokopedia.gm.featured.data.model.FeaturedProductGETModel;
+import com.tokopedia.gm.featured.data.model.FeaturedProductPOSTModel;
+import com.tokopedia.gm.featured.data.model.PostFeaturedProductModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;

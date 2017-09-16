@@ -1,8 +1,8 @@
-package com.tokopedia.seller.goldmerchant.featured.view.presenter;
+package com.tokopedia.gm.featured.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.goldmerchant.featured.view.listener.FeaturedProductView;
+import com.tokopedia.gm.featured.view.listener.FeaturedProductView;
 
 /**
  * Created by normansyahputa on 9/7/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.domain.model;
+package com.tokopedia.gm.featured.domain.model;
 
 import java.util.List;
 

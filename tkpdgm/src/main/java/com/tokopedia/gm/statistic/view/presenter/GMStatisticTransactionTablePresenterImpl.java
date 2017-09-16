@@ -1,12 +1,12 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
+package com.tokopedia.gm.statistic.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.Cell;
-import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.gm.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
+import com.tokopedia.gm.statistic.domain.model.transaction.table.Cell;
+import com.tokopedia.gm.statistic.domain.model.transaction.table.GetTransactionTableModel;
+import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 
 import java.util.ArrayList;
 import java.util.Date;

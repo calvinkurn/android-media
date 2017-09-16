@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph;
+package com.tokopedia.gm.statistic.data.source.cloud.model.graph;
 
 import java.util.List;
 

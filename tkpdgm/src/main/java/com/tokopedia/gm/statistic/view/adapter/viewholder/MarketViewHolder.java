@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.adapter.viewholder;
+package com.tokopedia.gm.statistic.view.adapter.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,11 +8,11 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 
 import java.util.List;
 
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant.NUMBER_TIMES_FORMAT;
+import static com.tokopedia.gm.statistic.constant.GMStatConstant.NUMBER_TIMES_FORMAT;
 
 /**
  * Created by Nathan on 7/25/2017.

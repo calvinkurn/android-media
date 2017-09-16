@@ -1,13 +1,13 @@
-package com.tokopedia.seller.goldmerchant.featured.constant;
+package com.tokopedia.gm.featured.constant;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType.ARRANGE_DISPLAY;
-import static com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType.DEFAULT_DISPLAY;
-import static com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType.DELETE_DISPLAY;
+import static com.tokopedia.gm.featured.constant.FeaturedProductType.ARRANGE_DISPLAY;
+import static com.tokopedia.gm.featured.constant.FeaturedProductType.DEFAULT_DISPLAY;
+import static com.tokopedia.gm.featured.constant.FeaturedProductType.DELETE_DISPLAY;
 
 /**
  * Created by normansyahputa on 9/12/17.

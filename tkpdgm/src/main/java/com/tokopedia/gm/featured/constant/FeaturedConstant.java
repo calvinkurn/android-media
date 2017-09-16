@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.constant;
+package com.tokopedia.gm.featured.constant;
 
 /**
  * Created by normansyahputa on 9/6/17.

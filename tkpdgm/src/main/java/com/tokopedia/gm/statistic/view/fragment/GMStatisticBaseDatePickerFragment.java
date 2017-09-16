@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
+package com.tokopedia.gm.statistic.view.fragment;
 
 import android.content.Intent;
 import android.view.View;
@@ -7,7 +7,7 @@ import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
+import com.tokopedia.gm.statistic.utils.GMStatisticDateUtils;
 
 /**
  * Created by nathan on 7/14/17.

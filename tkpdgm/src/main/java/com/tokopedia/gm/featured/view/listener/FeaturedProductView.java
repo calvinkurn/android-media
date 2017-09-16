@@ -1,9 +1,9 @@
-package com.tokopedia.seller.goldmerchant.featured.view.listener;
+package com.tokopedia.gm.featured.view.listener;
 
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
+import com.tokopedia.gm.featured.view.adapter.model.FeaturedProductModel;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
+package com.tokopedia.seller.common.williamchart.config;
 
 import android.graphics.Color;
 

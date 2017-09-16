@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table;
+package com.tokopedia.gm.statistic.data.source.cloud.model.table;
 
 
 import com.google.gson.annotations.Expose;

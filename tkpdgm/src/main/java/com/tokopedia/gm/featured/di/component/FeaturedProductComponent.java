@@ -1,14 +1,14 @@
-package com.tokopedia.seller.goldmerchant.featured.di.component;
+package com.tokopedia.gm.featured.di.component;
 
 /**
  * Created by normansyahputa on 9/7/17.
  */
 
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.featured.di.module.FeaturedProductModule;
-import com.tokopedia.seller.goldmerchant.featured.di.scope.FeaturedProductScope;
-import com.tokopedia.seller.goldmerchant.featured.view.activity.FeaturedProductActivity;
-import com.tokopedia.seller.goldmerchant.featured.view.fragment.FeaturedProductFragment;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.featured.di.module.FeaturedProductModule;
+import com.tokopedia.gm.featured.di.scope.FeaturedProductScope;
+import com.tokopedia.gm.featured.view.activity.FeaturedProductActivity;
+import com.tokopedia.gm.featured.view.fragment.FeaturedProductFragment;
 
 import dagger.Component;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress;
+package com.tokopedia.gm.statistic.view.widget.circleprogress;
 
 import android.content.res.Resources;
 

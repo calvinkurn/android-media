@@ -1,10 +1,10 @@
-package com.tokopedia.seller.goldmerchant.statistic.di.component;
+package com.tokopedia.gm.statistic.di.component;
 
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
-import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDashboardFragment;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
+import com.tokopedia.gm.statistic.di.scope.GMStatisticScope;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
+import com.tokopedia.gm.statistic.view.fragment.GMStatisticDashboardFragment;
 
 import dagger.Component;
 

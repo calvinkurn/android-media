@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.utils;
+package com.tokopedia.seller.common.utils;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.holder;
+package com.tokopedia.gm.statistic.view.holder;
 
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -11,12 +11,12 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.williamchart.Tools;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
+import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
+import com.tokopedia.gm.statistic.view.widget.LineChartContainerWidget;
 
 /**
  * Created by normansyahputa on 7/11/17.

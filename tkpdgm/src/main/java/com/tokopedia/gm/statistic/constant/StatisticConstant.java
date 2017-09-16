@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.constant;
+package com.tokopedia.gm.statistic.constant;
 
 /**
  * @author normansyahputa on 7/6/17.

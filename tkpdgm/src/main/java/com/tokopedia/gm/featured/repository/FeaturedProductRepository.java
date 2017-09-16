@@ -1,8 +1,8 @@
-package com.tokopedia.seller.goldmerchant.featured.repository;
+package com.tokopedia.gm.featured.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductDomainModel;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductPOSTDomainModel;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductDomainModel;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductPOSTDomainModel;
 
 import rx.Observable;
 

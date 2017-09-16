@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.data.source.cache;
+package com.tokopedia.gm.statistic.data.source.cache;
 
 import android.support.annotation.NonNull;
 
@@ -6,16 +6,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase_Table;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetShopCategory;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetTransactionTable;
+import com.tokopedia.gm.statistic.data.source.db.GMStatActionType;
+import com.tokopedia.gm.statistic.data.source.db.GMStatDataBase;
+import com.tokopedia.gm.statistic.data.source.db.GMStatDataBase_Table;
 
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.view.adapter;
+package com.tokopedia.gm.featured.view.adapter;
 
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;

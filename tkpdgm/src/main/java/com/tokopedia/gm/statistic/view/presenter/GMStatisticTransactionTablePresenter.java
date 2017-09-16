@@ -1,9 +1,9 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
+package com.tokopedia.gm.statistic.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionTableView;
 
 import java.util.Date;
 

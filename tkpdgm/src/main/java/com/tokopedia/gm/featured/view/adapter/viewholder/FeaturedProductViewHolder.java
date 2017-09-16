@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.view.adapter.viewholder;
+package com.tokopedia.gm.featured.view.adapter.viewholder;
 
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -11,10 +11,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType;
-import com.tokopedia.seller.goldmerchant.featured.helper.ItemTouchHelperViewHolder;
-import com.tokopedia.seller.goldmerchant.featured.helper.OnStartDragListener;
-import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
+import com.tokopedia.gm.featured.constant.FeaturedProductType;
+import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;
+import com.tokopedia.gm.featured.helper.OnStartDragListener;
+import com.tokopedia.gm.featured.view.adapter.model.FeaturedProductModel;
 
 /**
  * Created by normansyahputa on 9/8/17.

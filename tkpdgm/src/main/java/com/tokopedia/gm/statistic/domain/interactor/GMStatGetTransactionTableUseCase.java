@@ -1,13 +1,13 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
+package com.tokopedia.gm.statistic.domain.interactor;
 
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
-import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.gm.statistic.domain.GMStatRepository;
+import com.tokopedia.gm.statistic.domain.model.transaction.table.GetTransactionTableModel;
 
 import javax.inject.Inject;
 

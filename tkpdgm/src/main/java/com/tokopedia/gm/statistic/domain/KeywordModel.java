@@ -1,7 +1,7 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain;
+package com.tokopedia.gm.statistic.domain;
 
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetShopCategory;
 
 import java.util.List;
 

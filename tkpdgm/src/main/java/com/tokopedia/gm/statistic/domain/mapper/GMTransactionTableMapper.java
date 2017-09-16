@@ -1,8 +1,8 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain.mapper;
+package com.tokopedia.gm.statistic.domain.mapper;
 
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
-import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.Cell;
-import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
+import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetTransactionTable;
+import com.tokopedia.gm.statistic.domain.model.transaction.table.Cell;
+import com.tokopedia.gm.statistic.domain.model.transaction.table.GetTransactionTableModel;
 
 import java.util.ArrayList;
 import java.util.List;

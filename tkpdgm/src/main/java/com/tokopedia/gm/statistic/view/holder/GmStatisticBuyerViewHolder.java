@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.holder;
+package com.tokopedia.gm.statistic.view.holder;
 
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
@@ -7,15 +7,15 @@ import android.widget.TextView;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgress;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.gm.statistic.view.widget.circleprogress.DonutProgress;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.gm.statistic.view.widget.ArrowPercentageView;
 
 import java.util.Locale;
 
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant.LOWER_BUYER_FORMAT;
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant.UPPER_BUYER_FORMAT;
+import static com.tokopedia.gm.statistic.constant.GMStatConstant.LOWER_BUYER_FORMAT;
+import static com.tokopedia.gm.statistic.constant.GMStatConstant.UPPER_BUYER_FORMAT;
 
 /**
  * Created by normansyahputa on 11/11/16.

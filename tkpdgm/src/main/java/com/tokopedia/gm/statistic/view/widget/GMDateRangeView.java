@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.widget;
+package com.tokopedia.gm.statistic.view.widget;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.tokopedia.gm.statistic.view.model.GMDateRangeDateViewModel;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMDateRangeDateViewModel;
 
 /**
  * Created by normansyahputa on 7/11/17.

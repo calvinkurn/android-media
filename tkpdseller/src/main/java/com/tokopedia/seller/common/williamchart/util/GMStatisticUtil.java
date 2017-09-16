@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.utils;
+package com.tokopedia.seller.common.williamchart.util;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;
@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.ArrayList;

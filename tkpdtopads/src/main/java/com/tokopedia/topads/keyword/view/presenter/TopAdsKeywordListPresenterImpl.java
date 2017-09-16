@@ -1,11 +1,12 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.domain.interactor.KeywordDashboardUseCase;
 import com.tokopedia.topads.keyword.domain.model.Datum;
@@ -16,8 +17,6 @@ import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.topads.keyword.view.model.NegativeKeywordAd;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

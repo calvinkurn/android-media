@@ -1,11 +1,11 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
+package com.tokopedia.gm.statistic.domain.interactor;
 
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
-import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.gm.statistic.domain.GMStatRepository;
 
 import javax.inject.Inject;
 

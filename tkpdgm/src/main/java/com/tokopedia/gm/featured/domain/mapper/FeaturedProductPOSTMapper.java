@@ -1,7 +1,7 @@
-package com.tokopedia.seller.goldmerchant.featured.domain.mapper;
+package com.tokopedia.gm.featured.domain.mapper;
 
-import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductPOSTDomainModel;
+import com.tokopedia.gm.featured.data.model.FeaturedProductPOSTModel;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductPOSTDomainModel;
 
 import javax.inject.Inject;
 

@@ -1,12 +1,10 @@
 package com.tokopedia.seller.reputation.util;
 
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateFormatForInput;
-import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateRaw;
-import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateWithYear;
 
 /**
  * Created by normansyahputa on 3/29/17.
@@ -26,8 +24,8 @@ public class DateHeaderFormatter {
     public String getStartDateFormat(long sDate) {
         validateMonths();
 
-        String dateFormatForInput = getDateFormatForInput(sDate, DD_MM);
-        return getDateRaw(dateFormatForInput, monthNames);
+        String dateFormatForInput = GoldMerchantDateUtils.getDateFormatForInput(sDate, DD_MM);
+        return GoldMerchantDateUtils.getDateRaw(dateFormatForInput, monthNames);
     }
 
     protected void validateMonths() {
@@ -38,6 +36,6 @@ public class DateHeaderFormatter {
     public String getEndDateFormat(long eDate) {
         validateMonths();
 
-        return getDateWithYear(getDateFormatForInput(eDate, YYYY_M_MDD), monthNames);
+        return GoldMerchantDateUtils.getDateWithYear(GoldMerchantDateUtils.getDateFormatForInput(eDate, YYYY_M_MDD), monthNames);
     }
 }

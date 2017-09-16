@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.builder;
+package com.tokopedia.gm.statistic.view.builder;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

@@ -1,7 +1,7 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
+package com.tokopedia.gm.statistic.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
+import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 
 /**
  * Created by normansyahputa on 1/2/17.

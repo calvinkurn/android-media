@@ -1,13 +1,13 @@
-package com.tokopedia.seller.goldmerchant.featured.domain.interactor;
+package com.tokopedia.gm.featured.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
-import com.tokopedia.seller.goldmerchant.featured.domain.model.FeaturedProductPOSTDomainModel;
-import com.tokopedia.seller.goldmerchant.featured.repository.FeaturedProductRepository;
-import com.tokopedia.seller.goldmerchant.featured.view.adapter.model.FeaturedProductModel;
+import com.tokopedia.gm.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.gm.featured.domain.model.FeaturedProductPOSTDomainModel;
+import com.tokopedia.gm.featured.repository.FeaturedProductRepository;
+import com.tokopedia.gm.featured.view.adapter.model.FeaturedProductModel;
 
 import java.util.ArrayList;
 import java.util.List;

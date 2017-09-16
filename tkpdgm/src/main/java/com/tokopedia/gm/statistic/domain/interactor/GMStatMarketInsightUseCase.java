@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
+package com.tokopedia.gm.statistic.domain.interactor;
 
 import android.text.TextUtils;
 
@@ -6,10 +6,10 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
-import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetShopCategory;
+import com.tokopedia.gm.statistic.domain.KeywordModel;
+import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
 import com.tokopedia.core.common.category.domain.interactor.GetProductCategoryNameUseCase;
 
 import java.util.ArrayList;

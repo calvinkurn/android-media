@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.activity;
+package com.tokopedia.gm.statistic.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDashboardFragment;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.statistic.view.fragment.GMStatisticDashboardFragment;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 
 /**

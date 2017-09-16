@@ -1,6 +1,6 @@
-package com.tokopedia.seller.goldmerchant.featured.data.cloud.param;
+package com.tokopedia.gm.featured.data.cloud.param;
 
-import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.gm.featured.data.model.PostFeaturedProductModel;
 
 /**
  * Created by normansyahputa on 9/8/17.

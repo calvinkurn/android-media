@@ -1,8 +1,9 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
+package com.tokopedia.gm.statistic.view.widget.config;
 
 import android.content.Context;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.seller.common.williamchart.config.GrossGraphChartConfig;
 import com.tokopedia.seller.common.williamchart.renderer.AxisRenderer;
 import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
 

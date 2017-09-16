@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +16,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
@@ -28,8 +28,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateWithYear;
 
 /**
  * Created by normansyahputa on 11/21/16.
@@ -96,12 +94,12 @@ public class GMStatHeaderViewHelper {
         if (dateGraph == null || dateGraph.size() <= 0)
             return;
 
-        String startDate = getDateWithYear(dateGraph.get(0), monthNamesAbrev);
-        this.sDate = getDateWithYear(dateGraph.get(0));
+        String startDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(0), monthNamesAbrev);
+        this.sDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(0));
 
         int lastIndex = (dateGraph.size() > 7) ? 6 : dateGraph.size() - 1;
-        String endDate = getDateWithYear(dateGraph.get(lastIndex), monthNamesAbrev);
-        this.eDate = getDateWithYear(dateGraph.get(lastIndex));
+        String endDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(lastIndex), monthNamesAbrev);
+        this.eDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(lastIndex));
 
 
         calendarRange.setText(startDate + " - " + endDate);
@@ -174,7 +172,7 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(sDate);
             DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
             startDate = dateFormat.format(cal.getTime());
-            startDate = getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
+            startDate = GoldMerchantDateUtils.getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
         }
 
         String endDate = null;
@@ -183,7 +181,7 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(eDate);
             DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
             endDate = dateFormat.format(cal.getTime());
-            endDate = getDateWithYear(endDate, monthNamesAbrev);
+            endDate = GoldMerchantDateUtils.getDateWithYear(endDate, monthNamesAbrev);
         }
 
         calendarRange.setText(startDate + " - " + endDate);

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.holder;
+package com.tokopedia.gm.statistic.view.holder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -20,17 +20,17 @@ import com.tokopedia.seller.common.williamchart.renderer.TooltipFormatRenderer;
 import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.common.williamchart.util.TooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
+import com.tokopedia.gm.statistic.constant.GMTransactionGraphType;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
+import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.gm.statistic.view.builder.CheckedBottomSheetBuilder;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.gm.statistic.view.model.GMTransactionGraphViewModel;
+import com.tokopedia.gm.statistic.view.widget.LineChartContainerWidget;
+import com.tokopedia.gm.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
+import com.tokopedia.seller.common.williamchart.config.GrossGraphDataSetConfig;
 
 import java.util.ArrayList;
 import java.util.List;

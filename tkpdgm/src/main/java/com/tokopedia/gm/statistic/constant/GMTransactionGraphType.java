@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.constant;
+package com.tokopedia.gm.statistic.constant;
 
 /**
  * Created by normansyahputa on 7/11/17.
@@ -6,13 +6,13 @@ package com.tokopedia.seller.goldmerchant.statistic.constant;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType.GROSS_REVENUE;
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType.NET_REVENUE;
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType.REJECTED_AMOUNT;
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType.REJECT_TRANS;
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType.SHIPPING_COST;
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType.SUCCESS_TRANS;
-import static com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType.TOTAL_TRANSACTION;
+import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.GROSS_REVENUE;
+import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.NET_REVENUE;
+import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.REJECTED_AMOUNT;
+import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.REJECT_TRANS;
+import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.SHIPPING_COST;
+import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.SUCCESS_TRANS;
+import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.TOTAL_TRANSACTION;
 
 @IntDef({TOTAL_TRANSACTION, GROSS_REVENUE, NET_REVENUE, REJECTED_AMOUNT, SHIPPING_COST, SUCCESS_TRANS, REJECT_TRANS})
 public @interface GMTransactionGraphType {

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.adapter;
+package com.tokopedia.gm.statistic.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.viewholder.MarketViewHolder;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.gm.statistic.view.adapter.viewholder.MarketViewHolder;
 
 import java.util.List;
 

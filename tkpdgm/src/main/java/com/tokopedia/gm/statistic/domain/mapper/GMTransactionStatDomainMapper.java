@@ -1,18 +1,16 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain.mapper;
+package com.tokopedia.gm.statistic.domain.mapper;
 
-import android.util.Log;
-
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMDateRangeDateViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
+import com.tokopedia.gm.statistic.constant.GMStatConstant;
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.tokopedia.gm.statistic.constant.GMTransactionGraphType;
+import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
+import com.tokopedia.gm.statistic.view.model.GMDateRangeDateViewModel;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.gm.statistic.view.model.GMTransactionGraphViewModel;
+import com.tokopedia.gm.statistic.view.model.UnFinishedTransactionViewModel;
 
 import java.util.List;
 

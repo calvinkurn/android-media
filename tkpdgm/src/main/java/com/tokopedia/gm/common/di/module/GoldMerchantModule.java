@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.common.di.module;
+package com.tokopedia.gm.common.di.module;
 
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.seller.base.data.repository.DatePickerRepositoryImpl;
@@ -9,7 +9,7 @@ import com.tokopedia.seller.base.domain.interactor.FetchDatePickerUseCase;
 import com.tokopedia.seller.base.domain.interactor.SaveDatePickerUseCase;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenterImpl;
-import com.tokopedia.seller.goldmerchant.common.di.scope.GoldMerchantScope;
+import com.tokopedia.gm.common.di.scope.GoldMerchantScope;
 
 import dagger.Module;
 import dagger.Provides;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.widget;
+package com.tokopedia.gm.statistic.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,8 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.widget.GMDateRangeView;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
 
 /**
  * Created by hendry on 7/10/2017.

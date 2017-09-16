@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.view.adapter.model;
+package com.tokopedia.gm.featured.view.adapter.model;
 
 import com.tokopedia.seller.base.view.adapter.ItemIdType;
 

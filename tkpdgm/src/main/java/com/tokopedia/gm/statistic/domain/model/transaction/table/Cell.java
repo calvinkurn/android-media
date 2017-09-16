@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table;
+package com.tokopedia.gm.statistic.domain.model.transaction.table;
 
 /**
  * Created by normansyahputa on 7/18/17.

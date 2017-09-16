@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.view.activity;
+package com.tokopedia.gm.featured.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,14 +8,14 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.featured.constant.FeaturedProductType;
-import com.tokopedia.seller.goldmerchant.featured.data.cloud.api.FeaturedProductApi;
-import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductGETModel;
-import com.tokopedia.seller.goldmerchant.featured.data.model.FeaturedProductPOSTModel;
-import com.tokopedia.seller.goldmerchant.featured.data.model.PostFeaturedProductModel;
-import com.tokopedia.seller.goldmerchant.featured.di.component.DaggerFeaturedProductComponent;
-import com.tokopedia.seller.goldmerchant.featured.view.fragment.FeaturedProductFragment;
+import com.tokopedia.gm.common.di.component.GoldMerchantComponent;
+import com.tokopedia.gm.featured.constant.FeaturedProductType;
+import com.tokopedia.gm.featured.data.cloud.api.FeaturedProductApi;
+import com.tokopedia.gm.featured.data.model.FeaturedProductGETModel;
+import com.tokopedia.gm.featured.data.model.FeaturedProductPOSTModel;
+import com.tokopedia.gm.featured.data.model.PostFeaturedProductModel;
+import com.tokopedia.gm.featured.di.component.DaggerFeaturedProductComponent;
+import com.tokopedia.gm.featured.view.fragment.FeaturedProductFragment;
 
 import java.util.ArrayList;
 import java.util.List;

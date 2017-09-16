@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.adapter;
+package com.tokopedia.gm.statistic.view.adapter;
 
 import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
+import com.tokopedia.gm.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItem;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;

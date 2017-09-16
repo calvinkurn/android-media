@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.featured.domain.model;
+package com.tokopedia.gm.featured.domain.model;
 
 /**
  * Created by normansyahputa on 9/6/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.data.source.db;
+package com.tokopedia.gm.statistic.data.source.db;
 
 import android.support.annotation.Nullable;
 
