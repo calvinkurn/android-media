@@ -15,7 +15,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.di.GmProductDependencyInjection;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.component.GmSubscribeComponent;

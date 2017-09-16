@@ -13,7 +13,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
 import com.tokopedia.gm.subscribe.view.presenter.GmCheckoutPresenterImpl;

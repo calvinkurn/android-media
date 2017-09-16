@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.seller.R;
+
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductType;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;

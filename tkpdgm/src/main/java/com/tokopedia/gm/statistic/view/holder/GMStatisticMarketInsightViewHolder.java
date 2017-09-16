@@ -12,7 +12,7 @@ import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.view.adapter.GMMarketInsightAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by normansyahputa on 11/23/16.
  */
 
-public class GMStatisticMarketInsightViewHolder_ implements GMStatisticViewHolder {
+public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder {
 
     public interface Listener {
         void onViewNotGmClicked();
@@ -40,7 +40,7 @@ public class GMStatisticMarketInsightViewHolder_ implements GMStatisticViewHolde
         this.listener = listener;
     }
 
-    public GMStatisticMarketInsightViewHolder_(View view) {
+    public GMStatisticMarketInsightViewHolder(View view) {
         titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
         notGMView = titleCardView.getContentView().findViewById(R.id.vg_market_insight_not_gm);
 

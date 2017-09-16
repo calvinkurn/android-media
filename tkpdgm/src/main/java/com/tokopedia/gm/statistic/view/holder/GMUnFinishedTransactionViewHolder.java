@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.view.model.GMUnFinishedTransactionViewModel;
 import com.tokopedia.gm.statistic.view.widget.CircleTextView;

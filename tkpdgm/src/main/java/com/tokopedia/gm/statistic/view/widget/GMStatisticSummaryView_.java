@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.constant.GMStatConstant;
 
 /**

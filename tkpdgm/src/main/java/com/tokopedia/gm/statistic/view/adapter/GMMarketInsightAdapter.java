@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.view.adapter.viewholder.GMMarketViewHolder;
 

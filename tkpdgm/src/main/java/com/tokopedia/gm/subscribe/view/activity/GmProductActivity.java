@@ -13,7 +13,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.view.fragment.GmCurrentProductFragment;
 import com.tokopedia.gm.subscribe.view.fragment.GmExtendProductFragment;
 import com.tokopedia.gm.subscribe.view.fragment.GmProductFragment;

@@ -1,7 +1,7 @@
 package com.tokopedia.gm.statistic.view.adapter;
 
 import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 
 /**

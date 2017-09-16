@@ -22,7 +22,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragment;
 import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragmentCallback;
 

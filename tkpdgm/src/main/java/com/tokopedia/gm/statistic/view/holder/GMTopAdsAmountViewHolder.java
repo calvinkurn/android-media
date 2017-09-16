@@ -7,7 +7,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.williamchart.Tools;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;

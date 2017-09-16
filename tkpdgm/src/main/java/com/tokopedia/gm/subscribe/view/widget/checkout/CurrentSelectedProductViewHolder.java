@@ -3,7 +3,7 @@ package com.tokopedia.gm.subscribe.view.widget.checkout;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
 
 /**

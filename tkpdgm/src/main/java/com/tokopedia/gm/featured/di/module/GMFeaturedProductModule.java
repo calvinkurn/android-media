@@ -35,11 +35,11 @@ public class GMFeaturedProductModule {
     @GMFeaturedProductScope
     @Provides
     GMFeaturedProductRepository provideFeaturedProductRepository(
-            GMFeaturedProductDataSource GMFeaturedProductDataSource,
+            GMFeaturedProductDataSource gmFeaturedProductDataSource,
             ShopInfoRepository shopInfoRepository,
-            GMFeaturedProductMapper GMFeaturedProductMapper,
-            GMFeaturedProductSubmitMapper GMFeaturedProductSubmitMapper) {
-        return new GMFeaturedProductRepositoryImpl(GMFeaturedProductDataSource, shopInfoRepository, GMFeaturedProductMapper, GMFeaturedProductSubmitMapper);
+            GMFeaturedProductMapper gmFeaturedProductMapper,
+            GMFeaturedProductSubmitMapper gmFeaturedProductSubmitMapper) {
+        return new GMFeaturedProductRepositoryImpl(gmFeaturedProductDataSource, shopInfoRepository, gmFeaturedProductMapper, gmFeaturedProductSubmitMapper);
     }
 
     // FOR SHOP_INFO

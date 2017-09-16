@@ -3,7 +3,7 @@ package com.tokopedia.gm.featured.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductType;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;

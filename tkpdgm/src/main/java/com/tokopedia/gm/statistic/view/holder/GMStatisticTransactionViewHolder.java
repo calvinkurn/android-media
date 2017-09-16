@@ -14,7 +14,7 @@ import com.tokopedia.gm.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.gm.statistic.view.widget.config.DataTransactionChartConfig;
 import com.tokopedia.gm.statistic.view.widget.config.DataTransactionDataSetConfig;
 import com.tokopedia.gm.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
 import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;

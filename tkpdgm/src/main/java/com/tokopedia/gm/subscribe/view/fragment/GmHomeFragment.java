@@ -11,7 +11,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.di.GmHomeDependencyInjection;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.component.GmSubscribeComponent;

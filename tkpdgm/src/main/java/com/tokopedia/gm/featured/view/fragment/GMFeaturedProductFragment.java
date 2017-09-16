@@ -27,7 +27,7 @@ import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCas
 import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
@@ -66,7 +66,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private FloatingActionButton fab;
 
     @Inject
-    private GMFeaturedProductPresenterImpl featuredProductPresenter;
+    GMFeaturedProductPresenterImpl featuredProductPresenter;
     @GMFeaturedProductType
     private int featuredProductType = GMFeaturedProductType.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> productModelsTemp = new ArrayList<>();
@@ -208,7 +208,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             case GMFeaturedProductType.DEFAULT_DISPLAY:
                 if (productModelsTemp != null && productModelsTemp.size() > 0) {
                     featuredProductPresenter.postData(
-                            GMFeaturedProductSubmitUseCase.createParam(Collections.unmodifiableList(productModelsTemp))
+                            GMFeaturedProductSubmitUseCase.createParam(Collections.unmodifiableList(productModelsTemp)));
                 } else {
                     featuredProductPresenter.loadData();
                 }

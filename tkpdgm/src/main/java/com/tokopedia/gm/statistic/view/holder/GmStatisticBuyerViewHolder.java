@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.view.widget.circleprogress.DonutProgress;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;

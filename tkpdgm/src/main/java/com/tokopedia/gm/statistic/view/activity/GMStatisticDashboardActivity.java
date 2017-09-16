@@ -11,7 +11,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.seller.R;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.view.fragment.GMStatisticDashboardFragment;
 
 /**
