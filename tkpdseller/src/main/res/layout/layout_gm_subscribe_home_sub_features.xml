@@ -22,7 +22,7 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <com.tokopedia.seller.gmsubscribe.view.widget.home.GmSubFeatureView
+        <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
             android:id="@+id/sub_feature_etalase"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             app:feature_desc="@string/gmsubscribe_subfeature_etalase"
             app:feature_img="@drawable/ic_gmsubscribe_subfeature_etalase" />
 
-        <com.tokopedia.seller.gmsubscribe.view.widget.home.GmSubFeatureView
+        <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
             android:id="@+id/sub_feature_admin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             app:feature_desc="@string/gmsubscribe_feature_admin"
             app:feature_img="@drawable/ic_gmsubscribe_subfeature_admin" />
 
-        <com.tokopedia.seller.gmsubscribe.view.widget.home.GmSubFeatureView
+        <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
             android:id="@+id/sub_feature_cashback"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <com.tokopedia.seller.gmsubscribe.view.widget.home.GmSubFeatureView
+        <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
             android:id="@+id/sub_feature_video"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             app:feature_desc="@string/gmsubscribe_feature_video"
             app:feature_img="@drawable/ic_gmsubscribe_subfeature_video" />
 
-        <com.tokopedia.seller.gmsubscribe.view.widget.home.GmSubFeatureView
+        <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
             android:id="@+id/sub_feature_pantaupasar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
             app:feature_desc="@string/gmsubscribe_feature_pantaupasar"
             app:feature_img="@drawable/ic_gmsubscribe_subfeature_pantaupasar" />
 
-        <com.tokopedia.seller.gmsubscribe.view.widget.home.GmSubFeatureView
+        <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
             android:id="@+id/sub_feature_kurs"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
