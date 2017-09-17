@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,25 +20,25 @@ import android.view.View;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.gm.R;
+import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
+import com.tokopedia.gm.featured.di.component.DaggerGMFeaturedProductComponent;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
+import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
+import com.tokopedia.gm.featured.helper.OnStartDragListener;
+import com.tokopedia.gm.featured.helper.SimpleItemTouchHelperCallback;
 import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
+import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
+import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
-import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
-import com.tokopedia.gm.featured.di.component.DaggerGMFeaturedProductComponent;
-import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
-import com.tokopedia.gm.featured.helper.OnStartDragListener;
-import com.tokopedia.gm.featured.helper.SimpleItemTouchHelperCallback;
-import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
-import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
@@ -69,7 +70,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Inject
     GMFeaturedProductPresenterImpl featuredProductPresenter;
     @GMFeaturedProductTypeView
-    private int featuredProductType = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
+    private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private int MAX_ITEM = 5;
     private int deleteSelectionCount = 0;
@@ -144,7 +145,13 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             }
         });
         progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
+        resetPageAndSearch();
+    }
+
+    @Override
+    protected void searchForPage(int page) {
         featuredProductPresenter.loadData();
     }
 
@@ -155,10 +162,22 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         if (gmFeaturedProductModelListFromServer == null) {
             gmFeaturedProductModelListFromServer = list;
         }
-        if (totalItem <= 0 || totalItem >= MAX_ITEM) {
-            hideFab();
-        } else {
-            showFab();
+        updateFabDisplay();
+    }
+
+    private void updateFabDisplay() {
+        switch (getFeaturedProductTypeView()) {
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                hideFab();
+                break;
+            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
+            default:
+                if (totalItem <= 0 || totalItem >= MAX_ITEM) {
+                    hideFab();
+                } else {
+                    showFab();
+                }
         }
     }
 
@@ -188,11 +207,13 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         if (isAdded() && progressDialog != null) {
             progressDialog.dismiss();
         }
-        snackBarRetry.hideRetrySnackbar();
+        if (snackBarRetry != null) {
+            snackBarRetry.hideRetrySnackbar();
+        }
     }
 
     private void updateSubtitleCounterProduct() {
-        if (featuredProductType == GMFeaturedProductTypeView.DELETE_DISPLAY) {
+        if (featuredProductTypeView == GMFeaturedProductTypeView.DELETE_DISPLAY) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
         } else if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
@@ -211,11 +232,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         super.showViewSearchNoResult();
         hideFab();
         updateSubtitleCounterProduct();
-    }
-
-    @Override
-    protected void setAndSearchForPage(int page) {
-        featuredProductPresenter.loadData();
     }
 
     protected void moveToProductPicker() {
@@ -241,29 +257,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    protected void searchForPage(int page) {
-
-    }
-
-    public void updateTitleView(int itemCount, int maxItemCount) {
-        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
-            ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-            if (supportActionBar != null) {
-                supportActionBar.setTitle(String.format("%d / %d Item", itemCount, maxItemCount));
-            }
-        }
-    }
-
-    public void updateTitleView(@StringRes int text) {
-        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
-            ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-            if (supportActionBar != null) {
-                supportActionBar.setTitle(text);
-            }
-        }
-    }
-
-    @Override
     public void onSubmitSuccess() {
         hideLoading();
         closeActivity();
@@ -285,7 +278,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 closeActivity();
             }
         });
-        builder.setNeutralButton(R.string.label_exit, new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(R.string.label_no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
@@ -305,21 +298,56 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    public int getFeaturedProductType() {
-        return featuredProductType;
+    @GMFeaturedProductTypeView
+    public int getFeaturedProductTypeView() {
+        return featuredProductTypeView;
     }
 
-    public void setFeaturedProductTypeView(@GMFeaturedProductTypeView int featuredProductType) {
-        this.featuredProductType = featuredProductType;
+    public void setFeaturedProductTypeView(@GMFeaturedProductTypeView int featuredProductTypeView) {
+        this.featuredProductTypeView = featuredProductTypeView;
         getActivity().invalidateOptionsMenu();
         adapter.notifyDataSetChanged();
-        updateSubtitleCounterProduct();
+        updateTitle();
+        updateFabDisplay();
+    }
+
+    private void updateTitle() {
+        switch (getFeaturedProductTypeView()) {
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
+                updateTitle(String.valueOf(((GMFeaturedProductAdapter) adapter).getTotalChecked()), null);
+                break;
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
+            default:
+                updateTitle(getString(R.string.gm_featured_product_activity_title),
+                        getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
+        }
+    }
+
+    private void updateTitle(String title, String subTitle) {
+        AppCompatActivity appCompatActivity = ((AppCompatActivity) getActivity());
+        if (appCompatActivity == null) {
+            return;
+        }
+        ActionBar actionBar = appCompatActivity.getSupportActionBar();
+        if (actionBar == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(title)) {
+            title = "";
+        }
+        if (TextUtils.isEmpty(subTitle)) {
+            subTitle = "";
+        }
+        actionBar.setTitle(title);
+        actionBar.setSubtitle(subTitle);
     }
 
     public void onBackPressed() {
-        switch (featuredProductType) {
+        switch (featuredProductTypeView) {
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
             case GMFeaturedProductTypeView.DELETE_DISPLAY:
+                ((GMFeaturedProductAdapter) adapter).resetCheckedItemSet();
                 setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
                 break;
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
@@ -346,102 +374,60 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_gm_featured_product, menu);
-        if (featuredProductType == GMFeaturedProductTypeView.DELETE_DISPLAY) {
-            setVisibleMenuModeDelete(menu, true);
-        } else {
-            setVisibleMenuModeDelete(menu, false);
+        switch (featuredProductTypeView) {
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
+                inflater.inflate(R.menu.menu_gm_featured_product_delete_mode, menu);
+                break;
+            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
+                inflater.inflate(R.menu.menu_gm_featured_product, menu);
+                break;
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+            default:
+                break;
         }
-    }
-
-    private void setVisibleMenuModeDelete(Menu menu, boolean isMenuModeDeleteVisible) {
-        MenuItem menuItemDeleteMode = menu.findItem(R.id.menu_delete_mode);
-        MenuItem menuItemArrange = menu.findItem(R.id.menu_arrange);
-        MenuItem menuItemDelete = menu.findItem(R.id.menu_delete);
-        menuItemDeleteMode.setVisible(isMenuModeDeleteVisible);
-        menuItemArrange.setVisible(!isMenuModeDeleteVisible);
-        menuItemDelete.setVisible(!isMenuModeDeleteVisible);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_arrange) {
+        if (item.getItemId() == R.id.menu_arrange_mode) {
             setFeaturedProductTypeView(GMFeaturedProductTypeView.ARRANGE_DISPLAY);
             hideFab();
             return true;
-        } else if (item.getItemId() == R.id.menu_delete) {
-            ((GMFeaturedProductAdapter) adapter).clearSelections();
+        } else if (item.getItemId() == R.id.menu_delete_mode) {
+            ((GMFeaturedProductAdapter) adapter).resetCheckedItemSet();
             setFeaturedProductTypeView(GMFeaturedProductTypeView.DELETE_DISPLAY);
             hideFab();
             return true;
-        } else if (item.getItemId() == R.id.menu_delete_mode) {
-            showOtherActionDialog();
+        } else if (item.getItemId() == R.id.menu_delete) {
+            showDeleteDialog();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void showOtherActionDialog() {
-        String title;
-        String message;
-        String labelAction;
-
-        switch (featuredProductType) {
-            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
-                title = getString(R.string.gm_featured_product_sort_title);
-                message = getString(R.string.gm_featured_product_sort_desc);
-                labelAction = getString(R.string.action_sort);
-                break;
-            case GMFeaturedProductTypeView.DELETE_DISPLAY:
-                // TODO change this according to type.
-                title = getString(R.string.gm_featured_product_delete_title);
-                message = getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getSelectedSize());
-                labelAction = getString(R.string.label_delete);
-                break;
-            default:
-                title = getString(R.string.gm_featured_product_sort_title);
-                message = getString(R.string.gm_featured_product_sort_desc);
-                labelAction = getString(R.string.action_sort);
-                break;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
-                R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(true);
+    private void showDeleteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+        builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getSelectedSize()));
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                switch (featuredProductType) {
-                    case GMFeaturedProductTypeView.DELETE_DISPLAY:
-                        ((GMFeaturedProductAdapter) adapter).removeSelections();
-                        break;
-                    default:
-                        break;
-                }
-                updateTitleView(R.string.featured_product_title);
-                showFab();
-                featuredProductPresenter.postData(
-                        GMFeaturedProductSubmitUseCase.createParam(
-                                adapter.getData()
-                        )
-                );
+                ((GMFeaturedProductAdapter) adapter).removeCheckedItem();
+                setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
                 dialog.cancel();
             }
         });
         builder.setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
                 setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
+                dialog.dismiss();
             }
         });
-
         AlertDialog alert = builder.create();
         alert.show();
     }
 
     @Override
     public boolean isLongPressDragEnabled() {
-        switch (featuredProductType) {
+        switch (featuredProductTypeView) {
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
                 return true;
             default:
@@ -456,18 +442,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     public void onItemChecked(GMFeaturedProductModel gmFeaturedProductModel, boolean checked) {
-        switch (featuredProductType) {
-            case GMFeaturedProductTypeView.DELETE_DISPLAY:
-                if (checked) {
-                    deleteSelectionCount++;
-                } else {
-                    deleteSelectionCount--;
-                }
-                updateTitleView(deleteSelectionCount, MAX_ITEM);
-                break;
-            default:
-                break;
-        }
+        int totalChecked = ((GMFeaturedProductAdapter) adapter).getTotalChecked();
+        updateTitle(String.valueOf(totalChecked), null);
     }
 
     public void showFab() {

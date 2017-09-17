@@ -21,7 +21,6 @@ import java.util.List;
 
 public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFeaturedProductModel> implements ItemTouchHelperAdapter, GMFeaturedProductViewHolder.PostDataListener {
 
-    private static final String TAG = "GMFeaturedProductAdapter";
     private final OnStartDragListener mDragStartListener;
     private UseCaseListener useCaseListener;
 
@@ -75,29 +74,11 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
 
     @Override
     public int getFeaturedProductType() {
-        if(useCaseListener != null){
-            return useCaseListener.getFeaturedProductType();
-        }else{
+        if (useCaseListener != null) {
+            return useCaseListener.getFeaturedProductTypeView();
+        } else {
             return GMFeaturedProductTypeView.DEFAULT_DISPLAY;
         }
-    }
-
-    public void clearSelections() {
-        hashSet.clear();
-    }
-
-    public void removeSelections() {
-        int i = 0;
-        for(Iterator<GMFeaturedProductModel> iterator = data.iterator(); iterator.hasNext(); ){
-            GMFeaturedProductModel GMFeaturedProductModel = iterator.next();
-            if (hashSet.contains(GMFeaturedProductModel.getId())) {
-                hashSet.remove(GMFeaturedProductModel.getId());
-
-                iterator.remove();
-            }
-            i++;
-        }
-        notifyDataSetChanged();
     }
 
     public int getSelectedSize() {
@@ -107,6 +88,6 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
     public interface UseCaseListener {
         void postData(List<GMFeaturedProductModel> data);
 
-        int getFeaturedProductType();
+        int getFeaturedProductTypeView();
     }
 }
