@@ -34,6 +34,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         BaseListViewListener<T>, BaseListAdapter.Callback<T> {
 
     private static final int START_PAGE = 1;
+    private static final int DEFAULT_TOTAL_ITEM = 0;
 
     protected BaseListAdapter<T> adapter;
     protected RecyclerView recyclerView;
@@ -75,7 +76,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     protected boolean hasNextPage() {
-        return adapter.getDataSize() < totalItem && totalItem != Integer.MAX_VALUE;
+        return adapter.getDataSize() < totalItem && totalItem != DEFAULT_TOTAL_ITEM;
     }
 
     protected int getCurrentPage() {
@@ -139,7 +140,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     protected void initialVar() {
         super.initialVar();
         currentPage = getStartPage();
-        totalItem = Integer.MAX_VALUE;
         searchMode = false;
         adapter = getNewAdapter();
         adapter.setCallback(this);

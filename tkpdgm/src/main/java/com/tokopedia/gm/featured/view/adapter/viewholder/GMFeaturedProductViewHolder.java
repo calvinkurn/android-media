@@ -27,27 +27,38 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     private final TextView textPrice;
     private final AppCompatCheckBox checkBoxGM;
     AppCompatImageView dragAndDropGMFeaturedProduct;
-    private OnStartDragListener mDragStartListener;
+    private OnStartDragListener onStartDragListener;
     private PostDataListener useCaseListener;
 
-    public GMFeaturedProductViewHolder(View itemView, OnStartDragListener mDragStartListener, PostDataListener useCaseListener) {
+    public GMFeaturedProductViewHolder(View itemView, OnStartDragListener dragListener, PostDataListener useCaseListener) {
         super(itemView);
-
         dragAndDropGMFeaturedProduct = (AppCompatImageView) itemView.findViewById(R.id.ic_drag_and_drop_gm_featured_product);
         icGMFeaturedProduct = (AppCompatImageView) itemView.findViewById(R.id.ic_gm_featured_product);
         textProductName = (TextView) itemView.findViewById(R.id.text_product_name_gm_featured_product);
         textPrice = (TextView) itemView.findViewById(R.id.text_price_gm_featured_product);
         checkBoxGM = (AppCompatCheckBox) itemView.findViewById(R.id.check_box);
-        this.mDragStartListener = mDragStartListener;
-
+        this.onStartDragListener = dragListener;
         this.useCaseListener = useCaseListener;
+    }
+
+    @Override
+    public void onItemSelected() {
+
+    }
+
+    @Override
+    public void onItemClear() {
+
+    }
+
+    @Override
+    public void bindObject(GMFeaturedProductModel gmFeaturedProductModel) {
+        bindData(gmFeaturedProductModel);
     }
 
     public void bindData(GMFeaturedProductModel GMFeaturedProductModel) {
         textProductName.setText(GMFeaturedProductModel.getProductName());
-
         textPrice.setText(GMFeaturedProductModel.getProductPrice());
-
         ImageHandler.loadImageRounded2(
                 icGMFeaturedProduct.getContext(),
                 icGMFeaturedProduct,
@@ -58,7 +69,7 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(GMFeaturedProductViewHolder.this);
+                    onStartDragListener.onStartDrag(GMFeaturedProductViewHolder.this);
                 }
                 return false;
             }
@@ -66,27 +77,9 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     }
 
     @Override
-    public void onItemSelected() {
-
-    }
-
-    @Override
-    public void onItemClear() {
-        if (useCaseListener != null) {
-            useCaseListener.postData();
-        }
-    }
-
-    @Override
-    public void bindObject(GMFeaturedProductModel GMFeaturedProductModel) {
-        bindData(GMFeaturedProductModel);
-    }
-
-    @Override
     public void bindObject(final GMFeaturedProductModel GMFeaturedProductModel, boolean checked) {
-        bindData(GMFeaturedProductModel);
+        bindObject(GMFeaturedProductModel);
         setChecked(checked);
-
         switch (useCaseListener.getFeaturedProductType()){
             case GMFeaturedProductTypeView.DELETE_DISPLAY:
                 checkBoxGM.setVisibility(View.VISIBLE);
@@ -125,7 +118,6 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     }
 
     public interface PostDataListener {
-        void postData();
 
         int getFeaturedProductType();
     }

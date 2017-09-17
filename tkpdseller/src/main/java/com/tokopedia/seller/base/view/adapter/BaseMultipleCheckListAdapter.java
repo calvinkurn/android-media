@@ -76,7 +76,7 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         }
     }
 
-    public void removeCheckedItem() {
+    public void deleteCheckedItem() {
         for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); ) {
             T t = iterator.next();
             if (hashSet.contains(t.getId())) {

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -62,18 +61,17 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private static final int REQUEST_CODE = 12314;
+    private static final int MAX_ITEM = 5;
 
     private FloatingActionButton fab;
     private ItemTouchHelper mItemTouchHelper;
-    protected ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Inject
     GMFeaturedProductPresenterImpl featuredProductPresenter;
     @GMFeaturedProductTypeView
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
-    private int MAX_ITEM = 5;
-    private int deleteSelectionCount = 0;
 
     @Override
     protected BaseListAdapter<GMFeaturedProductModel> getNewAdapter() {
@@ -124,12 +122,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    protected void initialVar() {
-        super.initialVar();
-        updateSubtitleCounterProduct();
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_gm_featured_product;
     }
@@ -151,104 +143,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    protected void searchForPage(int page) {
-        featuredProductPresenter.loadData();
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List<GMFeaturedProductModel> list, int totalItem) {
-        super.onSearchLoaded(list, totalItem);
-        // Initiate gm features model for comparison purpose
-        if (gmFeaturedProductModelListFromServer == null) {
-            gmFeaturedProductModelListFromServer = list;
-        }
-        updateFabDisplay();
-    }
-
-    private void updateFabDisplay() {
-        switch (getFeaturedProductTypeView()) {
-            case GMFeaturedProductTypeView.DELETE_DISPLAY:
-            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
-                hideFab();
-                break;
-            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
-            default:
-                if (totalItem <= 0 || totalItem >= MAX_ITEM) {
-                    hideFab();
-                } else {
-                    showFab();
-                }
-        }
-    }
-
-    @Override
-    public void onItemClicked(GMFeaturedProductModel GMFeaturedProductModel) {
-
-    }
-
-    @Override
-    protected void showViewList(@NonNull List<GMFeaturedProductModel> list) {
-        super.showViewList(list);
-        if (list.size() < MAX_ITEM) {
-            showFab();
-        } else {
-            hideFab();
-        }
-        updateSubtitleCounterProduct();
-    }
-
-    private void showLoading() {
-        if (isAdded() && progressDialog != null) {
-            progressDialog.show();
-        }
-    }
-
-    protected void hideLoading() {
-        if (isAdded() && progressDialog != null) {
-            progressDialog.dismiss();
-        }
-        if (snackBarRetry != null) {
-            snackBarRetry.hideRetrySnackbar();
-        }
-    }
-
-    private void updateSubtitleCounterProduct() {
-        if (featuredProductTypeView == GMFeaturedProductTypeView.DELETE_DISPLAY) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
-        } else if (getActivity() instanceof AppCompatActivity) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
-        }
-    }
-
-    @Override
-    protected void showViewEmptyList() {
-        super.showViewEmptyList();
-        hideFab();
-        updateSubtitleCounterProduct();
-    }
-
-    @Override
-    protected void showViewSearchNoResult() {
-        super.showViewSearchNoResult();
-        hideFab();
-        updateSubtitleCounterProduct();
-    }
-
-    protected void moveToProductPicker() {
-        List<ProductListPickerViewModel> productListPickerViewModels = new ArrayList<>();
-        for (GMFeaturedProductModel gmFeaturedProductModel : adapter.getData()) {
-            ProductListPickerViewModel productListPickerViewModel = new ProductListPickerViewModel();
-            productListPickerViewModel.setId(gmFeaturedProductModel.getId());
-            productListPickerViewModel.setProductPrice(gmFeaturedProductModel.getProductPrice());
-            productListPickerViewModel.setTitle(gmFeaturedProductModel.getProductName());
-            productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
-            productListPickerViewModels.add(productListPickerViewModel);
-        }
-        Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels);
-        startActivityForResult(intent, REQUEST_CODE);
-    }
-
-    @Override
     protected void setViewListener() {
         super.setViewListener();
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter) adapter, this);
@@ -257,14 +151,19 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
+    }
+
+    @Override
     public void onSubmitSuccess() {
-        hideLoading();
+        hideDialogLoading();
         closeActivity();
     }
 
     @Override
     public void onSubmitError(Throwable t) {
-        hideLoading();
+        hideDialogLoading();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
         builder.setTitle(R.string.gm_featured_product_submit_failed_title);
         builder.setMessage(R.string.gm_featured_product_submit_failed_desc);
@@ -288,19 +187,145 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        mItemTouchHelper.startDrag(viewHolder);
+    protected void searchForPage(int page) {
+        featuredProductPresenter.loadData();
     }
 
     @Override
-    public void postData(List<GMFeaturedProductModel> data) {
-        // do nothing
+    public void onSearchLoaded(@NonNull List<GMFeaturedProductModel> list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
+        // Initiate gm features model for comparison purpose
+        if (gmFeaturedProductModelListFromServer == null) {
+            gmFeaturedProductModelListFromServer = list;
+        }
+    }
+
+    @Override
+    protected void showViewList(@NonNull List<GMFeaturedProductModel> list) {
+        super.showViewList(list);
+        getActivity().invalidateOptionsMenu();
+        updateTitle();
+        updateFabDisplay();
+    }
+
+    @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        getActivity().invalidateOptionsMenu();
+        updateTitle();
+        hideFab();
+    }
+
+    @Override
+    public void onLoadSearchError(Throwable t) {
+        super.onLoadSearchError(t);
+        getActivity().invalidateOptionsMenu();
+        updateTitle();
+        hideFab();
+    }
+
+    @Override
+    public boolean isLongPressDragEnabled() {
+        switch (featuredProductTypeView) {
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public boolean isItemViewSwipeEnabled() {
+        switch (featuredProductTypeView) {
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
     @GMFeaturedProductTypeView
     public int getFeaturedProductTypeView() {
         return featuredProductTypeView;
+    }
+
+    @Override
+    public void onItemChecked(GMFeaturedProductModel gmFeaturedProductModel, boolean checked) {
+        if (featuredProductTypeView == GMFeaturedProductTypeView.DELETE_DISPLAY) {
+            int totalChecked = ((GMFeaturedProductAdapter) adapter).getTotalChecked();
+            updateTitle(String.valueOf(totalChecked), null);
+        }
+    }
+
+    @Override
+    public void onItemClicked(GMFeaturedProductModel GMFeaturedProductModel) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE && intent != null) {
+            List<GMFeaturedProductModel> gmFeaturedProductModelList = new ArrayList<>();
+            List<ProductListPickerViewModel> productListPickerViewModelList = intent.getParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT);
+            if (productListPickerViewModelList != null) {
+                for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModelList) {
+                    GMFeaturedProductModel gmFeaturedProductModel = new GMFeaturedProductModel();
+                    gmFeaturedProductModel.setProductId(Long.valueOf(productListPickerViewModel.getId()));
+                    gmFeaturedProductModel.setImageUrl(productListPickerViewModel.getIcon());
+                    gmFeaturedProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
+                    gmFeaturedProductModel.setProductName(productListPickerViewModel.getTitle());
+                    gmFeaturedProductModelList.add(gmFeaturedProductModel);
+                }
+            }
+            onSearchLoaded(gmFeaturedProductModelList, gmFeaturedProductModelList.size());
+        }
+    }
+
+    private void updateFabDisplay() {
+        switch (featuredProductTypeView) {
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                hideFab();
+                break;
+            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
+            default:
+                if (totalItem <= 0 || totalItem >= MAX_ITEM) {
+                    hideFab();
+                } else {
+                    showFab();
+                }
+        }
+    }
+
+    private void showDialogLoading() {
+        if (isAdded() && progressDialog != null) {
+            progressDialog.show();
+        }
+    }
+
+    protected void hideDialogLoading() {
+        if (isAdded() && progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        if (snackBarRetry != null) {
+            snackBarRetry.hideRetrySnackbar();
+        }
+    }
+
+    protected void moveToProductPicker() {
+        List<ProductListPickerViewModel> productListPickerViewModels = new ArrayList<>();
+        for (GMFeaturedProductModel gmFeaturedProductModel : adapter.getData()) {
+            ProductListPickerViewModel productListPickerViewModel = new ProductListPickerViewModel();
+            productListPickerViewModel.setId(gmFeaturedProductModel.getId());
+            productListPickerViewModel.setProductPrice(gmFeaturedProductModel.getProductPrice());
+            productListPickerViewModel.setTitle(gmFeaturedProductModel.getProductName());
+            productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
+            productListPickerViewModels.add(productListPickerViewModel);
+        }
+        Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     public void setFeaturedProductTypeView(@GMFeaturedProductTypeView int featuredProductTypeView) {
@@ -312,7 +337,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void updateTitle() {
-        switch (getFeaturedProductTypeView()) {
+        switch (featuredProductTypeView) {
             case GMFeaturedProductTypeView.DELETE_DISPLAY:
                 updateTitle(String.valueOf(((GMFeaturedProductAdapter) adapter).getTotalChecked()), null);
                 break;
@@ -325,6 +350,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void updateTitle(String title, String subTitle) {
+        if (!(getActivity() instanceof AppCompatActivity)) {
+            return;
+        }
         AppCompatActivity appCompatActivity = ((AppCompatActivity) getActivity());
         if (appCompatActivity == null) {
             return;
@@ -361,7 +389,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void submitData() {
-        showLoading();
+        showDialogLoading();
         featuredProductPresenter.postData(GMFeaturedProductSubmitUseCase.createParam(adapter.getData()));
     }
 
@@ -379,7 +407,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 inflater.inflate(R.menu.menu_gm_featured_product_delete_mode, menu);
                 break;
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
-                inflater.inflate(R.menu.menu_gm_featured_product, menu);
+                if (totalItem > 0) {
+                    inflater.inflate(R.menu.menu_gm_featured_product, menu);
+                }
                 break;
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
             default:
@@ -391,12 +421,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_arrange_mode) {
             setFeaturedProductTypeView(GMFeaturedProductTypeView.ARRANGE_DISPLAY);
-            hideFab();
             return true;
         } else if (item.getItemId() == R.id.menu_delete_mode) {
             ((GMFeaturedProductAdapter) adapter).resetCheckedItemSet();
             setFeaturedProductTypeView(GMFeaturedProductTypeView.DELETE_DISPLAY);
-            hideFab();
             return true;
         } else if (item.getItemId() == R.id.menu_delete) {
             showDeleteDialog();
@@ -407,43 +435,23 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     private void showDeleteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
-        builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getSelectedSize()));
+        builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getTotalChecked()));
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                ((GMFeaturedProductAdapter) adapter).removeCheckedItem();
+                ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
                 setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
+                List<GMFeaturedProductModel> gmFeaturedProductModelListTemp = new ArrayList<GMFeaturedProductModel>(adapter.getData());
+                onSearchLoaded(gmFeaturedProductModelListTemp, gmFeaturedProductModelListTemp.size());
                 dialog.cancel();
             }
         });
         builder.setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
                 dialog.dismiss();
             }
         });
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    @Override
-    public boolean isLongPressDragEnabled() {
-        switch (featuredProductTypeView) {
-            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public boolean isItemViewSwipeEnabled() {
-        return false;
-    }
-
-    @Override
-    public void onItemChecked(GMFeaturedProductModel gmFeaturedProductModel, boolean checked) {
-        int totalChecked = ((GMFeaturedProductAdapter) adapter).getTotalChecked();
-        updateTitle(String.valueOf(totalChecked), null);
     }
 
     public void showFab() {
@@ -469,26 +477,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             }
         }
         return false;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == REQUEST_CODE && intent != null) {
-            List<GMFeaturedProductModel> gmFeaturedProductModelList = new ArrayList<>();
-            List<ProductListPickerViewModel> productListPickerViewModelList = intent.getParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT);
-            if (productListPickerViewModelList != null) {
-                for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModelList) {
-                    GMFeaturedProductModel gmFeaturedProductModel = new GMFeaturedProductModel();
-                    gmFeaturedProductModel.setProductId(Long.valueOf(productListPickerViewModel.getId()));
-                    gmFeaturedProductModel.setImageUrl(productListPickerViewModel.getIcon());
-                    gmFeaturedProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
-                    gmFeaturedProductModel.setProductName(productListPickerViewModel.getTitle());
-                    gmFeaturedProductModelList.add(gmFeaturedProductModel);
-                }
-            }
-            onSearchLoaded(gmFeaturedProductModelList, gmFeaturedProductModelList.size());
-        }
     }
 
     @Override

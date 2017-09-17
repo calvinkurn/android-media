@@ -12,20 +12,19 @@ import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.view.adapter.viewholder.GMFeaturedProductViewHolder;
 
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by normansyahputa on 9/6/17.
  */
 
-public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFeaturedProductModel> implements ItemTouchHelperAdapter, GMFeaturedProductViewHolder.PostDataListener {
+public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFeaturedProductModel> implements
+        ItemTouchHelperAdapter, GMFeaturedProductViewHolder.PostDataListener {
 
-    private final OnStartDragListener mDragStartListener;
+    private OnStartDragListener onStartDragListener;
     private UseCaseListener useCaseListener;
 
-    public GMFeaturedProductAdapter(OnStartDragListener dragStartListener) {
-        mDragStartListener = dragStartListener;
+    public GMFeaturedProductAdapter(OnStartDragListener onStartDragListener) {
+        this.onStartDragListener = onStartDragListener;
     }
 
     public void setUseCaseListener(UseCaseListener useCaseListener) {
@@ -36,19 +35,9 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GMFeaturedProductModel.TYPE:
-                return new GMFeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), mDragStartListener, this);
+                return new GMFeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), onStartDragListener, this);
             default:
                 return super.onCreateViewHolder(parent, viewType);
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
-        switch (getItemViewType(position)) {
-            case GMFeaturedProductModel.TYPE:
-                ((GMFeaturedProductViewHolder) holder).bindData(data.get(position));
-                break;
         }
     }
 
@@ -66,13 +55,6 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
     }
 
     @Override
-    public void postData() {
-        if (useCaseListener != null) {
-            useCaseListener.postData(getData());
-        }
-    }
-
-    @Override
     public int getFeaturedProductType() {
         if (useCaseListener != null) {
             return useCaseListener.getFeaturedProductTypeView();
@@ -81,12 +63,7 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
         }
     }
 
-    public int getSelectedSize() {
-        return hashSet.size();
-    }
-
     public interface UseCaseListener {
-        void postData(List<GMFeaturedProductModel> data);
 
         int getFeaturedProductTypeView();
     }
