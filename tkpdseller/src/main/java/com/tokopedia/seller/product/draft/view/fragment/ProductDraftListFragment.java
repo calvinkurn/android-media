@@ -124,7 +124,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                 }
                                 UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
-                        }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 // no op
                             }
@@ -177,7 +177,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                         public void onClick(DialogInterface dialogInterface, int i) {
                             productDraftListPresenter.clearAllDraftData();
                         }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                             // no op, just dismiss
                         }

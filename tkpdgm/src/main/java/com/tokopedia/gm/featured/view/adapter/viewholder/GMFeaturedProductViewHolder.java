@@ -11,7 +11,7 @@ import com.tkpd.library.utils.ImageHandler;
 
 import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.gm.featured.constant.GMFeaturedProductType;
+import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
@@ -88,7 +88,7 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
         setChecked(checked);
 
         switch (useCaseListener.getFeaturedProductType()){
-            case GMFeaturedProductType.DELETE_DISPLAY:
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
                 checkBoxGM.setVisibility(View.VISIBLE);
                 checkBoxGM.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -100,12 +100,12 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
                 });
                 dragAndDropGMFeaturedProduct.setVisibility(View.GONE);
                 break;
-            case GMFeaturedProductType.ARRANGE_DISPLAY:
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
                 checkBoxGM.setVisibility(View.GONE);
                 checkBoxGM.setOnClickListener(null);
                 dragAndDropGMFeaturedProduct.setVisibility(View.VISIBLE);
                 break;
-            case GMFeaturedProductType.DEFAULT_DISPLAY:
+            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
             default:
                 checkBoxGM.setVisibility(View.GONE);
                 dragAndDropGMFeaturedProduct.setVisibility(View.GONE);

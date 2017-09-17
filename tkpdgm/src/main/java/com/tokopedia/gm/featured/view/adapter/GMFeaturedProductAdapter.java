@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.gm.featured.constant.GMFeaturedProductType;
+import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
@@ -78,7 +78,7 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
         if(useCaseListener != null){
             return useCaseListener.getFeaturedProductType();
         }else{
-            return GMFeaturedProductType.DEFAULT_DISPLAY;
+            return GMFeaturedProductTypeView.DEFAULT_DISPLAY;
         }
     }
 

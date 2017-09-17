@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 public class ProductListPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductListPickerViewModel>
         implements BasePickerItemSearchList<ProductListPickerViewModel>, ProductListPickerSearchView,
-        BaseMultipleCheckListAdapter.CheckedCallback<ProductListPickerViewModel>{
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductListPickerViewModel> {
 
     @Inject
     ProductListPickerSearchPresenter productListPickerSearchPresenter;
@@ -43,7 +43,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getActivity() instanceof ProductListPickerMultipleItem){
+        if (getActivity() instanceof ProductListPickerMultipleItem) {
             productListPickerMultipleItem = (ProductListPickerMultipleItem<ProductListPickerViewModel>) getActivity();
         }
 
@@ -63,7 +63,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
             return;
         }
         for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModels) {
-            ((ProductListPickerSearchAdapter)adapter).setChecked(productListPickerViewModel.getId(), true);
+            ((ProductListPickerSearchAdapter) adapter).setChecked(productListPickerViewModel.getId(), true);
             productListPickerMultipleItem.addItemFromSearch(productListPickerViewModel);
         }
     }
@@ -169,7 +169,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
             if (productListPickerMultipleItem.allowAddItem()) {
                 productListPickerMultipleItem.addItemFromSearch(productListPickerViewModel);
             } else {
-                ((ProductListPickerSearchAdapter)adapter).setChecked(productListPickerViewModel.getId(), false);
+                ((ProductListPickerSearchAdapter) adapter).setChecked(productListPickerViewModel.getId(), false);
                 adapter.notifyDataSetChanged();
             }
         } else {

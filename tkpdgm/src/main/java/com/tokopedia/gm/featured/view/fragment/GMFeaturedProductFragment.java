@@ -1,28 +1,24 @@
 package com.tokopedia.gm.featured.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
 import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
@@ -35,7 +31,7 @@ import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.gm.featured.constant.GMFeaturedProductType;
+import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.di.component.DaggerGMFeaturedProductComponent;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
@@ -47,7 +43,6 @@ import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,22 +53,59 @@ import javax.inject.Inject;
 
 public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, GMFeaturedProductModel>
         implements GMFeaturedProductView, OnStartDragListener,
-        GMFeaturedProductAdapter.UseCaseListener, SimpleItemTouchHelperCallback.isEnabled, BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel> {
+        GMFeaturedProductAdapter.UseCaseListener, SimpleItemTouchHelperCallback.isEnabled,
+        BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel> {
+
+    public static GMFeaturedProductFragment createInstance() {
+        return new GMFeaturedProductFragment();
+    }
 
     private static final int REQUEST_CODE = 12314;
 
-    private CoordinatorLayout coordinatorLayout;
     private FloatingActionButton fab;
+    private ItemTouchHelper mItemTouchHelper;
+    protected ProgressDialog progressDialog;
 
     @Inject
     GMFeaturedProductPresenterImpl featuredProductPresenter;
-    @GMFeaturedProductType
-    private int featuredProductType = GMFeaturedProductType.DEFAULT_DISPLAY;
-    private List<GMFeaturedProductModel> productModelsTemp = new ArrayList<>();
-    private ItemTouchHelper mItemTouchHelper;
+    @GMFeaturedProductTypeView
+    private int featuredProductType = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
+    private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private int MAX_ITEM = 5;
-    private int delete_selection_count = 0;
+    private int deleteSelectionCount = 0;
 
+    @Override
+    protected BaseListAdapter<GMFeaturedProductModel> getNewAdapter() {
+        GMFeaturedProductAdapter gmFeaturedProductAdapter = new GMFeaturedProductAdapter(this);
+        gmFeaturedProductAdapter.setUseCaseListener(this);
+        gmFeaturedProductAdapter.setCheckedCallback(this);
+        return gmFeaturedProductAdapter;
+    }
+
+    @Override
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new GMStatRetryDataBinder(adapter);
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        EmptyDataBinder emptyGroupAdsDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.gm_featured_product_title_empty));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.gm_featured_product_description_empty));
+        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.gm_featured_product_add_title_empty));
+        emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+                moveToProductPicker();
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                moveToProductPicker();
+            }
+        });
+        return emptyGroupAdsDataBinder;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,14 +134,32 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new GMStatRetryDataBinder(adapter);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToProductPicker();
+            }
+        });
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+        featuredProductPresenter.loadData();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        featuredProductPresenter.detachView();
+    public void onSearchLoaded(@NonNull List<GMFeaturedProductModel> list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
+        // Initiate gm features model for comparison purpose
+        if (gmFeaturedProductModelListFromServer == null) {
+            gmFeaturedProductModelListFromServer = list;
+        }
+        if (totalItem <= 0 || totalItem >= MAX_ITEM) {
+            hideFab();
+        } else {
+            showFab();
+        }
     }
 
     @Override
@@ -128,11 +178,24 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         updateSubtitleCounterProduct();
     }
 
+    private void showLoading() {
+        if (isAdded() && progressDialog != null) {
+            progressDialog.show();
+        }
+    }
+
+    protected void hideLoading() {
+        if (isAdded() && progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        snackBarRetry.hideRetrySnackbar();
+    }
+
     private void updateSubtitleCounterProduct() {
-        if (featuredProductType == GMFeaturedProductType.DELETE_DISPLAY) {
+        if (featuredProductType == GMFeaturedProductTypeView.DELETE_DISPLAY) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
         } else if (getActivity() instanceof AppCompatActivity) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getString(R.string.featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
         }
     }
 
@@ -155,32 +218,16 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         featuredProductPresenter.loadData();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout_parent);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToProductPicker();
-            }
-        });
-        return view;
-    }
-
     protected void moveToProductPicker() {
         List<ProductListPickerViewModel> productListPickerViewModels = new ArrayList<>();
-        for (GMFeaturedProductModel GMFeaturedProductModel : adapter.getData()) {
+        for (GMFeaturedProductModel gmFeaturedProductModel : adapter.getData()) {
             ProductListPickerViewModel productListPickerViewModel = new ProductListPickerViewModel();
-            productListPickerViewModel.setId(GMFeaturedProductModel.getId());
-            productListPickerViewModel.setProductPrice(GMFeaturedProductModel.getProductPrice());
-            productListPickerViewModel.setTitle(GMFeaturedProductModel.getProductName());
-            productListPickerViewModel.setImageUrl(GMFeaturedProductModel.getImageUrl());
+            productListPickerViewModel.setId(gmFeaturedProductModel.getId());
+            productListPickerViewModel.setProductPrice(gmFeaturedProductModel.getProductPrice());
+            productListPickerViewModel.setTitle(gmFeaturedProductModel.getProductName());
+            productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
             productListPickerViewModels.add(productListPickerViewModel);
         }
-
         Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels);
         startActivityForResult(intent, REQUEST_CODE);
     }
@@ -191,31 +238,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter) adapter, this);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
-    }
-
-    @Override
-    protected BaseListAdapter<GMFeaturedProductModel> getNewAdapter() {
-        GMFeaturedProductAdapter GMFeaturedProductAdapter = new GMFeaturedProductAdapter(this);
-        GMFeaturedProductAdapter.setUseCaseListener(this);
-        GMFeaturedProductAdapter.setCheckedCallback(this);
-        return GMFeaturedProductAdapter;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        switch (featuredProductType) {
-            case GMFeaturedProductType.DEFAULT_DISPLAY:
-                if (productModelsTemp != null && productModelsTemp.size() > 0) {
-                    featuredProductPresenter.postData(
-                            GMFeaturedProductSubmitUseCase.createParam(Collections.unmodifiableList(productModelsTemp)));
-                } else {
-                    featuredProductPresenter.loadData();
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -242,18 +264,34 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    public void onPostSuccess() {
-        switch (featuredProductType) {
-            case GMFeaturedProductType.DEFAULT_DISPLAY:
-                adapter.clearData();
-                onSearchLoaded(productModelsTemp, productModelsTemp.size());
-                productModelsTemp.clear();
-                break;
-            default:
-                showViewEmptyList();
-                break;
-        }
-        setFeaturedProductType(GMFeaturedProductType.DEFAULT_DISPLAY);
+    public void onSubmitSuccess() {
+        hideLoading();
+        closeActivity();
+    }
+
+    @Override
+    public void onSubmitError(Throwable t) {
+        hideLoading();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+        builder.setTitle(R.string.gm_featured_product_submit_failed_title);
+        builder.setMessage(R.string.gm_featured_product_submit_failed_desc);
+        builder.setPositiveButton(R.string.label_try_again, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                submitData();
+            }
+        });
+        builder.setNegativeButton(R.string.label_exit, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                closeActivity();
+            }
+        });
+        builder.setNeutralButton(R.string.label_exit, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -271,23 +309,45 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         return featuredProductType;
     }
 
-    public void setFeaturedProductType(@GMFeaturedProductType int featuredProductType) {
+    public void setFeaturedProductTypeView(@GMFeaturedProductTypeView int featuredProductType) {
         this.featuredProductType = featuredProductType;
         getActivity().invalidateOptionsMenu();
-        if (featuredProductType == GMFeaturedProductType.DELETE_DISPLAY || featuredProductType == GMFeaturedProductType.ARRANGE_DISPLAY) {
-            swipeToRefresh.setEnabled(false);
-        } else {
-            swipeToRefresh.setEnabled(true);
-        }
         adapter.notifyDataSetChanged();
         updateSubtitleCounterProduct();
+    }
+
+    public void onBackPressed() {
+        switch (featuredProductType) {
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
+                setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
+                break;
+            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
+            default:
+                if (isFeaturedProductListChanged(gmFeaturedProductModelListFromServer, adapter.getData())) {
+                    submitData();
+                } else {
+                    closeActivity();
+                }
+        }
+    }
+
+    private void submitData() {
+        showLoading();
+        featuredProductPresenter.postData(GMFeaturedProductSubmitUseCase.createParam(adapter.getData()));
+    }
+
+    private void closeActivity() {
+        if (isAdded()) {
+            getActivity().finish();
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_gm_featured_product, menu);
-        if (featuredProductType == GMFeaturedProductType.DELETE_DISPLAY) {
+        if (featuredProductType == GMFeaturedProductTypeView.DELETE_DISPLAY) {
             setVisibleMenuModeDelete(menu, true);
         } else {
             setVisibleMenuModeDelete(menu, false);
@@ -306,12 +366,12 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_arrange) {
-            setFeaturedProductType(GMFeaturedProductType.ARRANGE_DISPLAY);
+            setFeaturedProductTypeView(GMFeaturedProductTypeView.ARRANGE_DISPLAY);
             hideFab();
             return true;
         } else if (item.getItemId() == R.id.menu_delete) {
             ((GMFeaturedProductAdapter) adapter).clearSelections();
-            setFeaturedProductType(GMFeaturedProductType.DELETE_DISPLAY);
+            setFeaturedProductTypeView(GMFeaturedProductTypeView.DELETE_DISPLAY);
             hideFab();
             return true;
         } else if (item.getItemId() == R.id.menu_delete_mode) {
@@ -326,20 +386,20 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         String labelAction;
 
         switch (featuredProductType) {
-            case GMFeaturedProductType.ARRANGE_DISPLAY:
-                title = getString(R.string.featured_product_sort_title);
-                message = getString(R.string.featured_product_sort_desc);
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                title = getString(R.string.gm_featured_product_sort_title);
+                message = getString(R.string.gm_featured_product_sort_desc);
                 labelAction = getString(R.string.action_sort);
                 break;
-            case GMFeaturedProductType.DELETE_DISPLAY:
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
                 // TODO change this according to type.
-                title = getString(R.string.featured_product_delete_title);
-                message = getString(R.string.featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getSelectedSize());
+                title = getString(R.string.gm_featured_product_delete_title);
+                message = getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getSelectedSize());
                 labelAction = getString(R.string.label_delete);
                 break;
             default:
-                title = getString(R.string.featured_product_sort_title);
-                message = getString(R.string.featured_product_sort_desc);
+                title = getString(R.string.gm_featured_product_sort_title);
+                message = getString(R.string.gm_featured_product_sort_desc);
                 labelAction = getString(R.string.action_sort);
                 break;
         }
@@ -352,30 +412,26 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 switch (featuredProductType) {
-                    case GMFeaturedProductType.DELETE_DISPLAY:
+                    case GMFeaturedProductTypeView.DELETE_DISPLAY:
                         ((GMFeaturedProductAdapter) adapter).removeSelections();
-
                         break;
                     default:
                         break;
                 }
-
                 updateTitleView(R.string.featured_product_title);
                 showFab();
-
                 featuredProductPresenter.postData(
                         GMFeaturedProductSubmitUseCase.createParam(
                                 adapter.getData()
                         )
                 );
-
                 dialog.cancel();
             }
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                setFeaturedProductType(GMFeaturedProductType.DEFAULT_DISPLAY);
+                setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
             }
         });
 
@@ -386,7 +442,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     public boolean isLongPressDragEnabled() {
         switch (featuredProductType) {
-            case GMFeaturedProductType.ARRANGE_DISPLAY:
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
                 return true;
             default:
                 return false;
@@ -399,15 +455,15 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    public void onItemChecked(GMFeaturedProductModel GMFeaturedProductModel, boolean checked) {
+    public void onItemChecked(GMFeaturedProductModel gmFeaturedProductModel, boolean checked) {
         switch (featuredProductType) {
-            case GMFeaturedProductType.DELETE_DISPLAY:
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
                 if (checked) {
-                    delete_selection_count++;
+                    deleteSelectionCount++;
                 } else {
-                    delete_selection_count--;
+                    deleteSelectionCount--;
                 }
-                updateTitleView(delete_selection_count, MAX_ITEM);
+                updateTitleView(deleteSelectionCount, MAX_ITEM);
                 break;
             default:
                 break;
@@ -418,56 +474,50 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         fab.show();
     }
 
-
     public void hideFab() {
         fab.hide();
+    }
+
+    private boolean isFeaturedProductListChanged(
+            List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer,
+            List<GMFeaturedProductModel> gmFeaturedProductModelListLocal) {
+        if (gmFeaturedProductModelListFromServer == null || gmFeaturedProductModelListLocal == null) {
+            return false;
+        }
+        if (gmFeaturedProductModelListFromServer.size() != gmFeaturedProductModelListLocal.size()) {
+            return true;
+        }
+        for (int i = 0; i < gmFeaturedProductModelListFromServer.size(); i++) {
+            if (!gmFeaturedProductModelListFromServer.get(i).getId().equalsIgnoreCase(gmFeaturedProductModelListLocal.get(i).getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE && intent != null) {
-            List<ProductListPickerViewModel> productListPickerViewModels = intent.getParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT);
-
-            if (productListPickerViewModels != null) {
-
-                productModelsTemp = new ArrayList<>();
-                for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModels) {
-                    GMFeaturedProductModel GMFeaturedProductModel = new GMFeaturedProductModel();
-                    GMFeaturedProductModel.setProductId(Long.valueOf(productListPickerViewModel.getId()));
-                    GMFeaturedProductModel.setImageUrl(productListPickerViewModel.getIcon());
-                    GMFeaturedProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
-                    GMFeaturedProductModel.setProductName(productListPickerViewModel.getTitle());
-
-                    productModelsTemp.add(GMFeaturedProductModel);
+            List<GMFeaturedProductModel> gmFeaturedProductModelList = new ArrayList<>();
+            List<ProductListPickerViewModel> productListPickerViewModelList = intent.getParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT);
+            if (productListPickerViewModelList != null) {
+                for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModelList) {
+                    GMFeaturedProductModel gmFeaturedProductModel = new GMFeaturedProductModel();
+                    gmFeaturedProductModel.setProductId(Long.valueOf(productListPickerViewModel.getId()));
+                    gmFeaturedProductModel.setImageUrl(productListPickerViewModel.getIcon());
+                    gmFeaturedProductModel.setProductPrice(productListPickerViewModel.getProductPrice());
+                    gmFeaturedProductModel.setProductName(productListPickerViewModel.getTitle());
+                    gmFeaturedProductModelList.add(gmFeaturedProductModel);
                 }
-                updateSubtitleCounterProduct();
             }
+            onSearchLoaded(gmFeaturedProductModelList, gmFeaturedProductModelList.size());
         }
     }
 
     @Override
-    protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        EmptyDataBinder emptyGroupAdsDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.featured_product_title_empty));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.featured_product_description_empty));
-        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.featured_product_add_title_empty));
-        emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
-            @Override
-            public void onEmptyContentItemTextClicked() {
-                moveToProductPicker();
-            }
-
-            @Override
-            public void onEmptyButtonClicked() {
-                moveToProductPicker();
-            }
-        });
-        return emptyGroupAdsDataBinder;
-    }
-
-    @Override
-    protected void initSnackbarRetry(NetworkErrorHelper.RetryClickedListener listener) {
-        snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout, listener);
+    public void onDestroy() {
+        super.onDestroy();
+        featuredProductPresenter.detachView();
     }
 }

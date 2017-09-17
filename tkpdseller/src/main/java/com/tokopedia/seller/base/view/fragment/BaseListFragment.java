@@ -50,10 +50,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         // Required empty public constructor
     }
 
-    protected int getCurrentPage() {
-        return currentPage;
-    }
-
     protected abstract BaseListAdapter<T> getNewAdapter();
 
     protected abstract void searchForPage(int page);
@@ -64,6 +60,26 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
 
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
         return getEmptyViewDefaultBinder();
+    }
+
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new BaseRetryDataBinder(adapter);
+    }
+
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new DividerItemDecoration(getActivity());
+    }
+
+    protected int getStartPage() {
+        return START_PAGE;
+    }
+
+    protected boolean hasNextPage() {
+        return adapter.getDataSize() < totalItem && totalItem != Integer.MAX_VALUE;
+    }
+
+    protected int getCurrentPage() {
+        return currentPage;
     }
 
     @Nullable
@@ -119,15 +135,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         }
     }
 
-    protected boolean hasNextPage() {
-        return adapter.getDataSize() < totalItem &&
-                totalItem != Integer.MAX_VALUE;
-    }
-
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getActivity());
-    }
-
     @Override
     protected void initialVar() {
         super.initialVar();
@@ -148,10 +155,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             }
         });
         adapter.setRetryView(retryDataBinder);
-    }
-
-    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new BaseRetryDataBinder(adapter);
     }
 
     @Override
@@ -266,9 +269,5 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
-    }
-
-    protected int getStartPage() {
-        return START_PAGE;
     }
 }

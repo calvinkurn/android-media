@@ -27,8 +27,7 @@ public class GMFeaturedProductPresenterImpl extends GMFeaturedProductPresenter {
     @Inject
     public GMFeaturedProductPresenterImpl(
             GMFeaturedProductSubmitUseCase gmFeaturedProductSubmitUseCase,
-            GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase
-    ) {
+            GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase) {
         this.gmFeaturedProductSubmitUseCase = gmFeaturedProductSubmitUseCase;
         this.gmFeaturedProductGetListUseCase = gmFeaturedProductGetListUseCase;
     }
@@ -50,37 +49,23 @@ public class GMFeaturedProductPresenterImpl extends GMFeaturedProductPresenter {
 
             @Override
             public void onNext(GMFeaturedProductDomainModel gmFeaturedProductDomainModel) {
-                revealGETData(gmFeaturedProductDomainModel);
+                List<GMFeaturedProductModel> GMFeaturedProductModels = convertToViewModel(gmFeaturedProductDomainModel);
+                getView().onSearchLoaded(GMFeaturedProductModels, GMFeaturedProductModels.size());
+            }
+
+            private List<GMFeaturedProductModel> convertToViewModel(GMFeaturedProductDomainModel GMFeaturedProductDomainModel) {
+                List<GMFeaturedProductModel> gmFeaturedProductModelList = new ArrayList<>();
+                for (GMFeaturedProductDomainModel.Datum datum : GMFeaturedProductDomainModel.getData()) {
+                    GMFeaturedProductModel gmFeaturedProductModel = new GMFeaturedProductModel();
+                    gmFeaturedProductModel.setProductId(datum.getProductId());
+                    gmFeaturedProductModel.setImageUrl(datum.getImageUri());
+                    gmFeaturedProductModel.setProductName(datum.getName());
+                    gmFeaturedProductModel.setProductPrice(datum.getPrice());
+                    gmFeaturedProductModelList.add(gmFeaturedProductModel);
+                }
+                return gmFeaturedProductModelList;
             }
         });
-    }
-
-    private void revealGETData(GMFeaturedProductDomainModel gmFeaturedProductDomainModel) {
-        if (isViewAttached()) {
-            List<GMFeaturedProductModel> GMFeaturedProductModels = convertToViewModel(gmFeaturedProductDomainModel);
-            getView().onSearchLoaded(
-                    GMFeaturedProductModels,
-                    GMFeaturedProductModels.size()
-            );
-        }
-    }
-
-    private List<GMFeaturedProductModel> convertToViewModel(GMFeaturedProductDomainModel GMFeaturedProductDomainModel) {
-
-        List<GMFeaturedProductModel> GMFeaturedProductModels = new ArrayList<>();
-
-        for (GMFeaturedProductDomainModel.Datum datum : GMFeaturedProductDomainModel.getData()) {
-            GMFeaturedProductModel gmFeaturedProductModel = new GMFeaturedProductModel();
-            gmFeaturedProductModel.setProductId(datum.getProductId());
-            gmFeaturedProductModel.setImageUrl(datum.getImageUri());
-            gmFeaturedProductModel.setProductName(datum.getName());
-            gmFeaturedProductModel.setProductPrice(datum.getPrice());
-
-
-            GMFeaturedProductModels.add(gmFeaturedProductModel);
-        }
-
-        return GMFeaturedProductModels;
     }
 
     @Override
@@ -92,25 +77,19 @@ public class GMFeaturedProductPresenterImpl extends GMFeaturedProductPresenter {
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 if (isViewAttached()) {
-                    getView().onLoadSearchError(e);
+                    getView().onSubmitError(t);
                 }
             }
 
             @Override
             public void onNext(GMFeaturedProductSubmitDomainModel gmFeaturedProductSubmitDomainModel) {
-                revealPOSTData(gmFeaturedProductSubmitDomainModel);
+                if (gmFeaturedProductSubmitDomainModel.isData()) {
+                    getView().onSubmitSuccess();
+                }
             }
         });
-    }
-
-    private void revealPOSTData(GMFeaturedProductSubmitDomainModel gmFeaturedProductSubmitDomainModel) {
-        if (isViewAttached()) {
-            if (gmFeaturedProductSubmitDomainModel.isData()) {
-                getView().onPostSuccess();
-            }
-        }
     }
 
     @Override

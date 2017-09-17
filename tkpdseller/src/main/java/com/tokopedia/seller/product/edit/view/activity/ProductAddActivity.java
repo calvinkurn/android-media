@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -269,12 +267,12 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         if (hasDataAdded()) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setMessage(getString(getCancelMessageRes()))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             ProductAddActivity.super.onBackPressed();
                         }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                             // no op, just dismiss
                         }

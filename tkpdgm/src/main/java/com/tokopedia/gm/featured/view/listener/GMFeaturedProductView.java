@@ -1,21 +1,15 @@
 package com.tokopedia.gm.featured.view.listener;
 
-import android.support.annotation.NonNull;
-
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
-
-import java.util.List;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 /**
  * Created by normansyahputa on 9/7/17.
  */
 
-public interface GMFeaturedProductView extends CustomerView {
+public interface GMFeaturedProductView extends BaseListViewListener<GMFeaturedProductModel> {
 
-    void onSearchLoaded(@NonNull List<GMFeaturedProductModel> list, int totalItem);
+    void onSubmitSuccess();
 
-    void onLoadSearchError(Throwable t);
-
-    void onPostSuccess();
+    void onSubmitError(Throwable t);
 }
