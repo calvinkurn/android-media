@@ -37,6 +37,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;
+import com.tokopedia.core.geolocation.domain.MapsRepository;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
@@ -80,6 +81,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     private SuggestionLocationAdapter adapter;
     private ActionBar actionBar;
     private BottomSheetDialog dialog;
+    private CompositeSubscription compositeSubscription;
 
     public static Fragment newInstance(LocationPass locationPass) {
         GoogleMapFragment fragment = new GoogleMapFragment();
@@ -166,11 +168,12 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     }
 
     @Override
-    public void initAutoCompleteAdapter(GoogleApiClient googleApiClient, LatLngBounds latLngBounds,
-                                        ) {
+    public void initAutoCompleteAdapter(GoogleApiClient googleApiClient, LatLngBounds latLngBounds) {
+        compositeSubscription = new CompositeSubscription();
         MapService service = new MapService();
-        CompositeSubscription compositeSubscription = new CompositeSubscription();
-        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, latLngBounds, null);
+        MapsRepository repository = new MapsRepository();
+        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, latLngBounds,
+                null, service, compositeSubscription, repository);
     }
 
     @Override
@@ -315,7 +318,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
             mapView.onDestroy();
         }
-
+        compositeSubscription.unsubscribe();
         super.onDestroyView();
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.core.geolocation.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
@@ -26,17 +27,31 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.geolocation.domain.MapsRepository;
+import com.tokopedia.core.geolocation.model.Data;
+import com.tokopedia.core.geolocation.model.MapsResponse;
+import com.tokopedia.core.geolocation.model.Prediction;
 import com.tokopedia.core.network.apiservices.maps.MapService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import retrofit2.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hangnadi on 2/2/16.
  */
-public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePrediction>
+public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
         implements Filterable {
 
     private static final String TAG = "PlaceAutocompleteAdapter";
@@ -44,11 +59,15 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
     /**
      * Current results returned by this adapter.
      */
-    private ArrayList<AutocompletePrediction> mResultList;
+    private List<Prediction> mResultList;
 
     private MapService mapService;
 
     private CompositeSubscription compositeSubscription;
+
+    private OnQueryListener queryListener;
+
+    private MapsRepository mapsRepository;
 
     /**
      * Handles autocomplete requests.
@@ -73,13 +92,34 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
     public SuggestionLocationAdapter(Context context, GoogleApiClient googleApiClient,
                                      LatLngBounds bounds, AutocompleteFilter filter,
                                      MapService mapService,
-                                     CompositeSubscription compositeSubscription) {
+                                     CompositeSubscription compositeSubscription,
+                                     MapsRepository repository) {
         super(context, R.layout.layout_autocomplete_search_location, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
         mPlaceFilter = filter;
         mResultList = new ArrayList<>();
+        this.mapsRepository = repository;
         this.mapService = mapService;
+        this.compositeSubscription = compositeSubscription;
+        this.compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
+
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                queryListener = new OnQueryListener() {
+                    @Override
+                    public void onQuerySubmit(String query) {
+                        subscriber.onNext(String.valueOf(query));
+                    }
+                };
+            }
+        }).debounce(700, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.from(new JobExecutor()))
+                .observeOn(new UIThread().getScheduler()).subscribe(queryAutoCompleteSubscriber()));
+    }
+
+    private interface  OnQueryListener {
+        void onQuerySubmit(String query);
     }
 
     /**
@@ -101,10 +141,11 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
      * Returns an item from the last autocomplete query.
      */
     @Override
-    public AutocompletePrediction getItem(int position) {
+    public Prediction getItem(int position) {
         return mResultList.get(position);
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = super.getView(position, convertView, parent);
@@ -113,12 +154,16 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
         // Note that getPrimaryText() and getSecondaryText() return a CharSequence that may contain
         // styling based on the given CharacterStyle.
 
-        AutocompletePrediction item = getItem(position);
+        Prediction item = getItem(position);
 
         TextView textView1 = (TextView) row.findViewById(android.R.id.text1);
         TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
-        textView1.setText(item.getPrimaryText(STYLE_BOLD));
-        textView2.setText(item.getSecondaryText(STYLE_BOLD));
+        textView1.setTypeface(textView1.getTypeface(), Typeface.BOLD);
+        textView2.setTypeface(textView1.getTypeface(), Typeface.BOLD);
+        if (item != null && item.getStructuredFormatting() != null) {
+            textView1.setText(item.getStructuredFormatting().getMainText());
+            textView2.setText(item.getStructuredFormatting().getSecondaryText());
+        }
 
         return row;
     }
@@ -136,13 +181,10 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
                 if (constraint != null) {
                     if (constraint.length() >= 3) {
                         // Query the autocomplete API for the (constraint) search string.
-                        //TODO call service here
-                        compositeSubscription.add();
-                        mResultList = getAutocomplete(constraint);
-                        if (mResultList != null) {
-                            // The API successfully returned results.
-                            results.values = mResultList;
-                            results.count = mResultList.size();
+                        //TODO This is where listener is initiated
+                        CommonUtils.dumper("PORING Masuk get Filter cuy");
+                        if(queryListener != null) {
+                            queryListener.onQuerySubmit(constraint.toString());
                         }
                     }
                 }
@@ -151,6 +193,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
+                CommonUtils.dumper("PORING Publish Result");
                 if (results != null && results.count > 0) {
                     // The API returned at least one result, update the data.
                     notifyDataSetChanged();
@@ -228,4 +271,48 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
         CommonUtils.dumper("Google API client is not connected for autocomplete query.");
         return new ArrayList<>();
     }
+
+    private Subscriber<String> queryAutoCompleteSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String query) {
+                CommonUtils.dumper("PORING Kirim Data " + query);
+                TKPDMapParam<String, String> params = new TKPDMapParam<>();
+                params.put("input", query);
+                compositeSubscription.add(mapsRepository.getAutoCompleteList(mapService, params)
+                       .subscribeOn(Schedulers.newThread())
+                       .observeOn(AndroidSchedulers.mainThread())
+                       .unsubscribeOn(Schedulers.newThread())
+                       .subscribe(new Subscriber<Data>() {
+                           @Override
+                           public void onCompleted() {
+
+                           }
+
+                           @Override
+                           public void onError(Throwable e) {
+
+                           }
+
+                           @Override
+                           public void onNext(Data response) {
+                               CommonUtils.dumper("PORING Terima Result");
+                               mResultList = response.getPredictions();
+                               notifyDataSetChanged();
+                           }
+                       }));
+            }
+        };
+    }
+
 }

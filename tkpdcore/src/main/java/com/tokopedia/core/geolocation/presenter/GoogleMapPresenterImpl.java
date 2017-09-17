@@ -336,6 +336,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
         Log.d(TAG, "AutoComplete item selected: " + primaryText);
 
+        //TODO summon service di sini
         PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeID);
 
         placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
