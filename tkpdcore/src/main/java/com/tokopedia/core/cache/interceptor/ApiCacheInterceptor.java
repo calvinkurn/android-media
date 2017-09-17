@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -40,7 +41,6 @@ import okhttp3.ResponseBody;
  */
 
 public class ApiCacheInterceptor implements Interceptor {
-    private static final String LOG_TAG = "ApiCacheInterceptor";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -52,7 +52,7 @@ public class ApiCacheInterceptor implements Interceptor {
         try {
             versionName = MainApplication.getAppContext().getPackageManager().getPackageInfo(MainApplication.getAppContext().getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            return null;
+            e.printStackTrace();
         }
         ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(
                 new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API),
@@ -76,7 +76,7 @@ public class ApiCacheInterceptor implements Interceptor {
 
         if (isInWhiteList != null && isInWhiteList) {
             if (cacheData == null || cacheData.equals("")) {
-                Log.d(LOG_TAG, request.url().toString() + " data is not here !!");
+                CommonUtils.dumper(request.url().toString() + " data is not here !!");
                 Response response;
                 try {
                     response = chain.proceed(request);
@@ -90,7 +90,7 @@ public class ApiCacheInterceptor implements Interceptor {
 
                 return response;
             } else {
-                Log.d(LOG_TAG, request.url().toString() + " already in here !!");
+                CommonUtils.dumper(request.url().toString() + " already in here !!");
                 Response.Builder builder = new Response.Builder();
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);
@@ -100,7 +100,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 return builder.build();
             }
         } else {
-            Log.d(LOG_TAG, String.format("%s just hit another network !!", request.url().toString()));
+            CommonUtils.dumper(String.format("%s just hit another network !!", request.url().toString()));
             Response response;
             try {
                 response = chain.proceed(request);
