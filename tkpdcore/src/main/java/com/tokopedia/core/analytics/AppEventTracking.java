@@ -772,12 +772,5 @@ public interface AppEventTracking {
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
-        String ENVIRONMENT = "Environment";
-    }
-
-    interface Environment {
-        String SELLER_APP = "Android - Seller App";
-        String MAIN_APP = "Android - Main App";
-
     }
 }

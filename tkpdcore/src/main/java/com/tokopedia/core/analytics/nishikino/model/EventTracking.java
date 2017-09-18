@@ -61,9 +61,4 @@ public class EventTracking {
         this.eventTracking.put(key, value);
         return this;
     }
-
-    public EventTracking setEnvironment(String environment) {
-        this.eventTracking.put(AppEventTracking.CustomDimension.ENVIRONMENT, environment);
-        return this;
-    }
 }

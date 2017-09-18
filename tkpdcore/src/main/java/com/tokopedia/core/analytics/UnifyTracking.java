@@ -2500,8 +2500,6 @@ public class UnifyTracking extends TrackingUtils {
                 category,
                 action,
                 label)
-                .setEnvironment(GlobalConfig.isSellerApp() ? AppEventTracking.Environment
-                        .SELLER_APP : AppEventTracking.Environment.MAIN_APP)
                 .getEvent());
     }
 }
