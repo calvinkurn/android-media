@@ -1,7 +1,7 @@
 package com.tokopedia.gm.statistic.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
 
 /**
@@ -10,6 +10,6 @@ import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
 
 public abstract class GMStatisticTransactionPresenter extends BaseDaggerPresenter<GMStatisticTransactionView> {
 
-    public abstract void loadDataWithDate(SellerModuleRouter sellerModuleRouter, long startDate, long endDate);
+    public abstract void loadDataWithDate(GMModuleRouter gmModuleRouter, long startDate, long endDate);
 
 }

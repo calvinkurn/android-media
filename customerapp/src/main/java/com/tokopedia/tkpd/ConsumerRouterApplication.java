@@ -476,4 +476,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void goToGMSubscribe(Activity activity) {
+        Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
+        activity.startActivity(intent);
+    }
 }
