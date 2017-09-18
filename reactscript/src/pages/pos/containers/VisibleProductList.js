@@ -46,7 +46,7 @@ class VisibleProductList extends Component {
   }
 
   renderProduct = ({ item }) => {
-    return <Product product={item} key={item.id} />
+    return <Product product={item} key={item.product_id} />
   }
 
   loadMore = () => {
@@ -75,6 +75,7 @@ class VisibleProductList extends Component {
     const refreshing = this.props.products.refreshing
     const selectedEtalaseId = this.props.etalases.selected
     const selectedEtalase = etalases.filter(e => e.id == selectedEtalaseId)
+    console.log(products)
 
     return (
       <View style={styles.container}>
@@ -100,7 +101,7 @@ class VisibleProductList extends Component {
         </View>
         {products.length > 0 && <FlatList
           data={products}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.product_id}
           renderItem={this.renderProduct}
           onEndReached={this.loadMore}
           onEndReachedThreshold={0.5}
