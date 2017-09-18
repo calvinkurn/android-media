@@ -10,7 +10,7 @@ import com.tokopedia.posapp.domain.model.product.ProductDomain;
 public class CartDomain implements DefaultParams {
     private Long id;
     private int productId;
-    private ProductDomain productDomain;
+    private ProductDomain product;
     private String outletId;
     private int quantity;
 
@@ -46,11 +46,11 @@ public class CartDomain implements DefaultParams {
         this.quantity = quantity;
     }
 
-    public ProductDomain getProductDomain() {
-        return productDomain;
+    public ProductDomain getProduct() {
+        return product;
     }
 
-    public void setProductDomain(ProductDomain productDomain) {
-        this.productDomain = productDomain;
+    public void setProduct(ProductDomain product) {
+        this.product = product;
     }
 }

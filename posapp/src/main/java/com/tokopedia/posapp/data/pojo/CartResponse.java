@@ -1,60 +1,47 @@
 package com.tokopedia.posapp.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.shopinfo.models.productmodel.List;
 
 /**
  * Created by okasurya on 9/15/17.
  */
 
 public class CartResponse {
+    @SerializedName("id")
+    private long id;
+
     @SerializedName("product_id")
-    private String productId;
+    private int productId;
 
-    @SerializedName("product_name")
-    private String productName;
-
-    @SerializedName("price")
-    private double price;
-
-    @SerializedName("formatted_price")
-    private String formattedPrice;
+    @SerializedName("product")
+    private com.tokopedia.core.shopinfo.models.productmodel.List product;
 
     @SerializedName("quantity")
     private int quantity;
 
-    @SerializedName("image_url")
-    private String imageUrl;
+    public long getId() {
+        return id;
+    }
 
-    public String getProductId() {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public String getProductName() {
-        return productName;
+    public List getProduct() {
+        return product;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getFormattedPrice() {
-        return formattedPrice;
-    }
-
-    public void setFormattedPrice(String formattedPrice) {
-        this.formattedPrice = formattedPrice;
+    public void setProduct(List product) {
+        this.product = product;
     }
 
     public int getQuantity() {
@@ -63,13 +50,5 @@ public class CartResponse {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }

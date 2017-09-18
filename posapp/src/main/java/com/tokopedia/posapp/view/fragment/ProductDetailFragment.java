@@ -2,15 +2,19 @@ package com.tokopedia.posapp.view.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -20,9 +24,11 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.view.AddToCart;
 import com.tokopedia.posapp.view.Product;
@@ -86,6 +92,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         initView(parentView);
         initListener();
         productPresenter.attachView(this);
+        addToCartPresenter.attachView(this);
         return parentView;
     }
 
@@ -107,6 +114,13 @@ public class ProductDetailFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 addToCartPresenter.add(Integer.parseInt(productPass.getProductId()), headerInfoView.getProductQuantity());
+            }
+        });
+
+        buttonBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addToCartPresenter.addAndCheckout(Integer.parseInt(productPass.getProductId()), headerInfoView.getProductQuantity());
             }
         });
     }
@@ -151,12 +165,41 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorAddToCart(String message) {
-
+        CommonUtils.dumper(message);
     }
 
     @Override
     public void onSuccessAddToCart(String message) {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("Tambah ke Keranjang")
+                .setMessage("Produk berhasil dimasukkan ke Keranjang Belanja")
+                .setPositiveButton("Bayar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        goToPaymentCheckout();
+                    }
+                })
+                .setNegativeButton("Lanjut Berbelanja", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setCancelable(true)
+                .create();
 
+        dialog.show();
+    }
+
+    @Override
+    public void onSuccessATCPayment(String message) {
+        goToPaymentCheckout();
+    }
+
+    private void goToPaymentCheckout() {
+        ((IDigitalModuleRouter) getActivity().getApplication())
+                .actionNavigateByApplinksUrl(getActivity(), Constants.Applinks.PAYMENT_CHECKOUT, new Bundle());
+        getActivity().finish();
     }
 
     @Override

@@ -16,5 +16,7 @@ public interface AddToCart {
         void onErrorAddToCart(String message);
 
         void onSuccessAddToCart(String message);
+
+        void onSuccessATCPayment(String message);
     }
 }

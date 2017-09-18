@@ -9,10 +9,10 @@ import rx.Subscriber;
  * Created by okasurya on 8/22/17.
  */
 
-public class AddToCartSubscriber extends Subscriber<ATCStatusDomain> {
+public class ATCSubscriber extends Subscriber<ATCStatusDomain> {
     AddToCart.View view;
 
-    public AddToCartSubscriber(AddToCart.View view) {
+    public ATCSubscriber(AddToCart.View view) {
         this.view = view;
     }
 

@@ -111,7 +111,7 @@ public class CartLocalSource {
                 for (int i = 0; i < cartDomains.size(); i++) {
                     ProductDomain productDomain = mapToDomain(getProduct(cartDomains.get(i).getProductId()));
                     if (productDomain != null) {
-                        cartDomains.get(i).setProductDomain(productDomain);
+                        cartDomains.get(i).setProduct(productDomain);
                     }
                 }
                 return cartDomains;
