@@ -72,7 +72,7 @@
 
     <!--step 1-->
     <string name="string_button_save_choose">Simpan dan Pilih Barang Lain</string>
-    <string name="string_product_status">Status Barang</string>
+    <string name="string_product_status">Status Barang</string>q
     <string name="string_product_arrived">Sudah Sampai</string>
     <string name="string_product_not_arrived">Belum Sampai</string>
     <string name="string_choose_problem">Pilih Masalah</string>

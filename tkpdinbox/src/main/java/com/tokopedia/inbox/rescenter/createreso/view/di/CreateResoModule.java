@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
@@ -142,7 +142,7 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    CreateResolutionFactory provideProductProblemFactory(@ActivityContext Context context,
+    CreateResolutionFactory provideProductProblemFactory(@ApplicationContext Context context,
                                                          GetProductProblemMapper getProductProblemMapper,
                                                          SolutionMapper solutionMapper,
                                                          CreateResoStep1Mapper createResoStep1Mapper,
