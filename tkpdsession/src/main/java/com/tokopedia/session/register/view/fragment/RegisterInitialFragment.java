@@ -66,6 +66,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
@@ -378,11 +379,13 @@ public class RegisterInitialFragment extends Fragment
             case RC_SIGN_IN_GOOGLE :
                 if (data != null) {
                     GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+                    String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+
                     LoginGoogleModel model = new LoginGoogleModel();
                     model.setFullName(googleSignInAccount.getDisplayName());
                     model.setGoogleId(googleSignInAccount.getId());
                     model.setEmail(googleSignInAccount.getEmail());
-
+                    model.setAccessToken(accessToken);
                     startLoginWithGoogle(LoginModel.GoogleType, model);
                 }
                 break;

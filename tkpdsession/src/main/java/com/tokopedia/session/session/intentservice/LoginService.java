@@ -463,6 +463,8 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                     params.put(Login.FULL_NAME, loginGoogleModel.getFullName());
                     params.put(Login.BIRTHDATE, loginGoogleModel.getBirthday());
                     params.put(Login.GENDER_ACCOUNTS, loginGoogleModel.getGender());
+                    params.put(Login.ACCESS_TOKEN, loginGoogleModel.getAccessToken());
+
                 }
                 break;
             case Login.GRANT_WEBVIEW:

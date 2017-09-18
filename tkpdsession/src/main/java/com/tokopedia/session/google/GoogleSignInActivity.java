@@ -33,6 +33,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
     public static final int RC_SIGN_IN_GOOGLE = 7777;
     public static final String KEY_GOOGLE_ACCOUNT = "GoogleSignInAccount";
+    public static final String KEY_GOOGLE_ACCOUNT_TOKEN = "GoogleSignInAccAccount";
     private static final int REQUEST_AUTHORIZATION = 1234;
     protected GoogleApiClient mGoogleApiClient;
 
@@ -108,9 +109,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                 }
 
                 @Override
-                public void onNext(String s) {
-                    s.equals("");
-                    handleSignInResult(result);
+                public void onNext(String accessToken) {
+                    handleSignInResult(accessToken, result);
                 }
             };
 
@@ -148,14 +148,16 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
         startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
+    private void handleSignInResult(String accessToken, GoogleSignInResult result) {
         GoogleSignInAccount account = null;
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             account = result.getSignInAccount();
         }
         Intent intent = new Intent();
-        setResult(RESULT_OK, intent.putExtra(KEY_GOOGLE_ACCOUNT, account));
+        intent.putExtra(KEY_GOOGLE_ACCOUNT, account);
+        intent.putExtra(KEY_GOOGLE_ACCOUNT_TOKEN, accessToken);
+        setResult(RESULT_OK, intent);
     }
 
     @Override
