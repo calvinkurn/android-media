@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +106,13 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         if (data != null && data.size() > 0) {
             this.data.addAll(data);
             notifyDataSetChanged();
+        }
+    }
+
+    public void addSingleDataWithPosition(Pair<Integer, T> pairData) {
+        if (data != null && data.size() > 0) {
+            this.data.add(pairData.getModel1(), pairData.getModel2());
+            notifyItemInserted(pairData.getModel1());
         }
     }
 

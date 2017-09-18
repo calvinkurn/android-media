@@ -5,16 +5,16 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
+import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 
 /**
  * Created by normansyahputa on 9/8/17.
@@ -26,12 +26,14 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     private final TextView textProductName;
     private final TextView textPrice;
     private final AppCompatCheckBox checkBoxGM;
+    private final FrameLayout dragAndDropView;
     AppCompatImageView dragAndDropGMFeaturedProduct;
     private OnStartDragListener onStartDragListener;
     private PostDataListener useCaseListener;
 
     public GMFeaturedProductViewHolder(View itemView, OnStartDragListener dragListener, PostDataListener useCaseListener) {
         super(itemView);
+        dragAndDropView = (FrameLayout) itemView.findViewById(R.id.ic_drag_and_drop_gm_featured_product_container);
         dragAndDropGMFeaturedProduct = (AppCompatImageView) itemView.findViewById(R.id.ic_drag_and_drop_gm_featured_product);
         icGMFeaturedProduct = (AppCompatImageView) itemView.findViewById(R.id.ic_gm_featured_product);
         textProductName = (TextView) itemView.findViewById(R.id.text_product_name_gm_featured_product);
@@ -65,7 +67,7 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
                 GMFeaturedProductModel.getImageUrl()
         );
 
-        dragAndDropGMFeaturedProduct.setOnTouchListener(new View.OnTouchListener() {
+        dragAndDropView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {

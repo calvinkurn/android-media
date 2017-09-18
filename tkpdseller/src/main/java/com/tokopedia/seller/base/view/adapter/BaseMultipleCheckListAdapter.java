@@ -3,10 +3,13 @@ package com.tokopedia.seller.base.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 11/24/16.
@@ -76,16 +79,24 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         }
     }
 
-    public void deleteCheckedItem() {
-        for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); ) {
+    public List<Pair<Integer, T>> deleteCheckedItem() {
+        List<Pair<Integer, T>> deletedItems = new ArrayList<>();
+
+        int index = 0;
+        for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); index++) {
             T t = iterator.next();
             if (hashSet.contains(t.getId())) {
+                deletedItems.add(new Pair<Integer, T>(index, t));
                 hashSet.remove(t.getId());
                 iterator.remove();
             }
         }
+
         notifyDataSetChanged();
+
+        return deletedItems.isEmpty() ? null : deletedItems;
     }
+
 
     public interface CheckedCallback<T> {
 
