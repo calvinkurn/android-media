@@ -99,6 +99,7 @@ public interface Constants {
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
+        String RESCENTER = "tokopedia://resolution/{resolution_id}";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";

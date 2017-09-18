@@ -6,14 +6,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;
+
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -34,6 +42,14 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
         bundle.putString(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resolutionID);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @DeepLink(Constants.Applinks.RESCENTER)
+    public static Intent getCallingIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, DetailResCenterActivity.class);
+        String resoId = bundle.getString(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, "");
+        intent.putExtra(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resoId);
+        return intent.putExtras(bundle);
     }
 
     @Override
