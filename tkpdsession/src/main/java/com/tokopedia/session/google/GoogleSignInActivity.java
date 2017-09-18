@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -32,6 +33,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
     public static final int RC_SIGN_IN_GOOGLE = 7777;
     public static final String KEY_GOOGLE_ACCOUNT = "GoogleSignInAccount";
+    private static final int REQUEST_AUTHORIZATION = 1234;
     protected GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -61,7 +63,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
         signIn();
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from
 
@@ -112,6 +115,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                         accessToken.equals("");
                     } catch (IOException e) {
                         e.printStackTrace();
+                    } catch (UserRecoverableAuthException e) {
+                        startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
                     } catch (GoogleAuthException e) {
                         e.printStackTrace();
                     }
