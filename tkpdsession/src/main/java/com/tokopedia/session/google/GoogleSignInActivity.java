@@ -1,7 +1,6 @@
 package com.tokopedia.session.google;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +25,7 @@ import java.io.IOException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -74,59 +74,73 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
             final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             final String magicString = "oauth2:https://www.googleapis.com/auth/plus.login";
 
-//            try {
-//                Observable<String> observable = Observable.just(GoogleAuthUtil.getToken(this, result.getSignInAccount().getEmail(), magicString));
-//
-//                Subscriber<String> subscriber = new Subscriber<String>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(String s) {
-//                        s.equals("");
-//                        handleSignInResult(result);
-//                    }
-//                };
-//
-//                CompositeSubscription compositeSubscription = new CompositeSubscription();
-//                compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-//                        .unsubscribeOn(Schedulers.newThread())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(subscriber));
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (GoogleAuthException e) {
-//                e.printStackTrace();
-//            }
 
-            new AsyncTask<Void, Void, Void>() {
+            Observable<String> observable = Observable.just(true)
+                    .flatMap(new Func1<Boolean, Observable<String>>() {
+                        @Override
+                        public Observable<String> call(Boolean aBoolean) {
+
+                            try {
+                                String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), result.getSignInAccount().getEmail(), magicString);
+                                accessToken.equals("");
+                                return Observable.just(accessToken);
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (UserRecoverableAuthException e) {
+                                startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
+                            } catch (GoogleAuthException e) {
+                                e.printStackTrace();
+                            }
+                            return Observable.just("");
+                        }
+                    });
+
+            Subscriber<String> subscriber = new Subscriber<String>() {
                 @Override
-                protected Void doInBackground(Void... voids) {
-                    try {
-                        String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), result.getSignInAccount().getEmail(), magicString);
-                        accessToken.equals("");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (UserRecoverableAuthException e) {
-                        startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
-                    } catch (GoogleAuthException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
+                public void onCompleted() {
+
                 }
-            }.execute();
-        }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(String s) {
+                    s.equals("");
+                    handleSignInResult(result);
+                }
+            };
+
+            CompositeSubscription compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber));
+
+//            new AsyncTask<Void, Void, Void>() {
+//                @Override
+//                protected Void doInBackground(Void... voids) {
+//                    try {
+//                        String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), result.getSignInAccount().getEmail(), magicString);
+//                        accessToken.equals("");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } catch (UserRecoverableAuthException e) {
+//                        startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
+//                    } catch (GoogleAuthException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return null;
+//                }
+//            }.execute();
+//        }
 //
 //        signOut();
 //        finish();
+        }
     }
 
     private void signIn() {
