@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
@@ -377,9 +378,11 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public boolean editShippingParamsValid() {
         if (view.getZipCode().isEmpty()) {
+            UnifyTracking.eventCreateShopFillLogisticError();
             view.zipCodeEmpty();
             return false;
         } else if (activatedServices.isEmpty()) {
+            UnifyTracking.eventCreateShopFillLogisticError();
             view.noServiceChosen();
             return false;
         } else return true;
