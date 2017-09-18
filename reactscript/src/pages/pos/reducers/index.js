@@ -137,14 +137,13 @@ const cart = (state = {
   items: [],
   totalPrice: 0
 }, action) => {
-  console.log(action.type)
   switch (action.type) {
     case `${FETCH_CART_FROM_CACHE}_${FULFILLED}`: 
-      // console.log(action.payload.data)
+      // console.log(action.payload)
       const getTotalPrice = () => {
         let total_price = 0
 
-        action.payload.data.list.map(res => {
+        action.payload.list.map(res => {
           let price_per_item = res.product.product_price_unformatted * res.quantity
           total_price = total_price + price_per_item 
           // console.log(total_price)
@@ -153,7 +152,7 @@ const cart = (state = {
       }
 
       return {
-        items: [...state.items, action.payload.data],
+        items: [...state.items, action.payload.list],
         totalPrice: getTotalPrice()
       }
 

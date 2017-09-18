@@ -24,6 +24,7 @@ class CartItem extends Component {
     const onIncr = this.props.onIncr
     const onDecr = this.props.onDecr
     const onRemove = this.props.onRemove
+    console.log(item)
 
     return (
       <View>
@@ -47,11 +48,11 @@ class CartItem extends Component {
             </TouchableWithoutFeedback>
           </View>
           <View style={{ width: '10%' }}>
-            <Image source={{ uri: item.imageUrl }} style={styles.imageStyle} />
+            <Image source={{ uri: item.product.product_image_300 }} style={styles.imageStyle} />
           </View>
           <View style={{ width: '50%', alignSelf: 'flex-start' }}>
-            <Text ellipsizeMode='tail' numberOfLines={2} style={styles.productName}>{item.name}</Text>
-            <Text style={styles.price}>Rp. {item.price}</Text>
+            <Text ellipsizeMode='tail' numberOfLines={2} style={styles.productName}>{item.product.product_name}</Text>
+            <Text style={styles.price}>Rp. {item.product.product_price}</Text>
           </View>
           <View style={styles.qtyContainer}>
             <Text style={styles.qtyLabel}>Qty</Text>
@@ -64,7 +65,7 @@ class CartItem extends Component {
                 </View>
               </TouchableWithoutFeedback>
               <View style={styles.qty}>
-                <Text style={styles.qtyText}> {item.qty} </Text>
+                <Text style={styles.qtyText}> {item.quantity} </Text>
               </View>
               <TouchableWithoutFeedback
                 onPress={() => { onIncr(item.id) }}>

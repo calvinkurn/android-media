@@ -27,7 +27,7 @@ export default class CartItemList extends Component {
     NavigationModule.navigateAndFinish("posapp://payment/checkout", "")
   }
 
-  componentDidMount(){
+  componentWillMount(){
     this.props.fetchCartList()
   }
   
@@ -40,6 +40,15 @@ export default class CartItemList extends Component {
     const onDecrQty = this.props.onDecrQty
     const onRemoveFromCart = this.props.onRemoveFromCart
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
+    // console.log(this.props)
+    // console.log(items)
+    // console.log(items[0])
+    // console.log(items.length)
+    // console.log(items[0].length)
+
+    // console.log(items)
+    // console.log(items.length)
+    // console.log(items.list)
 
     return (
       <Modal
@@ -48,7 +57,7 @@ export default class CartItemList extends Component {
         hardwareAccelerated={true}
         visible={this.props.visible}
         onRequestClose={onBackPress}>
-        {items.length > 0 ?
+        {items[0] && items.length > 0 ?
           <View style={{ flex: 1 }}>
             <View style={styles.headerContainer}>
               <View>
@@ -82,7 +91,7 @@ export default class CartItemList extends Component {
               </View>
               <ScrollView style={styles.itemListContainer}>
                 {
-                  items.map(i => <CartItem
+                  items[0].map(i => <CartItem
                     item={i}
                     key={i.id}
                     onIncr={onIncrQty}

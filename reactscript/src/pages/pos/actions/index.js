@@ -5,8 +5,6 @@ import { PosCacheModule } from 'NativeModules'
 // ===================== Product List ======================= //
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
 export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryText) => {
-  
-
   return {
     type: FETCH_PRODUCTS,
     payload: PosCacheModule.getDataAll("PRODUCT")
@@ -60,49 +58,98 @@ export const addToCart = (item) => {
 // Fetch Cart From Local Native Cache
 export const FETCH_CART_FROM_CACHE = 'FETCH_CART_FROM_CACHE'
 export const fetchCartFromCache = () => {
-  console.log('aksdhkjashdjkashd')
   return {
     type: FETCH_CART_FROM_CACHE,
     payload: PosCacheModule.getDataAll("CART")
               .then(response => {
+                // console.log(typeof response)
+                // console.log(response)
                 const jsonResponse = JSON.parse(response)
-                console.log(jsonResponse.data)
+                // console.log(jsonResponse.data.list)
+                return jsonResponse.data;
+              })
+              .catch(error => console.log(error))
+  }
+}
+
+
+//  ==================== Remove 1 item inside Cart ===================== //
+export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
+export const removeFromCart = (id) => {
+  return {
+    type: REMOVE_FROM_CART,
+    payload: PosCacheModule.deleteItem("CART", id.toString())
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
                 return jsonResponse;
               })
               .catch(error => console.log(error))
   }
 }
 
-export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
-export const removeFromCart = (id) => {
-  return {
-    type: REMOVE_FROM_CART,
-    payload: { id }
-  }
-}
-
+//  ==================== Increment Quantity inside Cart ===================== //
 export const INCREMENT_QTY = 'INCREMENT_QTY'
 export const incrementQty = (id) => {
+  // const payloads = {
+  //   id: 
+  //   product_id: 
+  //   quantity: 
+  // }
+
+  // return {
+  //   type: INCREMENT_QTY,
+  //   payload: PosCacheModule.update("CART", payloads)
+  //             .then(response => {
+  //               const jsonResponse = JSON.parse(response)
+  //               return jsonResponse;
+  //             })
+  //             .catch(error => console.log(error))
+  // }
   return {
     type: INCREMENT_QTY,
     payload: { id }
   }
 }
 
+//  ==================== Decrement Quantity inside Cart ===================== //
 export const DECREMENT_QTY = 'DECREMENT_QTY'
 export const decrementQty = (id) => {
+  // const payloads = {
+  //   id: 
+  //   product_id: 
+  //   quantity: 
+  // }
+
+  // return {
+  //   type: DECREMENT_QTY,
+  //   payload: PosCacheModule.update("CART", payloads)
+  //             .then(response => {
+  //               const jsonResponse = JSON.parse(response)
+  //               return jsonResponse;
+  //             })
+  //             .catch(error => console.log(error))
+  // }
   return {
     type: DECREMENT_QTY,
     payload: { id }
   }
 }
 
+
+//  ==================== Clear all Data inside Cart ===================== //
 export const CLEAR_CART = 'CLEAR_CART'
 export const clearCart = () => {
   return {
     type: CLEAR_CART,
+    payload: PosCacheModule.deleteAll("CART")
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
+                return jsonResponse;
+              })
+              .catch(error => console.log(error))
   }
 }
+
 
 export const BANK_SELECTED = 'BANK_SELECTED'
 export const selectBank = (id) => {
