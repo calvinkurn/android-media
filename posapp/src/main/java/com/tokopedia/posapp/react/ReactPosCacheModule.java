@@ -13,6 +13,7 @@ import com.tokopedia.posapp.react.domain.ReactCacheRepository;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
@@ -48,68 +49,63 @@ public class ReactPosCacheModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getData(String tableName, String id, final Promise promise) {
+    public void getData(String tableName, String id, Promise promise) {
         reactCacheRepository.getData(tableName, id)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        promise.reject(e);
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        promise.resolve(s);
-                    }
-                });
+                .subscribe(getDefaultSubscriber(promise));
     }
 
     @ReactMethod
-    public void getDataList(String tableName, int offset, int limit, final Promise promise) {
+    public void getDataList(String tableName, int offset, int limit, Promise promise) {
         reactCacheRepository.getDataList(tableName, offset, limit)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        promise.reject(e);
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        promise.resolve(s);
-                    }
-                });
+                .subscribe(getDefaultSubscriber(promise));
     }
 
     @ReactMethod
     public void getDataAll(String tableName, final Promise promise) {
         reactCacheRepository.getDataAll(tableName)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                .subscribe(getDefaultSubscriber(promise));
+    }
 
-                    }
+    @ReactMethod
+    public void deleteAll(String tableName, Promise promise) {
+        reactCacheRepository.deleteAll(tableName)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(getDefaultSubscriber(promise));
+    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        promise.reject(e);
-                    }
+    @ReactMethod
+    public void deleteItem(String tableName, String id, final Promise promise) {
+        reactCacheRepository.deleteItem(tableName, id)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(getDefaultSubscriber(promise));
+    }
 
-                    @Override
-                    public void onNext(String s) {
-                        promise.resolve(s);
-                    }
-                });
+    @ReactMethod
+    public void update(String tableName, String data, final Promise promise) {
+        reactCacheRepository.update(tableName, data)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(getDefaultSubscriber(promise));
+    }
+
+    private Subscriber<? super String> getDefaultSubscriber(final Promise promise) {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                promise.reject(e);
+            }
+
+            @Override
+            public void onNext(String s) {
+                promise.resolve(s);
+            }
+        };
     }
 }

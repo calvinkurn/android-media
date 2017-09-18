@@ -33,6 +33,7 @@ import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.view.AddToCart;
 import com.tokopedia.posapp.view.Product;
 import com.tokopedia.posapp.view.activity.InstallmentSimulationActivity;
+import com.tokopedia.posapp.view.activity.LocalCartActivity;
 import com.tokopedia.posapp.view.presenter.AddToCartPresenter;
 import com.tokopedia.posapp.view.presenter.ProductPresenter;
 import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
@@ -197,8 +198,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     private void goToPaymentCheckout() {
-        ((IDigitalModuleRouter) getActivity().getApplication())
-                .actionNavigateByApplinksUrl(getActivity(), Constants.Applinks.PAYMENT_CHECKOUT, new Bundle());
+        startActivity(new Intent(getContext(), LocalCartActivity.class));
         getActivity().finish();
     }
 

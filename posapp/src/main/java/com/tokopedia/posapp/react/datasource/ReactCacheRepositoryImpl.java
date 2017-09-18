@@ -46,4 +46,31 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
             return Observable.error(e);
         }
     }
+
+    @Override
+    public Observable<String> deleteAll(String tableName) {
+        try {
+            return reactCacheFactory.createCacheDataSource(tableName).deleteAll();
+        } catch (TableNotFoundException e) {
+            return Observable.error(e);
+        }
+    }
+
+    @Override
+    public Observable<String> deleteItem(String tableName, String id) {
+        try {
+            return reactCacheFactory.createCacheDataSource(tableName).deleteItem(id);
+        } catch (TableNotFoundException e) {
+            return Observable.error(e);
+        }
+    }
+
+    @Override
+    public Observable<String> update(String tableName, String data) {
+        try {
+            return reactCacheFactory.createCacheDataSource(tableName).update(data);
+        } catch (TableNotFoundException e) {
+            return Observable.error(e);
+        }
+    }
 }

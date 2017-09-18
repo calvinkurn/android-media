@@ -63,6 +63,21 @@ public class ReactBankCacheSource implements ReactCacheSource {
         return mapListData(bankDbList);
     }
 
+    @Override
+    public Observable<String> deleteAll() {
+        return null;
+    }
+
+    @Override
+    public Observable<String> deleteItem(String id) {
+        return null;
+    }
+
+    @Override
+    public Observable<String> update(String data) {
+        return null;
+    }
+
     private Observable<String> mapListData(List<BankDb> bankDbList) {
         BankListResponse bankListResponse = new BankListResponse();
         List<BankItemResponse> bankItemResponseList = new ArrayList<>();

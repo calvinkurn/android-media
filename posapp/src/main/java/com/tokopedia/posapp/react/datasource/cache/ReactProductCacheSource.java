@@ -68,4 +68,19 @@ public class ReactProductCacheSource implements ReactCacheSource {
                     }
                 });
     }
+
+    @Override
+    public Observable<String> deleteAll() {
+        return null;
+    }
+
+    @Override
+    public Observable<String> deleteItem(String id) {
+        return null;
+    }
+
+    @Override
+    public Observable<String> update(String data) {
+        return null;
+    }
 }

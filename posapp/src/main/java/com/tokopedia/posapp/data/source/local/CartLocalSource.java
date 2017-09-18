@@ -27,6 +27,7 @@ public class CartLocalSource {
 
     public CartLocalSource() {
         this.cartDbManager = new CartDbManager();
+        this.productDbManager = new ProductDbManager();
     }
 
     public Observable<ATCStatusDomain> storeCartProduct(CartDomain cartDomain) {

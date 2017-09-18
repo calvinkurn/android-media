@@ -1,11 +1,14 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.posapp.data.factory.CartFactory;
 import com.tokopedia.posapp.data.pojo.CartResponse;
+import com.tokopedia.posapp.domain.model.cart.ATCStatusDomain;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ListResult;
+import com.tokopedia.posapp.react.datasource.model.StatusResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,32 @@ public class ReactCartCacheSource implements ReactCacheSource {
         return cartFactory.local().getAllCartProducts().map(getCartListMapper());
     }
 
+    @Override
+    public Observable<String> deleteAll() {
+        return cartFactory.local().deleteCart().map(getDbOperationMapper());
+    }
+
+    @Override
+    public Observable<String> deleteItem(String id) {
+        CartDomain cartDomain = new CartDomain();
+        cartDomain.setProductId(Integer.parseInt(id));
+        return cartFactory.local().deleteCartProduct(cartDomain).map(getDbOperationMapper());
+    }
+
+    @Override
+    public Observable<String> update(String data) {
+        CartResponse cartResponse = gson.fromJson(data, CartResponse.class);
+        return cartFactory.local().updateCartProduct(mapToDomain(cartResponse)).map(getDbOperationMapper());
+    }
+
+    private CartDomain mapToDomain(CartResponse cartResponse) {
+        CartDomain cartDomain = new CartDomain();
+        cartDomain.setId(cartResponse.getId());
+        cartDomain.setProductId(cartResponse.getProductId());
+        cartDomain.setQuantity(cartResponse.getQuantity());
+        return cartDomain;
+    }
+
     private Func1<CartDomain, String> getCartMapper() {
         return new Func1<CartDomain, String>() {
             @Override
@@ -72,8 +101,28 @@ public class ReactCartCacheSource implements ReactCacheSource {
         };
     }
 
+    private Func1<ATCStatusDomain, String> getDbOperationMapper() {
+        return new Func1<ATCStatusDomain, String>() {
+            @Override
+            public String call(ATCStatusDomain atcStatusDomain) {
+                CacheResult<StatusResult> response = new CacheResult<>();
+                StatusResult statusResult = new StatusResult();
+                if(atcStatusDomain.getStatus() == ATCStatusDomain.RESULT_ADD_TO_CART_SUCCESS) {
+                    statusResult.setStatus(true);
+                    statusResult.setMessage(atcStatusDomain.getMessage());
+                } else {
+                    statusResult.setStatus(false);
+                    statusResult.setMessage(atcStatusDomain.getMessage());
+                }
+                response.setData(statusResult);
+                return gson.toJson(response);
+            }
+        };
+    }
+
     private CartResponse getCartResponse(CartDomain cartDomain) {
         CartResponse cartResponse = new CartResponse();
+        cartResponse.setId(cartDomain.getId());
         cartResponse.setQuantity(cartDomain.getQuantity());
         cartResponse.setProductId(cartDomain.getProductId());
 
@@ -85,6 +134,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
         product.productImage = cartDomain.getProduct().getProductImage();
         product.productImage300 = cartDomain.getProduct().getProductImage300();
         product.productImageFull = cartDomain.getProduct().getProductImageFull();
+        product.productPriceUnformatted = CurrencyFormatHelper.convertRupiahToInt(cartDomain.getProduct().getProductPrice());
         cartResponse.setProduct(product);
 
         return cartResponse;

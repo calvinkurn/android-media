@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.react.datasource.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class ListResult<T> {
     @SerializedName("list")
+    @Expose
     private List<T> list;
 
     public List<T> getList() {
