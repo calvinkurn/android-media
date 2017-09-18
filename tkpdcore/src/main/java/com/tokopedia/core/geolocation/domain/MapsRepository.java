@@ -3,7 +3,9 @@ package com.tokopedia.core.geolocation.domain;
 
 
 import com.tokopedia.core.geolocation.model.autocomplete.Data;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
+import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -18,23 +20,38 @@ import rx.functions.Func1;
 
 public class MapsRepository implements IMapsRepository {
 
+    private IMapsMapper mapsMapper = new MapsMapper();
+
+    public MapsRepository() {
+        mapsMapper = new MapsMapper();
+    }
+
     @Override
-    public Observable<Data> getAutoCompleteList(MapService service, TKPDMapParam<String, String> params) {
+    public Observable<AutoCompleteViewModel> getAutoCompleteList(MapService service,
+                                                                 TKPDMapParam<String, String> params,
+                                                                 final String query) {
         return service.getApi().getRecommendedPlaces(params)
-                .map(new Func1<Response<TkpdResponse>, Data>() {
+                .map(new Func1<Response<TkpdResponse>, AutoCompleteViewModel>() {
             @Override
-            public Data call(Response<TkpdResponse> response) {
-                return response.body().convertDataObj(Data.class);
+            public AutoCompleteViewModel call(Response<TkpdResponse> response) {
+                return mapsMapper.convertAutoCompleteModel(
+                        response.body().convertDataObj(Data.class),
+                        query
+                );
             }
         });
     }
 
     @Override
-    public Observable<CoordinateModel> getLatLng(MapService service, TKPDMapParam<String, String> params) {
-        return service.getApi().getLatLng(params).map(new Func1<Response<TkpdResponse>, CoordinateModel>() {
+    public Observable<CoordinateViewModel> getLatLng(MapService service,
+                                                     TKPDMapParam<String, String> params) {
+        return service.getApi().getLatLng(params)
+                .map(new Func1<Response<TkpdResponse>, CoordinateViewModel>() {
             @Override
-            public CoordinateModel call(Response<TkpdResponse> response) {
-                return response.body().convertDataObj(CoordinateModel.class);
+            public CoordinateViewModel call(Response<TkpdResponse> response) {
+                return mapsMapper
+                        .convertAutoCompleteLocationId(response.body()
+                                .convertDataObj(CoordinateModel.class));
             }
         });
     }

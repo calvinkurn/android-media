@@ -14,7 +14,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -22,8 +21,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,7 +36,8 @@ import com.tokopedia.core.geolocation.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
-import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -336,9 +334,9 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void onSuggestionItemClick(AdapterView<?> adapter, int position) {
-        final Prediction item = (Prediction) adapter.getItemAtPosition(position);
+        final PredictionResult item = (PredictionResult) adapter.getItemAtPosition(position);
         final String placeID = item.getPlaceId();
-        final CharSequence primaryText = item.getStructuredFormatting().getMainText();
+        final CharSequence primaryText = item.getMainText();
 
         Log.d(TAG, "AutoComplete item selected: " + primaryText);
 
@@ -405,10 +403,8 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     private RetrofitInteractor.GenerateLatLongListener latLongListener() {
         return new RetrofitInteractor.GenerateLatLongListener() {
             @Override
-            public void onSuccess(CoordinateModel model) {
-                LatLng latitudeLongitude = new LatLng(model.getGeometry().getLocation().getLat(),
-                        model.getGeometry().getLocation().getLng());
-                view.moveMap(latitudeLongitude);
+            public void onSuccess(CoordinateViewModel model) {
+                view.moveMap(model.getCoordinate());
             }
 
             @Override

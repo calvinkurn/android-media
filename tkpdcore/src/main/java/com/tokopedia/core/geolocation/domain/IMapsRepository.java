@@ -2,7 +2,9 @@ package com.tokopedia.core.geolocation.domain;
 
 
 import com.tokopedia.core.geolocation.model.autocomplete.Data;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
+import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
@@ -14,10 +16,11 @@ import rx.Observable;
 
 public interface IMapsRepository {
 
-    Observable<Data> getAutoCompleteList(MapService service,
-                                         TKPDMapParam<String, String> params);
+    Observable<AutoCompleteViewModel> getAutoCompleteList(MapService service,
+                                                          TKPDMapParam<String, String> params,
+                                                          String query);
 
-    Observable<CoordinateModel> getLatLng(MapService service,
-                                          TKPDMapParam<String, String> params);
+    Observable<CoordinateViewModel> getLatLng(MapService service,
+                                              TKPDMapParam<String, String> params);
 
 }

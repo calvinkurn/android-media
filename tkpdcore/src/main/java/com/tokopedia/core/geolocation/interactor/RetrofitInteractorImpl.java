@@ -9,6 +9,7 @@ import com.tokopedia.core.geolocation.domain.MapsRepository;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
 import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
+import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -85,7 +86,8 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         compositeSubscription.add(mapsRepository.getLatLng(service, param)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<CoordinateModel>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CoordinateViewModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -98,7 +100,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     }
 
                     @Override
-                    public void onNext(CoordinateModel model) {
+                    public void onNext(CoordinateViewModel model) {
                         listener.onSuccess(model);
                     }
                 }));

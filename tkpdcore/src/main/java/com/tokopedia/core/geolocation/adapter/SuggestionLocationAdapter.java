@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.text.Html;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -33,6 +34,8 @@ import com.tokopedia.core.geolocation.domain.IMapsRepository;
 import com.tokopedia.core.geolocation.domain.MapsRepository;
 import com.tokopedia.core.geolocation.model.autocomplete.Data;
 import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -50,7 +53,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by hangnadi on 2/2/16.
  */
-public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
+public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
         implements Filterable {
 
     private static final String TAG = "PlaceAutocompleteAdapter";
@@ -58,7 +61,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
     /**
      * Current results returned by this adapter.
      */
-    private List<Prediction> mResultList;
+    private List<PredictionResult> mResultList;
 
     private MapService mapService;
 
@@ -140,7 +143,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
      * Returns an item from the last autocomplete query.
      */
     @Override
-    public Prediction getItem(int position) {
+    public PredictionResult getItem(int position) {
         return mResultList.get(position);
     }
 
@@ -153,16 +156,17 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
         // Note that getPrimaryText() and getSecondaryText() return a CharSequence that may contain
         // styling based on the given CharacterStyle.
 
-        Prediction item = getItem(position);
+        PredictionResult item = getItem(position);
 
         TextView textView1 = (TextView) row.findViewById(android.R.id.text1);
         TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
-        textView1.setTypeface(textView1.getTypeface(), Typeface.BOLD);
-        textView2.setTypeface(textView1.getTypeface(), Typeface.BOLD);
-        if (item != null && item.getStructuredFormatting() != null) {
-            textView1.setText(item.getStructuredFormatting().getMainText());
-            textView2.setText(item.getStructuredFormatting().getSecondaryText());
+        if (item != null) {
+            textView1.setText(Html.fromHtml(item.getMainTextFormatted()));
         }
+        if (item != null) {
+            textView2.setText(Html.fromHtml(item.getSecondaryTextFormatted()));
+        }
+
 
         return row;
     }
@@ -206,8 +210,8 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
             public CharSequence convertResultToString(Object resultValue) {
                 // Override this method to display a readable result in the AutocompleteTextView
                 // when clicked.
-                if (resultValue instanceof Prediction) {
-                    return ((Prediction) resultValue).getStructuredFormatting().getMainText();
+                if (resultValue instanceof PredictionResult) {
+                    return ((PredictionResult) resultValue).getMainText();
                 } else {
                     return super.convertResultToString(resultValue);
                 }
@@ -290,11 +294,11 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
                 params.put("input", query);
                 compositeSubscription.add(mapsRepository
                         .getAutoCompleteList(mapService, AuthUtil
-                                .generateParamsNetwork(getContext(), params))
+                                .generateParamsNetwork(getContext(), params), query)
                        .subscribeOn(Schedulers.newThread())
                        .observeOn(AndroidSchedulers.mainThread())
                        .unsubscribeOn(Schedulers.newThread())
-                       .subscribe(new Subscriber<Data>() {
+                       .subscribe(new Subscriber<AutoCompleteViewModel>() {
                            @Override
                            public void onCompleted() {
 
@@ -306,9 +310,9 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
                            }
 
                            @Override
-                           public void onNext(Data response) {
+                           public void onNext(AutoCompleteViewModel response) {
                                CommonUtils.dumper("PORING Terima Result");
-                               mResultList = response.getPredictions();
+                               mResultList = response.getListOfPredictionResults();
                                notifyDataSetChanged();
                            }
                        }));

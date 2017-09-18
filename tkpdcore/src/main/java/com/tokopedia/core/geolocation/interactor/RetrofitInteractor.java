@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
+import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
@@ -30,7 +30,7 @@ public interface RetrofitInteractor {
     IMapsRepository getMapRepository();
 
     interface GenerateLatLongListener {
-        void onSuccess(CoordinateModel model);
+        void onSuccess(CoordinateViewModel model);
 
         void onError(String errorMessage);
     }
