@@ -29,7 +29,7 @@ import retrofit2.Retrofit;
 
 @TopAdsKeywordScope
 @Module
-public class TopAdsModule {
+public class TopAdsKeywordModule {
 
     @TopAdsKeywordScope
     @Provides

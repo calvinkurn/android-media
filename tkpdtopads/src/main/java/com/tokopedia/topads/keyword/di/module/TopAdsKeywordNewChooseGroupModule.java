@@ -20,7 +20,7 @@ import retrofit2.Retrofit;
 
 @TopAdsKeywordScope
 @Module
-public class TopAdsKeywordNewChooseGroupModule extends TopAdsModule {
+public class TopAdsKeywordNewChooseGroupModule extends TopAdsKeywordModule {
 
     @TopAdsKeywordScope
     @Provides
