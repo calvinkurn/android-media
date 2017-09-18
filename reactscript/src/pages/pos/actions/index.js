@@ -1,24 +1,29 @@
 import axios from 'axios'
-import {PosCacheModule} from 'NativeModules'
+import { PosCacheModule } from 'NativeModules'
 
 // Product list action and action creators
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
 export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryText) => {
-  const eId = +etalaseId || 0
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=${rows}&shop_id=${shopId}&start=${start}`
+  // const eId = +etalaseId || 0
+  // let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=${rows}&shop_id=${shopId}&start=${start}`
 
-  if (eId) {
-    url += `&etalase=${eId}`
-  }
+  // if (eId) {
+  //   url += `&etalase=${eId}`
+  // }
 
-  if (productId) {
-    url += `&id=${productId}`
-  }
+  // if (productId) {
+  //   url += `&id=${productId}`
+  // }
 
-  if (queryText) {
-    const text = queryText.replace(' ', '+')
-    url += `&q=${text}`
-  }
+  // if (queryText) {
+  //   const text = queryText.replace(' ', '+')
+  //   url += `&q=${text}`
+  // }
+
+  // return {
+  //   type: FETCH_PRODUCTS,
+  //   payload: axios.get(url)
+  // }
 
   return {
     type: FETCH_PRODUCTS,
@@ -139,7 +144,7 @@ export const selectEmi = (id) => {
   }
 }
 
-//Search actions
+// Search actions
 export const ON_SEARCH_QUERY_TYPE = 'ON_SEARCH_QUERY_TYPE'
 export const onSearchQueryType = (queryText) => {
   return {
