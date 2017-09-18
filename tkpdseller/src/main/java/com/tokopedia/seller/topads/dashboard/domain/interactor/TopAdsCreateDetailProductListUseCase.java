@@ -13,6 +13,8 @@ import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -25,6 +27,7 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
 
     private static final String PRODUCT_AD_TYPE = "1";
 
+    @Inject
     public TopAdsCreateDetailProductListUseCase(ThreadExecutor threadExecutor,
                                                 PostExecutionThread postExecutionThread,
                                                 TopAdsProductAdsRepository topAdsProductAdsRepository) {
@@ -47,12 +50,13 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
                                                     List<TopAdsProductViewModel> topAdsProductViewModelList) {
         List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels = new ArrayList<>();
         for(TopAdsProductViewModel topAdsProductViewModel : topAdsProductViewModelList){
+            TopAdsDetailGroupDomainModel detailGroupDomainModel = topAdsDetailGroupDomainModel.copy();
             String adId = String.valueOf(topAdsProductViewModel.getAdId());
             String itemId = String.valueOf( topAdsProductViewModel.getId() );
-            topAdsDetailGroupDomainModel.setAdId(adId);
-            topAdsDetailGroupDomainModel.setItemId(itemId);
-            topAdsDetailGroupDomainModel.setAdType(PRODUCT_AD_TYPE);
-            topAdsDetailProductDomainModels.add(topAdsDetailGroupDomainModel);
+            detailGroupDomainModel.setAdId(adId);
+            detailGroupDomainModel.setItemId(itemId);
+            detailGroupDomainModel.setAdType(PRODUCT_AD_TYPE);
+            topAdsDetailProductDomainModels.add(detailGroupDomainModel);
         }
 
         RequestParams params = RequestParams.create();

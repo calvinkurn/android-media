@@ -2,6 +2,7 @@ package com.tokopedia.core.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
@@ -54,14 +55,16 @@ public class TkpdWebView extends WebView {
 
     private String generateUri(String uri) {
         String url = String.valueOf(uri);
-        String flag_app = AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP + "=1";
+        String flagApp = AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP + "=1";
         String device = AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE + "=android";
-        String utm_source = AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE + "=android";
-        String app_version = AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION + "=" + GlobalConfig.VERSION_CODE;
-        String flags = flag_app
+        String utmSource = AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE + "=android";
+        String appVersion = AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION + "=" + GlobalConfig.VERSION_CODE;
+        String osVersion = AuthUtil.WEBVIEW_FLAG_PARAM_OS_VERSION + "=" + Build.VERSION.RELEASE;
+        String flags = flagApp
                 + "&" + device
-                + "&" + utm_source
-                + "&" + app_version;
+                + "&" + utmSource
+                + "&" + appVersion
+                + "&" + osVersion;
 
         try {
             if (Uri.parse(uri).getQuery() == null) {

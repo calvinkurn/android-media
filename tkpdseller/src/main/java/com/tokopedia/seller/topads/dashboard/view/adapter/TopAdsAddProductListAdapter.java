@@ -34,17 +34,16 @@ import java.util.List;
  *         06-03-2017, separate promoted and non promoted.
  *         <p>
  */
-public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
-        implements AdapterSelectionListener<TopAdsProductViewModel> {
+public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter{
     List<ItemType> datas;
-    FragmentItemSelection fragmentItemSelection;
+    AdapterSelectionListener<TopAdsProductViewModel> listener;
     private ImageHandler imageHandler;
     private boolean isEmptyShown;
 
     public TopAdsAddProductListAdapter(ImageHandler imageHandler,
-                                       FragmentItemSelection fragmentItemSelection) {
+                                       AdapterSelectionListener<TopAdsProductViewModel> listener) {
         this.imageHandler = imageHandler;
-        this.fragmentItemSelection = fragmentItemSelection;
+        this.listener = listener;
         datas = new ArrayList<>();
     }
 
@@ -56,8 +55,8 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         this.imageHandler = imageHandler;
     }
 
-    public void setFragmentItemSelection(FragmentItemSelection fragmentItemSelection) {
-        this.fragmentItemSelection = fragmentItemSelection;
+    public void setListener(AdapterSelectionListener<TopAdsProductViewModel> adapterSelectionListener) {
+        this.listener = adapterSelectionListener;
     }
 
     @Override
@@ -72,10 +71,10 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
             case NonPromotedTopAdsAddProductModel.TYPE:
                 view = from.inflate(R.layout.item_top_ads_add_product_list_non_promoted,
                         parent, false);
-                return new TopAdsNonPromotedViewHolder(view, this);
+                return new TopAdsNonPromotedViewHolder(view, listener);
             case TopAdsAddProductModel.TYPE:
                 view = from.inflate(R.layout.item_top_ads_add_product_list, parent, false);
-                return new TopAdsAddProductListViewHolder(view, imageHandler, this);
+                return new TopAdsAddProductListViewHolder(view, imageHandler, listener);
             case EmptyTypeBasedModel.TYPE:
                 view = from.inflate(R.layout.item_top_ads_empty_list, parent, false);
                 return new TopAdsEmptyRowViewHolder(view);
@@ -146,21 +145,6 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     @Override
     public int getItemCount() {
         return datas.size() + super.getItemCount();
-    }
-
-    @Override
-    public void onChecked(int position, TopAdsProductViewModel data) {
-        fragmentItemSelection.onChecked(position, data);
-    }
-
-    @Override
-    public void onUnChecked(int position, TopAdsProductViewModel data) {
-        fragmentItemSelection.onUnChecked(position, data);
-    }
-
-    @Override
-    public boolean isSelected(TopAdsProductViewModel data) {
-        return fragmentItemSelection.isSelected(data);
     }
 
     public void notifyUnCheck(TopAdsProductViewModel topAdsProductViewModel) {

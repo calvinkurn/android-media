@@ -1,13 +1,26 @@
 package com.tokopedia.seller.topads.dashboard.view.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
@@ -21,12 +34,44 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 
     public static final String TAG = TopAdsDetailProductFragment.class.getSimpleName();
 
     private ShowCaseDialog showCaseDialog;
+
+    @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            String userId = extras.getString("user_id", "");
+            if (!TextUtils.isEmpty(userId)) {
+                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                    Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+                    return getCallingIntent(context, extras.getString("ad_id", ""))
+                            .setData(uri.build())
+                            .putExtras(extras);
+                } else {
+                    return TopAdsDashboardActivity.getCallingIntent(context)
+                            .putExtras(extras);
+                }
+            } else {
+                Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+                return getCallingIntent(context, extras.getString("ad_id", ""))
+                        .setData(uri.build())
+                        .putExtras(extras);
+            }
+        } else {
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+        }
+    }
+
+    public static Intent getCallingIntent(Context activity, String adsId) {
+        Intent intent = new Intent(activity, TopAdsDetailProductActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adsId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +85,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
-        if(fragment == null){
+        if (fragment == null) {
             fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
         }
         getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
@@ -65,9 +110,14 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     public void onBackPressed() {
         if (isTaskRoot()) {
             //coming from deeplink
-            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
-            this.startActivity(intent);
-            this.finish();
+            String deepLink = getIntent().getStringExtra(DeepLink.URI);
+            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                this.startActivity(intent);
+                this.finish();
+            }
         } else {
             super.onBackPressed();
         }
@@ -76,7 +126,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDetailProductActivity.class.getName();
-        if (ShowCasePreference.hasShown(this, showCaseTag)){
+        if (ShowCasePreference.hasShown(this, showCaseTag)) {
             return;
         }
         if (showCaseDialog != null) {
@@ -103,7 +153,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
                             getString(R.string.topads_showcase_detail_promo_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
                             Color.WHITE)
-                            .withCustomTarget(new int[]{width - (int)(height * 0.8), 0,width, height}));
+                            .withCustomTarget(new int[]{width - (int) (height * 0.8), 0, width, height}));
             View statusView = topAdsDetailProductFragment.getStatusView();
             if (statusView != null) {
                 showCaseList.add(
@@ -116,8 +166,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             }
             showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
             showCaseDialog.show(TopAdsDetailProductActivity.this, showCaseTag, showCaseList);
-        }
-        else {
+        } else {
             toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(
                     toolbar,
                     new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
@@ -130,4 +179,5 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
         }
 
     }
+
 }

@@ -35,11 +35,11 @@
     <dimen name="font_loading_width_xxl">200dp</dimen>
     <dimen name="font_loading_width_xxxl">300dp</dimen>
 
-    <dimen name="image_width_xxxs">2dp</dimen>
-    <dimen name="image_width_xxs">4dp</dimen>
-    <dimen name="image_width_xs">8dp</dimen>
-    <dimen name="image_width_s">12dp</dimen>
-    <dimen name="image_width_m">24dp</dimen>
+    <dimen name="image_width_xxxs">8dp</dimen>
+    <dimen name="image_width_xxs">16dp</dimen>
+    <dimen name="image_width_xs">24dp</dimen>
+    <dimen name="image_width_s">32dp</dimen>
+    <dimen name="image_width_m">40dp</dimen>
     <dimen name="image_width_l">48dp</dimen>
     <dimen name="image_width_xl">96dp</dimen>
     <dimen name="image_width_xxl">140dp</dimen>
@@ -65,4 +65,6 @@
 
     <dimen name="text_input_margin_offset">-4dp</dimen>
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>
+
+    <dimen name="height_widget_ticker">90dp</dimen>
 </resources>

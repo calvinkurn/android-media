@@ -23,7 +23,7 @@
     <dimen name="default_corner_radius">4dp</dimen>
     <dimen name="default_shadow_radius">4dp</dimen>
 
-    <dimen name="default_circle_button_corner_2radius">80dp</dimen>
+    <dimen name="default_circle_button_corner_2radius">100dp</dimen>
     <dimen name="default_circle_button_text_size">10sp</dimen>
 
     <dimen name="default_ham_button_corner_radius">3dp</dimen>

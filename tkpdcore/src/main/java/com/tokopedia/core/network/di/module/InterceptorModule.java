@@ -7,6 +7,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.core.TkpdV4ResponseError;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
@@ -33,6 +34,12 @@ import dagger.Provides;
 
 @Module
 public class InterceptorModule {
+
+    @ApplicationScope
+    @Provides
+    public ApiCacheInterceptor provideApiCacheInterceptor() {
+        return new ApiCacheInterceptor();
+    }
 
     @ApplicationScope
     @Provides

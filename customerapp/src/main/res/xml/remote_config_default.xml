@@ -25,4 +25,16 @@
         <key>mainapp_update_link</key>
         <value>https://play.google.com/store/apps/details?id=com.tokopedia.tkpd</value>
     </entry>
+    <entry>
+        <key>toko_cash_top_up</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>toko_cash_label</key>
+        <value>TokoCash</value>
+    </entry>
+    <entry>
+        <key>mainapp_react_show_os</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

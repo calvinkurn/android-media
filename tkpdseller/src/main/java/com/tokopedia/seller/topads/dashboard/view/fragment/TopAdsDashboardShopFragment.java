@@ -6,11 +6,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailNewShopActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsCreatePromoShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
@@ -64,11 +67,10 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     }
 
     public void onCreateShop() {
-        Intent intent = new Intent(getActivity(), TopAdsDetailNewShopActivity.class);
         if (!TextUtils.isEmpty(shopAd.getName())) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, shopAd.getName());
+            Intent intent = TopAdsCreatePromoShopActivity.createIntent(getActivity(), shopAd.getName());
+            startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
         }
-        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     public void loadData() {
@@ -90,6 +92,38 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
                 populateShop();
+            }
+        }
+    }
+
+    @Override
+    public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        super.onDateChoosen(sDate, eDate, lastSelection, selectionType);
+        trackingDateTopAds(lastSelection, selectionType);
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsShopChooseDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -121,6 +155,42 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     public void onLoadAdShopError() {
         showNetworkError();
         hideLoading();
+    }
+
+    @Override
+    protected void onStatisticAverageClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_AVERAGE_CONVERSION);
+        super.onStatisticAverageClicked();
+    }
+
+    @Override
+    protected void onStatisticClickClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CLICK);
+        super.onStatisticClickClicked();
+    }
+
+    @Override
+    protected void onStatisticConversionClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CONVERSION);
+        super.onStatisticConversionClicked();
+    }
+
+    @Override
+    protected void onStatisticCostClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CPC);
+        super.onStatisticCostClicked();
+    }
+
+    @Override
+    protected void onStatisticCtrClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_CTR);
+        super.onStatisticCtrClicked();
+    }
+
+    @Override
+    protected void onStatisticImpressionClicked() {
+        UnifyTracking.eventTopAdsShopStatistic(AppEventTracking.EventLabel.STATISTIC_OPTION_IMPRESSION);
+        super.onStatisticImpressionClicked();
     }
 
     @Override

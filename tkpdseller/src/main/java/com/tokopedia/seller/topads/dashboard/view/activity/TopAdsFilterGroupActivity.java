@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
@@ -44,5 +46,28 @@ public class TopAdsFilterGroupActivity extends BaseFilterActivity {
     @Override
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    protected Intent setFilterChangedResult() {
+        Intent intent = super.setFilterChangedResult();
+        int filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, -1);
+        switch (filterStatus){
+            case 0:
+                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_ALL);
+                break;
+            case 1:
+                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_ACTIVE);
+                break;
+            case 2:
+                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_NOT_SEND);
+                break;
+            case 3:
+                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_INACTIVE);
+                break;
+            default:
+                break;
+        }
+        return intent;
     }
 }

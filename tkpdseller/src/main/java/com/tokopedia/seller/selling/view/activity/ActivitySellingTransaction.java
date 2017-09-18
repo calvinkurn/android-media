@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +18,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
@@ -31,13 +32,16 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -53,7 +57,6 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
-import com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +114,19 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
+    @DeepLink(Constants.Applinks.SellerApp.SALES)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            Intent intent = new Intent(context, ActivitySellingTransaction.class);
+            return intent
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+        }
+    }
+
     public static Intent createIntent(Context context, int tab) {
         return new Intent(context, ActivitySellingTransaction.class)
                 .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, tab);
@@ -128,12 +144,12 @@ public class ActivitySellingTransaction extends TkpdActivity
     }
 
     private void checkLogin() {
-        if(getApplication() instanceof TkpdCoreRouter) {
+        if (getApplication() instanceof TkpdCoreRouter) {
             if (!SessionHandler.isV4Login(this)) {
                 startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
-            } else if(!SessionHandler.isUserSeller(this)){
+            } else if (!SessionHandler.isUserSeller(this)) {
                 startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
@@ -443,8 +459,8 @@ public class ActivitySellingTransaction extends TkpdActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!GlobalConfig.isSellerApp()) {
             getMenuInflater().inflate(R.menu.cart_and_search, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
-            int CartCache = Cache.getInt("is_has_cart");
+            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
             } else {
@@ -515,7 +531,13 @@ public class ActivitySellingTransaction extends TkpdActivity
     @Override
     public void onBackPressed() {
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            startActivity(HomeRouter.getHomeActivity(this));
+            Intent homeIntent = null;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(this);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(this);
+            }
+            startActivity(homeIntent);
             finish();
         } else {
             super.onBackPressed();

@@ -79,4 +79,9 @@ public interface DigitalApi {
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> checkout(@Body JsonObject requestBody);
 
+    @POST(TkpdBaseURL.DigitalApi.PATH_USSD)
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> parsePulsaMessage(@Body JsonObject requestBody);
+
+
 }

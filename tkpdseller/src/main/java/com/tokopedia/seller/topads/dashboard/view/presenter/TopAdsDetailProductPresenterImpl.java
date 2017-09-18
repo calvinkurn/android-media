@@ -1,34 +1,38 @@
 package com.tokopedia.seller.topads.dashboard.view.presenter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdAction;
-import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
+import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailListener;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by zulfikarrahman on 12/30/16.
+ * Created by zulfikarrahman on 8/14/17.
  */
-public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl implements TopAdsDetailProductPresenter {
 
-    private TopAdsProductAdInteractor productAdInteractor;
+public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetailPresenterImpl<T> implements TopAdsDetailPresenter {
+    protected TopAdsProductAdInteractor topAdsProductAdInteractor;
 
-    public TopAdsDetailProductPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener, TopAdsProductAdInteractor productAdInteractor) {
-        super(context, topAdsDetailViewListener);
-        this.productAdInteractor = productAdInteractor;
+    public TopAdsDetailProductPresenterImpl(Context context, TopAdsDetailListener<T> topAdsDetailListener, TopAdsProductAdInteractor topAdsProductAdInteractor) {
+        super(context, topAdsDetailListener);
+        this.topAdsProductAdInteractor = topAdsProductAdInteractor;
     }
+
+    @Override
+    public void unSubscribe() {
+        if (topAdsProductAdInteractor != null) {
+            topAdsProductAdInteractor.unSubscribe();
+        }
+    }
+
 
     @Override
     public void refreshAd(Date startDate, Date endDate, String id) {
@@ -37,92 +41,21 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
         searchAdRequest.setStartDate(startDate);
         searchAdRequest.setEndDate(endDate);
         searchAdRequest.setAdId(id);
-        productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
+        topAdsProductAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<ProductAd>> pageDataResponse) {
                 List<ProductAd> productAds = pageDataResponse.getData();
                 if (productAds== null || productAds.size() == 0) {
-                    topAdsDetailViewListener.onAdEmpty();
+                    topAdsDetailListener.onAdEmpty();
                 } else {
-                    topAdsDetailViewListener.onAdLoaded(productAds.get(0));
+                    topAdsDetailListener.onAdLoaded((T) productAds.get(0));
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onLoadAdError();
+                topAdsDetailListener.onLoadAdError();
             }
         });
     }
-
-    @Override
-    public void turnOnAds(String id) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
-        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
-            @Override
-            public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOnAdSuccess();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onTurnOnAdError();
-            }
-        });
-    }
-
-    @Override
-    public void turnOffAds(String id) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
-            @Override
-            public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOffAdSuccess();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onTurnOffAdError();
-            }
-        });
-    }
-
-    @Override
-    public void deleteAd(String id) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
-        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
-            @Override
-            public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onDeleteAdSuccess();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onDeleteAdError();
-            }
-        });
-    }
-
-    @NonNull
-    private DataRequest<ProductAdBulkAction> generateActionRequest(String id, String action) {
-        DataRequest<ProductAdBulkAction> dataRequest = new DataRequest<>();
-        ProductAdBulkAction dataRequestSingleAd = new ProductAdBulkAction();
-        dataRequestSingleAd.setAction(action);
-        dataRequestSingleAd.setShopId(getShopId());
-        List<ProductAdAction> dataRequestSingleAdses = new ArrayList<>();
-        ProductAdAction data = new ProductAdAction();
-        data.setId(id);
-        dataRequestSingleAdses.add(data);
-        dataRequestSingleAd.setAds(dataRequestSingleAdses);
-        dataRequest.setData(dataRequestSingleAd);
-        return dataRequest;
-    }
-
-    @Override
-    public void unSubscribe() {
-        if (productAdInteractor != null) {
-            productAdInteractor.unSubscribe();
-        }
-    }
-
 }

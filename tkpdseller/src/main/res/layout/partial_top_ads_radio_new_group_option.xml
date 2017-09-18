@@ -25,11 +25,13 @@
                     android:id="@+id/input_new_group"
                     android:hint="@string/label_top_ads_group_name"
                     android:maxLength="70"
+                    android:inputType="text"
+                    android:singleLine="true"
                     style="@style/EditText.GreenHighlight"/>
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:visibility="gone"
+                android:text="@string/label_top_ads_info_group_option_new"
                 android:id="@+id/view_info_radio_new_group"
                 style="@style/TextView.infoInputType" />
         </LinearLayout>

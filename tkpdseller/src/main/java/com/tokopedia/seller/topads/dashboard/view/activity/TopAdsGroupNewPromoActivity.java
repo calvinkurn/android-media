@@ -1,13 +1,28 @@
 package com.tokopedia.seller.topads.dashboard.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
+
+import java.util.List;
+
+import bolts.AppLink;
 
 import static com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
 
@@ -16,6 +31,44 @@ import static com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNew
  */
 
 public class TopAdsGroupNewPromoActivity extends TActivity {
+
+    public static final String PARAM_ITEM_ID = "item_id";
+    public static final String PARAM_USER_ID = "user_id";
+
+    @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            String userId = extras.getString(PARAM_USER_ID, "");
+            if (!TextUtils.isEmpty(userId)) {
+                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                    Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+                    return getCallingIntent(context)
+                            .setData(uri.build())
+                            .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
+                            .putExtras(extras);
+                } else {
+                    return TopAdsDashboardActivity.getCallingIntent(context)
+                            .putExtras(extras);
+                }
+            } else {
+                Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+                return getCallingIntent(context)
+                        .setData(uri.build())
+                        .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
+                        .putExtras(extras);
+            }
+        } else {
+            Intent launchIntent = ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+            Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+            String itemId = uri.getQueryParameter(PARAM_ITEM_ID);
+            launchIntent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+            return launchIntent;
+        }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, TopAdsGroupNewPromoActivity.class);
+    }
 
     // from deeplink
     String itemId;
@@ -30,7 +83,7 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                 .commit();
     }
 
-    private void initFromIntent (){
+    private void initFromIntent() {
         Intent intent = getIntent();
         if (intent != null) {
             itemId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
@@ -63,9 +116,14 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
     public void onBackPressed() {
         if (isTaskRoot()) {
             //coming from deeplink
-            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
-            this.startActivity(intent);
-            this.finish();
+            String deepLink = getIntent().getStringExtra(DeepLink.URI);
+            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                this.startActivity(intent);
+                this.finish();
+            }
         } else {
             super.onBackPressed();
         }

@@ -4,12 +4,14 @@ package com.tokopedia.seller.topads.dashboard.data.mapper;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -19,6 +21,11 @@ import rx.functions.Func1;
  */
 
 public class SearchProductEOFMapper implements Func1<Response<DataResponse<List<Product>>>, ProductListDomain> {
+
+    @Inject
+    public SearchProductEOFMapper() {
+    }
+
     @NonNull
     public static List<ProductDomain> getProductDomains(List<Product> data) {
         List<ProductDomain> productDomains = new ArrayList<>();

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -18,6 +17,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.WishlistFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.AddWishlistMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FavoriteShopMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
@@ -32,6 +32,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
@@ -40,6 +41,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseC
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import javax.inject.Named;
 
@@ -93,7 +96,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FeedFactory provideFeedFactory(@ActivityContext Context context,
+    FeedFactory provideFeedFactory(@ApplicationContext Context context,
                                    ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
@@ -101,7 +104,8 @@ public class FeedPlusModule {
                                    FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
-                                   RecentProductMapper recentProductMapper) {
+                                   RecentProductMapper recentProductMapper,
+                                   CheckNewFeedMapper checkNewFeedMapper) {
         return new FeedFactory(
                 context,
                 apolloClient,
@@ -111,7 +115,8 @@ public class FeedPlusModule {
                 globalCacheManager,
                 feedDetailListMapper,
                 mojitoService,
-                recentProductMapper
+                recentProductMapper,
+                checkNewFeedMapper
         );
     }
 
@@ -156,7 +161,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FavoriteShopFactory provideFavoriteShopFactory(@ActivityContext Context context,
+    FavoriteShopFactory provideFavoriteShopFactory(@ApplicationContext Context context,
                                                    FavoriteShopMapper mapper,
                                                    ActionService service) {
         return new FavoriteShopFactory(context, mapper, service);
@@ -201,7 +206,6 @@ public class FeedPlusModule {
     WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
         return new WishlistRepositoryImpl(wishlistFactory);
     }
-
 
 
     @FeedPlusScope
@@ -293,4 +297,21 @@ public class FeedPlusModule {
                 postExecutionThread,
                 feedRepository);
     }
+
+    @FeedPlusScope
+    @Provides
+    CheckNewFeedMapper provideCheckNewFeedMapper() {
+        return new CheckNewFeedMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    CheckNewFeedUseCase provideCheckNewFeedUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   FeedRepository feedRepository) {
+        return new CheckNewFeedUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
 }

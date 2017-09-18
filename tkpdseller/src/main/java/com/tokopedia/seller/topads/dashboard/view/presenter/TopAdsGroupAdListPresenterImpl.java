@@ -48,6 +48,7 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
         });
     }
 
+
     @Override
     public void unSubscribe() {
         if (groupAdInteractor != null) {
