@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">tkpdgm</string>
+    <string name="success_delete_n_product_text">Berhasil menghapus %1$d produk dari Produk Unggulan</string>
 </resources>

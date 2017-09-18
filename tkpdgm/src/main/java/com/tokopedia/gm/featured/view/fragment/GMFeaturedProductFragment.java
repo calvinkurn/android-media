@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
@@ -56,22 +62,23 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         GMFeaturedProductAdapter.UseCaseListener, SimpleItemTouchHelperCallback.isEnabled,
         BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel> {
 
-    public static GMFeaturedProductFragment createInstance() {
-        return new GMFeaturedProductFragment();
-    }
-
     private static final int REQUEST_CODE = 12314;
     private static final int MAX_ITEM = 5;
-
+    @Inject
+    GMFeaturedProductPresenterImpl featuredProductPresenter;
     private FloatingActionButton fab;
     private ItemTouchHelper mItemTouchHelper;
     private ProgressDialog progressDialog;
-
-    @Inject
-    GMFeaturedProductPresenterImpl featuredProductPresenter;
+    private CoordinatorLayout coordinatorLayoutContainer;
+    private SnackbarRetry snackbarUndo;
     @GMFeaturedProductTypeView
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
+    private List<Pair<Integer, GMFeaturedProductModel>> gmTemporaryDelete;
+
+    public static GMFeaturedProductFragment createInstance() {
+        return new GMFeaturedProductFragment();
+    }
 
     @Override
     protected BaseListAdapter<GMFeaturedProductModel> getNewAdapter() {
@@ -136,10 +143,41 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 moveToProductPicker();
             }
         });
+        coordinatorLayoutContainer = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout_container);
+
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
         resetPageAndSearch();
+    }
+
+    private void showSnackbarWithUndo() {
+        if (gmTemporaryDelete != null) {
+            new SnackbarRetry(
+                    SnackbarManager.make(coordinatorLayoutContainer,
+                            getString(R.string.success_delete_n_product_text, gmTemporaryDelete.size()),
+                            Snackbar.LENGTH_INDEFINITE,
+                            android.R.color.white,
+                            com.tokopedia.core.R.color.black_seventy_percent_),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            if (adapter.getDataSize() == 0) {
+                                List<GMFeaturedProductModel> datas = new ArrayList<>();
+                                for (int i = 0; i < gmTemporaryDelete.size(); i++) {
+                                    datas.add(gmTemporaryDelete.get(i).getModel2());
+                                }
+                                onSearchLoaded(datas, datas.size());
+                            } else {
+                                for (Pair<Integer, GMFeaturedProductModel> gmFeaturedProductModelPair : gmTemporaryDelete) {
+                                    adapter.addSingleDataWithPosition(gmFeaturedProductModelPair);
+                                }
+                            }
+
+                        }
+                    }
+            ).showRetrySnackbar();
+        }
     }
 
     @Override
@@ -250,6 +288,14 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         return featuredProductTypeView;
     }
 
+    public void setFeaturedProductTypeView(@GMFeaturedProductTypeView int featuredProductTypeView) {
+        this.featuredProductTypeView = featuredProductTypeView;
+        getActivity().invalidateOptionsMenu();
+        adapter.notifyDataSetChanged();
+        updateTitle();
+        updateFabDisplay();
+    }
+
     @Override
     public void onItemChecked(GMFeaturedProductModel gmFeaturedProductModel, boolean checked) {
         if (featuredProductTypeView == GMFeaturedProductTypeView.DELETE_DISPLAY) {
@@ -326,14 +372,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         }
         Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels);
         startActivityForResult(intent, REQUEST_CODE);
-    }
-
-    public void setFeaturedProductTypeView(@GMFeaturedProductTypeView int featuredProductTypeView) {
-        this.featuredProductTypeView = featuredProductTypeView;
-        getActivity().invalidateOptionsMenu();
-        adapter.notifyDataSetChanged();
-        updateTitle();
-        updateFabDisplay();
     }
 
     private void updateTitle() {
@@ -438,7 +476,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getTotalChecked()));
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
+                gmTemporaryDelete = ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
+                showSnackbarWithUndo();
                 setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
                 List<GMFeaturedProductModel> gmFeaturedProductModelListTemp = new ArrayList<GMFeaturedProductModel>(adapter.getData());
                 onSearchLoaded(gmFeaturedProductModelListTemp, gmFeaturedProductModelListTemp.size());
@@ -483,5 +522,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     public void onDestroy() {
         super.onDestroy();
         featuredProductPresenter.detachView();
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
     }
 }
