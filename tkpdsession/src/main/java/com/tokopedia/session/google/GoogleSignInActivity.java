@@ -33,6 +33,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
+                .requestIdToken("692092518182-rjgh0bja6q41dllpq2dptn134cmhiv9h.apps.googleusercontent.com")
 //                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
 //                .requestScopes(new Scope(Scopes.PROFILE))
 //                .requestScopes(new Scope(Scopes.PLUS_ME))

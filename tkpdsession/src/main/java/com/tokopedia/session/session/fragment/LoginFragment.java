@@ -45,6 +45,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -58,6 +59,7 @@ import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -65,6 +67,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
@@ -83,6 +86,9 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * @author m.normansyah
@@ -190,7 +196,8 @@ LoginFragment extends Fragment implements LoginView {
             if (temp.equals(DownloadService.FACEBOOK)) {
                 onFacebookClick();
             } else if (temp.equals(DownloadService.GOOGLE)) {
-                LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
+//                LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
+                onGoogleClick();
             } else if (temp.equals(DownloadService.WEBVIEW)) {
                 String url = getArguments().getString("url");
                 String name = getArguments().getString("name");
@@ -399,6 +406,13 @@ LoginFragment extends Fragment implements LoginView {
         UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
         processFacebookLogin();
     }
+
+
+    private void onGoogleClick() {
+        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+    }
+
 
     private void processFacebookLogin() {
         login.doFacebookLogin(this, callbackManager);
@@ -621,6 +635,7 @@ LoginFragment extends Fragment implements LoginView {
                         public void onClick(View v) {
                             UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
                             LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
+                            onGoogleClick();
                         }
                     });
                 } else {
@@ -644,8 +659,8 @@ LoginFragment extends Fragment implements LoginView {
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGooglePlusClicked() {
         UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
-        showProgress(true);
-        ((GoogleActivity) getActivity()).onSignInClicked();
+//        showProgress(true);
+//        ((GoogleActivity) getActivity()).onSignInClicked();
     }
 
     @Override
@@ -799,6 +814,18 @@ LoginFragment extends Fragment implements LoginView {
                     destroyActivity();
                 } else if(resultCode == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
 
+                }
+                break;
+
+            case RC_SIGN_IN_GOOGLE :
+                if (data != null) {
+                    GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+                    LoginGoogleModel model = new LoginGoogleModel();
+                    model.setFullName(googleSignInAccount.getDisplayName());
+                    model.setGoogleId(googleSignInAccount.getId());
+                    model.setEmail(googleSignInAccount.getEmail());
+
+                    startLoginWithGoogle(LoginModel.GoogleType, model);
                 }
                 break;
             default:

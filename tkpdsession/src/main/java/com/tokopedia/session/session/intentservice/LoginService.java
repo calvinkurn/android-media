@@ -453,6 +453,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                     params.put(Login.FULL_NAME, loginFacebookViewModel.getFullName());
                     params.put(Login.BIRTHDATE, loginFacebookViewModel.getBirthday());
                     params.put(Login.GENDER_ACCOUNTS, loginFacebookViewModel.getGender());
+                    params.put(Login.ACCESS_TOKEN, loginFacebookViewModel.getFbToken());
                 } else if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
                     LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
                     accountsParameter.setEmail(loginGoogleModel.getEmail());
