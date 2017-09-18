@@ -224,7 +224,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private void addSelectedFilterToList(ArrayList<FilterPass> list,
                                          ArrayList<OptionViewModel> listChild) {
         for (OptionViewModel optionViewModel : listChild) {
-            if (optionViewModel.getListChild().size() > 0) {
+            if (optionViewModel.getListChild().size() > 0 && !optionViewModel.isExpanded()) {
                 addSelectedFilterToList(list, optionViewModel.getListChild());
             } else if (optionViewModel.isSelected()) {
                 list.add(new FilterPass(optionViewModel.getKey(), optionViewModel.getValue()));
