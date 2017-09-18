@@ -169,7 +169,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             } else {
                 return DEFAULT_LATLNG_JAKARTA;
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             return DEFAULT_LATLNG_JAKARTA;
         }
     }
