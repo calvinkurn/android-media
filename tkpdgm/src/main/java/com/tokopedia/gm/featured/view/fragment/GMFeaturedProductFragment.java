@@ -324,6 +324,12 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                     gmFeaturedProductModel.setProductName(productListPickerViewModel.getTitle());
                     gmFeaturedProductModelList.add(gmFeaturedProductModel);
                 }
+                if (isAdded() && getView() != null) {
+                    Snackbar.make(getView(),
+                            getString(R.string.success_add_n_featured_product_text, productListPickerViewModelList.size()),
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                }
             }
             onSearchLoaded(gmFeaturedProductModelList, gmFeaturedProductModelList.size());
         }
