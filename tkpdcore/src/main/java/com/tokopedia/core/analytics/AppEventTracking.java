@@ -309,6 +309,7 @@ public interface AppEventTracking {
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
+        String SUBMIT = "Submit";
     }
 
     interface EventLabel {
@@ -771,5 +772,12 @@ public interface AppEventTracking {
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
+        String ENVIRONMENT = "Environment";
+    }
+
+    interface Environment {
+        String SELLER_APP = "Android - Seller App";
+        String MAIN_APP = "Android - Main App";
+
     }
 }

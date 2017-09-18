@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -24,6 +27,7 @@ import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunitySortActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
@@ -232,6 +236,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                     opportunityParam.getSort(),
                                     opportunityParam.getListFilter());
                         }
+
+                        UnifyTracking.eventOpportunity(
+                                OpportunityTrackingEventLabel.EventName.SCROLL_OPPORTUNITY,
+                                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                                AppEventTracking.Action.SCROLL,
+                                OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
+                                );
                     }
                 });
 
@@ -240,6 +251,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public boolean onQueryTextSubmit(String query) {
                 opportunityParam.setQuery(query);
                 resetOpportunityList();
+
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY_SEARCH,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        query
+                );
                 return false;
             }
 
@@ -281,6 +299,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onSuccessGetOpportunity(OpportunityViewModel viewModel) {
         setPaging(viewModel.getPagingHandlerModel());
+
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.LOAD_OPPORTUNITY_PRODUCT,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.LOAD,
+                String.valueOf(pagingHandler.getPage())
+        );
+
         enableView();
         finishLoadingList();
         adapter.setList(viewModel.getListOpportunity());
@@ -508,5 +534,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.onSaveInstanceState(outState);
         outState.putParcelable(ARGS_FILTER_DATA, filterData);
         outState.putParcelable(ARGS_PARAM, opportunityParam);
+    }
+
+    @Override
+    protected String getScreenName() {
+        if (pagingHandler != null)
+            return AppScreen.SCREEN_OPPORTUNITY_TAB + pagingHandler.getPage();
+        else
+            return AppScreen.SCREEN_OPPORTUNITY_TAB;
     }
 }

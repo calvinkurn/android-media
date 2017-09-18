@@ -13,22 +13,21 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputation;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterTitleAdapter;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.fragment.OpportunityFilterFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityFilterTitleFragment;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterPassModel;
 import com.tokopedia.seller.opportunity.viewmodel.OptionViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
-import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,6 +192,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 filterPassModel = new OpportunityFilterPassModel();
                 filterPassModel.setListFilter(listFilter);
                 filterPassModel.setListPass(getSelectedFilterList());
@@ -228,8 +228,19 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                 addSelectedFilterToList(list, optionViewModel.getListChild());
             } else if (optionViewModel.isSelected()) {
                 list.add(new FilterPass(optionViewModel.getKey(), optionViewModel.getValue()));
+                sendAnalytics(optionViewModel.getKey(), optionViewModel.getValue());
+
             }
         }
+    }
+
+    private void sendAnalytics(String key, String value) {
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY_FILTER,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.SUBMIT,
+                key + " - " + value
+        );
     }
 
     @Override

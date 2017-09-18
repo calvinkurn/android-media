@@ -11,10 +11,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunitySortAdapter;
 import com.tokopedia.seller.opportunity.adapter.viewmodel.SimpleCheckListItemModel;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 
 import java.util.ArrayList;
@@ -149,6 +152,13 @@ public class OpportunitySortFragment extends BasePresenterFragment {
             @Override
 
             public void onItemSelected(int position, String value, String key) {
+
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY_SORT,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        key + " - " + value
+                );
 
                 Intent intent = new Intent();
                 intent.putExtra(SELECTED_VALUE, value);
