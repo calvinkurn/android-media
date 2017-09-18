@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -51,6 +52,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getResponse(String url, String method, String request, Boolean isAuth, final Promise promise) {
         try {
+            CommonUtils.dumper(url + " " + request);
             Subscription subscribe = reactNetworkRepository.getResponse(url, method, convertStringRequestToHashMap(request), isAuth)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
