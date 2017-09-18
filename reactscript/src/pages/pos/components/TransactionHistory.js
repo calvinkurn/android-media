@@ -1,152 +1,49 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView, FlatList} from 'react-native';
+import { StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView} from 'react-native';
 import { emailValidation } from '../lib/utility'
 import PopupDialog, {DialogTitle} from 'react-native-popup-dialog';
-import {getTransactionHistory } from '../actions/index';
-
 
 import PopUp from '../common/TKPPopupModal'
 
-class TransactionHistory  extends Component {
+class PaymentInvoice extends Component {
 
   constructor (props) {
 
     super (props);
 
     this.state = {
-      selectedOrder : ""
+      email: "",
+      emailErrorMessage : ""
     };
   }
 
-  componentDidMount() {
-    this.props.dispatch(getTransactionHistory());
-  }
-
-_toggleProduct(selectedOrder) {
+  _handleButtonPress = () => {
+    let emailErrorMessage  = "";
+    if (!emailValidation(this.state.email)) {
+      emailErrorMessage = "Mohon masukan alamat email Anda dengan format contoh@email.com";
+    } else {
+      this.popupDialog.show()
+    }
     this.setState({
-      selectedOrder
+      emailErrorMessage
     });
-  }
+  };
 
-  _renderProductList(rowData) {
-
+  _renderProductList(rowData: string, sectionID: number, rowID: number) {
     return (  
-      <View style={{flex: 1, flexDirection: 'row',justifyContent: 'space-between', marginTop: '1%'}}>
-          <View style={{width: "20%", height: '20%'}}>
+       <View style={{flex: 1, flexDirection: 'row',justifyContent: 'space-between', marginTop: '1%'}}>
+          <View style={{width: "15%", height: '20%'}}>
               <Image source={ {uri: rowData.imageUrl} } style={styles.productImage} ></Image>
           </View>
-          <View style={{width: '60%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start'}}>
-              <Text style={{fontSize: 20, fontWeight: 'bold', width: '80%'}}>{rowData.name} </Text> 
-              <Text style={{fontSize: 20, color: '#C8C8C8', marginTop: 10}}>Jumlah Barang: {rowData.qty}</Text> 
+          <View style={{width: '70%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start'}}>
+              <Text style={[styles.font14, styles.fontcolor71, {width: '80%'}]}>{rowData.name} </Text> 
+              <Text style={[styles.font13, styles.fontcolor61, {marginTop: 10}]}>Jumlah Barang: {rowData.qty}</Text> 
           </View>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>{rowData.price}</Text> 
+          <Text style={[styles.font14, styles.fontcolor71]}>{rowData.price}</Text> 
       </View>
     );
-  }
-  _renderTarnsactionHistory(rowData: string, sectionID: number, rowID: number) {
-    let ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2 });
-    let itemListddd = ds.cloneWithRows(rowData.products);
-
-    return (
-      <View style={styles.row}>  
-        <View style={styles.subRow1}>
-          <Text style={styles.orderName}>{rowData.orderName}</Text>
-          <Text style={styles.orderId}>{rowData.orderId}</Text>
-        </View>
-
-        <View style={styles.subRow2}>
-          <View style={{width: "22%"}}>
-            <Text style={[styles.font20, styles.grey]}>Waktu Transaksi</Text>
-            <Text style={styles.font20}>{rowData.time}</Text>
-          </View>
-          <View style={{width:"40%"}}>
-            <Text style={[styles.font20, styles.grey]}>Barang</Text>
-            <Text style={styles.font20}>{rowData.products[0].name.slice(0, 35)}...</Text>
-          </View>
-          <View style={{width:"25%"}}>
-            <Text style={[styles.font20, styles.grey]}>Total Pembayaran</Text>
-            <Text style={[styles.font20, styles.fontbold]}>{rowData.totalPrice}</Text>
-          </View>
-          
-        </View>
-
-        <View style={styles.subRow3}>
-          <View>
-          <Text style={[styles.font20, styles.grey]}>Status</Text>
-          <Text style={styles.font20}>Status {rowData.status}</Text>
-          </View>
-          <View style={{marginTop: 25, flexDirection: 'row' }}>
-            <TouchableNativeFeedback
-              onPress={() =>
-                    this._toggleProduct(this.state.selectedOrder != rowData.orderId ? rowData.orderId : "")
-                  }
-              >
-               <Text style={[styles.font20,  {color: '#42b549'}]}> { (this.state.selectedOrder != rowData.orderId) ? "Lihat Details" : "Sembunyikan" }</Text>
-            </TouchableNativeFeedback>
-            <TouchableNativeFeedback
-              onPress={() =>
-                    this._toggleProduct(this.state.selectedOrder != rowData.orderId ? rowData.orderId : "")
-                  }
-              >
-              { (this.state.selectedOrder != rowData.orderId) ? 
-               <Image source={require('./img/arrow-down.png')} style={{height:12, width: 12, resizeMode: 'cover', marginTop: 8, marginLeft:7}} />
-               :
-                <Image source={require('./img/arrow-up.png')} style={{height:12, width: 12, resizeMode: 'cover', marginTop: 8, marginLeft:7}} />
-             }
-            </TouchableNativeFeedback>
-          </View>
-         
-        </View>
-        { (this.state.selectedOrder == rowData.orderId) ?
-          
-          <ListView
-            contentContainerStyle={[styles.subRow4]}
-            dataSource = { itemListddd}
-            enableEmptySections={true}
-            renderRow = {this._renderProductList.bind(this)} />
-        : null
-        }
-
-        { (this.state.selectedOrder == rowData.orderId) ?      
-            <View style={styles.subRow5} >
-              <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 20}}>Metode Pembayaran</Text>
-                  <View style={{flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={require('./img/Logo-BCA.png')} style={{height: 50, width: 110, resizeMode: 'cover'}} >
-                    </Image>
-                    <Text style={{fontSize: 20, marginLeft: 10}}>BCA</Text>
-                  </View>
-              </View>         
-                <View style={{flexDirection: 'row'}}>
-                  <Text style={{fontSize: 20,fontWeight: 'bold'}}>Total Pembayaran</Text>
-                  <Text style={{fontSize: 20, fontWeight: 'bold'}}> {rowData.totalPrice}</Text>
-                </View>
-            </View>
-        : null}
-
-         { (this.state.selectedOrder == rowData.orderId) ?      
-            <View style={styles.subRow6} >
-              <Text style={{fontSize:16}}> {(rowData.isCompleted) ? "Transaksi sudah melewati batas waktu untuk dibatalkan" : "Transaki dapat dibatalkan sebelum jam 19.00"}</Text>
-             { (!rowData.isCompleted) ? 
-              <TouchableNativeFeedback onPress={() => {this.popupDialog.show()}}>
-                <View style={[styles.button]}>
-                  <Text style={styles.buttonText}> Batalkan Transaksi </Text>
-                </View>
-              </TouchableNativeFeedback>
-              :
-                <TouchableNativeFeedback>
-                <View style={[styles.button, {backgroundColor: '#E0E0E0', borderColor: '#E0E0E0'}]}>
-                  <Text style={[styles.buttonText,  {color: '#000000'}]}> Batalkan Transaksi </Text>
-                </View>
-              </TouchableNativeFeedback>
-            }
-            </View>
-        : null}
-      </View>
-    );
-  }
+}
 
   toggleScreen = (visible) => {
     this.setState({ showPopUp: visible })
@@ -155,74 +52,110 @@ _toggleProduct(selectedOrder) {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{
-        height: 55,
-        backgroundColor: '#42b549',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around'
-        }}>
-          <View style={{ width: '5%', left: 10 }}>
-          </View>
+        {/* <View style={{
+          height: 55,
+          backgroundColor: '#42b549',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around' }}>
+          <View style={{ width: '5%', left: 10 }}></View>
           <View style={{ width: '90%'}}>
-            <Text style={{ fontSize: 20, color: '#fff' }}>Riwayat Transaksi</Text>
+            <Text style={{ fontSize: 20, color: '#fff' }}>Invoice</Text>
           </View>
-        </View>
-
+        </View> */}
          <ScrollView>
-            <ListView
-              contentContainerStyle={[styles.containers]}
-              dataSource = { this.props.itemList}
-              enableEmptySections={true}
-              renderRow = {this._renderTarnsactionHistory.bind(this)} />
+              <View style={styles.containers} >
+                <View style={[styles.row, styles.row1]} >
+                  <Image style={{width: 111, height: 85}} source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Success_icon.png' }} />
+                  <Text style={styles.text1}> Transaksi Berhasil! </Text>
+                  <Text style={styles.text2}> Terima kasih telah berbelanja di toko kami</Text>
+                  <Text style={styles.text3}> IVR/20170609/XVII/VI/13461162</Text>
+                </View>
+
+                <ListView
+                    contentContainerStyle={[styles.row, styles.row2]}
+                    dataSource = { this.props.itemList}
+                    enableEmptySections={true}
+                    renderRow = {this._renderProductList.bind(this)} />
+
+                <View style={[styles.row, styles.row4]} >
+                   <View style={{flexDirection: 'column'}}>
+                    <Text style={{fontSize: 13, color: '#00000061'}}>Metode Pembayaran</Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center' }}>
+                      <Image source={require('./img/Logo-BCA.png')} style={{height: 48, width: 24, resizeMode: 'cover'}} >
+                      </Image>
+                      <Text style={{fontSize: 15,color: '#0000008a', marginLeft: 10}}>BCA</Text>
+                    </View>
+                   </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{fontSize: 16, color: '#0000008a'}}>Total Pembayaran</Text>
+                      <Text style={{fontSize: 16, color: '#000000b3'}}> {this.props.totalPrice}</Text>
+                    </View>
+                </View>
+
+                <View style={[styles.row, styles.row3]} >
+                  <Text style={styles.row3text1}> Bukti Pembayaran </Text>
+                   <TextInput
+                      style={{fontSize:16, width:"100%", marginTop:10}}
+                      placeholder="Email"
+                      underlineColorAndroid="#e0e0e0"
+                      placeholderTextColor = "#00000042"
+                      onChangeText={(email) => this.setState({email})}
+                    />
+                    {(this.state.emailErrorMessage == "") ? 
+
+                      <Text style={styles.row3text2}> Masukan email untuk kirim bukti pembayaran</Text>
+                    : 
+                       <Text style={[styles.row3text2, styles.errorText, {marginTop:5}]}> 
+                      { this.state.emailErrorMessage }
+                    </Text>
+                  }
+                  <View style={{ flexDirection:'row',flex:1,justifyContent:'space-between', alignItems:'center', marginTop: "5%"}} >
+                    <TouchableNativeFeedback>
+                      <View style={[styles.button, {backgroundColor: "#FFFFFF", borderColor:"#e0e0e0", marginLeft:"10%"}]}>
+                        <Text style={[styles.buttonText, {color: "#0000008a"}]}> Lewati </Text>
+                      </View>
+                    </TouchableNativeFeedback>
+                     <TouchableNativeFeedback onPress={this._handleButtonPress}>
+                      <View style={[styles.button, {marginLeft: "2%"}]}>
+                        <Text style={styles.buttonText}> Kirim </Text>
+                      </View>
+                    </TouchableNativeFeedback>
+                  </View>
+                </View>
+              </View>
           </ScrollView>
-           <PopupDialog
+          
+          <PopupDialog
                 dialogTitle={
                   <View style={{flexDirection:'row', justifyContent: 'flex-end', padding: 10}}> 
-                    <TouchableWithoutFeedback onPress={() => { this.popupDialog.dismiss()}}>
-                    <Image source={require('../common/img/close-icon.png')} />
-                    </TouchableWithoutFeedback>
                   </View>
                 }
                 dialogStyle={{borderRadius: 10}}
-                width = {700}
-                height= {300}
+                width = {504}
+                height= {232}
                 ref={(popupDialog) => { this.popupDialog = popupDialog; }}>
               <View style={{padding: 30, paddingTop: 0, flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                <Text style={{fontSize: 20, color: '#000000b3'}}>
                   Bukti Pembayaran
                 </Text>
-                <View style={{alignItems:  'center'}}>
-                <Text style={{fontSize: 20}}>
-                  Anda yakin akan membatalkan transaksi
+                <Text style={{fontSize: 14, color: '#000000b3'}}>
+                  Bukti pembayaran sudah terkirim ke email Anda
                 </Text>
-                <Text style={{fontSize: 20}}>
-                  IVR/20170609/XVII/VI/13461163
-                </Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
                 <TouchableNativeFeedback onPress={() => { this.popupDialog.dismiss()}}>
-                    <View style={[styles.popupButton, {backgroundColor: "#FFFFFF", borderColor:"#F3F3F3"}]}>
-                      <Text style={[styles.buttonText, {color: "#888888"}]}> Tidak </Text>
+                  <View style={[styles.popupButton]}>
+                    <Text style={styles.buttonText}> Ok </Text>
                   </View>
                 </TouchableNativeFeedback>
-                  <TouchableNativeFeedback onPress={() => {
-                          this.popupDialog.dismiss()
-                      } }>
-                  <View style={[styles.popupButton, {marginLeft: 30}]}>
-                    <Text style={styles.buttonText}> Ya </Text>
-                  </View>
-                </TouchableNativeFeedback>
-                </View>
               </View>
             </PopupDialog>
       </View>
     )
   }
 
-  static navigationOptions = {
-    title: 'Payment Invoice',
-  };
+  // static navigationOptions = {
+  //   title: 'Payment Invoice',
+  // };
 
 }
 
@@ -232,116 +165,125 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'stretch',
         margin: 20,
-        marginTop: 0
       },
       row: {
         backgroundColor: '#FFFFFF',
-        borderRadius: 6,
-        flex: 1,
+        borderBottomWidth: 1,
+        borderColor: '#F0F0F0'
+      },
+      row1:{
         flexDirection: 'column',
-        marginTop: 30
+        justifyContent: 'center',
+        alignItems: "center",
+        padding: "3%"
       },
-      subRow1: {
-        borderBottomWidth: 1,
-        borderColor: '#F0F0F0',
-        flexDirection: 'row',
-        padding: "3%",
-        justifyContent: 'space-between'
-      },
-      subRow2: {
-        flexDirection: 'row',
-        padding: "3%",
-        justifyContent: 'space-between'
-      },
-      subRow3: {
-        borderBottomWidth: 1,
-        borderColor: '#F0F0F0',
-        flexDirection: 'row',
-        padding: "3%",
-        justifyContent: 'space-between'
-      },
-      subRow4 : {
-        borderBottomWidth: 1,
-        borderColor: '#F0F0F0',
+      row2 : {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         padding: "3%",
         paddingTop: 0
       },
-      subRow5:{
+      row3:{
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: "flex-start",
+        padding: "3%",
+        marginTop: "2%"
+      },
+      row4:{
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: "3%",
       },
-      subRow6: {
-        borderBottomWidth: 1,
-        borderColor: '#F0F0F0',
-        flexDirection: 'row',
-        padding: "3%",
-        justifyContent: 'space-between'
+      text1: {
+        fontSize: 16,
+        color: '#000000b3',
+        marginTop: 10
+      },
+      text2: {
+        fontSize: 16,
+        color:"#00000061"
+      },
+      text3: {
+        marginTop: 10,
+        fontSize: 14,
+        color:"#000000b3"
+      },
+      row3text1: {
+        fontSize: 12,
+        color: '#000000b3',
+        marginTop: 10
+      },
+      row3text2: {
+        fontSize: 12,
+        color:"#00000061"
+      },
+       button: {
+        height: 40,
+        width: 252,
+        backgroundColor: '#42b549',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 3,
+        borderWidth: 3,
+        borderColor: '#42b549',
+      },
+      popupButton: {
+        height: 40,
+        width: 432,
+        backgroundColor: '#42b549',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 3,
+        borderWidth: 3,
+        borderColor: '#42b549',
+      },
+      buttonText: {
+        color: '#FFFFFF',
+        fontSize: 13,
+      },
+      errorText : {
+        color: '#D50000'
       },
       productImage: {
         borderRadius: 3,
-        width: 100,
-        height: 100,
+        width: 62,
+        height: 62,
         resizeMode: 'cover'
       },
-      button: {
-        height: 50,
-        width: "30%",
-        backgroundColor: '#41B548',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 3,
-        borderWidth: 3,
-        borderColor: '#41B548',
+        font13 : {
+        fontSize: 13
       },
-       buttonText: {
-        color: '#FFFFFF',
-        fontSize: 18,
+      fontcolor61 : {
+        color: "#00000061"
       },
-      popupButton: {
-        height: 50,
-        width: "40%",
-        backgroundColor: '#41B548',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 3,
-        borderWidth: 3,
-        borderColor: '#41B548',
+      font15 : {
+        fontSize: 15
       },
-      orderName: {
-        fontSize: 20,
-        fontWeight: 'bold',
+      font14 : {
+        fontSize: 14
       },
-      orderId: {
-        fontSize: 20,
-        color: '#C8C8C8'
+      font16 : {
+        fontSize: 16
       },
-      font20 : {
-        fontSize: 20
+      fontcolor54 : {
+        color: "#0000008a"
       },
-      font22 : {
-        fontSize: 22
+      fontcolor70 : {
+        color: "#000000b3"
       },
-      fontbold : {
-        fontWeight: 'bold'
-      },
-      grey: {
-         color: '#C8C8C8',
-      }
   });
 
 const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2 });
 
 const mapStateToProps = state => {
-  const itemList = ds.cloneWithRows(state.transactionHistory.items);
+  const itemList = ds.cloneWithRows(state.paymentInvoice.items);
   return {
-    ...state.transactionHistory,
+    ...state.paymentInvoice,
     itemList
   }
 }
 
-export default connect(mapStateToProps)(TransactionHistory)
+export default connect(mapStateToProps)(PaymentInvoice)

@@ -69,15 +69,16 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         reactRootView = new ReactRootView(this);
-        Bundle initialProps = getIntent().getExtras();
         reactInstanceManager = MainApplication.getInstance().getReactNativeHost().getReactInstanceManager();
-        reactRootView.startReactApplication(reactInstanceManager, ReactConst.MAIN_MODULE, initialProps);
+        reactRootView.startReactApplication(reactInstanceManager, ReactConst.MAIN_MODULE, getPropsBundle());
         setContentView(reactRootView);
     }
 
+    protected Bundle getPropsBundle() {
+        return getIntent().getExtras();
+    }
 }

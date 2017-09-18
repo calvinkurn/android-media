@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_payment"
-        android:title="Payment"
-        android:icon="@drawable/ic_set_payment"
+    <item android:id="@+id/action_installment"
+        android:title="Installment"
+        android:icon="@drawable/icon_credit_card_info"
         app:showAsAction="always"/>
 </menu>

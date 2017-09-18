@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Modal, View, Text, TouchableWithoutFeedback, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { Modal, View, TouchableWithoutFeedback, Image, ScrollView } from 'react-native'
 import CartItem from './CartItem'
 import Button from '../../common/TKPPrimaryBtn'
 import PopUp from '../../common/TKPPopupModal'
-import { NavigationModule } from 'NativeModules'
-import BtnLargeOrange from '../button/BtnLargeOrange'
+import { Text } from '../../common/TKPText'
 
 export default class CartItemList extends Component {
   constructor(props) {
@@ -12,7 +11,6 @@ export default class CartItemList extends Component {
     this.state = {
       showPopUp: false
     }
-    // this.paymentCheckoutClicked = this.paymentCheckoutClicked.bind(this)
   }
 
   toggleScreen = (visible) => {
@@ -22,14 +20,17 @@ export default class CartItemList extends Component {
   remove = () => {
     this.setState({ showPopUp: false })
     this.props.onRemoveAllFromCart()
-    console.log("remove clicked")
   }
 
   paymentCheckoutClicked = () => {
     console.log("checkout clicked")
-    NavigationModule.navigate("posapp://payment/checkout", "")
+    NavigationModule.navigateAndFinish("posapp://payment/checkout", "")
   }
 
+  componentWillMount(){
+    this.props.fetchCartList()
+  }
+  
   render() {
     const items = this.props.items
     const visible = this.props.visible
@@ -39,6 +40,15 @@ export default class CartItemList extends Component {
     const onDecrQty = this.props.onDecrQty
     const onRemoveFromCart = this.props.onRemoveFromCart
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
+    // console.log(this.props)
+    // console.log(items)
+    // console.log(items[0])
+    // console.log(items.length)
+    // console.log(items[0].length)
+
+    // console.log(items)
+    // console.log(items.length)
+    // console.log(items.list)
 
     return (
       <Modal
@@ -47,18 +57,18 @@ export default class CartItemList extends Component {
         hardwareAccelerated={true}
         visible={this.props.visible}
         onRequestClose={onBackPress}>
-        {items.length > 0 ?
+        {items[0] && items.length > 0 ?
           <View style={{ flex: 1 }}>
             <View style={styles.headerContainer}>
-              <View style={{ width: '10%' }}>
+              <View>
                 <TouchableWithoutFeedback onPress={onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
                 </TouchableWithoutFeedback>
               </View>
-              <View style={{ width: '85%' }}>
-                <Text style={{ fontSize: 24, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
+              <View style={{left: -220}}>
+                <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
               </View>
-              <View style={{ width: '5%' }}>
+              <View>
                 <TouchableWithoutFeedback onPress={() => { this.toggleScreen(true) }}>
                   <Image source={require('../img/trash-all.png')} />
                 </TouchableWithoutFeedback>
@@ -81,7 +91,7 @@ export default class CartItemList extends Component {
               </View>
               <ScrollView style={styles.itemListContainer}>
                 {
-                  items.map(i => <CartItem
+                  items[0].map(i => <CartItem
                     item={i}
                     key={i.id}
                     onIncr={onIncrQty}
@@ -97,13 +107,13 @@ export default class CartItemList extends Component {
               <View style={{ marginTop: 20 }}>
                 <Button
                   content='Checkout'
-                  type='medium'
+                  type='big'
                   onTap={() => {this.paymentCheckoutClicked()}}
                 />
               </View>
             </View></View> :
           <View style={styles.emptyContainer}>
-            <View style={styles.headerContainer}>
+            {/* <View style={styles.headerContainer}>
               <View style={{ width: '10%', left: 10 }}>
                 <TouchableWithoutFeedback onPress={onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
@@ -114,7 +124,7 @@ export default class CartItemList extends Component {
               </View>
               <View style={{ width: '10%' }}>
               </View>
-            </View>
+            </View> */}
             <View style={styles.emptyList}>
               <View style={{
                 alignItems: 'center',
@@ -128,7 +138,7 @@ export default class CartItemList extends Component {
               <View style={{ marginTop: 20 }}>
                 <Button
                   content='Mulai Belanja'
-                  type='medium'
+                  type='big'
                   onTap={onBackPress}
                 />
               </View>
@@ -148,9 +158,13 @@ const styles = {
     justifyContent: 'space-between',
     paddingVertical: 20,
     paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#e0e0e0'
   },
   itemListContainer: {
     backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0'
   },
   emptyList: {
     paddingVertical: 10,
@@ -167,6 +181,8 @@ const styles = {
     paddingVertical: 30,
     paddingHorizontal: '4%',
     backgroundColor: '#f1f1f1',
+    borderWidth: 1,
+    borderColor: '#e0e0e0'
   },
   checkoutBtn: {
     height: 40,
@@ -196,7 +212,7 @@ const styles = {
     fontWeight: '300',
   },
   paymentText: {
-    fontSize: 20,
+    fontSize: 16,
     color: 'black'
   }
 }

@@ -11,7 +11,7 @@ import java.util.List;
  * Created by okasurya on 8/23/17.
  */
 
-public interface DbManagerOperation<T extends BaseModel, S>  {
+public interface DbManager<T, S>  {
     void store(T data, TransactionListener callback);
 
     void store(List<T> data, TransactionListener callback);
@@ -19,6 +19,8 @@ public interface DbManagerOperation<T extends BaseModel, S>  {
     void update(T data, TransactionListener callback);
 
     void delete(ConditionGroup conditions, TransactionListener callback);
+
+    void delete(T data, TransactionListener callback);
 
     void deleteAll(TransactionListener callback);
 

@@ -1,30 +1,16 @@
 import axios from 'axios'
-import {PosCacheModule} from 'NativeModules'
+import { PosCacheModule } from 'NativeModules'
 
-// Product list action and action creators
+
+// ===================== Product List ======================= //
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
 export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryText) => {
-  const eId = +etalaseId || 0
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=${rows}&shop_id=${shopId}&start=${start}`
-
-  if (eId) {
-    url += `&etalase=${eId}`
-  }
-
-  if (productId) {
-    url += `&id=${productId}`
-  }
-
-  if (queryText) {
-    const text = queryText.replace(' ', '+')
-    url += `&q=${text}`
-  }
-
   return {
     type: FETCH_PRODUCTS,
     payload: PosCacheModule.getDataAll("PRODUCT")
              .then(response => {
                const jsonResponse = JSON.parse(response)
+               console.log(jsonResponse)
                return jsonResponse;
              })
              .catch(error => {})
@@ -68,36 +54,102 @@ export const addToCart = (item) => {
   }
 }
 
+// ====================== Yogie - 18 September 2017 ===================== //
+// Fetch Cart From Local Native Cache
+export const FETCH_CART_FROM_CACHE = 'FETCH_CART_FROM_CACHE'
+export const fetchCartFromCache = () => {
+  return {
+    type: FETCH_CART_FROM_CACHE,
+    payload: PosCacheModule.getDataAll("CART")
+              .then(response => {
+                // console.log(typeof response)
+                // console.log(response)
+                const jsonResponse = JSON.parse(response)
+                // console.log(jsonResponse.data.list)
+                return jsonResponse.data;
+              })
+              .catch(error => console.log(error))
+  }
+}
+
+
+//  ==================== Remove 1 item inside Cart ===================== //
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
 export const removeFromCart = (id) => {
   return {
     type: REMOVE_FROM_CART,
-    payload: { id }
+    payload: PosCacheModule.deleteItem("CART", id.toString())
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
+                return jsonResponse;
+              })
+              .catch(error => console.log(error))
   }
 }
 
+//  ==================== Increment Quantity inside Cart ===================== //
 export const INCREMENT_QTY = 'INCREMENT_QTY'
 export const incrementQty = (id) => {
+  // const payloads = {
+  //   id: 
+  //   product_id: 
+  //   quantity: 
+  // }
+
+  // return {
+  //   type: INCREMENT_QTY,
+  //   payload: PosCacheModule.update("CART", payloads)
+  //             .then(response => {
+  //               const jsonResponse = JSON.parse(response)
+  //               return jsonResponse;
+  //             })
+  //             .catch(error => console.log(error))
+  // }
   return {
     type: INCREMENT_QTY,
     payload: { id }
   }
 }
 
+//  ==================== Decrement Quantity inside Cart ===================== //
 export const DECREMENT_QTY = 'DECREMENT_QTY'
 export const decrementQty = (id) => {
+  // const payloads = {
+  //   id: 
+  //   product_id: 
+  //   quantity: 
+  // }
+
+  // return {
+  //   type: DECREMENT_QTY,
+  //   payload: PosCacheModule.update("CART", payloads)
+  //             .then(response => {
+  //               const jsonResponse = JSON.parse(response)
+  //               return jsonResponse;
+  //             })
+  //             .catch(error => console.log(error))
+  // }
   return {
     type: DECREMENT_QTY,
     payload: { id }
   }
 }
 
+
+//  ==================== Clear all Data inside Cart ===================== //
 export const CLEAR_CART = 'CLEAR_CART'
 export const clearCart = () => {
   return {
     type: CLEAR_CART,
+    payload: PosCacheModule.deleteAll("CART")
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
+                return jsonResponse;
+              })
+              .catch(error => console.log(error))
   }
 }
+
 
 export const BANK_SELECTED = 'BANK_SELECTED'
 export const selectBank = (id) => {
@@ -138,7 +190,7 @@ export const selectEmi = (id) => {
   }
 }
 
-//Search actions
+// Search actions
 export const ON_SEARCH_QUERY_TYPE = 'ON_SEARCH_QUERY_TYPE'
 export const onSearchQueryType = (queryText) => {
   return {

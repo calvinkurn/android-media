@@ -3,13 +3,15 @@ import { View, Text } from 'react-native'
 import Setup_pos from './setup_pos'
 import Setup_payment from './setup_payment'
 import Setup_cart from './setup_cart'
+import Setup_processing from './setup_processing'
+// import Setup_invoice from './setup_paymentinvoice'
 // import { Provider } from 'react-redux'
 // import store from './store/Store'
 // import PaymentBank from './components/PaymentBank'
 // import Payment from './components/Payment'
 // import PaymentProcessing from './components/PaymentProcessing'
 // import PaymentInvoice from './components/PaymentInvoice'
-// import TransactionHistory from './components/TransactionHistory'
+import TransactionHistory from './components/TransactionHistory'
 // import PasswordPopup from './components/PasswordPopup'
 // import POS from './components/POS'
 // import CartContainer from './containers/CartContainer'
@@ -33,12 +35,17 @@ class Root extends Component {
   }
 
   render() {
-    if (this.props.data.POS_PAGE === 'POS'){
+    const { POS_PAGE } = this.props.data
+    if (POS_PAGE === 'POS'){
       return <Setup_pos />
-    } else if (this.props.data.POS_PAGE === 'PAYMENT'){
+    } else if (POS_PAGE === 'PAYMENT'){
       return <Setup_payment />
-    } else if (this.props.data.POS_PAGE === 'LOCAL_CART'){
+    } else if (POS_PAGE === 'LOCAL_CART'){
       return <Setup_cart />
+    } else if (POS_PAGE === 'PROCESSING'){
+      return <Setup_processing />
+    } else if (POS_PAGE === 'HISTORY'){
+      return <TransactionHistory />
     }
   }
 }

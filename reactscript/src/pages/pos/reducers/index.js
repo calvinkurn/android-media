@@ -16,6 +16,7 @@ import {
   ON_SEARCH_QUERY_TYPE,
   SET_SEARCH_TEXT,
   ON_SUBMIT_FETCH_SEARCH_PRODUCT,
+  FETCH_CART_FROM_CACHE
 } from '../actions/index'
 import {bankData, emiData} from '../components/bankData';
 
@@ -36,9 +37,17 @@ const products = (state = {
         isFetching: true,
       }
     case `${FETCH_PRODUCTS}_${FULFILLED}`:
-      const products = action.payload.data.data.products || []
+      // console.log(action.payload)
+      // const products = action.payload.data.data.products || []
+      // const items = [...state.items, ...products]
+      // const nextUrl = action.payload.data.data.paging.uri_next
+      // const pagination = {
+      //   ...state.pagination,
+      //   start: items.length
+      // }
+      const products = action.payload.data.list || []
       const items = [...state.items, ...products]
-      const nextUrl = action.payload.data.data.paging.uri_next
+      const nextUrl = action.payload.data.paging.uri_next
       const pagination = {
         ...state.pagination,
         start: items.length
@@ -125,28 +134,28 @@ const etalase = (state = {
 }
 
 const cart = (state = {
-  items: [{
-    id: 160551106,
-    price: 40,
-    name: 'LEBIH HEMAT - Lovana Bodylotion Milky Cupcake 250ml',
-    qty: 1,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/3/17/17437275/17437275_1878b3d2-ce9c-4ab3-b345-64da204ec935.jpg',
-  }, {
-    id: 160533448,
-    price: 40,
-    name: 'Happy Urang Aring 55ml',
-    qty: 1,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
-  }, {
-    id: 193938857,
-    price: 40,
-    name: 'Oh Man! Baby Pomade Nutri Green 45gr',
-    qty: 1,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
-  },],
-  totalPrice: 120
+  items: [],
+  totalPrice: 0
 }, action) => {
   switch (action.type) {
+    case `${FETCH_CART_FROM_CACHE}_${FULFILLED}`: 
+      // console.log(action.payload)
+      const getTotalPrice = () => {
+        let total_price = 0
+
+        action.payload.list.map(res => {
+          let price_per_item = res.product.product_price_unformatted * res.quantity
+          total_price = total_price + price_per_item 
+          // console.log(total_price)
+        })
+        return total_price
+      }
+
+      return {
+        items: [...state.items, action.payload.list],
+        totalPrice: getTotalPrice()
+      }
+
     case ADD_TO_CART:
 
       return {

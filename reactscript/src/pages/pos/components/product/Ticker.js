@@ -1,18 +1,19 @@
 import React from 'react'
-import { Text, StyleSheet, View, Image } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
+import { Text } from '../../common/TKPText'
 
 const Ticker = () => {
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.imageWrapper}>
-          <Image source={require('../img/toped.png')} style={styles.imageIcon} />
+        <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/toped.png' }} style={styles.imageIcon} />
         </View>
       </View>
       <View style={styles.textContainer}>
         <Text style={{ fontSize: 13 }}>Selamat Datang di (Shop name here)</Text>
         <View style={styles.singleLineTextContainer}>
-          <Text style={styles.textStyle}>Nikmati Cicilan 0% Gratis Biaya Admin,</Text>
+          <Text style={styles.textStyle}>Nikamati Cicilan 0% Gratis Biaya Admin,</Text>
           <Text style={styles.linkText}> Cek Sekarang</Text>
         </View>
       </View>
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderColor: '#cde4c3',
     borderWidth: 1,
-    borderLeftWidth: 3,
+    borderLeftWidth: 4,
     backgroundColor: '#fff',
     alignItems: 'center',
     marginTop: 20,
@@ -43,11 +44,13 @@ const styles = StyleSheet.create({
   textStyle: {
     fontWeight: 'bold',
     fontSize: 15,
+    fontFamily:'Roboto-Medium'
   },
   linkText: {
     color: '#42b549',
     fontWeight: 'bold',
     fontSize: 15,
+    fontFamily:'Roboto-Medium'
   },
   imageWrapper: {
     paddingHorizontal: 10

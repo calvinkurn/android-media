@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
@@ -15,6 +16,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.posapp.view.activity.OutletActivity;
@@ -26,7 +30,7 @@ import com.tokopedia.posapp.view.drawer.DrawerPosHelper;
  */
 
 public class PosRouterApplication extends MainApplication implements
-    TkpdCoreRouter {
+    TkpdCoreRouter, IDigitalModuleRouter {
 
     @Override
     public void startInstopedActivity(Context context) {
@@ -154,5 +158,55 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
 
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
+        return null;
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
+        return null;
+    }
+
+    @Override
+    public Intent instanceIntentDigitalCategoryList() {
+        return null;
+    }
+
+    @Override
+    public Intent instanceIntentDigitalWeb(String url) {
+        return null;
+    }
+
+    @Override
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLinks);
+    }
+
+    @Override
+    public Intent getIntentDeepLinkHandlerActivity() {
+        return null;
+    }
+
+    @Override
+    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtras(bundle);
+        intent.setData(Uri.parse(applinks));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
+    public Intent instanceIntentTokoCashActivation() {
+        return null;
     }
 }

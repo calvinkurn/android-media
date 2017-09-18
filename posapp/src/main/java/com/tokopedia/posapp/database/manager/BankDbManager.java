@@ -6,14 +6,10 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-import com.tokopedia.core.database.DbFlowDatabase;
-import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.posapp.database.PosDatabase;
 import com.tokopedia.posapp.database.model.BankDb;
-import com.tokopedia.posapp.database.model.BankDb_Table;
 import com.tokopedia.posapp.database.model.InstallmentDb;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
-import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.bank.InstallmentDomain;
 
 import java.util.List;
@@ -22,7 +18,7 @@ import java.util.List;
  * Created by okasurya on 9/8/17.
  */
 
-public class BankDbManager implements DbManagerOperation<BankDomain,BankDb> {
+public class BankDbManager implements DbManager<BankDomain,BankDb> {
     @Override
     public void store(BankDomain bankDomain, TransactionListener callback) {
         BankDb bankDb = convertBankDb(bankDomain);
@@ -75,6 +71,11 @@ public class BankDbManager implements DbManagerOperation<BankDomain,BankDb> {
 
     @Override
     public void delete(ConditionGroup conditions, TransactionListener callback) {
+
+    }
+
+    @Override
+    public void delete(BankDomain data, TransactionListener callback) {
 
     }
 

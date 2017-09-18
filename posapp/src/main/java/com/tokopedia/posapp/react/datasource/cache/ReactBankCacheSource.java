@@ -10,6 +10,7 @@ import com.tokopedia.posapp.data.pojo.InstallmentResponse;
 import com.tokopedia.posapp.database.model.BankDb;
 import com.tokopedia.posapp.database.model.BankDb_Table;
 import com.tokopedia.posapp.database.model.InstallmentDb;
+import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,22 @@ public class ReactBankCacheSource implements ReactCacheSource {
         return mapListData(bankDbList);
     }
 
+    @Override
+    public Observable<String> deleteAll() {
+        return null;
+    }
+
+    @Override
+    public Observable<String> deleteItem(String id) {
+        return null;
+    }
+
+    @Override
+    public Observable<String> update(String data) {
+        return null;
+    }
+
     private Observable<String> mapListData(List<BankDb> bankDbList) {
-        BankInstallmentResponse bankInstallmentResponse = new BankInstallmentResponse();
         BankListResponse bankListResponse = new BankListResponse();
         List<BankItemResponse> bankItemResponseList = new ArrayList<>();
         for(BankDb bankDb: bankDbList) {
@@ -71,13 +86,14 @@ public class ReactBankCacheSource implements ReactCacheSource {
         }
         bankListResponse.setList(bankItemResponseList);
 
-        bankInstallmentResponse.setData(bankListResponse);
+        CacheResult<BankListResponse> result = new CacheResult<>();
+        result.setData(bankListResponse);
 
-        return Observable.just(bankInstallmentResponse)
-                .map(new Func1<BankInstallmentResponse, String>() {
+        return Observable.just(result)
+                .map(new Func1<CacheResult, String>() {
                     @Override
-                    public String call(BankInstallmentResponse bankInstallmentResponse) {
-                        return gson.toJson(bankInstallmentResponse);
+                    public String call(CacheResult result) {
+                        return gson.toJson(result);
                     }
                 });
     }

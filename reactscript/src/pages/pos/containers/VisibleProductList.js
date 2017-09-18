@@ -6,11 +6,11 @@ import {
   StyleSheet,
   RefreshControl,
   ActivityIndicator,
-  Text,
   TouchableNativeFeedback,
   Image,
   TextInput,
 } from 'react-native'
+import { Text } from '../common/TKPText'
 import Picker from '../components/product/EtalaseSelectPopUp'
 import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList } from '../actions/index'
 import Product from '../components/product/Product'
@@ -46,7 +46,7 @@ class VisibleProductList extends Component {
   }
 
   renderProduct = ({ item }) => {
-    return <Product product={item} key={item.id} />
+    return <Product product={item} key={item.product_id} />
   }
 
   loadMore = () => {
@@ -75,6 +75,7 @@ class VisibleProductList extends Component {
     const refreshing = this.props.products.refreshing
     const selectedEtalaseId = this.props.etalases.selected
     const selectedEtalase = etalases.filter(e => e.id == selectedEtalaseId)
+    console.log(products)
 
     return (
       <View style={styles.container}>
@@ -92,15 +93,15 @@ class VisibleProductList extends Component {
             <Text style={styles.etalaseText}>Etalase: </Text>
             <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
               <View style={styles.etalasePicker}>
-                <Text style={{ fontSize: 18, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
-                <Image source={require('../components/img/arrow-down-grey.png')} />
+                <Text style={{ fontSize: 14, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
+                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow-down-grey.png' }} />
               </View>
             </TouchableNativeFeedback>
           </View>
         </View>
         {products.length > 0 && <FlatList
           data={products}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.product_id}
           renderItem={this.renderProduct}
           onEndReached={this.loadMore}
           onEndReachedThreshold={0.5}
@@ -140,7 +141,6 @@ const styles = StyleSheet.create({
   productListHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'flex-end',
     marginTop: 14,
     marginBottom: 14,
     paddingRight: 5

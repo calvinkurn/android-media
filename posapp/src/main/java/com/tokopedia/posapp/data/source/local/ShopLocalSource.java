@@ -5,7 +5,7 @@ import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.mapper.StoreProductMapper;
 import com.tokopedia.posapp.database.model.ProductDb;
 import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
-import com.tokopedia.posapp.database.manager.DbManagerOperation;
+import com.tokopedia.posapp.database.manager.DbManager;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
@@ -54,7 +54,7 @@ public class ShopLocalSource {
                                     data.add(productDb);
                                 }
 
-                                productDbManager.store(data, new DbManagerOperation.TransactionListener() {
+                                productDbManager.store(data, new DbManager.TransactionListener() {
                                     @Override
                                     public void onTransactionSuccess() {
                                         ProductSavedResult productSavedResult = new ProductSavedResult();

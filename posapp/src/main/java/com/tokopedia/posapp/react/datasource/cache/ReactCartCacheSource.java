@@ -1,12 +1,14 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.posapp.database.model.CartDB;
-import com.tokopedia.posapp.database.model.CartDB_Table;
-import com.tokopedia.posapp.database.manager.CartDbManager;
-import com.tokopedia.posapp.database.QueryParameter;
+import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.posapp.data.factory.CartFactory;
+import com.tokopedia.posapp.data.pojo.CartResponse;
+import com.tokopedia.posapp.domain.model.cart.ATCStatusDomain;
+import com.tokopedia.posapp.domain.model.cart.CartDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
+import com.tokopedia.posapp.react.datasource.model.ListResult;
+import com.tokopedia.posapp.react.datasource.model.StatusResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,75 +21,122 @@ import rx.functions.Func1;
  */
 
 public class ReactCartCacheSource implements ReactCacheSource {
-    CartDbManager cartDbManager;
-    Gson gson;
+    private Gson gson;
+    private CartFactory cartFactory;
 
-    public ReactCartCacheSource() {
-        this.cartDbManager = new CartDbManager();
-        this.gson = new Gson();
+    public ReactCartCacheSource(CartFactory cartFactory, Gson gson) {
+        this.gson = gson;
+        this.cartFactory = cartFactory;
     }
 
     @Override
     public Observable<String> getData(String productId) {
-        return Observable.just(productId)
-                .map(getDataById());
+        return cartFactory.local().getCartProduct(Integer.parseInt(productId)).map(getCartMapper());
     }
 
     @Override
     public Observable<String> getListData(int offset, int limit) {
-        QueryParameter param = new QueryParameter();
-        param.setOffset(offset);
-        param.setLimit(limit);
-
-        return Observable.just(param)
-                .map(getList());
+        return cartFactory.local().getCartProducts(offset, limit).map(getCartListMapper());
     }
 
     @Override
     public Observable<String> getAllData() {
-        return Observable.just(true)
-                .map(getAll());
+        return cartFactory.local().getAllCartProducts().map(getCartListMapper());
     }
 
-    private Func1<String, String> getDataById() {
-        return new Func1<String, String>() {
+    @Override
+    public Observable<String> deleteAll() {
+        return cartFactory.local().deleteCart().map(getDbOperationMapper());
+    }
+
+    @Override
+    public Observable<String> deleteItem(String id) {
+        CartDomain cartDomain = new CartDomain();
+        cartDomain.setProductId(Integer.parseInt(id));
+        return cartFactory.local().deleteCartProduct(cartDomain).map(getDbOperationMapper());
+    }
+
+    @Override
+    public Observable<String> update(String data) {
+        CartResponse cartResponse = gson.fromJson(data, CartResponse.class);
+        return cartFactory.local().updateCartProduct(mapToDomain(cartResponse)).map(getDbOperationMapper());
+    }
+
+    private CartDomain mapToDomain(CartResponse cartResponse) {
+        CartDomain cartDomain = new CartDomain();
+        cartDomain.setId(cartResponse.getId());
+        cartDomain.setProductId(cartResponse.getProductId());
+        cartDomain.setQuantity(cartResponse.getQuantity());
+        return cartDomain;
+    }
+
+    private Func1<CartDomain, String> getCartMapper() {
+        return new Func1<CartDomain, String>() {
             @Override
-            public String call(String productId) {
-                CartDB cart = cartDbManager.first(
-                        ConditionGroup.clause().and(CartDB_Table.productId.eq(productId))
-                );
-                CacheResult<CartDB> result = new CacheResult<>();
-                result.data = cart;
+            public String call(CartDomain cartDomain) {
+                CacheResult<CartResponse> result = new CacheResult<>();
+                result.setData(getCartResponse(cartDomain));
                 return gson.toJson(result);
             }
         };
     }
 
-    private Func1<QueryParameter, String> getList() {
-        return new Func1<QueryParameter, String>() {
+    private Func1< List<CartDomain>,String> getCartListMapper() {
+        return new Func1<List<CartDomain>, String>() {
             @Override
-            public String call(QueryParameter queryParameter) {
-                List<CartDB> cartDBList = cartDbManager.getListData(
-                        queryParameter.getOffset(), queryParameter.getLimit()
-                );
-                CacheResult<CartDB> result = new CacheResult<>();
-                result.datas = new ArrayList<>();
-                result.datas.addAll(cartDBList);
+            public String call(List<CartDomain> cartDomains) {
+                CacheResult<ListResult<CartResponse>> result = new CacheResult<>();
+
+                ListResult<CartResponse> list = new ListResult<>();
+                List<CartResponse> cartResponses = new ArrayList<>();
+                for(CartDomain cartDomain : cartDomains) {
+                    cartResponses.add(getCartResponse(cartDomain));
+                }
+
+                list.setList(cartResponses);
+                result.setData(list);
+
                 return gson.toJson(result);
             }
         };
     }
 
-    private Func1<Boolean, String> getAll() {
-        return new Func1<Boolean, String>() {
+    private Func1<ATCStatusDomain, String> getDbOperationMapper() {
+        return new Func1<ATCStatusDomain, String>() {
             @Override
-            public String call(Boolean aBoolean) {
-                List<CartDB> cartDBList = cartDbManager.getAllData();
-                CacheResult<CartDB> result = new CacheResult<>();
-                result.datas = new ArrayList<>();
-                result.datas.addAll(cartDBList);
-                return gson.toJson(result);
+            public String call(ATCStatusDomain atcStatusDomain) {
+                CacheResult<StatusResult> response = new CacheResult<>();
+                StatusResult statusResult = new StatusResult();
+                if(atcStatusDomain.getStatus() == ATCStatusDomain.RESULT_ADD_TO_CART_SUCCESS) {
+                    statusResult.setStatus(true);
+                    statusResult.setMessage(atcStatusDomain.getMessage());
+                } else {
+                    statusResult.setStatus(false);
+                    statusResult.setMessage(atcStatusDomain.getMessage());
+                }
+                response.setData(statusResult);
+                return gson.toJson(response);
             }
         };
+    }
+
+    private CartResponse getCartResponse(CartDomain cartDomain) {
+        CartResponse cartResponse = new CartResponse();
+        cartResponse.setId(cartDomain.getId());
+        cartResponse.setQuantity(cartDomain.getQuantity());
+        cartResponse.setProductId(cartDomain.getProductId());
+
+        com.tokopedia.core.shopinfo.models.productmodel.List product = new com.tokopedia.core.shopinfo.models.productmodel.List();
+        product.productId = cartDomain.getProductId();
+        product.productName = cartDomain.getProduct().getProductName();
+        product.productPrice = cartDomain.getProduct().getProductPrice();
+        product.productUrl = cartDomain.getProduct().getProductUrl();
+        product.productImage = cartDomain.getProduct().getProductImage();
+        product.productImage300 = cartDomain.getProduct().getProductImage300();
+        product.productImageFull = cartDomain.getProduct().getProductImageFull();
+        product.productPriceUnformatted = CurrencyFormatHelper.convertRupiahToInt(cartDomain.getProduct().getProductPrice());
+        cartResponse.setProduct(product);
+
+        return cartResponse;
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.core.shopinfo.models.productmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -109,6 +110,10 @@ public class List implements Parcelable {
     @SerializedName("labels")
     @Expose
     public java.util.List<Label> labels;
+
+    @SerializedName("product_price_unformatted")
+    @Expose
+    public double productPriceUnformatted;
 
     public ShopProductCampaign shopProductCampaign;
 

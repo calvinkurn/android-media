@@ -5,7 +5,6 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.tokopedia.core.react.ReactNavigationModule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +19,7 @@ public class PosReactPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ReactPosCacheModule(reactContext));
+        modules.add(new ReactSessionModule(reactContext));
         return modules;
     }
 

@@ -3,7 +3,11 @@ package com.tokopedia.posapp.react.datasource.cache;
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.posapp.data.pojo.Paging;
+import com.tokopedia.posapp.data.pojo.ShopProductResponse;
+import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.database.model.ProductDb;
+import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +20,12 @@ import rx.functions.Func1;
  */
 
 public class ReactProductCacheSource implements ReactCacheSource {
-   private Gson gson;
+    private Gson gson;
+    private ProductDbManager productDbManager;
 
     public ReactProductCacheSource() {
         gson = new Gson();
+        productDbManager = new ProductDbManager();
     }
 
     @Override
@@ -34,24 +40,47 @@ public class ReactProductCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> getAllData() {
-        List<ProductDb> productDbs = SQLite.select().from(ProductDb.class).queryList();
-        ProductModel productModel = new ProductModel();
+        List<ProductDb> productDbs = productDbManager.getAllData();
+        ShopProductResponse shopProductResponse = new ShopProductResponse();
         List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
         for(ProductDb productDb : productDbs) {
             com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
             item.productName = productDb.getProductName();
             item.productPrice = productDb.getProductPrice();
             item.productId = productDb.getProductId();
+            item.productImage = productDb.getProductImage();
+            item.productImage300 = productDb.getProductImage300();
+            item.productImageFull = productDb.getProductImageFull();
             productList.add(item);
         }
-        productModel.list = productList;
+        shopProductResponse.setList(productList);
+        shopProductResponse.setTotalData(productDbs.size());
+        shopProductResponse.setPaging(new Paging());
 
-        return Observable.just(productModel)
-                .map(new Func1<ProductModel, String>() {
+        final CacheResult<ShopProductResponse> response = new CacheResult<>();
+        response.setData(shopProductResponse);
+
+        return Observable.just(response)
+                .map(new Func1<CacheResult, String>() {
                     @Override
-                    public String call(ProductModel productModel) {
-                        return gson.toJson(productModel);
+                    public String call(CacheResult response) {
+                        return gson.toJson(response);
                     }
                 });
+    }
+
+    @Override
+    public Observable<String> deleteAll() {
+        return null;
+    }
+
+    @Override
+    public Observable<String> deleteItem(String id) {
+        return null;
+    }
+
+    @Override
+    public Observable<String> update(String data) {
+        return null;
     }
 }

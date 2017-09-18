@@ -6,7 +6,6 @@ import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ProductFactory;
-import com.tokopedia.posapp.data.mapper.GetProductDomainMapper;
 import com.tokopedia.posapp.data.mapper.GetProductMapper;
 import com.tokopedia.posapp.data.repository.ProductRepository;
 import com.tokopedia.posapp.data.repository.ProductRepositoryImpl;
@@ -41,12 +40,6 @@ public class ProductModule {
     @ProductScope
     GetProductMapper provideGetProductMapper() {
         return new GetProductMapper();
-    }
-
-    @Provides
-    @ProductScope
-    GetProductDomainMapper provideGetProductDomainMapper() {
-        return new GetProductDomainMapper();
     }
 
     @Provides

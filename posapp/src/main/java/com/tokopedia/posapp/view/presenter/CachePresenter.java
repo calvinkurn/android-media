@@ -12,8 +12,10 @@ import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 import com.tokopedia.posapp.domain.usecase.GetBankInstallmentUseCase;
+import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
 import com.tokopedia.posapp.domain.usecase.GetShopProductListUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreBankInstallmentCacheUseCase;
+import com.tokopedia.posapp.domain.usecase.StoreEtalaseCacheUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -48,6 +50,8 @@ public class CachePresenter implements Cache.Presenter {
     private StoreProductCacheUseCase storeProductCacheUseCase;
     private GetBankInstallmentUseCase getBankInstallmentUseCase;
     private StoreBankInstallmentCacheUseCase storeBankInstallmentCacheUseCase;
+    private GetEtalaseUseCase getEtalaseUseCase;
+    private StoreEtalaseCacheUseCase storeEtalaseCacheUseCase;
 
     private Cache.CallbackListener callbackListener;
     private CompositeSubscription compositeSubscription;
