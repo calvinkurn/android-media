@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Created by zulfikarrahman on 11/24/16.
@@ -14,6 +15,7 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
 
     protected HashSet<String> hashSet;
     private CheckedCallback<T> checkedCallback;
+
     public BaseMultipleCheckListAdapter() {
         super();
         hashSet = new HashSet<>();
@@ -35,7 +37,11 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         }
     }
 
-    public void clearCheck() {
+    public int getTotalChecked() {
+        return hashSet.size();
+    }
+
+    public void resetCheckedItemSet() {
         hashSet = new HashSet<>();
     }
 
@@ -68,6 +74,17 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         if (checkedCallback != null) {
             checkedCallback.onItemChecked(t, checked);
         }
+    }
+
+    public void deleteCheckedItem() {
+        for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); ) {
+            T t = iterator.next();
+            if (hashSet.contains(t.getId())) {
+                hashSet.remove(t.getId());
+                iterator.remove();
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public interface CheckedCallback<T> {

@@ -2,17 +2,14 @@ package com.tokopedia.seller.product.picker.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
 import android.view.View;
 
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.di.DaggerProductListComponent;
 import com.tokopedia.seller.product.picker.di.ProductListModule;
@@ -21,9 +18,7 @@ import com.tokopedia.seller.product.picker.view.listener.ProductListPickerMultip
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerSearchView;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.List;
 
@@ -35,7 +30,7 @@ import javax.inject.Inject;
 
 public class ProductListPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductListPickerViewModel>
         implements BasePickerItemSearchList<ProductListPickerViewModel>, ProductListPickerSearchView,
-        BaseMultipleCheckListAdapter.CheckedCallback<ProductListPickerViewModel>{
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductListPickerViewModel> {
 
     @Inject
     ProductListPickerSearchPresenter productListPickerSearchPresenter;
@@ -48,7 +43,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getActivity() instanceof ProductListPickerMultipleItem){
+        if (getActivity() instanceof ProductListPickerMultipleItem) {
             productListPickerMultipleItem = (ProductListPickerMultipleItem<ProductListPickerViewModel>) getActivity();
         }
 
@@ -68,7 +63,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
             return;
         }
         for (ProductListPickerViewModel productListPickerViewModel : productListPickerViewModels) {
-            ((ProductListPickerSearchAdapter)adapter).setChecked(productListPickerViewModel.getId(), true);
+            ((ProductListPickerSearchAdapter) adapter).setChecked(productListPickerViewModel.getId(), true);
             productListPickerMultipleItem.addItemFromSearch(productListPickerViewModel);
         }
     }
@@ -174,7 +169,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
             if (productListPickerMultipleItem.allowAddItem()) {
                 productListPickerMultipleItem.addItemFromSearch(productListPickerViewModel);
             } else {
-                ((ProductListPickerSearchAdapter)adapter).setChecked(productListPickerViewModel.getId(), false);
+                ((ProductListPickerSearchAdapter) adapter).setChecked(productListPickerViewModel.getId(), false);
                 adapter.notifyDataSetChanged();
             }
         } else {

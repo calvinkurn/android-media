@@ -100,7 +100,7 @@ public class LabelSwitch extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.item_detail_topads_switch_layout, this);
+        View view = inflate(getContext(), R.layout.widget_label_switch, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         summaryTextView = (TextView) view.findViewById(R.id.summary_text_view);
         switchTextView = (TextView) view.findViewById(R.id.switch_text_view);

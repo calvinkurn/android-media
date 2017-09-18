@@ -234,7 +234,8 @@ dependencies {
         }
         compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
-    compile project(':tkpdseller')
+    compile project(':tkpdtopads')
+    compile project(':tkpdgm')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')

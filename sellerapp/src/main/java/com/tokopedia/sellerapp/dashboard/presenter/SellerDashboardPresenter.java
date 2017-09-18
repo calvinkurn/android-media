@@ -9,7 +9,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;

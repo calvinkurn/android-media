@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
@@ -17,34 +16,28 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
-import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;
-import com.tokopedia.seller.shop.di.component.DeleteCacheComponent;
-import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
-import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
-import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.Router;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
+import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;
+import com.tokopedia.seller.shop.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shop.fragment.ShopCreateFragment;
 import com.tokopedia.seller.shop.fragment.ShopEditorFragment;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
 import com.tokopedia.seller.shop.presenter.ShopSettingView;
+import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
+import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
+import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
 import java.io.File;
 import java.util.ArrayList;
-
 
 import javax.inject.Inject;
 
@@ -180,7 +173,9 @@ public class ShopEditorActivity extends TActivity implements
     }
 
     public static void finishActivity(Bundle bundle, Activity activity) {
-        Router.goToHome(activity);
+        if (activity.getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) activity.getApplication()).goToHome(activity);
+        }
         Intent intent = new Intent(activity, ShopInfoActivity.class);
         intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

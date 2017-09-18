@@ -31,17 +31,17 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
-import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.seller.goldmerchant.featured.view.activity.FeaturedProductActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import java.util.ArrayList;
 
@@ -412,7 +412,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    intent = new Intent(context, FeaturedProductActivity.class);
+                    intent = new Intent(context, GMFeaturedProductActivity.class);
                     context.startActivity(intent);
                     break;
                 default:

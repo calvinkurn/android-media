@@ -28,7 +28,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -371,7 +371,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     public void goToGoldMerchantPage() {
-        startActivity(new Intent(getActivity(), GmSubscribeHomeActivity.class));
+        if (getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+        }
     }
 
     private void updateProductScoring() {

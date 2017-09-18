@@ -19,22 +19,22 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
+import com.tokopedia.seller.common.widget.DividerItemDecoration;
 
 import java.util.List;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
         BaseListViewListener<T>, BaseListAdapter.Callback<T> {
 
     private static final int START_PAGE = 1;
+    private static final int DEFAULT_TOTAL_ITEM = 0;
 
     protected BaseListAdapter<T> adapter;
     protected RecyclerView recyclerView;
@@ -51,10 +51,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         // Required empty public constructor
     }
 
-    protected int getCurrentPage() {
-        return currentPage;
-    }
-
     protected abstract BaseListAdapter<T> getNewAdapter();
 
     protected abstract void searchForPage(int page);
@@ -65,6 +61,26 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
 
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
         return getEmptyViewDefaultBinder();
+    }
+
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new BaseRetryDataBinder(adapter);
+    }
+
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new DividerItemDecoration(getActivity());
+    }
+
+    protected int getStartPage() {
+        return START_PAGE;
+    }
+
+    protected boolean hasNextPage() {
+        return adapter.getDataSize() < totalItem && totalItem != DEFAULT_TOTAL_ITEM;
+    }
+
+    protected int getCurrentPage() {
+        return currentPage;
     }
 
     @Nullable
@@ -120,20 +136,10 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         }
     }
 
-    protected boolean hasNextPage() {
-        return adapter.getDataSize() < totalItem &&
-                totalItem != Integer.MAX_VALUE;
-    }
-
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getActivity());
-    }
-
     @Override
     protected void initialVar() {
         super.initialVar();
         currentPage = getStartPage();
-        totalItem = Integer.MAX_VALUE;
         searchMode = false;
         adapter = getNewAdapter();
         adapter.setCallback(this);
@@ -149,10 +155,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             }
         });
         adapter.setRetryView(retryDataBinder);
-    }
-
-    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new TopAdsRetryDataBinder(adapter);
     }
 
     @Override
@@ -267,9 +269,5 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
-    }
-
-    protected int getStartPage() {
-        return START_PAGE;
     }
 }
