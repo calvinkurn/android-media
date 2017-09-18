@@ -6,7 +6,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -46,6 +48,10 @@ public class CategoryProductStyle3View extends
     CheckBox cbInstantCheckout;
     @BindView(R2.id.btn_buy_digital)
     TextView btnBuyDigital;
+    @BindView(R2.id.layout_checkout)
+    RelativeLayout layoutCheckout;
+    @BindView(R2.id.tooltip_instant_checkout)
+    ImageView tooltipInstantCheckout;
 
     private DigitalOperatorChooserView digitalOperatorChooserView;
     private ClientNumberInputView clientNumberInputView;
@@ -142,15 +148,21 @@ public class CategoryProductStyle3View extends
 
     private void renderInstantCheckoutOptions() {
         if (data.isInstantCheckout()) {
-            cbInstantCheckout.setVisibility(VISIBLE);
+            layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
                     actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
             );
         } else {
             cbInstantCheckout.setChecked(false);
-            cbInstantCheckout.setVisibility(GONE);
+            layoutCheckout.setVisibility(GONE);
         }
+        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetView.show();
+            }
+        });
     }
 
     private void renderOperatorChooserOptions() {
