@@ -135,12 +135,14 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void callCreateResolutionAPI() {
+        mainView.showLoading();
         createResoStep1UseCase.execute(createResoStep1UseCase.createResoStep1Params(resultViewModel),
                 new CreateResoWithoutAttachmentSubscriber(mainView));
     }
 
     @Override
     public void callCreateResolutionAPIWithAttachment() {
+        mainView.showLoading();
         createResoWithAttachmentUseCase.execute(createResoWithAttachmentUseCase.
                         createResoWithAttachmentRequestParams(resultViewModel),
                 new CreateResoWithAttachmentSubscriber(mainView));

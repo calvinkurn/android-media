@@ -49,9 +49,11 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     ResultViewModel resultViewModel;
     EditAppealSolutionModel editAppealSolutionModel;
+
+
     RecyclerView rvSolution;
     SolutionListAdapter adapter;
-    LinearLayout llFreeReturn;
+    LinearLayout llFreeReturn, llSolution;
     TextView tvFreeReturn;
     ProgressBar progressBar;
 
@@ -94,7 +96,6 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         presenter.attachView(this);
-        progressBar = new ProgressBar(context);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -138,7 +139,8 @@ public class SolutionListFragment extends BaseDaggerFragment
         rvSolution = (RecyclerView) view.findViewById(R.id.rv_solution);
         llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
         tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
-
+        llSolution = (LinearLayout) view.findViewById(R.id.solution_layout);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         llFreeReturn.setVisibility(View.GONE);
 
         rvSolution.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -161,6 +163,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void showSuccessGetSolution(SolutionResponseViewModel solutionResponseViewModel) {
         hideLoading();
+        llSolution.setVisibility(View.VISIBLE);
         presenter.updateLocalData(solutionResponseViewModel);
         populateDataToView(solutionResponseViewModel);
     }
@@ -198,12 +201,8 @@ public class SolutionListFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showSuccessToast() {
-
-    }
-
-    @Override
     public void showErrorGetSolution(String error) {
+        llSolution.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {

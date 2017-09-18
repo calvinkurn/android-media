@@ -340,12 +340,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void successCreateResoWithoutAttachment(String resolutionId, String cacheKey, String message) {
         dismissProgressBar();
-        if (cacheKey == null) {
-            finishResolution(resolutionId, message);
-        } else {
-            //upload videos and photos string through createResoStep2
-        }
-
+        finishResolution(resolutionId, message);
     }
 
     @Override

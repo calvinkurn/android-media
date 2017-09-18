@@ -56,19 +56,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
     }
 
     @Override
-    public void onBindViewHolder(final ItemHolder holder, int position) {
+    public void onBindViewHolder(final ItemHolder holder, final int position) {
 
-        if (attachmentViewModelList.size() < maxAttachmentCount) {
-            if (position == attachmentViewModelList.size()) {
-                //show upload image
-                holder.ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment));
-            } else {
-                File file = new File(attachmentViewModelList.get(position).getFileLoc());
-                holder.ivImage.setImageURI(Uri.fromFile(file));
-                Glide.with(context).load(attachmentViewModelList.get(position).getFileLoc()).into(holder.ivImage);
-            }
+        if (attachmentViewModelList.size() < maxAttachmentCount && position == attachmentViewModelList.size()) {
+            holder.ivClose.setVisibility(View.GONE);
+            holder.ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment));
         } else {
             //show without upload image icon
+            holder.ivClose.setVisibility(View.VISIBLE);
             File file = new File(attachmentViewModelList.get(position).getFileLoc());
             holder.ivImage.setImageURI(Uri.fromFile(file));
             Glide.with(context).load(attachmentViewModelList.get(position).getFileLoc()).into(holder.ivImage);
@@ -84,6 +79,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
                 }
             }
         });
+
+        holder.ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAttachment(position);
+            }
+        });
     }
 
     @Override
@@ -92,10 +94,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder {
-        ImageView ivImage;
+        ImageView ivImage, ivClose;
         public ItemHolder(View itemView) {
             super(itemView);
             ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
+            ivClose = (ImageView) itemView.findViewById(R.id.iv_close);
         }
     }
 
