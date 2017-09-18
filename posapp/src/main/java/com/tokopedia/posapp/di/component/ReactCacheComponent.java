@@ -3,7 +3,7 @@ package com.tokopedia.posapp.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.module.ReactCacheModule;
 import com.tokopedia.posapp.di.scope.ReactCacheScope;
-import com.tokopedia.posapp.react.ReactCacheNativeModule;
+import com.tokopedia.posapp.react.ReactPosCacheModule;
 
 import dagger.Component;
 
@@ -17,5 +17,5 @@ import dagger.Component;
     dependencies = AppComponent.class
 )
 public interface ReactCacheComponent {
-    void inject(ReactCacheNativeModule reactCacheNativeModule);
+    void inject(ReactPosCacheModule reactPosCacheModule);
 }

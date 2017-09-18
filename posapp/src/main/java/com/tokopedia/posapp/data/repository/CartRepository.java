@@ -18,5 +18,5 @@ public interface CartRepository {
 
     Observable<ATCStatusDomain> deleteCart();
 
-    Observable<CartDomain> getCartProduct(String productId);
+    Observable<CartDomain> getCartProduct(int productId);
 }

@@ -29,7 +29,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> getData(String productId) {
-        return cartFactory.local().getCartProduct(productId).map(getCartMapper());
+        return cartFactory.local().getCartProduct(Integer.parseInt(productId)).map(getCartMapper());
     }
 
     @Override

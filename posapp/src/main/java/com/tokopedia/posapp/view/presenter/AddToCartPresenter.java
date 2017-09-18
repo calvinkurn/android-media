@@ -23,7 +23,7 @@ public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
     }
 
     @Override
-    public void add(String productId, int quantity) {
+    public void add(int productId, int quantity) {
         CartDomain cartDomain = new CartDomain();
         cartDomain.setProductId(productId);
         cartDomain.setQuantity(quantity);

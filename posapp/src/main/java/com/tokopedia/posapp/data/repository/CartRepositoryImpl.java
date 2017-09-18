@@ -38,7 +38,7 @@ public class CartRepositoryImpl implements CartRepository {
     }
 
     @Override
-    public Observable<CartDomain> getCartProduct(String productId) {
+    public Observable<CartDomain> getCartProduct(int productId) {
         return cartFactory.local().getCartProduct(productId);
     }
 }

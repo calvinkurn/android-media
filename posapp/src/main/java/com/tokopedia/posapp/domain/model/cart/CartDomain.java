@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.domain.model.cart;
 
 import com.tokopedia.core.base.domain.DefaultParams;
+import com.tokopedia.posapp.domain.model.product.ProductDomain;
 
 /**
  * Created by okasurya on 8/22/17.
@@ -8,7 +9,8 @@ import com.tokopedia.core.base.domain.DefaultParams;
 
 public class CartDomain implements DefaultParams {
     private Long id;
-    private String productId;
+    private int productId;
+    private ProductDomain productDomain;
     private String outletId;
     private int quantity;
 
@@ -20,11 +22,11 @@ public class CartDomain implements DefaultParams {
         this.id = id;
     }
 
-    public String getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
@@ -42,5 +44,13 @@ public class CartDomain implements DefaultParams {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public ProductDomain getProductDomain() {
+        return productDomain;
+    }
+
+    public void setProductDomain(ProductDomain productDomain) {
+        this.productDomain = productDomain;
     }
 }

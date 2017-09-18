@@ -20,13 +20,13 @@ import rx.schedulers.Schedulers;
  * Created by okasurya on 8/25/17.
  */
 
-public class ReactCacheNativeModule extends ReactContextBaseJavaModule {
+public class ReactPosCacheModule extends ReactContextBaseJavaModule {
     @Inject
     ReactCacheRepository reactCacheRepository;
 
     private Context context;
 
-    public ReactCacheNativeModule(ReactApplicationContext reactContext) {
+    public ReactPosCacheModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
         initInjection();
