@@ -1,24 +1,24 @@
 
-package com.tokopedia.core.geolocation.model;
+package com.tokopedia.core.geolocation.model.autocomplete;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MainTextMatchedSubstring {
+public class Term {
 
-    @SerializedName("length")
+    @SerializedName("value")
     @Expose
-    private Integer length;
+    private String value;
     @SerializedName("offset")
     @Expose
     private Integer offset;
 
-    public Integer getLength() {
-        return length;
+    public String getValue() {
+        return value;
     }
 
-    public void setLength(Integer length) {
-        this.length = length;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public Integer getOffset() {

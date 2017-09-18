@@ -29,19 +29,18 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.geolocation.domain.IMapsRepository;
 import com.tokopedia.core.geolocation.domain.MapsRepository;
-import com.tokopedia.core.geolocation.model.Data;
-import com.tokopedia.core.geolocation.model.MapsResponse;
-import com.tokopedia.core.geolocation.model.Prediction;
+import com.tokopedia.core.geolocation.model.autocomplete.Data;
+import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
 import com.tokopedia.core.network.apiservices.maps.MapService;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,7 +66,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
 
     private OnQueryListener queryListener;
 
-    private MapsRepository mapsRepository;
+    private IMapsRepository mapsRepository;
 
     /**
      * Handles autocomplete requests.
@@ -93,7 +92,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
                                      LatLngBounds bounds, AutocompleteFilter filter,
                                      MapService mapService,
                                      CompositeSubscription compositeSubscription,
-                                     MapsRepository repository) {
+                                     IMapsRepository repository) {
         super(context, R.layout.layout_autocomplete_search_location, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
@@ -207,8 +206,8 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
             public CharSequence convertResultToString(Object resultValue) {
                 // Override this method to display a readable result in the AutocompleteTextView
                 // when clicked.
-                if (resultValue instanceof AutocompletePrediction) {
-                    return ((AutocompletePrediction) resultValue).getFullText(null);
+                if (resultValue instanceof Prediction) {
+                    return ((Prediction) resultValue).getStructuredFormatting().getMainText();
                 } else {
                     return super.convertResultToString(resultValue);
                 }
@@ -289,7 +288,9 @@ public class SuggestionLocationAdapter extends ArrayAdapter<Prediction>
                 CommonUtils.dumper("PORING Kirim Data " + query);
                 TKPDMapParam<String, String> params = new TKPDMapParam<>();
                 params.put("input", query);
-                compositeSubscription.add(mapsRepository.getAutoCompleteList(mapService, params)
+                compositeSubscription.add(mapsRepository
+                        .getAutoCompleteList(mapService, AuthUtil
+                                .generateParamsNetwork(getContext(), params))
                        .subscribeOn(Schedulers.newThread())
                        .observeOn(AndroidSchedulers.mainThread())
                        .unsubscribeOn(Schedulers.newThread())

@@ -2,8 +2,8 @@ package com.tokopedia.core.geolocation.domain;
 
 
 
-import com.tokopedia.core.geolocation.model.Data;
-import com.tokopedia.core.geolocation.model.MapsResponse;
+import com.tokopedia.core.geolocation.model.autocomplete.Data;
+import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -25,6 +25,16 @@ public class MapsRepository implements IMapsRepository {
             @Override
             public Data call(Response<TkpdResponse> response) {
                 return response.body().convertDataObj(Data.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<CoordinateModel> getLatLng(MapService service, TKPDMapParam<String, String> params) {
+        return service.getApi().getLatLng(params).map(new Func1<Response<TkpdResponse>, CoordinateModel>() {
+            @Override
+            public CoordinateModel call(Response<TkpdResponse> response) {
+                return response.body().convertDataObj(CoordinateModel.class);
             }
         });
     }

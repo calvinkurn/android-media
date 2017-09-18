@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.geolocation.model;
+package com.tokopedia.core.geolocation.model.autocomplete;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

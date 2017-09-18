@@ -22,7 +22,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
@@ -38,8 +37,12 @@ import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractor;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
+import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
  * Created by hangnadi on 1/31/16.
@@ -297,7 +300,10 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void prepareAutoCompleteView() {
-        view.initAutoCompleteAdapter(googleApiClient, setDefaultBoundsJakarta());
+        view.initAutoCompleteAdapter(retrofitInteractor.getCompositeSubscription(),
+                retrofitInteractor.getMapService(),
+                retrofitInteractor.getMapRepository(),
+                googleApiClient, setDefaultBoundsJakarta());
         view.setAutoCompleteAdaoter();
     }
 
@@ -330,16 +336,22 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void onSuggestionItemClick(AdapterView<?> adapter, int position) {
-        final AutocompletePrediction item = (AutocompletePrediction) adapter.getItemAtPosition(position);
+        final Prediction item = (Prediction) adapter.getItemAtPosition(position);
         final String placeID = item.getPlaceId();
-        final CharSequence primaryText = item.getPrimaryText(null);
+        final CharSequence primaryText = item.getStructuredFormatting().getMainText();
 
         Log.d(TAG, "AutoComplete item selected: " + primaryText);
 
         //TODO summon service di sini
-        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeID);
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("placeid", placeID);
+        retrofitInteractor.generateLatLng(context,
+                AuthUtil.generateParamsNetwork(context, param),
+                latLongListener());
+        //PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeID);
 
-        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+        //TODO move all listener from here to getLatLongListener
+        /*placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
             @Override
             public void onResult(PlaceBuffer places) {
                 if (!places.getStatus().isSuccess()) {
@@ -355,7 +367,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
                 }
                 places.release();
             }
-        });
+        });*/
     }
 
     @Override
@@ -388,5 +400,21 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     @Override
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
+    }
+
+    private RetrofitInteractor.GenerateLatLongListener latLongListener() {
+        return new RetrofitInteractor.GenerateLatLongListener() {
+            @Override
+            public void onSuccess(CoordinateModel model) {
+                LatLng latitudeLongitude = new LatLng(model.getGeometry().getLocation().getLat(),
+                        model.getGeometry().getLocation().getLng());
+                view.moveMap(latitudeLongitude);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        };
     }
 }
