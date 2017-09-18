@@ -153,9 +153,13 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     private void showSnackbarWithUndo() {
         if (gmTemporaryDelete != null) {
+            String textToPresent = getString(R.string.success_delete_n_product_text, gmTemporaryDelete.size());
+            if (adapter.getDataSize() == 0) {
+                textToPresent = getString(R.string.success_empty_delete_featured_product_empty);
+            }
             new SnackbarRetry(
                     SnackbarManager.make(coordinatorLayoutContainer,
-                            getString(R.string.success_delete_n_product_text, gmTemporaryDelete.size()),
+                            textToPresent,
                             Snackbar.LENGTH_INDEFINITE,
                             android.R.color.white,
                             com.tokopedia.core.R.color.black_seventy_percent_),
