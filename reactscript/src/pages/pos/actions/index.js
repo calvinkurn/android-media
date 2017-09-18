@@ -1,29 +1,11 @@
 import axios from 'axios'
 import { PosCacheModule } from 'NativeModules'
 
-// Product list action and action creators
+
+// ===================== Product List ======================= //
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
 export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryText) => {
-  // const eId = +etalaseId || 0
-  // let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=${rows}&shop_id=${shopId}&start=${start}`
-
-  // if (eId) {
-  //   url += `&etalase=${eId}`
-  // }
-
-  // if (productId) {
-  //   url += `&id=${productId}`
-  // }
-
-  // if (queryText) {
-  //   const text = queryText.replace(' ', '+')
-  //   url += `&q=${text}`
-  // }
-
-  // return {
-  //   type: FETCH_PRODUCTS,
-  //   payload: axios.get(url)
-  // }
+  
 
   return {
     type: FETCH_PRODUCTS,
@@ -71,6 +53,23 @@ export const addToCart = (item) => {
   return {
     type: ADD_TO_CART,
     payload: item,
+  }
+}
+
+// ====================== Yogie - 18 September 2017 ===================== //
+// Fetch Cart From Local Native Cache
+export const FETCH_CART_FROM_CACHE = 'FETCH_CART_FROM_CACHE'
+export const fetchCartFromCache = () => {
+  console.log('aksdhkjashdjkashd')
+  return {
+    type: FETCH_CART_FROM_CACHE,
+    payload: PosCacheModule.getDataAll("CART")
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
+                console.log(jsonResponse.data)
+                return jsonResponse;
+              })
+              .catch(error => console.log(error))
   }
 }
 
