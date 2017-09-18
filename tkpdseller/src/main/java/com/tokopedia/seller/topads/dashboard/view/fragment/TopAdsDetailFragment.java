@@ -119,6 +119,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
 
     @Override
     public void onAdLoaded(V ad) {
+        if(ad == null){
+            onLoadAdError();
+            return;
+        }
         this.ad = ad;
         hideLoading();
         loadAdDetail(ad);
