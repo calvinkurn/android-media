@@ -117,7 +117,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                     }
                     return null;
                 }
-            };
+            }.execute();
         }
 //
 //        signOut();
