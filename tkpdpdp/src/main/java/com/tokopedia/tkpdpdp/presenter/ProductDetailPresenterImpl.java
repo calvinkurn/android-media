@@ -314,7 +314,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context,productDetailData.getInfo().getProductId().toString());
-                            getPromoWidget(context,generatePromoTargetType(productDetailData,context),SessionHandler.isV4Login(context)?SessionHandler.getLoginID(context):"0");
+                            if (!GlobalConfig.isSellerApp()) {
+                                getPromoWidget(context,generatePromoTargetType(productDetailData,context),SessionHandler.isV4Login(context)?SessionHandler.getLoginID(context):"0");
+                            }
                         }
 
                         @Override
@@ -796,7 +798,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getProductCampaign(context, data.getInfo().getProductId().toString());
                         getMostHelpfulReview(context,data.getInfo().getProductId().toString());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
-                        getPromoWidget(context,generatePromoTargetType(data,context),SessionHandler.isV4Login(context)?SessionHandler.getLoginID(context):"0");
+                        if (!GlobalConfig.isSellerApp()) {
+                            getPromoWidget(context,generatePromoTargetType(data,context),SessionHandler.isV4Login(context)?SessionHandler.getLoginID(context):"0");
+                        }
                     }
 
                     @Override
