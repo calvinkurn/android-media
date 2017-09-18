@@ -69,7 +69,6 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        setToolbar();
         Bundle initialProps = getIntent().getExtras();
         ReactNativeOfficialStoreFragment fragment = ReactNativeOfficialStoreFragment.createInstance(initialProps);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -77,38 +76,6 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
-    }
-
-    private void setToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            String title = getIntent().getExtras().getString(EXTRA_TITLE);
-            if (!TextUtils.isEmpty(title)) {
-                toolbar.setTitle(title);
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
-
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
     }
 
     @Override
@@ -129,5 +96,10 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_OFFICIAL_STORE_REACT;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }
