@@ -17,7 +17,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep1Us
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
-import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoStep1Subscriber;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithoutAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
@@ -136,7 +136,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     @Override
     public void callCreateResolutionAPI() {
         createResoStep1UseCase.execute(createResoStep1UseCase.createResoStep1Params(resultViewModel),
-                new CreateResoStep1Subscriber(mainView));
+                new CreateResoWithoutAttachmentSubscriber(mainView));
     }
 
     @Override

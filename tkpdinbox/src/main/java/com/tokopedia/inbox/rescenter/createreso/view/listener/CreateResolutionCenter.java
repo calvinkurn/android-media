@@ -42,13 +42,9 @@ public interface CreateResolutionCenter {
 
         void showCreateComplainDialog(ResultViewModel resultViewModel);
 
-        void successCreateResoStep1(String resolutionId, String cacheKey, String message);
+        void successCreateResoWithoutAttachment(String resolutionId, String cacheKey, String message);
 
-        void errorCreateResoStep1(String error);
-
-        void successCreateResoStep2(String resolutionId, String message);
-
-        void errorCreateResoStep2(String error);
+        void errorCreateResoWithoutAttachment(String error);
 
         void successCreateResoWithAttachment(String resolutionId, String message);
 

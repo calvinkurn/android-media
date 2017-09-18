@@ -11,10 +11,10 @@ import rx.Subscriber;
  * Created by yoasfs on 04/09/17.
  */
 
-public class CreateResoStep1Subscriber extends Subscriber<CreateResoStep1Domain> {
+public class CreateResoWithoutAttachmentSubscriber extends Subscriber<CreateResoStep1Domain> {
     private final CreateResolutionCenter.View mainView;
 
-    public CreateResoStep1Subscriber(CreateResolutionCenter.View mainView) {
+    public CreateResoWithoutAttachmentSubscriber(CreateResolutionCenter.View mainView) {
         this.mainView = mainView;
     }
 
@@ -26,12 +26,12 @@ public class CreateResoStep1Subscriber extends Subscriber<CreateResoStep1Domain>
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        mainView.errorCreateResoStep1(ErrorHandler.getErrorMessage(e));
+        mainView.errorCreateResoWithoutAttachment(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(CreateResoStep1Domain createResoStep1Domain) {
-        mainView.successCreateResoStep1(String.valueOf(
+        mainView.successCreateResoWithoutAttachment(String.valueOf(
                 createResoStep1Domain.getResolution().getId()),
                 createResoStep1Domain.getCacheKey(),
                 createResoStep1Domain.getSuccessMessage());

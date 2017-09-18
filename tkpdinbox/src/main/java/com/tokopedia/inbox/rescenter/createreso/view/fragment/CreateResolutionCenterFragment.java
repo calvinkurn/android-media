@@ -338,7 +338,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void successCreateResoStep1(String resolutionId, String cacheKey, String message) {
+    public void successCreateResoWithoutAttachment(String resolutionId, String cacheKey, String message) {
+        dismissProgressBar();
         if (cacheKey == null) {
             finishResolution(resolutionId, message);
         } else {
@@ -348,25 +349,14 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void errorCreateResoStep1(String error) {
-        dismissProgressBar();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
-    }
-
-    @Override
-    public void successCreateResoStep2(String resolutionId, String message) {
-        finishResolution(resolutionId, message);
-    }
-
-    @Override
-    public void errorCreateResoStep2(String error) {
+    public void errorCreateResoWithoutAttachment(String error) {
         dismissProgressBar();
         NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override
     public void successCreateResoWithAttachment(String resolutionId, String message) {
-
+        dismissProgressBar();
         finishResolution(resolutionId, message);
     }
 
