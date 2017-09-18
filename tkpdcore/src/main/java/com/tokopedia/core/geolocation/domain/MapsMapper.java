@@ -25,8 +25,8 @@ public class MapsMapper implements IMapsMapper{
             PredictionResult simplifiedResult = new PredictionResult();
             String mainText = predictions.getStructuredFormatting().getMainText();
             String secondaryText = predictions.getStructuredFormatting().getSecondaryText();
-            String mainTextToShow = mainText.replace(query, "<b>" + query + "</b>");
-            String secondaryTextToShow = secondaryText.replace(query, "<b>" + query + "</b>");
+            String mainTextToShow = mainText.replaceAll(query, "<b>" + query + "</b>");
+            String secondaryTextToShow = secondaryText.replaceAll(query, "<b>" + query + "</b>");
             simplifiedResult.setMainTextFormatted(mainTextToShow);
             simplifiedResult.setSecondaryTextFormatted(secondaryTextToShow);
             simplifiedResult.setMainText(mainText);
