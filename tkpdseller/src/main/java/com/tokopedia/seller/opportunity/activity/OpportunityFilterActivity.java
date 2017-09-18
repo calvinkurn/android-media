@@ -228,19 +228,8 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                 addSelectedFilterToList(list, optionViewModel.getListChild());
             } else if (optionViewModel.isSelected()) {
                 list.add(new FilterPass(optionViewModel.getKey(), optionViewModel.getValue()));
-                sendAnalytics(optionViewModel.getKey(), optionViewModel.getValue());
-
             }
         }
-    }
-
-    private void sendAnalytics(String key, String value) {
-        UnifyTracking.eventOpportunity(
-                OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY_FILTER,
-                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                AppEventTracking.Action.SUBMIT,
-                key + " - " + value
-        );
     }
 
     @Override
