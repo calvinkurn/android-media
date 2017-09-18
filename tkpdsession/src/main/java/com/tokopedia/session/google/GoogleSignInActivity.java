@@ -1,11 +1,14 @@
 package com.tokopedia.session.google;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -16,6 +19,14 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.tokopedia.session.R;
+
+import java.io.IOException;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class GoogleSignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -57,12 +68,60 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
         setResult(resultCode);
 
         if (requestCode == RC_SIGN_IN_GOOGLE && resultCode == RESULT_OK) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
+            final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            final String magicString = "oauth2:https://www.googleapis.com/auth/plus.login";
 
-        signOut();
-        finish();
+//            try {
+//                Observable<String> observable = Observable.just(GoogleAuthUtil.getToken(this, result.getSignInAccount().getEmail(), magicString));
+//
+//                Subscriber<String> subscriber = new Subscriber<String>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(String s) {
+//                        s.equals("");
+//                        handleSignInResult(result);
+//                    }
+//                };
+//
+//                CompositeSubscription compositeSubscription = new CompositeSubscription();
+//                compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+//                        .unsubscribeOn(Schedulers.newThread())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(subscriber));
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (GoogleAuthException e) {
+//                e.printStackTrace();
+//            }
+
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    try {
+                        String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), result.getSignInAccount().getEmail(), magicString);
+                        accessToken.equals("");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (GoogleAuthException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            };
+        }
+//
+//        signOut();
+//        finish();
     }
 
     private void signIn() {
