@@ -234,7 +234,7 @@ public class ProductList extends V2BaseFragment {
         configSearchView();
 
         TextView searchText = (TextView) holder.searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchText.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.hint_search_view));
+        searchText.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
     }
 
     @Override

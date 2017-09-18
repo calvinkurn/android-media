@@ -233,7 +233,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         searchEditText.clearFocus();
         searchEditText.requestFocusFromTouch();
         TextView searchText = (TextView) searchEditText.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchText.setHintTextColor(ContextCompat.getColor(getContext(), R.color.hint_search_view));
+        searchText.setHintTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
         setAdapter();
     }
 
