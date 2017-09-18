@@ -1,4 +1,4 @@
-package com.tokopedia.seller.cache.usecase;
+package com.tokopedia.seller.shop.common.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;

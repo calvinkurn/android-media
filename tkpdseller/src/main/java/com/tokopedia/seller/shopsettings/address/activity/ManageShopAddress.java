@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +34,7 @@ import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.address.adapter.ListViewManageShopLocation;
 
 import org.json.JSONArray;

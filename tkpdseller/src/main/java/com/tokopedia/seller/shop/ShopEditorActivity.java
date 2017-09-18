@@ -22,7 +22,7 @@ import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;

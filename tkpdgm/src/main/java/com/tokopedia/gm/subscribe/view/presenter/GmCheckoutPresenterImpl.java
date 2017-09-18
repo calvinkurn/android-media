@@ -18,7 +18,7 @@ import com.tokopedia.gm.subscribe.view.viewmodel.GmAutoSubscribeViewModel;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutViewModel;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmVoucherViewModel;
-import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 
 import javax.inject.Inject;
 

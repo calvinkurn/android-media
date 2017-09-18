@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -20,7 +19,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.prototype.ShopCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
-import com.tokopedia.seller.cache.usecase.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.ShopEditService;
 import com.tokopedia.seller.shop.constant.ShopEditServiceConstant;
 import com.tokopedia.seller.shop.fragment.ShopScheduleDialog;
@@ -33,7 +31,6 @@ import com.tokopedia.core.shop.model.shopData.Data;
 import com.tokopedia.core.shop.model.shopData.Image;
 import com.tokopedia.core.shop.model.shopData.Info;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 

@@ -17,6 +17,8 @@ public class WhitelistUtils {
     private static final long THIRTY_SECOND = TimeUnit.SECONDS.toSeconds(30);
     private static final long ONE_MINUTE = TimeUnit.MINUTES.toSeconds(1);
     private static final long FIVE_MINUTE = TimeUnit.MINUTES.toSeconds(5);
+    private static final long ONE_HOUR = TimeUnit.HOURS.toSeconds(1);
+    private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
     private static final long ONE_DAY = TimeUnit.HOURS.toSeconds(24);
 
     public static List<CacheApiWhiteListDomain> getWhiteList() {
@@ -28,7 +30,7 @@ public class WhitelistUtils {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.User.URL_NOTIFICATION + TkpdBaseURL.User.PATH_GET_NOTIFICATION, THIRTY_SECOND));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
-                TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, FIVE_MINUTE));
+                TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, THREE_HOURS));
 
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
                 StatisticConstant.GET_TRANSACTION_GRAPH_URL, ONE_DAY));
