@@ -60,7 +60,7 @@ export const FETCH_CART_FROM_CACHE = 'FETCH_CART_FROM_CACHE'
 export const fetchCartFromCache = () => {
   return {
     type: FETCH_CART_FROM_CACHE,
-    payload: PosCacheModule.getDataAll("CART")
+    payload: PosCacheModule.getDataAll('CART')
               .then(response => {
                 // console.log(typeof response)
                 // console.log(response)
@@ -78,10 +78,11 @@ export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
 export const removeFromCart = (id) => {
   return {
     type: REMOVE_FROM_CART,
-    payload: PosCacheModule.deleteItem("CART", id.toString())
+    payload: PosCacheModule.deleteItem('CART', id.toString())
               .then(response => {
                 const jsonResponse = JSON.parse(response)
-                return jsonResponse;
+                console.log(jsonResponse)
+                if (jsonResponse.data.status) return jsonResponse
               })
               .catch(error => console.log(error))
   }
@@ -89,50 +90,57 @@ export const removeFromCart = (id) => {
 
 //  ==================== Increment Quantity inside Cart ===================== //
 export const INCREMENT_QTY = 'INCREMENT_QTY'
-export const incrementQty = (id) => {
+export const incrementQty = (id, pid, qty) => {
+  console.log(id, pid, qty)
   // const payloads = {
-  //   id: 
-  //   product_id: 
-  //   quantity: 
+  //   'id': id,
+  //   'product_id': pid,
+  //   'quantity': qty
   // }
+  // console.log(payloads)
+  // console.log(payloads.toString())
 
-  // return {
-  //   type: INCREMENT_QTY,
-  //   payload: PosCacheModule.update("CART", payloads)
-  //             .then(response => {
-  //               const jsonResponse = JSON.parse(response)
-  //               return jsonResponse;
-  //             })
-  //             .catch(error => console.log(error))
-  // }
   return {
     type: INCREMENT_QTY,
-    payload: { id }
+    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${qty}}`)
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
+                console.log(jsonResponse)
+                if (jsonResponse.data.status) return jsonResponse
+              })
+              .catch(error => console.log(error))
   }
+  // return {
+  //   type: INCREMENT_QTY,
+  //   payload: { id }
+  // }
 }
 
 //  ==================== Decrement Quantity inside Cart ===================== //
 export const DECREMENT_QTY = 'DECREMENT_QTY'
-export const decrementQty = (id) => {
+export const decrementQty = (id, pid, qty) => {
+  console.log(id, pid, qty)
   // const payloads = {
   //   id: 
   //   product_id: 
   //   quantity: 
   // }
 
-  // return {
-  //   type: DECREMENT_QTY,
-  //   payload: PosCacheModule.update("CART", payloads)
-  //             .then(response => {
-  //               const jsonResponse = JSON.parse(response)
-  //               return jsonResponse;
-  //             })
-  //             .catch(error => console.log(error))
-  // }
   return {
     type: DECREMENT_QTY,
-    payload: { id }
+    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${qty}}`)
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
+                console.log(jsonResponse)
+                if (jsonResponse.data.status) return jsonResponse
+              })
+              .catch(error => console.log(error))
   }
+
+  // return {
+  //   type: DECREMENT_QTY,
+  //   payload: { id }
+  // }
 }
 
 
@@ -141,10 +149,10 @@ export const CLEAR_CART = 'CLEAR_CART'
 export const clearCart = () => {
   return {
     type: CLEAR_CART,
-    payload: PosCacheModule.deleteAll("CART")
+    payload: PosCacheModule.deleteAll('CART')
               .then(response => {
                 const jsonResponse = JSON.parse(response)
-                return jsonResponse;
+                if (jsonResponse.data.status) return jsonResponse
               })
               .catch(error => console.log(error))
   }

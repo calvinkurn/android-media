@@ -34,7 +34,7 @@ class CartItem extends Component {
             animationType='fade'
             onBackPress={() => { this.togglePopUp(false) }}
             title='Konfirmasi Pembatalan'
-            subTitle={`${item.name} - senilai ${item.price}`}
+            subTitle={`${item.product.product_name} - senilai ${item.product.product_price}`}
             onSecondOptionTap={() => { this.removeItem(item.id) }}
             onFirstOptionTap={() => { this.togglePopUp(false) }}
             firstOptionText='Tidak'
@@ -59,7 +59,7 @@ class CartItem extends Component {
             <View style={styles.qtyControlContainer}>
               <TouchableWithoutFeedback
                 disabled={item.qty === 1}
-                onPress={() => { onDecr(item.id) }}>
+                onPress={() => { onDecr(item.id, item.product_id, item.quantity) }}>
                 <View>
                   <Image source={require('../img/btn_minus.png')} style={styles.qtyControlImage}></Image>
                 </View>
@@ -68,7 +68,7 @@ class CartItem extends Component {
                 <Text style={styles.qtyText}> {item.quantity} </Text>
               </View>
               <TouchableWithoutFeedback
-                onPress={() => { onIncr(item.id) }}>
+                onPress={() => { onIncr(item.id, item.product_id, item.quantity) }}>
                 <View>
                   <Image source={require('../img/btn_plus.png')} style={styles.qtyControlImage}></Image>
                 </View>
