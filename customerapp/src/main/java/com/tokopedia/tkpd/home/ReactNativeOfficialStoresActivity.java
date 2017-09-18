@@ -49,7 +49,6 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
 
     @Override
     protected void setupURIPass(Uri data) {
-
     }
 
     @Override

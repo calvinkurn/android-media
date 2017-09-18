@@ -33,12 +33,13 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     public ReactNetworkModule(ReactApplicationContext reactContext) {
         super(reactContext);
-//        reactNetworkRepository = new ReactNetworkDependencies(reactContext).createReactNetworkRepository();
-        if (reactContext.getApplicationContext() instanceof MainApplication){
+        if (reactContext.getApplicationContext() instanceof MainApplication) {
             AppComponent appComponent = ((MainApplication) reactContext.getApplicationContext()).getApplicationComponent();
             daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
                     .appComponent(appComponent).build();
             daggerRnNetworkComponent.inject(this);
+        } else {
+            throw new RuntimeException("Current context unsupported");
         }
     }
 
