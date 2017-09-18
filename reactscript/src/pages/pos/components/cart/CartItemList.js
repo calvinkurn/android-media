@@ -27,6 +27,10 @@ export default class CartItemList extends Component {
     NavigationModule.navigateAndFinish("posapp://payment/checkout", "")
   }
 
+  componentDidMount(){
+    this.props.fetchCartList()
+  }
+  
   render() {
     const items = this.props.items
     const visible = this.props.visible
