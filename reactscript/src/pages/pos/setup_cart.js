@@ -30,7 +30,7 @@ class Root extends Component {
     render() {
         return (
             <Provider store={store}>
-                <CartContainer />
+                <CartContainer onBackPress={() => {}}/>
             </Provider>
         )
     }
