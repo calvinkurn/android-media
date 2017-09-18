@@ -52,7 +52,7 @@ class CartItem extends Component {
           </View>
           <View style={{ width: '50%', alignSelf: 'flex-start' }}>
             <Text ellipsizeMode='tail' numberOfLines={2} style={styles.productName}>{item.product.product_name}</Text>
-            <Text style={styles.price}>Rp. {item.product.product_price}</Text>
+            <Text style={styles.price}>{item.product.product_price}</Text>
           </View>
           <View style={styles.qtyContainer}>
             <Text style={styles.qtyLabel}>Qty</Text>
