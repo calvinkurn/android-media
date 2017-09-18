@@ -22,9 +22,5 @@ public interface SellerModuleRouter {
 
     void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
 
-    DataDeposit getDataDeposit(String shopId);
-
-    void goToTopAdsDashboard(Activity activity);
-
     void goToGMSubscribe(Activity activity);
 }

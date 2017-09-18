@@ -22,7 +22,7 @@ public class TkpdSellerLogout {
         component.getClearCategoryCacheUseCase().execute(RequestParams.EMPTY, new EmptySubscriber());
     }
 
-    private static class EmptySubscriber extends Subscriber<Boolean> {
+    public static class EmptySubscriber extends Subscriber<Boolean> {
         @Override
         public void onCompleted() {
 
