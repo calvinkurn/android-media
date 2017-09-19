@@ -34,7 +34,7 @@ public interface CreateResolutionCenter {
 
         void showErrorToast(String error);
 
-        void showLoading();
+        void showLoading(boolean isCreateReso);
 
         void successLoadProductProblemData(ProductProblemResponseDomain responseDomain);
 
@@ -49,7 +49,6 @@ public interface CreateResolutionCenter {
         void successCreateResoWithAttachment(String resolutionId, String message);
 
         void errorCreateResoWithAttachment(String error);
-
     }
 
     interface Presenter extends CustomerPresenter<View> {

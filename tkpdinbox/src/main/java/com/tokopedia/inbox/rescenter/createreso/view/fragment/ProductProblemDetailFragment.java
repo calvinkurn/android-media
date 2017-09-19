@@ -131,8 +131,14 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
         stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
         tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
+
         buttonDisabled(btnSaveAndChooseOther);
         buttonDisabled(btnSave);
+        if (problemResult != null) {
+            buttonSelected(btnSaveAndChooseOther);
+            buttonCanSelected(btnSave);
+        }
+
         presenter.populateData(productProblemViewModel, problemResult);
 
     }

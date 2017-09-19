@@ -73,7 +73,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void loadProductProblem(String orderId) {
-        mainView.showLoading();
+        mainView.showLoading(false);
         resultViewModel.orderId = orderId;
         this.orderId = orderId;
         getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId),
@@ -135,14 +135,14 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void callCreateResolutionAPI() {
-        mainView.showLoading();
+        mainView.showLoading(true);
         createResoStep1UseCase.execute(createResoStep1UseCase.createResoStep1Params(resultViewModel),
                 new CreateResoWithoutAttachmentSubscriber(mainView));
     }
 
     @Override
     public void callCreateResolutionAPIWithAttachment() {
-        mainView.showLoading();
+        mainView.showLoading(true);
         createResoWithAttachmentUseCase.execute(createResoWithAttachmentUseCase.
                         createResoWithAttachmentRequestParams(resultViewModel),
                 new CreateResoWithAttachmentSubscriber(mainView));

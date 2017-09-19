@@ -202,6 +202,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         if (resultViewModel.problem.size() != 0) {
             ffSolution.setEnabled(true);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
+            ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable_with_green));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
             updateProductProblemString(resultViewModel.problem, tvChooseProductProblem);
             tvSolution.setTextColor(context.getResources().getColor(R.color.black_70));
@@ -217,6 +218,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         if (resultViewModel.solution != 0) {
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
+            ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable_with_green));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
             if (!resultViewModel.isAttachmentRequired) {
                 ffUploadProve.setEnabled(false);
@@ -246,6 +248,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     btnCreateResolution.setEnabled(true);
                     btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
                     ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
+                    ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable_with_green));
                     btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
                 }
             } else {
@@ -300,9 +303,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         Toast.makeText(getActivity(), "error : " + error, Toast.LENGTH_SHORT).show();
     }
 
-    public void showProgressBar() {
-        problemView.setVisibility(View.INVISIBLE);
-        footer.setVisibility(View.INVISIBLE);
+    public void showProgressBar(boolean isCreateReso) {
+        if (!isCreateReso) {
+            problemView.setVisibility(View.INVISIBLE);
+            footer.setVisibility(View.INVISIBLE);
+        }
         if (progressBar.getVisibility() == View.GONE) {
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -314,9 +319,10 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void showLoading() {
-        showProgressBar();
+    public void showLoading(boolean isCreateReso) {
+        showProgressBar(isCreateReso);
     }
+
 
     @Override
     public void successLoadProductProblemData(ProductProblemResponseDomain responseDomain) {
