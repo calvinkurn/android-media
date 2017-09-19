@@ -197,4 +197,10 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
         emptyDataBinder.setEmptyContentText(getString(R.string.product_picker_empty_search_description));
         return emptyDataBinder;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        productListPickerSearchPresenter.detachView();
+    }
 }
