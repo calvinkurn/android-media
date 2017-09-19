@@ -448,23 +448,11 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 if (Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel) {
                     LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
                     accountsParameter.setEmail(loginFacebookViewModel.getEmail());
-                    params.put(Login.SOCIAL_ID, loginFacebookViewModel.getFbId());
-                    params.put(Login.EMAIL_ACCOUNTS, loginFacebookViewModel.getEmail());
-                    params.put(Login.FULL_NAME, loginFacebookViewModel.getFullName());
-                    params.put(Login.BIRTHDATE, loginFacebookViewModel.getBirthday());
-                    params.put(Login.GENDER_ACCOUNTS, loginFacebookViewModel.getGender());
                     params.put(Login.ACCESS_TOKEN, loginFacebookViewModel.getFbToken());
                 } else if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
                     LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
                     accountsParameter.setEmail(loginGoogleModel.getEmail());
-                    params.put(Login.SOCIAL_ID, loginGoogleModel.getGoogleId());
-                    params.put(Login.EMAIL_ACCOUNTS, loginGoogleModel.getEmail());
-                    params.put(Login.PICTURE_ACCOUNTS, loginGoogleModel.getImageUrl());
-                    params.put(Login.FULL_NAME, loginGoogleModel.getFullName());
-                    params.put(Login.BIRTHDATE, loginGoogleModel.getBirthday());
-                    params.put(Login.GENDER_ACCOUNTS, loginGoogleModel.getGender());
                     params.put(Login.ACCESS_TOKEN, loginGoogleModel.getAccessToken());
-
                 }
                 break;
             case Login.GRANT_WEBVIEW:
