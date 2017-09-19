@@ -77,11 +77,13 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
                     });
         } catch (UnknownMethodException e) {
             promise.reject(e);
+        } catch (Exception e){
+            promise.reject(e);
         }
     }
 
 
-    public static TKPDMapParam<String, String> convertStringRequestToHashMap(String request) {
+    private static TKPDMapParam<String, String> convertStringRequestToHashMap(String request) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         try {
             JSONObject jsonObject = new JSONObject(request);
