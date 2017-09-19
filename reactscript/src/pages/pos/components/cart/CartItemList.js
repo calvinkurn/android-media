@@ -121,18 +121,16 @@ export default class CartItemList extends Component {
               </View>
             </View></View> :
           <View style={styles.emptyContainer}>
-            {/* <View style={styles.headerContainer}>
-              <View style={{ width: '10%', left: 10 }}>
-                <TouchableWithoutFeedback onPress={onBackPress}>
+            <View style={styles.headerContainer}>
+              <View>
+                <TouchableWithoutFeedback onPress={this.onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
                 </TouchableWithoutFeedback>
               </View>
-              <View style={{ width: '80%', left: 10 }}>
-                <Text style={styles.headerTitleText}>Keranjang Belanja</Text>
+              <View style={{left: -220}}>
+                <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
               </View>
-              <View style={{ width: '10%' }}>
-              </View>
-            </View> */}
+            </View>
             <View style={styles.emptyList}>
               <View style={{
                 alignItems: 'center',
