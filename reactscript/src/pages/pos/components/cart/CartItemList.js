@@ -4,6 +4,8 @@ import CartItem from './CartItem'
 import Button from '../../common/TKPPrimaryBtn'
 import PopUp from '../../common/TKPPopupModal'
 import { Text } from '../../common/TKPText'
+import { NavigationModule } from 'NativeModules'
+
 
 export default class CartItemList extends Component {
   constructor(props) {
@@ -27,6 +29,12 @@ export default class CartItemList extends Component {
     NavigationModule.navigateAndFinish("posapp://payment/checkout", "")
   }
 
+  onBackPress = () => {
+    NavigationModule.navigateAndFinish("posapp://product", "")
+  }
+
+
+
   componentWillMount(){
     this.props.fetchCartList()
   }
@@ -34,7 +42,7 @@ export default class CartItemList extends Component {
   render() {
     const items = this.props.items
     const visible = this.props.visible
-    const onBackPress = this.props.onBackPress
+    // const onBackPress = this.props.onBackPress
     const totalPrice = this.props.totalPrice
     const onIncrQty = this.props.onIncrQty
     const onDecrQty = this.props.onDecrQty
@@ -56,12 +64,12 @@ export default class CartItemList extends Component {
         transparent={true}
         hardwareAccelerated={true}
         visible={this.props.visible}
-        onRequestClose={onBackPress}>
-        {items[0] && items.length > 0 ?
+        onRequestClose={this.onBackPress}>
+        {items[0] && items[0].length > 0 ?
           <View style={{ flex: 1 }}>
             <View style={styles.headerContainer}>
               <View>
-                <TouchableWithoutFeedback onPress={onBackPress}>
+                <TouchableWithoutFeedback onPress={this.onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
                 </TouchableWithoutFeedback>
               </View>
@@ -139,7 +147,7 @@ export default class CartItemList extends Component {
                 <Button
                   content='Mulai Belanja'
                   type='big'
-                  onTap={onBackPress}
+                  onTap={this.onBackPress}
                 />
               </View>
             </View>
