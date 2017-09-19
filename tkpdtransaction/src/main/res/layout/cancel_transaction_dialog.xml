@@ -16,14 +16,14 @@
 
     <TextView
         android:id="@+id/message_cancel_transaction"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/med_dp"
         android:textSize="@dimen/text_size_l_medium"
         tools:text="Dana pembatalan transaksi senilai Rp400.000 akan dikembalikan ke TokoCash Anda" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_large"
         android:gravity="end"
