@@ -45,14 +45,14 @@ export const resetProductList = () => {
   }
 }
 
-// Cart actions and action creators
-export const ADD_TO_CART = 'ADD_TO_CART'
-export const addToCart = (item) => {
-  return {
-    type: ADD_TO_CART,
-    payload: item,
-  }
-}
+// // Cart actions and action creators
+// export const ADD_TO_CART = 'ADD_TO_CART'
+// export const addToCart = (item) => {
+//   return {
+//     type: ADD_TO_CART,
+//     payload: item,
+//   }
+// }
 
 // ====================== Yogie - 18 September 2017 ===================== //
 // Fetch Cart From Local Native Cache
@@ -60,16 +60,17 @@ export const FETCH_CART_FROM_CACHE = 'FETCH_CART_FROM_CACHE'
 export const fetchCartFromCache = () => {
   return {
     type: FETCH_CART_FROM_CACHE,
-    payload: PosCacheModule.getDataAll('CART')
-              .then(response => {
-                // console.log(typeof response)
-                // console.log(response)
-                const jsonResponse = JSON.parse(response)
-                // console.log(jsonResponse.data.list)
-                return jsonResponse.data;
-              })
-              .catch(error => console.log(error))
+    payload: fetchCart()
   }
+}
+
+const fetchCart = () => {
+  return PosCacheModule.getDataAll('CART')
+    .then(response => {
+      const jsonResponse = JSON.parse(response)
+      return jsonResponse.data;
+    })
+    .catch(error => console.log(error))
 }
 
 
@@ -81,7 +82,7 @@ export const removeFromCart = (id) => {
     payload: PosCacheModule.deleteItem('CART', id.toString())
               .then(response => {
                 const jsonResponse = JSON.parse(response)
-                console.log(jsonResponse)
+                console.log(response)
                 if (jsonResponse.data.status) return jsonResponse
               })
               .catch(error => console.log(error))
@@ -92,55 +93,36 @@ export const removeFromCart = (id) => {
 export const INCREMENT_QTY = 'INCREMENT_QTY'
 export const incrementQty = (id, pid, qty) => {
   console.log(id, pid, qty)
-  // const payloads = {
-  //   'id': id,
-  //   'product_id': pid,
-  //   'quantity': qty
-  // }
-  // console.log(payloads)
-  // console.log(payloads.toString())
+  const quantity = qty + 1
 
   return {
     type: INCREMENT_QTY,
-    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${qty}}`)
+    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${quantity}}`)
               .then(response => {
                 const jsonResponse = JSON.parse(response)
-                console.log(jsonResponse)
-                if (jsonResponse.data.status) return jsonResponse
+                if (jsonResponse.data.status) {
+                  return { id, pid, quantity }
+                }
               })
               .catch(error => console.log(error))
-  }
-  // return {
-  //   type: INCREMENT_QTY,
-  //   payload: { id }
-  // }
+  } 
 }
 
 //  ==================== Decrement Quantity inside Cart ===================== //
 export const DECREMENT_QTY = 'DECREMENT_QTY'
 export const decrementQty = (id, pid, qty) => {
   console.log(id, pid, qty)
-  // const payloads = {
-  //   id: 
-  //   product_id: 
-  //   quantity: 
-  // }
+  const quantity = qty + 1
 
   return {
     type: DECREMENT_QTY,
-    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${qty}}`)
+    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${quantity}}`)
               .then(response => {
                 const jsonResponse = JSON.parse(response)
-                console.log(jsonResponse)
                 if (jsonResponse.data.status) return jsonResponse
               })
               .catch(error => console.log(error))
   }
-
-  // return {
-  //   type: DECREMENT_QTY,
-  //   payload: { id }
-  // }
 }
 
 
@@ -150,13 +132,11 @@ export const clearCart = () => {
   return {
     type: CLEAR_CART,
     payload: PosCacheModule.deleteAll('CART')
-              .then(response => {
-                const jsonResponse = JSON.parse(response)
-                if (jsonResponse.data.status) return jsonResponse
-              })
+              .then(response => {})
               .catch(error => console.log(error))
   }
 }
+
 
 
 export const BANK_SELECTED = 'BANK_SELECTED'
