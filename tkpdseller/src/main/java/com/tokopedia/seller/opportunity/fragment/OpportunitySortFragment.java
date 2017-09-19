@@ -156,7 +156,8 @@ public class OpportunitySortFragment extends BasePresenterFragment {
                 FilterPass filterPass = new FilterPass(item.getKey(), item.getValue(), item
                         .getTitle());
                 bundle.putParcelable(SELECTED_SORT, filterPass);
-                intent.putExtra(SELECTED_POSITION, adapterPosition);
+                bundle.putInt(SELECTED_POSITION, adapterPosition);
+                intent.putExtras(bundle);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }
