@@ -16,6 +16,7 @@ const mapStateToProps = (state, ownProps) => {
     visible: ownProps.visible,
     onBackPress: ownProps.onBackPress,
     totalPrice: state.cart.totalPrice,
+    isFetching: state.cart.isFetching
   }
 }
 
