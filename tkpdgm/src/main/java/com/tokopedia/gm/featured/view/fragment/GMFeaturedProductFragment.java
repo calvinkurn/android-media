@@ -388,7 +388,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
             default:
-                updateTitle(getString(R.string.gm_featured_product_activity_title),
+                updateTitle(getString(R.string.featured_product_title),
                         getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
         }
     }
