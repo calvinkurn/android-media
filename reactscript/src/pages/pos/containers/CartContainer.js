@@ -10,6 +10,7 @@ import {
 } from '../actions/index'
 
 const mapStateToProps = (state, ownProps) => {
+  console.log(state.cart.items)
   return {
     items: state.cart.items,
     visible: ownProps.visible,
