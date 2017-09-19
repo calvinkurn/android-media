@@ -1,36 +1,48 @@
 package com.tokopedia.topads.dashboard.data.model.data;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by zulfikarrahman on 11/4/16.
  */
 
 public class Summary {
 
-    private long Id;
+    @SerializedName("click_sum")
     private int clickSum;
-    private String clickSumFmt;
-    private double costSum;
-    private String costSumFmt;
-    private int impressionSum;
-    private String impressionSumFmt;
-    private double ctrPercentage;
-    private String ctrPercentageFmt;
-    private int conversionSum;
-    private String conversionSumFmt;
-    private double costAvg;
-    private String costAvgFmt;
-    private String shopId;
-    private int type;
-    private String startDate;
-    private String endDate;
 
-    public long getId() {
-        return Id;
-    }
+    @SerializedName("click_sum_fmt")
+    public String clickSumFmt;
 
-    public void setId(long id) {
-        Id = id;
-    }
+    @SerializedName("cost_sum")
+    public double costSum;
+
+    @SerializedName("cost_sum_fmt")
+    public String costSumFmt;
+
+    @SerializedName("impression_sum")
+    public int impressionSum;
+
+    @SerializedName("impression_sum_fmt")
+    public String impressionSumFmt;
+
+    @SerializedName("ctr_percentage")
+    public double ctrPercentage;
+
+    @SerializedName("ctr_percentage_fmt")
+    public String ctrPercentageFmt;
+
+    @SerializedName("conversion_sum")
+    public int conversionSum;
+
+    @SerializedName("conversion_sum_fmt")
+    public String conversionSumFmt;
+
+    @SerializedName("cost_avg")
+    public double costAvg;
+
+    @SerializedName("cost_avg_fmt")
+    public String costAvgFmt;
 
     public int getClickSum() {
         return clickSum;
@@ -126,37 +138,5 @@ public class Summary {
 
     public void setCostAvgFmt(String costAvgFmt) {
         this.costAvgFmt = costAvgFmt;
-    }
-
-    public String getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
     }
 }

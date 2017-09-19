@@ -2,7 +2,6 @@ package com.tokopedia.seller.common.williamchart.util;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.util.Pair;
@@ -20,7 +19,6 @@ import java.util.List;
 public final class GMStatisticUtil {
     public static final int DATA_SET_NUMBER_DIVIDER = 7;
     public static final int MINIMUM_RATIO = 1;
-    private static final String TAG = "GMStatisticUtil";
 
     public static List<Integer> subList(List<Integer> datas, int size) {
         if (datas != null && !datas.isEmpty()) {
@@ -53,8 +51,6 @@ public final class GMStatisticUtil {
      * @param numChart
      */
     public static void resizeChart(int numChart, LineChartView chartView) {
-        Log.d(TAG, "resizeChart " + numChart);
-
         DisplayMetrics displaymetrics = new DisplayMetrics();
         Activity activity = null;
         if (chartView.getContext() instanceof Activity) {

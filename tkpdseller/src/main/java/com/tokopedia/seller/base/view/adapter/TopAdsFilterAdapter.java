@@ -56,7 +56,8 @@ public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case VIEW_DATA:
-                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_base_filter, viewGroup, false));
+                return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.item_base_filter, viewGroup, false));
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
@@ -118,7 +119,7 @@ public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
         notifyItemChanged(selectedPosition);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView titleTextView;
         public ImageView statusImageView;

@@ -47,9 +47,6 @@ public interface GMComponent {
     @ApplicationContext
     Context context();
 
-    @TopAdsQualifier
-    Retrofit topAdsRetrofit();
-
     @AceQualifier
     Retrofit aceRetrofit();
 
@@ -62,14 +59,8 @@ public interface GMComponent {
     @HadesQualifier
     Retrofit hadesRetrofit();
 
-    @YoutubeQualifier
-    Retrofit youtubeRetrofit();
-
     @DefaultAuthWithErrorHandler
     OkHttpClient okHttpClient();
-
-    @ResolutionQualifier
-    Retrofit resolutionRetrofit();
 
     @GoldMerchantQualifier
     Retrofit goldMerchantRetrofit();
