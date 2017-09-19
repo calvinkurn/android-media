@@ -324,7 +324,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
             productListPickerViewModels.add(productListPickerViewModel);
         }
-        Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels);
+        Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels, false);
         startActivityForResult(intent, REQUEST_CODE);
     }
 

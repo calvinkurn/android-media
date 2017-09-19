@@ -12,11 +12,13 @@ import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 public class ProductListPickerViewModel implements ItemPickerType, Parcelable {
 
     public static final int TYPE = 432;
+    public static final String STOCK_READY_VALUE = "1";
 
     String productName;
     String imageUrl;
     String productId;
     String productPrice;
+    String productStatus;
 
     @Override
     public int getType() {
@@ -29,6 +31,14 @@ public class ProductListPickerViewModel implements ItemPickerType, Parcelable {
 
     public void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public String getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(String productStatus) {
+        this.productStatus = productStatus;
     }
 
     @Override
@@ -58,6 +68,10 @@ public class ProductListPickerViewModel implements ItemPickerType, Parcelable {
         this.productId = productId;
     }
 
+    public boolean isStockOrImageEmpty(){
+        return productStatus != null && !productStatus.equals(STOCK_READY_VALUE);
+    }
+
     public ProductListPickerViewModel() {
     }
 
@@ -72,6 +86,7 @@ public class ProductListPickerViewModel implements ItemPickerType, Parcelable {
         dest.writeString(this.imageUrl);
         dest.writeString(this.productId);
         dest.writeString(this.productPrice);
+        dest.writeString(this.productStatus);
     }
 
     protected ProductListPickerViewModel(Parcel in) {
@@ -79,6 +94,7 @@ public class ProductListPickerViewModel implements ItemPickerType, Parcelable {
         this.imageUrl = in.readString();
         this.productId = in.readString();
         this.productPrice = in.readString();
+        this.productStatus = in.readString();
     }
 
     public static final Creator<ProductListPickerViewModel> CREATOR = new Creator<ProductListPickerViewModel>() {

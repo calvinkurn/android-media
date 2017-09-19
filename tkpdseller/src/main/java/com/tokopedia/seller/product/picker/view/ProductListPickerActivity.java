@@ -16,8 +16,6 @@ import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerMultipleItem;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
-import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +26,13 @@ import java.util.List;
 
 public class ProductListPickerActivity extends BasePickerMultipleItemActivity<ProductListPickerViewModel> implements ProductListPickerMultipleItem<ProductListPickerViewModel>, HasComponent<ProductComponent> {
 
-    public static Intent createIntent(Context context, List<ProductListPickerViewModel> productListPickerViewModels){
+    //default value is true
+    private boolean isEmptyImageAllowedPick = true;
+
+    public static Intent createIntent(Context context, List<ProductListPickerViewModel> productListPickerViewModels, boolean isEmptyImageAllowToPick){
         Intent intent = new Intent(context, ProductListPickerActivity.class);
         intent.putParcelableArrayListExtra(ProductListPickerConstant.PRODUCT_LIST_PICKER_MODEL_EXTRA, new ArrayList<Parcelable>(productListPickerViewModels));
+        intent.putExtra(ProductListPickerConstant.PRODUCT_LIST_PICKER_IS_EMPTY_ALLOW_EXTRA, isEmptyImageAllowToPick);
         return intent;
     }
 
@@ -38,6 +40,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateBottomSheetInfo();
+        isEmptyImageAllowedPick = getIntent().getBooleanExtra(ProductListPickerConstant.PRODUCT_LIST_PICKER_IS_EMPTY_ALLOW_EXTRA, true);
     }
 
     @Override
@@ -74,12 +77,20 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     @Override
-    public boolean allowAddItem() {
+    public boolean allowAddItem(ProductListPickerViewModel productListPickerViewModel) {
         if (isMaxVariantReached()) {
             showMaxVariantReachedMessage();
             return false;
+        }else if(!isEmptyImageAllowedPick(productListPickerViewModel)){
+            showEmptyImageNotAllowedMessage();
+            return false;
+        }else {
+            return true;
         }
-        return true;
+    }
+
+    private void showEmptyImageNotAllowedMessage() {
+        NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_list_picker_empty_stock_cannot_picked));
     }
 
     @Override
@@ -144,5 +155,13 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     @Override
     public ProductComponent getComponent() {
         return ((SellerModuleRouter)getApplication()).getProductComponent();
+    }
+
+    public boolean isEmptyImageAllowedPick(ProductListPickerViewModel productListPickerViewModel) {
+        if(isEmptyImageAllowedPick){
+            return true;
+        }else{
+            return !productListPickerViewModel.isStockOrImageEmpty();
+        }
     }
 }
