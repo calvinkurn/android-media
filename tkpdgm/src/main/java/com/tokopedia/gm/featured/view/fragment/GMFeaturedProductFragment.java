@@ -37,6 +37,7 @@ import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
+import com.tokopedia.gm.featured.view.util.GMSnackbarRetry;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -157,7 +158,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             if (adapter.getDataSize() == 0) {
                 textToPresent = getString(R.string.success_empty_delete_featured_product_empty);
             }
-            new SnackbarRetry(
+            new GMSnackbarRetry(
                     SnackbarManager.make(coordinatorLayoutContainer,
                             textToPresent,
                             Snackbar.LENGTH_INDEFINITE,

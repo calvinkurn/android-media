@@ -52,6 +52,7 @@ public class SnackbarManager {
 
         Button snackBarAction = (Button) snack.getView().findViewById(android.support.design.R.id.snackbar_action);
         snackBarAction.setTextColor(ContextCompat.getColor(coordinatorLayout.getContext(), actionColorRes));
+        snackBarAction.setAllCaps(false);
 
         snack.getView().setBackgroundColor(ContextCompat.getColor(coordinatorLayout.getContext(), backGroundColor));
 
