@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
@@ -71,22 +73,24 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             if (!isViewAttached()) {
                 return;
             }
-            updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(productDraftId, false), new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
-                    // no op
-                }
+            if (!TextUtils.isEmpty(productDraftId)) {
+                updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(productDraftId, false), new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        // no op
+                    }
 
-                @Override
-                public void onError(Throwable e) {
-                    // no op
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        // no op
+                    }
 
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    // no op
-                }
-            });
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        // no op
+                    }
+                });
+            }
             getView().onFailedAddProduct();
             getView().notificationFailed(e, productDraftId, productStatus);
             getView().sendFailedBroadcast(e);
