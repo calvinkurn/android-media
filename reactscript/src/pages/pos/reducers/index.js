@@ -137,14 +137,13 @@ const cart = (state = {
   items: [],
   totalPrice: 0
 }, action) => {
-  console.log(action.type)
   switch (action.type) {
     case `${FETCH_CART_FROM_CACHE}_${FULFILLED}`: 
-      // console.log(action.payload.data)
+      // console.log(action.payload)
       const getTotalPrice = () => {
         let total_price = 0
 
-        action.payload.data.list.map(res => {
+        action.payload.list.map(res => {
           let price_per_item = res.product.product_price_unformatted * res.quantity
           total_price = total_price + price_per_item 
           // console.log(total_price)
@@ -153,7 +152,7 @@ const cart = (state = {
       }
 
       return {
-        items: [...state.items, action.payload.data],
+        items: [...state.items, action.payload.list],
         totalPrice: getTotalPrice()
       }
 
@@ -165,45 +164,49 @@ const cart = (state = {
       }
 
     case REMOVE_FROM_CART:
-      const ItemToBeRemoved = state.items.filter(i => i.id === action.payload.id)
+      console.log(action.payload)
+      // const ItemToBeRemoved = state.items.filter(i => i.id === action.payload.id)
 
-      return {
-        items: state.items.filter(i => action.payload.id !== i.id),
-        totalPrice: state.totalPrice - (ItemToBeRemoved[0].price * ItemToBeRemoved[0].qty)
-      }
+      // return {
+      //   items: state.items.filter(i => action.payload.id !== i.id),
+      //   totalPrice: state.totalPrice - (ItemToBeRemoved[0].price * ItemToBeRemoved[0].qty)
+      // }
 
     case INCREMENT_QTY:
-      const itemQtyToBeIncr = state.items.filter(i => i.id === action.payload.id)
-      return {
-        items: state.items.map(b => {
-          if (action.payload.id === b.id) {
-            return Object.assign({}, b, {
-              qty: b.qty + 1
-            })
-          } else {
-            return b
-          }
-        }),
-        totalPrice: state.totalPrice + itemQtyToBeIncr[0].price
-      }
+      console.log(action.payload)
+      // const itemQtyToBeIncr = state.items.filter(i => i.id === action.payload.id)
+      // return {
+        // items: state.items.map(b => {
+        //   if (action.payload.id === b.id) {
+        //     return Object.assign({}, b, {
+        //       qty: b.qty + 1
+        //     })
+        //   } else {
+        //     return b
+        //   }
+        // }),
+        // items: 
+      //   totalPrice: state.totalPrice + itemQtyToBeIncr[0].price
+      // }
 
     case DECREMENT_QTY:
-      const itemQtyToBeDecr = state.items.filter(i => i.id === action.payload.id)
-      if (itemQtyToBeDecr[0].qty === 1) {
-        return state
-      }
-      return {
-        items: state.items.map(b => {
-          if (action.payload.id === b.id) {
-            return Object.assign({}, b, {
-              qty: b.qty - 1
-            })
-          } else {
-            return b
-          }
-        }),
-        totalPrice: state.totalPrice - itemQtyToBeDecr[0].price
-      }
+      console.log(action.payload)
+      // const itemQtyToBeDecr = state.items.filter(i => i.id === action.payload.id)
+      // if (itemQtyToBeDecr[0].qty === 1) {
+      //   return state
+      // }
+      // return {
+      //   items: state.items.map(b => {
+      //     if (action.payload.id === b.id) {
+      //       return Object.assign({}, b, {
+      //         qty: b.qty - 1
+      //       })
+      //     } else {
+      //       return b
+      //     }
+      //   }),
+      //   totalPrice: state.totalPrice - itemQtyToBeDecr[0].price
+      // }
 
     case CLEAR_CART:
       return {

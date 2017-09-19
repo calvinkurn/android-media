@@ -31,11 +31,11 @@ const mapDispatchToProps = (dispatch) => {
     onRemoveAllFromCart: () => {
       dispatch(clearCart())
     },
-    onIncrQty: (id) => {
-      dispatch(incrementQty(id))
+    onIncrQty: (id, pid, qty) => {
+      dispatch(incrementQty(id, pid, qty))
     },
-    onDecrQty: (id) => {
-      dispatch(decrementQty(id))
+    onDecrQty: (id, pid, qty) => {
+      dispatch(decrementQty(id, pid, qty))
     },
 
   }

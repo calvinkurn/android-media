@@ -24,6 +24,7 @@ class CartItem extends Component {
     const onIncr = this.props.onIncr
     const onDecr = this.props.onDecr
     const onRemove = this.props.onRemove
+    console.log(item)
 
     return (
       <View>
@@ -33,7 +34,7 @@ class CartItem extends Component {
             animationType='fade'
             onBackPress={() => { this.togglePopUp(false) }}
             title='Konfirmasi Pembatalan'
-            subTitle={`${item.name} - senilai ${item.price}`}
+            subTitle={`${item.product.product_name} - senilai ${item.product.product_price}`}
             onSecondOptionTap={() => { this.removeItem(item.id) }}
             onFirstOptionTap={() => { this.togglePopUp(false) }}
             firstOptionText='Tidak'
@@ -47,27 +48,27 @@ class CartItem extends Component {
             </TouchableWithoutFeedback>
           </View>
           <View style={{ width: '10%' }}>
-            <Image source={{ uri: item.imageUrl }} style={styles.imageStyle} />
+            <Image source={{ uri: item.product.product_image_300 }} style={styles.imageStyle} />
           </View>
           <View style={{ width: '50%', alignSelf: 'flex-start' }}>
-            <Text ellipsizeMode='tail' numberOfLines={2} style={styles.productName}>{item.name}</Text>
-            <Text style={styles.price}>Rp. {item.price}</Text>
+            <Text ellipsizeMode='tail' numberOfLines={2} style={styles.productName}>{item.product.product_name}</Text>
+            <Text style={styles.price}>{item.product.product_price}</Text>
           </View>
           <View style={styles.qtyContainer}>
             <Text style={styles.qtyLabel}>Qty</Text>
             <View style={styles.qtyControlContainer}>
               <TouchableWithoutFeedback
                 disabled={item.qty === 1}
-                onPress={() => { onDecr(item.id) }}>
+                onPress={() => { onDecr(item.id, item.product_id, item.quantity) }}>
                 <View>
                   <Image source={require('../img/btn_minus.png')} style={styles.qtyControlImage}></Image>
                 </View>
               </TouchableWithoutFeedback>
               <View style={styles.qty}>
-                <Text style={styles.qtyText}> {item.qty} </Text>
+                <Text style={styles.qtyText}> {item.quantity} </Text>
               </View>
               <TouchableWithoutFeedback
-                onPress={() => { onIncr(item.id) }}>
+                onPress={() => { onIncr(item.id, item.product_id, item.quantity) }}>
                 <View>
                   <Image source={require('../img/btn_plus.png')} style={styles.qtyControlImage}></Image>
                 </View>
