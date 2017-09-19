@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -70,8 +71,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder holder, int position) {
-        holder.checkBox.setClickable(false);
+    public void onBindViewHolder(final ItemHolder holder, int position) {
         if (itemList.get(position) instanceof ProductProblemViewModel) {
             final ProductProblemViewModel productProblem = (ProductProblemViewModel) itemList.get(position);
             holder.tvTitleSection.setVisibility(View.GONE);
@@ -81,9 +81,6 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             for (ProblemResult problemResult : selectedProblemResultList) {
                 if (problemResult.name.equals(productProblem.getProblem().getName())) {
                     holder.checkBox.setChecked(true);
-                    if (productProblem.getProblem().getType() == 2) {
-                        holder.checkBox.setClickable(true);
-                    }
                 }
             }
             if (productProblem.getProblem().getType() == 1) {
@@ -114,10 +111,25 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                 }
             });
 
+//            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (productProblem.getProblem().getType() == 2) {
+//                        listener.onRemoveProductProblem(productProblem);
+//                    }
+//                }
+//            });
+
             holder.checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (productProblem.getProblem().getType() == 2) {
+                    if (holder.checkBox.isChecked()) {
+                        if (productProblem.getProblem().getType() == 2) {
+                            listener.onItemClicked(productProblem);
+                        } else {
+                            listener.onStringProblemClicked(productProblem);
+                        }
+                    } else {
                         listener.onRemoveProductProblem(productProblem);
                     }
                 }

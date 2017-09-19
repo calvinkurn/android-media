@@ -131,7 +131,8 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
         stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
         tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
-
+        buttonDisabled(btnSaveAndChooseOther);
+        buttonDisabled(btnSave);
         presenter.populateData(productProblemViewModel, problemResult);
 
     }
@@ -272,7 +273,6 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     @Override
     public void populateReasonSpinner(String[] reasonStringArray, int position) {
         if (reasonStringArray != null) {
-            ;
             stvProblem.setValues(reasonStringArray);
             stvProblem.setEntries(reasonStringArray, 0);
             stvProblem.setEnabled(reasonStringArray.length != 1);
