@@ -499,37 +499,31 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
-
     }
 
     @Override
     public void sendAddWishlistEmitter(String productId, String userId) {
         reactUtils.sendAddWishlistEmitter(productId, userId);
-//        ReactUtils.init(ConsumerRouterApplication.this).sendAddWishlistEmitter(productId, userId);
     }
 
     @Override
     public void sendRemoveWishlistEmitter(String productId, String userId) {
         reactUtils.sendRemoveWishlistEmitter(productId, userId);
-//        ReactUtils.init(ConsumerRouterApplication.this).sendRemoveWishlistEmitter(productId, userId);
     }
 
     @Override
     public void sendRemoveFavoriteEmitter(String shopId, String userId) {
         reactUtils.sendRemoveFavoriteEmitter(shopId, userId);
-//        ReactUtils.init(ConsumerRouterApplication.this).sendRemoveFavoriteEmitter(shopId, userId);
     }
 
     @Override
     public void sendLoginEmitter(String userId) {
         reactUtils.sendLoginEmitter(userId);
-//        ReactUtils.init(ConsumerRouterApplication.this).sendLoginEmitter(userId);
     }
 
     @Override
     public void sendAddFavoriteEmitter(String shopId, String userId) {
         reactUtils.sendAddFavoriteEmitter(shopId, userId);
-//        ReactUtils.init(ConsumerRouterApplication.this).sendAddFavoriteEmitter(shopId, userId);
     }
 
     private ReactNativeComponent getReactNativeComponent() {
