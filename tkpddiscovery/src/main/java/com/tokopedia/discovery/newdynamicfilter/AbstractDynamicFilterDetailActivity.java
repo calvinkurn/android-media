@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
@@ -30,7 +31,7 @@ import java.util.List;
  */
 
 public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView.Adapter>
-        extends AppCompatActivity implements DynamicFilterDetailView {
+        extends BaseActivity implements DynamicFilterDetailView {
 
     public static final int REQUEST_CODE = 220;
     public static final String EXTRA_RESULT = "EXTRA_RESULT";

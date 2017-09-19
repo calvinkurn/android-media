@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.helper.KeyboardHelper;
@@ -42,7 +43,7 @@ import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
  * Created by henrypriyono on 8/8/17.
  */
 
-public class RevampedDynamicFilterActivity extends AppCompatActivity implements DynamicFilterView {
+public class RevampedDynamicFilterActivity extends BaseActivity implements DynamicFilterView {
 
     public static final int REQUEST_CODE = 219;
     public static final String EXTRA_FILTERS = "EXTRA_FILTERS";
