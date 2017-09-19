@@ -34,7 +34,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
     public static final int RC_SIGN_IN_GOOGLE = 7777;
     public static final String KEY_GOOGLE_ACCOUNT = "GoogleSignInAccount";
     public static final String KEY_GOOGLE_ACCOUNT_TOKEN = "GoogleSignInAccAccount";
-    private static final int REQUEST_AUTHORIZATION = 1234;
     protected GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -47,7 +46,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
-                .requestIdToken("692092518182-rjgh0bja6q41dllpq2dptn134cmhiv9h.apps.googleusercontent.com")
 //                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
 //                .requestScopes(new Scope(Scopes.PROFILE))
 //                .requestScopes(new Scope(Scopes.PLUS_ME))
@@ -88,12 +86,14 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                throw new RuntimeException(e);
                             } catch (UserRecoverableAuthException e) {
-                                startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
+                                startActivityForResult(e.getIntent(), RC_SIGN_IN_GOOGLE);
                             } catch (GoogleAuthException e) {
                                 e.printStackTrace();
+                                throw new RuntimeException(e);
                             }
-                            return Observable.just("");
+
                         }
                     });
 
@@ -105,12 +105,15 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
                 @Override
                 public void onError(Throwable e) {
-
+                    signOut();
+                    finish();
                 }
 
                 @Override
                 public void onNext(String accessToken) {
                     handleSignInResult(accessToken, result);
+                    signOut();
+                    finish();
                 }
             };
 
@@ -120,9 +123,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(subscriber));
         }
-
-        signOut();
-        finish();
     }
 
     private void signIn() {
