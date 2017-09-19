@@ -23,40 +23,40 @@ import rx.Observable;
  * @author normansyahputa on 7/6/17.
  */
 public interface GMStatApi {
-    @GET(StatisticConstant.GET_TRANSACTION_GRAPH_URL + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_TRANSACTION_GRAPH_URL)
     Observable<Response<GetTransactionGraph>> getTransactionGraph(@Path("id") String shopId,
                                                                   @QueryMap Map<String, String> params);
 
-    @GET(StatisticConstant.GET_TRANSACTION_TABLE_URL + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_TRANSACTION_TABLE_URL)
     Observable<Response<GetTransactionTable>> getTransactionTable(@Path("id") String shopId,
                                                                   @QueryMap Map<String, String> params);
 
-    @GET(StatisticConstant.GET_PRODUCT_GRAPH + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_PRODUCT_GRAPH)
     Observable<Response<GetProductGraph>> getProductGraph(@Path("id") String shopId,
                                                           @QueryMap Map<String, String> params);
 
 
-    @GET(StatisticConstant.GET_POPULAR_PRODUCT + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_POPULAR_PRODUCT)
     Observable<Response<GetPopularProduct>> getPopularProduct(@Path("id") String shopId,
                                                               @QueryMap Map<String, String> params);
 
-    @GET(StatisticConstant.GET_BUYER_GRAPH + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_BUYER_GRAPH)
     Observable<Response<GetBuyerGraph>> getBuyerGraph(@Path("id") String shopId,
                                                       @QueryMap Map<String, String> params);
 
-    @GET(StatisticConstant.GET_KEYWORD + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_KEYWORD)
     Observable<Response<GetKeyword>> getKeyword(@Path("id") String categoryId,
                                                 @QueryMap Map<String, String> params);
 
-    @GET(StatisticConstant.GET_SHOP_CATEGORY + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_SHOP_CATEGORY)
     Observable<Response<GetShopCategory>> getShopCategory(@Path("id") String shopId,
                                                           @QueryMap Map<String, String> params);
 
-    @GET(StatisticConstant.GET_PRODUCT_TABLE + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_PRODUCT_TABLE)
     Observable<Response<GetProductTable>> getProductTable(@Path("id") String shopId,
                                                           @QueryMap Map<String, String> params);
 
-    @GET(StatisticConstant.GET_BUYER_TABLE + StatisticConstant.ID_PARAM)
+    @GET(StatisticConstant.GET_BUYER_TABLE)
     Observable<Response<GetBuyerTable>> getBuyerTable(@Path("id") String shopId,
                                                       @QueryMap Map<String, String> params);
 

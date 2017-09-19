@@ -20,6 +20,10 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -174,21 +178,21 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
         }
-//        else if (TextUtils.isEmpty(type)){
-//            intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
-//            intentToLaunch.setData(uriData);
-//        }
-//        else if(TOPADS_VIEW_TYPE.equals(type)){
-//            String adId = uriData.getQueryParameter(PARAM_AD_ID);
-//            intentToLaunch = new Intent(context, TopAdsDetailProductActivity.class);
-//            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
-//            intentToLaunch.setData(uriData);
-//        } else if (TOPADS_CREATE_TYPE.equals(type)){
-//            String itemId = uriData.getQueryParameter(PARAM_ITEM_ID);
-//            intentToLaunch = new Intent(context, TopAdsGroupNewPromoActivity.class);
-//            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
-//            intentToLaunch.setData(uriData);
-//        }
+        else if (TextUtils.isEmpty(type)){
+            intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
+            intentToLaunch.setData(uriData);
+        }
+        else if(TOPADS_VIEW_TYPE.equals(type)){
+            String adId = uriData.getQueryParameter(PARAM_AD_ID);
+            intentToLaunch = new Intent(context, TopAdsDetailProductActivity.class);
+            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+            intentToLaunch.setData(uriData);
+        } else if (TOPADS_CREATE_TYPE.equals(type)){
+            String itemId = uriData.getQueryParameter(PARAM_ITEM_ID);
+            intentToLaunch = new Intent(context, TopAdsGroupNewPromoActivity.class);
+            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+            intentToLaunch.setData(uriData);
+        }
         context.startActivity(intentToLaunch);
         context.finish();
 
