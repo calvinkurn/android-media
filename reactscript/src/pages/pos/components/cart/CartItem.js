@@ -35,7 +35,7 @@ class CartItem extends Component {
             onBackPress={() => { this.togglePopUp(false) }}
             title='Konfirmasi Pembatalan'
             subTitle={`${item.product.product_name} - senilai ${item.product.product_price}`}
-            onSecondOptionTap={() => { this.removeItem(item.id) }}
+            onSecondOptionTap={() => { this.removeItem(item.product_id) }}
             onFirstOptionTap={() => { this.togglePopUp(false) }}
             firstOptionText='Tidak'
             secondOptionText='Ya'

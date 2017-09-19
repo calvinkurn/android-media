@@ -18,7 +18,7 @@ import {
   ON_SUBMIT_FETCH_SEARCH_PRODUCT,
   FETCH_CART_FROM_CACHE
 } from '../actions/index'
-import {bankData, emiData} from '../components/bankData';
+import { bankData, emiData } from '../components/bankData';
 
 const products = (state = {
   items: [],
@@ -85,7 +85,7 @@ const products = (state = {
         },
       }
     case `${ON_SUBMIT_FETCH_SEARCH_PRODUCT}_${FULFILLED}`:
-    console.log(ON_SUBMIT_FETCH_SEARCH_PRODUCT)
+      console.log(ON_SUBMIT_FETCH_SEARCH_PRODUCT)
       return {
         ...state,
         items: action.payload.data.data.products
@@ -101,7 +101,7 @@ const etalase = (state = {
     name: 'Semua Etalase',
     alias: 'semua_etalase'
   }],
-  selected: '0' 
+  selected: '0'
 }, action) => {
   switch (action.type) {
     case `${FETCH_ETALASE}_${PENDING}`:
@@ -135,23 +135,31 @@ const etalase = (state = {
 
 const cart = (state = {
   items: [],
-  totalPrice: 0
+  totalPrice: 0,
+  isFetching: false,
 }, action) => {
   switch (action.type) {
-    case `${FETCH_CART_FROM_CACHE}_${FULFILLED}`: 
+    case `${FETCH_CART_FROM_CACHE}_${PENDING}`:
+      return {
+        ...state,
+        isFetching: true,
+      }
+    case `${FETCH_CART_FROM_CACHE}_${FULFILLED}`:
+      const cartItems = action.payload.list
       const getTotalPrice = () => {
         let total_price = 0
-        
+
         action.payload.list.map(res => {
           let price_per_item = res.product.product_price_unformatted * res.quantity
-          total_price = total_price + price_per_item 
+          total_price = total_price + price_per_item
         })
         return total_price
       }
-      
+
       return {
-        items: [...state.items, action.payload.list],
-        totalPrice: getTotalPrice()
+        items: cartItems || [],
+        totalPrice: getTotalPrice(),
+        isFetching: false,
       }
 
     // case ADD_TO_CART:
@@ -159,53 +167,63 @@ const cart = (state = {
     //     items: [...state.items, action.payload.item],
     //     totalPrice: state.totalPrice + action.payload.item.price
     //   }
+    case `${FETCH_CART_FROM_CACHE}_${REJECTED}`:
+      return {
+        ...state,
+        isFetching: false,
+      }
+    case ADD_TO_CART:
 
-    case `${REMOVE_FROM_CART}_${FULFILLED}`: 
+      return {
+        items: [...state.items, action.payload.item],
+        totalPrice: state.totalPrice + action.payload.item.price
+      }
+
+    case `${REMOVE_FROM_CART}_${FULFILLED}`:
       console.log(action.payload)
-      // const ItemToBeRemoved = state.items.filter(i => i.id === action.payload.id)
+    const ItemToBeRemoved = state.items.filter(i => i.product_id === action.payload.pid)
 
-      // return {
-      //   items: state.items.filter(i => action.payload.id !== i.id),
-      //   totalPrice: state.totalPrice - (ItemToBeRemoved[0].price * ItemToBeRemoved[0].qty)
-      // }
+    return {
+      items: state.items.filter(i => action.payload.pid !== i.product_id),
+      totalPrice: state.totalPrice - (ItemToBeRemoved[0].product.product_price_unformatted * ItemToBeRemoved[0].quantity)
+    }
 
-    case `${INCREMENT_QTY}_${FULFILLED}`: 
-      // console.log(action.payload)
+    case `${INCREMENT_QTY}_${FULFILLED}`:
+      const itemQtyToBeIncr = state.items.filter(i => i.product_id === action.payload.pid)
+      return {
+        ...state,
+        items: state.items.map(b => {
+          if (action.payload.pid === b.product_id) {
+            return Object.assign({}, b, {
+              quantity: action.payload.quantity
+            })
+          } else {
+            return b
+          }
+        }),
+        totalPrice: state.totalPrice + itemQtyToBeIncr[0].product.product_price_unformatted
+      }
 
-      // return {
-        // items: state.items.map(b => {
-        //   if (action.payload.id === b.id) {
-        //     return Object.assign({}, b, {
-        //       qty: b.qty + 1
-        //     })
-        //   } else {
-        //     return b
-        //   }
-        // }),
-        // items: 
-      //   totalPrice: state.totalPrice + itemQtyToBeIncr[0].price
-      // }
+    case `${DECREMENT_QTY}_${FULFILLED}`:
+    const itemQtyToBeDecr = state.items.filter(i => i.product_id === action.payload.pid)
+    if (itemQtyToBeDecr[0].quantity === 1) {
+      return state
+    }
 
-    case DECREMENT_QTY:
-      // console.log(action.payload)
-      // const itemQtyToBeDecr = state.items.filter(i => i.id === action.payload.id)
-      // if (itemQtyToBeDecr[0].qty === 1) {
-      //   return state
-      // }
-      // return {
-      //   items: state.items.map(b => {
-      //     if (action.payload.id === b.id) {
-      //       return Object.assign({}, b, {
-      //         qty: b.qty - 1
-      //       })
-      //     } else {
-      //       return b
-      //     }
-      //   }),
-      //   totalPrice: state.totalPrice - itemQtyToBeDecr[0].price
-      // }
+    return {
+      items: state.items.map(b => {
+        if (action.payload.pid === b.product_id) {
+          return Object.assign({}, b, {
+            quantity: action.payload.quantity
+          })
+        } else {
+          return b
+        }
+      }),
+      totalPrice: state.totalPrice - itemQtyToBeDecr[0].product.product_price_unformatted
+    }
 
-    case `${CLEAR_CART}_${FULFILLED}`: 
+    case `${CLEAR_CART}_${FULFILLED}`:
       return {
         items: [],
         totalPrice: 0
@@ -318,7 +336,7 @@ const search = (state = {
         query: '',
       }
     case SET_SEARCH_TEXT:
-    console.log(action.payload)
+      console.log(action.payload)
       return {
         ...state,
         query: action.payload
@@ -348,10 +366,10 @@ const paymentInvoice = (state = {
 }
 
 const transactionHistory = (state = {
-  items:[]
+  items: []
 }, action) => {
 
-   switch (action.type) {
+  switch (action.type) {
     case 'FETCH_TRANSACTION_HISTORY':
       const data = [{
         orderName: "OkeShop Carrefour Kasablanca",
@@ -367,7 +385,7 @@ const transactionHistory = (state = {
             name: 'Oh Man! Baby Pomade Nutri Green 45gr',
             qty: 2,
             imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
-          }, 
+          },
           {
             id: 160533448,
             price: "Rp 13.699.000",
@@ -376,7 +394,7 @@ const transactionHistory = (state = {
             imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
           }
         ]
-      }, 
+      },
       {
         orderName: "OkeShop Carrefour Kasablanca",
         orderId: "IVR/20170609/XVII/VI/13461163",
@@ -391,7 +409,7 @@ const transactionHistory = (state = {
             name: 'Oh Man! Baby Pomade Nutri Green 45grsss  ',
             qty: 2,
             imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
-          }, 
+          },
           {
             id: 160533448,
             price: "Rp 13.699.000",
@@ -400,12 +418,12 @@ const transactionHistory = (state = {
             imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
           }
         ]
-      }]; 
+      }];
       return {
         ...state,
-        items:data
+        items: data
       }
-    break;
+      break;
   }
 
   return state;

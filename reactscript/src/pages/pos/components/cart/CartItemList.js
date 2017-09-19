@@ -32,13 +32,10 @@ export default class CartItemList extends Component {
   onBackPress = () => {
     NavigationModule.navigateAndFinish("posapp://product", "")
   }
-
-
-
-  componentWillMount(){
+  componentWillMount() {
     this.props.fetchCartList()
   }
-  
+
   render() {
     const items = this.props.items
     const visible = this.props.visible
@@ -48,6 +45,7 @@ export default class CartItemList extends Component {
     const onDecrQty = this.props.onDecrQty
     const onRemoveFromCart = this.props.onRemoveFromCart
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
+    const { isFetching } = this.props
     // console.log(this.props)
     console.log(items)
     // console.log(items[0])
@@ -65,91 +63,95 @@ export default class CartItemList extends Component {
         hardwareAccelerated={true}
         visible={this.props.visible}
         onRequestClose={this.onBackPress}>
-        {items[0] && items[0].length > 0 ?
-          <View style={{ flex: 1 }}>
-            <View style={styles.headerContainer}>
-              <View>
-                <TouchableWithoutFeedback onPress={this.onBackPress}>
+        {
+          isFetching ? null : (
+            items && items.length > 0 ? (
+              !isFetching && (<View style={{ flex: 1 }}>
+                <View style={styles.headerContainer}>
+                  <View>
+                    <TouchableWithoutFeedback onPress={this.onBackPress}>
+                      <Image source={require('../img/icon_back.png')} />
+                    </TouchableWithoutFeedback>
+                  </View>
+                  <View style={{ left: -220 }}>
+                    <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
+                  </View>
+                  <View>
+                    <TouchableWithoutFeedback onPress={() => { this.toggleScreen(true) }}>
+                      <Image source={require('../img/trash-all.png')} />
+                    </TouchableWithoutFeedback>
+                  </View>
+                </View>
+                <View style={styles.container}>
+                  <View>
+                    <PopUp
+                      visible={this.state.showPopUp}
+                      animationType='fade'
+                      onBackPress={() => { this.toggleScreen(false) }}
+                      title='Konfirmasi Pembatalan'
+                      subTitle='Apakah Anda yakin untuk menghapus semua daftar belanjaan?'
+                      onSecondOptionTap={this.remove}
+                      onFirstOptionTap={() => { this.toggleScreen(false) }}
+                      firstOptionText='Tidak'
+                      secondOptionText='Ya'
+                      onCloseIconTap={() => { this.toggleScreen(false) }}
+                    />
+                  </View>
+                  <ScrollView style={styles.itemListContainer}>
+                    {
+                      items.map(i => <CartItem
+                        item={i}
+                        key={i.id}
+                        onIncr={onIncrQty}
+                        onDecr={onDecrQty}
+                        onRemove={onRemoveFromCart}
+                      />)
+                    }
+                  </ScrollView>
+                  <View style={styles.paymentContainer}>
+                    <Text style={styles.paymentText}>Total Pembayaran</Text>
+                    <Text style={styles.paymentText}>Rp {totalPrice}</Text>
+                  </View>
+                  <View style={{ marginTop: 20 }}>
+                    <Button
+                      content='Checkout'
+                      type='big'
+                      onTap={() => { this.paymentCheckoutClicked() }}
+                    />
+                  </View>
+                </View></View>)
+            ) :
+              <View style={styles.emptyContainer}>
+                {/* <View style={styles.headerContainer}>
+              <View style={{ width: '10%', left: 10 }}>
+                <TouchableWithoutFeedback onPress={onBackPress}>
                   <Image source={require('../img/icon_back.png')} />
                 </TouchableWithoutFeedback>
               </View>
               <View style={{left: -220}}>
                 <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
               </View>
-              <View>
-                <TouchableWithoutFeedback onPress={() => { this.toggleScreen(true) }}>
-                  <Image source={require('../img/trash-all.png')} />
-                </TouchableWithoutFeedback>
+            </View> */}
+                <View style={styles.emptyList}>
+                  <View style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '40%',
+                    backgroundColor: '#fff'
+                  }}>
+                    <Image source={require('../img/shopping-basket.png')} style={{ width: 100, height: 100 }} />
+                    <Text>Tidak Ada barang dalam keranjang</Text>
+                  </View>
+                  <View style={{ marginTop: 20 }}>
+                    <Button
+                      content='Mulai Belanja'
+                      type='big'
+                      onTap={this.onBackPress}
+                    />
+                  </View>
+                </View>
               </View>
-            </View>
-            <View style={styles.container}>
-              <View>
-                <PopUp
-                  visible={this.state.showPopUp}
-                  animationType='fade'
-                  onBackPress={() => { this.toggleScreen(false) }}
-                  title='Konfirmasi Pembatalan'
-                  subTitle='Apakah Anda yakin untuk menghapus semua daftar belanjaan?'
-                  onSecondOptionTap={this.remove}
-                  onFirstOptionTap={() => { this.toggleScreen(false) }}
-                  firstOptionText='Tidak'
-                  secondOptionText='Ya'
-                  onCloseIconTap={() => { this.toggleScreen(false) }}
-                />
-              </View>
-              <ScrollView style={styles.itemListContainer}>
-                {
-                  items[0].map(i => <CartItem
-                    item={i}
-                    key={i.id}
-                    onIncr={onIncrQty}
-                    onDecr={onDecrQty}
-                    onRemove={onRemoveFromCart}
-                  />)
-                }
-              </ScrollView>
-              <View style={styles.paymentContainer}>
-                <Text style={styles.paymentText}>Total Pembayaran</Text>
-                <Text style={styles.paymentText}>Rp {totalPrice}</Text>
-              </View>
-              <View style={{ marginTop: 20 }}>
-                <Button
-                  content='Checkout'
-                  type='big'
-                  onTap={() => {this.paymentCheckoutClicked()}}
-                />
-              </View>
-            </View></View> :
-          <View style={styles.emptyContainer}>
-            <View style={styles.headerContainer}>
-              <View>
-                <TouchableWithoutFeedback onPress={this.onBackPress}>
-                  <Image source={require('../img/icon_back.png')} />
-                </TouchableWithoutFeedback>
-              </View>
-              <View style={{left: -220}}>
-                <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
-              </View>
-            </View>
-            <View style={styles.emptyList}>
-              <View style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '40%',
-                backgroundColor: '#fff'
-              }}>
-                <Image source={require('../img/shopping-basket.png')} style={{ width: 100, height: 100 }} />
-                <Text>Tidak Ada barang dalam keranjang</Text>
-              </View>
-              <View style={{ marginTop: 20 }}>
-                <Button
-                  content='Mulai Belanja'
-                  type='big'
-                  onTap={this.onBackPress}
-                />
-              </View>
-            </View>
-          </View>
+          )
         }
       </Modal>
     )

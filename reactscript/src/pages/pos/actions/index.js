@@ -76,14 +76,16 @@ const fetchCart = () => {
 
 //  ==================== Remove 1 item inside Cart ===================== //
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
-export const removeFromCart = (id) => {
+export const removeFromCart = (pid) => {
   return {
     type: REMOVE_FROM_CART,
-    payload: PosCacheModule.deleteItem('CART', id.toString())
+    payload: PosCacheModule.deleteItem('CART', pid.toString())
               .then(response => {
                 const jsonResponse = JSON.parse(response)
                 console.log(response)
-                if (jsonResponse.data.status) return jsonResponse
+                if (jsonResponse.data.status) {
+                  return {pid}
+                }
               })
               .catch(error => console.log(error))
   }
@@ -112,14 +114,16 @@ export const incrementQty = (id, pid, qty) => {
 export const DECREMENT_QTY = 'DECREMENT_QTY'
 export const decrementQty = (id, pid, qty) => {
   console.log(id, pid, qty)
-  const quantity = qty + 1
+  const quantity = qty - 1
 
   return {
     type: DECREMENT_QTY,
     payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${quantity}}`)
               .then(response => {
                 const jsonResponse = JSON.parse(response)
-                if (jsonResponse.data.status) return jsonResponse
+                if (jsonResponse.data.status) {
+                  return { id, pid, quantity }
+                }
               })
               .catch(error => console.log(error))
   }
