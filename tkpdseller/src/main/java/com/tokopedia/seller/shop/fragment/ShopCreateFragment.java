@@ -381,7 +381,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 CommonUtils.UniversalToast(getContext(), descInput.getError().toString());
                 break;
             default:
-                CommonUtils.UniversalToast(getContext(), (String) (data[0]));
+                CommonUtils.UniversalToast(getContext(), (String) (data[0] == null ? getString(R.string.error_connection) : data[0]));
                 break;
         }
 

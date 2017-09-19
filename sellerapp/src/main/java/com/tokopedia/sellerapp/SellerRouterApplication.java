@@ -74,11 +74,18 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import rx.Observable;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -88,7 +95,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, SellerFragmentReputation, PdpRouter,
+        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
@@ -99,6 +106,9 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerGMComponent.Builder daggerGMBuilder;
     private GMComponent gmComponent;
 
+    private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
+    private TopAdsComponent topAdsComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -108,6 +118,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private void initializeDagger() {
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
+        daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
     }
 
     @Override
@@ -123,6 +134,14 @@ public abstract class SellerRouterApplication extends MainApplication
             gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
         }
         return gmComponent;
+    }
+
+    @Override
+    public TopAdsComponent getTopAdsComponent() {
+        if (topAdsComponent == null) {
+            topAdsComponent = daggerTopAdsBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return topAdsComponent;
     }
 
     @Override
@@ -488,9 +507,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public DataDeposit getDataDeposit(String shopId) {
-        DashboardTopadsInteractorImpl dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(getApplicationContext());
-        return dashboardTopadsInteractor.getDeposit(shopId);
+    public Observable<DataDeposit> getDataDeposit(String shopId) {
+        GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
+        return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
     }
 
     @Override

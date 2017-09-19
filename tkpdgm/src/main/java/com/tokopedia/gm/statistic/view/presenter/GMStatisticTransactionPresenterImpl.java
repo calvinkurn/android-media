@@ -26,7 +26,7 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
     @Override
     public void loadDataWithDate(final GMModuleRouter gmModuleRouter, long startDate, long endDate) {
-        gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate), new Subscriber<GMTransactionGraphMergeModel>() {
+        gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate, sessionHandler.getShopID()), new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
             public void onCompleted() {
 
@@ -42,17 +42,16 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
+                fetchTopAdsDeposit(mergeModel);
                 // get necessary object, just take from transaction graph view
                 getView().onSuccessLoadTransactionGraph(mergeModel);
             }
 
-            private void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
-                DataDeposit dataDeposit = gmModuleRouter.getDataDeposit(sessionHandler.getShopID());
-                if (dataDeposit.isAdUsage()) {
-                    getView().bindTopAds(gmTopAdsAmountViewModel);
+            private void fetchTopAdsDeposit(final GMTransactionGraphMergeModel gmTransactionGraphMergeModel) {
+                if (gmTransactionGraphMergeModel.dataDeposit.isAdUsage()) {
+                    getView().bindTopAds(gmTransactionGraphMergeModel.gmTopAdsAmountViewModel);
                 } else {
-                    getView().bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel, dataDeposit);
+                    getView().bindTopAdsCreditNotUsed(gmTransactionGraphMergeModel.gmTopAdsAmountViewModel, gmTransactionGraphMergeModel.dataDeposit);
                 }
             }
         });
