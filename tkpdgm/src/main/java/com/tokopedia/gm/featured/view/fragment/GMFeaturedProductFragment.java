@@ -278,12 +278,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     public boolean isItemViewSwipeEnabled() {
-        switch (featuredProductTypeView) {
-            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
-                return true;
-            default:
-                return false;
-        }
+        return false;
     }
 
     @Override
