@@ -46,7 +46,7 @@ const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching
     <View style={{flex: 1 / 3}}>
       <Touchable onPress={_onClick}>
         <View style={styles.container}>
-          <Image source={ icons.load_more } style={{ flex:1, width:35, height:10, marginTop:30, marginBottom:5 }} />
+          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_offstore/load_more.png' }} style={{ flex:1, width:35, height:10, marginTop:30, marginBottom:5 }} />
           <Text style={styles.text}>Brand Lainnya</Text>
         </View>
       </Touchable>
