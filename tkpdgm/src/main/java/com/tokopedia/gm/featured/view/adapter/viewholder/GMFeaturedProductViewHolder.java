@@ -5,6 +5,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -73,11 +74,13 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
                 icGMFeaturedProduct,
                 gmFeaturedProductModel.getImageUrl()
         );
-        checkBoxGM.setOnClickListener(new View.OnClickListener() {
+        checkBoxGM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (checkedCallback != null) {
-                    checkedCallback.onItemChecked(gmFeaturedProductModel, checkBoxGM.isChecked());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
+                } else {
+                    gmFeaturedContainer.setBackgroundResource(android.R.color.white);
                 }
             }
         });
