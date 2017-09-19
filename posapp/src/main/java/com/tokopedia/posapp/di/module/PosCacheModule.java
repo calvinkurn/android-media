@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.di.module;
 
 import com.tokopedia.posapp.di.scope.PosCacheScope;
+import com.tokopedia.posapp.di.scope.ShopScope;
 
 import dagger.Module;
 
@@ -9,7 +10,8 @@ import dagger.Module;
  */
 
 @PosCacheScope
-@Module(includes = {ShopProductModule.class, BankModule.class})
+@ShopScope
+@Module(includes = {EtalaseModule.class, ShopProductModule.class, BankModule.class})
 public class PosCacheModule {
 
 }

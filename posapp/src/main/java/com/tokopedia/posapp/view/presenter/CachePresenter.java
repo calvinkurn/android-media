@@ -10,6 +10,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
+import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 import com.tokopedia.posapp.domain.usecase.GetBankInstallmentUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
@@ -19,6 +20,8 @@ import com.tokopedia.posapp.domain.usecase.StoreEtalaseCacheUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,7 +57,6 @@ public class CachePresenter implements Cache.Presenter {
     private StoreEtalaseCacheUseCase storeEtalaseCacheUseCase;
 
     private Cache.CallbackListener callbackListener;
-    private CompositeSubscription compositeSubscription;
 
     // TODO: 9/5/17 this state is ugly, try somethin else
     private boolean isRequestNextProduct;
@@ -65,15 +67,17 @@ public class CachePresenter implements Cache.Presenter {
                           GetShopProductListUseCase getShopProductListUseCase,
                           StoreProductCacheUseCase storeProductCacheUseCase,
                           GetBankInstallmentUseCase getBankInstallmentUseCase,
-                          StoreBankInstallmentCacheUseCase storeBankInstallmentCacheUseCase
+                          StoreBankInstallmentCacheUseCase storeBankInstallmentCacheUseCase,
+                          GetEtalaseUseCase getEtalaseUseCase,
+                          StoreEtalaseCacheUseCase storeEtalaseCacheUseCase
     ) {
         this.context = context;
         this.getShopProductListUseCase = getShopProductListUseCase;
         this.storeProductCacheUseCase = storeProductCacheUseCase;
         this.getBankInstallmentUseCase = getBankInstallmentUseCase;
         this.storeBankInstallmentCacheUseCase = storeBankInstallmentCacheUseCase;
-
-        compositeSubscription = new CompositeSubscription();
+        this.getEtalaseUseCase = getEtalaseUseCase;
+        this.storeEtalaseCacheUseCase = storeEtalaseCacheUseCase;
 
         initState();
     }
@@ -92,7 +96,7 @@ public class CachePresenter implements Cache.Presenter {
 
     @Override
     public void onDestroy() {
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+
     }
 
     private void initState() {
@@ -101,21 +105,30 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private void getProduct() {
-//        compositeSubscription.add(
-            Observable.defer(new Func0<Observable<ShopProductListDomain>>() {
-                @Override
-                public Observable<ShopProductListDomain> call() {
-                    if(isRequestNextProduct) {
-                        return getShopProductListUseCase.createObservable(getProductParam(productPage));
-                    }
+        RequestParams etalaseParams = RequestParams.create();
+        etalaseParams.putString(SHOP_ID, SessionHandler.getShopID(context));
 
-                    return Observable.error(null);
+        getEtalaseUseCase.createObservable(etalaseParams)
+                .flatMap(new Func1<List<ShopEtalaseDomain>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(List<ShopEtalaseDomain> shopEtalaseDomains) {
+                        return null;
+                    }
+                });
+
+        Observable.defer(new Func0<Observable<ShopProductListDomain>>() {
+            @Override
+            public Observable<ShopProductListDomain> call() {
+                if(isRequestNextProduct) {
+                    return getShopProductListUseCase.createObservable(getProductParam(productPage));
                 }
-            })
-            .repeat()
-            .subscribeOn(Schedulers.newThread())
-            .subscribe(new ProductSubscriber());
-//        );
+
+                return Observable.error(null);
+            }
+        })
+        .repeat()
+        .subscribeOn(Schedulers.newThread())
+        .subscribe(new ProductSubscriber());
     }
 
     private RequestParams getProductParam(int page) {
@@ -133,29 +146,27 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private void getBankList() {
-//        compositeSubscription.add(
-            getBankInstallmentUseCase
-                    .createObservable(null)
-                    .observeOn(Schedulers.newThread())
-                    .flatMap(storeBankToCache())
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Subscriber<BankSavedResult>() {
-                        @Override
-                        public void onCompleted() {
+        getBankInstallmentUseCase
+                .createObservable(null)
+                .observeOn(Schedulers.newThread())
+                .flatMap(storeBankToCache())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<BankSavedResult>() {
+                    @Override
+                    public void onCompleted() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-                        @Override
-                        public void onNext(BankSavedResult o) {
+                    @Override
+                    public void onNext(BankSavedResult o) {
 
-                        }
-                    });
-//        );
+                    }
+                });
     }
 
     private Func1<BankInstallmentDomain, Observable<BankSavedResult>> storeBankToCache() {
@@ -164,8 +175,8 @@ public class CachePresenter implements Cache.Presenter {
             public Observable<BankSavedResult> call(BankInstallmentDomain bankInstallmentDomain) {
                 RequestParams requestParams = RequestParams.create();
                 requestParams.putObject(
-                        StoreBankInstallmentCacheUseCase.BANK_INSTALLMENT_DOMAIN,
-                        bankInstallmentDomain
+                    StoreBankInstallmentCacheUseCase.BANK_INSTALLMENT_DOMAIN,
+                    bankInstallmentDomain
                 );
                 return storeBankInstallmentCacheUseCase.createObservable(requestParams);
             }

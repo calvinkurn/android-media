@@ -9,9 +9,9 @@ import rx.Observable;
 public interface ReactCacheSource {
     Observable<String> getData(String id);
 
-    Observable<String> getListData(int offset, int limit);
+    Observable<String> getDataList(int offset, int limit);
 
-    Observable<String> getAllData();
+    Observable<String> getDataAll();
 
     Observable<String> deleteAll();
 

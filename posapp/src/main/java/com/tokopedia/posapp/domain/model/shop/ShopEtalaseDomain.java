@@ -1,31 +1,16 @@
-package com.tokopedia.posapp.database.model;
+package com.tokopedia.posapp.domain.model.shop;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.posapp.database.PosDatabase;
 
 /**
  * Created by okasurya on 9/18/17.
  */
 
-@ModelContainer
-@Table(database = PosDatabase.class, insertConflict = ConflictAction.REPLACE)
-public class EtalaseDb extends BaseModel {
-    @Column
-    @PrimaryKey
+public class ShopEtalaseDomain {
     private String etalaseId;
-
-    @Column
     private String etalaseName;
-
-    @Column
     private String etalaseAlias;
-
-    @Column
     private int useAce;
 
     public String getEtalaseId() {

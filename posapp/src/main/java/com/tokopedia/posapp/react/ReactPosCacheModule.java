@@ -9,11 +9,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.component.DaggerReactCacheComponent;
-import com.tokopedia.posapp.react.domain.ReactCacheRepository;
+import com.tokopedia.posapp.react.datasource.ReactCacheRepository;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 

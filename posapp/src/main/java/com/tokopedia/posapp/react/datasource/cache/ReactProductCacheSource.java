@@ -1,12 +1,14 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.pojo.Paging;
 import com.tokopedia.posapp.data.pojo.ShopProductResponse;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.database.model.ProductDb;
+import com.tokopedia.posapp.database.model.ProductDb_Table;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
@@ -34,12 +36,12 @@ public class ReactProductCacheSource implements ReactCacheSource {
     }
 
     @Override
-    public Observable<String> getListData(int offset, int limit) {
+    public Observable<String> getDataList(int offset, int limit) {
         return null;
     }
 
     @Override
-    public Observable<String> getAllData() {
+    public Observable<String> getDataAll() {
         List<ProductDb> productDbs = productDbManager.getAllData();
         ShopProductResponse shopProductResponse = new ShopProductResponse();
         List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
@@ -81,6 +83,14 @@ public class ReactProductCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> update(String data) {
+        return null;
+    }
+
+    public Observable<String> searchProduct(String keyword, String etalaseId, int offset, int limit) {
+//        ConditionGroup conditions = ConditionGroup.clause()
+//                .and(ProductDb_Table.productName.like(keyword))
+//                .and(ProductDb_Table.)
+//        productDbManager.getDataList()
         return null;
     }
 }

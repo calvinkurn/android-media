@@ -2,6 +2,8 @@ package com.tokopedia.posapp.database.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -9,6 +11,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.posapp.database.PosDatabase;
+import com.tokopedia.posapp.database.model.container.BankDbContainer;
 
 import java.util.List;
 
@@ -46,6 +49,9 @@ public class ProductDb extends BaseModel {
 
     @Column
     private String productImageFull;
+
+    @Column
+    private String etalaseId;
 
     public int getProductId() {
         return productId;
@@ -117,5 +123,13 @@ public class ProductDb extends BaseModel {
 
     public void setProductImageFull(String productImageFull) {
         this.productImageFull = productImageFull;
+    }
+
+    public String getEtalaseId() {
+        return etalaseId;
+    }
+
+    public void setEtalaseId(String etalaseId) {
+        this.etalaseId = etalaseId;
     }
 }

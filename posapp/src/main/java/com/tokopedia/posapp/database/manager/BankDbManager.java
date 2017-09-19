@@ -100,6 +100,11 @@ public class BankDbManager implements DbManager<BankDomain,BankDb> {
     }
 
     @Override
+    public List<BankDb> getListData(ConditionGroup conditions, int offset, int limit) {
+        return null;
+    }
+
+    @Override
     public List<BankDb> getListData(int offset, int limit) {
         return null;
     }

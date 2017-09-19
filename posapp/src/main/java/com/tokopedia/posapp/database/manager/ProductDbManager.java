@@ -83,6 +83,11 @@ public class ProductDbManager implements DbManager<ProductDb, ProductDb> {
     }
 
     @Override
+    public List<ProductDb> getListData(ConditionGroup conditions, int offset, int limit) {
+        return SQLite.select().from(ProductDb.class).where(conditions).offset(offset).limit(limit).queryList();
+    }
+
+    @Override
     public List<ProductDb> getListData(int offset, int limit) {
         return SQLite.select().from(ProductDb.class).offset(offset).limit(limit).queryList();
     }

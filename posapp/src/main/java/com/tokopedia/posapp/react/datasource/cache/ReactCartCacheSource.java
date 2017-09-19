@@ -35,12 +35,12 @@ public class ReactCartCacheSource implements ReactCacheSource {
     }
 
     @Override
-    public Observable<String> getListData(int offset, int limit) {
+    public Observable<String> getDataList(int offset, int limit) {
         return cartFactory.local().getCartProducts(offset, limit).map(getCartListMapper());
     }
 
     @Override
-    public Observable<String> getAllData() {
+    public Observable<String> getDataAll() {
         return cartFactory.local().getAllCartProducts().map(getCartListMapper());
     }
 
@@ -52,7 +52,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
     @Override
     public Observable<String> deleteItem(String id) {
         CartDomain cartDomain = new CartDomain();
-        cartDomain.setProductId(Integer.parseInt(id));
+        cartDomain.setId(Long.parseLong(id));
         return cartFactory.local().deleteCartProduct(cartDomain).map(getDbOperationMapper());
     }
 

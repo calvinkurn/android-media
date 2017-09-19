@@ -51,13 +51,13 @@ public class ReactBankCacheSource implements ReactCacheSource {
     }
 
     @Override
-    public Observable<String> getListData(int offset, int limit) {
+    public Observable<String> getDataList(int offset, int limit) {
         List<BankDb> bankDbList = SQLite.select().from(BankDb.class).offset(offset).limit(limit).queryList();
         return mapListData(bankDbList);
     }
 
     @Override
-    public Observable<String> getAllData() {
+    public Observable<String> getDataAll() {
         List<BankDb> bankDbList = SQLite.select().from(BankDb.class).queryList();
 
         return mapListData(bankDbList);

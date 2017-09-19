@@ -57,7 +57,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.ProductListActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" />
         <activity
             android:name=".view.activity.LocalCartActivity"
             android:screenOrientation="portrait" />

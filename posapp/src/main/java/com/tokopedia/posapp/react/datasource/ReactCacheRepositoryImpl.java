@@ -1,6 +1,5 @@
 package com.tokopedia.posapp.react.datasource;
 
-import com.tokopedia.posapp.react.domain.ReactCacheRepository;
 import com.tokopedia.posapp.react.exception.TableNotFoundException;
 import com.tokopedia.posapp.react.factory.ReactCacheFactory;
 
@@ -32,7 +31,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> getDataList(String tableName, int offset, int limit) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).getListData(offset, limit);
+            return reactCacheFactory.createCacheDataSource(tableName).getDataList(offset, limit);
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }
@@ -41,7 +40,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> getDataAll(String tableName) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).getAllData();
+            return reactCacheFactory.createCacheDataSource(tableName).getDataAll();
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }

@@ -30,6 +30,8 @@ public interface DbManager<T, S>  {
 
     List<S> getListData(ConditionGroup conditions);
 
+    List<S> getListData(ConditionGroup conditions, int offset, int limit);
+
     List<S> getListData(int offset, int limit);
 
     List<S> getAllData();
