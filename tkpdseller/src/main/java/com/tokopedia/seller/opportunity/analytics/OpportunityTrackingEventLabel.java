@@ -8,9 +8,7 @@ public interface OpportunityTrackingEventLabel {
 
     interface EventName {
         String SCROLL_OPPORTUNITY = "scrollPeluang";
-        String SUBMIT_OPPORTUNITY_FILTER = "submitPeluang";
-        String SUBMIT_OPPORTUNITY_SEARCH = "submitPeluang";
-        String SUBMIT_OPPORTUNITY_SORT = "submitPeluang";
+        String SUBMIT_OPPORTUNITY = "submitPeluang";
         String CLICK_OPPORTUNITY_TAKE = "clickPeluang";
         String CLICK_OPPORTUNITY_PRODUCT = "clickPeluang";
         String CLICK_OPPORTUNITY_TAKE_YES = "clickPeluang";
@@ -28,5 +26,11 @@ public interface OpportunityTrackingEventLabel {
         String SEE_PRODUCT = "Lihat Produk";
         String YES = "Ya";
         String NO = "Tidak";
+
+        String SEARCH = "searchPeluang";
+    }
+
+    interface CustomDimension {
+        String SEARCH = "search";
     }
 }

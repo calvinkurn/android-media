@@ -2502,4 +2502,17 @@ public class UnifyTracking extends TrackingUtils {
                 label)
                 .getEvent());
     }
+
+    public static void eventOpportunityCustom(String event, String category,
+                                        String action, String label,
+                                        HashMap<String, String> customDimension) {
+        sendGTMEvent(new EventTracking(
+                event,
+                category,
+                action,
+                label)
+                .setCustomDimension(customDimension)
+                .getEvent()
+        );
+    }
 }

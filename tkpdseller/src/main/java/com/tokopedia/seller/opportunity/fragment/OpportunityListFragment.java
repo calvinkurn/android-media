@@ -111,8 +111,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         KeyboardHandler.DropKeyboard(getActivity(), searchView);
         presenter.initOpportunityForFirstTime(
                 opportunityParam.getQuery(),
-                opportunityParam.getKeySort(),
-                opportunityParam.getSort(),
                 opportunityParam.getListFilter()
         );
     }
@@ -194,8 +192,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         pagingHandler.resetPage();
         presenter.initOpportunityForFirstTime(
                 opportunityParam.getQuery(),
-                opportunityParam.getKeySort(),
-                opportunityParam.getSort(),
                 opportunityParam.getListFilter()
         );
     }
@@ -232,8 +228,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                             pagingHandler.nextPage();
                             presenter.getOpportunity(
                                     opportunityParam.getQuery(),
-                                    opportunityParam.getKeySort(),
-                                    opportunityParam.getSort(),
                                     opportunityParam.getListFilter());
                         }
 
@@ -251,13 +245,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public boolean onQueryTextSubmit(String query) {
                 opportunityParam.setQuery(query);
                 resetOpportunityList();
-
-                UnifyTracking.eventOpportunity(
-                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY_SEARCH,
-                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                        AppEventTracking.Action.SUBMIT,
-                        query
-                );
                 return false;
             }
 
@@ -412,8 +399,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public void onRetryClicked() {
                 presenter.initOpportunityForFirstTime(
                         opportunityParam.getQuery(),
-                        opportunityParam.getKeySort(),
-                        opportunityParam.getSort(),
                         opportunityParam.getListFilter()
                 );
             }
@@ -502,8 +487,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private void setOpportunitySortData(Intent data) {
         if (filterData != null && filterData.getListSortingType() != null) {
-            String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
-            String keySort = data.getExtras().getString(OpportunitySortFragment.SELECTED_KEY);
+            FilterPass sort = data.getExtras().getParcelable(OpportunitySortFragment.SELECTED_SORT);
             int position = data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION);
 
             for (int i = 0; i < filterData.getListSortingType().size(); i++) {
@@ -513,7 +497,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                     filterData.getListSortingType().get(i).setSelected(true);
                 }
             }
-            opportunityParam.setSort(keySort, paramSort);
+            opportunityParam.setSort(sort);
             resetOpportunityList();
         }
 

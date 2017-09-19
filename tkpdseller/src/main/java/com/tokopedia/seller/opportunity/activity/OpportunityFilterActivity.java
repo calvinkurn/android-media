@@ -227,7 +227,10 @@ public class OpportunityFilterActivity extends BasePresenterActivity
             if (optionViewModel.getListChild().size() > 0 && !optionViewModel.isExpanded()) {
                 addSelectedFilterToList(list, optionViewModel.getListChild());
             } else if (optionViewModel.isSelected()) {
-                list.add(new FilterPass(optionViewModel.getKey(), optionViewModel.getValue()));
+                list.add(new FilterPass(
+                        optionViewModel.getKey(),
+                        optionViewModel.getValue(),
+                        optionViewModel.getName()));
             }
         }
     }
