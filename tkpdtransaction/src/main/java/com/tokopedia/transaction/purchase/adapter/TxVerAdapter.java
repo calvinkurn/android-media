@@ -150,7 +150,8 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     }
 
     private int getTypePaymentMethod(TxVerData item) {
-        return item.getBankName().contains("Klik") && item.getBankName().contains("BCA") ? 1
+        return (item.getBankName().contains("Klik") && item.getBankName().contains("BCA")) ||
+                (item.getBankName().contains("Kartu") && item.getBankName().contains("Kredit")) ? 1
                 : item.getButton().getButtonEditPayment() == 0 &&
                 item.getButton().getButtonUploadProof() == 0 &&
                 item.getButton().getButtonViewProof() == 0 ? 2 : 3;
