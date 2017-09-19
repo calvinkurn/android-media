@@ -107,7 +107,7 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
     }
 
     public void selectItem(int position) {
-        if (isAdded()) {
+        if (adapter != null && isAdded()) {
             adapter.selectItem(position);
         }
     }

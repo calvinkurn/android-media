@@ -5,16 +5,17 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
+import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 
 /**
  * Created by normansyahputa on 9/8/17.
@@ -26,12 +27,16 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     private final TextView textProductName;
     private final TextView textPrice;
     private final AppCompatCheckBox checkBoxGM;
+    private final FrameLayout dragAndDropView;
+    private final RelativeLayout gmFeaturedContainer;
     AppCompatImageView dragAndDropGMFeaturedProduct;
     private OnStartDragListener onStartDragListener;
     private PostDataListener useCaseListener;
 
     public GMFeaturedProductViewHolder(View itemView, OnStartDragListener dragListener, PostDataListener useCaseListener) {
         super(itemView);
+        gmFeaturedContainer = (RelativeLayout) itemView.findViewById(R.id.gm_featured_container);
+        dragAndDropView = (FrameLayout) itemView.findViewById(R.id.ic_drag_and_drop_gm_featured_product_container);
         dragAndDropGMFeaturedProduct = (AppCompatImageView) itemView.findViewById(R.id.ic_drag_and_drop_gm_featured_product);
         icGMFeaturedProduct = (AppCompatImageView) itemView.findViewById(R.id.ic_gm_featured_product);
         textProductName = (TextView) itemView.findViewById(R.id.text_product_name_gm_featured_product);
@@ -43,12 +48,16 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
 
     @Override
     public void onItemSelected() {
-
+        gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
+        dragAndDropGMFeaturedProduct.setAlpha(0.5f);
+        textProductName.setTextColor(itemView.getResources().getColor(R.color.black_70));
     }
 
     @Override
     public void onItemClear() {
-
+        gmFeaturedContainer.setBackgroundResource(android.R.color.white);
+        dragAndDropGMFeaturedProduct.setAlpha(1f);
+        textProductName.setTextColor(itemView.getResources().getColor(R.color.font_black_primary_70));
     }
 
     @Override
@@ -56,16 +65,24 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
         bindData(gmFeaturedProductModel);
     }
 
-    public void bindData(GMFeaturedProductModel GMFeaturedProductModel) {
-        textProductName.setText(GMFeaturedProductModel.getProductName());
-        textPrice.setText(GMFeaturedProductModel.getProductPrice());
+    public void bindData(final GMFeaturedProductModel gmFeaturedProductModel) {
+        textProductName.setText(gmFeaturedProductModel.getProductName());
+        textPrice.setText(gmFeaturedProductModel.getProductPrice());
         ImageHandler.loadImageRounded2(
                 icGMFeaturedProduct.getContext(),
                 icGMFeaturedProduct,
-                GMFeaturedProductModel.getImageUrl()
+                gmFeaturedProductModel.getImageUrl()
         );
+        checkBoxGM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkedCallback != null) {
+                    checkedCallback.onItemChecked(gmFeaturedProductModel, checkBoxGM.isChecked());
+                }
+            }
+        });
 
-        dragAndDropGMFeaturedProduct.setOnTouchListener(new View.OnTouchListener() {
+        dragAndDropView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
@@ -115,6 +132,12 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     @Override
     public void setChecked(boolean checked) {
         checkBoxGM.setChecked(checked);
+
+        if(checked){
+            gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
+        }else{
+            gmFeaturedContainer.setBackgroundResource(android.R.color.white);
+        }
     }
 
     public interface PostDataListener {

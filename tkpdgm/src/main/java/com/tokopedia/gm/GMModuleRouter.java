@@ -14,9 +14,7 @@ import rx.Observable;
 public interface GMModuleRouter {
 
     GMComponent getGMComponent();
-
     Observable<DataDeposit> getDataDeposit(String shopId);
-
     void goToTopAdsDashboard(Activity activity);
 
 }

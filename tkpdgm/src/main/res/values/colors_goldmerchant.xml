@@ -9,5 +9,6 @@
     <color name="gmsubscribe_autosubscribe_title_content">#61000000</color>
 
     <color name="bg_card_not_gm">#CD000000</color>
+    <color name="gmfeatured_selection_color">#f3fef3</color>
 
 </resources>
