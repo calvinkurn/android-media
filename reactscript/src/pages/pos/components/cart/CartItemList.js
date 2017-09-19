@@ -110,7 +110,7 @@ export default class CartItemList extends Component {
                   </ScrollView>
                   <View style={styles.paymentContainer}>
                     <Text style={styles.paymentText}>Total Pembayaran</Text>
-                    <Text style={styles.paymentText}>Rp {totalPrice}</Text>
+                    <Text style={styles.paymentText}>Rp {(totalPrice).toLocaleString("id")}</Text>
                   </View>
                   <View style={{ marginTop: 20 }}>
                     <Button
