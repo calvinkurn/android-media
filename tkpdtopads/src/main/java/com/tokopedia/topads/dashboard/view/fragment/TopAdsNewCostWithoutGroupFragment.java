@@ -123,4 +123,10 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        topAdsDetailNewProductPresenter.detachView();
+    }
 }

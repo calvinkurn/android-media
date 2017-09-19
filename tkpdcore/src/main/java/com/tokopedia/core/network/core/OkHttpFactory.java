@@ -309,10 +309,12 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientBearerWithClientDefaultAuth(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
                                                                      OkHttpRetryPolicy okHttpRetryPolicy,
                                                                      ChuckInterceptor chuckInterceptor,
-                                                                     DebugInterceptor debugInterceptor) {
+                                                                     DebugInterceptor debugInterceptor,
+                                                                     ApiCacheInterceptor apiCacheInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(tkpdBearerWithAuthTypeJsonUtInterceptor)
+                .addInterceptor(apiCacheInterceptor)
                 .addInterceptor(new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class))
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 

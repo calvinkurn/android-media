@@ -37,6 +37,7 @@ import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
+import com.tokopedia.gm.featured.view.util.GMSnackbarRetry;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -157,7 +158,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             if (adapter.getDataSize() == 0) {
                 textToPresent = getString(R.string.success_empty_delete_featured_product_empty);
             }
-            new SnackbarRetry(
+            new GMSnackbarRetry(
                     SnackbarManager.make(coordinatorLayoutContainer,
                             textToPresent,
                             Snackbar.LENGTH_INDEFINITE,
@@ -278,12 +279,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     public boolean isItemViewSwipeEnabled() {
-        switch (featuredProductTypeView) {
-            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
-                return true;
-            default:
-                return false;
-        }
+        return false;
     }
 
     @Override
@@ -380,7 +376,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
             productListPickerViewModels.add(productListPickerViewModel);
         }
-        Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels);
+        Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels, false);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -392,7 +388,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
             default:
-                updateTitle(getString(R.string.gm_featured_product_activity_title),
+                updateTitle(getString(R.string.featured_product_title),
                         getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
         }
     }

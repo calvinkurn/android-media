@@ -248,7 +248,8 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0);
-        String gmString = SessionHandler.isGoldMerchant(context) ?
+        boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
+        String gmString = isGoldMerchant ?
                 context.getString(R.string.extend_gold_merchant) :
                 context.getString(R.string.upgrade_gold_merchant);
 
@@ -256,10 +257,12 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0));
-        gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
-                TkpdState.DrawerPosition.FEATURED_PRODUCT,
-                true
-        ));
+        if(isGoldMerchant) {
+            gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
+                    TkpdState.DrawerPosition.FEATURED_PRODUCT,
+                    true
+            ));
+        }
         return gmMenu;
     }
 

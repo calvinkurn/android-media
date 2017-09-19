@@ -24,7 +24,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
-import com.tokopedia.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.topads.keyword.di.module.TopAdsKeywordModule;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
@@ -77,7 +77,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Override
     protected void initInjector() {
         DaggerTopAdsKeywordComponent.builder()
-                .topAdsModule(new TopAdsModule())
+                .topAdsKeywordModule(new TopAdsKeywordModule())
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);

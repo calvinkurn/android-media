@@ -12,9 +12,9 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
-import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.WsV4Auth;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -195,11 +195,13 @@ public class OkHttpClientModule {
     public OkHttpClient provideOkHttpClientWithAuthTypeJsonUt(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
                                                               OkHttpRetryPolicy okHttpRetryPolicy,
                                                               ChuckInterceptor chuckInterceptor,
-                                                              DebugInterceptor debugInterceptor) {
+                                                              DebugInterceptor debugInterceptor,
+                                                              ApiCacheInterceptor apiCacheInterceptor) {
         return OkHttpFactory.create().buildDaggerClientBearerWithClientDefaultAuth(tkpdBearerWithAuthTypeJsonUtInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @UploadWsV4Auth

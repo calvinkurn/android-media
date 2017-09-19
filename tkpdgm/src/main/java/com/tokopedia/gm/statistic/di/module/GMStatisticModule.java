@@ -12,8 +12,10 @@ import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.gm.statistic.data.source.GMStatDataSource;
 import com.tokopedia.gm.statistic.data.source.cloud.api.GMStatApi;
@@ -38,6 +40,7 @@ import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -76,6 +79,12 @@ public class GMStatisticModule {
     @Provides
     ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ShopApi.class);
+    }
+
+    @GMStatisticScope
+    @Provides
+    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeApi.class);
     }
 
     @GMStatisticScope
@@ -122,5 +131,11 @@ public class GMStatisticModule {
     @Provides
     HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
         return retrofit.create(HadesCategoryApi.class);
+    }
+
+    @GMStatisticScope
+    @Provides
+    public GMModuleRouter provideGmModuleRouter(@ApplicationContext Context context){
+        return (GMModuleRouter)context;
     }
 }

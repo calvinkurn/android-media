@@ -1,4 +1,4 @@
-package com.tokopedia.gm.common.di.component;
+package com.tokopedia.topads.dashboard.di.component;
 
 import android.content.Context;
 
@@ -12,65 +12,35 @@ import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.di.qualifier.AceQualifier;
-import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
-import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
-import com.tokopedia.core.network.di.qualifier.HadesQualifier;
-import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
-import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
-import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
-import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.gm.common.di.scope.GMScope;
+import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
+import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
+import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
- * @author sebastianuskh on 4/13/17.
+ * Created by zulfikarrahman on 9/18/17.
  */
-@GMScope
-@Component(modules = GMModule.class, dependencies = AppComponent.class)
-public interface GMComponent {
-    void inject(BaseDatePickerFragment datePickerFragment);
 
-    DatePickerPresenter datePickerPresenter();
+@TopAdsScope
+@Component(modules = TopAdsModule.class, dependencies = AppComponent.class)
+public interface TopAdsComponent {
 
     @ApplicationContext
     Context context();
 
-    @AceQualifier
-    Retrofit aceRetrofit();
-
-    @MerlinQualifier
-    Retrofit merlinRetrofit();
-
-    @MojitoQualifier
-    Retrofit mojitoRetrofit();
-
-    @HadesQualifier
-    Retrofit hadesRetrofit();
+    @TopAdsQualifier
+    Retrofit topAdsRetrofit();
 
     @DefaultAuthWithErrorHandler
     OkHttpClient okHttpClient();
-
-    @GoldMerchantQualifier
-    Retrofit goldMerchantRetrofit();
-
-    @CartQualifier
-    Retrofit cartRetrofit();
-
-    @TomeQualifier
-    Retrofit tomeQualifier();
 
     Retrofit.Builder retrofitBuilder();
 
@@ -97,4 +67,6 @@ public interface GMComponent {
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
 
     ApiCacheDataSource cacheHelper();
+
+    GetDepositTopAdsUseCase getDepositTopAdsUseCase();
 }
