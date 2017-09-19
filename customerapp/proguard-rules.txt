@@ -291,6 +291,7 @@
 
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpdpdp.fragment.ProductDetailFragment
+-keep class com.tokopedia.core.onboarding.OnboardingActivity
 -keep class com.tokopedia.core.network.entity.** { *; }
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
 

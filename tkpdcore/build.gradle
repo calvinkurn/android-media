@@ -118,6 +118,7 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.maps
     compile rootProject.ext.playServicesDependencies.auth
     compile rootProject.ext.playServicesDependencies.places
+    compile rootProject.ext.playServicesDependencies.perfMon
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore

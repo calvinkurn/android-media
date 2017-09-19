@@ -72,7 +72,11 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 
@@ -232,6 +236,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initCreate();
         adapter.notifyDataSetChanged();
 
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+
+        cacheHandler = new AnalyticsCacheHandler();
+
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -247,9 +255,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         t.start();
 
-        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-
-        cacheHandler = new AnalyticsCacheHandler();
 
         checkAppUpdate();
     }

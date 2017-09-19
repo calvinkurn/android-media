@@ -115,7 +115,7 @@
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:label="com.tokopedia.tkpd:string/app_name" />
         <activity
-            android:name=".onboarding.OnboardingActivity"
+            android:name="com.tokopedia.core.onboarding.OnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
