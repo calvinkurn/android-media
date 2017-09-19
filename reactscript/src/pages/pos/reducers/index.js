@@ -139,31 +139,28 @@ const cart = (state = {
 }, action) => {
   switch (action.type) {
     case `${FETCH_CART_FROM_CACHE}_${FULFILLED}`: 
-      // console.log(action.payload)
       const getTotalPrice = () => {
         let total_price = 0
-
+        
         action.payload.list.map(res => {
           let price_per_item = res.product.product_price_unformatted * res.quantity
           total_price = total_price + price_per_item 
-          // console.log(total_price)
         })
         return total_price
       }
-
+      
       return {
         items: [...state.items, action.payload.list],
         totalPrice: getTotalPrice()
       }
 
-    case ADD_TO_CART:
+    // case ADD_TO_CART:
+    //   return {
+    //     items: [...state.items, action.payload.item],
+    //     totalPrice: state.totalPrice + action.payload.item.price
+    //   }
 
-      return {
-        items: [...state.items, action.payload.item],
-        totalPrice: state.totalPrice + action.payload.item.price
-      }
-
-    case REMOVE_FROM_CART:
+    case `${REMOVE_FROM_CART}_${FULFILLED}`: 
       console.log(action.payload)
       // const ItemToBeRemoved = state.items.filter(i => i.id === action.payload.id)
 
@@ -172,9 +169,9 @@ const cart = (state = {
       //   totalPrice: state.totalPrice - (ItemToBeRemoved[0].price * ItemToBeRemoved[0].qty)
       // }
 
-    case INCREMENT_QTY:
-      console.log(action.payload)
-      // const itemQtyToBeIncr = state.items.filter(i => i.id === action.payload.id)
+    case `${INCREMENT_QTY}_${FULFILLED}`: 
+      // console.log(action.payload)
+
       // return {
         // items: state.items.map(b => {
         //   if (action.payload.id === b.id) {
@@ -190,7 +187,7 @@ const cart = (state = {
       // }
 
     case DECREMENT_QTY:
-      console.log(action.payload)
+      // console.log(action.payload)
       // const itemQtyToBeDecr = state.items.filter(i => i.id === action.payload.id)
       // if (itemQtyToBeDecr[0].qty === 1) {
       //   return state
