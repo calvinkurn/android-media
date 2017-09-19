@@ -119,28 +119,10 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(subscriber));
-
-//            new AsyncTask<Void, Void, Void>() {
-//                @Override
-//                protected Void doInBackground(Void... voids) {
-//                    try {
-//                        String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), result.getSignInAccount().getEmail(), magicString);
-//                        accessToken.equals("");
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    } catch (UserRecoverableAuthException e) {
-//                        startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
-//                    } catch (GoogleAuthException e) {
-//                        e.printStackTrace();
-//                    }
-//                    return null;
-//                }
-//            }.execute();
-//        }
-//
-//        signOut();
-//        finish();
         }
+
+        signOut();
+        finish();
     }
 
     private void signIn() {
