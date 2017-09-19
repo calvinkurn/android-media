@@ -56,7 +56,7 @@
     <string name="list_sold_product_text">Daftar Produk Terjual</string>
 
     <!-- reputation history -->
-    <string name="your_shop_reputation">Reputasi Toko Anda</string>
+    <string name="shop_reputation">Reputasi Toko</string>
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
     <string name="perhitungan_poin_reputasi">Perhitungan Poin Reputasi</string>
     <string name="point"> poin</string>
