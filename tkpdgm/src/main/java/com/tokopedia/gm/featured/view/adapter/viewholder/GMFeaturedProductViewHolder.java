@@ -65,14 +65,22 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
         bindData(gmFeaturedProductModel);
     }
 
-    public void bindData(GMFeaturedProductModel GMFeaturedProductModel) {
-        textProductName.setText(GMFeaturedProductModel.getProductName());
-        textPrice.setText(GMFeaturedProductModel.getProductPrice());
+    public void bindData(final GMFeaturedProductModel gmFeaturedProductModel) {
+        textProductName.setText(gmFeaturedProductModel.getProductName());
+        textPrice.setText(gmFeaturedProductModel.getProductPrice());
         ImageHandler.loadImageRounded2(
                 icGMFeaturedProduct.getContext(),
                 icGMFeaturedProduct,
-                GMFeaturedProductModel.getImageUrl()
+                gmFeaturedProductModel.getImageUrl()
         );
+        checkBoxGM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkedCallback != null) {
+                    checkedCallback.onItemChecked(gmFeaturedProductModel, checkBoxGM.isChecked());
+                }
+            }
+        });
 
         dragAndDropView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -124,6 +132,12 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     @Override
     public void setChecked(boolean checked) {
         checkBoxGM.setChecked(checked);
+
+        if(checked){
+            gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
+        }else{
+            gmFeaturedContainer.setBackgroundResource(android.R.color.white);
+        }
     }
 
     public interface PostDataListener {
