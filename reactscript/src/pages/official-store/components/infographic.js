@@ -39,7 +39,7 @@ class infographic extends Component {
         {infoContent.map((info, idx) => (
           <View style={styles.osInfoContent} key={idx}>
             <View style={styles.osInfoImgWrap}>
-              <Image source={ info.img } style={{width:70, height:70, resizeMode:'contain'}} />
+              <Image source={{ uri : info.img }} style={{width:70, height:70, resizeMode:'contain'}} />
             </View>
             <View style={styles.osInfoContentText}>
               <View>

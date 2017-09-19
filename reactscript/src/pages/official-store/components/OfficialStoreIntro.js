@@ -27,7 +27,7 @@ const OfficialStoreIntro = () => {
       <View style={styles.osIntroInner}>
         <Image source={{ uri : 'https://ecs7.tokopedia.net/img/android_offstore/icon-usp.png' }} style={styles.osIntroImage}/>
         <View style={styles.osIntroTextWrap}>
-            <Image source={{ uri : 'https://ecs7.tokopedia.net/img/android_offstore/icon-usp.png' }} style={styles.osIntroImage}/>
+
           <Text style={styles.uspHeadingTitle}>{'Official Store Tokopedia'.toUpperCase()}</Text>
           <View style={styles.uspTextInner} onLayout={this.getWidthofView}>
           {
