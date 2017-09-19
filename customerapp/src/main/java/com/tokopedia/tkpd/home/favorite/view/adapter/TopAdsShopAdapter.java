@@ -76,7 +76,9 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         setShopCover(holder, shopItem.getShopCoverUrl(), shopItem.getShopCoverEcs());
         setFavorite(holder, shopItem);
         holder.mainContent.setOnClickListener(onShopClicked(shopItem));
-        holder.favButton.setOnClickListener(onFavClicked(holder, shopItem));
+        holder.favButton.setOnClickListener(
+                shopItem.isFav() ? null : onFavClicked(holder, shopItem)
+        );
     }
 
 
