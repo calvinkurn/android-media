@@ -10,6 +10,7 @@ import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewM
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by kris on 9/18/17. Tokopedia
@@ -25,8 +26,8 @@ public class MapsMapper implements IMapsMapper{
             PredictionResult simplifiedResult = new PredictionResult();
             String mainText = predictions.getStructuredFormatting().getMainText();
             String secondaryText = predictions.getStructuredFormatting().getSecondaryText();
-            String mainTextToShow = mainText.replaceAll(query, "<b>" + query + "</b>");
-            String secondaryTextToShow = secondaryText.replaceAll(query, "<b>" + query + "</b>");
+            String mainTextToShow = modifiedString(mainText, query);
+            String secondaryTextToShow = modifiedString(secondaryText, query);
             simplifiedResult.setMainTextFormatted(mainTextToShow);
             simplifiedResult.setSecondaryTextFormatted(secondaryTextToShow);
             simplifiedResult.setMainText(mainText);
@@ -47,5 +48,9 @@ public class MapsMapper implements IMapsMapper{
                 );
         coordinateViewModel.setCoordinate(coordinate);
         return coordinateViewModel;
+    }
+
+    private String modifiedString(String text, String query) {
+        return text.replaceAll("(?i)" + Pattern.quote(query), "<b>" + query + "</b>");
     }
 }
