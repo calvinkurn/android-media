@@ -41,7 +41,7 @@ export default class CartItemList extends Component {
     const onRemoveFromCart = this.props.onRemoveFromCart
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
     // console.log(this.props)
-    // console.log(items)
+    console.log(items)
     // console.log(items[0])
     // console.log(items.length)
     // console.log(items[0].length)

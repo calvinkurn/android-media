@@ -150,10 +150,7 @@ export const clearCart = () => {
   return {
     type: CLEAR_CART,
     payload: PosCacheModule.deleteAll('CART')
-              .then(response => {
-                const jsonResponse = JSON.parse(response)
-                if (jsonResponse.data.status) return jsonResponse
-              })
+              .then(response => {})
               .catch(error => console.log(error))
   }
 }

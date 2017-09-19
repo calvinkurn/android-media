@@ -208,7 +208,7 @@ const cart = (state = {
       //   totalPrice: state.totalPrice - itemQtyToBeDecr[0].price
       // }
 
-    case CLEAR_CART:
+    case `${CLEAR_CART}_${FULFILLED}`: 
       return {
         items: [],
         totalPrice: 0
