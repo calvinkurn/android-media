@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native'
-import { icons } from '../../../icons/index'
+//import { icons } from '../../../icons/index'
 
 const { width } = Dimensions.get('window')
 

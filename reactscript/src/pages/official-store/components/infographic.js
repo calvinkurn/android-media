@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Image, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
-import { icons } from '../../../icons/index'
 
 
 const { height, width, fontScale } = Dimensions.get('window');
