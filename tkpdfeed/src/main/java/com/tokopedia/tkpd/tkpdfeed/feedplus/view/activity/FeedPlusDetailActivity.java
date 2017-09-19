@@ -28,10 +28,14 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment
 public class FeedPlusDetailActivity extends BasePresenterActivity implements HasComponent {
 
     public static final String EXTRA_DETAIL_ID = "EXTRA_DETAIL_ID";
+    public static final String EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER";
 
-    public static Intent getIntent(FragmentActivity activity, String detailId) {
+    public static Intent getIntent(FragmentActivity activity, String detailId,
+                                   String pageRowNumber) {
         Intent intent = new Intent(activity, FeedPlusDetailActivity.class);
         intent.putExtra(EXTRA_DETAIL_ID, detailId);
+        intent.putExtra(EXTRA_ANALYTICS_PAGE_ROW_NUMBER, pageRowNumber);
+
         return intent;
     }
 

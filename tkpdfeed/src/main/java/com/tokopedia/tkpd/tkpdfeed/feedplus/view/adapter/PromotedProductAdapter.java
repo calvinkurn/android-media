@@ -60,7 +60,7 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getPage(),
+                viewListener.onGoToProductDetail(activityCardViewModel.getRowNumber(), list.get(position).getPage(),
                         String.valueOf(list.get(position).getProductId()));
 
             }
@@ -69,7 +69,7 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getPage(),
+                viewListener.onGoToProductDetail(activityCardViewModel.getRowNumber(), list.get(position).getPage(),
                         String.valueOf(list.get(position).getProductId()));
 
             }

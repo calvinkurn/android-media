@@ -1,10 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
 import android.graphics.Paint;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
-
-import org.w3c.dom.Text;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 
 import java.util.ArrayList;
 
@@ -28,8 +25,8 @@ import java.util.ArrayList;
 public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialStoreCampaignAdapter.ViewHolder> {
 
     private static final String DEFAULT_EMPTY_PRICE = "Rp 0";
-    protected ArrayList<OfficialStoreCampaignProductViewModel> list;
     private final FeedPlus.View viewListener;
+    private OfficialStoreCampaignViewModel officialStoreCampaignViewModel;
 
     public OfficialStoreCampaignAdapter(FeedPlus.View viewListener) {
         this.viewListener = viewListener;
@@ -66,34 +63,47 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             adapter = new LabelsAdapter();
             labels.setAdapter(adapter);
 
+            final ArrayList<OfficialStoreCampaignProductViewModel> list =
+                    officialStoreCampaignViewModel.getListProduct();
+
             productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetailFromCampaign(String.valueOf(list.get
-                            (getAdapterPosition())
-                            .getProductId()));
+                    viewListener.onGoToProductDetailFromCampaign(
+                            officialStoreCampaignViewModel.getPage(),
+                            officialStoreCampaignViewModel.getRowNumber(),
+                            String.valueOf(list.get(getAdapterPosition())
+                                    .getProductId()));
                 }
             });
 
             productImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetailFromCampaign(String.valueOf(list.get(getAdapterPosition())
-                            .getProductId()));
+                    viewListener.onGoToProductDetailFromCampaign(
+                            officialStoreCampaignViewModel.getPage(),
+                            officialStoreCampaignViewModel.getRowNumber(),
+                            String.valueOf(list.get(getAdapterPosition())
+                                    .getProductId()));
                 }
             });
             shopAva.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     viewListener.onGoToShopDetailFromCampaign(
+                            officialStoreCampaignViewModel.getPage(),
+                            officialStoreCampaignViewModel.getRowNumber(),
                             list.get(getAdapterPosition()).getShopUrl());
                 }
             });
             shopName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToShopDetailFromCampaign(list.get(getAdapterPosition())
-                            .getShopUrl());
+                    viewListener.onGoToShopDetailFromCampaign(
+                            officialStoreCampaignViewModel.getPage(),
+                            officialStoreCampaignViewModel.getRowNumber(),
+                            list.get(getAdapterPosition())
+                                    .getShopUrl());
                 }
             });
         }
@@ -108,6 +118,9 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        ArrayList<OfficialStoreCampaignProductViewModel> list =
+                officialStoreCampaignViewModel.getListProduct();
+
         ImageHandler.LoadImage(holder.shopAva, list.get(holder.getAdapterPosition()).getShopAva());
         holder.shopName.setText(list.get(position).getShopName());
 
@@ -150,16 +163,16 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return officialStoreCampaignViewModel.getListProduct().size();
     }
 
-    public void setList(ArrayList<OfficialStoreCampaignProductViewModel> list) {
-        this.list = list;
+    public void setData(OfficialStoreCampaignViewModel officialStoreCampaignViewModel) {
+        this.officialStoreCampaignViewModel = officialStoreCampaignViewModel;
         notifyDataSetChanged();
     }
 
     public ArrayList<OfficialStoreCampaignProductViewModel> getList() {
-        return list;
+        return officialStoreCampaignViewModel.getListProduct();
     }
 
     @Override
