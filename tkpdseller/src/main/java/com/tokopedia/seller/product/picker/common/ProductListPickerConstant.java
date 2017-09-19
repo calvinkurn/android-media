@@ -14,4 +14,5 @@ public class ProductListPickerConstant {
     public static final String DEFAULT_SORT = "1"; //sort by position
     public static final String QUERY_KEYWORD = "keyword";
     public static final String EXTRA_PRODUCT_LIST_SUBMIT = "extra_product_list_submit";
+    public static final String PRODUCT_LIST_PICKER_IS_EMPTY_ALLOW_EXTRA = "product_list_picker_is_empty_allow_extra";
 }

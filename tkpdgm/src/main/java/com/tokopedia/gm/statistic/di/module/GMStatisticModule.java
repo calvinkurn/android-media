@@ -15,6 +15,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.gm.statistic.data.source.GMStatDataSource;
 import com.tokopedia.gm.statistic.data.source.cloud.api.GMStatApi;
@@ -130,5 +131,11 @@ public class GMStatisticModule {
     @Provides
     HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
         return retrofit.create(HadesCategoryApi.class);
+    }
+
+    @GMStatisticScope
+    @Provides
+    public GMModuleRouter provideGmModuleRouter(@ApplicationContext Context context){
+        return (GMModuleRouter)context;
     }
 }

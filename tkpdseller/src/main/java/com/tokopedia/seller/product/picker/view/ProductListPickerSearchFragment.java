@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
@@ -166,7 +169,7 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     @Override
     public void onItemChecked(ProductListPickerViewModel productListPickerViewModel, boolean checked) {
         if (checked) {
-            if (productListPickerMultipleItem.allowAddItem()) {
+            if (productListPickerMultipleItem.allowAddItem(productListPickerViewModel)) {
                 productListPickerMultipleItem.addItemFromSearch(productListPickerViewModel);
             } else {
                 ((ProductListPickerSearchAdapter) adapter).setChecked(productListPickerViewModel.getId(), false);
@@ -185,5 +188,19 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
 
     public List<ProductListPickerViewModel> getItemList() {
         return adapter.getData();
+    }
+
+    @Override
+    protected EmptyDataBinder getEmptyViewDefaultBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
+        emptyDataBinder.setEmptyContentText(getString(R.string.product_picker_empty_search_description));
+        return emptyDataBinder;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        productListPickerSearchPresenter.detachView();
     }
 }

@@ -143,6 +143,7 @@
     <string name="title_activity_product_list_picker">Pilih Produk Unggulan</string>
     <string name="product_list_picker_variant_count">%1$d Produk Unggulan terpilih</string>
     <string name="product_list_featured_max_limit">%1$d batas maksimum produk unggulan</string>
+    <string name="product_list_picker_empty_stock_cannot_picked">Produk yang anda pilih tidak memiliki stok. Harap pilih produk yang memiliki stok sebagai Produk Unggulan</string>
 
     <!-- featured product -->
     <string name="product_variant_search_x">Cari %1$s</string>
@@ -157,5 +158,6 @@
 
     <string name="shop_score_point_value">%1s poin</string>
     <string name="shop_score_title_widget_home">Performa Toko</string>
+    <string name="product_picker_empty_search_description">Ubah pencarian untuk memilih Produk Unggulan</string>
 
 </resources>

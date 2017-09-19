@@ -14,7 +14,7 @@ import dagger.Provides;
 
 @TopAdsKeywordScope
 @Module
-public class TopAdsKeywordAddModule extends TopAdsModule{
+public class TopAdsKeywordAddModule extends TopAdsKeywordModule {
 
     @TopAdsKeywordScope
     @Provides
