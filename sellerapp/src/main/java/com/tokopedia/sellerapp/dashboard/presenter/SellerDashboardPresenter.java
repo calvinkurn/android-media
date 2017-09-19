@@ -94,7 +94,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             }
 
             @Override
-            public void onNext(Boolean aBoolean) {AA    q
+            public void onNext(Boolean aBoolean) {
                 getShopInfoWithScore();
             }
         });

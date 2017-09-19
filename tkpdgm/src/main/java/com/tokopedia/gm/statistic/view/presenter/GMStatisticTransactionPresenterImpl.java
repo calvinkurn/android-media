@@ -1,11 +1,11 @@
 package com.tokopedia.gm.statistic.view.presenter;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 
 import rx.Subscriber;
 
@@ -25,8 +25,8 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     }
 
     @Override
-    public void loadDataWithDate(final SellerModuleRouter sellerModuleRouter, long startDate, long endDate) {
-        gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate), new Subscriber<GMTransactionGraphMergeModel>() {
+    public void loadDataWithDate(final GMModuleRouter gmModuleRouter, long startDate, long endDate) {
+        gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate, sessionHandler.getShopID()), new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
             public void onCompleted() {
 
@@ -42,17 +42,16 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
+                fetchTopAdsDeposit(mergeModel);
                 // get necessary object, just take from transaction graph view
                 getView().onSuccessLoadTransactionGraph(mergeModel);
             }
 
-            private void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
-                DataDeposit dataDeposit = sellerModuleRouter.getDataDeposit(sessionHandler.getShopID());
-                if (dataDeposit.isAdUsage()) {
-                    getView().bindTopAds(gmTopAdsAmountViewModel);
+            private void fetchTopAdsDeposit(final GMTransactionGraphMergeModel gmTransactionGraphMergeModel) {
+                if (gmTransactionGraphMergeModel.dataDeposit.isAdUsage()) {
+                    getView().bindTopAds(gmTransactionGraphMergeModel.gmTopAdsAmountViewModel);
                 } else {
-                    getView().bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel, dataDeposit);
+                    getView().bindTopAdsCreditNotUsed(gmTransactionGraphMergeModel.gmTopAdsAmountViewModel, gmTransactionGraphMergeModel.dataDeposit);
                 }
             }
         });
