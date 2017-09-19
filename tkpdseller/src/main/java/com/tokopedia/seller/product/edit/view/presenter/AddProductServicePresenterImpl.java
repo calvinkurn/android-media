@@ -61,38 +61,36 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
         @Override
         public void onError(Throwable uploadThrowable) {
             Throwable e = uploadThrowable;
-            String productDraftId = "";
-            @ProductStatus
-            int productStatus = ProductStatus.ADD;
-            if (uploadThrowable instanceof UploadProductException){
-                e = ((UploadProductException) uploadThrowable).getThrowable();
-                productDraftId = ((UploadProductException) uploadThrowable).getProductDraftId();
-                productStatus = ((UploadProductException) uploadThrowable).getProductStatus();
-            }
 
             if (!isViewAttached()) {
                 return;
             }
-            if (!TextUtils.isEmpty(productDraftId)) {
-                updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(productDraftId, false), new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-                        // no op
-                    }
+            updateUploadingDraftProductUseCase.execute(
+                    UpdateUploadingDraftProductUseCase.createRequestParams(
+                            this.productDraftId, false), new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+                    // no op
+                }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        // no op
-                    }
+                @Override
+                public void onError(Throwable e) {
+                    // no op
+                }
 
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        // no op
-                    }
-                });
-            }
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    // no op
+                }
+            });
             getView().onFailedAddProduct();
-            getView().notificationFailed(e, productDraftId, productStatus);
+            if (uploadThrowable instanceof UploadProductException){
+                e = ((UploadProductException) uploadThrowable).getThrowable();
+                @ProductStatus
+                int productStatus = ((UploadProductException) uploadThrowable).getProductStatus();
+                getView().notificationFailed(e, this.productDraftId, productStatus);
+            }
+
             getView().sendFailedBroadcast(e);
         }
 
