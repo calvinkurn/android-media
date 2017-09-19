@@ -93,7 +93,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                                 e.printStackTrace();
                                 throw new RuntimeException(e);
                             }
-
+                            return Observable.just("");
                         }
                     });
 
