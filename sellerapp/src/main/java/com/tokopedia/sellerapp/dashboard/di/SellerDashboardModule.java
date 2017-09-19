@@ -14,6 +14,7 @@ import com.tokopedia.core.network.apiservices.goldmerchant.apis.GoldMerchantApi;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -22,6 +23,7 @@ import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.setting.data.datasource.UpdateShopScheduleDataSource;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.ShopScheduleApi;
 import com.tokopedia.seller.shop.setting.data.repository.UpdateShopScheduleRepositoryImpl;
@@ -65,6 +67,12 @@ public class SellerDashboardModule {
     @Provides
     ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit){
         return retrofit.create(ShopApi.class);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeApi.class);
     }
 
     @SellerDashboardScope

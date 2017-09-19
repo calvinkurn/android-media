@@ -125,7 +125,7 @@
 
             <TextView
                 style="@style/TextView.Body1.Bold"
-                android:text="@string/your_shop_reputation" />
+                android:text="@string/shop_reputation" />
 
             <com.tokopedia.design.reputation.ShopReputationView
                 android:id="@+id/shop_reputation_view"

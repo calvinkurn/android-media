@@ -30,6 +30,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
@@ -250,6 +251,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onErrorShopInfoAndScore(Throwable t) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
+        headerShopInfoLoadingStateView.getContentView().setVisibility(View.INVISIBLE);
+        View errorView = headerShopInfoLoadingStateView.getErrorView();
+        EmptyCardContentView emptyCardContentView= (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
+        emptyCardContentView.setActionClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DashboardFragment.this.onRefresh();
+            }
+        });
         swipeRefreshLayout.setRefreshing(false);
     }
 
