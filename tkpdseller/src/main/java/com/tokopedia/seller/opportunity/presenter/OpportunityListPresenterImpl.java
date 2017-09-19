@@ -98,15 +98,15 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
                         sessionHandler.getShopID()),
                 new GetOpportunityFirstTimeSubscriber(viewListener));
 
-        if ((listFilter != null && listFilter.size() > 0)
-                || (query != null && !query.equals("")))
-            UnifyTracking.eventOpportunityCustom(
-                    OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
-                    OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                    AppEventTracking.Action.SUBMIT,
-                    OpportunityTrackingEventLabel.EventLabel.SEARCH,
-                    getCustomDimension(query, listFilter)
-            );
+//        if ((listFilter != null && listFilter.size() > 0)
+//                || (query != null && !query.equals("")))
+//            UnifyTracking.eventOpportunityCustom(
+//                    OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+//                    OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+//                    AppEventTracking.Action.SUBMIT,
+//                    OpportunityTrackingEventLabel.EventLabel.SEARCH,
+//                    getCustomDimension(query, listFilter)
+//            );
     }
 
     public HashMap<String, String> getCustomDimension(String query,
