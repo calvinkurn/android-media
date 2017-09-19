@@ -11,6 +11,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -171,7 +172,7 @@ public interface RetrofitInteractor {
 
     interface PromoListener {
 
-        void onSucccess(PromoAttributes promoAttributes);
+        void onSucccess(DataPromoWidget dataPromoWidget);
 
         void onError(String error);
     }

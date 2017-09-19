@@ -9,9 +9,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class PromoAttributes {
 
-    @SerializedName("cache_expire")
-    @Expose
-    private Integer cacheExpire;
     @SerializedName("code")
     @Expose
     private String code;
@@ -21,35 +18,21 @@ public class PromoAttributes {
     @SerializedName("target_url")
     @Expose
     private String targetUrl;
-    @SerializedName("short_desc")
-    @Expose
-    private String shortDesc;
     @SerializedName("short_desc_html")
     @Expose
     private String shortDescHtml;
-    @SerializedName("short_cond")
-    @Expose
-    private String shortCond;
     @SerializedName("short_cond_html")
     @Expose
     private String shortCondHtml;
 
-    //belot two attributes is used only for caching
+    //below two attributes is used only for caching
     @SerializedName("target_type")
     @Expose
-    private String targetType="";
+    private String targetType;
     @SerializedName("user_id")
     @Expose
-    private String userId="";
+    private String userId;
 
-
-    public Integer getCacheExpire() {
-        return cacheExpire;
-    }
-
-    public void setCacheExpire(Integer cacheExpire) {
-        this.cacheExpire = cacheExpire;
-    }
 
     public String getCode() {
         return code;
@@ -75,12 +58,8 @@ public class PromoAttributes {
         this.targetUrl = targetUrl;
     }
 
-    public String getShortDesc() {
-        return shortDesc;
-    }
-
-    public void setShortDesc(String shortDesc) {
-        this.shortDesc = shortDesc;
+    public String getShortCondHtml() {
+        return shortCondHtml;
     }
 
     public String getShortDescHtml() {
@@ -89,18 +68,6 @@ public class PromoAttributes {
 
     public void setShortDescHtml(String shortDescHtml) {
         this.shortDescHtml = shortDescHtml;
-    }
-
-    public String getShortCond() {
-        return shortCond;
-    }
-
-    public void setShortCond(String shortCond) {
-        this.shortCond = shortCond;
-    }
-
-    public String getShortCondHtml() {
-        return shortCondHtml;
     }
 
     public void setShortCondHtml(String shortCondHtml) {

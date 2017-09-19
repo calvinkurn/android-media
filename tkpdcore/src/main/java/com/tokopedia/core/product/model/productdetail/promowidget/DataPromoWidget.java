@@ -15,11 +15,23 @@ public class DataPromoWidget {
     @Expose
     private List<PromoWidget> promoWidgetList = new ArrayList<PromoWidget>();
 
+    @SerializedName("cache_expire")
+    @Expose
+    private int cacheExpire;
+
     public List<PromoWidget> getPromoWidgetList() {
         return promoWidgetList;
     }
 
     public void setPromoWidgetList(List<PromoWidget> promoWidgetList) {
         this.promoWidgetList = promoWidgetList;
+    }
+
+    public int getCacheExpire() {
+        return cacheExpire;
+    }
+
+    public void setCacheExpire(int cacheExpire) {
+        this.cacheExpire = cacheExpire;
     }
 }

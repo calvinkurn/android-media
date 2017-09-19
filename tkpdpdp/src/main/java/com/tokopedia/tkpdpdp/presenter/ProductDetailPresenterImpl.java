@@ -44,6 +44,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -895,15 +896,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     public void getPromoWidget(@NonNull Context context, @NonNull final String targetType, @NonNull final String userId) {
         PromoAttributes promoAttributes = cacheInteractor.getPromoWidgetCache(targetType,userId);
-        if (promoAttributes!=null) {
+        if (promoAttributes!=null && !TextUtils.isEmpty(promoAttributes.getCode())) {
             viewListener.showPromoWidget(promoAttributes);
         } else {
             retrofitInteractor.getPromo(context, targetType, userId,
                     new RetrofitInteractor.PromoListener() {
                         @Override
-                        public void onSucccess(PromoAttributes promoAttributes) {
-                            cacheInteractor.storePromoWidget(targetType,userId,promoAttributes);
-                            viewListener.showPromoWidget(promoAttributes);
+                        public void onSucccess(DataPromoWidget dataPromoWidget) {
+                            cacheInteractor.storePromoWidget(targetType,userId,dataPromoWidget);
+                            if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
+                                viewListener.showPromoWidget(dataPromoWidget.getPromoWidgetList().get(0).getPromoAttributes());
+                            }
                         }
 
                         @Override

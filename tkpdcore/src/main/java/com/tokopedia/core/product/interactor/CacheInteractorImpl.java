@@ -9,8 +9,10 @@ import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
+import com.tokopedia.core.database.recharge.product.Promo;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.var.TkpdCache;
@@ -201,7 +203,7 @@ public class CacheInteractorImpl implements CacheInteractor {
     @Override
     public PromoAttributes getPromoWidgetCache(@NonNull String targetType, @NonNull String userId) {
         try {
-            PromoAttributes promoAttributes =  new GlobalCacheManager()
+            PromoAttributes promoAttributes =  new GlobalCacheManager().setKey(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA)
                     .getConvertObjData(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA, PromoAttributes.class);
             if (promoAttributes!=null && targetType.equals(promoAttributes.getTargetType()) &&
                     userId.equals(promoAttributes.getUserId())) return promoAttributes;
@@ -212,12 +214,18 @@ public class CacheInteractorImpl implements CacheInteractor {
     }
 
     @Override
-    public void storePromoWidget(String targetType, String userId, PromoAttributes promoAttributes) {
+    public void storePromoWidget(String targetType, String userId, DataPromoWidget promoWidget) {
+
+        PromoAttributes promoAttributes = new PromoAttributes();
+
+        if (!promoWidget.getPromoWidgetList().isEmpty()) {
+            promoAttributes = promoWidget.getPromoWidgetList().get(0).getPromoAttributes();
+        }
         promoAttributes.setTargetType(targetType);
         promoAttributes.setUserId(userId);
         new GlobalCacheManager()
                 .setKey(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA)
-                .setCacheDuration(promoAttributes.getCacheExpire())
+                .setCacheDuration(promoWidget.getCacheExpire())
                 .setValue(new Gson().toJson(promoAttributes))
                 .store();
     }

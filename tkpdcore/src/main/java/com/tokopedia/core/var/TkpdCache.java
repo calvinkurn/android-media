@@ -204,7 +204,7 @@ public class TkpdCache {
 
         public static final String VERSION_NAME_IN_CACHE = "VERSION_NAME_IN_CACHE";
 
-        public static final String KEY_PDP_PROMO_WIDGET_DATA = "KEY_PDP_PROMO_WIDGET_DATA";
+        public static final String KEY_PDP_PROMO_WIDGET_DATA = "KEY_PROMO_WIDGET_DATA_PDP";
     }
 
 }

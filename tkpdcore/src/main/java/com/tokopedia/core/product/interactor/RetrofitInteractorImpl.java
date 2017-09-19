@@ -840,7 +840,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Observable<Response<PromoWidgetResponse>> observable = galadrielservice
                 .getApi().getPromoWidget(GaladrielApi.VALUE_PDP_WIDGET,targetType,GaladrielApi.VALUE_DEVICE,GaladrielApi.VALUE_LANG,userId);
 
-        Subscriber<PromoAttributes> subscriber = new Subscriber<PromoAttributes>() {
+        Subscriber<DataPromoWidget> subscriber = new Subscriber<DataPromoWidget>() {
             @Override
             public void onCompleted() {
                 Log.d(TAG, "onCompleted: ");
@@ -851,17 +851,17 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             }
 
             @Override
-            public void onNext(PromoAttributes promoWidget) {
+            public void onNext(DataPromoWidget promoWidget) {
                 listener.onSucccess(promoWidget);
             }
         };
 
-        Func1<Response<PromoWidgetResponse>, PromoAttributes> mapper =
-                new Func1<Response<PromoWidgetResponse>, PromoAttributes>() {
+        Func1<Response<PromoWidgetResponse>, DataPromoWidget> mapper =
+                new Func1<Response<PromoWidgetResponse>, DataPromoWidget>() {
                     @Override
-                    public PromoAttributes call(Response<PromoWidgetResponse> promoWidgetRespone) {
+                    public DataPromoWidget call(Response<PromoWidgetResponse> promoWidgetRespone) {
                         if (!promoWidgetRespone.body().getData().getPromoWidgetList().isEmpty()) {
-                            return promoWidgetRespone.body().getData().getPromoWidgetList().get(0).getPromoAttributes();
+                            return promoWidgetRespone.body().getData();
                         }
                         return null;
                     }

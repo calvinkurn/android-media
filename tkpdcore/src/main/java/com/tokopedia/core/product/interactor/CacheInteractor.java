@@ -3,6 +3,7 @@ package com.tokopedia.core.product.interactor;
 import com.tokopedia.core.database.recharge.product.Promo;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 
@@ -29,7 +30,7 @@ public interface CacheInteractor {
 
     PromoAttributes getPromoWidgetCache(String targetType, String userId);
 
-    void storePromoWidget(String targetType, String userId, PromoAttributes promoAttributes);
+    void storePromoWidget(String targetType, String userId, DataPromoWidget dataPromoWidget);
 
     interface GetProductDetailCacheListener {
         void onSuccess(ProductDetailData productDetailData);
