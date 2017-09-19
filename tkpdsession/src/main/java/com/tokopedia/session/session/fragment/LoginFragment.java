@@ -197,8 +197,7 @@ LoginFragment extends Fragment implements LoginView {
             if (temp.equals(DownloadService.FACEBOOK)) {
                 onFacebookClick();
             } else if (temp.equals(DownloadService.GOOGLE)) {
-//                LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
-                onGoogleClick();
+                LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
             } else if (temp.equals(DownloadService.WEBVIEW)) {
                 String url = getArguments().getString("url");
                 String name = getArguments().getString("name");
@@ -407,13 +406,6 @@ LoginFragment extends Fragment implements LoginView {
         UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
         processFacebookLogin();
     }
-
-
-    private void onGoogleClick() {
-        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
-    }
-
 
     private void processFacebookLogin() {
         login.doFacebookLogin(this, callbackManager);
@@ -636,7 +628,6 @@ LoginFragment extends Fragment implements LoginView {
                         public void onClick(View v) {
                             UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
                             LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
-                            onGoogleClick();
                         }
                     });
                 } else {
@@ -660,8 +651,9 @@ LoginFragment extends Fragment implements LoginView {
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGooglePlusClicked() {
         UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
-//        showProgress(true);
-//        ((GoogleActivity) getActivity()).onSignInClicked();
+        showProgress(true);
+        Intent intent = GoogleSignInActivity.getSignInIntent(getActivity());
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
     @Override
