@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.picker.view.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -20,9 +21,11 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
     private TextView nameProduct;
     private CheckBox checkBoxProduct;
     private TextView priceProduct;
+    private View itemView;
 
     public ProductListPickerSearchViewHolder(View itemView) {
         super(itemView);
+        this.itemView = itemView;
         imageProduct = (ImageView) itemView.findViewById(R.id.image_product_picker_search);
         nameProduct = (TextView) itemView.findViewById(R.id.text_product_name);
         priceProduct = (TextView) itemView.findViewById(R.id.text_product_price);
@@ -44,9 +47,11 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
     public void bindObject(final ProductListPickerViewModel productListPickerViewModel, boolean checked) {
         bindObject(productListPickerViewModel);
         setChecked(checked);
+        setBackground(checked);
         checkBoxProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setBackground(checkBoxProduct.isChecked());
                 if (checkedCallback != null) {
                     checkedCallback.onItemChecked(productListPickerViewModel, checkBoxProduct.isChecked());
                 }
@@ -62,5 +67,13 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
     @Override
     public void setChecked(boolean checked) {
         checkBoxProduct.setChecked(checked);
+    }
+
+    public void setBackground(boolean isChecked) {
+        if(isChecked){
+            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+        }else{
+            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+        }
     }
 }
