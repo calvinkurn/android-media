@@ -15,8 +15,8 @@ import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -150,8 +150,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         promotion.setPromotionAlias(item.getPromoTitle());
         promotion.setPromotionPosition(currentPosition);
 
-        GTMContainer gtmContainer = GTMContainer.newInstance(context);
-        gtmContainer.eventBannerClick(promotion);
+        PaymentTracking.eventPromoClick(promotion);
     }
 
     private boolean isBaseHost(String host) {

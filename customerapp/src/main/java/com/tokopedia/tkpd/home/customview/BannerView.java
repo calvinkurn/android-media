@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -185,9 +185,7 @@ public class BannerView extends BaseCustomView {
             promotion.setPromotionAlias(promoList.get(currentPosition).getPromoTitle());
             promotion.setPromotionPosition(currentPosition);
 
-            GTMContainer gtmContainer = GTMContainer.newInstance(getContext());
-            gtmContainer.eventBannerImpression(promotion);
-
+            PaymentTracking.eventPromoImpression(promotion);
         }
     }
 

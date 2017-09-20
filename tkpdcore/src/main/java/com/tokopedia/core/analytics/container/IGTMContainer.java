@@ -91,9 +91,9 @@ public interface IGTMContainer {
 
     void eventTransaction(Purchase purchase);
 
-    void eventBannerImpression(Promotion promotion);
+    GTMContainer eventBannerImpression(Promotion promotion);
 
-    void eventBannerClick(Promotion promotion);
+    GTMContainer eventBannerClick(Promotion promotion);
 
     void clearTransactionDataLayer(Purchase purchase);
 

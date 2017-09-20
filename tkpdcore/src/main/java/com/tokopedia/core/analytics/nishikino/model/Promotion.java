@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
+import com.google.android.gms.tagmanager.DataLayer;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,28 +11,58 @@ import java.util.Map;
 
 public class Promotion {
 
-    private Map<String, Object> actionField = new HashMap<>();
-    private Map<String, Object> promotionImpression = new HashMap<>();
+    private String promotionID;
+    private String promotionName;
+    private String promotionAlias;
+    private String promotionPosition;
 
     public void setPromotionID(String promotionID) {
-        this.promotionImpression.put("id", promotionID);
+        this.promotionID = promotionID;
     }
 
     public void setPromotionName(String promotionName) {
-        this.promotionImpression.put("name", promotionName);
+        this.promotionName = promotionName;
     }
 
     public void setPromotionAlias(String promotionAlias) {
-        this.promotionImpression.put("creative",
-                promotionAlias.trim().replaceAll(" ", "-")
-        );
+        this.promotionAlias = promotionAlias.trim().replaceAll(" ", "-");
     }
 
     public void setPromotionPosition(int promotionPosition) {
-        this.promotionImpression.put("position", "slider_banner_" + promotionPosition);
+        this.promotionPosition = "slider_banner_" + promotionPosition;
     }
 
-    public Map<String, Object> getPromotionImpressionEvent() {
-        return promotionImpression;
+    public String getPromotionID() {
+        return promotionID;
+    }
+
+    public String getPromotionName() {
+        return promotionName;
+    }
+
+    public String getPromotionAlias() {
+        return promotionAlias;
+    }
+
+    public String getPromotionPosition() {
+        return promotionPosition;
+    }
+
+    public Map<String, Object> getPromotionDataEvent() {
+        return DataLayer.mapOf(
+                "id", getPromotionID(),
+                "name", getPromotionName(),
+                "creative", getPromotionAlias(),
+                "position", getPromotionPosition()
+        );
+    }
+
+    public Map<String, Object> getNullPromotionDataEvent() {
+        return DataLayer.mapOf(
+                "id", null,
+                "name", null,
+                "creative", null,
+                "position", null
+        );
     }
 }
