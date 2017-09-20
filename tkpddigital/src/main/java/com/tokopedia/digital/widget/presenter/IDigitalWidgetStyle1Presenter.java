@@ -8,6 +8,8 @@ public interface IDigitalWidgetStyle1Presenter {
 
     void fetchRecentNumber(int categoryId);
 
+    void getOperatorById(String operatorId);
+
     void validatePhonePrefix(String phonePrefix, int categoryId, Boolean validatePrefix);
 
     void validateOperatorWithProducts(int categoryId, String operatorId);

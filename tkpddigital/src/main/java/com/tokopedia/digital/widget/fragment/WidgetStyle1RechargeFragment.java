@@ -289,7 +289,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         } else if (SessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
-            widgetClientNumberView.setText(lastClientNumberTyped);
+            renderLastTypeClientNumber();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
                 && TextUtils.isEmpty(lastClientNumberTyped)
@@ -298,10 +298,16 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetClientNumberView.setText(defaultPhoneNumber);
         } else if (!SessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
-            widgetClientNumberView.setText(lastClientNumberTyped);
+            renderLastTypeClientNumber();
         }
     }
 
+    private void renderLastTypeClientNumber() {
+        if (category.getAttributes().isValidatePrefix())
+            widgetClientNumberView.setText(lastClientNumberTyped);
+        else
+            presenter.getOperatorById(lastOperatorSelected);
+    }
 
     @Override
     public int getLayout() {
@@ -323,7 +329,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     public void renderDataProducts(List<Product> products) {
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
-        if(!TextUtils.isEmpty(widgetClientNumberView.getText())) {
+        if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
             widgetProductChoserView.setListener(getProductChoserListener());
             widgetProductChoserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
             holderWidgetSpinnerProduct.addView(widgetProductChoserView);
@@ -379,5 +385,12 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         if (SessionHandler.isV4Login(getActivity())) {
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
+    }
+
+    @Override
+    public void renderOperator(RechargeOperatorModel operatorModel) {
+        selectedOperator = operatorModel;
+        selectedOperatorId = String.valueOf(selectedOperator.operatorId);
+        widgetClientNumberView.setText(lastClientNumberTyped);
     }
 }

@@ -15,11 +15,13 @@ public class WidgetFactory {
     public static final String STYLE_THREE = "style_3";
     public static final String STYLE_FOUR = "style_4";
     public static final String STYLE_FIVE = "style_5";
+    public static final String STYLE_99 = "style_99";
 
     public static Fragment buildFragment(Category category, int position) {
         String operatorStyle = category.getAttributes().getClientNumber().getOperatorStyle();
         switch (operatorStyle) {
             case STYLE_ONE:
+            case STYLE_99:
                 return WidgetStyle1RechargeFragment.newInstance(category, position);
             case STYLE_TWO:
                 return WidgetStyle2RechargeFragment.newInstance(category, position);

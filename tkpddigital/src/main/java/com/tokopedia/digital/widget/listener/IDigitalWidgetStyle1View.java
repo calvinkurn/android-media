@@ -23,4 +23,6 @@ public interface IDigitalWidgetStyle1View {
 
     void renderDataRecent(List<String> results);
 
+    void renderOperator(RechargeOperatorModel operatorModel);
+
 }

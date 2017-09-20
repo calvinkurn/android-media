@@ -55,6 +55,30 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
+    public void getOperatorById(String operatorId) {
+        widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
+    }
+
+    private Subscriber<RechargeOperatorModel> getOperatorModelSubscriber() {
+        return new Subscriber<RechargeOperatorModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
+                view.renderOperator(rechargeOperatorModel);
+            }
+        };
+    }
+
+    @Override
     public void validatePhonePrefix(String phonePrefix, int categoryId, Boolean validatePrefix) {
         widgetInteractor.getProductsFromPrefix(getListProductSubscriber(), categoryId, phonePrefix,
                 validatePrefix);
