@@ -69,6 +69,11 @@
     <string name="string_prove_information">3. Bukti &amp; Keterangan</string>
     <string name="string_upload_prove_information">Unggah Bukti &amp; Keterangan</string>
     <string name="string_button_create_complain">Buat Komplain</string>
+    <string name="string_difference_ongkir">Selisih Ongkos Kirim </string>
+    <string name="string_problem_product"> Barang Bermasalah</string>
+    <string name="string_return_rp">Kembalikan Rp </string>
+    <string name="string_to_buyer"> ke Pembeli</string>
+    <string name="string_returning">Kembalikan </string>
 
     <!--step 1-->
     <string name="string_button_save_choose">Simpan dan Pilih Barang Lain</string>

@@ -28,7 +28,7 @@ public interface SolutionListFragmentListener {
 
         void hideLoading();
 
-        void successEditSolution();
+        void successEditSolution(String message);
 
         void errorEditSolution(String error);
 

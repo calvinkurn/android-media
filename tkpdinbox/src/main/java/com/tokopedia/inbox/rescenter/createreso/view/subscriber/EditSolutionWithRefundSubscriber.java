@@ -29,7 +29,7 @@ public class EditSolutionWithRefundSubscriber extends Subscriber<EditAppealResol
     @Override
     public void onNext(EditAppealResolutionSolutionDomain editAppealResolutionSolutionDomain) {
         if (editAppealResolutionSolutionDomain.isSuccess()) {
-            mainView.successEditSolution();
+            mainView.successEditSolution(editAppealResolutionSolutionDomain.getMessage());
         } else {
             mainView.errorEditSolution(editAppealResolutionSolutionDomain.getMessage());
         }

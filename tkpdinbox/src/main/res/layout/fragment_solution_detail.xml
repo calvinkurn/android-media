@@ -43,4 +43,11 @@
             android:textAllCaps="false"
             android:background="@drawable/bg_button_disable"/>
     </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 </RelativeLayout>

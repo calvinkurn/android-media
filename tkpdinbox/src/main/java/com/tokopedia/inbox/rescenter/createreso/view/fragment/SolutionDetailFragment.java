@@ -3,7 +3,6 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -27,7 +26,6 @@ import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponen
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
-import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
@@ -138,7 +136,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         tilAmount = (TkpdTextInputLayout) view.findViewById(R.id.til_amount);
         etAmount = (EditText) view.findViewById(R.id.et_amount);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
-        progressBar = new ProgressBar(context);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         if (resultViewModel != null) {
             presenter.initResultViewModel(resultViewModel, solutionViewModel);
         } else {
@@ -204,8 +202,9 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     }
 
     @Override
-    public void successEditSolution() {
-        Toast.makeText(context, "Sukses mengubah solusi", Toast.LENGTH_SHORT).show();
+    public void successEditSolution(String message) {
+        hideLoading();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 

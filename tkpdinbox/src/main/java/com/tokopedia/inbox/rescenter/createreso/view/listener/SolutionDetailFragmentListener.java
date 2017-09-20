@@ -28,7 +28,7 @@ public interface SolutionDetailFragmentListener {
 
         void showErrorToast(String error);
 
-        void successEditSolution();
+        void successEditSolution(String message);
 
         void errorEditSolution(String error);
 

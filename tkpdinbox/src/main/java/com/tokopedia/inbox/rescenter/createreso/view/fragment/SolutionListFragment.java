@@ -226,9 +226,9 @@ public class SolutionListFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void successEditSolution() {
+    public void successEditSolution(String message) {
         hideLoading();
-        Toast.makeText(context, "Sukses mengubah solusi", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -276,7 +276,8 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
         textView.setText(solutionViewModel.getAmount() != null ?
-                "Kembalikan " + solutionViewModel.getAmount().getIdr() + " ke Pembeli" :
+                context.getString(R.string.string_returning) + solutionViewModel.getAmount().getIdr()
+                        + context.getString(R.string.string_to_buyer) :
                 solutionViewModel.getName());
     }
 

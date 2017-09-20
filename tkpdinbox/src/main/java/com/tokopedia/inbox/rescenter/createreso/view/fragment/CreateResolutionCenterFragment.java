@@ -201,31 +201,40 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         if (resultViewModel.problem.size() != 0) {
             ffSolution.setEnabled(true);
-            ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
-            ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable_with_green));
-            ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
+            ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.ic_complete));
+            ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_layout_enable_with_green));
+            ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_layout_enable));
             updateProductProblemString(resultViewModel.problem, tvChooseProductProblem);
             tvSolution.setTextColor(context.getResources().getColor(R.color.black_70));
             tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_70));
         } else {
             ffSolution.setEnabled(false);
-            ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
-            ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
+            ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.chevron_thin_right));
+            ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_layout_disable));
             tvChooseProductProblem.setText(context.getResources().getString(R.string.string_choose_product_problem));
             tvSolution.setTextColor(context.getResources().getColor(R.color.black_38));
             tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_38));
         }
 
         if (resultViewModel.solution != 0) {
-            ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
-            ffSolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable_with_green));
-            ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
+            ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.ic_complete));
+            ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_layout_enable_with_green));
+            ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_layout_enable));
             if (!resultViewModel.isAttachmentRequired) {
                 ffUploadProve.setEnabled(false);
                 tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
                 tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
             } else {
-                ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
+                ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                        R.drawable.chevron_thin_right));
                 ffUploadProve.setEnabled(true);
                 tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_70));
                 tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_70));
@@ -233,28 +242,36 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             updateSolutionString(resultViewModel, tvSolution);
         } else {
             ffUploadProve.setEnabled(false);
-            ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.chevron_thin_right));
-            ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
+            ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.chevron_thin_right));
+            ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_layout_disable));
             tvSolution.setText(context.getResources().getString(R.string.string_choose_solution));
             tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
             tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
         }
 
         btnCreateResolution.setEnabled(false);
-        btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(),
+                R.drawable.bg_button_disable));
         if (resultViewModel.problem.size() != 0 && resultViewModel.solution != 0) {
             if (resultViewModel.isAttachmentRequired) {
                 if (resultViewModel.message.remark != null) {
                     btnCreateResolution.setEnabled(true);
-                    btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-                    ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_complete));
-                    ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable_with_green));
+                    btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(),
+                            R.drawable.bg_button_enable));
+                    ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                            R.drawable.ic_complete));
+                    ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
+                            R.drawable.bg_layout_enable_with_green));
                     btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
                 }
             } else {
                 btnCreateResolution.setEnabled(true);
-                btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-                ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_disable));
+                btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(),
+                        R.drawable.bg_button_enable));
+                ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
+                        R.drawable.bg_layout_disable));
                 btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
                 ffUploadProve.setEnabled(false);
             }
@@ -270,20 +287,27 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             }
         }
         if (isType1Selected) {
-            problemResultString += "Selisih Ongkos Kirim ";
+            problemResultString += context.getString(R.string.string_difference_ongkir);
             if (problemResultList.size() > 1) {
                 problemResultString += "& ";
-                problemResultString += (isType1Selected ? problemResultList.size() - 1 : problemResultList.size()) + " Barang Bermasalah";
+                problemResultString += (isType1Selected ?
+                        problemResultList.size() - 1 :
+                        problemResultList.size()) + context.getString(R.string.string_problem_product);
             }
         }
         else  {
-            problemResultString += (isType1Selected ? problemResultList.size() - 1 : problemResultList.size()) + " Barang Bermasalah";
+            problemResultString += (isType1Selected ?
+                    problemResultList.size() - 1 :
+                    problemResultList.size()) + context.getString(R.string.string_problem_product);
         }
         textView.setText(problemResultString);
     }
 
     public void updateSolutionString(ResultViewModel resultViewModel, TextView textView) {
-        textView.setText(resultViewModel.refundAmount != 0 ? "Kembalikan Rp " + resultViewModel.refundAmount + " ke Pembeli" : resultViewModel.solutionName);
+        textView.setText(resultViewModel.refundAmount != 0 ?
+                context.getString(R.string.string_return_rp) + resultViewModel.refundAmount
+                        + context.getString(R.string.string_to_buyer) :
+                resultViewModel.solutionName);
     }
 
     @Override
