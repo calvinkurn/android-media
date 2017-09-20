@@ -237,9 +237,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
 
     @Override
     public void renderErrorGetInvoiceData(String message) {
-        setResult(RESULT_INVOICE_FAILED,
-                new Intent().putExtra(EXTRA_MESSAGE_ERROR_GET_INVOICE, message));
-        finish();
+
     }
 
     @Override
