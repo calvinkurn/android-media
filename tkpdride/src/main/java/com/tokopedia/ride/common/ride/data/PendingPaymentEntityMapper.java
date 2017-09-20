@@ -26,6 +26,7 @@ public class PendingPaymentEntityMapper {
             pendingPayment.setTopupUrl(entity.getTopupUrl());
             pendingPayment.setOperatorId(entity.getOperatorId());
             pendingPayment.setCategoryId(entity.getCategoryId());
+            pendingPayment.setShowTopupOptions(entity.isShowTopupOptions());
         }
         return pendingPayment;
     }

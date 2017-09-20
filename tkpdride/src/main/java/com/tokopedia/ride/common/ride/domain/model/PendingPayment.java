@@ -20,6 +20,7 @@ public class PendingPayment implements Parcelable {
     private String currencyCode;
     private List<TokoCashProduct> topUpOptions;
     private String topupUrl;
+    private boolean showTopupOptions;
 
     public PendingPayment() {
     }
@@ -37,6 +38,7 @@ public class PendingPayment implements Parcelable {
             topUpOptions = null;
         }
         topupUrl = in.readString();
+        showTopupOptions = in.readByte() != 0x00;
     }
 
     public static final Creator<PendingPayment> CREATOR = new Creator<PendingPayment>() {
@@ -107,6 +109,14 @@ public class PendingPayment implements Parcelable {
         this.categoryId = categoryId;
     }
 
+    public boolean isShowTopupOptions() {
+        return showTopupOptions;
+    }
+
+    public void setShowTopupOptions(boolean showTopupOptions) {
+        this.showTopupOptions = showTopupOptions;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -126,5 +136,6 @@ public class PendingPayment implements Parcelable {
             parcel.writeList(topUpOptions);
         }
         parcel.writeString(topupUrl);
+        parcel.writeByte((byte) (showTopupOptions ? 0x01 : 0x00));
     }
 }

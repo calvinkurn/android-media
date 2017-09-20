@@ -140,6 +140,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @BindView(R2.id.pending_fare_layout)
     RelativeLayout pendingFareLayout;
+    @BindView(R2.id.layout_topup)
+    LinearLayout topupPendingFareLayout;
     @BindView(R2.id.tv_total_pending)
     TextView totalPendingTextView;
     @BindView(R2.id.layout_tokocash_option)
@@ -380,6 +382,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
             totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
             pendingFareLayout.setVisibility(View.VISIBLE);
+            topupPendingFareLayout.setVisibility(receipt.getPendingPayment().isShowTopupOptions() ? View.VISIBLE : View.GONE);
         } else {
             ratingLayout.setVisibility(View.VISIBLE);
 
