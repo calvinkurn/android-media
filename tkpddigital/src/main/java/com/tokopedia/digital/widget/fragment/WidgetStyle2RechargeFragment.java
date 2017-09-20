@@ -137,7 +137,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (before == 1 && count == 0) {
+                if (s.length() == 0 || before == 1 && count == 0) {
                     widgetClientNumberView.setImgOperatorInvisible();
                     clearHolder(holderWidgetSpinnerProduct);
                     clearHolder(holderWidgetWrapperBuy);
@@ -172,8 +172,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     private PreCheckoutDigitalWidget getDataPreCheckout() {
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
-        preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedProduct.getRelationships()
-                .getOperator().getData().getId()));
+        preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedOperator.operatorId));
         preCheckoutDigitalWidget.setProductId(String.valueOf(selectedProduct.getId()));
         preCheckoutDigitalWidget.setPromoProduct(selectedProduct.getAttributes().getPromo() != null);
         preCheckoutDigitalWidget.setBundle(bundle);
@@ -312,7 +311,9 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderEmptyProduct(String message) {
-
+        widgetClientNumberView.setImgOperatorInvisible();
+        clearHolder(holderWidgetWrapperBuy);
+        clearHolder(holderWidgetSpinnerProduct);
     }
 
     @Override
@@ -339,6 +340,11 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
+    public void renderErrorMessage(String message) {
+        showSnackbarErrorMessage(message);
+    }
+
+    @Override
     public void renderDataRecent(List<String> results) {
         if (SessionHandler.isV4Login(getActivity())) {
             widgetClientNumberView.setDropdownAutoComplete(results);
@@ -358,6 +364,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void onCheckChange(RechargeOperatorModel rechargeOperatorModel) {
+                selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.operatorId);
                 minLengthDefaultOperator = rechargeOperatorModel.minimumLength;

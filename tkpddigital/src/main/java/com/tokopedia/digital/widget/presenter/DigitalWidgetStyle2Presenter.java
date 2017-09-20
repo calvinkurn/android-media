@@ -121,7 +121,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderErrorMessage("Produk yang anda pilih saat ini tidak tersedia");
             }
 
             @Override

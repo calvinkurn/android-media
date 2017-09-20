@@ -352,4 +352,8 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
         localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED, currentPosition);
         localCacheHandler.applyEditor();
     }
+
+    protected void showSnackbarErrorMessage(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
 }

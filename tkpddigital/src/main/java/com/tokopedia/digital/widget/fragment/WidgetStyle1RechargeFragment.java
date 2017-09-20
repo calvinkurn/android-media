@@ -106,10 +106,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             holderWidgetClientNumber.addView(widgetClientNumberView);
             initClientNumber();
         } else {
-            clearHolder(holderWidgetWrapperBuy);
             selectedOperatorId = category.getAttributes().getDefaultOperatorId();
             presenter.validateOperatorWithProducts(category.getId(), selectedOperatorId);
-            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
         }
     }
 
@@ -187,8 +185,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     private PreCheckoutDigitalWidget getDataPreCheckout() {
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
-        preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedProduct.getRelationships()
-                .getOperator().getData().getId()));
+        preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedOperator.operatorId));
         preCheckoutDigitalWidget.setProductId(String.valueOf(selectedProduct.getId()));
         preCheckoutDigitalWidget.setPromoProduct(selectedProduct.getAttributes().getPromo() != null);
         preCheckoutDigitalWidget.setBundle(bundle);
@@ -324,22 +321,25 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderDataProducts(List<Product> products) {
+        clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
         if(!TextUtils.isEmpty(widgetClientNumberView.getText())) {
             widgetProductChoserView.setListener(getProductChoserListener());
             widgetProductChoserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
             holderWidgetSpinnerProduct.addView(widgetProductChoserView);
         }
+        holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
     }
 
     @Override
     public void renderEmptyProduct(String message) {
-
+        widgetClientNumberView.setImgOperatorInvisible();
+        clearHolder(holderWidgetWrapperBuy);
+        clearHolder(holderWidgetSpinnerProduct);
     }
 
     @Override
     public void renderDataOperator(RechargeOperatorModel operatorModel) {
-        clearHolder(holderWidgetWrapperBuy);
         if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
             selectedOperator = operatorModel;
             selectedOperatorId = String.valueOf(operatorModel.operatorId);
@@ -351,7 +351,10 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetProductChoserView.setTitleProduct(operatorModel.nominalText);
             widgetProductChoserView.setVisibilityProduct(operatorModel.showProduct);
             if (!operatorModel.showPrice) showPrice = false;
-            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
+            if (operatorModel.showProduct) {
+                clearHolder(holderWidgetWrapperBuy);
+                holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
+            }
         }
     }
 

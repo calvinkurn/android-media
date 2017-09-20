@@ -163,7 +163,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
