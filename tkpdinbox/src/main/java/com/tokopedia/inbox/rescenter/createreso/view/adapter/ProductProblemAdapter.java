@@ -111,19 +111,11 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                 }
             });
 
-//            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (productProblem.getProblem().getType() == 2) {
-//                        listener.onRemoveProductProblem(productProblem);
-//                    }
-//                }
-//            });
-
             holder.checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (holder.checkBox.isChecked()) {
+                        holder.checkBox.setChecked(false);
                         if (productProblem.getProblem().getType() == 2) {
                             listener.onItemClicked(productProblem);
                         } else {
