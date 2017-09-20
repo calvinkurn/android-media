@@ -156,7 +156,9 @@ class PaymentBank extends Component {
     headerStyle: {
         backgroundColor: '#42B549'
     },
-    headerLeft: <Text style={{ fontColor:'#FFF', fontSize:20 }}>Back</Text>
+    headerLeft: <Image 
+      source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png' }} 
+      style={{ width: 15, height: 15, marginLeft: 20 }} />
   };
 
   _choosePaymentMethod(paymentMethod) {
