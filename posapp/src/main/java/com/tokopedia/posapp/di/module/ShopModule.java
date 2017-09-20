@@ -27,6 +27,7 @@ import retrofit2.Retrofit;
 /**
  * Created by okasurya on 8/3/17.
  */
+// TODO: 9/20/17 fix scope structure
 @Module
 public class ShopModule {
     @ShopScope

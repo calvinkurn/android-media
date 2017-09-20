@@ -1,7 +1,9 @@
 package com.tokopedia.posapp.di.module;
 
 import com.google.gson.Gson;
+import com.tokopedia.posapp.data.factory.BankFactory;
 import com.tokopedia.posapp.data.factory.CartFactory;
+import com.tokopedia.posapp.data.source.local.BankLocalSource;
 import com.tokopedia.posapp.di.scope.ReactCacheScope;
 import com.tokopedia.posapp.react.datasource.ReactCacheRepositoryImpl;
 import com.tokopedia.posapp.react.datasource.cache.ReactBankCacheSource;
@@ -32,8 +34,8 @@ public class ReactCacheModule {
     }
 
     @Provides
-    ReactBankCacheSource provideBankCacheSource() {
-        return new ReactBankCacheSource();
+    ReactBankCacheSource provideBankCacheSource(BankFactory bankFactory, Gson gson) {
+        return new ReactBankCacheSource(bankFactory, gson);
     }
 
     @Provides

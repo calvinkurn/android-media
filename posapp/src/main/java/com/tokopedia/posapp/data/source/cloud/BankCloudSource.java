@@ -48,7 +48,9 @@ public class BankCloudSource {
                         List<BankDomain> bankDomains =
                                 getBankList(bankResponse.body().getData().getList());
 
-                        if(binResponse.body() != null && binResponse.isSuccessful()) {
+                        if(binResponse.body() != null
+                                && binResponse.isSuccessful()
+                                && binResponse.body().getData() != null) {
                             for(CCBinResponse ccBinResponse : binResponse.body().getData().getList()) {
                                 for(int i = 0; i < bankDomains.size(); i++) {
                                     if(bankDomains.get(i).getBankId() == ccBinResponse.getBankId()) {

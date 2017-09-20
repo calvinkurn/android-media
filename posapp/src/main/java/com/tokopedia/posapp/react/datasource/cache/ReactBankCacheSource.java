@@ -1,17 +1,10 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.tokopedia.posapp.data.factory.BankFactory;
 import com.tokopedia.posapp.data.pojo.BankItemResponse;
-import com.tokopedia.posapp.data.pojo.BankListResponse;
 import com.tokopedia.posapp.data.pojo.InstallmentResponse;
 import com.tokopedia.posapp.data.pojo.base.ListResponse;
-import com.tokopedia.posapp.data.source.local.BankLocalSource;
-import com.tokopedia.posapp.database.manager.BankDbManager;
-import com.tokopedia.posapp.database.manager.BankDbManager2;
-import com.tokopedia.posapp.database.model.BankDb;
-import com.tokopedia.posapp.database.model.BankDb_Table;
-import com.tokopedia.posapp.database.model.InstallmentDb;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.bank.InstallmentDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
@@ -28,26 +21,26 @@ import rx.functions.Func1;
 
 public class ReactBankCacheSource implements ReactCacheSource {
     private Gson gson;
-    private BankLocalSource bankLocalSource;
+    private BankFactory bankFactory;
 
-    public ReactBankCacheSource() {
-        gson = new Gson();
-        bankLocalSource = new BankLocalSource(new BankDbManager());
+    public ReactBankCacheSource(BankFactory bankFactory, Gson gson) {
+        this.gson = gson;
+        this.bankFactory = bankFactory;
     }
 
     @Override
     public Observable<String> getData(String id) {
-        return bankLocalSource.getBank(id).map(mapData());
+        return bankFactory.local().getBank(id).map(mapData());
     }
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return bankLocalSource.getBanks(offset, limit).map(mapListData());
+        return bankFactory.local().getBanks(offset, limit).map(mapListData());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return bankLocalSource.getAllBank().map(mapListData());
+        return bankFactory.local().getAllBank().map(mapListData());
     }
 
     @Override

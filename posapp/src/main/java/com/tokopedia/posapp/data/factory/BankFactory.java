@@ -13,14 +13,11 @@ import com.tokopedia.posapp.database.manager.BankDbManager;
 public class BankFactory {
     private CreditCardApi creditCardApi;
     private GetBankInstallmentMapper getBankInstallmentMapper;
-    private BankDbManager bankDbManager;
 
     public BankFactory(CreditCardApi creditCardApi,
-                       GetBankInstallmentMapper getBankInstallmentMapper,
-                       BankDbManager bankDbManager) {
+                       GetBankInstallmentMapper getBankInstallmentMapper) {
         this.creditCardApi = creditCardApi;
         this.getBankInstallmentMapper = getBankInstallmentMapper;
-        this.bankDbManager = bankDbManager;
     }
 
     public BankCloudSource cloud() {
@@ -28,6 +25,6 @@ public class BankFactory {
     }
 
     public BankLocalSource local() {
-        return new BankLocalSource(bankDbManager);
+        return new BankLocalSource();
     }
 }

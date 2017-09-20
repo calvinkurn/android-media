@@ -15,7 +15,7 @@ import dagger.Provides;
 /**
  * Created by okasurya on 9/19/17.
  */
-
+// TODO: 9/20/17 fix scope structure
 @Module(includes = ShopModule.class)
 public class EtalaseModule {
 

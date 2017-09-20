@@ -41,9 +41,8 @@ public class BankModule {
 
     @Provides
     BankFactory provideBankFactory(CreditCardApi creditCardApi,
-                                   GetBankInstallmentMapper getBankInstallmentMapper,
-                                   BankDbManager bankDbManager) {
-        return new BankFactory(creditCardApi, getBankInstallmentMapper, bankDbManager);
+                                   GetBankInstallmentMapper getBankInstallmentMapper) {
+        return new BankFactory(creditCardApi, getBankInstallmentMapper);
     }
 
     @Provides
