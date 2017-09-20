@@ -80,22 +80,26 @@ public class ProductAdditionalInfoView extends RelativeLayout {
 
     @SuppressWarnings("deprecation")
     public void convertDetailWithHtml(Product product) {
-        CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
-        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+        CharSequence detailUrl = MethodChecker.fromHtml(product.getDetailUrl());
+        SpannableStringBuilder strBuilderDetailUrl = new SpannableStringBuilder(detailUrl);
+        URLSpan[] urls = strBuilderDetailUrl.getSpans(0, detailUrl.length(), URLSpan.class);
         for (final URLSpan span : urls) {
-            int start = strBuilder.getSpanStart(span);
-            int end = strBuilder.getSpanEnd(span);
-            int flags = strBuilder.getSpanFlags(span);
+            int start = strBuilderDetailUrl.getSpanStart(span);
+            int end = strBuilderDetailUrl.getSpanEnd(span);
+            int flags = strBuilderDetailUrl.getSpanFlags(span);
             ClickableSpan clickable = new ClickableSpan() {
                 public void onClick(View view) {
                     actionListener.onProductLinkClicked(span.getURL());
                 }
             };
-            strBuilder.setSpan(clickable, start, end, flags);
-            strBuilder.removeSpan(span);
+            strBuilderDetailUrl.setSpan(clickable, start, end, flags);
+            strBuilderDetailUrl.removeSpan(span);
         }
-        tvInfo.setText(strBuilder);
+
+        CharSequence detail = MethodChecker.fromHtml(product.getDetail());
+        SpannableStringBuilder stringBuilderDetail = new SpannableStringBuilder(detail);
+        stringBuilderDetail.append(" ");
+        tvInfo.setText(stringBuilderDetail.append(strBuilderDetailUrl));
         tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
