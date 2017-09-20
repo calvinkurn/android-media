@@ -17,6 +17,16 @@
         android:padding="2dp"
         android:layout_weight="0.96">
 
+        <ImageView
+            android:id="@id/iv_brands"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_loading_toped"
+            android:layout_margin="3dp"
+            android:background="@color/transparent"/>
+
         <TextView
             android:id="@+id/text_new"
             android:layout_width="wrap_content"
@@ -29,15 +39,6 @@
             android:background="@drawable/bg_rounded_corners_red"
             android:padding="@dimen/padding_vvs"
             android:layout_margin="@dimen/margin_vs"/>
-
-        <ImageView
-            android:id="@id/iv_brands"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_loading_toped"
-            android:layout_margin="3dp" />
 
     </RelativeLayout>
 
