@@ -1,5 +1,8 @@
 package com.tokopedia.core.drawer2.data.pojo.topcash;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by nisie on 5/5/17.
  */
 
-public class TokoCashData {
+public class TokoCashData implements Parcelable {
 
     @SerializedName("action")
     @Expose
@@ -83,4 +86,35 @@ public class TokoCashData {
     public String getmAppLinks() {
         return mAppLinks;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.mAction, flags);
+        dest.writeString(this.mBalance);
+        dest.writeString(this.mRedirectUrl);
+        dest.writeString(this.mAppLinks);
+        dest.writeString(this.mText);
+        dest.writeValue(this.mWalletId);
+        dest.writeInt(this.link);
+    }
+
+    public TokoCashData() {
+    }
+
+    protected TokoCashData(Parcel in) {
+        this.mAction = in.readParcelable(Action.class.getClassLoader());
+        this.mBalance = in.readString();
+        this.mRedirectUrl = in.readString();
+        this.mAppLinks = in.readString();
+        this.mText = in.readString();
+        this.mWalletId = (Long) in.readValue(Long.class.getClassLoader());
+        this.link = in.readInt();
+    }
+
 }

@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
@@ -29,6 +28,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
@@ -365,17 +365,17 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
         UnifyTracking.eventClickDigitalCategory(itemData.getName());
-        if (itemData.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
-                && tokoCashData.getLink() != 1) {
-            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
-            String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
-                    getActivity());
-            if (getActivity() != null) {
-                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) getActivity().getApplication())
-                            .goToWallet(getActivity(), seamlessUrl);
-                }
-            }
+        if (itemData.getCategoryId().equalsIgnoreCase(
+                String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
+                )) && tokoCashData != null && tokoCashData.getLink() != 1) {
+
+            if (getActivity().getApplication() instanceof IWalletRouter)
+                ((IWalletRouter) getActivity().getApplication()).navigateAppLinkWallet(
+                        this, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                        tokoCashData.getAction().getmAppLinks(),
+                        tokoCashData.getAction().getmRedirectUrl(),
+                        new Bundle()
+                );
         } else {
             if (getActivity().getApplication() instanceof IDigitalModuleRouter)
                 if (((IDigitalModuleRouter) getActivity().getApplication())

@@ -1,12 +1,18 @@
 package com.tokopedia.digital.tokocash.activity;
 
 import android.app.Fragment;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.tokocash.fragment.ActivateTokoCashFragment;
 import com.tokopedia.digital.tokocash.fragment.RequestOTPWalletFragment;
@@ -17,6 +23,28 @@ import com.tokopedia.digital.tokocash.fragment.RequestOTPWalletFragment;
 
 public class ActivateTokoCashActivity extends BasePresenterActivity
         implements ActivateTokoCashFragment.ActionListener, RequestOTPWalletFragment.ActionListener {
+
+    @SuppressWarnings("unused")
+    @DeepLink(Constants.Applinks.WALLET_ACTIVATION)
+    public static Intent getcallingIntent(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            Intent homeIntent;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(context);
+            }
+            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+            taskStackBuilder.addNextIntent(homeIntent);
+        }
+        Intent destination = ActivateTokoCashActivity.newInstance(context);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        taskStackBuilder.addNextIntent(destination);
+        return destination;
+    }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, ActivateTokoCashActivity.class);

@@ -35,6 +35,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -87,7 +88,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IWalletRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -225,26 +226,26 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
             );
@@ -373,12 +374,7 @@ public class ConsumerRouterApplication extends MainApplication implements
 
         getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
     }
-
-    @Override
-    public boolean isSupportAppLinks(String appLinkScheme) {
-        return isSupportedDelegateDeepLink(appLinkScheme);
-    }
-
+    
     @Override
     public void actionAppLink(Context context, String linkUrl) {
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
@@ -482,4 +478,61 @@ public class ConsumerRouterApplication extends MainApplication implements
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void navigateAppLinkWallet(Context context,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        context.startActivity(getIntentAppLinkWallet(context, appLinkScheme, alternateRedirectUrl));
+    }
+
+
+    @Override
+    public void navigateAppLinkWallet(Activity activity,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        activity.startActivityForResult(
+                getIntentAppLinkWallet(activity, appLinkScheme, alternateRedirectUrl), requestCode
+        );
+    }
+
+    @Override
+    public void navigateAppLinkWallet(android.app.Fragment fragment,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        fragment.startActivityForResult(
+                getIntentAppLinkWallet(
+                        fragment.getActivity(), appLinkScheme, alternateRedirectUrl
+                ), requestCode
+        );
+    }
+
+    @Override
+    public void navigateAppLinkWallet(Fragment fragmentSupport,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        fragmentSupport.startActivityForResult(
+                getIntentAppLinkWallet(fragmentSupport.getActivity(),
+                        appLinkScheme, alternateRedirectUrl
+                ), requestCode
+        );
+    }
+
+    private Intent getIntentAppLinkWallet(Context context, String appLinkScheme,
+                                          String alternateRedirectUrl) {
+
+        return appLinkScheme == null || appLinkScheme.isEmpty() ?
+                DigitalWebActivity.newInstance(context, alternateRedirectUrl)
+                : isSupportedDelegateDeepLink(appLinkScheme)
+                ? new Intent(context, DeeplinkHandlerActivity.class).setData(Uri.parse(appLinkScheme))
+                : DigitalWebActivity.newInstance(context, appLinkScheme);
+    }
+
 }

@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.drawer;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.view.View;
@@ -33,17 +32,15 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
@@ -472,10 +469,10 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     if (launchIntent != null) {
                         context.startActivity(launchIntent);
-                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
+                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER + AppEventTracking.EventLabel.OPEN_APP);
                     } else if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
-                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_GM+AppEventTracking.Category.SWITCHER);
+                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_GM + AppEventTracking.Category.SWITCHER);
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
@@ -532,26 +529,27 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     @Override
-    public void onGoToTopCash(String topCashUrl) {
-        if (context.getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
-            context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
-        }
-
-    }
-
-    @Override
-    public void onGoToTopCashWithOtp(String topCashUrl) {
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, topCashUrl);
-        }
-    }
-
-    @Override
     public void onGoToProfileCompletion() {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance) {
+        ((IWalletRouter) context.getApplication()).navigateAppLinkWallet(
+                context, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkBalance, redirectUrlBalance,
+                new Bundle()
+        );
+    }
+
+    @Override
+    public void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton) {
+        ((IWalletRouter) context.getApplication()).navigateAppLinkWallet(
+                context, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkActionButton, redirectUrlActionButton,
+                new Bundle()
+        );
     }
 
     private void onGoToCreateShop() {

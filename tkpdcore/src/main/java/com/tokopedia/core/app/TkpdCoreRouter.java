@@ -74,6 +74,4 @@ public interface TkpdCoreRouter {
     Intent getRegisterIntent(Context context);
 
     void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
-
-    boolean isSupportAppLinks(String appLinkScheme);
 }
