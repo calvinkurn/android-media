@@ -3,7 +3,7 @@ package com.tokopedia.posapp.data.mapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.posapp.data.pojo.ListResponse;
+import com.tokopedia.posapp.data.pojo.base.ListResponse;
 import com.tokopedia.posapp.data.pojo.ShopEtalaseResponse;
 import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
 

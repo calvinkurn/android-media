@@ -57,11 +57,7 @@ public class CartLocalSource {
     }
 
     public Observable<List<CartDomain>> getCartProducts(int offset, int limit) {
-        QueryParameter q = new QueryParameter();
-        q.setOffset(offset);
-        q.setLimit(limit);
-
-        return cartDbManager.getListData(q).map(getProductData());
+        return cartDbManager.getListData(offset, limit).map(getProductData());
     }
 
     private ProductDomain mapToDomain(ProductDb productDb) {

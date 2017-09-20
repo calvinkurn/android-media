@@ -5,17 +5,17 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
-import com.tokopedia.posapp.domain.usecase.GetBankInstallmentUseCase;
+import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
 import com.tokopedia.posapp.domain.usecase.GetShopProductListUseCase;
-import com.tokopedia.posapp.domain.usecase.StoreBankInstallmentCacheUseCase;
+import com.tokopedia.posapp.domain.usecase.StoreBankUsecase;
 import com.tokopedia.posapp.domain.usecase.StoreEtalaseCacheUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
@@ -30,9 +30,6 @@ import rx.Subscriber;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-
-import static com.tokopedia.posapp.domain.usecase.StoreBankInstallmentCacheUseCase.BANK_INSTALLMENT_DOMAIN;
 
 /**
  * Created by okasurya on 8/29/17.
@@ -51,8 +48,8 @@ public class CachePresenter implements Cache.Presenter {
     private Context context;
     private GetShopProductListUseCase getShopProductListUseCase;
     private StoreProductCacheUseCase storeProductCacheUseCase;
-    private GetBankInstallmentUseCase getBankInstallmentUseCase;
-    private StoreBankInstallmentCacheUseCase storeBankInstallmentCacheUseCase;
+    private GetBankUseCase getBankUseCase;
+    private StoreBankUsecase storeBankUsecase;
     private GetEtalaseUseCase getEtalaseUseCase;
     private StoreEtalaseCacheUseCase storeEtalaseCacheUseCase;
 
@@ -66,16 +63,16 @@ public class CachePresenter implements Cache.Presenter {
     public CachePresenter(@ApplicationContext Context context,
                           GetShopProductListUseCase getShopProductListUseCase,
                           StoreProductCacheUseCase storeProductCacheUseCase,
-                          GetBankInstallmentUseCase getBankInstallmentUseCase,
-                          StoreBankInstallmentCacheUseCase storeBankInstallmentCacheUseCase,
+                          GetBankUseCase getBankUseCase,
+                          StoreBankUsecase storeBankUsecase,
                           GetEtalaseUseCase getEtalaseUseCase,
                           StoreEtalaseCacheUseCase storeEtalaseCacheUseCase
     ) {
         this.context = context;
         this.getShopProductListUseCase = getShopProductListUseCase;
         this.storeProductCacheUseCase = storeProductCacheUseCase;
-        this.getBankInstallmentUseCase = getBankInstallmentUseCase;
-        this.storeBankInstallmentCacheUseCase = storeBankInstallmentCacheUseCase;
+        this.getBankUseCase = getBankUseCase;
+        this.storeBankUsecase = storeBankUsecase;
         this.getEtalaseUseCase = getEtalaseUseCase;
         this.storeEtalaseCacheUseCase = storeEtalaseCacheUseCase;
 
@@ -146,7 +143,7 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private void getBankList() {
-        getBankInstallmentUseCase
+        getBankUseCase
                 .createObservable(null)
                 .observeOn(Schedulers.newThread())
                 .flatMap(storeBankToCache())
@@ -169,16 +166,19 @@ public class CachePresenter implements Cache.Presenter {
                 });
     }
 
-    private Func1<BankInstallmentDomain, Observable<BankSavedResult>> storeBankToCache() {
-        return new Func1<BankInstallmentDomain, Observable<BankSavedResult>>() {
+    private Func1<List<BankDomain>, Observable<BankSavedResult>> storeBankToCache() {
+        return new Func1<List<BankDomain>, Observable<BankSavedResult>>() {
             @Override
-            public Observable<BankSavedResult> call(BankInstallmentDomain bankInstallmentDomain) {
+            public Observable<BankSavedResult> call(List<BankDomain> bankDomains) {
                 RequestParams requestParams = RequestParams.create();
+                BankInstallmentDomain bankInstallmentDomain = new BankInstallmentDomain();
+                bankInstallmentDomain.setBankDomainList(bankDomains);
+
                 requestParams.putObject(
-                    StoreBankInstallmentCacheUseCase.BANK_INSTALLMENT_DOMAIN,
+                    StoreBankUsecase.BANK_INSTALLMENT_DOMAIN,
                     bankInstallmentDomain
                 );
-                return storeBankInstallmentCacheUseCase.createObservable(requestParams);
+                return storeBankUsecase.createObservable(requestParams);
             }
         };
     }

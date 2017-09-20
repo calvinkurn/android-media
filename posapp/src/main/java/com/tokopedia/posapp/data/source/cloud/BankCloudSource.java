@@ -1,14 +1,13 @@
 package com.tokopedia.posapp.data.source.cloud;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.data.mapper.GetBankInstallmentMapper;
-import com.tokopedia.posapp.data.pojo.BankInstallmentResponse;
 import com.tokopedia.posapp.data.pojo.BankItemResponse;
-import com.tokopedia.posapp.data.pojo.CreditCardBinResponse;
+import com.tokopedia.posapp.data.pojo.CCBinResponse;
 import com.tokopedia.posapp.data.pojo.InstallmentResponse;
+import com.tokopedia.posapp.data.pojo.base.ListResponse;
+import com.tokopedia.posapp.data.pojo.base.PaymentResponse;
 import com.tokopedia.posapp.data.source.cloud.api.CreditCardApi;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
-import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.bank.InstallmentDomain;
 
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
 
 /**
@@ -33,47 +31,46 @@ public class BankCloudSource {
         this.getBankInstallmentMapper = getBankInstallmentMapper;
     }
 
-    public Observable<BankInstallmentDomain> getBankInstallment() {
-        return creditCardApi.getBankInstallment().map(new Func1<Response<BankInstallmentResponse>, BankInstallmentDomain>() {
-            @Override
-            public BankInstallmentDomain call(Response<BankInstallmentResponse> bankResponse) {
-                if(bankResponse.body() != null
-                        && bankResponse.isSuccessful()
-                        && bankResponse.body().getData() != null) {
-                    return getBankInstallmentDomain(bankResponse.body().getData().getList());
+    public Observable<List<BankDomain>> getBankInstallment() {
+        return Observable.zip(
+            creditCardApi.getBankInstallment(),
+            creditCardApi.getBins(),
+            new Func2<Response<PaymentResponse<ListResponse<BankItemResponse>>>, Response<PaymentResponse<ListResponse<CCBinResponse>>>, List<BankDomain>>() {
+                @Override
+                public List<BankDomain> call(
+                        Response<PaymentResponse<ListResponse<BankItemResponse>>> bankResponse,
+                        Response<PaymentResponse<ListResponse<CCBinResponse>>> binResponse) {
+
+                    if(bankResponse.body() != null
+                            && bankResponse.isSuccessful()
+                            && bankResponse.body().getData() != null) {
+
+                        List<BankDomain> bankDomains =
+                                getBankList(bankResponse.body().getData().getList());
+
+                        if(binResponse.body() != null && binResponse.isSuccessful()) {
+                            for(CCBinResponse ccBinResponse : binResponse.body().getData().getList()) {
+                                for(int i = 0; i < bankDomains.size(); i++) {
+                                    if(bankDomains.get(i).getBankId() == ccBinResponse.getBankId()) {
+                                        bankDomains.get(i).setBankLogo(ccBinResponse.getBankLogo());
+                                        bankDomains.get(i).setBin(ccBinResponse.getValidateBin());
+                                        bankDomains.get(i).setBinInstallment(ccBinResponse.getInstallmentBin());
+                                        bankDomains.get(i).setAllowInstallment(ccBinResponse.getAllowInstallment());
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        return bankDomains;
+                    }
+                    return null;
+
                 }
-                return null;
             }
-        });
-//        return Observable.zip(
-//            creditCardApi.getBankInstallment(),
-//            creditCardApi.getBins(),
-//            new Func2<Response<BankInstallmentResponse>, Response<CreditCardBinResponse>, BankInstallmentDomain>() {
-//                @Override
-//                public BankInstallmentDomain call(Response<BankInstallmentResponse> bankResponse,
-//                                                  Response<CreditCardBinResponse> binResponse) {
-//
-//                    if(bankResponse.body() != null
-//                            && bankResponse.isSuccessful()
-//                            && bankResponse.body().getData() != null) {
-//
-//                        BankInstallmentDomain bankInstallmentDomain =
-//                                getBankInstallmentDomain(bankResponse.body().getData().getList());
-//
-//                        if(binResponse.body() != null && binResponse.isSuccessful()) {
-//
-//                        }
-//                        return bankInstallmentDomain;
-//                    }
-//
-//                    return null;
-//                }
-//            }
-//        );
+        );
     }
 
-    private BankInstallmentDomain getBankInstallmentDomain(List<BankItemResponse> bankList) {
-        BankInstallmentDomain bankInstallmentDomain = new BankInstallmentDomain();
+    private List<BankDomain> getBankList(List<BankItemResponse> bankList) {
         List<BankDomain> bankDomainList = new ArrayList<>();
 
         for(BankItemResponse bankItem : bankList) {
@@ -84,9 +81,9 @@ public class BankCloudSource {
 
             bankDomainList.add(bankDomain);
         }
-        bankInstallmentDomain.setBankDomainList(bankDomainList);
 
-        return bankInstallmentDomain;
+        return bankDomainList;
+
     }
 
     private List<InstallmentDomain> getInstallmentDomain(List<InstallmentResponse> installmentList) {

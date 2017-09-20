@@ -6,7 +6,10 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.data.repository.BankRepository;
 import com.tokopedia.posapp.data.repository.PaymentRepository;
+import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -14,18 +17,18 @@ import rx.Observable;
  * Created by okasurya on 9/5/17.
  */
 
-public class GetBankInstallmentUseCase extends UseCase<BankInstallmentDomain>{
+public class GetBankUseCase extends UseCase<List<BankDomain>>{
     BankRepository bankRepository;
 
-    public GetBankInstallmentUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     BankRepository bankRepository) {
+    public GetBankUseCase(ThreadExecutor threadExecutor,
+                          PostExecutionThread postExecutionThread,
+                          BankRepository bankRepository) {
         super(threadExecutor, postExecutionThread);
         this.bankRepository = bankRepository;
     }
 
     @Override
-    public Observable<BankInstallmentDomain> createObservable(RequestParams requestParams) {
+    public Observable<List<BankDomain>> createObservable(RequestParams requestParams) {
         return bankRepository.getBankInstallment();
     }
 }

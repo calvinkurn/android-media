@@ -22,7 +22,7 @@ import rx.Subscriber;
 
 public abstract class PosDbOperation<T, D extends BaseModel> extends DbOperation<T, D> {
     @Override
-    DatabaseDefinition getDatabase() {
+    protected DatabaseDefinition getDatabase() {
         return FlowManager.getDatabase(PosDatabase.class);
     }
 }

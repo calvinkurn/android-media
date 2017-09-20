@@ -1,8 +1,11 @@
 package com.tokopedia.posapp.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -11,7 +14,7 @@ import rx.Observable;
  */
 
 public interface BankRepository {
-    Observable<BankInstallmentDomain> getBankInstallment();
+    Observable<List<BankDomain>> getBankInstallment();
 
     Observable<BankSavedResult> storeBankToCache(BankInstallmentDomain data);
 }
