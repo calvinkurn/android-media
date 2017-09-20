@@ -10,6 +10,7 @@ import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import com.tokopedia.posapp.database.QueryParameter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -61,6 +62,27 @@ public abstract class DbOperation<T, D extends BaseModel> {
                 });
     }
 
+    public Observable<DbStatus> store(List<T> domains) {
+        return Observable.just(domains)
+                .map(new Func1<List<T>, List<D>>() {
+                    @Override
+                    public List<D> call(List<T> domains) {
+                        List<D> dbs = new ArrayList<D>();
+                        for(T domain: domains) {
+                            D db = mapToDb(domain);
+                            dbs.add(db);
+                        }
+                        return dbs;
+                    }
+                })
+                .flatMap(new Func1<List<D>, Observable<DbStatus>>() {
+                    @Override
+                    public Observable<DbStatus> call(List<D> dbs) {
+                        return executeStore(dbs);
+                    }
+                });
+    }
+
     public Observable<DbStatus> update(T domain) {
         return Observable.just(domain)
                 .map(new Func1<T, D>() {
@@ -101,8 +123,12 @@ public abstract class DbOperation<T, D extends BaseModel> {
                 });
     }
 
-    public Observable<List<T>> getListData(QueryParameter queryParameter) {
-        return Observable.just(queryParameter)
+    public Observable<List<T>> getListData(int offset, int limit) {
+        QueryParameter q = new QueryParameter();
+        q.setOffset(offset);
+        q.setLimit(limit);
+
+        return Observable.just(q)
                 .map(new Func1<QueryParameter, List<T>>() {
                     @Override
                     public List<T> call(QueryParameter q) {
@@ -205,7 +231,7 @@ public abstract class DbOperation<T, D extends BaseModel> {
         });
     }
 
-    private Transaction.Success defaultSuccessListener(final Subscriber<? super DbStatus> subscriber) {
+    protected Transaction.Success defaultSuccessListener(final Subscriber<? super DbStatus> subscriber) {
         return new Transaction.Success() {
             @Override
             public void onSuccess(Transaction transaction) {
@@ -214,10 +240,11 @@ public abstract class DbOperation<T, D extends BaseModel> {
         };
     }
 
-    private Transaction.Error defaultErrorListener(final Subscriber<? super DbStatus> subscriber) {
+    protected Transaction.Error defaultErrorListener(final Subscriber<? super DbStatus> subscriber) {
         return new Transaction.Error() {
             @Override
             public void onError(Transaction transaction, Throwable error) {
+                error.printStackTrace();
                 subscriber.onNext(DbStatus.defaultErrorResult(error));
             }
         };

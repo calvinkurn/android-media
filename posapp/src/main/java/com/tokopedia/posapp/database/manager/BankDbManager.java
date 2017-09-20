@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by okasurya on 9/8/17.
  */
-
+// TODO: 9/20/17 clean up this mess
 public class BankDbManager implements DbManager<BankDomain,BankDb> {
     @Override
     public void store(BankDomain bankDomain, TransactionListener callback) {
@@ -38,6 +38,7 @@ public class BankDbManager implements DbManager<BankDomain,BankDb> {
                     for(InstallmentDomain installment : bankDomain.getInstallmentList()) {
                         InstallmentDb installmentDb = new InstallmentDb();
                         installmentDb.setBankDb(bankDb);
+                        installmentDb.setBankId(bankDb.getBankId());
                         installmentDb.setTerm(installment.getTerm());
                         installmentDb.setFeeValue(installment.getFeeValue());
                         installmentDb.setFeeType(installment.getFeeType());

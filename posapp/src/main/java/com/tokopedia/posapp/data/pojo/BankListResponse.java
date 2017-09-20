@@ -18,7 +18,7 @@ public class BankListResponse {
         return list;
     }
 
-    public void setList(List<BankItemResponse> list) {
+    public void setList(List<BankItemResponse> list)git {
         this.list = list;
     }
 }

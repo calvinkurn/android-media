@@ -27,7 +27,17 @@ public class BankDb extends BaseModel {
     @Column
     private String bankName;
 
+    @Column
+    private String bankLogo;
+
+    @Column
+    private Boolean allowInstallment;
+
     List<InstallmentDb> installmentDbs;
+
+    List<BinDb> binDbs;
+
+    List<BinInstallmentDb> binInstallmentDbs;
 
     public int getBankId() {
         return bankId;
@@ -45,6 +55,22 @@ public class BankDb extends BaseModel {
         this.bankName = bankName;
     }
 
+    public String getBankLogo() {
+        return bankLogo;
+    }
+
+    public void setBankLogo(String bankLogo) {
+        this.bankLogo = bankLogo;
+    }
+
+    public Boolean isAllowInstallment() {
+        return allowInstallment;
+    }
+
+    public void setAllowInstallment(Boolean allowInstallment) {
+        this.allowInstallment = allowInstallment;
+    }
+
     @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "installmentDbs")
     public List<InstallmentDb> getInstallmentDbs() {
         if(installmentDbs == null || installmentDbs.isEmpty()){
@@ -54,5 +80,39 @@ public class BankDb extends BaseModel {
                     .queryList();
         }
         return installmentDbs;
+    }
+
+    public void setInstallmentDbs(List<InstallmentDb> installmentDbs) {
+        this.installmentDbs = installmentDbs;
+    }
+
+    @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "binDbs")
+    public List<BinDb> getBinDbs() {
+        if(binDbs == null || binDbs.isEmpty()){
+            binDbs = SQLite.select()
+                        .from(BinDb.class)
+                        .where(BinDb_Table.bankDbContainer_bankId.eq(bankId))
+                        .queryList();
+        }
+        return binDbs;
+    }
+
+    public void setBinDbs(List<BinDb> binDbs) {
+        this.binDbs = binDbs;
+    }
+
+    @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "binInstallmentDbs")
+    public List<BinInstallmentDb> getBinInstallmentDbs() {
+        if(binInstallmentDbs == null || binInstallmentDbs.isEmpty()){
+            binInstallmentDbs = SQLite.select()
+                    .from(BinInstallmentDb.class)
+                    .where(BinInstallmentDb_Table.bankDbContainer_bankId.eq(bankId))
+                    .queryList();
+        }
+        return binInstallmentDbs;
+    }
+
+    public void setBinInstallmentDbs(List<BinInstallmentDb> binInstallmentDbs) {
+        this.binInstallmentDbs = binInstallmentDbs;
     }
 }

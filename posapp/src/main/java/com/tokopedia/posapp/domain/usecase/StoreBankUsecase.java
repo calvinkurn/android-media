@@ -16,14 +16,14 @@ import rx.Observable;
  * Created by okasurya on 9/8/17.
  */
 
-public class StoreBankInstallmentCacheUseCase extends UseCase<BankSavedResult> {
+public class StoreBankUsecase extends UseCase<BankSavedResult> {
     public static final String BANK_INSTALLMENT_DOMAIN = "BANK_INSTALLMENT_DOMAIN";
 
     private BankRepository bankRepository;
 
-    public StoreBankInstallmentCacheUseCase(ThreadExecutor threadExecutor,
-                                            PostExecutionThread postExecutionThread,
-                                            BankRepository bankRepository) {
+    public StoreBankUsecase(ThreadExecutor threadExecutor,
+                            PostExecutionThread postExecutionThread,
+                            BankRepository bankRepository) {
         super(threadExecutor, postExecutionThread);
         this.bankRepository = bankRepository;
     }
