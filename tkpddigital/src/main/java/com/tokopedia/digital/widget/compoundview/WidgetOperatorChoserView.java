@@ -71,6 +71,7 @@ public class WidgetOperatorChoserView extends LinearLayout {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                listener.onResetOperator();
                 listener.onCheckChangeOperator(operators.get(i));
             }
 
