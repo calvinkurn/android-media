@@ -81,12 +81,15 @@ class PaymentBank extends Component {
   }
 
   _renderBankLogo(rowData: string, sectionID: number, rowID: number) {
+    console.log(rowData, sectionID, rowID)
     if (rowData.id < 10) {
       return (
         <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
+          <Text>{rowData.bank_name}</Text>
           <View style={[styles.logoBox, { marginTop: 10, height: 80 }, (rowData.isSelected ? styles.selectedBorder : '')]}>
             <Image source={rowData.bankImage}
               style={styles.cardLogo} />
+            <Text>{rowData.bank_name}</Text>
           </View>
         </TouchableWithoutFeedback>
       );
@@ -149,11 +152,12 @@ class PaymentBank extends Component {
 
 
   static navigationOptions = {
-    title: 'Bank Selection Page',
+    title: 'Pembayaran',
     headerTintColor: '#FFF',
     headerStyle: {
         backgroundColor: '#42B549'
-    }
+    },
+    headerLeft: <Text style={{ fontColor:'#FFF', fontSize:20 }}>Back</Text>
   };
 
   _choosePaymentMethod(paymentMethod) {
@@ -163,6 +167,7 @@ class PaymentBank extends Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <View style={styles.mainContainers} >
         {/* <View style={styles.header}>
@@ -246,7 +251,7 @@ class PaymentBank extends Component {
                 <View style={{ paddingVertical: 20, flexDirection: 'row', marginLeft: 15 }}>
                   <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'SCAN')}>
                     <View style={[styles.paymentMethod, { marginRight: 10 }, (this.state.paymentMethod === 'SCAN') ? styles.paymentSelected : {}]}>
-                      <Text style={styles.emiText, {fontSize: 14}}>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>
                         Scan Kartu Kredit
                         </Text>
                     </View>
@@ -254,7 +259,7 @@ class PaymentBank extends Component {
 
                   <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'ONLINE')}>
                     <View style={[styles.paymentMethod, (this.state.paymentMethod === 'ONLINE') ? styles.paymentSelected : {}]}>
-                      <Text style={styles.emiText, {fontSize: 14}}>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>
                         Pembayaran Online
                         </Text>
                     </View>
@@ -510,12 +515,14 @@ const ds = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2 });
 
 const mapStateToProps = state => {
+  console.log(state)
+  console.log(state.payment.items)
   const bankList = ds.cloneWithRows(state.payment.items);
   const emiList = ds.cloneWithRows(state.payment.emiList);
 
   return {
-          ...state.payment,
-        bankList,
+    ...state.payment,
+    bankList,
     emiList
   }
 }

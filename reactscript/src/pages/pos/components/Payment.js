@@ -77,7 +77,7 @@ class payment extends Component {
   };
 
   static navigationOptions = {
-    title: 'Payment Page',
+    title: 'Pembayaran',
     headerTintColor: '#FFF',
     headerStyle: {
         backgroundColor: '#42B549'

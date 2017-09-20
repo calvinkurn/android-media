@@ -151,10 +151,18 @@ export const selectBank = (id) => {
   }
 }
 
+//  ==================== Fetch data Bank from Cache ===================== //
 export const FETCH_BANK_FUlFILLED = 'FETCH_BANK_FUlFILLED'
 export const getBankList = () => {
   return {
     type: FETCH_BANK_FUlFILLED,
+    payload: PosCacheModule.getDataAll('BANK')
+              .then(response => {
+                const jsonResponse = JSON.parse(response)
+                console.log(jsonResponse.data)
+                if (jsonResponse.data) return jsonResponse.data.list
+              })
+              .catch(err => console.log(err))
   }
 }
 

@@ -64,7 +64,6 @@ class SearchBar extends Component {
   }
 
   render() {
-    console.log(this.props.items)
     return (
       <View>
         <View>

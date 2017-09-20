@@ -5,10 +5,10 @@ import store from './store/Store'
 // import Payment from './components/Payment'
 // import PaymentProcessing from './components/PaymentProcessing'
 // import PaymentInvoice from './components/PaymentInvoice'
-// import TransactionHistory from './components/TransactionHistory'
+import TransactionHistory from './components/TransactionHistory'
 // import PasswordPopup from './components/PasswordPopup'
 // import POS from './components/POS'
-import CartContainer from './containers/CartContainer'
+// import CartContainer from './containers/CartContainer'
 // import { StackNavigator } from 'react-navigation';
 
 // // // TODO: FOR UI testing purpose
@@ -27,7 +27,7 @@ class Root extends Component {
     render() {
         return (
             <Provider store={store}>
-                <CartContainer onBackPress={() => {}}/>
+                <TransactionHistory onBackPress={() => {}}/>
             </Provider>
         )
     }

@@ -38,10 +38,6 @@ const PaymentApp = StackNavigator({
 
 
 class Root extends Component {
-    componentWillMount() {
-        console.log(this.props)
-    }
-  
     render() {
         return (
             <Provider store={store}>
