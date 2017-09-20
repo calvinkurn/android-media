@@ -81,7 +81,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
     private TextView transactionSuccessTextView;
-    private View viewShopStatus;
     private LabelView newOrderLabelView;
     private LabelView deliveryConfirmationLabelView;
     private LabelView deliveryStatusLabelView;
@@ -110,7 +109,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onViewCreated(view, savedInstanceState);
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
-        ViewGroup vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
+
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
@@ -134,7 +133,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
         shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
 
-        viewShopStatus = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
 
@@ -278,7 +276,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Inbox reputation now has 2 tabs, need activity for 1 tab only?
                 Intent intent = new Intent(getContext(), InboxReputationActivity.class);
                 intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
                 startActivity(intent);
@@ -302,8 +299,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 getContext().startActivity(intent);
             }
         });
-        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
-                String.valueOf(shopModel.getStats().getRateSuccess())));
+        if (shopModel.shopTxStats.shopTxHasTransaction1Month == 1) {
+            transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
+                    String.valueOf(shopModel.shopTxStats.shopTxSuccessRate1Month)));
+        } else {
+            transactionSuccessTextView.setText(getString(R.string.label_empty_value));
+        }
+
     }
 
     private void updateShopInfo(ShopModel shopModel) {
@@ -330,8 +332,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 showShopClosed(shopModel);
                 break;
             case ShopStatusDef.MODERATED:
-                //TODO moderated state
-                shopWarningTickerView.setVisibility(View.GONE);
+                showShopModerated(shopModel);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
                 //TODO not active state
@@ -355,6 +356,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 sellerDashboardPresenter.openShop();
             }
         });
+        shopWarningTickerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showShopModerated(ShopModel shopModel) {
+        shopWarningTickerView.setIcon(R.drawable.icon_closed);
+        shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
+        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
+        shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
