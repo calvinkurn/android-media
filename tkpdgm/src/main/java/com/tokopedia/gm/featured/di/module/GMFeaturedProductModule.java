@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.gm.featured.data.GMFeaturedProductDataSource;
 import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
@@ -16,6 +17,7 @@ import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -51,7 +53,7 @@ public class GMFeaturedProductModule {
 
     @GMFeaturedProductScope
     @Provides
-    ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit) {
-        return retrofit.create(ShopApi.class);
+    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeApi.class);
     }
 }

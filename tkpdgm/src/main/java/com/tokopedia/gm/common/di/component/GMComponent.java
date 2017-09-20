@@ -22,6 +22,7 @@ import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
@@ -67,6 +68,9 @@ public interface GMComponent {
 
     @CartQualifier
     Retrofit cartRetrofit();
+
+    @TomeQualifier
+    Retrofit tomeQualifier();
 
     Retrofit.Builder retrofitBuilder();
 
