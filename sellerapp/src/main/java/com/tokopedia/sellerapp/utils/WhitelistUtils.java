@@ -31,8 +31,6 @@ public class WhitelistUtils {
                 TkpdBaseURL.User.URL_NOTIFICATION + TkpdBaseURL.User.PATH_GET_NOTIFICATION, THIRTY_SECOND));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, THREE_HOURS));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOME_DOMAIN,
-                TkpdBaseURL.Shop.PATH_SHOP_TOME, THREE_HOURS));
 
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
                 StatisticConstant.GET_TRANSACTION_GRAPH_URL, ONE_DAY));
