@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
@@ -128,6 +129,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     }
 
     protected void expandBottomSheet() {
+        CommonUtils.hideKeyboard(this, getWindow().getDecorView());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
