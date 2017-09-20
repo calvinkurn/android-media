@@ -103,6 +103,11 @@ public class WishListImpl implements WishList {
         if (savedInstanceState != null) {
             //mPaging.onCreate(savedInstanceState);
             data = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_MODEL));
+            dataWishlist = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_ENTITY));
+            if (mPaging != null) {
+                Pagination pagination = savedInstanceState.getParcelable(PAGINATION_MODEL);
+                mPaging.setPagination(pagination);
+            }
         }
     }
 
@@ -167,6 +172,10 @@ public class WishListImpl implements WishList {
     public void saveDataBeforeRotate(Bundle saved) {
         //mPaging.onSavedInstanceState(saved);
         saved.putParcelable(WISHLIST_MODEL, Parcels.wrap(data));
+        saved.putParcelable(WISHLIST_ENTITY, Parcels.wrap(dataWishlist));
+        if (mPaging != null) {
+            saved.putParcelable(PAGINATION_MODEL, mPaging.getPagination());
+        }
     }
 
     @Override
