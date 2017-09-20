@@ -301,6 +301,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         if (featuredProductTypeView == GMFeaturedProductTypeView.DELETE_DISPLAY) {
             int totalChecked = ((GMFeaturedProductAdapter) adapter).getTotalChecked();
             updateTitle(String.valueOf(totalChecked), null);
+            getActivity().invalidateOptionsMenu();
         }
     }
 
@@ -448,7 +449,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         menu.clear();
         switch (featuredProductTypeView) {
             case GMFeaturedProductTypeView.DELETE_DISPLAY:
-                inflater.inflate(R.menu.menu_gm_featured_product_delete_mode, menu);
+                if (((GMFeaturedProductAdapter) adapter).getTotalChecked() > 0) {
+                    inflater.inflate(R.menu.menu_gm_featured_product_delete_mode, menu);
+                }
                 break;
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
                 if (totalItem > 0) {
@@ -471,7 +474,11 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             setFeaturedProductTypeView(GMFeaturedProductTypeView.DELETE_DISPLAY);
             return true;
         } else if (item.getItemId() == R.id.menu_delete) {
-            showDeleteDialog();
+            if (((GMFeaturedProductAdapter) adapter).getTotalChecked() == 0) {
+                reloadAfterDeleteAction();
+            } else {
+                showDeleteDialog();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -484,9 +491,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             public void onClick(DialogInterface dialog, int id) {
                 gmTemporaryDelete = ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
                 showSnackbarWithUndo();
-                setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
-                List<GMFeaturedProductModel> gmFeaturedProductModelListTemp = new ArrayList<GMFeaturedProductModel>(adapter.getData());
-                onSearchLoaded(gmFeaturedProductModelListTemp, gmFeaturedProductModelListTemp.size());
+                reloadAfterDeleteAction();
                 dialog.cancel();
             }
         });
@@ -497,6 +502,12 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    protected void reloadAfterDeleteAction() {
+        setFeaturedProductTypeView(GMFeaturedProductTypeView.DEFAULT_DISPLAY);
+        List<GMFeaturedProductModel> gmFeaturedProductModelListTemp = new ArrayList<GMFeaturedProductModel>(adapter.getData());
+        onSearchLoaded(gmFeaturedProductModelListTemp, gmFeaturedProductModelListTemp.size());
     }
 
     public void showFab() {
