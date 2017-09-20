@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.InboxReputationDetailPojo;
@@ -63,12 +66,11 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
                 }
             }
         } else {
-            if (response.body() == null ||
-                    (response.body().getErrorMessages() == null
-                            && response.body().getErrorMessages().isEmpty())) {
-                throw new RuntimeException(String.valueOf(response.code()));
+            String messageError = ErrorHandler.getErrorMessage(response);
+            if (!TextUtils.isEmpty(messageError)) {
+                throw new ErrorMessageException(messageError);
             } else {
-                throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                throw new RuntimeException(String.valueOf(response.code()));
             }
         }
     }
