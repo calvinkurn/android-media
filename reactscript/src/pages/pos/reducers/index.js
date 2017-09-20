@@ -16,9 +16,12 @@ import {
   ON_SEARCH_QUERY_TYPE,
   SET_SEARCH_TEXT,
   ON_SUBMIT_FETCH_SEARCH_PRODUCT,
-  FETCH_CART_FROM_CACHE
+  FETCH_CART_FROM_CACHE,
+  FETCH_BANK_FUlFILLED,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
+import { icons } from '../components/icon/index'
+
 
 const products = (state = {
   items: [],
@@ -243,19 +246,17 @@ const payment = (state = {
   cardType: ''
 }, action) => {
   switch (action.type) {
-    case 'FETCH_BANK_FUlFILLED':
-      //const data  = action.payload.data
-      //TODO: update with API on future
-      const data = bankData;
+    case `${FETCH_BANK_FUlFILLED}_${FULFILLED}`:
       return {
         ...state,
-        items: data
+        items: action.payload
       }
       break;
+
     case 'FETCH_EMI_FUlFILLED':
       return {
         ...state,
-        emiList: emiData
+        emiList: action.payload
       }
       break;
     case 'BANK_SELECTED':

@@ -75,7 +75,6 @@ class VisibleProductList extends Component {
     const refreshing = this.props.products.refreshing
     const selectedEtalaseId = this.props.etalases.selected
     const selectedEtalase = etalases.filter(e => e.id == selectedEtalaseId)
-    console.log(products)
 
     return (
       <View style={styles.container}>

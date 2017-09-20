@@ -24,7 +24,6 @@ class CartItem extends Component {
     const onIncr = this.props.onIncr
     const onDecr = this.props.onDecr
     const onRemove = this.props.onRemove
-    console.log(item)
 
     return (
       <View>
