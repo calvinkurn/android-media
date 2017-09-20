@@ -13,20 +13,16 @@ import rx.functions.Func1;
  * Created by alifa on 9/13/17.
  */
 
-public class PromoWidgetMapper implements Func1<Response<TkpdResponse>, PromoAttributes> {
+public class PromoWidgetMapper implements Func1<Response<TkpdResponse>, DataPromoWidget> {
 
     public PromoWidgetMapper() {
     }
 
     @Override
-    public PromoAttributes call(Response<TkpdResponse> response) {
+    public DataPromoWidget call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-                DataPromoWidget data =
-                        new GsonBuilder().create().fromJson(response.body().getStringData(), DataPromoWidget.class);
-                if (!data.getPromoWidgetList().isEmpty()) {
-                    return data.getPromoWidgetList().get(0).getPromoAttributes();
-                }
+                return new GsonBuilder().create().fromJson(response.body().getStringData(), DataPromoWidget.class);
             }
         }
         return null;
