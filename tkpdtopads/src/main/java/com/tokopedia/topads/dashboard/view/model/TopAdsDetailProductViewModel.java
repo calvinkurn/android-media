@@ -186,6 +186,9 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         this.title = title;
     }
 
+    public TopAdsDetailProductViewModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -213,9 +216,6 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         dest.writeByte(this.toggled ? (byte) 1 : (byte) 0);
     }
 
-    public TopAdsDetailProductViewModel() {
-    }
-
     protected TopAdsDetailProductViewModel(Parcel in) {
         this.id = in.readLong();
         this.type = in.readInt();
@@ -237,7 +237,7 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         this.toggled = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<TopAdsDetailProductViewModel> CREATOR = new Parcelable.Creator<TopAdsDetailProductViewModel>() {
+    public static final Creator<TopAdsDetailProductViewModel> CREATOR = new Creator<TopAdsDetailProductViewModel>() {
         @Override
         public TopAdsDetailProductViewModel createFromParcel(Parcel source) {
             return new TopAdsDetailProductViewModel(source);
