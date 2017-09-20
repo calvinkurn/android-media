@@ -81,7 +81,6 @@ class PaymentBank extends Component {
   }
 
   _renderBankLogo(rowData: string, sectionID: number, rowID: number) {
-    console.log(rowData, sectionID, rowID)
     if (rowData.id < 10) {
       return (
         <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
@@ -167,7 +166,6 @@ class PaymentBank extends Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <View style={styles.mainContainers} >
         {/* <View style={styles.header}>
@@ -515,8 +513,6 @@ const ds = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2 });
 
 const mapStateToProps = state => {
-  console.log(state)
-  console.log(state.payment.items)
   const bankList = ds.cloneWithRows(state.payment.items);
   const emiList = ds.cloneWithRows(state.payment.emiList);
 

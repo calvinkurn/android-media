@@ -94,7 +94,6 @@ export const removeFromCart = (pid) => {
 //  ==================== Increment Quantity inside Cart ===================== //
 export const INCREMENT_QTY = 'INCREMENT_QTY'
 export const incrementQty = (id, pid, qty) => {
-  console.log(id, pid, qty)
   const quantity = qty + 1
 
   return {
@@ -113,7 +112,6 @@ export const incrementQty = (id, pid, qty) => {
 //  ==================== Decrement Quantity inside Cart ===================== //
 export const DECREMENT_QTY = 'DECREMENT_QTY'
 export const decrementQty = (id, pid, qty) => {
-  console.log(id, pid, qty)
   const quantity = qty - 1
 
   return {
@@ -156,16 +154,28 @@ export const FETCH_BANK_FUlFILLED = 'FETCH_BANK_FUlFILLED'
 export const getBankList = () => {
   return {
     type: FETCH_BANK_FUlFILLED,
-    payload: PosCacheModule.getDataAll('BANK')
-              .then(response => {
-                const jsonResponse = JSON.parse(response)
-                console.log(jsonResponse.data)
-                if (jsonResponse.data) return jsonResponse.data.list
-              })
-              .catch(err => console.log(err))
+    payload: fetchBankData()
   }
 }
 
+const fetchBankData = () => {
+  return PosCacheModule.getDataAll('BANK')
+    .then(response => {
+      const jsonResponse = JSON.parse(response)
+      console.log(jsonResponse.data.list)
+      if (jsonResponse.data) return jsonResponse.data.list
+    })
+    .catch(err => console.log(err))
+}
+
+//  ==================== Fetch data Installment from Cache ===================== //
+export const FETCH_EMI_FUlFILLED = 'FETCH_EMI_FUlFILLED'
+export const getEmiList = () => {
+  return {
+    type: FETCH_EMI_FUlFILLED,
+    payload: fetchBankData()
+  }
+}
 
 export const SELECT_PAYMENT_OPTIONS = 'SELECT_PAYMENT_OPTIONS'
 export const selectPaymentOptions = (option, value) => {
@@ -175,12 +185,7 @@ export const selectPaymentOptions = (option, value) => {
   }
 }
 
-export const FETCH_EMI_FUlFILLED = 'FETCH_EMI_FUlFILLED'
-export const getEmiList = () => {
-  return {
-    type: FETCH_EMI_FUlFILLED,
-  }
-}
+
 
 export const EMI_SELECTED = 'EMI_SELECTED'
 export const selectEmi = (id) => {

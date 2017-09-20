@@ -247,18 +247,6 @@ const payment = (state = {
 }, action) => {
   switch (action.type) {
     case `${FETCH_BANK_FUlFILLED}_${FULFILLED}`:
-      // console.log(action.payload)
-      //const data  = action.payload.data
-      //TODO: update with API on future
-      // const data = bankData;
-      // const dataIcons = icons;
-      // console.log(data)
-
-      // console.log(icons.logo_anz)
-      // action.payload.map(i => {
-      //   console.log(i)
-      // })
-
       return {
         ...state,
         items: action.payload
@@ -266,10 +254,9 @@ const payment = (state = {
       break;
 
     case 'FETCH_EMI_FUlFILLED':
-      console.log(emiData)
       return {
         ...state,
-        emiList: emiData
+        emiList: action.payload
       }
       break;
     case 'BANK_SELECTED':
