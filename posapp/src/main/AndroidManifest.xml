@@ -64,15 +64,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.PaymentActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="pospayment"
-                    android:host="pospayment" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.PaymentProcessingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.TransactionHistoryActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

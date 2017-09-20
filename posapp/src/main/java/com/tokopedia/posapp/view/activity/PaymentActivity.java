@@ -6,11 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.ReactNativeActivity;
-import com.tokopedia.core.react.ReactConst;
+
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.react.PosReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
 
 /**
  * Created by okasurya on 9/12/17.

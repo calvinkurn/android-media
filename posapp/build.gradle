@@ -60,6 +60,7 @@ dependencies {
     compile project(':tkpdpdp')
     compile project(':tkpdseller')
     compile project(':tkpddesign')
+    compile project(':tkpdreactnative')
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore

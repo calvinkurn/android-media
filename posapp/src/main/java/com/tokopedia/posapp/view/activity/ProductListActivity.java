@@ -1,12 +1,12 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -69,19 +69,10 @@ public class ProductListActivity extends DrawerPresenterActivity {
     @Override
     protected void initView() {
         ProductListFragment fragment = ProductListFragment.newInstance(SessionHandler.getShopID(this), "etalase");
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (getSupportFragmentManager().findFragmentByTag(
-                ProductListFragment.class.getSimpleName()) == null) {
-            fragmentTransaction.replace(R.id.container,
-                    fragment,
-                    fragment.getClass().getSimpleName());
-        } else {
-            fragmentTransaction.replace(R.id.container,
-                    getSupportFragmentManager().findFragmentByTag(
-                            ProductListFragment.class.getSimpleName()));
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
-
         fragmentTransaction.commit();
     }
 

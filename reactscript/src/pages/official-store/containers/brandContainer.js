@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DeviceEventEmitter, AsyncStorage } from 'react-native'
+import { DeviceEventEmitter } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import LoadMore from '../components/LoadMore'
@@ -14,17 +14,15 @@ import {
   resetBrands
 } from '../actions/actions'
 import BrandList from '../components/brandList'
+import { NavigationModule } from 'NativeModules';
 
 
 class BrandContainer extends Component {
   componentWillMount() {
     const { offset, limit } = this.props.brands.pagination
-    AsyncStorage.getItem('user_id')
-    .then(uid => {
-      this.props.loadMore(limit, offset, uid)
+    NavigationModule.getCurrentUserId().then(uuid => {
+      this.props.loadMore(limit, offset, uuid)
     })
-    // const { User_ID } = this.props.screenProps
-    // this.props.loadMore(limit, offset, User_ID)
 
     this.addToWishlist = DeviceEventEmitter.addListener('WishlistAdd', (res) => {
       this.props.brandAddWishlistPdp(res)
@@ -39,11 +37,8 @@ class BrandContainer extends Component {
       this.props.removeFavoriteFromPdp(res.shop_id)
     })
 
-    this.checkLogin = DeviceEventEmitter.addListener('Login', (res) => {
-      AsyncStorage.getItem('user_id')
-      .then(uid => {
-          this.props.resetBrandsAfterLogin(limit, offset, uid, 'REFRESH')
-      })
+    this.checkLoginBrand = DeviceEventEmitter.addListener('Login', (res) => {
+      this.props.resetBrandsAfterLogin(limit, offset, res.user_id)
     })
   }
 
@@ -52,7 +47,7 @@ class BrandContainer extends Component {
     this.removeWishlist.remove()
     this.addToFavoritePDP.remove()
     this.removeFavoritePDP.remove()
-    this.checkLogin.remove()
+    this.checkLoginBrand.remove()
   }
 
   render() {

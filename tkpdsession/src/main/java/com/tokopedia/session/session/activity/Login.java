@@ -1,8 +1,6 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
-import android.app.Activity;
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -32,7 +30,6 @@ import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.login.LoginManager;
-import com.facebook.react.ReactApplication;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.tkpd.library.utils.CommonUtils;
@@ -47,11 +44,11 @@ import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
@@ -68,9 +65,9 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
-import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
@@ -140,7 +137,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     ErrorNetworkReceiver mReceiverLogout;
 
     @DeepLink({Constants.Applinks.LOGIN})
-    public static Intent getCallingApplinkIntent(Context context, Bundle bundle){
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         Intent intent = new Intent(context, Login.class);
         intent.putExtra(Session.WHICH_FRAGMENT_KEY,
@@ -382,7 +379,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
                     AppWidgetUtil.sendBroadcastToAppWidget(this);
-                    if(!SessionHandler.isUserSeller(this)){
+                    if (!SessionHandler.isUserSeller(this)) {
                         UnifyTracking.eventLoginCreateShopSellerApp();
                     }
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
@@ -575,8 +572,11 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void destroy() {
-        if (SessionHandler.isV4Login(this)){
-            ReactUtils.sendLoginEmitter(SessionHandler.getLoginID(this));
+        if (SessionHandler.isV4Login(this)) {
+            if (getApplication() instanceof IReactNativeRouter) {
+                IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
+                reactNativeRouter.sendLoginEmitter(SessionHandler.getLoginID(this));
+            }
         }
         Log.d(getClass().getSimpleName(), "destroy");
         this.setResult(RESULT_OK);

@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
-import com.tokopedia.seller.topads.dashboard.view.helper.CircleTransform;
 
 /**
  * @author normansyahputa on 5/26/17.
@@ -31,13 +30,15 @@ public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVar
 
     @Override
     public void bindObject(final ProductVariantDashboardViewModel variantManageViewModel) {
-        if (!TextUtils.isEmpty(variantManageViewModel.getHexCode())) {
+        if (!TextUtils.isEmpty(variantManageViewModel.getImageUrl())) {
+            imageView.setBackgroundColor(Color.TRANSPARENT);
+            Glide.with(imageView.getContext()).load(variantManageViewModel.getImageUrl()).into(imageView);
+        } else if (!TextUtils.isEmpty(variantManageViewModel.getHexCode())) {
             imageView.setBackgroundColor(Color.parseColor(variantManageViewModel.getHexCode()));
             imageView.setImageDrawable(null);
-        } else if (!TextUtils.isEmpty(variantManageViewModel.getImageUrl())) {
+        } else if (!TextUtils.isEmpty(variantManageViewModel.getIconUrl())) {
             imageView.setBackgroundColor(Color.TRANSPARENT);
-            Glide.with(imageView.getContext()).load(variantManageViewModel.getImageUrl())
-                    .transform(new CircleTransform(imageView.getContext())).into(imageView);
+            Glide.with(imageView.getContext()).load(variantManageViewModel.getIconUrl()).into(imageView);
         } else {
             imageView.setBackgroundColor(Color.LTGRAY);
             imageView.setImageDrawable(null);

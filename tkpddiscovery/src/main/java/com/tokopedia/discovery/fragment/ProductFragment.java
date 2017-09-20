@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.facebook.react.ReactApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -36,9 +35,9 @@ import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.Data;
-import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -58,7 +57,6 @@ import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
-import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -696,12 +694,18 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void actionSuccessRemoveFromWishlist(Integer productId) {
-        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        if(getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        }
     }
 
     @Override
     public void actionSuccessAddToWishlist(Integer productId) {
-        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        if(getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        }
     }
 
     @Override

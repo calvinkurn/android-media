@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -19,18 +21,39 @@ import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.posapp.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.posapp.di.component.DaggerReactNativeComponent;
+import com.tokopedia.posapp.di.component.ReactNativeComponent;
+import com.tokopedia.posapp.di.module.PosReactNativeModule;
+import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.view.drawer.DrawerPosHelper;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
+
+import javax.inject.Inject;
 
 /**
  * Created by okasurya on 7/30/17.
  */
 
 public class PosRouterApplication extends MainApplication implements
-    TkpdCoreRouter, IDigitalModuleRouter {
+        TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication {
+
+    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
+    private ReactNativeComponent reactNativeComponent;
+    @Inject
+    ReactNativeHost reactNativeHost;
+    @Inject
+    ReactUtils reactUtils;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initializeDagger();
+        initDaggerInjector();
+    }
 
     @Override
     public void startInstopedActivity(Context context) {
@@ -208,5 +231,52 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentTokoCashActivation() {
         return null;
+    }
+
+    @Override
+    public void sendAddWishlistEmitter(String productId, String userId) {
+
+    }
+
+    @Override
+    public void sendRemoveWishlistEmitter(String productId, String userId) {
+
+    }
+
+    @Override
+    public void sendAddFavoriteEmitter(String shopId, String userId) {
+
+    }
+
+    @Override
+    public void sendRemoveFavoriteEmitter(String shopId, String userId) {
+
+    }
+
+    @Override
+    public void sendLoginEmitter(String userId) {
+
+    }
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        if (reactNativeHost == null) initDaggerInjector();
+        return reactNativeHost;
+    }
+
+    private void initializeDagger() {
+        daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
+                .appComponent(getApplicationComponent())
+                .posReactNativeModule(new PosReactNativeModule(this));
+    }
+
+    private void initDaggerInjector() {
+        getReactNativeComponent().inject(this);
+    }
+
+    private ReactNativeComponent getReactNativeComponent() {
+        if (reactNativeComponent == null)
+            reactNativeComponent = daggerReactNativeBuilder.build();
+        return reactNativeComponent;
     }
 }
