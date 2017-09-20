@@ -998,15 +998,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.share_thin_white));
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white_shadow));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
+                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_shadow_active));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_white_shadow));
             }
-            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
+            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.more));
         }
     }
 
