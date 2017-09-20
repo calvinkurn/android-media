@@ -44,7 +44,7 @@ class CartItem extends Component {
           <View style={{ width: '8%' }}>
             <TouchableWithoutFeedback
               onPress={() => { this.togglePopUp(true) }} >
-              <Image source={{uri: config.imageBasePath + 'trash.png'}} style={styles.trashImage} />
+              <Image source={{ uri: config.imageBasePath + 'trash.png' }} style={styles.trashImage} />
             </TouchableWithoutFeedback>
           </View>
           <View style={{ width: '10%' }}>
