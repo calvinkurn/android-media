@@ -84,9 +84,11 @@ class PaymentBank extends Component {
     if (rowData.id < 10) {
       return (
         <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
+          <Text>{rowData.bank_name}</Text>
           <View style={[styles.logoBox, { marginTop: 10, height: 80 }, (rowData.isSelected ? styles.selectedBorder : '')]}>
             <Image source={rowData.bankImage}
               style={styles.cardLogo} />
+            <Text>{rowData.bank_name}</Text>
           </View>
         </TouchableWithoutFeedback>
       );
@@ -149,11 +151,12 @@ class PaymentBank extends Component {
 
 
   static navigationOptions = {
-    title: 'Bank Selection Page',
+    title: 'Pembayaran',
     headerTintColor: '#FFF',
     headerStyle: {
         backgroundColor: '#42B549'
-    }
+    },
+    headerLeft: <Text style={{ fontColor:'#FFF', fontSize:20 }}>Back</Text>
   };
 
   _choosePaymentMethod(paymentMethod) {
@@ -246,7 +249,7 @@ class PaymentBank extends Component {
                 <View style={{ paddingVertical: 20, flexDirection: 'row', marginLeft: 15 }}>
                   <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'SCAN')}>
                     <View style={[styles.paymentMethod, { marginRight: 10 }, (this.state.paymentMethod === 'SCAN') ? styles.paymentSelected : {}]}>
-                      <Text style={styles.emiText, {fontSize: 14}}>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>
                         Scan Kartu Kredit
                         </Text>
                     </View>
@@ -254,7 +257,7 @@ class PaymentBank extends Component {
 
                   <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'ONLINE')}>
                     <View style={[styles.paymentMethod, (this.state.paymentMethod === 'ONLINE') ? styles.paymentSelected : {}]}>
-                      <Text style={styles.emiText, {fontSize: 14}}>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>
                         Pembayaran Online
                         </Text>
                     </View>
@@ -514,8 +517,8 @@ const mapStateToProps = state => {
   const emiList = ds.cloneWithRows(state.payment.emiList);
 
   return {
-          ...state.payment,
-        bankList,
+    ...state.payment,
+    bankList,
     emiList
   }
 }

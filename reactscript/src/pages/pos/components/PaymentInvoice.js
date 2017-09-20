@@ -7,7 +7,7 @@ import { NavigationModule } from 'NativeModules'
 import Dash from 'react-native-dash';
 
 import PopUp from '../common/TKPPopupModal'
-// import { Text } from '../common/TKPText'
+import { Text } from '../common/TKPText'
 
 class PaymentInvoice extends Component {
 

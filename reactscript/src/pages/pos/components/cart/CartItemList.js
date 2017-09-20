@@ -46,15 +46,6 @@ export default class CartItemList extends Component {
     const onRemoveFromCart = this.props.onRemoveFromCart
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
     const { isFetching } = this.props
-    // console.log(this.props)
-    console.log(items)
-    // console.log(items[0])
-    // console.log(items.length)
-    // console.log(items[0].length)
-
-    // console.log(items)
-    // console.log(items.length)
-    // console.log(items.list)
 
     return (
       <Modal
@@ -132,6 +123,17 @@ export default class CartItemList extends Component {
                 <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
               </View>
             </View> */}
+                <View style={styles.headerContainer}>
+                  <View>
+                    <TouchableWithoutFeedback onPress={this.onBackPress}>
+                      <Image source={require('../img/icon_back.png')} />
+                    </TouchableWithoutFeedback>
+                  </View>
+                  <View style={{ left: -220 }}>
+                    <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
+                  </View>
+                  <View></View>
+                </View>
                 <View style={styles.emptyList}>
                   <View style={{
                     alignItems: 'center',
