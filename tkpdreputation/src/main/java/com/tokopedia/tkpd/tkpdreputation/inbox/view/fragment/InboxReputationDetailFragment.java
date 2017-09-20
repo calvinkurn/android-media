@@ -2,13 +2,13 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -260,11 +260,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessSendSmiley() {
-
-    }
-
-    @Override
     public void showLoadingDialog() {
         if (progressDialog == null && getActivity() != null)
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
@@ -344,21 +339,37 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSuccessSendSmiley(int score) {
+        if (adapter.getHeader() != null) {
+            InboxReputationDetailHeaderViewModel header = adapter.getHeader();
+            header.getReputationDataViewModel()
+                    .setReviewerScore(Integer.parseInt(ReputationAdapter.SMILEY_BAD));
+            header.getReputationDataViewModel()
+                    .setInserted(true);
+            header.getReputationDataViewModel()
+                    .setEditable(!header.getReputationDataViewModel().isEditable());
+            adapter.getList().remove(0);
+            adapter.getList().add(0, header);
+            adapter.notifyItemChanged(0);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
     }
 
     @Override
-    public void onReputationSmileyClicked(String name, final String value) {
-        if (!TextUtils.isEmpty(value)) {
+    public void onReputationSmileyClicked(String name, final String score) {
+        if (!TextUtils.isEmpty(score)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(getReputationSmileyMessage(name));
             builder.setPositiveButton(getString(R.string.send),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            presenter.sendSmiley(passModel.getReputationId(), value);
+                            presenter.sendSmiley(passModel.getReputationId(), score, passModel.getRole());
                         }
                     });
             builder.setNegativeButton(getString(R.string.title_cancel),

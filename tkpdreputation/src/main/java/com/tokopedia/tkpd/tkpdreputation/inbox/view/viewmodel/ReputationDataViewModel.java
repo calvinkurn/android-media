@@ -154,4 +154,16 @@ public class ReputationDataViewModel implements Parcelable{
         dest.writeByte((byte) (showBookmark ? 1 : 0));
         dest.writeString(actionMessage);
     }
+
+    public void setReviewerScore(int reviewerScore) {
+        this.reviewerScore = reviewerScore;
+    }
+
+    public void setInserted(boolean inserted) {
+        isInserted = inserted;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
+    }
 }

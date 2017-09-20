@@ -15,8 +15,12 @@ import rx.Observable;
 
 public class SendSmileyReputationUseCase extends UseCase<SendSmileyReputationDomain> {
 
-    private static final String PARAM_VALUE = "smiley";
-    private static final String PARAM_REPUTATION_ID = "reputationId";
+    private static final String PARAM_SCORE = "reputation_score";
+    private static final String PARAM_REPUTATION_ID = "reputation_id";
+    private static final String PARAM_ROLE = "buyer_seller";
+    private static final String I_AM_SELLER = "2";
+    private static final String I_AM_BUYER = "1";
+    private static final int REVIEW_IS_FROM_BUYER = 1;
 
     private ReputationRepository reputationRepository;
 
@@ -32,10 +36,15 @@ public class SendSmileyReputationUseCase extends UseCase<SendSmileyReputationDom
         return reputationRepository.sendSmiley(requestParams);
     }
 
-    public static RequestParams getParam(String reputationId, String value) {
+    public static RequestParams getParam(String reputationId, String score, int role) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_VALUE, value);
+        params.putString(PARAM_SCORE, score);
         params.putString(PARAM_REPUTATION_ID, reputationId);
+        params.putString(PARAM_ROLE, getRole(role));
         return params;
+    }
+
+    private static String getRole(int role) {
+        return role == REVIEW_IS_FROM_BUYER ? I_AM_SELLER : I_AM_BUYER;
     }
 }

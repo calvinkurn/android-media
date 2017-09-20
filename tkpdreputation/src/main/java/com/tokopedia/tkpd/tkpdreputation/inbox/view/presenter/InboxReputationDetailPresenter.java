@@ -24,7 +24,6 @@ public class InboxReputationDetailPresenter
     private final SessionHandler sessionHandler;
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
     private InboxReputationDetail.View viewListener;
-    private PagingHandler pagingHandler;
 
     @Inject
     InboxReputationDetailPresenter(
@@ -33,7 +32,6 @@ public class InboxReputationDetailPresenter
             SessionHandler sessionHandler) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
-        this.pagingHandler = new PagingHandler();
         this.sessionHandler = sessionHandler;
     }
 
@@ -66,11 +64,12 @@ public class InboxReputationDetailPresenter
     }
 
     @Override
-    public void sendSmiley(String reputationId, String value) {
+    public void sendSmiley(String reputationId, String score, int role) {
         viewListener.showLoadingDialog();
         sendSmileyReputationUseCase.execute(SendSmileyReputationUseCase.getParam(reputationId,
-                value),
-                new SendSmileySubscriber(viewListener));
+                score,
+                role),
+                new SendSmileySubscriber(viewListener, score));
     }
 
     public void refreshPage(String reputationId, int tab) {

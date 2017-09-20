@@ -818,7 +818,7 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/inbox";
         public static final String PATH_GET_DETAIL_INBOX_REPUTATION = "review/api/"
                 + REPUTATION_VERSION + "/list";
-        public static final String PATH_SEND_REPUTATION_SMILEY = "reputation";
+        public static final String PATH_SEND_REPUTATION_SMILEY = "reputation/api/v1/insert";
         public static final String PATH_SEND_REVIEW_VALIDATE = "review/api/"
                 + REPUTATION_VERSION + "/insert/validate";
         public static final String PATH_SEND_REVIEW_SUBMIT = "review/api/"

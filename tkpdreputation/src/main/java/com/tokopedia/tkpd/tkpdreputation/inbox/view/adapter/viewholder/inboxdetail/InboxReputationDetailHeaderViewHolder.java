@@ -52,7 +52,6 @@ public class InboxReputationDetailHeaderViewHolder extends
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
 
     public InboxReputationDetailHeaderViewHolder(View itemView,
-                                                 InboxReputationDetail.View viewListener,
                                                  ReputationAdapter.ReputationListener reputationListener) {
         super(itemView);
         userAvatar = (ImageView) itemView.findViewById(R.id.user_avatar);
@@ -118,10 +117,10 @@ public class InboxReputationDetailHeaderViewHolder extends
         else
             changeButton.setVisibility(View.GONE);
 
-        setSmileyOpponent(element, adapter);
+        setSmileyOpponent(element);
     }
 
-    private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {
+    private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element) {
         switch (element.getReputationDataViewModel().getRevieweeScore()) {
             case NO_REPUTATION:
                 ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_empty);

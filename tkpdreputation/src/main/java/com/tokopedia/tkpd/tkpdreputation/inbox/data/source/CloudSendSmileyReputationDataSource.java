@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 
@@ -25,7 +27,8 @@ public class CloudSendSmileyReputationDataSource {
     public Observable<SendSmileyReputationDomain> sendSmiley(RequestParams requestParams) {
         return reputationService
                 .getApi()
-                .sendSmiley(requestParams.getParameters())
+                .sendSmiley(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
+                        requestParams.getParameters()))
                 .map(sendSmileyReputationMapper);
     }
 }

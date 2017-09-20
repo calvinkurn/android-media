@@ -36,8 +36,6 @@ public interface InboxReputationDetail {
 
         void onErrorSendSmiley(String errorMessage);
 
-        void onSuccessSendSmiley();
-
         void showLoadingDialog();
 
         void finishLoadingDialog();
@@ -57,6 +55,8 @@ public interface InboxReputationDetail {
         int getTab();
 
         void onGoToReportReview(int shopId, String reviewId);
+
+        void onSuccessSendSmiley(int score);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -65,6 +65,6 @@ public interface InboxReputationDetail {
 
         void getNextPage(int lastItemPosition, int visibleItem);
 
-        void sendSmiley(String reputationId, String value);
+        void sendSmiley(String reputationId, String score, int role);
     }
 }

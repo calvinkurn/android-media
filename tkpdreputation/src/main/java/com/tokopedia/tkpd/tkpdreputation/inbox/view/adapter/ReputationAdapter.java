@@ -20,9 +20,10 @@ import java.util.ArrayList;
 
 public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.ViewHolder> {
 
-    private static final String SMILEY_BAD = "1";
-    private static final String SMILEY_NEUTRAL = "2";
-    private static final String SMILEY_GOOD = "3";
+    public static final String SMILEY_BAD = "-1";
+    public static final String SMILEY_NEUTRAL = "1";
+    public static final String SMILEY_GOOD = "2";
+    private boolean canGiveReputation;
 
     public ArrayList<SmileyModel> getList() {
         return list;
@@ -42,6 +43,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     private ReputationAdapter(ReputationListener listener) {
         this.list = new ArrayList<>();
         this.listener = listener;
+        this.canGiveReputation = true;
     }
 
     public static ReputationAdapter createInstance(ReputationListener listener) {
@@ -62,9 +64,9 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
             main.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null)
+                    if (listener != null && canGiveReputation)
                         listener.onReputationSmileyClicked(list.get(getAdapterPosition())
-                                .getName(),list.get(getAdapterPosition()).getValue());
+                                .getName(), list.get(getAdapterPosition()).getScore());
                 }
             });
         }
@@ -106,6 +108,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
         this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
                 MainApplication.getAppContext().getString(R.string.smiley_bad),
                 SMILEY_BAD));
+        this.canGiveReputation = false;
         notifyDataSetChanged();
     }
 
@@ -114,6 +117,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
         this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
                 MainApplication.getAppContext().getString(R.string.smiley_netral),
                 SMILEY_NEUTRAL));
+        this.canGiveReputation = false;
         notifyDataSetChanged();
     }
 
@@ -122,6 +126,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
         this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
                 MainApplication.getAppContext().getString(R.string.smiley_good),
                 SMILEY_GOOD));
+        this.canGiveReputation = false;
         notifyDataSetChanged();
     }
 
@@ -130,22 +135,29 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
         this.list.add(new SmileyModel(R.drawable.ic_smiley_empty,
                 "",
                 ""));
+        this.canGiveReputation = false;
     }
 
     public void showChangeSmiley() {
-        this.list.clear();
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
-                MainApplication.getAppContext().getString(R.string.smiley_bad),
-                SMILEY_BAD,
-                true));
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
-                MainApplication.getAppContext().getString(R.string.smiley_netral),
-                SMILEY_NEUTRAL,
-                true));
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
-                MainApplication.getAppContext().getString(R.string.smiley_good),
-                SMILEY_GOOD,
-                true));
-        notifyDataSetChanged();
+        if (list.get(0).getScore().equals(SMILEY_BAD)) {
+            this.list.clear();
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
+                    MainApplication.getAppContext().getString(R.string.smiley_netral),
+                    SMILEY_NEUTRAL,
+                    true));
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+                    MainApplication.getAppContext().getString(R.string.smiley_good),
+                    SMILEY_GOOD,
+                    true));
+            this.canGiveReputation = true;
+        } else if (list.get(0).getScore().equals(SMILEY_NEUTRAL)) {
+            this.list.clear();
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+                    MainApplication.getAppContext().getString(R.string.smiley_good),
+                    SMILEY_GOOD,
+                    true));
+            this.canGiveReputation = true;
+            notifyDataSetChanged();
+        }
     }
 }

@@ -43,6 +43,6 @@ public class SendSmileyReputationMapper implements Func1<Response<TkpdResponse>,
     }
 
     private SendSmileyReputationDomain mappingToDomain(SendSmileyPojo data) {
-        return null;
+        return new SendSmileyReputationDomain(data.getIsSuccess());
     }
 }

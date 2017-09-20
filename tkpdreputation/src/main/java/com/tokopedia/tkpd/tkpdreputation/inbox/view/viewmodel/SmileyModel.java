@@ -35,7 +35,7 @@ public class SmileyModel {
         return name;
     }
 
-    public String getValue() {
+    public String getScore() {
         return value;
     }
 }

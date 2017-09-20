@@ -5,4 +5,13 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
  */
 
 public class SendSmileyReputationDomain {
+    private final boolean isSuccess;
+
+    public SendSmileyReputationDomain(int isSuccess) {
+        this.isSuccess = isSuccess == 1;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
 }

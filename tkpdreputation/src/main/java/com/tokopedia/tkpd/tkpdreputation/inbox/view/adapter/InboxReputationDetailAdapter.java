@@ -86,4 +86,15 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
     public void clearList() {
         this.list.clear();
     }
+
+    public InboxReputationDetailHeaderViewModel getHeader() {
+        if (list.get(0) instanceof InboxReputationDetailHeaderViewModel)
+            return (InboxReputationDetailHeaderViewModel) list.get(0);
+        else
+            return null;
+    }
+
+    public List<Visitable> getList() {
+        return list;
+    }
 }
