@@ -156,7 +156,6 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
             case 2:
                 holderAccountBankInfo.setVisibility(View.GONE);
                 btnEditPayment.setVisibility(View.GONE);
-                tvPaymentCode.setVisibility(View.VISIBLE);
                 tvPaymentCode.setText(String.format("Kode %s : %s",
                         txVerData.getBankName(), txVerData.getUserAccountName()));
                 break;
@@ -233,6 +232,9 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     public void renderInvoiceList(List<Detail> detail) {
         invoiceAdapter.addAllInvoiceList(detail);
+        if(presenter.getTypePaymentMethod(txVerData) != 1) {
+            tvPaymentCode.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
