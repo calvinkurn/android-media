@@ -46,10 +46,10 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean headerPlaced = false;
     private boolean isFeed = false;
     private boolean shouldLoadAds = true; //default load ads
-    private final RecyclerView.Adapter adapter;
+    private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
 
-    public TopAdsPlacer(RecyclerView.Adapter adapter, Context context,
+    public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
         presenter = new TopAdsPresenter(context);
         this.adapter = adapter;
@@ -99,6 +99,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onItemRangeInserted(final int positionStart, final int itemCount) {
+        Log.d(TAG, "onItemRangeInserted positionStart " + positionStart + " itemCount " + itemCount);
         ajustedPositionStart = positionStart;
         ajustedItemCount = itemCount;
         observerType = ObserverType.ITEM_RANGE_INSERTED;
@@ -179,8 +180,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         Log.d(TAG, "displayAds list size " + list.size());
         adsItems = list;
         if (isFeed) {
-            if (getItemCount() > 4) {
-                setTopAds(adsItems, itemList, getItemCount() - 4);
+            int tresHold = (ajustedItemCount - 1);
+            if (getItemCount() > tresHold) {
+                setTopAds(adsItems, itemList, getItemCount() - tresHold);
             } else {
                 setTopAds(adsItems, itemList, getItemCount());
             }
