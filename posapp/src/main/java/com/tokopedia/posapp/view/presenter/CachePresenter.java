@@ -81,6 +81,7 @@ public class CachePresenter implements Cache.Presenter {
 
     @Override
     public void getData() {
+        getEtalase();
         getProduct();
         getBankList();
         getInstallmentTerms();
@@ -101,10 +102,9 @@ public class CachePresenter implements Cache.Presenter {
         this.productPage = 1;
     }
 
-    private void getProduct() {
+    private void getEtalase() {
         RequestParams etalaseParams = RequestParams.create();
         etalaseParams.putString(SHOP_ID, SessionHandler.getShopID(context));
-
         getEtalaseUseCase.createObservable(etalaseParams)
                 .flatMap(new Func1<List<ShopEtalaseDomain>, Observable<?>>() {
                     @Override
@@ -112,7 +112,9 @@ public class CachePresenter implements Cache.Presenter {
                         return null;
                     }
                 });
+    }
 
+    private void getProduct() {
         Observable.defer(new Func0<Observable<ShopProductListDomain>>() {
             @Override
             public Observable<ShopProductListDomain> call() {

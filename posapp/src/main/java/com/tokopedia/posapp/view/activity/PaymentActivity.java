@@ -33,7 +33,6 @@ public class PaymentActivity extends ReactNativeActivity {
         bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE,  PosReactConst.Page.PAYMENT);
         bundle.putString(USER_ID,  SessionHandler.getLoginID(this));
 
-
         return bundle;
     }
 
