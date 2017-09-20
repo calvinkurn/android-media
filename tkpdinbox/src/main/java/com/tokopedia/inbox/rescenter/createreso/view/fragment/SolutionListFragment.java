@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,6 +190,8 @@ public class SolutionListFragment extends BaseDaggerFragment
         if (solutionResponseViewModel.getFreeReturn() != null) {
             llFreeReturn.setVisibility(View.VISIBLE);
             tvFreeReturn.setText(Html.fromHtml(solutionResponseViewModel.getFreeReturn().getInfo()));
+            tvFreeReturn.setLinksClickable(true);
+            tvFreeReturn.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 

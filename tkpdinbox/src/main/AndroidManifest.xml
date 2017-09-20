@@ -120,6 +120,7 @@
         <activity
             android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity"
             android:label="@string/title_activity_attachment"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
 
         <activity

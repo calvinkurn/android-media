@@ -292,21 +292,21 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 problemResultString += "& ";
                 problemResultString += (isType1Selected ?
                         problemResultList.size() - 1 :
-                        problemResultList.size()) + context.getString(R.string.string_problem_product);
+                        problemResultList.size()) + " " +context.getString(R.string.string_problem_product);
             }
         }
         else  {
             problemResultString += (isType1Selected ?
                     problemResultList.size() - 1 :
-                    problemResultList.size()) + context.getString(R.string.string_problem_product);
+                    problemResultList.size()) + " " + context.getString(R.string.string_problem_product);
         }
         textView.setText(problemResultString);
     }
 
     public void updateSolutionString(ResultViewModel resultViewModel, TextView textView) {
         textView.setText(resultViewModel.refundAmount != 0 ?
-                context.getString(R.string.string_return_rp) + resultViewModel.refundAmount
-                        + context.getString(R.string.string_to_buyer) :
+                context.getString(R.string.string_return_rp) + " " + resultViewModel.refundAmount
+                        + " " + context.getString(R.string.string_to_buyer) :
                 resultViewModel.solutionName);
     }
 
