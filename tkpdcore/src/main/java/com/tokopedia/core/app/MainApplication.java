@@ -13,9 +13,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactNativeHost;
-import com.facebook.soloader.SoLoader;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
@@ -36,7 +33,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.di.module.NetModule;
-import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
@@ -54,8 +50,7 @@ import rx.Subscriber;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication implements ReactApplication{
-
+public class MainApplication extends TkpdMultiDexApplication{
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -73,7 +68,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
     private LocationUtils locationUtils;
@@ -267,7 +261,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         initializeAnalytics();
         initANRWatchDogs();
         initStetho();
-        initReact();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -290,9 +283,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         addToWhiteList();
     }
 
-    private void initReact() {
-        SoLoader.init(this, false);
-    }
+
 
     public void addToWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
@@ -404,10 +395,5 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
-    }
-
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        return reactNativeHost;
     }
 }

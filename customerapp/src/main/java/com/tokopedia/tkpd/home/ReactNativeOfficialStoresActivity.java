@@ -20,9 +20,9 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
     public static final String USER_ID = "User_ID";
@@ -49,7 +49,6 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
 
     @Override
     protected void setupURIPass(Uri data) {
-
     }
 
     @Override
