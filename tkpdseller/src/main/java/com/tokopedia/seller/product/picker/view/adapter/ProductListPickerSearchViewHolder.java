@@ -21,15 +21,15 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
     private TextView nameProduct;
     private CheckBox checkBoxProduct;
     private TextView priceProduct;
-    private View itemView;
+    private View stockTagEmpty;
 
     public ProductListPickerSearchViewHolder(View itemView) {
         super(itemView);
-        this.itemView = itemView;
         imageProduct = (ImageView) itemView.findViewById(R.id.image_product_picker_search);
         nameProduct = (TextView) itemView.findViewById(R.id.text_product_name);
         priceProduct = (TextView) itemView.findViewById(R.id.text_product_price);
         checkBoxProduct = (CheckBox) itemView.findViewById(R.id.check_box_picker_product);
+        stockTagEmpty = itemView.findViewById(R.id.stock_empty_tag);
     }
 
     @Override
@@ -48,15 +48,25 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
         bindObject(productListPickerViewModel);
         setChecked(checked);
         setBackground(checked);
+        setActive(productListPickerViewModel.isStockOrImageEmpty());
         checkBoxProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setBackground(checkBoxProduct.isChecked());
                 if (checkedCallback != null) {
                     checkedCallback.onItemChecked(productListPickerViewModel, checkBoxProduct.isChecked());
                 }
             }
         });
+    }
+
+    private void setActive(boolean stockOrImageEmpty) {
+        if(stockOrImageEmpty){
+            stockTagEmpty.setVisibility(View.VISIBLE);
+            checkBoxProduct.setEnabled(false);
+        }else{
+            stockTagEmpty.setVisibility(View.GONE);
+            checkBoxProduct.setEnabled(true);
+        }
     }
 
     @Override
@@ -67,6 +77,7 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
     @Override
     public void setChecked(boolean checked) {
         checkBoxProduct.setChecked(checked);
+        setBackground(checked);
     }
 
     public void setBackground(boolean isChecked) {
