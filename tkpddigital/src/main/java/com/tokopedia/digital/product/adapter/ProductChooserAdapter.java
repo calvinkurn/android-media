@@ -162,8 +162,13 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private void setViewPriceAdditionalFee(Product product) {
             tvProductPrice.setText(product.getDesc());
             tvProductTotalPrice.setText(product.getPrice());
-            CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-            tvProductDescription.setText(sequence);
+            if (product.getDetail().isEmpty()) {
+                tvProductDescription.setVisibility(View.GONE);
+            } else {
+                tvProductDescription.setVisibility(View.VISIBLE);
+                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+                tvProductDescription.setText(sequence);
+            }
         }
 
         private void setProductAvailability(final Product product) {
