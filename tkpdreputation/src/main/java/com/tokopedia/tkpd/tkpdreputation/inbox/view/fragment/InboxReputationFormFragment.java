@@ -71,6 +71,8 @@ import permissions.dispatcher.RuntimePermissions;
 public class InboxReputationFormFragment extends BaseDaggerFragment
         implements InboxReputationForm.View, InboxReputationFormActivity.SkipListener {
 
+    public static final int RESULT_CODE_SKIP = 321;
+
     RatingBar rating;
     TextView ratingText;
     EditText review;
@@ -446,7 +448,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessSkipReview() {
-        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().setResult(RESULT_CODE_SKIP);
         getActivity().finish();
     }
 

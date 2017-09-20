@@ -43,6 +43,6 @@ public class SkipReviewMapper implements Func1<Response<TkpdResponse>, SkipRevie
     }
 
     private SkipReviewDomain mappingToDomain(SkipReviewPojo data) {
-        return new SkipReviewDomain();
+        return new SkipReviewDomain(data.getIsSuccess());
     }
 }

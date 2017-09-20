@@ -5,4 +5,13 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview;
  */
 
 public class SkipReviewDomain {
+    private final boolean isSuccess;
+
+    public SkipReviewDomain(int isSuccess) {
+        this.isSuccess = isSuccess == 1;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
 }

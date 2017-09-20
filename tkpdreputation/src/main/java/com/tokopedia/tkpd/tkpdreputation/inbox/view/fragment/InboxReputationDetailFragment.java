@@ -402,6 +402,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             getActivity().setResult(Activity.RESULT_OK);
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
                     .success_send_review));
+        } else if (requestCode == REQUEST_GIVE_REVIEW && resultCode ==
+                InboxReputationFormFragment.RESULT_CODE_SKIP) {
+            refreshPage();
+            getActivity().setResult(Activity.RESULT_OK);
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
+                    .success_skip_review));
         } else if (requestCode == REQUEST_EDIT_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
