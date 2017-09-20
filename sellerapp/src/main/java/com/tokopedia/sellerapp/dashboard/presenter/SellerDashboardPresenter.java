@@ -176,5 +176,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         getShopInfoWithScoreUseCase.unsubscribe();
         getTickerUseCase.unsubscribe();
         updateShopScheduleUseCase.unsubscribe();
+        notificationUseCase.unsubscribe();
+        deleteShopInfoUseCase.unsubscribe();
     }
 }

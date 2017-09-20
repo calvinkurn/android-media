@@ -260,7 +260,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         View errorView = headerShopInfoLoadingStateView.getErrorView();
         EmptyCardContentView emptyCardContentView= (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
         emptyCardContentView.setTitleText(getString(R.string.error_connection_problem));
-        emptyCardContentView.setTitleText(getString(R.string.msg_connection_timeout));
+        emptyCardContentView.setDescriptionText(getString(R.string.msg_connection_timeout));
         emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
 
