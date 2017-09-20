@@ -104,6 +104,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private Trace homeTrace;
     private GetFingerprintUseCase getFingerprintUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
@@ -249,7 +250,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         t.start();
 
-        Trace homeTrace = FirebasePerformance.getInstance().newTrace("trace_home_android");
+        homeTrace = FirebasePerformance.getInstance().newTrace("trace_home_android");
         homeTrace.start();
 
         checkAppUpdate();
@@ -598,6 +599,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onStop");
         super.onStop();
         needToRefresh = true;
+        myTrace.stop();
     }
 
     @Override
