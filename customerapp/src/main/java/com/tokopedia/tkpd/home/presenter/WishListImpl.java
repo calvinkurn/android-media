@@ -21,6 +21,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
@@ -383,6 +384,26 @@ public class WishListImpl implements WishList {
     public void refreshDataOnSearch(CharSequence query) {
         mPaging.resetPage();
         searchWishlist(query.toString());
+    }
+
+    @Override
+    public void onResume(Context context) {
+        setLocalyticFlow(context, context.getString(R.string.home_wishlist));
+        if (isAfterRotation()) {
+            handleAfterRotation(context);
+        } else {
+            fetchDataFromCache(context);
+        }
+    }
+
+    private void handleAfterRotation(Context context) {
+        if (!isLoadedFirstPage()) {
+            refreshData(context);
+        } else {
+            wishListView.displayLoadMore(mPaging.CheckNextPage());
+            wishListView.displayContentList(true);
+            wishListView.displayLoading(false);
+        }
     }
 
     @Override

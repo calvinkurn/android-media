@@ -94,4 +94,6 @@ public interface WishList {
     void fetchDataAfterClearSearch(Context context);
 
     void refreshDataOnSearch(CharSequence query);
+
+    void onResume(Context context);
 }
