@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -247,6 +249,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         t.start();
 
+        Trace homeTrace = FirebasePerformance.getInstance().newTrace("trace_home_android");
+        homeTrace.start();
 
         checkAppUpdate();
     }
