@@ -19,7 +19,7 @@ public interface ReputationRepository {
 
     Observable<InboxReputationDomain> getInboxReputationFromCloud(RequestParams requestParams);
 
-    Observable<InboxReputationDomain> getInboxReputationFromLocal();
+    Observable<InboxReputationDomain> getInboxReputationFromLocal(RequestParams requestParams);
 
     Observable<InboxReputationDetailDomain> getInboxReputationDetailFromCloud(RequestParams requestParams);
 

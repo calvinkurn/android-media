@@ -48,6 +48,7 @@ public class GetFirstTimeInboxReputationUseCase extends GetInboxReputationUseCas
         params.putInt(PARAM_ROLE, getRole(tab));
         params.putString(PARAM_TIME_FILTER, DEFAULT_TIME_FILTER);
         params.putInt(PARAM_STATUS, getStatus(tab));
+        params.putInt(PARAM_TAB, tab);
         return params;
     }
 }

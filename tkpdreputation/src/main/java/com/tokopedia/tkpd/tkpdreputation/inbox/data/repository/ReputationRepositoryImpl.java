@@ -32,10 +32,10 @@ public class ReputationRepositoryImpl implements ReputationRepository {
     }
 
     @Override
-    public Observable<InboxReputationDomain> getInboxReputationFromLocal() {
+    public Observable<InboxReputationDomain> getInboxReputationFromLocal(RequestParams requestParams) {
         return reputationFactory
                 .createLocalInboxReputationDataSource()
-                .getInboxReputationFromCache();
+                .getInboxReputationFromCache(requestParams);
     }
 
     @Override

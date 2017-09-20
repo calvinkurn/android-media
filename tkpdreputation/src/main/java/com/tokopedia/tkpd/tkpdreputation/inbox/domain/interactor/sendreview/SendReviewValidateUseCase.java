@@ -30,7 +30,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
     public static final String PARAM_SHOP_ID = "shop_id";
     public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_REVIEW_MESSAGE = "review_message";
-    public static final String PARAM_RATING = "rating";
+    public static final String PARAM_RATING = "rate_quality";
 
     private static final String PARAM_HAS_PRODUCT_REVIEW_PHOTO = "has_product_review_photo";
     private static final String PARAM_REVIEW_PHOTO_ALL = "product_review_photo_all";

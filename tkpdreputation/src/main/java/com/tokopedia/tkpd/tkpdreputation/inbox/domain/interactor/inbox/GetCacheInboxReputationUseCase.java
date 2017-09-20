@@ -27,6 +27,6 @@ public class GetCacheInboxReputationUseCase extends UseCase<InboxReputationDomai
 
     @Override
     public Observable<InboxReputationDomain> createObservable(final RequestParams requestParams) {
-        return reputationRepository.getInboxReputationFromLocal();
+        return reputationRepository.getInboxReputationFromLocal(requestParams);
     }
 }

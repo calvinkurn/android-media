@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 
 import rx.Observable;
@@ -20,8 +22,9 @@ public class LocalInboxReputationDataSource {
         this.globalCacheManager = globalCacheManager;
     }
 
-    public Observable<InboxReputationDomain> getInboxReputationFromCache() {
-        return Observable.just(GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION)
+    public Observable<InboxReputationDomain> getInboxReputationFromCache(RequestParams requestParams) {
+        return Observable.just(GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION +
+                requestParams.getParameters().get(GetInboxReputationUseCase.PARAM_TAB))
                 .map(new Func1<String, InboxReputationDomain>() {
                     @Override
                     public InboxReputationDomain call(String key) {

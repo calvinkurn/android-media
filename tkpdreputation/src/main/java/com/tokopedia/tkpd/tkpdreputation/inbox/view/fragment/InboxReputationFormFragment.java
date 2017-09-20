@@ -472,8 +472,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                     public void onClick(DialogInterface dialog, int which) {
                         presenter.skipReview(
                                 getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID));
+                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID));
                     }
                 });
         builder.setNegativeButton(getString(R.string.title_cancel),

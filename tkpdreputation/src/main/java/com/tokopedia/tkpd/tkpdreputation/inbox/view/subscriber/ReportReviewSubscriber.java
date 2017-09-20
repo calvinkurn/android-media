@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReportReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationReport;
 
@@ -31,7 +33,14 @@ public class ReportReviewSubscriber extends Subscriber<ReportReviewDomain> {
     @Override
     public void onNext(ReportReviewDomain reportReviewDomain) {
         viewListener.removeLoadingProgress();
-        viewListener.onSuccessReportReview();
+        if (reportReviewDomain.isSuccess()) {
+            viewListener.onSuccessReportReview();
+        } else {
+            viewListener.onErrorReportReview(MainApplication.getAppContext().getString(
+                    R.string.default_request_error_unknown
+            ));
+
+        }
 
     }
 }
