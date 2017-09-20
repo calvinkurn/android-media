@@ -65,17 +65,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:visibility="gone">
+        android:visibility="visible">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/blue_official_store"
             android:layout_marginRight="@dimen/margin_vs"
+            android:textSize="@dimen/text_size_xsmall"
             android:text="@string/headerview_label_official_store" />
+
         <ImageView
             android:id="@id/iv_official"
-            android:layout_width="@dimen/large_dp"
-            android:layout_height="@dimen/large_dp"
+            android:layout_width="@dimen/med_dp"
+            android:layout_height="@dimen/med_dp"
             android:src="@drawable/ic_badge_official"
             tools:ignore="ContentDescription" />
     </LinearLayout>
