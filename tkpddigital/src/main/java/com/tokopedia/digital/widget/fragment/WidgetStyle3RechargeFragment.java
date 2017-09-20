@@ -345,6 +345,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void onResetOperator() {
+                clearHolder(holderWidgetWrapperBuy);
                 widgetClientNumberView.setEmptyString();
                 widgetClientNumberView.setImgOperatorInvisible();
             }
