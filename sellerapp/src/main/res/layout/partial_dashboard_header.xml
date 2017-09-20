@@ -124,7 +124,7 @@
             android:foreground="?attr/selectableItemBackground">
 
             <TextView
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Body1.Bold.BlackSecondary"
                 android:text="@string/shop_reputation" />
 
             <com.tokopedia.design.reputation.ShopReputationView
@@ -156,7 +156,7 @@
             android:foreground="?attr/selectableItemBackground">
 
             <TextView
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Body1.Bold.BlackSecondary"
                 android:text="@string/gm_statistic_title_transaction_success" />
 
             <TextView
