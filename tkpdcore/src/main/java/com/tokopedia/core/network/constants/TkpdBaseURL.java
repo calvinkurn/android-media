@@ -54,7 +54,7 @@ public class TkpdBaseURL {
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
-    public static String GALADRIEL = "https://galadriel.tokopedia.com/";
+    public static String GALADRIEL = "https://galadriel-staging.tokopedia.com/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";

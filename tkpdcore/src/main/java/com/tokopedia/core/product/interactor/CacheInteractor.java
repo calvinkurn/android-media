@@ -6,6 +6,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
+import com.tokopedia.core.shopinfo.models.shopfavoritedmodel.ShopFavoritedResponse;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public interface CacheInteractor {
 
     void saveReportTypeToCache(String data);
 
-    PromoAttributes getPromoWidgetCache(String targetType, String userId);
+    void getPromoWidgetCache(String targetType, String userId, GetPromoWidgetCacheListener listener);
 
     void storePromoWidget(String targetType, String userId, DataPromoWidget dataPromoWidget);
 
@@ -42,5 +43,11 @@ public interface CacheInteractor {
         void onSuccess(List<ProductOther> data);
 
         void onError(Throwable e);
+    }
+
+    interface GetPromoWidgetCacheListener {
+        void onSuccess(PromoAttributes result);
+
+        void onError();
     }
 }

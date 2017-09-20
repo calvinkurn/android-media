@@ -894,27 +894,31 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
     }
 
-    public void getPromoWidget(@NonNull Context context, @NonNull final String targetType, @NonNull final String userId) {
-        PromoAttributes promoAttributes = cacheInteractor.getPromoWidgetCache(targetType,userId);
-        if (promoAttributes!=null && !TextUtils.isEmpty(promoAttributes.getCode())) {
-            viewListener.showPromoWidget(promoAttributes);
-        } else {
-            retrofitInteractor.getPromo(context, targetType, userId,
-                    new RetrofitInteractor.PromoListener() {
-                        @Override
-                        public void onSucccess(DataPromoWidget dataPromoWidget) {
-                            cacheInteractor.storePromoWidget(targetType,userId,dataPromoWidget);
-                            if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                viewListener.showPromoWidget(dataPromoWidget.getPromoWidgetList().get(0).getPromoAttributes());
-                            }
-                        }
+    public void getPromoWidget(final @NonNull Context context, @NonNull final String targetType, @NonNull final String userId) {
+        cacheInteractor.getPromoWidgetCache(targetType, userId, new CacheInteractor.GetPromoWidgetCacheListener() {
+            @Override
+            public void onSuccess(PromoAttributes result) {
+                viewListener.showPromoWidget(result);
+            }
 
-                        @Override
-                        public void onError(String error) {
-                        }
-                    }
-            );
-        }
+            @Override
+            public void onError() {
+                retrofitInteractor.getPromo(context, targetType, userId,
+                        new RetrofitInteractor.PromoListener() {
+                            @Override
+                            public void onSucccess(DataPromoWidget dataPromoWidget) {
+                                cacheInteractor.storePromoWidget(targetType,userId,dataPromoWidget);
+                                if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
+                                    viewListener.showPromoWidget(dataPromoWidget.getPromoWidgetList().get(0).getPromoAttributes());
+                                }
+                            }
+
+                            @Override
+                            public void onError(String error) {
+                            }
+                        });
+            }
+        });
     }
 
     public void getProductCampaign(@NonNull Context context, @NonNull String id) {

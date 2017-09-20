@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
@@ -15,6 +17,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
+import com.tokopedia.core.shopinfo.models.shopfavoritedmodel.ShopFavoritedResponse;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.util.List;
@@ -31,6 +34,7 @@ import rx.schedulers.Schedulers;
  */
 public class CacheInteractorImpl implements CacheInteractor {
     private static String TAG = "CacheProductDetail";
+    private static final String PROMO_WIDGET_PDP = "PROMO_WIDGET_PDP";
 
     @Override
     public void getProductDetailCache(final String productID, final GetProductDetailCacheListener listener) {
@@ -201,33 +205,85 @@ public class CacheInteractorImpl implements CacheInteractor {
     }
 
     @Override
-    public PromoAttributes getPromoWidgetCache(@NonNull String targetType, @NonNull String userId) {
-        try {
-            PromoAttributes promoAttributes =  new GlobalCacheManager().setKey(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA)
-                    .getConvertObjData(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA, PromoAttributes.class);
-            if (promoAttributes!=null && targetType.equals(promoAttributes.getTargetType()) &&
-                    userId.equals(promoAttributes.getUserId())) return promoAttributes;
-        } catch (Exception e) {
-            return null;
+    public void getPromoWidgetCache(final @NonNull String targetType, final @NonNull String userId, @NonNull final GetPromoWidgetCacheListener listener) {
+
+        final GlobalCacheManager cacheManager= new GlobalCacheManager();
+        Observable.just(PROMO_WIDGET_PDP)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<String, PromoAttributes>() {
+                    @Override
+                    public PromoAttributes call(String s) {
+                        return cacheManager.getConvertObjData(s, PromoAttributes.class);
+                    }
+                })
+                .subscribe(new Subscriber<PromoAttributes>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onError();
+                    }
+
+                    @Override
+                    public void onNext(PromoAttributes promoAttributes) {
+                        if (promoAttributes!=null && targetType.equals(promoAttributes.getTargetType()) &&
+                                userId.equals(promoAttributes.getUserId())) {
+                            listener.onSuccess(promoAttributes);
+                        } else {
+                            listener.onError();
+                        }
+                    }
+                });
         }
-        return null;
-    }
 
     @Override
     public void storePromoWidget(String targetType, String userId, DataPromoWidget promoWidget) {
 
         PromoAttributes promoAttributes = new PromoAttributes();
-
         if (!promoWidget.getPromoWidgetList().isEmpty()) {
             promoAttributes = promoWidget.getPromoWidgetList().get(0).getPromoAttributes();
         }
         promoAttributes.setTargetType(targetType);
         promoAttributes.setUserId(userId);
-        new GlobalCacheManager()
-                .setKey(TkpdCache.Key.KEY_PDP_PROMO_WIDGET_DATA)
+
+        final GlobalCacheManager cache = new GlobalCacheManager();
+        cache.setKey(PROMO_WIDGET_PDP)
                 .setCacheDuration(promoWidget.getCacheExpire())
-                .setValue(new Gson().toJson(promoAttributes))
-                .store();
+                .setValue(CacheUtil.convertModelToString(promoAttributes, new TypeToken<PromoAttributes>() {
+                }.getType()));
+
+
+        Observable.just(cache)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<GlobalCacheManager, Boolean>() {
+                    @Override
+                    public Boolean call(GlobalCacheManager globalCacheManager) {
+                        cache.delete(PROMO_WIDGET_PDP);
+                        globalCacheManager.store();
+                        return true;
+                    }
+                })
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
     }
 
     @Override
