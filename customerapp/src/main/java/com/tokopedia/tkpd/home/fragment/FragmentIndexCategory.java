@@ -454,8 +454,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (isTickerRotating()) {
             startSlideTicker();
         }
-        if (!holder.bannerView.isAutoScrollOnProgress()
-                && getUserVisibleHint()) {
+        if (!holder.bannerView.isAutoScrollOnProgress()) {
             restartAutoScrollBanner();
         }
         super.onStart();
