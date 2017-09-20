@@ -178,10 +178,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.debugToolsDependencies.stetho
-
-    compile (rootProject.ext.miscDependencies.reactNative)
-    compile (rootProject.ext.miscDependencies.codePushReactNative)
-
 }
 
 apply plugin: 'com.google.gms.google-services'
