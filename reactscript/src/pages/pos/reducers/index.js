@@ -18,6 +18,7 @@ import {
   ON_SUBMIT_FETCH_SEARCH_PRODUCT,
   FETCH_CART_FROM_CACHE,
   FETCH_BANK_FUlFILLED,
+  FETCH_EMI_FUlFILLED
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -246,25 +247,45 @@ const payment = (state = {
   cardType: ''
 }, action) => {
   switch (action.type) {
+    case `${FETCH_BANK_FUlFILLED}_${PENDING}`:
+      return {
+        ...state,
+        isFetching: true,
+      }
+    case `${FETCH_BANK_FUlFILLED}_${REJECTED}`:
+      return {
+        ...state, 
+        isFetching: false
+      }
     case `${FETCH_BANK_FUlFILLED}_${FULFILLED}`:
       return {
         ...state,
         items: action.payload
       }
       break;
-
-    case 'FETCH_EMI_FUlFILLED':
+    case `${FETCH_EMI_FUlFILLED}_${PENDING}`:
       return {
         ...state,
-        emiList: action.payload
+        isFetching: true,
+      }
+    case `${FETCH_EMI_FUlFILLED}_${REJECTED}`:
+      return {
+        ...state, 
+        isFetching: false
+      }
+    case `${FETCH_EMI_FUlFILLED}_${FULFILLED}`:
+     // const data =  action.payload.data.data.list;
+      return {
+        ...state,
+        emiList: action.payload.data.data.list
       }
       break;
     case 'BANK_SELECTED':
-      const bankId = action.payload
+      const bank_id = action.payload
       const newData = {
         items: state.items.map(i => {
           i.isSelected = false;
-          if (i.id === bankId) {
+          if (i.bank_id === bank_id) {
             i.isSelected = true;
           }
           return i
