@@ -68,7 +68,6 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
-import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -115,6 +114,7 @@ import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 import com.tokopedia.tkpd.home.tokocash.BottomSheetTokoCash;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
 import java.util.HashMap;
