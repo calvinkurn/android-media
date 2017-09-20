@@ -457,7 +457,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessEditReview() {
-
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
 

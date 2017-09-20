@@ -64,5 +64,7 @@
     <string name="report_option_sara">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/normal sosial</string>
     <string name="hint_input_reason">Isi alasan disini</string>
     <string name="success_report_review">Sukses mengirim laporan</string>
+    <string name="success_edit_review">Sukses mengubah ulasan</string>
+    <string name="success_send_review">Sukses mengirim ulasan</string>
 
 </resources>

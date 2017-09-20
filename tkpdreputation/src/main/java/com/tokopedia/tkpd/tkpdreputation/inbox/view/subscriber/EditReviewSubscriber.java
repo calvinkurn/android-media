@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
@@ -31,6 +32,10 @@ public class EditReviewSubscriber extends Subscriber<SendReviewDomain> {
     @Override
     public void onNext(SendReviewDomain sendReviewDomain) {
         viewListener.finishLoadingProgress();
-        viewListener.onSuccessEditReview();
+        if (sendReviewDomain.isSuccess())
+            viewListener.onSuccessEditReview();
+        else
+            viewListener.onErrorSendReview(MainApplication.getAppContext().getString(R.string
+                    .default_request_error_unknown));
     }
 }

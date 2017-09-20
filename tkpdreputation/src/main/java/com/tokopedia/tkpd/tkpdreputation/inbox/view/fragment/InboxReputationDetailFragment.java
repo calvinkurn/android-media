@@ -400,9 +400,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
+                    .success_send_review));
         } else if (requestCode == REQUEST_EDIT_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
+                    .success_edit_review));
         } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
                     .success_report_review));
