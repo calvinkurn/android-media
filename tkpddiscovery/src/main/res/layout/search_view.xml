@@ -38,7 +38,7 @@
                 android:paddingRight="@dimen/search_view_text_padding"
                 android:singleLine="true"
                 android:textColor="#212121"
-                android:textColorHint="@color/hint_search_view"
+                android:textColorHint="@color/black_38"
                 android:textSize="16sp" />
 
             <ImageButton
