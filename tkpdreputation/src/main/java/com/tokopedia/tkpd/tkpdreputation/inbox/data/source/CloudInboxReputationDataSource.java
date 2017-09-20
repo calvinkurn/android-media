@@ -1,14 +1,18 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * @author by nisie on 8/14/17.
@@ -34,6 +38,21 @@ public class CloudInboxReputationDataSource {
                 AuthUtil.generateParamsNetwork2(
                         MainApplication.getAppContext(),
                         requestParams.getParameters()))
-                .map(inboxReputationMapper);
+                .map(inboxReputationMapper)
+                .doOnNext(saveToCache());
+    }
+
+    private Action1<InboxReputationDomain> saveToCache() {
+        return new Action1<InboxReputationDomain>() {
+            @Override
+            public void call(InboxReputationDomain inboxReputationDomain) {
+                globalCacheManager.setKey(GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION)
+                        .setCacheDuration(GetFirstTimeInboxReputationUseCase.DURATION_CACHE)
+                        .setValue(CacheUtil.convertModelToString(inboxReputationDomain,
+                                new TypeToken<InboxReputationDomain>() {
+                                }.getType()))
+                        .store();
+            }
+        };
     }
 }

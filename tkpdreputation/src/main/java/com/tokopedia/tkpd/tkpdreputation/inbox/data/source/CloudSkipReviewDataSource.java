@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
 
@@ -25,7 +27,8 @@ public class CloudSkipReviewDataSource {
 
     public Observable<SkipReviewDomain> skipReview(RequestParams requestParams) {
         return reputationService.getApi()
-                .skipReview(requestParams.getParameters())
+                .skipReview(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
+                        requestParams.getParameters()))
                 .map(skipReviewMapper);
     }
 }

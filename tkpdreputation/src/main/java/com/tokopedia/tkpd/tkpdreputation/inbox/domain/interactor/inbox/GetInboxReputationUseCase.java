@@ -1,4 +1,6 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor;
+package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox;
+
+import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
@@ -11,10 +13,10 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import rx.Observable;
 
 /**
- * @author by nisie on 8/14/17.
+ * @author by nisie on 8/18/17.
  */
 
-public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationDomain> {
+public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
 
     protected static final String PARAM_PER_PAGE = "per_page";
     protected static final String PARAM_PAGE = "page";
@@ -34,14 +36,16 @@ public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationD
     protected static final int ROLE_SELLER = 2;
     protected static final int STATUS_OTHER = 3;
     protected static final String DEFAULT_TIME_FILTER = "1";
+    private static final String PARAM_KEYWORD = "keyword";
 
     protected ReputationRepository reputationRepository;
 
-    public GetFirstTimeInboxReputationUseCase(ThreadExecutor threadExecutor,
-                                              PostExecutionThread postExecutionThread,
-                                              ReputationRepository reputationRepository) {
+    public GetInboxReputationUseCase(ThreadExecutor threadExecutor,
+                                     PostExecutionThread postExecutionThread,
+                                     ReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
+
     }
 
     @Override
@@ -49,15 +53,23 @@ public class GetFirstTimeInboxReputationUseCase extends UseCase<InboxReputationD
         return reputationRepository.getInboxReputationFromCloud(requestParams);
     }
 
-    public static RequestParams getFirstTimeParam(int tab) {
+    public static RequestParams getParam(int page, String keyword, String timeFilter,
+                                         String readStatusFilter, int tab) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
-        params.putInt(PARAM_PAGE, 1);
+        params.putInt(PARAM_PAGE, page);
         params.putInt(PARAM_ROLE, getRole(tab));
-        params.putString(PARAM_TIME_FILTER, DEFAULT_TIME_FILTER);
+        if (!TextUtils.isEmpty(keyword))
+            params.putString(PARAM_KEYWORD, keyword);
+        params.putString(PARAM_TIME_FILTER, !TextUtils.isEmpty(timeFilter) ? timeFilter :
+                DEFAULT_TIME_FILTER);
+        if (!TextUtils.isEmpty(readStatusFilter))
+            params.putString(PARAM_READ_STATUS, !TextUtils.isEmpty(readStatusFilter) ?
+                    readStatusFilter : DEFAULT_READ_STATUS);
         params.putInt(PARAM_STATUS, getStatus(tab));
         return params;
     }
+
 
     protected static int getStatus(int tab) {
         switch (tab) {

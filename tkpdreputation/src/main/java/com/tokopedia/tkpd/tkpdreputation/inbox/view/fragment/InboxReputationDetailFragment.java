@@ -351,6 +351,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             adapter.getList().remove(0);
             adapter.getList().add(0, header);
             adapter.notifyItemChanged(0);
+            getActivity().setResult(Activity.RESULT_OK);
         }
     }
 

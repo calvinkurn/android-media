@@ -16,6 +16,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendReviewDataSo
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendReviewSubmitDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendSmileyReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSkipReviewDataSource;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.LocalInboxReputationDataSource;
 
 /**
  * @author by nisie on 8/14/17.
@@ -55,6 +56,10 @@ public class ReputationFactory {
 
     public CloudInboxReputationDataSource createCloudInboxReputationDataSource() {
         return new CloudInboxReputationDataSource(reputationService, inboxReputationMapper, globalCacheManager);
+    }
+
+    public LocalInboxReputationDataSource createLocalInboxReputationDataSource() {
+        return new LocalInboxReputationDataSource(globalCacheManager);
     }
 
     public CloudInboxReputationDetailDataSource createCloudInboxReputationDetailDataSource() {

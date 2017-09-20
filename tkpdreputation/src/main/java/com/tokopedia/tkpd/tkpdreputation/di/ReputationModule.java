@@ -16,8 +16,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationM
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetFirstTimeInboxReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.GetInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetCacheInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.ReportReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
@@ -59,10 +60,15 @@ public class ReputationModule {
     GetFirstTimeInboxReputationUseCase
     provideGetFirstTimeInboxReputationUseCase(ThreadExecutor threadExecutor,
                                               PostExecutionThread postExecutionThread,
+                                              GetInboxReputationUseCase getInboxReputationUseCase,
+                                              GetCacheInboxReputationUseCase
+                                                      getCacheInboxReputationUseCase,
                                               ReputationRepository reputationRepository) {
         return new GetFirstTimeInboxReputationUseCase(
                 threadExecutor,
                 postExecutionThread,
+                getInboxReputationUseCase,
+                getCacheInboxReputationUseCase,
                 reputationRepository);
     }
 
@@ -362,6 +368,14 @@ public class ReputationModule {
                                                    PostExecutionThread postExecutionThread,
                                                    ReputationRepository reputationRepository) {
         return new ReportReviewUseCase(threadExecutor, postExecutionThread, reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    GetCacheInboxReputationUseCase provideGetCacheInboxReputationUseCase(ThreadExecutor threadExecutor,
+                                                                         PostExecutionThread postExecutionThread,
+                                                                         ReputationRepository reputationRepository) {
+        return new GetCacheInboxReputationUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
 }
