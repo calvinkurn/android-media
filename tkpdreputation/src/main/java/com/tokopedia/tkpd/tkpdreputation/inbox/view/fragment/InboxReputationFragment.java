@@ -257,6 +257,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel) {
         adapter.removeLoading();
         adapter.addList(inboxReputationViewModel.getList());
+        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
 
     @Override
