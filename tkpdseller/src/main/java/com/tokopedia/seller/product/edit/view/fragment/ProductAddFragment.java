@@ -790,7 +790,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @ProductStatus
-    protected int getStatusUpload() {
+    public int getStatusUpload() {
         return ProductStatus.ADD;
     }
 

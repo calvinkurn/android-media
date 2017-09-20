@@ -28,10 +28,10 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     }
 
     @Override
-    public void uploadProduct(long productDraftId) {
+    public void uploadProduct(long productDraftId, boolean isAdd) {
         checkViewAttached();
         RequestParams requestParams = UploadProductUseCase.generateUploadProductParam(productDraftId);
-        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId)));
+        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId), isAdd));
     }
 
     @Override
@@ -49,8 +49,10 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
 
         private String productDraftId;
-        public AddProductSubscriber(String productDraftId) {
+        private boolean isAdd;
+        public AddProductSubscriber(String productDraftId, boolean isAdd) {
             this.productDraftId = productDraftId;
+            this.isAdd = isAdd;
         }
 
         @Override
@@ -60,8 +62,6 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
 
         @Override
         public void onError(Throwable uploadThrowable) {
-            Throwable e = uploadThrowable;
-
             if (!isViewAttached()) {
                 return;
             }
@@ -84,14 +84,8 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                 }
             });
             getView().onFailedAddProduct();
-            if (uploadThrowable instanceof UploadProductException){
-                e = ((UploadProductException) uploadThrowable).getThrowable();
-                @ProductStatus
-                int productStatus = ((UploadProductException) uploadThrowable).getProductStatus();
-                getView().notificationFailed(e, this.productDraftId, productStatus);
-            }
-
-            getView().sendFailedBroadcast(e);
+            getView().notificationFailed(uploadThrowable, this.productDraftId, isAdd? ProductStatus.ADD: ProductStatus.EDIT);
+            getView().sendFailedBroadcast(uploadThrowable);
         }
 
         @Override

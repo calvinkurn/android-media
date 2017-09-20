@@ -335,7 +335,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 showShopModerated(shopModel);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
-                //TODO not active state
                 shopWarningTickerView.setVisibility(View.GONE);
                 break;
             default:
@@ -360,6 +359,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void showShopModerated(ShopModel shopModel) {
+        //TODO icon
         shopWarningTickerView.setIcon(R.drawable.icon_closed);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
         shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
