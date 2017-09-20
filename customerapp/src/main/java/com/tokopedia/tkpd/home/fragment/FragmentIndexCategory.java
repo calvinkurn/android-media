@@ -57,6 +57,7 @@ import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
 import com.tokopedia.core.network.entity.home.Brands;
@@ -70,6 +71,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
@@ -367,6 +369,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             toItem.setPromoId(item.id);
             toItem.setPromoTitle(item.title);
             toItem.setPromoUrl(item.promoUrl);
+            toItem.setPromoApplink(item.appLink); // toItem.setPromoApplink(Uri.decode(item.appLink)); wait should be fix from ws or client cause ios already use it
             list.add(toItem);
         }
         return list;
