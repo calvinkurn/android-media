@@ -816,21 +816,23 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
         }
 
-        MarkerOptions options;
-        if (markerId != 0) {
-            options = new MarkerOptions()
-                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                    .icon(getCarMapIcon(markerId))
-                    .rotation(result.getLocation().getBearing())
-                    .title(getString(R.string.ontrip_marker_driver));
-        } else {
-            options = new MarkerOptions()
-                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                    .rotation(result.getLocation().getBearing())
-                    .title(getString(R.string.ontrip_marker_driver));
-        }
+        if (result.getLocation() != null) {
+            MarkerOptions options;
+            if (markerId != 0) {
+                options = new MarkerOptions()
+                        .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                        .icon(getCarMapIcon(markerId))
+                        .rotation(result.getLocation().getBearing())
+                        .title(getString(R.string.ontrip_marker_driver));
+            } else {
+                options = new MarkerOptions()
+                        .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                        .rotation(result.getLocation().getBearing())
+                        .title(getString(R.string.ontrip_marker_driver));
+            }
 
-        mDriverMarker = mGoogleMap.addMarker(options);
+            mDriverMarker = mGoogleMap.addMarker(options);
+        }
     }
 
     private BitmapDescriptor getCarMapIcon(int resourceId) {
@@ -1245,14 +1247,16 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
         markerId = drawable;
 
-        MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                .icon(getCarMapIcon(drawable))
-                .rotation(result.getLocation().getBearing())
-                .title(getString(R.string.ontrip_marker_driver));
+        if (result.getLocation() != null) {
+            MarkerOptions options = new MarkerOptions()
+                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                    .icon(getCarMapIcon(drawable))
+                    .rotation(result.getLocation().getBearing())
+                    .title(getString(R.string.ontrip_marker_driver));
 
-        if (mGoogleMap != null) {
-            mDriverMarker = mGoogleMap.addMarker(options);
+            if (mGoogleMap != null) {
+                mDriverMarker = mGoogleMap.addMarker(options);
+            }
         }
     }
 

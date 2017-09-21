@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="android:name">
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />

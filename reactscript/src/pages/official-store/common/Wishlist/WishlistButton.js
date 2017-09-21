@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import {
   Button,
   StyleSheet,
-  AsyncStorage,
   TouchableNativeFeedback,
   TouchableOpacity,
   Platform,
@@ -13,7 +12,6 @@ import {
 } from 'react-native'
 import { addToWishlist, removeFromWishlist } from '../../actions/actions'
 import { NavigationModule } from 'NativeModules'
-import { icons } from '../../../../icons/index'
 
 
 class Wishlist extends Component {
@@ -40,8 +38,8 @@ class Wishlist extends Component {
         <TouchableOpacity onPress={() => this._onTap(isWishlist, productId)}>
            <View>
             {
-              isWishlist ? (<Image source={ icons.icon_wishlist_red } style={{width:20, height:20, margin:10}} />) :
-                (<Image source={ icons.icon_wishlist } style={{width:20, height:20, margin:10}} />)
+              isWishlist ? (<Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_offstore/icon-wishlist-red.png' }} style={{width:20, height:20, margin:10}} />) :
+                (<Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_offstore/icon-wishlist.png' }} style={{width:20, height:20, margin:10}} />)
             }
           </View> 
         </TouchableOpacity>

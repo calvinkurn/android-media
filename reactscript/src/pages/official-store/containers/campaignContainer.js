@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DeviceEventEmitter, AsyncStorage } from 'react-native'
+import { DeviceEventEmitter } from 'react-native'
 import { connect } from 'react-redux'
 import { fetchCampaigns, addWishlistFromPdp, removeWishlistFromPdp } from '../actions/actions'
 import CampaignList from '../components/campaignList'
