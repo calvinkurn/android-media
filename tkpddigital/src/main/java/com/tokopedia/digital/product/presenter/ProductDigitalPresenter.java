@@ -352,7 +352,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             );
         }
 
-        if (view.isUserLoggedIn() && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)) {
+        if (!GlobalConfig.isSellerApp() && view.isUserLoggedIn() && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)) {
             renderCheckPulsaBalanceDataToView();
         }
     }

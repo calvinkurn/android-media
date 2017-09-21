@@ -407,7 +407,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (!GlobalConfig.isSellerApp() && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
         }
     }
@@ -674,14 +674,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onButtonCheckBalanceClicked(int simPosition, String ussdCode) {
+    public void onButtonCheckBalanceClicked(int simPosition, String ussdCode, CheckPulsaBalanceView checkPulsaBalanceView) {
         if (ussdInProgress) {
             showToastMessage(getString(R.string.msg_ussd_please_wait));
         } else {
             selectedSimIndex = simPosition;
-            if (holderCheckBalance != null && holderCheckBalance.getChildCount() > selectedSimIndex) {
-                selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSimIndex);
-            }
+            selectedCheckPulsaBalanceView = checkPulsaBalanceView;
+
+            /*if (holderCheckBalance != null) {
+                if (holderCheckBalance.getChildCount() > selectedSimIndex) {
+                    selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSimIndex);
+                } else if (selectedSimIndex == 1 && holderCheckBalance.getChildCount() == 1) {
+                    selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSimIndex - 1);
+                }
+            }*/
+
             DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
         }
     }
@@ -1110,6 +1117,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void restoreUssdData() {
+        if (GlobalConfig.isSellerApp()) {
+            return;
+        }
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
