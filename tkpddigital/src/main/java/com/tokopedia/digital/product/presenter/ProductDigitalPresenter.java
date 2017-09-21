@@ -352,7 +352,10 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             );
         }
 
-        if (!GlobalConfig.isSellerApp() && view.isUserLoggedIn() && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)) {
+        if (!GlobalConfig.isSellerApp()
+                && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
+                && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && view.isUserLoggedIn()) {
             renderCheckPulsaBalanceDataToView();
         }
     }
@@ -597,7 +600,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
-        number=DeviceUtil.formatPrefixClientNumber(number);
+        number = DeviceUtil.formatPrefixClientNumber(number);
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM1, number);

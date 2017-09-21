@@ -407,9 +407,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance) {
-        if (!GlobalConfig.isSellerApp() && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
-        }
+        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
     }
 
     @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
@@ -1119,16 +1117,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
         //selectedCheckPulsaBalanceView should not be null
         if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-                Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
-                String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
+            Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
 
-                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
-                        operator, phoneNumber)) {
-                    phoneNumber = "";
-                    presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
-                } else {
-                    selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
-                }
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                phoneNumber = "";
+                presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
+            } else {
+                selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
+            }
         }
     }
 
