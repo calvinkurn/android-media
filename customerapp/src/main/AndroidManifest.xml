@@ -4,7 +4,8 @@
     package="com.tokopedia.tkpd">
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core" />
-
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
