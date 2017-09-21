@@ -680,15 +680,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         } else {
             selectedSimIndex = simPosition;
             selectedCheckPulsaBalanceView = checkPulsaBalanceView;
-
-            /*if (holderCheckBalance != null) {
-                if (holderCheckBalance.getChildCount() > selectedSimIndex) {
-                    selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSimIndex);
-                } else if (selectedSimIndex == 1 && holderCheckBalance.getChildCount() == 1) {
-                    selectedCheckPulsaBalanceView = (CheckPulsaBalanceView) holderCheckBalance.getChildAt(selectedSimIndex - 1);
-                }
-            }*/
-
             DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
         }
     }
@@ -1117,15 +1108,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void restoreUssdData() {
+        if (selectedCheckPulsaBalanceView == null) {
+            return;
+        }
         if (GlobalConfig.isSellerApp()) {
             return;
         }
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
+        //selectedCheckPulsaBalanceView should not be null
         if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-
-            if (selectedCheckPulsaBalanceView != null) {
                 Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
                 String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
 
@@ -1136,7 +1129,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 } else {
                     selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
                 }
-            }
         }
     }
 
