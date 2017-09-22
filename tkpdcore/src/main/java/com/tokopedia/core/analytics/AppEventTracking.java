@@ -309,6 +309,7 @@ public interface AppEventTracking {
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
+        String SUBMIT = "Submit";
     }
 
     interface EventLabel {
