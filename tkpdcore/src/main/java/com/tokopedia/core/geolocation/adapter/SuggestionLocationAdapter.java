@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -314,11 +316,11 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                            @Override
                            public void onError(Throwable e) {
                                if(e instanceof RuntimeException) {
-                                   NetworkErrorHelper.showSnackbar((Activity) getContext(),
-                                           e.getMessage());
+                                   Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG)
+                                           .show();
                                } else if(e instanceof UnknownHostException) {
-                                   NetworkErrorHelper.showSnackbar((Activity) getContext(),
-                                           ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                                   Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG)
+                                           .show();
                                }
                            }
 
@@ -332,5 +334,6 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
             }
         };
     }
+
 
 }
