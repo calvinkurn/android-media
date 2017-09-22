@@ -58,6 +58,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
         super.setupLayout(savedInstanceState);
         bottomSheetContentTextView.setText(getString(R.string.product_list_featured_max_limit, ProductListPickerConstant.MAX_LIMIT_PRODUCT_LIST_FEATURED_PICKER));
         bottomSheetContentTextView.setVisibility(View.VISIBLE);
+        submitButton.setText(getString(R.string.title_save));
     }
 
     @Override
