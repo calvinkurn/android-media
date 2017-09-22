@@ -361,6 +361,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
+            stopAutoScrollBanner();
             holder.bannerView.setPromoList(mappingListBannerPromo(promoList));
             holder.bannerView.buildView();
         } else {
