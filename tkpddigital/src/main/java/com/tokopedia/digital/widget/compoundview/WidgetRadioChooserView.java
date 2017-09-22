@@ -73,8 +73,8 @@ public class WidgetRadioChooserView extends LinearLayout {
             radioGroup.addView(radioButton);
         }
         radioGroup.check(radioGroup.getChildAt(0).getId());
-        RechargeOperatorModel modelll = operators.get(radioGroup.getChildAt(0).getId());
-        listener.onCheckChange(modelll);
+        RechargeOperatorModel operatorModel = operators.get(radioGroup.getChildAt(0).getId());
+        listener.onCheckChange(operatorModel);
         checkRadioButtonBasedOnLastOrder(operators, radioGroup, lastOrder, lastOperatorSelected);
         radioGroup.setOnTouchListener(getOnTouchListener());
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

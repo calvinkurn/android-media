@@ -29,7 +29,8 @@ public class WidgetFactory {
             case STYLE_FOUR:
             case STYLE_FIVE:
                 return WidgetStyle3RechargeFragment.newInstance(category, position);
+            default:
+                return WidgetStyle1RechargeFragment.newInstance(category, position);
         }
-        return WidgetStyle1RechargeFragment.newInstance(category, position);
     }
 }

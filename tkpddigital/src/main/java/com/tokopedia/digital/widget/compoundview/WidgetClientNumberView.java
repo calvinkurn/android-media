@@ -165,11 +165,11 @@ public class WidgetClientNumberView extends LinearLayout {
                 .into(this.imgOperator);
     }
 
-    public void setDropdownAutoComplete(List<String> displayList) {
-        String[] wannaDisplay = new String[displayList.size()];
-        wannaDisplay = displayList.toArray(wannaDisplay);
+    public void setDropdownAutoComplete(List<String> numberList) {
+        String[] numberAutoCompleteList = new String[numberList.size()];
+        numberAutoCompleteList = numberList.toArray(numberAutoCompleteList);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(), R.layout.simple_spinner_tv_res, wannaDisplay);
+                getContext(), R.layout.simple_spinner_tv_res, numberAutoCompleteList);
 
         pulsaAutocompleteView.setAdapter(adapter);
         pulsaAutocompleteView.setThreshold(1);
@@ -248,12 +248,14 @@ public class WidgetClientNumberView extends LinearLayout {
     public void setVisibilityPhoneBook(boolean isUsePhoneBook) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (isUsePhoneBook && pulsaAutocompleteView != null) {
-            btnPhoneBook.setVisibility(View.VISIBLE);
-            layoutParams.weight = 0.92f;
-        } else if (pulsaAutocompleteView != null) {
-            btnPhoneBook.setVisibility(View.GONE);
-            layoutParams.weight = 1;
+        if (pulsaAutocompleteView != null) {
+            if (isUsePhoneBook) {
+                btnPhoneBook.setVisibility(View.VISIBLE);
+                layoutParams.weight = 0.92f;
+            } else {
+                btnPhoneBook.setVisibility(View.GONE);
+                layoutParams.weight = 1;
+            }
         }
         pulsaFrameLayout.setLayoutParams(layoutParams);
     }
