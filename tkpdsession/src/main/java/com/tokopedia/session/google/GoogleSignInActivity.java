@@ -150,9 +150,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
             handleSignInResult(accessToken, signInResult);
             signOut();
             finish();
-        } else {
-            signOut();
-            finish();
         }
     }
 
