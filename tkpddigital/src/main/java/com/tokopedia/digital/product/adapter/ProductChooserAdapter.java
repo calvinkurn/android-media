@@ -3,6 +3,10 @@ package com.tokopedia.digital.product.adapter;
 import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,8 +170,26 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
-                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-                tvProductDescription.setText(sequence);
+//                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+//                tvProductDescription.setText(sequence);
+
+                CharSequence detail = MethodChecker.fromHtml(product.getDetail());
+                SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
+                URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
+                for (final URLSpan span : urls) {
+                    int start = strBuilderDetail.getSpanStart(span);
+                    int end = strBuilderDetail.getSpanEnd(span);
+                    int flags = strBuilderDetail.getSpanFlags(span);
+                    ClickableSpan clickable = new ClickableSpan() {
+                        public void onClick(View view) {
+                            actionListener.onProductLinkClicked(span.getURL());
+                        }
+                    };
+                    strBuilderDetail.setSpan(clickable, start, end, flags);
+                    strBuilderDetail.removeSpan(span);
+                }
+                tvProductDescription.setText(strBuilderDetail);
+                tvProductDescription.setMovementMethod(LinkMovementMethod.getInstance());
             }
         }
 
@@ -228,9 +250,27 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (product.getDetail().isEmpty()) {
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
-                tvProductPromoDescription.setVisibility(View.VISIBLE);
-                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-                tvProductPromoDescription.setText(sequence);
+//                tvProductPromoDescription.setVisibility(View.VISIBLE);
+//                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+//                tvProductPromoDescription.setText(sequence);
+
+                CharSequence detail = MethodChecker.fromHtml(product.getDetail());
+                SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
+                URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
+                for (final URLSpan span : urls) {
+                    int start = strBuilderDetail.getSpanStart(span);
+                    int end = strBuilderDetail.getSpanEnd(span);
+                    int flags = strBuilderDetail.getSpanFlags(span);
+                    ClickableSpan clickable = new ClickableSpan() {
+                        public void onClick(View view) {
+                            actionListener.onProductLinkClicked(span.getURL());
+                        }
+                    };
+                    strBuilderDetail.setSpan(clickable, start, end, flags);
+                    strBuilderDetail.removeSpan(span);
+                }
+                tvProductPromoDescription.setText(strBuilderDetail);
+                tvProductPromoDescription.setMovementMethod(LinkMovementMethod.getInstance());
             }
             tvProductPromoTag.setText(product.getPromo().getTag());
             tvPromoProductPrice.setText(product.getPromo().getNewPrice());
