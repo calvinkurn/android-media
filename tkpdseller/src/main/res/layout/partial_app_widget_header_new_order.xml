@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/tkpd_main_green"
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="@dimen/padding_ms"
     tools:showIn="@layout/app_widget_new_order">
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_marginRight="@dimen/margin_small"

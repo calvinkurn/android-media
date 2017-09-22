@@ -78,7 +78,7 @@
         android:background="@drawable/selectable_white_background"
         android:clickable="true">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_trash_can"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
