@@ -86,6 +86,7 @@
     <color name="white_grey">#fbfbfb</color>
     <color name="grey_toolbar_icon">#666666</color>
     <color name="price_pdp">#ff5722</color>
+    <color name="blue_official_store">#9042b9</color>
     <color name="empty_stock_pdp">#80000000</color>
 
 </resources>

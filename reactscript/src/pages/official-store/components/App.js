@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   Dimensions,
   DeviceEventEmitter,
-  AsyncStorage,
   RefreshControl 
 } from 'react-native'
 import { connect } from 'react-redux'
