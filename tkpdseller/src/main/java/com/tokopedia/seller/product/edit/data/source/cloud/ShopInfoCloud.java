@@ -9,7 +9,6 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,19 +23,29 @@ import rx.Observable;
  */
 
 public class ShopInfoCloud {
-    private final TomeApi api;
+    private final ShopApi api;
     private final Context context;
+
+    public static final String SHOP_ID = "shop_id";
+    public static final String SHOW_ALL = "show_all";
 
     @Inject
     public ShopInfoCloud(@ApplicationContext Context context,
-                         TomeApi api) {
+                         ShopApi api) {
         this.api = api;
         this.context = context;
     }
 
     public Observable<Response<DataResponse<ShopModel>>> getShopInfo() {
+        String userId = SessionHandler.getLoginID(context);
+        String deviceId = GCMHandler.getRegistrationId(context);
         String shopId = SessionHandler.getShopID(context);
-        return api.getShopInfo(shopId);
+
+        Map<String, String> params = new HashMap<>();
+        params.put(SHOP_ID, shopId);
+        params.put(SHOW_ALL, "1");
+        params = AuthUtil.generateParams(userId, deviceId, params);
+        return api.getShopInfo(params);
     }
 
 }

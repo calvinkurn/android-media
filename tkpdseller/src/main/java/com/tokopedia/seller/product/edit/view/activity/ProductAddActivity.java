@@ -41,6 +41,7 @@ import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
@@ -402,19 +403,28 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     public void startUploadProduct(long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         finish();
     }
 
+    private void startUploadProductService(long productId){
+        ProductAddFragment productAddFragment = getProductAddFragment();
+        boolean isAdd = true;
+        if (productAddFragment!= null) {
+            isAdd = productAddFragment.getStatusUpload() == ProductStatus.ADD;
+        }
+        startService(UploadProductService.getIntent(this, productId, isAdd));
+    }
+
     public void startUploadProductWithShare(long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
     }
 
     @Override
     public void startUploadProductAndAdd(Long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         start(this);
         finish();
     }
@@ -427,7 +437,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
 
     @Override
     public void startUploadProductAndAddWithShare(Long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         start(this);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();

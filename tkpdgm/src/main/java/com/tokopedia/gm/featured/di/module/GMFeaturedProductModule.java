@@ -53,7 +53,7 @@ public class GMFeaturedProductModule {
 
     @GMFeaturedProductScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeApi.class);
+    ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit) {
+        return retrofit.create(ShopApi.class);
     }
 }

@@ -56,12 +56,13 @@
     <style name="TextView.Subheading.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
-    <style name="TextView.Subheading.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
-    </style>
 
     <style name="TextView.Subheading.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
+    </style>
+
+    <style name="TextView.Subheading.BlackSecondary">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
     <style name="TextView.Body2">
@@ -85,6 +86,9 @@
     </style>
     <style name="TextView.Body1.Bold">
         <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextView.Body1.Bold.BlackSecondary">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
     <style name="TextView.Body1.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>

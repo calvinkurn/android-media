@@ -25,6 +25,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
@@ -71,6 +72,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private TickerView tickerView;
     private LoadingStateView headerShopInfoLoadingStateView;
+    private LoadingStateView footerShopInfoLoadingStateView;
     private ImageView shopIconImageView;
     private TextView shopNameTextView;
     private ImageView gmIconImageView;
@@ -81,7 +83,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
     private TextView transactionSuccessTextView;
-    private View viewShopStatus;
     private LabelView newOrderLabelView;
     private LabelView deliveryConfirmationLabelView;
     private LabelView deliveryStatusLabelView;
@@ -92,6 +93,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private ShopWarningTickerView shopWarningTickerView;
     private ProgressDialog progressDialog;
+
+    private SnackbarRetry snackBarRetry;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         super.onViewCreated(view, savedInstanceState);
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
-        ViewGroup vgHeaderLabelLayout = (ViewGroup) view.findViewById(R.id.label_layout_header);
+        footerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_footer);
+
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
@@ -134,7 +138,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
         shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
 
-        viewShopStatus = vgHeaderLabelLayout.findViewById(R.id.vg_shop_close);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
 
@@ -211,6 +214,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         });
 
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+        footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
         sellerDashboardPresenter.getTicker();
     }
@@ -222,7 +226,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         sellerDashboardPresenter.refreshShopInfo();
 
-        //TODO loading state for notification
+        footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         sellerDashboardPresenter.getNotification();
     }
 
@@ -254,13 +258,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView.getContentView().setVisibility(View.INVISIBLE);
         View errorView = headerShopInfoLoadingStateView.getErrorView();
         EmptyCardContentView emptyCardContentView= (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
-        emptyCardContentView.setActionClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DashboardFragment.this.onRefresh();
-            }
-        });
+        emptyCardContentView.setTitleText(getString(R.string.error_connection_problem));
+        emptyCardContentView.setTitleText(getString(R.string.msg_connection_timeout));
+        emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
+
+        showSnackBarRetry();
     }
 
     @Override
@@ -278,7 +281,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Inbox reputation now has 2 tabs, need activity for 1 tab only?
                 Intent intent = new Intent(getContext(), InboxReputationActivity.class);
                 intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
                 startActivity(intent);
@@ -302,8 +304,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 getContext().startActivity(intent);
             }
         });
-        transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
-                String.valueOf(shopModel.getStats().getRateSuccess())));
+        if (shopModel.shopTxStats.shopTxHasTransaction1Month == 1) {
+            transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
+                    String.valueOf(shopModel.shopTxStats.shopTxSuccessRate1Month)));
+        } else {
+            transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
+                    String.valueOf(0)));
+        }
+
     }
 
     private void updateShopInfo(ShopModel shopModel) {
@@ -321,7 +329,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         } else {
             shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
-        //TODO need shopModel.info.shopLucky?
     }
 
     private void updateViewShopOpen(ShopModel shopModel) {
@@ -330,11 +337,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 showShopClosed(shopModel);
                 break;
             case ShopStatusDef.MODERATED:
-                //TODO moderated state
-                shopWarningTickerView.setVisibility(View.GONE);
+                showShopModerated(shopModel);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
-                //TODO not active state
                 shopWarningTickerView.setVisibility(View.GONE);
                 break;
             default:
@@ -346,7 +351,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopModel.closedInfo.until);
-        shopWarningTickerView.setIcon(R.drawable.icon_closed);
+        shopWarningTickerView.setIcon(R.drawable.ic_closed);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
         shopWarningTickerView.setDescription(shopModel.closedInfo.note);
         shopWarningTickerView.setAction(getString(R.string.open_shop), new View.OnClickListener() {
@@ -355,6 +360,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 sellerDashboardPresenter.openShop();
             }
         });
+        shopWarningTickerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showShopModerated(ShopModel shopModel) {
+        shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
+        shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
+        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
+        shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
@@ -385,11 +398,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onErrorGetNotifiction(String message) {
-        // TODO on Error get notification
+        // just show the content without the count
+        footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        showSnackBarRetry();
     }
 
     @Override
     public void onSuccessGetNotification(DrawerNotification drawerNotification) {
+        footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+
         int newOrderCount = drawerNotification.getSellingNewOrder();
         int shippingConfirmation = drawerNotification.getSellingShippingConfirmation();
         int shippingStatus = drawerNotification.getSellingShippingStatus();
@@ -406,6 +423,25 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
 
+    }
+
+    private void showSnackBarRetry() {
+        if (snackBarRetry == null) {
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    DashboardFragment.this.onRefresh();
+                }
+            });
+            snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), com.tokopedia.seller.R.color.green_400));
+        }
+        snackBarRetry.showRetrySnackbar();
+    }
+
+    private void hideSnackBarRetry() {
+        if (snackBarRetry != null) {
+            snackBarRetry.hideRetrySnackbar();
+        }
     }
 
     @Override
