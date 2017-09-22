@@ -977,18 +977,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_share));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_notif));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart));
             }
         }
-        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
+        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more));
 
     }
 
@@ -996,17 +996,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundColor(Color.TRANSPARENT);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white_shadow));
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_shadow_active));
+                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_white_shadow));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_white));
             }
-            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.more));
+            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more_white));
         }
     }
 
