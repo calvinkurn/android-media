@@ -20,7 +20,6 @@ import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
-import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -49,8 +48,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by noiz354 on 3/24/16.

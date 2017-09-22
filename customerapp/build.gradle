@@ -250,6 +250,7 @@ dependencies {
     compile project(':tkpddigital')
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
+    compile project(':tkpdreactnative')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
