@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -575,13 +576,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
-            webViewHandleListener = (DeepLinkWebViewHandleListener) getActivity();
-            webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            if (webViewHandleListener != null) {
+                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            }
         } else {
             showToastMessage("Produk tidak ditemukan!");
             closeView();
         }
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(context);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
     }
 
     @Override
