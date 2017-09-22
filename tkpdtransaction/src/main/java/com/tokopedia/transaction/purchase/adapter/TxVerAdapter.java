@@ -29,6 +29,8 @@ import butterknife.ButterKnife;
  */
 public class TxVerAdapter extends ArrayAdapter<TxVerData> {
 
+    private static final int PENDING_PAYMENT_MODE = 1;
+    private static final int UNEDITABLE_PAYMENT_MODE = 2;
     private final LayoutInflater inflater;
     private final Context context;
     private final ActionListener actionListener;
@@ -100,7 +102,8 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
         int menuId;
-        if(getTypePaymentMethod(data) == 1 || getTypePaymentMethod(data) == 2) {
+        if(getTypePaymentMethod(data) == PENDING_PAYMENT_MODE
+                || getTypePaymentMethod(data) == UNEDITABLE_PAYMENT_MODE) {
             menuId = R.menu.menu_transaction_payment_delete;
         } else if(data.getButton().getButtonUploadProof() == 0) {
             menuId = R.menu.menu_transaction_payment;
@@ -150,8 +153,10 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     }
 
     private int getTypePaymentMethod(TxVerData item) {
-        return (item.getBankName().contains("Klik") && item.getBankName().contains("BCA")) ||
-                (item.getBankName().contains("Kartu") && item.getBankName().contains("Kredit")) ? 1
+        return (item.getBankName().contains(context.getString(R.string.parameter_klik))
+                && item.getBankName().contains(context.getString(R.string.parameter_bca)) ||
+                (item.getBankName().contains(context.getString(R.string.parameter_kartu))
+                        && item.getBankName().contains(context.getString(R.string.parameter_kredit)) ? 1
                 : item.getButton().getButtonEditPayment() == 0 &&
                 item.getButton().getButtonUploadProof() == 0 &&
                 item.getButton().getButtonViewProof() == 0 ? 2 : 3;

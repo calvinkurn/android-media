@@ -63,6 +63,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     public static final String EXTRA_MESSAGE_ERROR_GET_INVOICE = "EXTRA_MESSAGE_ERROR_GET_INVOICE";
     public static final int RESULT_INVOICE_FAILED = 2;
     public static final int REQUEST_EDIT_PAYMENT = 42;
+    private static final int KLIK_BCA_MODE = 1;
 
     private TxVerData txVerData;
     private TxVerInvoiceAdapter invoiceAdapter;
@@ -232,7 +233,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     public void renderInvoiceList(List<Detail> detail) {
         invoiceAdapter.addAllInvoiceList(detail);
-        if(presenter.getTypePaymentMethod(txVerData) != 1) {
+        if(presenter.getTypePaymentMethod(txVerData) != KLIK_BCA_MODE) {
             tvPaymentCode.setVisibility(View.VISIBLE);
         }
     }

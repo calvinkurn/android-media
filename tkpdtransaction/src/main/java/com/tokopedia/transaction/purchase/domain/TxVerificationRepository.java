@@ -18,6 +18,9 @@ import rx.functions.Func1;
 
 public class TxVerificationRepository implements ITxVerificationRepository{
 
+    private static final int SUCCESS_CODE = 200;
+    private static final int EXPIRE_CODE = 404003;
+    private static final int CANCELLED_CODE = 404004;
     private PaymentTransactionService service;
 
     public TxVerificationRepository(PaymentTransactionService service) {
@@ -33,7 +36,7 @@ public class TxVerificationRepository implements ITxVerificationRepository{
                         CancelationDialogResponse response = (new Gson().fromJson(stringResponse.body(),
                                 CancelationDialogResponse.class));
                         handlerFetchError(stringResponse);
-                        if(response.isSuccess() != 200) {
+                        if(response.getResponseCode() != SUCCESS_CODE) {
                             handleDataError(false, response.getData().getMessage());
                         }
                         return response.getData().getMessage();
@@ -51,9 +54,9 @@ public class TxVerificationRepository implements ITxVerificationRepository{
                                 .fromJson(stringResponse.body(),
                                 CancelTransactionResponse.class));
                         handlerFetchError(stringResponse);
-                        if(response.isSuccess() != 200
-                                && response.isSuccess() != 404003
-                                && response.isSuccess() != 404004) {
+                        if(response.getResponseCode() != SUCCESS_CODE
+                                && response.getResponseCode() != EXPIRE_CODE
+                                && response.getResponseCode() != CANCELLED_CODE) {
                             handleDataError(false, response.getMessage());
                         }
                         return response.getMessage();

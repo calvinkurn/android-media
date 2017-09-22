@@ -81,6 +81,10 @@
     <string name="title_delete">Hapus</string>
     <string name="title_change">Ubah</string>
     <string name="title_cancel">Batal</string>
+    <string name="parameter_klik">Klik</string>
+    <string name="parameter_kartu">Kartu</string>
+    <string name="parameter_kredit">Kredit</string>
+    <string name="parameter_bca">BCA</string>
     <string name="title_daily_limit">Limit Harian</string>
     <string name="title_delete_bca_one_click">Hapus BCA OneKlik?</string>
     <string name="title_payment_account_owner">Nama Pemilik Rekening</string>

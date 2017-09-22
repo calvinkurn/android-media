@@ -238,7 +238,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         CancelTransactionDialog dialog = CancelTransactionDialog.showCancelTransactionDialog(
                 message, paymentId
         );
-        dialog.show(getFragmentManager(), "delete_cancelation_dialog");
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
     }
 
     @Override

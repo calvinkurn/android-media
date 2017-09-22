@@ -17,7 +17,7 @@ public class CancelationDialogResponse {
     @Expose
     private CancelationDialogData data;
 
-    public int isSuccess() {
+    public int getResponseCode() {
         return success;
     }
 

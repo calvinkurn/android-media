@@ -17,7 +17,7 @@ public class CancelTransactionResponse {
     @Expose
     private String message;
 
-    public int isSuccess() {
+    public int getResponseCode() {
         return success;
     }
 

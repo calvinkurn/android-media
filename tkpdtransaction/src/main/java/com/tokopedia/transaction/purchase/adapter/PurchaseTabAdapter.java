@@ -30,7 +30,8 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
                 return TxSummaryFragment.createInstancePurchase();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
-                verificationFragment = TxVerificationFragment.createInstance();
+                if(verificationFragment == null)
+                    verificationFragment = TxVerificationFragment.createInstance();
                 return verificationFragment;
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
                 return TxListFragment.instanceStatusOrder();
