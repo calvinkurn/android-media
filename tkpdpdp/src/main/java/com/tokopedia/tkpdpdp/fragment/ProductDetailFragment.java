@@ -467,8 +467,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onProductShopMessageClicked(@NonNull Bundle bundle) {
-        presenter.processToSendMessage(context, bundle);
+    public void onProductShopMessageClicked(@NonNull Intent intent) {
+        presenter.processToSendMessage(context, intent);
     }
 
     @Override
