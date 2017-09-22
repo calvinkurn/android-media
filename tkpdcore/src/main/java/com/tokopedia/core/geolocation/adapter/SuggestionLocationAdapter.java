@@ -39,8 +39,10 @@ import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionRes
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -314,6 +316,9 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                                if(e instanceof RuntimeException) {
                                    NetworkErrorHelper.showSnackbar((Activity) getContext(),
                                            e.getMessage());
+                               } else if(e instanceof UnknownHostException) {
+                                   NetworkErrorHelper.showSnackbar((Activity) getContext(),
+                                           ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                                }
                            }
 
