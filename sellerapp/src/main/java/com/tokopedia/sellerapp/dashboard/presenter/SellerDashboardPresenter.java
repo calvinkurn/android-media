@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.dashboard.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.common.ticker.usecase.GetTickerUseCase;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
@@ -32,19 +33,19 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private final GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase;
     private final GetTickerUseCase getTickerUseCase;
     private final NotificationUseCase notificationUseCase;
-    private final DeleteShopInfoUseCase deleteShopInfoUseCase;
+    private final CacheApiClearAllUseCase cacheApiClearAllUseCase;
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
                                     GetTickerUseCase getTickerUseCase,
                                     NotificationUseCase notificationUseCase,
-                                    DeleteShopInfoUseCase deleteShopInfoUseCase,
+                                    CacheApiClearAllUseCase cacheApiClearAllUseCase,
                                     UpdateShopScheduleUseCase updateShopScheduleUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.notificationUseCase = notificationUseCase;
-        this.deleteShopInfoUseCase = deleteShopInfoUseCase;
+        this.cacheApiClearAllUseCase = cacheApiClearAllUseCase;
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
     }
 
@@ -82,7 +83,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     }
 
     public void refreshShopInfo(){
-        deleteShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+        cacheApiClearAllUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -96,6 +97,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             @Override
             public void onNext(Boolean aBoolean) {
                 getShopInfoWithScore();
+                getNotification();
             }
         });
     }
@@ -177,6 +179,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         getTickerUseCase.unsubscribe();
         updateShopScheduleUseCase.unsubscribe();
         notificationUseCase.unsubscribe();
-        deleteShopInfoUseCase.unsubscribe();
+        cacheApiClearAllUseCase.unsubscribe();
     }
 }
