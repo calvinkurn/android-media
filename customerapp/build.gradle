@@ -269,7 +269,6 @@ dependencies {
 
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig
-    compile rootProject.ext.playServicesDependencies.perfMon
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
