@@ -26,7 +26,7 @@ export default class CartItemList extends Component {
 
   paymentCheckoutClicked = () => {
     console.log("checkout clicked, total: " + this.props.totalPrice)
-    NavigationModule.navigateAndFinish("posapp://payment/checkout", `{total_payment:${this.props.totalPrice}}`)
+    NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
   }
 
   onBackPress = () => {
