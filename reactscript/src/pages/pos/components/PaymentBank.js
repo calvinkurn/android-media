@@ -41,7 +41,9 @@ class PaymentBank extends Component {
     if (this.state.paymentMethod === 'SCAN'){
       NavigationModule.navigate("posapp://payment/scan/3/6", "")
     } else {
-      this.props.navigation.navigate('Payment', {})
+      this.props.navigation.navigate('Payment', {
+        
+      })
     }
   };
 
