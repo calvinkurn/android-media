@@ -427,7 +427,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
                     @Override
                     public void onError(Throwable e) {
-
+                        UnifyTracking.eventCreateShopFillBiodataError();
                     }
 
                     @Override
