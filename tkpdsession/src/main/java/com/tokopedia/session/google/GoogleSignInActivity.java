@@ -39,6 +39,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
     public static final int RC_SIGN_IN_GOOGLE = 7777;
     public static final String KEY_GOOGLE_ACCOUNT = "GoogleSignInAccount";
     public static final String KEY_GOOGLE_ACCOUNT_TOKEN = "GoogleSignInAccAccount";
+    private static final String scope = "oauth2:https://www.googleapis.com/auth/plus.login";
     private static final int REQUEST_GPLUS_AUTHORIZE = 8888;
     private static final java.lang.String AUTH_TOKEN = "authtoken";
     protected GoogleApiClient mGoogleApiClient;
@@ -80,7 +81,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
         if (requestCode == RC_SIGN_IN_GOOGLE && resultCode == RESULT_OK) {
             signInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            final String magicString = "oauth2:https://www.googleapis.com/auth/plus.login";
 
             Observable<String> observable = Observable.just(true)
                     .flatMap(new Func1<Boolean, Observable<String>>() {
@@ -88,7 +88,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                         public Observable<String> call(Boolean aBoolean) {
 
                             try {
-                                String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), signInResult.getSignInAccount().getEmail(), magicString);
+                                String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), signInResult.getSignInAccount().getEmail(), scope);
                                 accessToken.equals("");
                                 return Observable.just(accessToken);
 

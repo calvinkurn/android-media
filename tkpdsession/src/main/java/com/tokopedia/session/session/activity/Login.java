@@ -40,6 +40,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -110,7 +111,7 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
  * 1. Logout Fragment currently dialog is discard when rotate.
  */
 @RuntimePermissions
-public class Login extends AppCompatActivity implements SessionView
+public class Login extends BaseActivity implements SessionView
         , DownloadResultReceiver.Receiver
         , LoginResultReceiver.Receiver
         , RegisterResultReceiver.Receiver
