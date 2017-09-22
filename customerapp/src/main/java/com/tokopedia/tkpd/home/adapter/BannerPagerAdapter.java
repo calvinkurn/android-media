@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,9 @@ import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -24,12 +25,11 @@ import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.facade.FacadePromo;
+import com.tokopedia.tkpd.home.customview.BannerView;
 
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by hangnadi on 7/24/17.
@@ -38,10 +38,10 @@ import java.util.Locale;
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
     private static final String TAG = BannerPagerAdapter.class.getSimpleName();
-    private List<FacadePromo.PromoItem> bannerList;
+    private List<BannerView.PromoItem> bannerList;
     private GetShopInfoRetrofit getShopInfoRetrofit;
 
-    public BannerPagerAdapter(List<FacadePromo.PromoItem> promoList) {
+    public BannerPagerAdapter(List<BannerView.PromoItem> promoList) {
         this.bannerList = promoList;
     }
 
@@ -72,7 +72,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         if (bannerList.get(position).imgUrl!=null &&
                 bannerList.get(position).promoUrl.length()>0) {
             holder.bannerImage.setOnClickListener(
-                    getBannerImageOnClickListener(bannerList.get(position).promoUrl)
+                    getBannerImageOnClickListener(position)
             );
         }
 
@@ -109,10 +109,16 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         return bannerList.size();
     }
 
-    private View.OnClickListener getBannerImageOnClickListener(final String url) {
+    private View.OnClickListener getBannerImageOnClickListener(final int currentPosition) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                BannerView.PromoItem item = bannerList.get(currentPosition);
+
+                trackingBannerClick(view.getContext(), item, currentPosition);
+
+                String url = item.getPromoUrl();
                 try {
                     UnifyTracking.eventSlideBannerClicked(url);
                     Uri uri = Uri.parse(url);
@@ -135,6 +141,16 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 }
             }
         };
+    }
+
+    private void trackingBannerClick(Context context, BannerView.PromoItem item, int currentPosition) {
+        Promotion promotion = new Promotion();
+        promotion.setPromotionID(item.getPromoId());
+        promotion.setPromotionName(item.getPromoTitle());
+        promotion.setPromotionAlias(item.getPromoTitle());
+        promotion.setPromotionPosition(currentPosition);
+
+        PaymentTracking.eventPromoClick(promotion);
     }
 
     private boolean isBaseHost(String host) {

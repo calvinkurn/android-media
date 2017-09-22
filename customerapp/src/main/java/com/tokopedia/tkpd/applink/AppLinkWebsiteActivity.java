@@ -69,7 +69,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        setTheme(R.style.WebViewActivity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
