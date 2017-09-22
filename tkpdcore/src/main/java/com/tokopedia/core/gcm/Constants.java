@@ -52,6 +52,7 @@ public interface Constants {
     interface Applinks {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
+        String FEED = "tokopedia://feed";
         String HOME_CATEGORY = "tokopedia://home/category";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
