@@ -289,7 +289,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         if (isType1Selected) {
             problemResultString += context.getString(R.string.string_difference_ongkir);
             if (problemResultList.size() > 1) {
-                problemResultString += "& ";
+                problemResultString += " & ";
                 problemResultString += (isType1Selected ?
                         problemResultList.size() - 1 :
                         problemResultList.size()) + " " +context.getString(R.string.string_problem_product);
