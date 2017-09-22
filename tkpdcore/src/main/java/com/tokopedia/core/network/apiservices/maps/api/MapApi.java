@@ -20,12 +20,12 @@ public interface MapApi {
 
     @GET(TkpdBaseURL.Maps.PATH_MAPS_PLACES)
     Observable<Response<TkpdResponse>> getRecommendedPlaces(
-            @QueryMap TKPDMapParam<String, String> params
+            @QueryMap TKPDMapParam<String, Object> params
     );
 
     @GET(TkpdBaseURL.Maps.PATH_MAPS_PLACES_DETAIL)
     Observable<Response<TkpdResponse>> getLatLng(
-            @QueryMap TKPDMapParam<String, String> params
+            @QueryMap TKPDMapParam<String, Object> params
     );
 
 }

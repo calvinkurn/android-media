@@ -112,4 +112,8 @@ public class RequestParams {
         }
         return newMap;
     }
+
+    public void putAll(Map<String, Object> params){
+        parameters.putAll(params);
+    }
 }

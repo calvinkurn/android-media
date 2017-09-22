@@ -28,7 +28,7 @@ public class MapsRepository implements IMapsRepository {
 
     @Override
     public Observable<AutoCompleteViewModel> getAutoCompleteList(MapService service,
-                                                                 TKPDMapParam<String, String> params,
+                                                                 TKPDMapParam<String, Object> params,
                                                                  final String query) {
         return service.getApi().getRecommendedPlaces(params)
                 .map(new Func1<Response<TkpdResponse>, AutoCompleteViewModel>() {
@@ -44,7 +44,7 @@ public class MapsRepository implements IMapsRepository {
 
     @Override
     public Observable<CoordinateViewModel> getLatLng(MapService service,
-                                                     TKPDMapParam<String, String> params) {
+                                                     TKPDMapParam<String, Object> params) {
         return service.getApi().getLatLng(params)
                 .map(new Func1<Response<TkpdResponse>, CoordinateViewModel>() {
             @Override

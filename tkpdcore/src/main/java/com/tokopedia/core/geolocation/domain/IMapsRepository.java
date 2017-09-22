@@ -17,10 +17,10 @@ import rx.Observable;
 public interface IMapsRepository {
 
     Observable<AutoCompleteViewModel> getAutoCompleteList(MapService service,
-                                                          TKPDMapParam<String, String> params,
+                                                          TKPDMapParam<String, Object> params,
                                                           String query);
 
     Observable<CoordinateViewModel> getLatLng(MapService service,
-                                              TKPDMapParam<String, String> params);
+                                              TKPDMapParam<String, Object> params);
 
 }

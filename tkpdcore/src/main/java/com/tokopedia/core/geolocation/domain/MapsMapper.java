@@ -47,6 +47,9 @@ public class MapsMapper implements IMapsMapper{
                 coordinateModel.getGeometry().getLocation().getLng()
                 );
         coordinateViewModel.setCoordinate(coordinate);
+        coordinateViewModel.setTitle(coordinateModel.getName());
+        coordinateViewModel.setAddress(coordinateModel.getFormattedAddress());
+        coordinateViewModel.setPlaceId(coordinateModel.getPlaceId());
         return coordinateViewModel;
     }
 
