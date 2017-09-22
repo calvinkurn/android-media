@@ -9,6 +9,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -433,7 +434,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
     public Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
         Bundle bundle = new Bundle();
-        Map<String, String> params = new HashMap<>();
+        final Map<String, String> params = new HashMap<>();
         Parcelable parcelable = accountsParameter.getParcelable();
 
         params.put(Login.GRANT_TYPE, accountsParameter.getGrantType());
@@ -477,6 +478,11 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                     accountsParameter.setTokenModel(model);
                 } else {
                     accountsParameter.setErrorModel(errorModel);
+                    try {
+                        GoogleAuthUtil.clearToken(getApplicationContext(), params.get(Login.ACCESS_TOKEN));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return accountsParameter;
             }

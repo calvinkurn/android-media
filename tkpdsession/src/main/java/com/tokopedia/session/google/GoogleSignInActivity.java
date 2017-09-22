@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -123,9 +124,11 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
                 @Override
                 public void onNext(String accessToken) {
-                    handleSignInResult(accessToken, result);
-                    signOut();
-                    finish();
+                    if(!TextUtils.isEmpty(accessToken)) {
+                        handleSignInResult(accessToken, result);
+                        signOut();
+                        finish();
+                    }
                 }
             };
 
