@@ -8,6 +8,7 @@ import com.tokopedia.core.geolocation.model.coordinate.CoordinateModel;
 import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import retrofit2.Response;
@@ -34,6 +35,7 @@ public class MapsRepository implements IMapsRepository {
                 .map(new Func1<Response<TkpdResponse>, AutoCompleteViewModel>() {
             @Override
             public AutoCompleteViewModel call(Response<TkpdResponse> response) {
+                handleError(response);
                 return mapsMapper.convertAutoCompleteModel(
                         response.body().convertDataObj(Data.class),
                         query
@@ -49,10 +51,19 @@ public class MapsRepository implements IMapsRepository {
                 .map(new Func1<Response<TkpdResponse>, CoordinateViewModel>() {
             @Override
             public CoordinateViewModel call(Response<TkpdResponse> response) {
+                handleError(response);
                 return mapsMapper
                         .convertAutoCompleteLocationId(response.body()
                                 .convertDataObj(CoordinateModel.class));
             }
         });
+    }
+
+    private void handleError(Response<TkpdResponse> response) {
+        if(response.body().isNullData()) {
+            throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
+        } else if(response.body().isError() && !response.body().getErrorMessageJoined().isEmpty()) {
+            throw new RuntimeException(response.body().getErrorMessageJoined());
+        } else throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
     }
 }

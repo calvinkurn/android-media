@@ -36,6 +36,7 @@ import com.tokopedia.core.geolocation.model.autocomplete.Data;
 import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
 import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -310,7 +311,10 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
 
                            @Override
                            public void onError(Throwable e) {
-
+                               if(e instanceof RuntimeException) {
+                                   NetworkErrorHelper.showSnackbar((Activity) getContext(),
+                                           e.getMessage());
+                               }
                            }
 
                            @Override
