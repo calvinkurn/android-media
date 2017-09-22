@@ -42,6 +42,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
     private static final int REQUEST_GPLUS_AUTHORIZE = 8888;
     private static final java.lang.String AUTH_TOKEN = "authtoken";
     protected GoogleApiClient mGoogleApiClient;
+    private GoogleSignInResult signInResult;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
         setResult(resultCode);
 
         if (requestCode == RC_SIGN_IN_GOOGLE && resultCode == RESULT_OK) {
-            final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            signInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             final String magicString = "oauth2:https://www.googleapis.com/auth/plus.login";
 
             Observable<String> observable = Observable.just(true)
@@ -86,7 +88,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                         public Observable<String> call(Boolean aBoolean) {
 
                             try {
-                                String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), result.getSignInAccount().getEmail(), magicString);
+                                String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), signInResult.getSignInAccount().getEmail(), magicString);
                                 accessToken.equals("");
                                 return Observable.just(accessToken);
 
@@ -124,11 +126,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
                 @Override
                 public void onNext(String accessToken) {
-                    if(!TextUtils.isEmpty(accessToken)) {
-                        handleSignInResult(accessToken, result);
-                        signOut();
-                        finish();
-                    }
+                    signInWithToken(accessToken);
                 }
             };
 
@@ -139,9 +137,20 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                     .subscribe(subscriber));
         } else if (requestCode == REQUEST_GPLUS_AUTHORIZE && resultCode == RESULT_OK) {
             Bundle extra = data.getExtras();
-            final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             String oneTimeToken = extra.getString(AUTH_TOKEN);
-            handleSignInResult(oneTimeToken, result);
+            signInWithToken(oneTimeToken);
+        } else if (requestCode == REQUEST_GPLUS_AUTHORIZE && resultCode == RESULT_CANCELED) {
+            signOut();
+            finish();
+        }
+    }
+
+    private void signInWithToken(String accessToken) {
+        if (!TextUtils.isEmpty(accessToken)) {
+            handleSignInResult(accessToken, signInResult);
+            signOut();
+            finish();
+        } else {
             signOut();
             finish();
         }
