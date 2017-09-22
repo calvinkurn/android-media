@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,11 +31,15 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.appsflyer.AppsFlyerLib.LOG_TAG;
+
 public class GoogleSignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final int RC_SIGN_IN_GOOGLE = 7777;
     public static final String KEY_GOOGLE_ACCOUNT = "GoogleSignInAccount";
     public static final String KEY_GOOGLE_ACCOUNT_TOKEN = "GoogleSignInAccAccount";
+    private static final int REQUEST_GPLUS_AUTHORIZE = 8888;
+    private static final java.lang.String AUTH_TOKEN = "authtoken";
     protected GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -75,7 +79,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
             final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             final String magicString = "oauth2:https://www.googleapis.com/auth/plus.login";
 
-
             Observable<String> observable = Observable.just(true)
                     .flatMap(new Func1<Boolean, Observable<String>>() {
                         @Override
@@ -89,8 +92,15 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e);
+                            } catch (GooglePlayServicesAvailabilityException e) {
+                                Log.w(LOG_TAG, "Google Play services not available.");
+                                Intent recover = e.getIntent();
+                                startActivityForResult(recover, REQUEST_GPLUS_AUTHORIZE);
                             } catch (UserRecoverableAuthException e) {
-                                startActivityForResult(e.getIntent(), RC_SIGN_IN_GOOGLE);
+                                // Recover (with e.getIntent())
+                                Log.w(LOG_TAG, "User must approve " + e.toString());
+                                Intent recover = e.getIntent();
+                                startActivityForResult(recover, REQUEST_GPLUS_AUTHORIZE);
                             } catch (GoogleAuthException e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e);
@@ -124,6 +134,13 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(subscriber));
+        } else if (requestCode == REQUEST_GPLUS_AUTHORIZE && resultCode == RESULT_OK) {
+            Bundle extra = data.getExtras();
+            final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            String oneTimeToken = extra.getString(AUTH_TOKEN);
+            handleSignInResult(oneTimeToken, result);
+            signOut();
+            finish();
         }
     }
 
