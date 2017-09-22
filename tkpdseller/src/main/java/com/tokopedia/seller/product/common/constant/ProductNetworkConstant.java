@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.constant;
+package com.tokopedia.seller.product.common.constant;
 
 /**
  * Created by Nathaniel on 11/15/2016.
@@ -28,6 +28,11 @@ public class ProductNetworkConstant {
     public static final String RESOLUTION = "resolution";
     public static final String SERVER_ID = "server_id";
     public static final String PRODUCT_ID = "product_id";
+
+    //manage product
+    public static final String PRODUCT_PRICE = "product_price";
+    public static final String PRODUCT_PRICE_CURRENCY = "product_price_currency";
+    public static final String SHOP_ID = "shop_id";
 
     public static String getUploadImageUrl(String uploadHostUrl){
         return HTTPS + uploadHostUrl + UPLOAD_IMAGE;
