@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -119,6 +120,9 @@ public abstract class TActivity extends BaseActivity {
     private void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
+        } else {
+            View toolbarShadow = findViewById(R.id.app_bar_shadow);
+            toolbarShadow.setVisibility(View.VISIBLE);
         }
 
         if (getSupportActionBar() != null)
@@ -130,7 +134,7 @@ public abstract class TActivity extends BaseActivity {
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
     }
 
-    protected boolean isLightToolbarThemes(){
+    protected boolean isLightToolbarThemes() {
         return false;
     }
 }
