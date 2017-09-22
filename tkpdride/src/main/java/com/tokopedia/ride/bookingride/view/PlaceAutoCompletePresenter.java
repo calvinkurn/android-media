@@ -19,7 +19,6 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.data.DataBufferUtils;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -27,7 +26,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -43,9 +41,13 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
@@ -89,6 +91,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private GetUserAddressUseCase getUserAddressUseCase;
     private GetUserAddressCacheUseCase getUserAddressCacheUseCase;
     private GetDistanceMatrixUseCase getDistanceMatrixUseCase;
+    private AutoCompletePredictionUseCase autoCompletePredictionUseCase;
+    private GetPlaceDetailUseCase placeDetailUseCase;
     private boolean mAutoDetectLocation;
 
     private interface OnQueryListener {
@@ -98,11 +102,15 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Inject
     public PlaceAutoCompletePresenter(GetUserAddressUseCase getUserAddressUseCase,
                                       GetUserAddressCacheUseCase getUserAddressCacheUseCase,
-                                      GetDistanceMatrixUseCase getDistanceMatrixUseCase) {
+                                      GetDistanceMatrixUseCase getDistanceMatrixUseCase,
+                                      AutoCompletePredictionUseCase autoCompletePredictionUseCase,
+                                      GetPlaceDetailUseCase placeDetailUseCase) {
         compositeSubscription = new CompositeSubscription();
         this.getUserAddressUseCase = getUserAddressUseCase;
         this.getUserAddressCacheUseCase = getUserAddressCacheUseCase;
         this.getDistanceMatrixUseCase = getDistanceMatrixUseCase;
+        this.autoCompletePredictionUseCase = autoCompletePredictionUseCase;
+        this.placeDetailUseCase = placeDetailUseCase;
     }
 
     @Override
@@ -446,7 +454,40 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         if (mCurrentLocation != null) {
             bounds = GeoLocationUtils.generateBoundary(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
-        compositeSubscription.add(
+
+        TKPDMapParam<String, String> temp = new TKPDMapParam<>();
+        temp = AuthUtil.generateParamsNetwork(getView().getActivity(), temp);
+        TKPDMapParam<String, Object> params = new TKPDMapParam<>();
+        params.putAll(temp);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(AutoCompletePredictionUseCase.PARAM_KEYWORD, keyword);
+        requestParams.putAll(params);
+        autoCompletePredictionUseCase.execute(requestParams, new Subscriber<List<PlaceAutoCompeleteViewModel>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<PlaceAutoCompeleteViewModel> placeAutoCompeleteViewModels) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    if (!getView().isActiveGooglePlaceSource()) return;
+
+                    if (mCurrentLocation == null || placeAutoCompeleteViewModels == null || placeAutoCompeleteViewModels.size() == 0) {
+                        renderPlaceList(placeAutoCompeleteViewModels);
+                    } else {
+                        getDistanceMatrixFromOrigin(placeAutoCompeleteViewModels);
+                    }
+                }
+            }
+        });
+        /*compositeSubscription.add(
                 getPlaceAutocompletePredictions(keyword, bounds, mAutocompleteFilter)
                         .map(new Func1<AutocompletePredictionBuffer, ArrayList<AutocompletePrediction>>() {
                                  @Override
@@ -496,12 +537,14 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                        }
                                    }
                         )
-        );
+        );*/
     }
 
-    public void renderPlaceList(ArrayList<Visitable> addresses) {
+    public void renderPlaceList(List<PlaceAutoCompeleteViewModel> addresses) {
         getView().showGoogleLabel();
-        getView().renderPlacesList(addresses);
+        ArrayList<Visitable> addr = new ArrayList<>();
+        addr.addAll(addresses);
+        getView().renderPlacesList(addr);
         getView().hideAutoCompleteLoadingCross();
         getView().showClearButton();
     }
@@ -546,7 +589,25 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void onPlaceSelected(PlaceAutoCompeleteViewModel adress) {
         if (adress.getType() == PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE) {
-            Places.GeoDataApi.getPlaceById(mGoogleApiClient, adress.getAddressId())
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString("placeid", adress.getAddressId());
+            placeDetailUseCase.execute(requestParams, new Subscriber<PlacePassViewModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(PlacePassViewModel placePassViewModel) {
+                    getView().onPlaceSelectedFound(placePassViewModel);
+                }
+            });
+           /* Places.GeoDataApi.getPlaceById(mGoogleApiClient, adress.getAddressId())
                     .setResultCallback(new ResultCallback<PlaceBuffer>() {
                         @Override
                         public void onResult(PlaceBuffer places) {
@@ -565,7 +626,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             }
                             places.release();
                         }
-                    });
+                    });*/
         } else {
             PlacePassViewModel placePassViewModel = new PlacePassViewModel();
             placePassViewModel.setAndFormatLatitude(adress.getLatitude());
@@ -587,8 +648,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         }
     }
 
-    public void getDistanceMatrixFromOrigin(ArrayList<AutocompletePrediction> results, final ArrayList<Visitable> addresses) {
-        if (mCurrentLocation == null || results == null || results.size() == 0) return;
+    public void getDistanceMatrixFromOrigin(final List<PlaceAutoCompeleteViewModel> addresses) {
+        if (mCurrentLocation == null || addresses == null || addresses.size() == 0) return;
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetDistanceMatrixUseCase.PARAM_ORIGINS, String.format("%s,%s",
@@ -597,8 +658,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         ));
 
         String destinations = "";
-        for (AutocompletePrediction prediction : results) {
-            destinations += prediction.getFullText(null) + "|";
+        for (PlaceAutoCompeleteViewModel prediction : addresses) {
+            destinations += prediction.getAddress() + "|";
         }
 
         requestParams.putString(GetDistanceMatrixUseCase.PARAM_DESTINATIONS, destinations);
@@ -629,7 +690,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 String distance = element.getDistance().getText();
 
                                 if (addresses.size() > index) {
-                                    ((PlaceAutoCompeleteViewModel) addresses.get(index)).setDistance(distance);
+                                    addresses.get(index).setDistance(distance);
                                 }
                             }
                             index++;
