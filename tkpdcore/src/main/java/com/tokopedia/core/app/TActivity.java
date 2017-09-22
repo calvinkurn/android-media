@@ -53,6 +53,10 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        if (isLightToolbarThemes()) {
+            setLightToolbarStyle();
+        }
     }
 
     @Override
@@ -109,5 +113,24 @@ public abstract class TActivity extends BaseActivity {
 
     public void hideToolbar() {
         getSupportActionBar().hide();
+    }
+
+
+    private void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+        }
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(
+                    com.tokopedia.core.R.drawable.ic_webview_back_button
+            );
+
+        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+    }
+
+    protected boolean isLightToolbarThemes(){
+        return false;
     }
 }

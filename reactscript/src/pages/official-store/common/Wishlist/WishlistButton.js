@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 import { addToWishlist, removeFromWishlist } from '../../actions/actions'
 import { NavigationModule } from 'NativeModules'
-import { icons } from '../../../../icons/index'
 
 
 class Wishlist extends Component {
