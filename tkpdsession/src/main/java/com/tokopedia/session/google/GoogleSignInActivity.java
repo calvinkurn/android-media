@@ -177,13 +177,15 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
     }
 
     private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        Log.i("GMAIL", "onResult: ");
-                    }
-                });
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            Log.i("GMAIL", "onResult: ");
+                        }
+                    });
+        }
     }
 
     public static Intent getSignInIntent(Context context) {
