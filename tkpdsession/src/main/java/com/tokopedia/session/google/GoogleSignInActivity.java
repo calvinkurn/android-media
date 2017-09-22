@@ -139,7 +139,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
             Bundle extra = data.getExtras();
             String oneTimeToken = extra.getString(AUTH_TOKEN);
             signInWithToken(oneTimeToken);
-        } else if (requestCode == REQUEST_GPLUS_AUTHORIZE && resultCode == RESULT_CANCELED) {
+        } else {
             signOut();
             finish();
         }
@@ -152,6 +152,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
             finish();
         }
     }
+
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
