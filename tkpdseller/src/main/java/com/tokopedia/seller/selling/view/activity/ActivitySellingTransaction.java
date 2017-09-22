@@ -530,7 +530,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @Override
     public void onBackPressed() {
-        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+        if (isTaskRoot()) {
             Intent homeIntent = null;
             if (GlobalConfig.isSellerApp()) {
                 homeIntent = SellerAppRouter.getSellerHomeActivity(this);

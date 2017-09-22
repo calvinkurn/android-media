@@ -58,7 +58,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
         super.setupLayout(savedInstanceState);
         bottomSheetContentTextView.setText(getString(R.string.product_list_featured_max_limit, ProductListPickerConstant.MAX_LIMIT_PRODUCT_LIST_FEATURED_PICKER));
         bottomSheetContentTextView.setVisibility(View.VISIBLE);
-        submitButton.setText(getString(R.string.label_add));
+        submitButton.setText(getString(R.string.title_save));
     }
 
     @Override
@@ -124,11 +124,6 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     private void updateBottomSheetInfo() {
         bottomSheetTitleTextView.setText(getString(R.string.product_list_picker_variant_count,
                 getCacheListSize()));
-        if (getCacheListSize() > 0) {
-            showBottomSheetInfo(true);
-        } else {
-            showBottomSheetInfo(false);
-        }
     }
 
     private int getSearchListSize() {

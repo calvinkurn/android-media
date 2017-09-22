@@ -90,4 +90,8 @@ public class SuccessActivateTokoCashActivity extends BasePresenterActivity {
         finish();
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

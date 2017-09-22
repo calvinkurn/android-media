@@ -32,24 +32,6 @@ public class WhitelistUtils {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, THREE_HOURS));
 
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_TRANSACTION_GRAPH_URL, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_TRANSACTION_TABLE_URL, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_PRODUCT_GRAPH, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_POPULAR_PRODUCT, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_BUYER_GRAPH, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_KEYWORD, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_SHOP_CATEGORY, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_PRODUCT_TABLE, ONE_DAY));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                StatisticConstant.GET_BUYER_TABLE, ONE_DAY));
         return cacheApiWhiteList;
     }
 }

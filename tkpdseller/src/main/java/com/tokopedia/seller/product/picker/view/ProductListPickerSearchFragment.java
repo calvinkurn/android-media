@@ -173,11 +173,11 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
                 productListPickerMultipleItem.addItemFromSearch(productListPickerViewModel);
             } else {
                 ((ProductListPickerSearchAdapter) adapter).setChecked(productListPickerViewModel.getId(), false);
-                adapter.notifyDataSetChanged();
             }
         } else {
             productListPickerMultipleItem.removeItemFromSearch(productListPickerViewModel);
         }
+        adapter.notifyDataSetChanged();
     }
 
     @Override

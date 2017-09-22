@@ -30,8 +30,6 @@ import android.widget.TextView;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -46,11 +44,10 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
@@ -59,7 +56,6 @@ import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
@@ -398,7 +394,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
+        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
     }
 
     @Override
@@ -923,22 +919,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void actionSuccessAddToWishlist(Integer productId) {
-        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        if (getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        }
     }
 
     @Override
     public void actionSuccessRemoveFromWishlist(Integer productId) {
-        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        if (getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        }
     }
 
     @Override
     public void actionSuccessAddFavoriteShop(String shopId) {
         if (productData.getShopInfo().getShopAlreadyFavorited() == 1) {
             productData.getShopInfo().setShopAlreadyFavorited(0);
-            ReactUtils.sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            if (getActivity().getApplication() instanceof IReactNativeRouter) {
+                IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+                reactNativeRouter.sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            }
         } else {
             productData.getShopInfo().setShopAlreadyFavorited(1);
-            ReactUtils.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            if (getActivity().getApplication() instanceof IReactNativeRouter) {
+                IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+                reactNativeRouter.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            }
         }
     }
 
@@ -964,7 +972,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 } else {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    if (productData!=null && productData.getInfo().getProductAlreadyWishlist()!=null) {
+                    if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
                 }
