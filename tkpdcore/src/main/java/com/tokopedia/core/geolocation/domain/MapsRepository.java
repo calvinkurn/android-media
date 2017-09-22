@@ -60,7 +60,7 @@ public class MapsRepository implements IMapsRepository {
     }
 
     private void handleError(Response<TkpdResponse> response) {
-        if(response.body().isNullData()) {
+        if(response.body() == null) {
             throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
         } else if(response.body().isError() && !response.body().getErrorMessageJoined().isEmpty()) {
             throw new RuntimeException(response.body().getErrorMessageJoined());
