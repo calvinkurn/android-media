@@ -429,15 +429,12 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     void submitButtonOnClickListener() {
-        CommonUtils.dumper("GAv4 clicked simpan toko");
         if(fragmentShipingMainLayout.getChildCount() > 1 && editShippingValid()){
-            CommonUtils.dumper("GAv4 edit shipping valid");
             Intent intent = new Intent();
             intent.putExtra(EDIT_SHIPPING_DATA, getCurrentShippingConfiguration());
             getActivity().setResult(OPEN_SHOP_EDIT_SHIPPING_REQUEST_CODE, intent);
             getActivity().finish();
         } else if(fragmentShipingMainLayout.getChildCount() < 1){
-            CommonUtils.dumper("GAv4 lokasi toko");
             showErrorToast(getActivity().getString(R.string.title_select_shop_location));
         }
     }

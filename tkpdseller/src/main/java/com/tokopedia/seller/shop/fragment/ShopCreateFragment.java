@@ -200,9 +200,6 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     public void SubmitDialog() {
-
-        CommonUtils.dumper("GAv4 create shop clicked");
-
         showProgress(true);
         presenter.saveDescTag();
         presenter.finalCheckDomainName(
