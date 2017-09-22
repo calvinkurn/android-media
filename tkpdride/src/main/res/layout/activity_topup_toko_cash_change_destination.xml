@@ -42,23 +42,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingLeft="@dimen/new_margin_med"
+            android:paddingRight="@dimen/new_margin_med"
             android:text="@string/change_destination_insufficient_balance_title"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_small" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="12dp"
+            android:paddingLeft="@dimen/new_margin_med"
+            android:paddingRight="@dimen/new_margin_med"
+            android:paddingTop="@dimen/margin_small_sm"
             android:text="@string/change_destination_insufficient_balance_message"
             android:textColor="@color/grey_500"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_small" />
 
         <View
             android:layout_width="match_parent"
@@ -145,7 +145,7 @@
                 android:id="@+id/btn_topup_tokocash"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/margin_med"
                 android:background="@drawable/rounded_filled_green_bttn"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center"

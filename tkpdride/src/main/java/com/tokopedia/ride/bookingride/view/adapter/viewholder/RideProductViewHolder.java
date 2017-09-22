@@ -60,8 +60,6 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
         rideProductViewModel = element;
         productNameTextView.setText(element.getProductName());
         surgePriceImageView.setVisibility(element.isSurgePrice() ? View.VISIBLE : View.GONE);
-        //baseFareTextView.setVisibility(!element.isEnabled() ? View.VISIBLE : View.GONE);
-        //baseFareTextView.setText(String.valueOf(element.getBaseFare()));
 
         priceEstimateContainerLinearLayout.setVisibility(element.isDestinationSelected() ? View.VISIBLE : View.GONE);
         priceProgress.setVisibility(element.getProductPriceFmt() == null ? View.VISIBLE : View.GONE);

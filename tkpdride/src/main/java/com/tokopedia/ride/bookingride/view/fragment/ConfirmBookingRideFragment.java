@@ -372,19 +372,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     }
 
-//    @OnClick(R2.id.iv_promo_desc_close)
-//    public void actionRemoveAppliedPromo() {
-//        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-//        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("remove_product_fragment");
-//        if (previousDialog != null) {
-//            fragmentTransaction.remove(previousDialog);
-//        }
-//        fragmentTransaction.addToBackStack(null);
-//        DialogFragment dialogFragment = RemovePromoDialogFragment.newInstance();
-//        dialogFragment.setTargetFragment(this, REQUEST_CODE_REMOVE_PROMO);
-//        dialogFragment.show(getFragmentManager().beginTransaction(), "remove_product_fragment");
-//    }
-
     @OnClick(R2.id.tv_promo_edit)
     public void actionEditPromo() {
         startActivityForResult(

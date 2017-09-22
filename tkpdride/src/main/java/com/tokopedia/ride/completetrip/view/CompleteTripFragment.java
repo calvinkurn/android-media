@@ -696,22 +696,13 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void enableRatingSubmitButton() {
         rateConfirmationButton.setEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
-        } else {
-            rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
-        }
+        rateConfirmationButton.setBackgroundResource(R.drawable.rounded_filled_theme_bttn);
     }
 
     @Override
     public void disableRatingSubmitButton() {
         rateConfirmationButton.setEnabled(false);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
-        } else {
-            rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
-        }
+        rateConfirmationButton.setBackgroundResource(R.drawable.rounded_filled_theme_disable_bttn);
     }
 
     @Override
