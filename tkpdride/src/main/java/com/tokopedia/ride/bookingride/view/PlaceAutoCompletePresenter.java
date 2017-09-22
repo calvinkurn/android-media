@@ -487,57 +487,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                 }
             }
         });
-        /*compositeSubscription.add(
-                getPlaceAutocompletePredictions(keyword, bounds, mAutocompleteFilter)
-                        .map(new Func1<AutocompletePredictionBuffer, ArrayList<AutocompletePrediction>>() {
-                                 @Override
-                                 public ArrayList<AutocompletePrediction> call(AutocompletePredictionBuffer autocompletePredictions) {
-                                     if (autocompletePredictions.getStatus().isSuccess()) {
-                                         return DataBufferUtils.freezeAndClose(autocompletePredictions);
-                                     }
-                                     autocompletePredictions.release();
-                                     return new ArrayList<>();
-                                 }
-                             }
-                        )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<ArrayList<AutocompletePrediction>>() {
-                                       @Override
-                                       public void onCompleted() {
-
-                                       }
-
-                                       @Override
-                                       public void onError(Throwable e) {
-                                           e.printStackTrace();
-                                       }
-
-                                       @Override
-                                       public void onNext(ArrayList<AutocompletePrediction> results) {
-                                           if (isViewAttached() && !isUnsubscribed()) {
-                                               if (!getView().isActiveGooglePlaceSource()) return;
-                                               ArrayList<Visitable> addresses = new ArrayList<>();
-                                               for (AutocompletePrediction autocompletePrediction : results) {
-                                                   PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                                                   address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
-                                                   address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
-                                                   address.setAddressId(autocompletePrediction.getPlaceId());
-                                                   address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
-                                                   addresses.add(address);
-                                               }
-
-
-                                               if (mCurrentLocation == null || results == null || results.size() == 0) {
-                                                   renderPlaceList(addresses);
-                                               } else {
-                                                   getDistanceMatrixFromOrigin(results, addresses);
-                                               }
-                                           }
-                                       }
-                                   }
-                        )
-        );*/
     }
 
     public void renderPlaceList(List<PlaceAutoCompeleteViewModel> addresses) {
@@ -554,15 +503,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         return GoogleAPIClientObservable.create(getView().getActivity(), apis);
     }
 
-    public Observable<AutocompletePredictionBuffer> getPlaceAutocompletePredictions(final String query, final LatLngBounds bounds, final AutocompleteFilter filter) {
-        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
-                .flatMap(new Func1<GoogleApiClient, Observable<AutocompletePredictionBuffer>>() {
-                    @Override
-                    public Observable<AutocompletePredictionBuffer> call(GoogleApiClient api) {
-                        return fromPendingResult(Places.GeoDataApi.getAutocompletePredictions(api, query, bounds, filter));
-                    }
-                });
-    }
 
     public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
         return Observable.create(new PendingResultObservable<>(result));
@@ -607,26 +547,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                     getView().onPlaceSelectedFound(placePassViewModel);
                 }
             });
-           /* Places.GeoDataApi.getPlaceById(mGoogleApiClient, adress.getAddressId())
-                    .setResultCallback(new ResultCallback<PlaceBuffer>() {
-                        @Override
-                        public void onResult(PlaceBuffer places) {
-                            if (places.getStatus().isSuccess() && places.getCount() > 0) {
-                                final Place myPlace = places.get(0);
-                                PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-                                placePassViewModel.setAndFormatLatitude(myPlace.getLatLng().latitude);
-                                placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
-                                placePassViewModel.setTitle((String) myPlace.getName());
-                                placePassViewModel.setPlaceId(myPlace.getId());
-                                placePassViewModel.setAddress(String.valueOf(myPlace.getAddress()));
-                                getView().onPlaceSelectedFound(placePassViewModel);
-                            } else {
-                                getView().showMessage("Place not Found");
-                                Log.e(TAG, "Place not found");
-                            }
-                            places.release();
-                        }
-                    });*/
         } else {
             PlacePassViewModel placePassViewModel = new PlacePassViewModel();
             placePassViewModel.setAndFormatLatitude(adress.getLatitude());
