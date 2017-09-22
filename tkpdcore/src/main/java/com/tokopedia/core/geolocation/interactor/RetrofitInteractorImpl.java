@@ -83,7 +83,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void generateLatLng(Context context, TKPDMapParam<String, String> param,
                                final GenerateLatLongListener listener) {
-        compositeSubscription.add(mapsRepository.getLatLng(service, param)
+        TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
+        paramaters.putAll(param);
+        compositeSubscription.add(mapsRepository.getLatLng(service, paramaters)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

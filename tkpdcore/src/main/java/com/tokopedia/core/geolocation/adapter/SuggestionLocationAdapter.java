@@ -41,6 +41,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -290,11 +291,14 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
             @Override
             public void onNext(String query) {
                 CommonUtils.dumper("PORING Kirim Data " + query);
-                TKPDMapParam<String, String> params = new TKPDMapParam<>();
+                TKPDMapParam<String, String> temp = new TKPDMapParam<>();
+                temp = AuthUtil.generateParamsNetwork(getContext(), temp);
+                TKPDMapParam<String, Object> params = new TKPDMapParam<>();
                 params.put("input", query);
+                params.putAll(temp);
+
                 compositeSubscription.add(mapsRepository
-                        .getAutoCompleteList(mapService, AuthUtil
-                                .generateParamsNetwork(getContext(), params), query)
+                        .getAutoCompleteList(mapService, params, query)
                        .subscribeOn(Schedulers.newThread())
                        .observeOn(AndroidSchedulers.mainThread())
                        .unsubscribeOn(Schedulers.newThread())
