@@ -822,6 +822,8 @@ LoginFragment extends Fragment implements LoginView {
                     model.setAccessToken(accessToken);
 
                     startLoginWithGoogle(LoginModel.GoogleType, model);
+                }else{
+                    showProgress(false);
                 }
                 break;
             default:
