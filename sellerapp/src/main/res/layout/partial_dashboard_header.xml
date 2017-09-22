@@ -68,14 +68,14 @@
                         android:layout_gravity="center_vertical"
                         android:visibility="gone"
                         android:src="@drawable/ic_shop_gold"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginEnd="@dimen/margin_vs"
                         tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/text_view_gm_status"
                         style="@style/TextView.Body1"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/margin_vs"
-                        android:layout_marginStart="@dimen/margin_vs"
                         tools:text="Regular Merchant" />
                 </LinearLayout>
 
