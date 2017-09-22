@@ -64,11 +64,11 @@ public class DrawerPosHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_INDEX_HOME,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_riwayat_tx),
-                R.drawable.statistik_icon,
+                R.drawable.ic_hourglass,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_choose_outlet),
-                R.drawable.ic_top_ads,
+                R.drawable.ic_store,
                 TkpdState.DrawerPosition.SELLER_TOP_ADS,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),

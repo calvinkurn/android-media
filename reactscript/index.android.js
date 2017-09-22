@@ -15,7 +15,7 @@ import OfficialStore from './src/pages/official-store/setup'
 import POS from './src/pages/pos/setup'
 
 
-let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_START };
+//let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_START };
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class Home extends Component {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-Home = codePush(Home);
+//Home = codePush(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 

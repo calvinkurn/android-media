@@ -3,6 +3,7 @@ package com.tokopedia.tkpdreactnative.react.app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -79,5 +80,14 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
 
     protected Bundle getPropsBundle() {
         return getIntent().getExtras();
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU && reactInstanceManager != null) {
+            reactInstanceManager.showDevOptionsDialog();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }
