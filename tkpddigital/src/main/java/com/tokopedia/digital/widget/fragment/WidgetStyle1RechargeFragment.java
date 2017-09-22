@@ -58,6 +58,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     private String selectedOperatorId;
     private int minLengthDefaultOperator;
     private boolean showPrice = true;
+    private SessionHandler sessionHandler;
 
     public static WidgetStyle1RechargeFragment newInstance(Category category, int position) {
         WidgetStyle1RechargeFragment fragment = new WidgetStyle1RechargeFragment();
@@ -75,6 +76,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
         presenter.fetchRecentNumber(category.getId());
 
+        sessionHandler = new SessionHandler(getActivity());
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
         lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
@@ -281,22 +283,22 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     private void initClientNumber() {
-        String defaultPhoneNumber = SessionHandler.getPhoneNumber();
+        String defaultPhoneNumber = sessionHandler.getPhoneNumber();
 
-        if (SessionHandler.isV4Login(getActivity())
+        if (sessionHandler.isV4Login(getActivity())
                 && presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())) {
             renderLastOrder();
-        } else if (SessionHandler.isV4Login(getActivity())
+        } else if (sessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             renderLastTypeClientNumber();
-        } else if (SessionHandler.isV4Login(getActivity())
+        } else if (sessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
                 && TextUtils.isEmpty(lastClientNumberTyped)
                 && (category.getId() == 1 || category.getId() == 2)
                 && !TextUtils.isEmpty(defaultPhoneNumber)) {
             widgetClientNumberView.setText(defaultPhoneNumber);
-        } else if (!SessionHandler.isV4Login(getActivity())
+        } else if (!sessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             renderLastTypeClientNumber();
         }
@@ -372,7 +374,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderProduct(Product product) {
         selectedProduct = product;
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (sessionHandler.isV4Login(getActivity())) {
             if (widgetProductChooserView.checkStockProduct(selectedProduct))
                 widgetWrapperBuyView.goToNativeCheckout();
         } else {
@@ -382,7 +384,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderDataRecent(List<String> results) {
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (sessionHandler.isV4Login(getActivity())) {
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
     }

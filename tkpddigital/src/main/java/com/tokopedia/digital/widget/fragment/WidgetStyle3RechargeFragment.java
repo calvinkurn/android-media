@@ -270,14 +270,14 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     private void initClientNumber() {
-        if (SessionHandler.isV4Login(getActivity())
+        if (sessionHandler.isV4Login(getActivity())
                 && presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())) {
             renderLastOrder();
-        } else if (SessionHandler.isV4Login(getActivity())
+        } else if (sessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             presenter.getOperatorById(lastOperatorSelected);
-        } else if (!SessionHandler.isV4Login(getActivity())
+        } else if (!sessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             presenter.getOperatorById(lastOperatorSelected);
         }
@@ -370,7 +370,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderProduct(Product product) {
         selectedProduct = product;
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (sessionHandler.isV4Login(getActivity())) {
             if (widgetProductChooserView.checkStockProduct(selectedProduct))
                 widgetWrapperBuyView.goToNativeCheckout();
         } else {
@@ -392,7 +392,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderDataRecent(List<String> results) {
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (sessionHandler.isV4Login(getActivity())) {
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
     }

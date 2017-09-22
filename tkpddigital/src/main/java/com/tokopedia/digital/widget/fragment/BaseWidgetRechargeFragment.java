@@ -52,12 +52,16 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     private static final String EXTRA_CHECKOUT_PASS_DATA = "EXTRA_CHECKOUT_PASS_DATA";
     protected static final int CONTACT_PICKER_RESULT = 1001;
     protected static final int LOGIN_REQUEST_CODE = 198;
+    private static final String PHONE_CODE = "62";
+    private static final String PHONE_CODE_PLUS = "+62";
+    private static final String DEFAULT_PREFIX_PHONE = "0";
 
     protected Category category;
     protected int currentPosition;
     protected Unbinder unbinder;
     protected Bundle bundle;
     protected DigitalCheckoutPassData digitalCheckoutPassDataState;
+    protected SessionHandler sessionHandler;
     protected String lastClientNumberTyped = "";
     protected String lastOperatorSelected = "";
     protected String lastProductSelected = "";
@@ -104,6 +108,7 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        sessionHandler = new SessionHandler(getActivity());
         initialVariable();
         return view;
     }
@@ -138,7 +143,7 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
                     }
                     break;
                 case LOGIN_REQUEST_CODE:
-                    if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
+                    if (sessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
                         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
                             IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
                             startActivityForResult(
@@ -173,11 +178,11 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     }
 
     protected String validateTextPrefix(String phoneNumber) {
-        if (phoneNumber.startsWith("62")) {
-            phoneNumber = phoneNumber.replaceFirst("62", "0");
+        if (phoneNumber.startsWith(PHONE_CODE)) {
+            phoneNumber = phoneNumber.replaceFirst(PHONE_CODE, DEFAULT_PREFIX_PHONE);
         }
-        if (phoneNumber.startsWith("+62")) {
-            phoneNumber = phoneNumber.replace("+62", "0");
+        if (phoneNumber.startsWith(PHONE_CODE_PLUS)) {
+            phoneNumber = phoneNumber.replace(PHONE_CODE_PLUS, DEFAULT_PREFIX_PHONE);
         }
         phoneNumber = phoneNumber.replace(".", "");
 
