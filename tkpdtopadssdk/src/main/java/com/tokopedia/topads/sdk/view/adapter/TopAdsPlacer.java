@@ -182,7 +182,12 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         if (isFeed) {
             int tresHold = (ajustedItemCount - 1);
             if (getItemCount() > tresHold) {
-                setTopAds(adsItems, itemList, getItemCount() - tresHold);
+                if (hasHeader && !headerPlaced) {
+                    headerPlaced = true;
+                    setTopAds(adsItems, itemList, 1);
+                } else {
+                    setTopAds(adsItems, itemList, getItemCount() - tresHold);
+                }
             } else {
                 setTopAds(adsItems, itemList, getItemCount());
             }
@@ -190,7 +195,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
             if (hasHeader && !headerPlaced) {
                 headerPlaced = true;
                 setTopAds(adsItems, itemList, 1);
-                adapter.notifyItemInserted(1);
             } else {
                 if (headerPlaced || position > 0) {
                     position = position - 1;
