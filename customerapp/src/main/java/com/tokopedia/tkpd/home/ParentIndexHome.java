@@ -599,7 +599,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onStop");
         super.onStop();
         needToRefresh = true;
-        myTrace.stop();
+        if(homeTrace!=null)
+            homeTrace.stop;
     }
 
     @Override
