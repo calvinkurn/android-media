@@ -33,7 +33,7 @@
                     android:layout_height="match_parent"
                     android:padding="1dp"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_placeholder_shop_with_padding" />
+                    app:srcCompat="@drawable/ic_placeholder_shop_with_padding"/>
 
                 <android.support.v7.widget.AppCompatImageView
                     android:layout_width="match_parent"

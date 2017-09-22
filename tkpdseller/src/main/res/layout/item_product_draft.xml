@@ -85,6 +85,6 @@
             android:scaleType="centerInside"
             android:padding="8dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_trash_can"/>
+            app:srcCompat="@drawable/ic_trash_can"/>
     </FrameLayout>
 </LinearLayout>

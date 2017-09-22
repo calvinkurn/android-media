@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/img_reputation_retry"
         android:layout_width="96dp"
         android:layout_height="84dp"
@@ -14,7 +14,6 @@
         android:layout_marginTop="28dp"
         android:layout_marginBottom="20dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_empty_penalti_reputasi"
         app:srcCompat="@drawable/ic_empty_penalti_reputasi" />
 
     <TextView
