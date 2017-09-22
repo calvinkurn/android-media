@@ -103,4 +103,9 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     protected void setActionVar() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

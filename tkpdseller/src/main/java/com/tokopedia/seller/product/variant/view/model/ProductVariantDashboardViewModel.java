@@ -14,8 +14,17 @@ public class ProductVariantDashboardViewModel implements ItemType {
     private String title;
     private String content;
     private String hexCode;
+    private String iconUrl;
     private String imageUrl;
     private boolean stockAvailable;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public long getTemporaryId() {
         return temporaryId;
@@ -49,12 +58,12 @@ public class ProductVariantDashboardViewModel implements ItemType {
         this.hexCode = hexCode;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getIconUrl() {
+        return iconUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public boolean isStockAvailable() {

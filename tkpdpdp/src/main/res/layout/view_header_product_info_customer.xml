@@ -8,7 +8,7 @@
     android:padding="@dimen/padding_small">
 
     <TextView
-        android:id="@id/tv_name"
+        android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -16,7 +16,6 @@
         android:layout_marginRight="80dp"
         tools:text="Product Name"
         android:textColor="#b3000000"
-        android:textAllCaps="true"
         android:textSize="@dimen/text_size_l_medium"
         tools:ignore="HardcodedText" />
 
@@ -58,6 +57,30 @@
             android:textSize="@dimen/fontvs"
             tools:text="10%OFF"
             android:visibility="gone"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/text_official_store"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_official_store"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:textSize="@dimen/text_size_xsmall"
+            android:text="@string/headerview_label_official_store" />
+
+        <ImageView
+            android:id="@id/iv_official"
+            android:layout_width="@dimen/med_dp"
+            android:layout_height="@dimen/med_dp"
+            android:src="@drawable/ic_badge_official"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <LinearLayout

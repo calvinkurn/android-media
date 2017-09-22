@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -62,11 +60,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throwChainProcessCauseHttpError(response);
         }
 
-        if(isUnauthorized(finalRequest, response)){
+        if (isUnauthorized(finalRequest, response)) {
             refreshToken();
             Request newest = recreateRequestWithNewAccessToken(chain);
             Response response1 = chain.proceed(newest);
-            if(isUnauthorized(newest, response1)){
+            if (isUnauthorized(newest, response1)) {
                 showForceLogoutDialog();
                 sendForceLogoutAnalytics(response1);
             }
@@ -315,7 +313,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
-            return responseString.contains("REQUEST_DENIED") &&
+            return responseString.toUpperCase().contains("REQUEST_DENIED") &&
                     !response.request().url().encodedPath().contains("make_login");
         } catch (IOException e) {
             e.printStackTrace();
@@ -327,7 +325,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
-            return responseString.contains("invalid_request") && request.header("authorization").contains("Bearer");
+            return responseString.toLowerCase().contains("invalid_request")
+                    && request.header("authorization").contains("Bearer");
         } catch (IOException e) {
             e.printStackTrace();
             return false;

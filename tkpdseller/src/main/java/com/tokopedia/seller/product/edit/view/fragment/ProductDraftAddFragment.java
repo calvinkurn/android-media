@@ -144,6 +144,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         if (model.getSwitchVariant() == ProductVariantConstant.SWITCH_VARIANT_EXIST) {
             productAdditionalInfoViewHolder.setProductVariantDataSubmit(model.getProductVariantDataSubmit(),
                     model.getVariantStringSelection());
+            productAdditionalInfoViewHolder.setOptionSubmitLv1(model.getProductVariantDataSubmit());
         }
     }
 

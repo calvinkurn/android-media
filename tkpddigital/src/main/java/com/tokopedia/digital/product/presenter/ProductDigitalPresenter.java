@@ -196,7 +196,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processStateDataToReRender() {
         CategoryData categoryData = view.getCategoryDataState();
         List<BannerData> bannerDataList = view.getBannerDataListState();
-        List<BannerData> otherBannerDataList = view.getBannerDataListState();
+        List<BannerData> otherBannerDataList = view.getOtherBannerDataListState();
         HistoryClientNumber historyClientNumber = view.getHistoryClientNumberState();
         if (categoryData != null) {
             renderCategoryDataAndBannerToView(

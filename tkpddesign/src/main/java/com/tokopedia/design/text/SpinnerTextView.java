@@ -157,7 +157,7 @@ public class SpinnerTextView extends BaseCustomView {
 
     public String getSpinnerValue() {
         if (values == null || selectionIndex < 0) {
-            return null;
+            return String.valueOf(DEFAULT_INDEX_NOT_SELECTED);
         }
         return values[selectionIndex].toString();
     }
