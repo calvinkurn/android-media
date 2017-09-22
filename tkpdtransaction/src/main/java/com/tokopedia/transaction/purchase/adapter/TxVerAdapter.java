@@ -154,9 +154,9 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
 
     private int getTypePaymentMethod(TxVerData item) {
         return (item.getBankName().contains(context.getString(R.string.parameter_klik))
-                && item.getBankName().contains(context.getString(R.string.parameter_bca)) ||
+                && item.getBankName().contains(context.getString(R.string.parameter_bca))) ||
                 (item.getBankName().contains(context.getString(R.string.parameter_kartu))
-                        && item.getBankName().contains(context.getString(R.string.parameter_kredit)) ? 1
+                        && item.getBankName().contains(context.getString(R.string.parameter_kredit))) ? 1
                 : item.getButton().getButtonEditPayment() == 0 &&
                 item.getButton().getButtonUploadProof() == 0 &&
                 item.getButton().getButtonViewProof() == 0 ? 2 : 3;
