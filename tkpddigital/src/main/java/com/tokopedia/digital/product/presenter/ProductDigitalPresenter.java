@@ -316,12 +316,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
-                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     view.renderCategoryProductDataStyle1(
                             categoryData, historyClientNumber
                     );
                     break;
                 case CategoryData.STYLE_PRODUCT_CATEGORY_2:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     view.renderCategoryProductDataStyle2(
                             categoryData, historyClientNumber
                     );

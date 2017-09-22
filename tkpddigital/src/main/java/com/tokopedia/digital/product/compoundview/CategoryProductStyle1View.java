@@ -94,7 +94,6 @@ public class CategoryProductStyle1View extends
                     break;
                 }
             }
-
         }
         renderInstantCheckoutOption();
         btnBuyDigital.setOnClickListener(getButtonBuyClickListener());
