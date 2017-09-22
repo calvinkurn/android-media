@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.listener;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -190,9 +191,9 @@ public interface ProductDetailView extends ViewListener {
     /**
      * Pada saat tombol pesan di info toko diklik
      *
-     * @param bundle bundle yang dikirim
+     * @param intent intent send Message
      */
-    void onProductShopMessageClicked(@NonNull Bundle bundle);
+    void onProductShopMessageClicked(@NonNull Intent intent);
 
     /**
      * Setelah product di edit
