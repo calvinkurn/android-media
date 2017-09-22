@@ -105,6 +105,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         widgetClientNumberView.setHint(clientNumber.getPlaceholder());
         widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
         widgetWrapperBuyView.setCategory(category);
+        widgetWrapperBuyView.renderInstantCheckoutOption(
+                category.getAttributes().isInstantCheckoutAvailable());
         holderWidgetClientNumber.addView(widgetClientNumberView);
 
         presenter.fetchOperatorByCategory(category.getId());

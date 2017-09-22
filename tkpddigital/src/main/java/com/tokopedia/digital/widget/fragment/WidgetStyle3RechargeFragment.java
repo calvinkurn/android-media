@@ -97,6 +97,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
         clearHolder(holderWidgetClientNumber);
         widgetWrapperBuyView.setListener(getBuyButtonListener());
         widgetWrapperBuyView.setCategory(category);
+        widgetWrapperBuyView.renderInstantCheckoutOption(
+                category.getAttributes().isInstantCheckoutAvailable());
 
         if (category.getAttributes().getClientNumber().isShown()) {
             widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
