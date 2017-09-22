@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
  * Created by nabillasabbaha on 7/18/17.
  */
 
-public class WidgetProductChoserView extends LinearLayout {
+public class WidgetProductChooserView extends LinearLayout {
 
     private final static int OUT_OF_STOCK = 3;
 
@@ -41,17 +41,17 @@ public class WidgetProductChoserView extends LinearLayout {
 
     private ProductChoserListener listener;
 
-    public WidgetProductChoserView(Context context) {
+    public WidgetProductChooserView(Context context) {
         super(context);
         init();
     }
 
-    public WidgetProductChoserView(Context context, @Nullable AttributeSet attrs) {
+    public WidgetProductChooserView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public WidgetProductChoserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WidgetProductChooserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

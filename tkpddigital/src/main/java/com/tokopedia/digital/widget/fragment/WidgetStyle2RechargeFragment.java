@@ -22,8 +22,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
-import com.tokopedia.digital.widget.compoundview.WidgetProductChoserView;
-import com.tokopedia.digital.widget.compoundview.WidgetRadioChoserView;
+import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView;
+import com.tokopedia.digital.widget.compoundview.WidgetRadioChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.interactor.DigitalWidgetInteractor;
@@ -54,8 +54,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     private DigitalWidgetStyle2Presenter presenter;
     private WidgetClientNumberView widgetClientNumberView;
     private WidgetWrapperBuyView widgetWrapperBuyView;
-    private WidgetProductChoserView widgetProductChoserView;
-    private WidgetRadioChoserView widgetRadioChoserView;
+    private WidgetProductChooserView widgetProductChooserView;
+    private WidgetRadioChooserView widgetRadioChooserView;
     private RechargeOperatorModel selectedOperator;
     private LastOrder lastOrder;
     private Product selectedProduct;
@@ -85,8 +85,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
 
         widgetClientNumberView = new WidgetClientNumberView(getActivity());
         widgetWrapperBuyView = new WidgetWrapperBuyView(getActivity());
-        widgetProductChoserView = new WidgetProductChoserView(getActivity());
-        widgetRadioChoserView = new WidgetRadioChoserView(getActivity());
+        widgetProductChooserView = new WidgetProductChooserView(getActivity());
+        widgetRadioChooserView = new WidgetRadioChooserView(getActivity());
     }
 
     @Override
@@ -187,7 +187,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                     presenter.fetchDefaultProduct(String.valueOf(category.getId()),
                             selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
                 } else {
-                    if (widgetProductChoserView.checkStockProduct(selectedProduct))
+                    if (widgetProductChooserView.checkStockProduct(selectedProduct))
                         presenter.storeLastInstantCheckoutUsed(String.valueOf(category.getId()),
                                 widgetWrapperBuyView.isCreditCheckboxChecked());
 
@@ -241,12 +241,12 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         };
     }
 
-    private WidgetProductChoserView.ProductChoserListener getProductChoserListener() {
-        return new WidgetProductChoserView.ProductChoserListener() {
+    private WidgetProductChooserView.ProductChoserListener getProductChoserListener() {
+        return new WidgetProductChooserView.ProductChoserListener() {
             @Override
             public void initDataView(Product productSelected) {
                 selectedProduct = productSelected;
-                widgetProductChoserView.checkStockProduct(productSelected);
+                widgetProductChooserView.checkStockProduct(productSelected);
             }
 
             @Override
@@ -303,9 +303,9 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     public void renderDataProducts(List<Product> products) {
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetWrapperBuy);
-        widgetProductChoserView.setListener(getProductChoserListener());
-        widgetProductChoserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
-        holderWidgetSpinnerProduct.addView(widgetProductChoserView);
+        widgetProductChooserView.setListener(getProductChoserListener());
+        widgetProductChooserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
+        holderWidgetSpinnerProduct.addView(widgetProductChooserView);
         holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
     }
 
@@ -325,7 +325,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     public void renderProduct(Product product) {
         selectedProduct = product;
         if (SessionHandler.isV4Login(getActivity())) {
-            if (widgetProductChoserView.checkStockProduct(selectedProduct))
+            if (widgetProductChooserView.checkStockProduct(selectedProduct))
                 widgetWrapperBuyView.goToNativeCheckout();
         } else {
             widgetWrapperBuyView.goToLoginPage();
@@ -354,13 +354,13 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderOperators(List<RechargeOperatorModel> operatorModels) {
         clearHolder(holderWidgetSpinnerOperator);
-        widgetRadioChoserView.setListener(getRadioChoserListener());
-        widgetRadioChoserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
-        holderWidgetSpinnerOperator.addView(widgetRadioChoserView);
+        widgetRadioChooserView.setListener(getRadioChoserListener());
+        widgetRadioChooserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
+        holderWidgetSpinnerOperator.addView(widgetRadioChooserView);
     }
 
-    private WidgetRadioChoserView.RadioChoserListener getRadioChoserListener() {
-        return new WidgetRadioChoserView.RadioChoserListener() {
+    private WidgetRadioChooserView.RadioChoserListener getRadioChoserListener() {
+        return new WidgetRadioChooserView.RadioChoserListener() {
 
             @Override
             public void onCheckChange(RechargeOperatorModel rechargeOperatorModel) {
@@ -370,8 +370,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                 minLengthDefaultOperator = rechargeOperatorModel.minimumLength;
                 widgetClientNumberView.setInputType(rechargeOperatorModel.allowAlphanumeric);
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.maximumLength);
-                widgetProductChoserView.setTitleProduct(rechargeOperatorModel.nominalText);
-                widgetProductChoserView.setVisibilityProduct(rechargeOperatorModel.showProduct);
+                widgetProductChooserView.setTitleProduct(rechargeOperatorModel.nominalText);
+                widgetProductChooserView.setVisibilityProduct(rechargeOperatorModel.showProduct);
                 if (!rechargeOperatorModel.showPrice) showPrice = false;
             }
 

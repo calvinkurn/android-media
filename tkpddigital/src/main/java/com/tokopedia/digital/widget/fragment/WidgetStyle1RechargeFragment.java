@@ -22,7 +22,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
-import com.tokopedia.digital.widget.compoundview.WidgetProductChoserView;
+import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.interactor.DigitalWidgetInteractor;
@@ -51,7 +51,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     private DigitalWidgetStyle1Presenter presenter;
     private WidgetClientNumberView widgetClientNumberView;
     private WidgetWrapperBuyView widgetWrapperBuyView;
-    private WidgetProductChoserView widgetProductChoserView;
+    private WidgetProductChooserView widgetProductChooserView;
     private RechargeOperatorModel selectedOperator;
     private LastOrder lastOrder;
     private Product selectedProduct;
@@ -81,7 +81,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
         widgetClientNumberView = new WidgetClientNumberView(getActivity());
         widgetWrapperBuyView = new WidgetWrapperBuyView(getActivity());
-        widgetProductChoserView = new WidgetProductChoserView(getActivity());
+        widgetProductChooserView = new WidgetProductChooserView(getActivity());
     }
 
     @Override
@@ -200,7 +200,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                     presenter.fetchDefaultProduct(String.valueOf(category.getId()),
                             selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
                 } else {
-                    if (widgetProductChoserView.checkStockProduct(selectedProduct))
+                    if (widgetProductChooserView.checkStockProduct(selectedProduct))
                         presenter.storeLastInstantCheckoutUsed(String.valueOf(category.getId()),
                                 widgetWrapperBuyView.isCreditCheckboxChecked());
 
@@ -253,12 +253,12 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         };
     }
 
-    private WidgetProductChoserView.ProductChoserListener getProductChoserListener() {
-        return new WidgetProductChoserView.ProductChoserListener() {
+    private WidgetProductChooserView.ProductChoserListener getProductChoserListener() {
+        return new WidgetProductChooserView.ProductChoserListener() {
             @Override
             public void initDataView(Product productSelected) {
                 selectedProduct = productSelected;
-                widgetProductChoserView.checkStockProduct(productSelected);
+                widgetProductChooserView.checkStockProduct(productSelected);
             }
 
             @Override
@@ -330,9 +330,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
         if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
-            widgetProductChoserView.setListener(getProductChoserListener());
-            widgetProductChoserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
-            holderWidgetSpinnerProduct.addView(widgetProductChoserView);
+            widgetProductChooserView.setListener(getProductChoserListener());
+            widgetProductChooserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
+            holderWidgetSpinnerProduct.addView(widgetProductChooserView);
         }
         holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
     }
@@ -354,8 +354,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetClientNumberView.setFilterMaxLength(operatorModel.maximumLength);
             widgetClientNumberView.setImgOperatorVisible();
             widgetClientNumberView.setInputType(operatorModel.allowAlphanumeric);
-            widgetProductChoserView.setTitleProduct(operatorModel.nominalText);
-            widgetProductChoserView.setVisibilityProduct(operatorModel.showProduct);
+            widgetProductChooserView.setTitleProduct(operatorModel.nominalText);
+            widgetProductChooserView.setVisibilityProduct(operatorModel.showProduct);
             if (!operatorModel.showPrice) showPrice = false;
             if (operatorModel.showProduct) {
                 clearHolder(holderWidgetWrapperBuy);
@@ -373,7 +373,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     public void renderProduct(Product product) {
         selectedProduct = product;
         if (SessionHandler.isV4Login(getActivity())) {
-            if (widgetProductChoserView.checkStockProduct(selectedProduct))
+            if (widgetProductChooserView.checkStockProduct(selectedProduct))
                 widgetWrapperBuyView.goToNativeCheckout();
         } else {
             widgetWrapperBuyView.goToLoginPage();

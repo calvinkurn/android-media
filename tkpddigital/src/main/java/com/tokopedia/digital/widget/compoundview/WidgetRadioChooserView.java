@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
  * Created by nabillasabbaha on 7/18/17.
  */
 
-public class WidgetRadioChoserView extends LinearLayout {
+public class WidgetRadioChooserView extends LinearLayout {
 
     @BindView(R2.id.radio_group_container)
     LinearLayout radioGroupContainer;
@@ -33,17 +33,17 @@ public class WidgetRadioChoserView extends LinearLayout {
     private RadioGroup radioGroup;
     private RadioChoserListener listener;
 
-    public WidgetRadioChoserView(Context context) {
+    public WidgetRadioChooserView(Context context) {
         super(context);
         init();
     }
 
-    public WidgetRadioChoserView(Context context, @Nullable AttributeSet attrs) {
+    public WidgetRadioChooserView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public WidgetRadioChoserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WidgetRadioChooserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

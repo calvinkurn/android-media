@@ -26,24 +26,24 @@ import butterknife.ButterKnife;
  * Created by nabillasabbaha on 7/18/17.
  */
 
-public class WidgetOperatorChoserView extends LinearLayout {
+public class WidgetOperatorChooserView extends LinearLayout {
 
     @BindView(R2.id.spinner_operator)
     Spinner spinnerOperator;
 
     private OperatorChoserListener listener;
 
-    public WidgetOperatorChoserView(Context context) {
+    public WidgetOperatorChooserView(Context context) {
         super(context);
         init();
     }
 
-    public WidgetOperatorChoserView(Context context, @Nullable AttributeSet attrs) {
+    public WidgetOperatorChooserView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public WidgetOperatorChoserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WidgetOperatorChooserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
