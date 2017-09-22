@@ -119,6 +119,8 @@
 
     <!--edit appeal solution-->
     <string name="string_edit_title">Ubah Solusi</string>
+    <string name="string_appeal_title">Ubah Solusi</string>
     <string name="string_edit_message">Tekan \"Ubah\" untuk mengubah solusi menjadi:</string>
+    <string name="string_appeal_message">Solusi akan diubah menjadi </string>
     <string name="string_edit_button">Ubah</string>
 </resources>

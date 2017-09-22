@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -233,11 +234,22 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void showDialogCompleteEditAppeal(EditAppealSolutionModel editAppealSolutionModel) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_edit_solution);
+        TextView tvTitle = (TextView) dialog.findViewById(R.id.tv_title);
+        TextView tvMessage = (TextView) dialog.findViewById(R.id.tv_message);
         TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
         ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         Button btnEditSolution = (Button) dialog.findViewById(R.id.btn_edit_solution);
+
+        if (editAppealSolutionModel.isEdit) {
+            tvTitle.setText(context.getString(R.string.string_edit_title));
+            tvMessage.setText(context.getString(R.string.string_edit_message));
+        } else {
+            tvTitle.setText(context.getString(R.string.string_appeal_title));
+            tvMessage.setText(context.getString(R.string.string_appeal_message));
+        }
 
         updateSolutionString(editAppealSolutionModel, tvSolution);
 

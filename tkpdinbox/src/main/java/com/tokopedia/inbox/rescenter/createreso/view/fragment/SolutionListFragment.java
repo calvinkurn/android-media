@@ -11,6 +11,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -244,13 +245,24 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void showDialogCompleteEditAppeal(final SolutionViewModel solutionViewModel) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_edit_solution);
+        TextView tvTitle = (TextView) dialog.findViewById(R.id.tv_title);
+        TextView tvMessage = (TextView) dialog.findViewById(R.id.tv_message);
         TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
         ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         Button btnEditSolution = (Button) dialog.findViewById(R.id.btn_edit_solution);
 
         updateSolutionString(solutionViewModel, tvSolution);
+
+        if (editAppealSolutionModel.isEdit) {
+            tvTitle.setText(context.getString(R.string.string_edit_title));
+            tvMessage.setText(context.getString(R.string.string_edit_message));
+        } else {
+            tvTitle.setText(context.getString(R.string.string_appeal_title));
+            tvMessage.setText(context.getString(R.string.string_appeal_message));
+        }
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
