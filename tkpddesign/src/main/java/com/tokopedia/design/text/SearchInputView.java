@@ -137,6 +137,13 @@ public class SearchInputView extends BaseCustomView {
         requestLayout();
     }
 
+    public void setSearchHint(String searchHint) {
+        this.searchHint = searchHint;
+        if (!TextUtils.isEmpty(searchHint)) {
+            searchTextView.setHint(searchHint);
+        }
+    }
+
     @Override
     public void setEnabled(boolean enabled) {
         searchTextView.setEnabled(enabled);

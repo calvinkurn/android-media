@@ -43,6 +43,7 @@ public interface Constants {
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
     int ARG_NOTIFICATION_APPLINK_PROMO = 1003;
+    String APPLINK_CUSTOMER_SCHEME = "tokopedia";
 
     String MOE_KEY_URL = "gcm_webUrl";
 
@@ -53,6 +54,7 @@ public interface Constants {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
         String HOME_CATEGORY = "tokopedia://home/category";
+        String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";

@@ -26,7 +26,7 @@ class seo extends Component {
   render(){
     return(
       <View>
-        {!this.props.campaigns.isFetching && this.renderSeo()}
+        {this.renderSeo()}
       </View>
     )
   }

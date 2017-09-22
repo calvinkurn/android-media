@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by hendry on 8/15/2017.
  * "option":[{"pvo_id":2184932,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom merah","status":1,"hex":"","picture":null},{"pvo_id":2184931,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom biru","status":1,"hex":"","picture":null}]
@@ -33,7 +35,7 @@ public class Option implements Parcelable {
     private String hex;
     @SerializedName("picture")
     @Expose
-    private String picture;
+    private List<PictureItem> picture;
 
     public int getPvoId() {
         return pvoId;
@@ -47,12 +49,12 @@ public class Option implements Parcelable {
         return hex;
     }
 
-    public String getPicture() {
-        return picture;
-    }
-
     public int getVuvId() {
         return vuvId;
+    }
+
+    public List<PictureItem> getPicture() {
+        return picture;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class Option implements Parcelable {
         dest.writeInt(this.vuvId);
         dest.writeString(this.value);
         dest.writeString(this.hex);
-        dest.writeString(this.picture);
+        dest.writeTypedList(this.picture);
     }
 
     public Option() {
@@ -81,7 +83,7 @@ public class Option implements Parcelable {
         this.vuvId = in.readInt();
         this.value = in.readString();
         this.hex = in.readString();
-        this.picture = in.readString();
+        this.picture = in.createTypedArrayList(PictureItem.CREATOR);
     }
 
     public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() {

@@ -183,6 +183,11 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
         //do nothing
     }
 
+    @Override
+    public void onErrorLoadTopAdsProduct(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
     protected void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener) {
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
     }

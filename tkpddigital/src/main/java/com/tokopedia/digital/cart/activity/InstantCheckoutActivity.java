@@ -258,4 +258,9 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         finish();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
