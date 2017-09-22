@@ -309,6 +309,7 @@ public interface AppEventTracking {
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
+        String SUBMIT = "Submit";
     }
 
     interface EventLabel {
@@ -671,7 +672,7 @@ public interface AppEventTracking {
         String EMAIL = "Email";
         String LOGIN_STATUS = "logged_in_status";
         String PRODUCTS_NUMBER = "number_of_products";
-        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY = "subcategory";
         String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "category";
         String CATEGORY_ID = "category_id";
@@ -707,7 +708,7 @@ public interface AppEventTracking {
         String CLICK_HOTLIST = "Clicked_Hotlist_Item";
         String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
         String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
-        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
+        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched";
         String CAT_SCREEN_OPEN = "Category_Screen_Launched";
         String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
         String PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
@@ -736,7 +737,9 @@ public interface AppEventTracking {
     interface AddProduct {
         String EVENT_CLICK_ADD_PRODUCT = "clickAddProduct";
         String CATEGORY_ADD_PRODUCT = "Add Product";
+        String CATEGORY_EDIT_PRODUCT = "Edit Product";
         String EVENT_ACTION_ADD = "Add";
+        String EVENT_ACTION_EDIT = "Edit";
         String EVENT_ACTION_ADD_MORE = "Add More";
         String EVENT_ACTION_ERROR = "Error";
         String EVENT_ACTION_ERROR_SERVER = "Error Server";
@@ -758,6 +761,10 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_PRODUCT_VIDEO = "O6";
         String FIELDS_OPTIONAL_PREORDER = "O7";
         String FIELDS_OPTIONAL_SHARE = "O8";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1 = "O9";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "O10";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM = "O11";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM = "O12";
     }
 
     interface CustomDimension {

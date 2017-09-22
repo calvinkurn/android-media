@@ -39,7 +39,7 @@ public class FetchEditProductWithVariantUseCase extends UseCase<UploadProductInp
 
     @Override
     public Observable<UploadProductInputDomainModel> createObservable(RequestParams requestParams) {
-        String productId = requestParams.getString(PRODUCT_ID, "-1");
+        String productId = requestParams.getString(PRODUCT_ID, UNSELECTED_PRODUCT_ID);
         return Observable.zip(
                 fetchEditProductFormUseCase.createObservable(FetchEditProductFormUseCase.createParams(productId)),
                 fetchProductVariantByPrdUseCase.createObservable(FetchProductVariantByPrdUseCase.generateParam(Long.parseLong(productId))),

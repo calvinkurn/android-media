@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -952,12 +954,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void onPromoAdsClicked(final Context context, String shopId, int itemId, final String userId) {
+    public void onPromoAdsClicked(final Context context, String shopId, final int itemId, final String userId) {
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
             @Override
             public void onSuccess(String adsId) {
                 if(adsId.equals(IS_UNPROMOTED_PRODUCT)){
-                    openPromoteAds(context, String.format("%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, userId));
+                    openPromoteAds(context, String.format("%s?user_id=%s&item_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, userId, itemId));
                 } else {
                     openPromoteAds(context, String.format("%s/%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS, adsId, userId));
                 }
@@ -971,17 +973,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     private void openPromoteAds(Context context, String url){
-        Intent launchIntent = context.getPackageManager()
+        Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-        if (launchIntent == null) {
-            launchIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-            );
-        } else {
-            launchIntent = new Intent(Intent.ACTION_VIEW);
-            launchIntent.setData(Uri.parse(url));
-            launchIntent.putExtra(Constants.EXTRA_APPLINK, url);
+        if (topadsIntent != null) {
+            Intent intentActionView = new Intent(Intent.ACTION_VIEW);
+            intentActionView.setData(Uri.parse(url));
+            intentActionView.putExtra(Constants.EXTRA_APPLINK, url);
+            PackageManager manager = context.getPackageManager();
+            List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
+            if (infos.size() > 0) {
+                topadsIntent = intentActionView;
+            }
+            context.startActivity(topadsIntent);
+        } else if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
-        context.startActivity(launchIntent);
     }
 }

@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
+
+import java.util.List;
 
 /**
  * Created by nathan on 8/4/17.
@@ -17,7 +20,7 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
     private long unitValueId;
     private String hexCode;
     private String title;
-    private String imageUrl;
+    private String icon;
 
     public void setTemporaryId(long tempId) {
         this.temporaryId = tempId;
@@ -57,13 +60,12 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
         return title;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    @Override
-    public String getImageUrl() {
-        return imageUrl;
+    public String getIcon() {
+        return icon;
     }
 
     @Override
@@ -82,7 +84,7 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
         dest.writeLong(this.unitValueId);
         dest.writeString(this.hexCode);
         dest.writeString(this.title);
-        dest.writeString(this.imageUrl);
+        dest.writeString(this.icon);
     }
 
     public ProductVariantViewModel() {
@@ -93,7 +95,7 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
         this.unitValueId = in.readLong();
         this.hexCode = in.readString();
         this.title = in.readString();
-        this.imageUrl = in.readString();
+        this.icon = in.readString();
     }
 
     public static final Parcelable.Creator<ProductVariantViewModel> CREATOR = new Parcelable.Creator<ProductVariantViewModel>() {
