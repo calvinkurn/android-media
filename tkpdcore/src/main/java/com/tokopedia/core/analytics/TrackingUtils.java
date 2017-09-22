@@ -599,5 +599,9 @@ public class TrackingUtils extends TrackingConfig {
     public static String getAfUniqueId(){
         return getAFEngine().getUniqueId();
     }
+
+    public static String getAdsId(){
+        return getAFEngine().getAdsIdDirect();
+    }
 }
 
