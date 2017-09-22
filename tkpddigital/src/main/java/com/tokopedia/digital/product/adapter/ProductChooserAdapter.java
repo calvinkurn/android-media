@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
@@ -86,7 +87,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemViewType(int position) {
         if (productList.get(position).getPromo() != null)
             return TYPE_HOLDER_PRODUCT_PROMO;
-        else if (!productList.get(position).getDetail().isEmpty())
+        else if (TextUtils.isEmpty(productList.get(position).getDetail()))
             return TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC;
         else return TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM;
     }
@@ -166,7 +167,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private void setViewPriceAdditionalFee(Product product) {
             tvProductPrice.setText(product.getDesc());
             tvProductTotalPrice.setText(product.getPrice());
-            if (product.getDetail().isEmpty()) {
+            if (TextUtils.isEmpty(product.getDetail())) {
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
@@ -244,9 +245,10 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void setViewPromo(Product product) {
             tvProductPromoTitle.setText(product.getDesc());
-            if (product.getDetail().isEmpty()) {
+            if (TextUtils.isEmpty(product.getDetail())) {
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
+                tvProductPromoDescription.setVisibility(View.VISIBLE);
                 CharSequence detail = MethodChecker.fromHtml(product.getDetail());
                 SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
                 URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
@@ -265,7 +267,12 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductPromoDescription.setText(strBuilderDetail);
                 tvProductPromoDescription.setMovementMethod(LinkMovementMethod.getInstance());
             }
-            tvProductPromoTag.setText(product.getPromo().getTag());
+            if (TextUtils.isEmpty(product.getPromo().getTag())) {
+                tvProductPromoTag.setVisibility(View.GONE);
+            } else {
+                tvProductPromoTag.setVisibility(View.VISIBLE);
+                tvProductPromoTag.setText(product.getPromo().getTag());
+            }
             tvPromoProductPrice.setText(product.getPromo().getNewPrice());
             tvProductPromoOldPrice.setText(product.getPrice());
             tvProductPromoOldPrice
