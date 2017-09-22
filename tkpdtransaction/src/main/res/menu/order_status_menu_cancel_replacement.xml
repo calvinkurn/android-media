@@ -4,5 +4,5 @@
         android:id="@+id/action_cancel_replacement"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/title_cart_cancel_order"/>
+        android:title="@string/cancel_replacement"/>
 </menu>
