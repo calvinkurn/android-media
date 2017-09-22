@@ -25,7 +25,7 @@ public interface DiscoveryInteractor {
 
     void getShops(HashMap<String, String> data);
 
-    void getDynamicAttribute(Context context, String source, String depId);
+    void getDynamicAttribute(Context context, String source, String depId, String query);
 
     void setDiscoveryListener(DiscoveryListener discoveryListener);
 

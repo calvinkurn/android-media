@@ -90,4 +90,9 @@
         <attr name="tckv_indicator_off_color" format="color" />
     </declare-styleable>
 
+
+    <declare-styleable name="PriceSeekbarDynamicBackground">
+        <attr name="backColor" format="color"/>
+        <attr name="foreColor" format="color"/>
+    </declare-styleable>
 </resources>
