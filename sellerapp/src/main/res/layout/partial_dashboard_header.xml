@@ -32,13 +32,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="1dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_placeholder_shop_with_padding"/>
+                    android:scaleType="fitCenter"/>
 
                 <android.support.v7.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rect_stroke_light_gray" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/image_view_shop_icon_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/margin_small_sm"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_placeholder_shop"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
 
             </FrameLayout>
 

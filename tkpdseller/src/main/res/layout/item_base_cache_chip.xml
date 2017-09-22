@@ -33,7 +33,7 @@
         android:layout_weight="1"
         tools:text="@string/app_id" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/image_button_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
