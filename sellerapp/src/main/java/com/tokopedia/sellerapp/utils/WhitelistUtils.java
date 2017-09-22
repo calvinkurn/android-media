@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.utils;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.gm.statistic.constant.StatisticConstant;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +24,26 @@ public class WhitelistUtils {
 
     public static List<CacheApiWhiteListDomain> getWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
+        // Deposit
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Transaction.URL_DEPOSIT + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, THIRTY_SECOND));
+        // Ticker
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.MOJITO_DOMAIN,
                 TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, ONE_MINUTE));
+        // Notification
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.User.URL_NOTIFICATION + TkpdBaseURL.User.PATH_GET_NOTIFICATION, THIRTY_SECOND));
+        // Shop info
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, THREE_HOURS));
 
+        // Product Recommended category
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.MERLIN_DOMAIN,
+                TkpdBaseURL.Merlin.PATH_CATEGORY_RECOMMENDATION, ONE_DAY));
+
+        // Product variant by category
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOME_DOMAIN,
+                TomeApi.GET_VARIANT_BY_CAT_PATH, ONE_DAY));
         return cacheApiWhiteList;
     }
 }

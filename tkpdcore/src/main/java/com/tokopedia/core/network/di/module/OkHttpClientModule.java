@@ -48,13 +48,15 @@ public class OkHttpClientModule {
                                                   TkpdBaseInterceptor tkpdBaseInterceptor,
                                                   OkHttpRetryPolicy okHttpRetryPolicy,
                                                   ChuckInterceptor chuckInterceptor,
-                                                  DebugInterceptor debugInterceptor) {
+                                                  DebugInterceptor debugInterceptor,
+                                                  ApiCacheInterceptor apiCacheInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientNoAuth(fingerprintInterceptor,
                 tkpdBaseInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @DefaultAuth

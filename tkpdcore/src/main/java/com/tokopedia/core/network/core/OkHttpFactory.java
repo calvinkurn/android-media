@@ -262,11 +262,13 @@ public class OkHttpFactory {
                                                 TkpdBaseInterceptor tkpdBaseInterceptor,
                                                 OkHttpRetryPolicy okHttpRetryPolicy,
                                                 ChuckInterceptor chuckInterceptor,
-                                                DebugInterceptor debugInterceptor) {
+                                                DebugInterceptor debugInterceptor,
+                                                ApiCacheInterceptor apiCacheInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
+                .addInterceptor(apiCacheInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {

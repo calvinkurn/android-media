@@ -15,6 +15,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
 @Table(database = DbFlowDatabase.class,
         uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.REPLACE)})
 public class CacheApiData extends BaseModel {
+    @PrimaryKey
     @ContainerKey("request_param")
     @Column
     public String requestParam;
@@ -32,7 +33,6 @@ public class CacheApiData extends BaseModel {
     @PrimaryKey
     @Column
     private String path;
-    @PrimaryKey
     @Column
     private String method;
 
