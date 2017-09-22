@@ -21,8 +21,10 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.app.MainApplication;
@@ -31,7 +33,9 @@ import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -192,6 +196,35 @@ public class GTMContainer implements IGTMContainer {
                 "checkout", checkout.getCheckoutMapEvent()
         )));
 
+        return this;
+    }
+
+    @Override
+    public GTMContainer eventBannerImpression(Promotion promotion) {
+        Log.i("Tag Manager", "UA-98016xx-xx: Send Banner Impression");
+        Log.i("Tag Manager", "UA-98016xx-xx: " + promotion.getPromotionDataEvent());
+
+        GTMDataLayer.pushGeneral(context, new EventTracking("InternalPromotion", "Internal Promotion", "view", promotion.getPromotionName()).getEvent());
+
+        GTMDataLayer.pushEvent(context, "internalPromo", DataLayer.mapOf("ecommerce", DataLayer.mapOf(
+                "promoView",
+                DataLayer.mapOf("promotions", DataLayer.listOf(promotion.getPromotionDataEvent()))))
+        );
+
+        return this;
+    }
+
+    @Override
+    public GTMContainer eventBannerClick(Promotion promotion) {
+        Log.i("Tag Manager", "UA-98016xx-yy: Send Banner Action");
+        Log.i("Tag Manager", "UA-98016xx-yy: " + promotion.getPromotionDataEvent());
+
+        GTMDataLayer.pushGeneral(context, new EventTracking("InternalPromotion", "Internal Promotion", "click", promotion.getPromotionName()).getEvent());
+
+        GTMDataLayer.pushEvent(context, "internalPromo", DataLayer.mapOf("ecommerce", DataLayer.mapOf(
+                "promoClick",
+                DataLayer.mapOf("promotions", DataLayer.listOf(promotion.getPromotionDataEvent()))))
+        );
         return this;
     }
 
