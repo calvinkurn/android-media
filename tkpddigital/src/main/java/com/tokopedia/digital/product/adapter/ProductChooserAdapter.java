@@ -170,9 +170,6 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
-//                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-//                tvProductDescription.setText(sequence);
-
                 CharSequence detail = MethodChecker.fromHtml(product.getDetail());
                 SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
                 URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
@@ -250,10 +247,6 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (product.getDetail().isEmpty()) {
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
-//                tvProductPromoDescription.setVisibility(View.VISIBLE);
-//                CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
-//                tvProductPromoDescription.setText(sequence);
-
                 CharSequence detail = MethodChecker.fromHtml(product.getDetail());
                 SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
                 URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
