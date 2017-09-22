@@ -124,11 +124,6 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     private void updateBottomSheetInfo() {
         bottomSheetTitleTextView.setText(getString(R.string.product_list_picker_variant_count,
                 getCacheListSize()));
-        if (getCacheListSize() > 0) {
-            showBottomSheetInfo(true);
-        } else {
-            showBottomSheetInfo(false);
-        }
     }
 
     private int getSearchListSize() {
