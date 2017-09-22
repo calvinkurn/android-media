@@ -16,10 +16,10 @@ import java.util.List;
 public class FacadePromo extends BaseFacade {
 
     public static class PromoItem implements Parcelable {
-        public String imgUrl;
-        public String promoUrl;
-        public String title;
-        public String id;
+        public String imgUrl="";
+        public String promoUrl="";
+        public String title="";
+        public String id="";
 
         public PromoItem() {
 

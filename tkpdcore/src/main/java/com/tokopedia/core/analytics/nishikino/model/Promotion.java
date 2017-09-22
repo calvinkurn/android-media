@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class Promotion {
 
-    private String promotionID;
-    private String promotionName;
-    private String promotionAlias;
-    private String promotionPosition;
+    private String promotionID="";
+    private String promotionName="";
+    private String promotionAlias="";
+    private String promotionPosition="";
 
     public void setPromotionID(String promotionID) {
         this.promotionID = promotionID;

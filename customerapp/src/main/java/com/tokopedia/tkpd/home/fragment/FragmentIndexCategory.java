@@ -57,6 +57,7 @@ import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
 import com.tokopedia.core.network.entity.home.Brands;
@@ -217,6 +218,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         TextView seeAllProduct;
         CardView containerRecharge;
         BannerView bannerView;
+        View pulsaPlaceHolder;
 
         private ViewHolder() {
         }
@@ -266,6 +268,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void initData() {
+        loadDummyPromos();
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
@@ -273,6 +276,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         brandsPresenter.fetchBrands();
         fetchRemoteConfig();
     }
+    private void loadDummyPromos() {
+                List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
+                dummyPromoList.add(new FacadePromo.PromoItem());
+                dummyPromoList.add(new FacadePromo.PromoItem());
+                setBanner(dummyPromoList);
+            }
 
     private void fetchRemoteConfig() {
         remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
@@ -298,6 +307,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     holder.tickerContainer.setVisibility(View.VISIBLE);
                     if (tickersResponse.size() > 1) {
                         tickerIncrementPage = runnableIncrementTicker();
+                        tickerShowed.clear();
                         tickerHandler = new Handler();
                         holder.tickerContainer.setVisibility(View.VISIBLE);
                         tickers.addAll(tickersResponse);
@@ -506,7 +516,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.containerRecharge = (CardView) holder.MainView.findViewById(R.id.container_recharge);
         holder.tabLayoutRecharge = (TabLayout) holder.MainView.findViewById(R.id.tablayout_recharge);
         holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
-        ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
         holder.cardBrandLayout = (CardView) holder.MainView.findViewById(R.id.card_brand_layout);
@@ -516,6 +525,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tokoCashHeaderView.setActionListener(this);
         holder.seeAllProduct = (TextView) holder.MainView.findViewById(R.id.see_all_product);
         holder.seeAllProduct.setOnClickListener(getClickListenerShowAllDigitalProducts());
+        holder.pulsaPlaceHolder = holder.MainView.findViewById(R.id.pulsa_place_holders);
+
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
@@ -976,6 +987,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {
         for (int i = 0; i < rechargeCategory.getData().size(); i++) {
+            holder.pulsaPlaceHolder.setVisibility(View.GONE);
             com.tokopedia.core.database.model.category.Category category = rechargeCategory.getData().get(i);
             TabLayout.Tab tab = holder.tabLayoutRecharge.newTab();
             tab.setText(category.getAttributes().getName());

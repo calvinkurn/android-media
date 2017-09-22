@@ -113,7 +113,8 @@ public class BannerView extends BaseCustomView {
         BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoList);
 
         bannerRecyclerView.setHasFixedSize(true);
-
+        indicatorItems.clear();
+        bannerIndicator.removeAllViews();
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         bannerRecyclerView.setLayoutManager(layoutManager);
@@ -156,6 +157,7 @@ public class BannerView extends BaseCustomView {
         }
 
         PagerSnapHelper snapHelper = new PagerSnapHelper();
+        bannerRecyclerView.setOnFlingListener(null);
         snapHelper.attachToRecyclerView(bannerRecyclerView);
 
         bannerHandler = new Handler();
