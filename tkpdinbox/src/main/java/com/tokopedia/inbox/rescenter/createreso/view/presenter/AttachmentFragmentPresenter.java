@@ -17,6 +17,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attach
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -51,6 +52,12 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
     @Override
     public void initResultViewModel(ResultViewModel resultViewModel) {
         this.resultViewModel = resultViewModel;
+        if (resultViewModel.attachmentList != null && resultViewModel.attachmentList.size() != 0) {
+            attachment.attachmentViewModelList = resultViewModel.attachmentList;
+            attachment.information = resultViewModel.message.remark;
+            mainView.populateDataToView(resultViewModel);
+            mainView.updateView(attachment);
+        }
     }
 
     @Override
@@ -60,15 +67,20 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
     }
 
     @Override
+    public void onAdapterChanged(List<AttachmentViewModel> attachmentViewModelList) {
+        updateView();
+    }
+
+    @Override
     public void btnContinueClicked() {
         resultViewModel.message.remark = attachment.information;
         int i = 0;
-        for (AttachmentViewModel attachmentViewModel : attachment.attachmentViewModelList) {
+        for (AttachmentViewModel attachmentViewModel : mainView.getAttachmentListFromAdapter()) {
             attachmentViewModel.setAttachmentId(String.valueOf(i));
             i++;
         }
-        resultViewModel.attachmentList = attachment.attachmentViewModelList;
-        resultViewModel.attachmentCount = attachment.attachmentViewModelList.size();
+        resultViewModel.attachmentList = mainView.getAttachmentListFromAdapter();
+        resultViewModel.attachmentCount = mainView.getAttachmentListFromAdapter().size();
         mainView.submitData(resultViewModel);
     }
 
@@ -123,12 +135,10 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
     }
 
     private void onAddImageAttachment(String fileLoc, int typeFile) {
-//        attachmentList.setVisibility(View.VISIBLE);
         AttachmentViewModel attachmentViewModel = new AttachmentViewModel();
         attachmentViewModel.setFileLoc(fileLoc);
         attachmentViewModel.setFileType(typeFile);
         mainView.addAttachmentFile(attachmentViewModel);
-        attachment.attachmentViewModelList.add(attachmentViewModel);
         updateView();
     }
 

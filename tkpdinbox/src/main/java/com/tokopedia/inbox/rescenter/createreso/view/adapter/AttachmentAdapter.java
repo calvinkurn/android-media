@@ -47,7 +47,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
 
     public void deleteAttachment(int position) {
         attachmentViewModelList.remove(position);
-        notifyItemRemoved(position);
+        if (attachmentViewModelList.size() == 0) {
+            listener.onEmptyAdapter();
+        }
+        notifyDataSetChanged();
     }
 
     @Override

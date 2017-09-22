@@ -19,7 +19,7 @@ public interface AttachmentFragmentListener {
 
     interface View extends CustomerView {
 
-        void populateDataToView();
+        void populateDataToView(ResultViewModel resultViewModel);
 
         void updateView(Attachment attachment);
 
@@ -43,5 +43,7 @@ public interface AttachmentFragmentListener {
         void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data);
 
         void handleNewGalleryResult(int resultCode, Intent data);
+
+        void onAdapterChanged(List<AttachmentViewModel> attachmentViewModelList);
     }
 }

@@ -192,6 +192,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
         adapter = new AttachmentAdapter(context, COUNT_MAX_ATTACHMENT, this);
 
+        buttonDisabled(btnContinue);
         rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         rvAttachment.setAdapter(adapter);
         tilInformation.setHint(context.getResources().getString(R.string.string_information));
@@ -200,8 +201,9 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     }
 
     @Override
-    public void populateDataToView() {
-
+    public void populateDataToView(ResultViewModel resultViewModel) {
+        adapter.updateAdapter(resultViewModel.attachmentList);
+        etInformation.setText(resultViewModel.message.remark);
     }
 
     @Override
@@ -213,7 +215,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         } else {
             tilInformation.hideErrorSuccess();
         }
-        if (attachment.attachmentViewModelList.size() == 0) {
+        if (adapter.getList().size() == 0) {
             isComplete = false;
         }
         if (isComplete) {
@@ -271,7 +273,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
     @Override
     public void onAddAttachmentClicked() {
-        if (adapter.getList().size() < 5) {
+        if (adapter.getList().size() < COUNT_MAX_ATTACHMENT) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(context.getString(R.string.dialog_upload_option));
             builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
@@ -293,6 +295,11 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
         }
 
+    }
+
+    @Override
+    public void onEmptyAdapter() {
+        presenter.onAdapterChanged(adapter.getList());
     }
 
     @Override

@@ -6,4 +6,6 @@ package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
 public interface AttachmentAdapterListener {
     void onAddAttachmentClicked();
+
+    void onEmptyAdapter();
 }
