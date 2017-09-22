@@ -225,10 +225,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             swipeRefreshLayout.setRefreshing(true);
         }
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-        sellerDashboardPresenter.refreshShopInfo();
-
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-        sellerDashboardPresenter.getNotification();
+        sellerDashboardPresenter.refreshShopInfo();
     }
 
     @Override
@@ -259,8 +257,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView.getContentView().setVisibility(View.INVISIBLE);
         View errorView = headerShopInfoLoadingStateView.getErrorView();
         EmptyCardContentView emptyCardContentView= (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
-        emptyCardContentView.setTitleText(getString(R.string.error_connection_problem));
-        emptyCardContentView.setDescriptionText(getString(R.string.msg_connection_timeout));
+        emptyCardContentView.setTitleText(getString(R.string.msg_network_error_1));
+        emptyCardContentView.setDescriptionText(getString(R.string.msg_network_error_2));
         emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
 
