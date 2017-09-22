@@ -357,6 +357,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 sellerDashboardPresenter.openShop();
             }
         });
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.green_ticker));
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
@@ -364,6 +365,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
         shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
