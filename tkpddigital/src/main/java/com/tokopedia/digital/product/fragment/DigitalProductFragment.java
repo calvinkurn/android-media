@@ -1106,17 +1106,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void restoreUssdData() {
-        if (selectedCheckPulsaBalanceView == null) {
+        if (selectedCheckPulsaBalanceView == null ||
+                GlobalConfig.isSellerApp() ||
+                android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
-        }
-        if (GlobalConfig.isSellerApp()) {
-            return;
-        }
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
-        //selectedCheckPulsaBalanceView should not be null
-        if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+        } else if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
             Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
 
