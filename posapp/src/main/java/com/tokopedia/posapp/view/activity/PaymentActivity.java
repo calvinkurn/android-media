@@ -18,9 +18,13 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
  */
 
 public class PaymentActivity extends ReactNativeActivity {
+
+    private static final String TOTAL_PAYMENT = "total_payment";
+
     @DeepLink(Constants.Applinks.PAYMENT_CHECKOUT)
     public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+        extras.putString(TOTAL_PAYMENT, uri.getQueryParameter(TOTAL_PAYMENT));
 
         return new Intent(context, PaymentActivity.class)
                 .setData(uri)
@@ -33,6 +37,7 @@ public class PaymentActivity extends ReactNativeActivity {
         bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
         bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE,  PosReactConst.Page.PAYMENT);
         bundle.putString(USER_ID,  SessionHandler.getLoginID(this));
+        bundle.putString(TOTAL_PAYMENT, getIntent().getExtras().getString(TOTAL_PAYMENT));
 
         return bundle;
     }

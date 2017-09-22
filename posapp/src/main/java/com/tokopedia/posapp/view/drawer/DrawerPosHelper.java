@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.view.drawer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +19,8 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.view.activity.OutletActivity;
+import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
 
 import java.util.ArrayList;
 
@@ -61,15 +64,15 @@ public class DrawerPosHelper extends DrawerHelper
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home),
                 R.drawable.icon_home,
-                TkpdState.DrawerPosition.SELLER_INDEX_HOME,
+                TkpdState.DrawerPosition.INDEX_HOME,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_riwayat_tx),
                 R.drawable.ic_hourglass,
-                TkpdState.DrawerPosition.SELLER_GM_STAT,
+                TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_choose_outlet),
                 R.drawable.ic_store,
-                TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                TkpdState.DrawerPosition.POS_OUTLET,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
@@ -105,5 +108,29 @@ public class DrawerPosHelper extends DrawerHelper
     @Override
     public void setExpand() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClicked(DrawerItem item) {
+        if(item.getId() == selectedPosition) {
+            closeDrawer();
+        } else {
+            Intent intent;
+            switch (item.getId()) {
+                case TkpdState.DrawerPosition.INDEX_HOME:
+                    break;
+                case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
+                    startIntent(context, TransactionHistoryActivity.class);
+                    break;
+                case TkpdState.DrawerPosition.POS_OUTLET:
+                    startIntent(context, OutletActivity.class);
+                    context.finish();
+                    break;
+                default:
+                    super.onItemClicked(item);
+            }
+
+            closeDrawer();
+        }
     }
 }

@@ -91,6 +91,9 @@ public class TkpdState {
         public static final int SHOP_OPPORTUNITY_LIST = 52;
 
         public static final int CATEGORY_NAVIGATION = 54;
+
+        public static final int POS_TRANSACTION_HISTORY = 401;
+        public static final int POS_OUTLET = 402;
     }
 
     public class Application {

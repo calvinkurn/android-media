@@ -48,8 +48,8 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void navigateAndFinish(String appLinks, String mobileUrl) {
-        navigateWithMobileUrl(appLinks, mobileUrl, "");
+    public void navigateAndFinish(String appLinks, String extra) {
+        navigate(appLinks, extra);
 
         finish();
     }

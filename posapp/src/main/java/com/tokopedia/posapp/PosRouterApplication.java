@@ -117,7 +117,9 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public void actionAppLink(Context context, String linkUrl) {
-
+        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+        intent.setData(Uri.parse(linkUrl));
+        context.startActivity(intent);
     }
 
     @Override
