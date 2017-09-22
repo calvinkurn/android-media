@@ -64,6 +64,8 @@ public class MapsRepository implements IMapsRepository {
             throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
         } else if(response.body().isError() && !response.body().getErrorMessageJoined().isEmpty()) {
             throw new RuntimeException(response.body().getErrorMessageJoined());
-        } else throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        } else if(response.body().isError() && response.body().getErrorMessageJoined().isEmpty()) {
+            throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
     }
 }
