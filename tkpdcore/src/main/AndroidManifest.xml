@@ -29,8 +29,6 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -51,8 +49,6 @@
         android:protectionLevel="signature" />
 
     <uses-feature android:name="android.hardware.camera" />
-
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -360,7 +356,7 @@
             android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".app.ReactNativeActivity"
+            android:name="com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity"
             android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
 

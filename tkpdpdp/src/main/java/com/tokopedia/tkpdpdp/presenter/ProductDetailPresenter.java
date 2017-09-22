@@ -55,7 +55,7 @@ public interface ProductDetailPresenter {
 
     void processToPicturePreview(@NonNull Context context, @NonNull Bundle bundle);
 
-    void processToSendMessage(@NonNull Context context, @NonNull Bundle bundle);
+    void processToSendMessage(@NonNull Context context, @NonNull Intent intent);
 
     void requestProductDetail(final @NonNull Context context, final @NonNull ProductPass productPass, int type, boolean forceNetwork);
 

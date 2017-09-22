@@ -214,4 +214,5 @@
     <dimen name="featured_product_badges_and_label_container_min_height">21dp</dimen>
     <dimen name="featured_product_grid_padding">8dp</dimen>
     <dimen name="feature_product_item_component_spacing">3dp</dimen>
+    <dimen name="keyboard_min_height">200dp</dimen>
 </resources>

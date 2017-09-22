@@ -230,6 +230,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void setShopDomainResult(String message, boolean available) {
         if (domainInput != null) {
             if (!available) {
+                UnifyTracking.eventCreateShopFillBiodataError();
                 domainInput.setErrorEnabled(true);
                 domainInput.setError(message);
             } else {
@@ -242,6 +243,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkDomainError() {
         if (shopDomain.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             domainInput.setError(getString(R.string.error_domain_unfilled));
         }
         return domainInput.isErrorEnabled();
@@ -264,6 +266,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void setShopNameResult(String message, boolean available) {
         if (nameInput != null) {
             if (!available) {
+                UnifyTracking.eventCreateShopFillBiodataError();
                 nameInput.setErrorEnabled(true);
                 nameInput.setError(message);
                 nameInput.setHint(getString(R.string.title_shop_name));
@@ -278,6 +281,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkNameError() {
         if (shopName.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             nameInput.setError(getString(R.string.error_name_unfilled));
         }
         return nameInput.isErrorEnabled();
@@ -303,8 +307,10 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkTagError() {
         if (shopTag.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             tagInput.setError(getString(R.string.error_tag_unfilled));
         } else if (shopTag.getText().toString().length() > 48) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             tagInput.setError(getString(R.string.error_tag_too_long));
         } else {
             tagInput.setErrorEnabled(false);
@@ -331,8 +337,10 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkDescError() {
         if (shopDesc.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             descInput.setError(getString(R.string.error_desc_unfilled));
         } else if (shopDesc.getText().toString().length() > 140) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             descInput.setError(getString(R.string.error_desc_too_long));
         } else {
             descInput.setErrorEnabled(false);

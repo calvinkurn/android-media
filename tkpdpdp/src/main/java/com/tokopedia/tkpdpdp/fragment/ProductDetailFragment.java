@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -30,8 +31,6 @@ import android.widget.TextView;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -44,13 +43,13 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.react.ReactUtils;
 import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
@@ -59,7 +58,6 @@ import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
@@ -79,6 +77,7 @@ import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
 import com.tokopedia.tkpdpdp.customview.PriceSimulationView;
+import com.tokopedia.tkpdpdp.customview.PromoWidgetView;
 import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
@@ -132,6 +131,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private PictureView pictureView;
     private RatingTalkCourierView ratingTalkCourierView;
     private PriceSimulationView priceSimulationView;
+    private PromoWidgetView promoWidgetView;
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
@@ -223,6 +223,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
         newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
+        promoWidgetView = (PromoWidgetView) view.findViewById(R.id.view_promo_widget);
         mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
@@ -263,6 +264,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
         mostHelpfulReviewView.setListener(this);
+        promoWidgetView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
         latestTalkView.setListener(this);
@@ -398,7 +400,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
+        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
     }
 
     @Override
@@ -471,8 +473,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onProductShopMessageClicked(@NonNull Bundle bundle) {
-        presenter.processToSendMessage(context, bundle);
+    public void onProductShopMessageClicked(@NonNull Intent intent) {
+        presenter.processToSendMessage(context, intent);
     }
 
     @Override
@@ -574,13 +576,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
-            webViewHandleListener = (DeepLinkWebViewHandleListener) getActivity();
-            webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            if (webViewHandleListener != null) {
+                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            }
         } else {
             showToastMessage("Produk tidak ditemukan!");
             closeView();
         }
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(context);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
     }
 
     @Override
@@ -910,6 +933,25 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void showPromoWidget(PromoAttributes promoAttributes) {
+        this.promoWidgetView.renderData(promoAttributes);
+    }
+
+    @Override
+    public void onPromoWidgetCopied() {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout,context.getString(R.string.title_copied),
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(context.getString(R.string.close), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.setActionTextColor(Color.WHITE);
+        snackbar.show();
+    }
+
+    @Override
     public void showProductCampaign(ProductCampaign productCampaign) {
         this.productCampaign = productCampaign;
         headerInfoView.renderProductCampaign(this.productCampaign);
@@ -923,22 +965,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void actionSuccessAddToWishlist(Integer productId) {
-        ReactUtils.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        if (getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        }
     }
 
     @Override
     public void actionSuccessRemoveFromWishlist(Integer productId) {
-        ReactUtils.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        if (getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        }
     }
 
     @Override
     public void actionSuccessAddFavoriteShop(String shopId) {
         if (productData.getShopInfo().getShopAlreadyFavorited() == 1) {
             productData.getShopInfo().setShopAlreadyFavorited(0);
-            ReactUtils.sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            if (getActivity().getApplication() instanceof IReactNativeRouter) {
+                IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+                reactNativeRouter.sendRemoveFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            }
         } else {
             productData.getShopInfo().setShopAlreadyFavorited(1);
-            ReactUtils.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            if (getActivity().getApplication() instanceof IReactNativeRouter) {
+                IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+                reactNativeRouter.sendAddFavoriteEmitter(String.valueOf(shopId), SessionHandler.getLoginID(getActivity()));
+            }
         }
     }
 
@@ -964,7 +1018,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 } else {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    if (productData!=null && productData.getInfo().getProductAlreadyWishlist()!=null) {
+                    if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
                 }
@@ -1011,9 +1065,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
             getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.black));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 View decor = getActivity().getWindow().getDecorView();
                 decor.setSystemUiVisibility(0);
@@ -1022,12 +1076,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
+    private boolean getWindowValidation() {
+        return getActivity() != null && getActivity().getWindow() != null;
+    }
+
     private void initStatusBarLight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getWindowValidation()) {
             View decor = getActivity().getWindow().getDecorView();
             decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.white));
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.white));
         }
     }
 

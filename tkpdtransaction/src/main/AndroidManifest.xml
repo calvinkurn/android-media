@@ -52,7 +52,8 @@
 
         <activity android:name=".bcaoneklik.BcaOneClickEditActivity" />
 
-        <activity android:name=".bcaoneklik.activity.ListPaymentTypeActivity"/>
+        <activity android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
+            android:label="@string/label_payment_setting"/>
 
         <service
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"

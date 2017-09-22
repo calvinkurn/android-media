@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -30,7 +31,9 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
  * Created by ricoharisin on 11/11/16.
  */
 
-public class ConsumerMainApplication extends ConsumerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction, InAppManager.InAppMessageListener{
+public class ConsumerMainApplication extends ConsumerRouterApplication implements
+        MoEPushCallBacks.OnMoEPushNavigationAction,
+        InAppManager.InAppMessageListener {
 
     @Override
     public void onCreate() {
@@ -43,6 +46,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         generateConsumerAppNetworkKeys();
         initializeDatabase();
         super.onCreate();
+        initReact();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -83,6 +87,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.SCROOGE_DOMAIN = ConsumerAppBaseUrl.SCROOGE_DOMAIN;
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = ConsumerAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
         TkpdBaseURL.PAYMENT_DOMAIN = ConsumerAppBaseUrl.PAYMENT_DOMAIN;
+        TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
     }
 
     private void generateConsumerAppNetworkKeys() {
@@ -149,4 +154,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
 
     }
+
+    private void initReact() {
+        SoLoader.init(this, false);
+    }
+
+
 }

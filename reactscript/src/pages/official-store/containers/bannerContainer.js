@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { View, ActivityIndicator } from 'react-native'
 import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
 import { fetchBanners } from '../actions/actions'
@@ -23,15 +24,13 @@ class BannerContainer extends Component {
   render() {
     const banners = this.props.banners.items
     return (
-      this.props.banners.isFetching ? <BannerList
-        banners={banners}
-        onBannerPress={this.onBannerPress}
-        onViewAllPress={this.onViewAllPress}
-      /> : <BannerList
-        banners={banners}
-        onBannerPress={this.onBannerPress}
-        onViewAllPress={this.onViewAllPress}
-      />
+      this.props.banners.isFetching ? 
+        <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
+          <ActivityIndicator size="large" /></View> : 
+        <BannerList
+          banners={banners}
+          onBannerPress={this.onBannerPress}
+          onViewAllPress={this.onViewAllPress} />
     )
   }
 }

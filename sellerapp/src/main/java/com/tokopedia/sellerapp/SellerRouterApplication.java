@@ -28,6 +28,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -43,6 +44,7 @@ import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -72,8 +74,6 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -87,7 +87,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -244,9 +244,9 @@ public class SellerRouterApplication extends MainApplication
     public Intent getHomeIntent(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            if(SessionHandler.isUserSeller(context)){
+            if (SessionHandler.isUserSeller(context)) {
                 return new Intent(context, SellerHomeActivity.class);
-            }else{
+            } else {
                 return intent;
             }
         } else {
@@ -449,26 +449,26 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder =  Uri.parse(originUrl).buildUpon();
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))){
+        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
                     AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
             );
         }
-        if(!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))){
+        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
             uriBuilder.appendQueryParameter(
                     AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
             );
@@ -484,5 +484,36 @@ public class SellerRouterApplication extends MainApplication
                 urlQuery != null ? urlQuery : "",
                 "GET",
                 AuthUtil.KEY.KEY_WSV4);
+    }
+
+    @Override
+    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
+                                    String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+                customSubject, customMessage, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, customMessage, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
+    }
+
+    @Override
+    public Intent getAskUserIntent(Context context, String userId, String userName, String source) {
+        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, source);
     }
 }

@@ -37,7 +37,7 @@ public class TkpdState {
         public static final int MANAGE_PAYMENT_AND_TOPUP = 55;
         public static final int MANAGE_TRANSACTION_DIGITAL = 56;
         public static final int MANAGE_PRICE_PRODUCT_DIGITAL = 57;
-        public static final int DRAFT_PRODUCT = 54;
+        public static final int DRAFT_PRODUCT = 22;
 		public static final int MANAGE_SHOP = 9;
 		public static final int PEOPLE = 10;
 		public static final int PEOPLE_DEPOSIT = 11;
@@ -50,8 +50,6 @@ public class TkpdState {
 		public static final int REGISTER = 19;
 		public static final int DEVELOPER_OPTIONS = 20;
 		public static final int MANAGE_ETALASE = 21;
-        public static final int MANAGE_DRAFT_PRODUCT = 22;
-
         public static final int PEOPLE_PAYMENT_STATUS = 201;
         public static final int PEOPLE_ORDER_STATUS = 202;
 		public static final int PEOPLE_CONFIRM_SHIPPING = 203;

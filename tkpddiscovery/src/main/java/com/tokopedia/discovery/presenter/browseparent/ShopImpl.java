@@ -150,7 +150,10 @@ public class ShopImpl extends Shop implements DiscoveryListener {
     @Override
     public void fetchDynamicAttribut() {
         if (browseView.checkHasFilterAttrIsNull(index)) {
-            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseView.getBrowseProductActivityModel().getDepartmentId());
+            discoveryInteractor.getDynamicAttribute(view.getContext(),
+                    BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP,
+                    browseView.getBrowseProductActivityModel().getDepartmentId(),
+                    browseView.getBrowseProductActivityModel().getQ());
         }
     }
 }

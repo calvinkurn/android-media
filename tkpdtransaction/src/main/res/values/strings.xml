@@ -12,6 +12,7 @@
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
     <string name="toko_cash_info">TokoCash</string>
 
+    <string name="label_payment_setting">Pengaturan Pembayaran</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
@@ -60,7 +61,7 @@
     <string name="label_transaction_potential_cashback">Potensi Cashback</string>
     <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
-    <string name="cancel_replacement">Batalkan Pesanan</string>
+    <string name="cancel_replacement">Batalkan Pencarian</string>
     <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="alert_payment_canceled_transaction_module">Pembayaran dibatalkan</string>
     <string name="title_driver_detail">Detil Driver</string>

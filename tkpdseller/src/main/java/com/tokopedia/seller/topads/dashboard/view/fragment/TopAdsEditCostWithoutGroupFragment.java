@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.seller.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -61,5 +62,10 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onErrorLoadTopAdsProduct(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 }
