@@ -13,13 +13,13 @@
         android:layout_centerVertical="true"
         tools:text="2 - 10 buah" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/image_whole_sale"
         style="@style/TextView.Body1"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_close_grey_copy" />
+        android:src="@drawable/ic_close_grey_copy" />
 
     <TextView
         android:id="@+id/text_whole_sale_price"

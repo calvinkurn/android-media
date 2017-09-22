@@ -33,11 +33,11 @@
         android:layout_weight="1"
         tools:text="@string/app_id" />
 
-    <android.support.v7.widget.AppCompatImageButton
+    <ImageButton
         android:id="@+id/image_button_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        app:srcCompat="@drawable/vector_cancel_24dp"/>
+        android:src="@drawable/vector_cancel_24dp"/>
 
 </LinearLayout>

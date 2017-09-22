@@ -7,11 +7,11 @@
     android:padding="@dimen/padding_vs"
     android:weightSum="1">
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/image_selected"
         android:layout_width="@dimen/shop_ava"
         android:layout_height="@dimen/shop_ava"
-        app:srcCompat="@drawable/ic_add_black_48dp"
+        android:src="@drawable/ic_add_black_48dp"
         android:layout_gravity="center_vertical"
         />
 

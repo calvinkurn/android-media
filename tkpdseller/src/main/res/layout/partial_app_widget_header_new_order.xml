@@ -14,7 +14,7 @@
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_marginRight="@dimen/margin_small"
-        app:srcCompat="@drawable/ic_order_widget" />
+        android:src="@drawable/ic_order_widget" />
 
     <TextView
         style="@style/TextView.Body2.WhitePrimary"

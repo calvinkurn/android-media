@@ -77,7 +77,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LoadingStateView headerShopInfoLoadingStateView;
     private LoadingStateView footerShopInfoLoadingStateView;
     private ImageView shopIconImageView;
-    private ImageView shopIconEmptyImageView;
     private TextView shopNameTextView;
     private ImageView gmIconImageView;
     private TextView gmStatusTextView;
@@ -120,7 +119,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         footerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_footer);
 
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
-        shopIconEmptyImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon_empty);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
         gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
@@ -329,11 +327,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
-            shopIconImageView.setVisibility(View.VISIBLE);
-            shopIconEmptyImageView.setVisibility(View.GONE);
         } else {
-            shopIconImageView.setVisibility(View.GONE);
-            shopIconEmptyImageView.setVisibility(View.VISIBLE);
+            shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
     }
 

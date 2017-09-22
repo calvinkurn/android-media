@@ -29,11 +29,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ic_shop_score_limit"
             android:layout_width="@dimen/image_width_xs"
             android:layout_height="@dimen/image_width_xs"
-            app:srcCompat="@drawable/ic_pointer_gold_badge" />
+            android:src="@drawable/ic_pointer_gold_badge" />
 
         <TextView
             style="@style/TextView.Caption.BlackDisabled"

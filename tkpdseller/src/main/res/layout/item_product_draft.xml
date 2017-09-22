@@ -78,13 +78,13 @@
         android:background="@drawable/selectable_white_background"
         android:clickable="true">
 
-        <android.support.v7.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/iv_trash_can"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerInside"
             android:padding="8dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_trash_can"/>
+            android:src="@drawable/ic_trash_can"/>
     </FrameLayout>
 </LinearLayout>

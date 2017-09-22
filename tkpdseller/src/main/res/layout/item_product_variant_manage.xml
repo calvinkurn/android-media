@@ -53,11 +53,11 @@
                 tools:text="@string/app_id" />
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/arrow_left"
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
-            app:srcCompat="@drawable/ic_arrow_right" />
+            android:src="@drawable/ic_arrow_right" />
 
     </LinearLayout>
 </FrameLayout>

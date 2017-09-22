@@ -9,12 +9,12 @@
     android:orientation="horizontal"
     tools:showIn="@layout/item_product_score_indicator">
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/image_desc_score"
         android:layout_width="15dp"
         android:layout_height="18dp"
         android:layout_marginRight="5dp"
-        app:srcCompat="@drawable/ic_list_light_score_product_desc" />
+        android:src="@drawable/ic_list_light_score_product_desc" />
 
     <TextView
         android:id="@+id/content_desc_product_score"
