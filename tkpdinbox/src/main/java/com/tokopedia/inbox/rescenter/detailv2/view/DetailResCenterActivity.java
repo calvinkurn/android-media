@@ -11,17 +11,10 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;
-
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 
 /**
  * Created by hangnadi on 3/8/17.
