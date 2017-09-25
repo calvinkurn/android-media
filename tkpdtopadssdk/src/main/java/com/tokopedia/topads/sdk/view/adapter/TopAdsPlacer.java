@@ -48,6 +48,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean shouldLoadAds = true; //default load ads
     private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    private static final int ROW_ADS_INDEX_FEED = 2;
 
     public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
@@ -183,7 +184,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
             if (getItemCount() > tresHold) {
                 if (hasHeader && !headerPlaced) {
                     headerPlaced = true;
-                    setTopAds(adsItems, itemList, 2);
+                    setTopAds(adsItems, itemList, ROW_ADS_INDEX_FEED);
                 } else {
                     setTopAds(adsItems, itemList, getItemCount() - tresHold);
                 }
