@@ -90,7 +90,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onChanged() {
-        reset();
         observerType = ObserverType.CHANGE;
         if (shouldLoadAds && adsItems.isEmpty()) {
             loadTopAds();
