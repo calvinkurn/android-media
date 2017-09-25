@@ -165,6 +165,11 @@ public class RechargeCategoryFragment extends
 
     }
 
+    @Override
+    public void renderErrorMessage() {
+
+    }
+
     @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {

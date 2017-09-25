@@ -18,6 +18,7 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.digital.widget.WidgetRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -304,7 +305,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     managerStatus.store();
                 } else if (currentStatusString != null && currentStatusString.equals(statusString)
                         && !isInitialGetStatus) {
-                    throw new RuntimeException("Is no need to reload widget");
+                    throw new WidgetRuntimeException("Is no need to reload widget");
                 } else if (currentStatusString == null) {
                     GlobalCacheManager managerStatus = new GlobalCacheManager();
                     managerStatus.setKey(KEY_STATUS_CURRENT);
