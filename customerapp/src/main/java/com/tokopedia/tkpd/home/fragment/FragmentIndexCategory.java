@@ -57,6 +57,8 @@ import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -78,6 +80,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
@@ -107,6 +110,7 @@ import com.tokopedia.tkpd.home.presenter.TokoCashPresenterImpl;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenter;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
@@ -247,7 +251,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LocalCacheHandler.clearCache(getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
     }
 
     @Override
@@ -392,7 +395,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category = new CategoryImpl(getActivity(), this);
         holder = new ViewHolder();
         tickerAdapter = TickerAdapter.createInstance(getActivity(), this);
-        rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
+        rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this,
+                new RechargeNetworkInteractorImpl(
+                        new DigitalWidgetRepository(
+                                new RechargeService(), new DigitalEndpointService())));
+
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
         tokoCashPresenter = new TokoCashPresenterImpl(this);
@@ -462,7 +469,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onResume() {
-        LocalCacheHandler.clearCache(getActivity(), "RechargeCache");
         rechargeCategoryPresenter.fetchStatusDigitalProductData();
         if (SessionHandler.isV4Login(getActivity())) {
             rechargeCategoryPresenter.fetchLastOrder();
@@ -690,7 +696,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     UnifyTracking.eventViewAllOSNonLogin();
                 }
 
-                if(firebaseRemoteConfig != null
+                if (firebaseRemoteConfig != null
                         && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
                     getActivity().startActivity(
                             ReactNativeOfficialStoresActivity.createReactNativeActivity(
@@ -888,7 +894,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
         tokoCashPresenter.onDestroy();
-
+        rechargeCategoryPresenter.onDestroy();
         getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
@@ -967,12 +973,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void renderErrorNetwork() {
 
-    }
-
-    @Override
-    public void hideRechargeWidget() {
-        holder.containerRecharge.setVisibility(View.GONE);
-        ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 
     private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {
@@ -1095,7 +1095,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     config.activateFetched();
                     holder.tokoCashHeaderView.renderData(tokoCashData, config
                             .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
