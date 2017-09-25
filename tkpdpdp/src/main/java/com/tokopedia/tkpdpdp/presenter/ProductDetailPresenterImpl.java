@@ -35,13 +35,13 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
@@ -145,9 +145,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToReputation(@NonNull Context context, @NonNull Bundle bundle) {
         UnifyTracking.eventPDPReputation();
-        Intent intent = new Intent(context, ReputationProduct.class);
-        intent.putExtras(bundle);
-        viewListener.navigateToActivity(intent);
+        if(context.getApplicationContext() instanceof ReputationRouter){
+            Intent intent = ((ReputationRouter)context.getApplicationContext())
+                    .getProductReputationIntent(context);
+            intent.putExtras(bundle);
+            viewListener.navigateToActivity(intent);
+        }
     }
 
     @Override

@@ -256,7 +256,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.core.reputationproduct.ReputationProduct"
+            android:name="com.tokopedia.core.com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct"
             android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait" />
         <activity
@@ -264,7 +264,7 @@
             android:label="@string/title_activity_shop_statistic_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.reputationproduct.activity.ReputationProductActivity"
+            android:name="com.tokopedia.core.com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProductActivity"
             android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait" />
         <activity

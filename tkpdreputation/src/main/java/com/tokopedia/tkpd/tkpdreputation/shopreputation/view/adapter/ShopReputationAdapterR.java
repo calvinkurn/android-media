@@ -18,12 +18,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.AbstractRecyclerAdapter;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.StarGenerator;
+import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ReputationModel;
 
