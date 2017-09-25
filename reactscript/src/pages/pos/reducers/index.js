@@ -18,7 +18,8 @@ import {
   ON_SUBMIT_FETCH_SEARCH_PRODUCT,
   FETCH_CART_FROM_CACHE,
   FETCH_BANK_FUlFILLED,
-  FETCH_EMI_FUlFILLED
+  FETCH_EMI_FUlFILLED,
+  MAKE_PAYMENT
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -317,6 +318,10 @@ const payment = (state = {
         case 'cvv':
           return { ...state, cvv: action.payload.value }
       }
+    
+    case 'MAKE_PAYMENT':
+      console.log(action.payload)
+
     default:
       return state
   }

@@ -21,6 +21,7 @@ class PaymentBank extends Component {
 
     this.state = {
       selectedBank: null,
+      selectIdBank: null,
       selectedEmiId: null,
       otherBank: null,
       paymentMethod: null,
@@ -34,15 +35,22 @@ class PaymentBank extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props)
+    console.log(this.props.screenProps.total_payment)
     this.props.dispatch(getBankList());
   }
 
   _handleButtonPress = () => {
+    const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId)
     if (this.state.paymentMethod === 'SCAN'){
       NavigationModule.navigate("posapp://payment/scan/3/6", "")
     } else {
+      // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
       this.props.navigation.navigate('Payment', {
-        
+        selectBank: this.state.selectedBank,
+        selectIdBank: this.state.selectIdBank,
+        selectedEmiId: selected_installment,
+        total_payment: this.props.screenProps.total_payment
       })
     }
   };
@@ -185,6 +193,7 @@ class PaymentBank extends Component {
 
       this.setState({
         selectedBank: rowData.bank_name,
+        selectIdBank: rowData.bank_id,
         otherBank: null,
         selectedEmiId: null,
         emiList: emiList
@@ -235,7 +244,7 @@ class PaymentBank extends Component {
                   Total Pembayaran
                   </Text>
                 <Text style={[styles.font16, styles.fontColor70]}>
-                  Rp 34.697.000
+                  Rp {this.props.screenProps.total_payment}
                   </Text>
               </View>
 
@@ -316,14 +325,12 @@ class PaymentBank extends Component {
                 </View>
               </View>
 
-              <View style={[styles.row, styles.row1]} >
+              {this.props.screenProps.total_payment && this.state.selectedEmiId && 
+              <View style={[styles.row, styles.row1]}>
+                <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
                 <Text style={[styles.font20, styles.fontColor70]}>
-                  Nominal
-                  </Text>
-                <Text style={[styles.font20, styles.fontColor70]}>
-                  Rp 2.266.334/bulan
-                  </Text>
-              </View>
+                  Rp {this.props.screenProps.total_payment / this.state.selectedEmiId}/ bulan</Text>
+              </View>}
               {/*<View style={[styles.row, styles.row3]} >
                   <Text style={styles.row1Text}>
                     Pilih Metode Pembayaran
@@ -357,9 +364,7 @@ class PaymentBank extends Component {
                     backgroundColor: '#FF5722',
                     borderRadius: 3
                   }}>
-                    <Text style={{ color: '#fff', fontSize: 16 }}>
-                      Bayar
-                        </Text>
+                    <Text style={{ color: '#fff', fontSize: 16 }}>Bayar</Text>
                   </View>
                 </TouchableNativeFeedback>
               </View>

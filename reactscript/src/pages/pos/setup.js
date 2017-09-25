@@ -40,7 +40,7 @@ class Root extends Component {
     if (POS_PAGE === 'POS'){
       return <Setup_pos />
     } else if (POS_PAGE === 'PAYMENT'){
-      return <Setup_payment />
+      return <Setup_payment data={this.props.data} />
     } else if (POS_PAGE === 'LOCAL_CART'){
       return <Setup_cart />
     } else if (POS_PAGE === 'PROCESSING'){

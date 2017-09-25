@@ -195,6 +195,21 @@ export const selectEmi = (id) => {
   }
 }
 
+
+//  ==================== Make Payment to Native ===================== //
+export const MAKE_PAYMENT = 'MAKE_PAYMENT'
+export const makePayment = () => {
+
+  // Please pass total_amount, installment_term, creditCard No, expired date, and cvv to this action
+
+  // return {
+  //   type: MAKE_PAYMENT,
+  //   payload: fetchBankData()
+  // }
+}
+
+
+
 // Search actions
 export const ON_SEARCH_QUERY_TYPE = 'ON_SEARCH_QUERY_TYPE'
 export const onSearchQueryType = (queryText) => {

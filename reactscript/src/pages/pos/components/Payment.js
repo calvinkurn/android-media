@@ -31,6 +31,12 @@ class payment extends Component {
   }
 
 
+  componentWillMount(){
+    console.log(this.props)
+    console.log(this.props.navigation.state.params)
+  }
+
+
   _handleButtonPress = () => {
 
     const errorMessage = {
@@ -114,7 +120,7 @@ class payment extends Component {
                 Total Pembayaran
             </Text>
               <Text style={styles.row1Text}>
-                Rp 34.697.000
+                Rp {this.props.navigation.state.params.total_payment}
             </Text>
             </View>
 
@@ -186,10 +192,10 @@ class payment extends Component {
 
             <View style={[styles.row, styles.row6]} >
               <View style={{ flex: 0.5, paddingLeft: 20 }}>
-                <Text style={styles.row4Text, styles.errorText}>
+                <Text style={[styles.row4Text, styles.errorText]}>
                {this.state.errorMessage.ccNum}
               </Text>
-              <Text style={styles.row4Text, {color: '#00000061'}}>
+              <Text style={[styles.row4Text, {color: '#00000061'}]}>
                 Masukan nomor kartu kredit
               </Text>
             </View>
