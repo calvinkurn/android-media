@@ -88,7 +88,16 @@ public class CategoryProductStyle2View extends
         tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         clearHolder(holderRadioChooserOperator);
         renderInstantCheckoutOptions();
-        renderOperatorChooserOptions();
+        if (!data.getOperatorStyle().equals(CategoryData.STYLE_PRODUCT_CATEGORY_99)) {
+            renderOperatorChooserOptions();
+        } else {
+            for (Operator operator : data.getOperatorList()) {
+                if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
+                    operatorSelected = operator;
+                    renderClientNumberInputForm();
+                }
+            }
+        }
         btnBuyDigital.setOnClickListener(getButtonBuyListener());
     }
 

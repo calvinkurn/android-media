@@ -22,8 +22,8 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.goldmerchant.common.di.scope.GoldMerchantScope;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
+import com.tokopedia.seller.product.common.di.scope.ProductScope;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -32,7 +32,7 @@ import retrofit2.Retrofit;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-@GoldMerchantScope
+@ProductScope
 @Component(modules = ProductModule.class, dependencies = AppComponent.class)
 public interface ProductComponent {
 

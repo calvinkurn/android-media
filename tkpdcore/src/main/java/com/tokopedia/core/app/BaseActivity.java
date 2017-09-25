@@ -97,12 +97,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         globalCacheManager = new GlobalCacheManager();
         Localytics.registerPush(gcmHandler.getSenderID());
 
-
-        /* clear cache if not login */
-        if (!sessionHandler.isV4Login()) {
-            globalCacheManager.deleteAll();
-        }
-
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
     }

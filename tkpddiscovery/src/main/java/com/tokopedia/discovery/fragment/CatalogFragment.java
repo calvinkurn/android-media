@@ -120,8 +120,8 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     public static CatalogFragment newInstance(int index) {
-
         Bundle args = new Bundle();
+        args.putInt(INDEX, index);
         CatalogFragment fragment = new CatalogFragment();
         fragment.setArguments(args);
         return fragment;
