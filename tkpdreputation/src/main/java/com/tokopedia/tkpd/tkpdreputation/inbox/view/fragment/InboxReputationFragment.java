@@ -121,7 +121,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private void initVar() {
         timeFilter = "";
         statusFilter = "";
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(this);
         adapter = new InboxReputationAdapter(typeFactory);
     }
@@ -141,6 +140,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setLayoutManager(layoutManager);
         mainList.setAdapter(adapter);
 

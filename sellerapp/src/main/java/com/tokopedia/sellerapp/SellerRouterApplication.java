@@ -22,17 +22,18 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -73,6 +74,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 
@@ -81,8 +83,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter {
+        implements TkpdCoreRouter, SellerModuleRouter, PdpRouter,
+        IPaymentModuleRouter, IDigitalModuleRouter, ReputationRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -205,6 +207,30 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public Intent getInboxReputationIntent(Context context) {
         return InboxReputationActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
+                ((ReputationRouter) mContext).getInboxReputationIntent(mContext)
+        );
+        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.title = notifTitle;
+        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        return mNotificationPass;
+    }
+
+    @Override
+    public Intent getInboxReputationHistoryIntent() {
+        Intent intent = new Intent(this, InboxReputationActivity.class);
+        intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
+        return intent;
+    }
+
+    @Override
+    public Fragment getReputationHistoryFragment() {
+        return SellerReputationFragment.createInstance();
     }
 
     @Override
@@ -343,14 +369,6 @@ public class SellerRouterApplication extends MainApplication
                 SellerHomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public TkpdFragmentWrapper getSellerReputationFragment(Context context) {
-        return new TkpdFragmentWrapper(
-                context.getString(R.string.header_review_reputation),
-                SellerReputationFragment.TAG,
-                SellerReputationFragment.createInstance());
     }
 
     @Override

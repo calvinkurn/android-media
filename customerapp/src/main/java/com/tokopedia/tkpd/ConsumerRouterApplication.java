@@ -22,6 +22,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -32,6 +34,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -55,6 +58,7 @@ import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
+import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -73,6 +77,7 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
@@ -83,7 +88,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, ReputationRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -343,6 +348,31 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent getInboxReputationIntent(Context context) {
         return InboxReputationActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
+                                                Bundle data, String notifTitle) {
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
+                ((ReputationRouter) mContext).getInboxReputationIntent(mContext)
+        );
+        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.title = notifTitle;
+        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        return mNotificationPass;
+    }
+
+    @Override
+    public Intent getInboxReputationHistoryIntent() {
+        Intent intent = new Intent(this, InboxReputationActivity.class);
+        intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
+        return intent;
+    }
+
+    @Override
+    public Fragment getReputationHistoryFragment() {
+        return SellerReputationFragment.createInstance();
     }
 
     @Override

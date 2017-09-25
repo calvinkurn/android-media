@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
+package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -12,7 +12,7 @@ import rx.Subscriber;
  * @author by nisie on 9/5/17.
  */
 
-class SendReviewWithoutImageSubscriber extends Subscriber<SendReviewValidateDomain> {
+public class SendReviewWithoutImageSubscriber extends Subscriber<SendReviewValidateDomain> {
 
     private final InboxReputationForm.View viewListener;
 

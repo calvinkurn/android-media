@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -36,6 +37,7 @@ import com.tokopedia.core.gcm.notification.dedicated.SellingOrderFinishedNotific
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.var.TkpdState;
 
 import org.json.JSONException;

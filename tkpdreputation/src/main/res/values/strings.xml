@@ -67,5 +67,6 @@
     <string name="success_edit_review">Sukses mengubah ulasan</string>
     <string name="success_send_review">Sukses mengirim ulasan</string>
     <string name="success_skip_review">Sukses melewati ulasan</string>
+    <string name="title_reputation_history">Penalti Reputasi</string>
 
 </resources>

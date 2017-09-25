@@ -19,9 +19,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -55,6 +55,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     private final CancelReplacementUseCase cancelReplacementUseCase;
     private final SessionHandler sessionHandler;
     private static final int FREE_RETURN = 1;
+
     public TxListPresenterImpl(TxListViewListener viewListener,
                                CancelReplacementUseCase cancelReplacementUseCase,
                                SessionHandler sessionHandler) {
@@ -464,13 +465,13 @@ public class TxListPresenterImpl implements TxListPresenter {
             btnNotReceive.setVisibility(View.VISIBLE);
         else
             btnBack.setVisibility(View.VISIBLE);
-      
+
         //will be used later
 //        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
 //            llFreeReturn.setVisibility(View.VISIBLE);
 //            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
 //        }
-  
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -574,10 +575,13 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(context, InboxReputationActivity.class);
-                        intent.putExtra("unread", true);
-                        dialog.dismiss();
-                        viewListener.navigateToActivity(intent);
+                        if (context instanceof ReputationRouter) {
+                            Intent intent = ((ReputationRouter) context).getInboxReputationIntent
+                                    (context);
+                            intent.putExtra("unread", true);
+                            dialog.dismiss();
+                            viewListener.navigateToActivity(intent);
+                        }
                     }
                 });
         Dialog alertDialog = builder.create();

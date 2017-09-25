@@ -22,6 +22,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -104,8 +105,8 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    context.startActivity(((TkpdCoreRouter) context.getApplication())
+                if (context.getApplication() instanceof ReputationRouter) {
+                    context.startActivity(((ReputationRouter) context.getApplication())
                             .getInboxReputationIntent(context));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
                 }

@@ -1,9 +1,9 @@
 package com.tokopedia.seller.reputation.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.image.ImageHandler;
@@ -65,7 +65,7 @@ public class SellerReputationActivity extends BaseActivity implements SellerRepu
     }
 
     private void inflateNewFragment(@IdRes int containerId, Fragment fragment, String TAG) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(containerId, fragment, TAG);
         fragmentTransaction.commit();
     }

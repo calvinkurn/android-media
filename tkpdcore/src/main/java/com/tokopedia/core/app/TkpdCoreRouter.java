@@ -69,5 +69,4 @@ public interface TkpdCoreRouter {
 
     void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
 
-    Intent getInboxReputationIntent(Context context);
 }

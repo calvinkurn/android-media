@@ -14,11 +14,10 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -40,9 +39,9 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     public static final int TAB_MY_REVIEW = 2;
     public static final int TAB_BUYER_REVIEW = 3;
 
-    private static final int OFFSCREEN_PAGE_LIMIT = 2;
+    private static final int OFFSCREEN_PAGE_LIMIT = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
-    TkpdFragmentWrapper sellerReputationFragment;
+    Fragment sellerReputationFragment;
 
     ViewPager viewPager;
     TabLayout indicator;
@@ -95,33 +94,33 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
         viewPager = (ViewPager) findViewById(R.id.pager);
         indicator = (TabLayout) findViewById(R.id.indicator);
 
-        if (getApplicationContext() != null && getApplicationContext() instanceof SellerFragmentReputation) {
-            SellerFragmentReputation applicationContext = (SellerFragmentReputation) getApplicationContext();
-            sellerReputationFragment = applicationContext.getSellerReputationFragment(this);
+        if (getApplicationContext() != null
+                && getApplicationContext() instanceof ReputationRouter) {
+            ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
+            sellerReputationFragment = applicationContext.getReputationHistoryFragment();
         }
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
+        indicator.addTab(indicator.newTab().setText(getString(R.string
+                .title_tab_waiting_review)));
+        indicator.addTab(indicator.newTab().setText(getString(R.string
+                .title_tab_my_review)));
+
+        if (!sessionHandler.getShopID(this).equals("0")
+                && !sessionHandler.getShopID(this).equals("")) {
+            indicator.addTab(indicator.newTab().setText(getString(R.string
+                    .title_tab_buyer_review)));
+        }
+
         if (GlobalConfig.isSellerApp()) {
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product_seller)));
             if (sellerReputationFragment != null) {
-                indicator.addTab(indicator.newTab().setText(sellerReputationFragment.getHeader()));
+                indicator.addTab(indicator.newTab().setText(R.string.title_reputation_history));
             }
             if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
-            }
-        } else {
-
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_waiting_review)));
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_my_review)));
-            if (!sessionHandler.getShopID(this).equals("0")
-                    && !sessionHandler.getShopID(this).equals("")) {
-                indicator.addTab(indicator.newTab().setText(getString(R.string
-                        .title_tab_buyer_review)));
             }
         }
 
@@ -134,8 +133,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
-//            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
-//            fragmentList.add(sellerReputationFragment.getTkpdFragment());
+            fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
+            fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
+            if (!sessionHandler.getShopID(this).equals("0")
+                    && !sessionHandler.getShopID(this).equals("")) {
+                fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
+            }
+            fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));

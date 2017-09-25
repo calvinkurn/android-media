@@ -43,11 +43,6 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
-import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -65,12 +60,12 @@ import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
@@ -82,10 +77,12 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
@@ -93,8 +90,9 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.home.view.ReputationView;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;
@@ -280,9 +278,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @OnClick(R.id.seller_home_reputation_view)
     public void goToSellerReputationHistory() {
-        Intent intent = new Intent(this, InboxReputationActivity.class);
-        intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
-        startActivity(intent);
+        if (this instanceof ReputationRouter) {
+            Intent intent = ((ReputationRouter) this).getInboxReputationHistoryIntent();
+            startActivity(intent);
+        }
+
     }
 
     @Override
@@ -808,8 +808,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                                 ));
                                 break;
                             case 1:
-                                context.startActivity(new Intent(
-                                        context, InboxReputationActivity.class));
+                                if (context instanceof ReputationRouter) {
+                                    Intent intent = ((ReputationRouter) context)
+                                            .getInboxReputationIntent(context);
+                                    context.startActivity(intent);
+                                }
                                 break;
                             case 2:
                                 context.startActivity(new Intent(

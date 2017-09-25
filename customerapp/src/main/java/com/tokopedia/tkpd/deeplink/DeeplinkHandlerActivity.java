@@ -27,6 +27,7 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
@@ -41,7 +42,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
         RideDeeplinkModule.class,
-        DiscoveryApplinkModule.class
+        DiscoveryApplinkModule.class,
+        ReputationApplinkModuleLoader.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -55,7 +57,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
                 new RideDeeplinkModuleLoader(),
-                new DiscoveryApplinkModuleLoader()
+                new DiscoveryApplinkModuleLoader(),
+                new ReputationApplinkModuleLoader()
         );
     }
 

@@ -54,14 +54,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity
 
     private boolean goToReputationHistory;
 
-    @DeepLink(Constants.Applinks.REPUTATION)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, InboxReputationActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);

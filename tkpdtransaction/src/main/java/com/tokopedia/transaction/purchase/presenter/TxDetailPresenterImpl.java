@@ -18,11 +18,11 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
@@ -53,6 +53,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private final TxDetailViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
     private static final int FREE_RETURN = 1;
+
     public TxDetailPresenterImpl(TxDetailViewListener viewListener) {
         this.viewListener = viewListener;
         this.netInteractor = new TxOrderNetInteractorImpl();
@@ -217,7 +218,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     }
 
     @Override
-    public void processComplain(Context context, OrderData orderData){
+    public void processComplain(Context context, OrderData orderData) {
         showComplainDialog(context, orderData);
     }
 
@@ -233,13 +234,17 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(context, InboxReputationActivity.class);
-                        intent.putExtra("unread", true);
-                        dialog.dismiss();
-                        viewListener.navigateToActivity(intent);
-                        viewListener.closeWithResult(
-                                TkpdState.TxActivityCode.BuyerItemReceived, null
-                        );
+                        if (context instanceof ReputationRouter) {
+                            Intent intent = ((ReputationRouter) context).getInboxReputationIntent
+                                    (context);
+                            intent.putExtra("unread", true);
+                            dialog.dismiss();
+                            viewListener.navigateToActivity(intent);
+                            viewListener.closeWithResult(
+                                    TkpdState.TxActivityCode.BuyerItemReceived, null
+                            );
+                        }
+
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -295,13 +300,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
             btnNotReceive.setVisibility(View.VISIBLE);
         else
             btnBack.setVisibility(View.VISIBLE);
-      
+
         //will be used later
 //        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
 //            llFreeReturn.setVisibility(View.VISIBLE);
 //            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
 //        }
-      
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -386,6 +391,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
 
         dialog.show();
     }
+
     private void processResolution(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())

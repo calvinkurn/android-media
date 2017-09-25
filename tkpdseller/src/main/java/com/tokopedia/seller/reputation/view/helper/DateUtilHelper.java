@@ -1,9 +1,9 @@
 package com.tokopedia.seller.reputation.view.helper;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
