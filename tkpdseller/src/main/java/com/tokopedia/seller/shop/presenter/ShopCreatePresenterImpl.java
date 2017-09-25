@@ -507,6 +507,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 break;
             case ShopEditService.STATUS_FINISHED:
                 UnifyTracking.eventCreateShopSuccess();
+                UnifyTracking.eventCreateShopFillLogistic();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         view.showProgress(false);
