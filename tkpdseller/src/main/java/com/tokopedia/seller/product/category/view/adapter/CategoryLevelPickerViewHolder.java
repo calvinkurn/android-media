@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.category.view.model.CategoryLevelViewModel;
+import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 
 /**
  * @author sebastianuskh on 4/6/17.

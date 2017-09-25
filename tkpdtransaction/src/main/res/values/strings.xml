@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
+    <string name="title_change_payment">Ubah Pembayaran</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
     <string name="label_title_dialog_request_cancel_order">Pengajuan Pembatalan Pesanan</string>
@@ -81,6 +82,10 @@
     <string name="title_delete">Hapus</string>
     <string name="title_change">Ubah</string>
     <string name="title_cancel">Batal</string>
+    <string name="parameter_klik">Klik</string>
+    <string name="parameter_kartu">Kartu</string>
+    <string name="parameter_kredit">Kredit</string>
+    <string name="parameter_bca">BCA</string>
     <string name="title_daily_limit">Limit Harian</string>
     <string name="title_delete_bca_one_click">Hapus BCA OneKlik?</string>
     <string name="title_payment_account_owner">Nama Pemilik Rekening</string>
@@ -89,4 +94,7 @@
     <string name="title_expiry_date">Masa Berlaku</string>
     <string name="message_no_credit_card">Belum Ada Kartu Kredit Tersimpan</string>
     <string name="success_cancel_replacement">Pesanan berhasil dibatalkan</string>
+    <string name="title_cancel_transaction">Batalkan Transaksi</string>
+    <string name="title_confirm_cancel_transaction">Konfirmasi Pembatalan Transaksi</string>
+    <string name="question_cancel_transaction">Batalkan Transaksi?</string>
 </resources>

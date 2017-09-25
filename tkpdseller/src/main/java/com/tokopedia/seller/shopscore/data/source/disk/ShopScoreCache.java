@@ -10,6 +10,8 @@ import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceM
 import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
 import com.tokopedia.core.var.TkpdCache;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -19,6 +21,7 @@ import rx.functions.Func1;
 public class ShopScoreCache {
     private final GlobalCacheManager cacheManager;
 
+    @Inject
     public ShopScoreCache(GlobalCacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }

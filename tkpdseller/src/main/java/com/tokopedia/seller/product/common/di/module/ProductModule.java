@@ -9,7 +9,6 @@ import com.tokopedia.seller.base.domain.interactor.FetchDatePickerUseCase;
 import com.tokopedia.seller.base.domain.interactor.SaveDatePickerUseCase;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenterImpl;
-import com.tokopedia.seller.goldmerchant.common.di.scope.GoldMerchantScope;
 import com.tokopedia.seller.product.common.di.scope.ProductScope;
 
 import dagger.Module;

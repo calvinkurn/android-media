@@ -37,7 +37,6 @@ import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,7 +49,7 @@ import rx.Subscriber;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication{
+public abstract class MainApplication extends TkpdMultiDexApplication{
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -73,6 +72,13 @@ public class MainApplication extends TkpdMultiDexApplication{
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+
+    /**
+     * Get list of white list
+     *
+     * @return
+     */
+    protected abstract List<CacheApiWhiteListDomain> getWhiteList();
 
     public static MainApplication getInstance() {
         return instance;
@@ -286,7 +292,7 @@ public class MainApplication extends TkpdMultiDexApplication{
 
 
     public void addToWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
         cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
@@ -305,16 +311,6 @@ public class MainApplication extends TkpdMultiDexApplication{
                 Log.i(TAG, aBoolean.toString());
             }
         });
-    }
-
-
-    /**
-     * leave empty for mainapplication.
-     *
-     * @return
-     */
-    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
-        return new ArrayList<>();
     }
 
     @Override

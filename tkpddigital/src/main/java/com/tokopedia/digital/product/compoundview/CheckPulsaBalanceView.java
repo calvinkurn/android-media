@@ -93,13 +93,13 @@ public class CheckPulsaBalanceView extends LinearLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onButtonCheckBalanceClicked(simPosition, ussdCode);
+                actionListener.onButtonCheckBalanceClicked(simPosition, ussdCode , CheckPulsaBalanceView.this);
             }
         };
     }
 
     public interface ActionListener {
-        void onButtonCheckBalanceClicked(int simPosition, String ussdCode);
+        void onButtonCheckBalanceClicked(int simPosition, String ussdCode, CheckPulsaBalanceView checkPulsaBalanceView);
 
     }
 

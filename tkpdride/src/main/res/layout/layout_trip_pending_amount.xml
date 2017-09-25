@@ -59,6 +59,7 @@
         android:src="@drawable/shape_dash_line" />
 
     <LinearLayout
+        android:id="@+id/layout_topup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/thirty_dp"

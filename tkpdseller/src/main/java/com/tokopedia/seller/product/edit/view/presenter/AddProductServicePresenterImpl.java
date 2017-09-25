@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
@@ -26,10 +28,10 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     }
 
     @Override
-    public void uploadProduct(long productDraftId) {
+    public void uploadProduct(long productDraftId, boolean isAdd) {
         checkViewAttached();
         RequestParams requestParams = UploadProductUseCase.generateUploadProductParam(productDraftId);
-        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId)));
+        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId), isAdd));
     }
 
     @Override
@@ -47,8 +49,10 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
 
         private String productDraftId;
-        public AddProductSubscriber(String productDraftId) {
+        private boolean isAdd;
+        public AddProductSubscriber(String productDraftId, boolean isAdd) {
             this.productDraftId = productDraftId;
+            this.isAdd = isAdd;
         }
 
         @Override
@@ -58,20 +62,12 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
 
         @Override
         public void onError(Throwable uploadThrowable) {
-            Throwable e = uploadThrowable;
-            String productDraftId = "";
-            @ProductStatus
-            int productStatus = ProductStatus.ADD;
-            if (uploadThrowable instanceof UploadProductException){
-                e = ((UploadProductException) uploadThrowable).getThrowable();
-                productDraftId = ((UploadProductException) uploadThrowable).getProductDraftId();
-                productStatus = ((UploadProductException) uploadThrowable).getProductStatus();
-            }
-
             if (!isViewAttached()) {
                 return;
             }
-            updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(productDraftId, false), new Subscriber<Boolean>() {
+            updateUploadingDraftProductUseCase.execute(
+                    UpdateUploadingDraftProductUseCase.createRequestParams(
+                            this.productDraftId, false), new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
                     // no op
@@ -88,8 +84,8 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                 }
             });
             getView().onFailedAddProduct();
-            getView().notificationFailed(e, productDraftId, productStatus);
-            getView().sendFailedBroadcast(e);
+            getView().notificationFailed(uploadThrowable, this.productDraftId, isAdd? ProductStatus.ADD: ProductStatus.EDIT);
+            getView().sendFailedBroadcast(uploadThrowable);
         }
 
         @Override

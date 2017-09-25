@@ -67,7 +67,11 @@ public class UploadProductInputViewModel {
     }
 
     public void setProductPhotos(ProductPhotoListViewModel productPhotos) {
-        this.productPhotos = productPhotos;
+        if (productPhotos == null) {
+            this.productPhotos = new ProductPhotoListViewModel();
+        } else {
+            this.productPhotos = productPhotos;
+        }
     }
 
     public List<ProductWholesaleViewModel> getProductWholesaleList() {

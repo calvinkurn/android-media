@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp.customview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -13,12 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
@@ -197,13 +199,15 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         @Override
         public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("login", true);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID,
-                    String.valueOf(data.getShopInfo().getShopId()));
-            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
-            bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT, data.getInfo().getProductName());
-            listener.onProductShopMessageClicked(bundle);
+            if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                        .getAskSellerIntent(v.getContext(),
+                                String.valueOf(data.getShopInfo().getShopId()),
+                                data.getShopInfo().getShopName(),
+                                data.getInfo().getProductName(),
+                                TkpdInboxRouter.PRODUCT);
+                listener.onProductShopMessageClicked(intent);
+            }
         }
     }
 

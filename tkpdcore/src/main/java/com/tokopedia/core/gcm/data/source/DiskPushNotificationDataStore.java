@@ -69,6 +69,10 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         });
     }
 
+    public Observable<String> getRegistrationDevice() {
+        return Observable.just( FCMCacheManager.getRegistrationId(mContext) );
+    }
+
     @Override
     public Observable<List<PushNotification>> getSavedPushNotification() {
         return Observable.just(pushNotificationDbManager.getData()).map(new Func1<List<DbPushNotification>, List<PushNotification>>() {
