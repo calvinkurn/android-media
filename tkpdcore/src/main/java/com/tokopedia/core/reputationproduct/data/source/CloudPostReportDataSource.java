@@ -30,7 +30,7 @@ public class CloudPostReportDataSource {
     }
 
     public Observable<ActResultDomain> getPostReportDataSource(Map<String, String> parameters) {
-        return reviewActService.getApi().reportReview(AuthUtil.generateParams(context,parameters))
+        return reviewActService.getApi().reportReview(AuthUtil.generateParams(context, parameters))
                 .map(actResultMapper);
     }
 }

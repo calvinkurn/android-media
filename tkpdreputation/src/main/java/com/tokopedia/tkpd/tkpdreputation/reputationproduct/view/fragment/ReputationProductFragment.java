@@ -235,7 +235,6 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         model = ((ReviewProductModel) getArguments().getParcelable("data"));
         shopID = getArguments().getString("shop_id");
         productID = getArguments().getString("product_id");
-        initData();
     }
 
     @Override
@@ -252,6 +251,9 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     @Override
     protected void onFirstTimeLaunched() {
+        initData();
+        setModelToView();
+        presenter.getLikeDislike(getActivity(), model.getReviewShopId(), String.valueOf(model.getReviewId()));
 
     }
 
@@ -267,7 +269,6 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     private void initData() {
         model.detail = new ReviewProductDetailModel();
-        presenter.getLikeDislike(getActivity(), model.getReviewShopId(), String.valueOf(model.getReviewId()));
     }
 
     @Override
@@ -278,14 +279,6 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         model.detail.counterLike = result.getLikeDislikeReviewDomain().get(0).getTotalLikeDislikeDomain().getTotalLike();
         setModelToView();
     }
-
-//    private Map<String, String> getLikeDislikeParam() {
-//        HashMap<String, String> param = new HashMap<>();
-//        param.put("shop_id", model.getReviewShopId());
-//        param.put("review_ids", String.valueOf(model.getReviewId()));
-//        return param;
-//    }
-
 
     private void setModelToView() {
         imageUploadAdapter = ImageUploadAdapter.createAdapter(getActivity());

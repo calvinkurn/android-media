@@ -57,7 +57,7 @@ public class ReputationProductViewFragmentPresenterImpl implements ReputationPro
         likeDislikeUseCase.execute(likeDislikeUseCase.getActionLikeDislikeParam(String.valueOf(reviewId),
                 productId,
                 shopId,
-                String.valueOf(shopId)),
+                String.valueOf(statusLikeDislike)),
                 new ActionLikeDislikeSubscriber(reputationProductFragmentView, model));
     }
 

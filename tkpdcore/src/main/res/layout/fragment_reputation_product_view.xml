@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,7 +34,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        android:src="@drawable/remove" />
+                        tools:src="@drawable/remove" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -42,7 +43,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:src="@drawable/ic_new_action_overflow_black"/>
+                        tools:src="@drawable/ic_new_action_overflow_black"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -57,7 +58,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/username"
-                            android:text="Username"
+                            tools:text="Username"
                             android:textColor="@color/black"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -82,7 +83,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="@dimen/fontvs"
-                                android:text="40%"
+                                tools:text="40%"
                                 android:layout_marginLeft="@dimen/margin_vs"
                                 />
 
@@ -97,7 +98,7 @@
                     android:layout_below="@id/header"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:id="@+id/comment"
-                    android:text="Comment Here\n\tComment Here\n\t\tComment There"
+                    tools:text="Comment Here\n\tComment Here\n\t\tComment There"
                     android:textSize="@dimen/font_small"/>
 
                 <android.support.v7.widget.RecyclerView
@@ -115,7 +116,7 @@
                     android:layout_marginTop="@dimen/margin_vs"
                     android:layout_below="@id/image_holder"
                     android:id="@+id/date"
-                    android:text="25 Maret 2015"
+                    tools:text="25 Maret 2015"
                     android:textColor="@color/time_color"
                     android:textSize="@dimen/fontvs" />
 
@@ -175,7 +176,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/star_quality"
                                 android:gravity="center"
-                                android:src="@drawable/ic_star_five"
+                                tools:src="@drawable/ic_star_five"
                                 android:layout_gravity="center_vertical"
                                 android:paddingTop="@dimen/padding_vs"
                                 android:paddingBottom="@dimen/padding_vs"
@@ -214,7 +215,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/star_accuracy"
                                 android:gravity="center"
-                                android:src="@drawable/ic_star_five"
+                                tools:src="@drawable/ic_star_five"
                                 android:layout_gravity="center_vertical"
                                 android:paddingTop="@dimen/padding_vs"
                                 android:paddingBottom="@dimen/padding_vs"
@@ -286,7 +287,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="1"
+                    tools:text="1"
                     android:textSize="@dimen/fontvs"
                     android:gravity="center_vertical" />
 
@@ -362,6 +363,7 @@
                 android:id="@+id/comment_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:padding="@dimen/padding_small">
 
                 <RelativeLayout
@@ -373,7 +375,7 @@
                         android:id="@+id/user_ava_comment"
                         android:layout_width="@dimen/img_thumb"
                         android:layout_height="@dimen/img_thumb"
-                        android:src="@drawable/remove" />
+                        tools:src="@drawable/remove" />
 
                     <ImageView
                         android:id="@+id/but_overflow_comment"
