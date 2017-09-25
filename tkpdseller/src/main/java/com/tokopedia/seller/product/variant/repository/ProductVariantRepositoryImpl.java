@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.variant.repository;
 
-import com.tokopedia.seller.product.category.di.scope.CategoryPickerScope;
+import com.tokopedia.core.common.category.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;

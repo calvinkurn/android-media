@@ -16,6 +16,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -150,13 +151,6 @@ public class TickerView extends BaseCustomView {
         tickerIndicator = (CirclePageIndicator) view.findViewById(R.id.page_indicator_ticker);
         imageViewActionClose = view.findViewById(R.id.imageview_ticker_action_close);
 
-        int minHeight = (int) getResources().getDimension(R.dimen.height_widget_ticker);
-
-        ViewGroup.LayoutParams layoutParams = tickerHighlightView.getLayoutParams();
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.height = minHeight;
-        tickerHighlightView.setLayoutParams(layoutParams);
-
         listTextColor = new ArrayList<>();
         listBackGroundColor = new ArrayList<>();
         listMessage = new ArrayList<>();
@@ -286,6 +280,12 @@ public class TickerView extends BaseCustomView {
 
         if (listMessage.size() == 1) {
             tickerIndicator.setVisibility(GONE);
+
+            stopAutoScrollTicker();
+        } else {
+            tickerIndicator.setVisibility(View.VISIBLE);
+
+            startAutoScrollTicker();
         }
 
         tickerAdapter.setListMessage(listMessage);
@@ -293,8 +293,6 @@ public class TickerView extends BaseCustomView {
         tickerAdapter.setListBackGroundColor(listBackGroundColor);
         tickerAdapter.setListener(onPartialTextClickListener);
         tickerAdapter.notifyDataSetChanged();
-
-        startAutoScrollTicker();
 
         invalidate();
         requestLayout();
