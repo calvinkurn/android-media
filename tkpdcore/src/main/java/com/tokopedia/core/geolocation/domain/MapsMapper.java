@@ -54,7 +54,6 @@ public class MapsMapper implements IMapsMapper{
     }
 
     private String modifiedString(String text, String query) {
-        return text.replaceAll("(?i)" + Pattern.quote(query), "<b>" + query + "</b>");
-        //html = Pattern.compile(label, Pattern.CASE_INSENSITIVE).matcher(html).replaceAll("WINDOWS");
+        return text.replaceAll(query, "<b>" + query + "</b>");
     }
 }
