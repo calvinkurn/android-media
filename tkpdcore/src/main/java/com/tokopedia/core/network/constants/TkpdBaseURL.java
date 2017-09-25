@@ -54,6 +54,7 @@ public class TkpdBaseURL {
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
+    public static String GALADRIEL = "https://galadriel.tokopedia.com/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -586,6 +587,11 @@ public class TkpdBaseURL {
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
         public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
         public static final String URL_CHECK_PROMO = "v1/promo/check";
+    }
+
+    public static class Galadriel {
+        public static final String PATH_PROMO_WIDGET = "promo-suggestions/v1/widget";
+
     }
 
     public static class Mojito {

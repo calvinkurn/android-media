@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -42,6 +43,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
@@ -75,6 +77,7 @@ import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
 import com.tokopedia.tkpdpdp.customview.PriceSimulationView;
+import com.tokopedia.tkpdpdp.customview.PromoWidgetView;
 import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
@@ -128,6 +131,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private PictureView pictureView;
     private RatingTalkCourierView ratingTalkCourierView;
     private PriceSimulationView priceSimulationView;
+    private PromoWidgetView promoWidgetView;
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
@@ -219,6 +223,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
         newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
+        promoWidgetView = (PromoWidgetView) view.findViewById(R.id.view_promo_widget);
         mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
@@ -259,6 +264,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
         mostHelpfulReviewView.setListener(this);
+        promoWidgetView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
         latestTalkView.setListener(this);
@@ -467,8 +473,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onProductShopMessageClicked(@NonNull Bundle bundle) {
-        presenter.processToSendMessage(context, bundle);
+    public void onProductShopMessageClicked(@NonNull Intent intent) {
+        presenter.processToSendMessage(context, intent);
     }
 
     @Override
@@ -570,13 +576,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
-            webViewHandleListener = (DeepLinkWebViewHandleListener) getActivity();
-            webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            if (webViewHandleListener != null) {
+                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            }
         } else {
             showToastMessage("Produk tidak ditemukan!");
             closeView();
         }
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(context);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
     }
 
     @Override
@@ -903,6 +930,25 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onPromoAdsClicked() {
         presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
                 productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
+    }
+
+    @Override
+    public void showPromoWidget(PromoAttributes promoAttributes) {
+        this.promoWidgetView.renderData(promoAttributes);
+    }
+
+    @Override
+    public void onPromoWidgetCopied() {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout,context.getString(R.string.title_copied),
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(context.getString(R.string.close), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.setActionTextColor(Color.WHITE);
+        snackbar.show();
     }
 
     @Override

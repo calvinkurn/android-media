@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +30,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
@@ -451,20 +453,22 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
-                Bundle bundle = new Bundle();
-                bundle.putString(InboxRouter.PARAM_USER_ID, order.getOrderCustomer().getCustomerId());
-                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, order.getOrderCustomer().getCustomerName());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                        order.getOrderDetail().getDetailInvoice());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                        MethodChecker.fromHtml(
-                                getString(R.string.custom_content_message_ask_seller)
-                                        .replace("XXX",
-                                                order.getOrderDetail().getDetailPdfUri())).toString()
-                );
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                            .getAskBuyerIntent(getActivity(),
+                                    order.getOrderCustomer().getCustomerId(),
+                                    order.getOrderCustomer().getCustomerName(),
+                                    order.getOrderDetail().getDetailInvoice(),
+                                    MethodChecker.fromHtml(
+                                            getString(R.string.custom_content_message_ask_seller)
+                                                    .replace("XXX",
+                                                            order.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER);
+                    startActivity(intent);
+                }
+
+
             }
         };
     }
