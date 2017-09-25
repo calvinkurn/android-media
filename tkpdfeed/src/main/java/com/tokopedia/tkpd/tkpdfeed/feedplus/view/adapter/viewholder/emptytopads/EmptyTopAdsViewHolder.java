@@ -29,7 +29,7 @@ import java.util.Random;
 public class EmptyTopAdsViewHolder extends AbstractViewHolder<EmptyTopAdsModel> {
 
 
-    private static final int MAX_TOPADS = 3;
+    private static final int MAX_TOPADS = 2;
     private static final int MARGIN_15DP_PIXEL = 40;
     TopAdsView topAdsView;
     private final CacheHandler cacheHandler;
