@@ -48,7 +48,7 @@
     <string name="your_trips_toolbar_title">Your Trips</string>
     <string name="btn_request">Request</string>
     <string name="apply_promocode">Do you have a promocode?</string>
-    <string name="apply">Apply</string>
+    <string name="apply">APPLY</string>
     <string name="btn_apply">APPLY</string>
     <string name="hint_enter_promo_code">Enter Promo Code</string>
     <string name="apply_promo_toolbar_title">Apply Promo Code</string>
@@ -143,7 +143,7 @@
     <string name="complete_trip_tip_top_up_more_tokocash_than_your_pending_fare_to_ease_your_booking_experience"><b>Tip</b>: Top up more TokoCash than your pending fare to ease your booking experience!</string>
     <string name="complete_trip_top_up_tokocash">Top Up TokoCash</string>
     <string name="complete_trip_pending_fare">Pending Fare</string>
-    <string name="pending_fare_choose_nominal">Nominal</string>
+    <string name="pending_fare_choose_nominal">Choose Nominal Amount</string>
     <string name="complete_trip_payment_failed">Payment failed</string>
     <string name="please_wait_message">Please wait...</string>
     <string name="uber_product_confirm_tos">You must confirm your information to take ride</string>
@@ -151,4 +151,11 @@
     <string name="error_please_try_again_later">Sorry, Please try again later</string>
     <string name="interrupt_tos_cancel">Cancel</string>
     <string name="interrupt_tos_accept">Accept</string>
+    <string name="edit">EDIT</string>
+    <string name="menu_remove">Remove</string>
+    <string name="change_destination">CHANGE</string>
+    <string name="change_destination_insufficient_balance_title">Oops, you don\'t have enought Tokocash balance to change your destination</string>
+    <string name="change_destination_insufficient_balance_message">Please topup your Tokocash to\nchange your destination</string>
+    <string name="add_tokocash">Add TokoCash</string>
+    <string name="change_destination_insufficient_balance_screen_title">Insufficient TokoCash</string>
 </resources>

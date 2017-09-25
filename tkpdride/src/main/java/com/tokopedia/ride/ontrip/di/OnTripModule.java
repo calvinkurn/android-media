@@ -9,6 +9,7 @@ import com.tokopedia.ride.ontrip.domain.GetCancelReasonsUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
+import com.tokopedia.ride.ontrip.domain.UpdateRideRequestUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -68,6 +69,14 @@ public class OnTripModule {
                                                              PostExecutionThread postExecutionThread,
                                                              BookingRideRepository bookingRideRepository) {
         return new CancelRideRequestUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    @OnTripScope
+    UpdateRideRequestUseCase provideUpdateRideRequestUseCase(ThreadExecutor threadExecutor,
+                                                             PostExecutionThread postExecutionThread,
+                                                             BookingRideRepository bookingRideRepository) {
+        return new UpdateRideRequestUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 
 
