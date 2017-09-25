@@ -141,7 +141,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration
                 = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.line_separator_medium));
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.bg_line_separator));
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

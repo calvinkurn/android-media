@@ -1,4 +1,4 @@
-package com.tokopedia.ride.completetrip.domain.model;
+package com.tokopedia.ride.common.ride.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by alvarisi on 3/31/17.
  */
 
-public class Receipt implements Parcelable{
+public class Receipt implements Parcelable {
     private String requestId;
     private String currency;
     private String distance;
@@ -26,6 +26,7 @@ public class Receipt implements Parcelable{
     private PendingPayment pendingPayment;
     private String cashbackDisplayFormat;
     private String discountDisplayFormat;
+    private TipList tipList;
 
     public Receipt() {
     }
@@ -49,6 +50,7 @@ public class Receipt implements Parcelable{
         pendingPayment = in.readParcelable(PendingPayment.class.getClassLoader());
         cashbackDisplayFormat = in.readString();
         discountDisplayFormat = in.readString();
+        tipList = in.readParcelable(TipList.class.getClassLoader());
     }
 
     public static final Creator<Receipt> CREATOR = new Creator<Receipt>() {
@@ -207,6 +209,14 @@ public class Receipt implements Parcelable{
         this.discountDisplayFormat = discountDisplayFormat;
     }
 
+    public TipList getTipList() {
+        return tipList;
+    }
+
+    public void setTipList(TipList tipList) {
+        this.tipList = tipList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -232,5 +242,6 @@ public class Receipt implements Parcelable{
         parcel.writeParcelable(pendingPayment, i);
         parcel.writeString(cashbackDisplayFormat);
         parcel.writeString(discountDisplayFormat);
+        parcel.writeParcelable(tipList, i);
     }
 }

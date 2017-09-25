@@ -9,6 +9,7 @@ public class RideAddress {
     private String addressDescription;
     private String latitude;
     private String longitude;
+    private boolean prefill;
 
     public RideAddress() {
     }
@@ -43,5 +44,13 @@ public class RideAddress {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isPrefill() {
+        return prefill;
+    }
+
+    public void setPrefill(boolean prefill) {
+        this.prefill = prefill;
     }
 }
