@@ -44,7 +44,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-
+                view.renderDefaultError();
             }
 
             @Override
@@ -69,6 +69,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                view.renderDefaultError();
             }
 
             @Override
@@ -187,7 +188,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderErrorProduct("Produk yang anda pilih saat ini tidak tersedia");
             }
 
             @Override

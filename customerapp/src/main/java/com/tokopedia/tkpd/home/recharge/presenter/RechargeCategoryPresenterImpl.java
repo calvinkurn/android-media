@@ -73,7 +73,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderErrorNetwork();
             }
 
             @Override
@@ -102,7 +102,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderErrorNetwork();
             }
 
             @Override
@@ -132,15 +132,13 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                     cacheHandler.putString(TkpdCache.Key.DIGITAL_LAST_ORDER,
                             CacheUtil.convertModelToString(lastOrder, LastOrder.class));
                     cacheHandler.applyEditor();
-                } else {
-                    onNetworkError();
                 }
             }
         };
     }
 
     public void onNetworkError() {
-        view.renderErrorNetwork();
+        view.renderErrorMessage();
     }
 
     private boolean isVersionMatch(Status status) {

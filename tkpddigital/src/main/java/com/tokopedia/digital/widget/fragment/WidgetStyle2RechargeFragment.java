@@ -351,7 +351,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
-    public void renderErrorMessage(String message) {
+    public void renderErrorProduct(String message) {
         showSnackbarErrorMessage(message);
     }
 
