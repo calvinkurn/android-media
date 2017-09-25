@@ -13,6 +13,8 @@ import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
+import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 
 import java.util.List;
 
@@ -58,4 +60,8 @@ public interface BookingRideDataStore {
     Observable<String> sendRating(String requestId, TKPDMapParam<String, Object> parameters);
 
     Observable<CancelReasonsResponseEntity> getCancelReasons(TKPDMapParam<String, Object> parameters);
+
+    Observable<UpdateDestinationEntity> updateRequest(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> sendTip(TKPDMapParam<String, Object> parameters);
 }
