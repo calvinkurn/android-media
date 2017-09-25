@@ -496,9 +496,9 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
         int type = resultData.getInt(ShopEditService.TYPE, ShopEditService.INVALID_TYPE);
         switch (resultCode) {
             case ShopEditServiceConstant.STATUS_RUNNING:
-                UnifyTracking.eventCreateShopFillLogistic();
                 switch (type) {
                     case ShopEditServiceConstant.CREATE_SHOP:
+                        UnifyTracking.eventCreateShopFillLogistic();
                         view.showProgress(true);
                         break;
                     case ShopEditServiceConstant.CREATE_SHOP_WITHOUT_IMAGE:
