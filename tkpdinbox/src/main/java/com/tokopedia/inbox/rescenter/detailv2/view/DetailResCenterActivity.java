@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -15,6 +16,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -38,11 +40,16 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     }
 
     @DeepLink(Constants.Applinks.RESCENTER)
-    public static Intent getCallingIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, DetailResCenterActivity.class);
+    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Intent parentIntent = InboxResCenterActivity.createIntent(context);
+        Intent destinationIntent = new Intent(context, DetailResCenterActivity.class);
         String resoId = bundle.getString(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, "");
-        intent.putExtra(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resoId);
-        return intent.putExtras(bundle);
+        destinationIntent.putExtra(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resoId);
+        destinationIntent.putExtras(bundle);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(destinationIntent);
+        return taskStackBuilder;
     }
 
     @Override
