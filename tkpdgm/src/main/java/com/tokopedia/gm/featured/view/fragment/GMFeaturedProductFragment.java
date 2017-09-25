@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -143,6 +144,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventClickAddFeaturedProduct();
                 moveToProductPicker();
             }
         });
@@ -151,6 +153,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSortFeaturedProduct();
                 onBackPressed();
             }
         });
@@ -511,6 +514,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getTotalChecked()));
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                UnifyTracking.eventDeleteFeaturedProduct();
                 gmTemporaryDelete = ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
                 showSnackbarWithUndo();
                 reloadAfterDeleteAction();

@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -62,6 +63,12 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     @Override
+    protected void submitButtonClicked() {
+        UnifyTracking.eventSavePickFeaturedProduct(String.valueOf(getCacheListSize()));
+        super.submitButtonClicked();
+    }
+
+    @Override
     protected Intent getDefaultIntentResult() {
         Intent intent = new Intent();
         intent.putParcelableArrayListExtra(ProductListPickerConstant.EXTRA_PRODUCT_LIST_SUBMIT, new ArrayList<Parcelable>(getItemListCache()));
@@ -91,6 +98,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     private void showEmptyImageNotAllowedMessage() {
+        UnifyTracking.eventTickErrorFeaturedProduct();
         NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_list_picker_empty_stock_cannot_picked));
     }
 
@@ -118,6 +126,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     private void showMaxVariantReachedMessage(){
+        UnifyTracking.eventTickErrorFeaturedProduct();
         NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_list_picker_max_has_been_reached));
     }
 
