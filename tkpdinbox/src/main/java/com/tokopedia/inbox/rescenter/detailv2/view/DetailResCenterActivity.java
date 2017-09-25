@@ -10,7 +10,6 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;

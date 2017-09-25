@@ -1,5 +1,9 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.TaskStackBuilder;
+
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
@@ -34,6 +38,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Sh
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +152,20 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         createResoWithAttachmentUseCase.execute(createResoWithAttachmentUseCase.
                         createResoWithAttachmentRequestParams(resultViewModel),
                 new CreateResoWithAttachmentSubscriber(mainView));
+    }
+
+    @Override
+    public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId) {
+
+        Intent resInboxIntent = InboxResCenterActivity.createIntent(context);
+        resInboxIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        Intent detailResIntent = DetailResCenterActivity.newInstance(context, resolutionId);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(resInboxIntent);
+        taskStackBuilder.addNextIntent(detailResIntent);
+        return taskStackBuilder;
     }
 
     private ProductProblemListViewModel mappingDomainToViewModel(ProductProblemResponseDomain responseDomain) {

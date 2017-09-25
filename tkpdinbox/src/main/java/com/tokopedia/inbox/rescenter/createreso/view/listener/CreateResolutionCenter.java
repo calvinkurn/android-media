@@ -1,5 +1,8 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
+import android.content.Context;
+import android.support.v4.app.TaskStackBuilder;
+
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
@@ -72,5 +75,7 @@ public interface CreateResolutionCenter {
         void addResultFromStep2(ResultViewModel resultViewModel);
 
         void addResultFromStep3(ResultViewModel resultViewModel);
+
+        TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId);
     }
 }

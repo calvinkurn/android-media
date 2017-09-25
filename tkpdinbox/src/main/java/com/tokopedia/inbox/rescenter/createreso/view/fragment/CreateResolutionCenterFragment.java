@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
+    public static final String RESOLUTION_ID = "reso_id";
 
     private static final int REQUEST_STEP1 = 1001;
     private static final int REQUEST_STEP2 = 1002;
@@ -305,8 +308,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     public void updateSolutionString(ResultViewModel resultViewModel, TextView textView) {
         textView.setText(resultViewModel.refundAmount != 0 ?
-                context.getString(R.string.string_return_rp) + " " + resultViewModel.refundAmount
-                        + " " + context.getString(R.string.string_to_buyer) :
+                resultViewModel.solutionName + " Rp " + resultViewModel.refundAmount :
                 resultViewModel.solutionName);
     }
 
@@ -394,7 +396,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     private void finishResolution(String resolutionId, String message) {
         dismissProgressBar();
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        context.startActivity(DetailResCenterActivity.newInstance(context, String.valueOf(resolutionId)));
+        presenter.getInboxAndDetailResoStackBuilder(context, resolutionId).startActivities();
         getActivity().finish();
     }
 
