@@ -19,7 +19,7 @@ import {
   FETCH_CART_FROM_CACHE,
   FETCH_BANK_FUlFILLED,
   FETCH_EMI_FUlFILLED,
-  MAKE_PAYMENT
+  MAKE_PAYMENT_FUlFILLED
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -281,6 +281,22 @@ const payment = (state = {
         emiList: action.payload.data.data.list
       }
       break;
+
+    case `${MAKE_PAYMENT_FUlFILLED}_${FULFILLED}`:
+      return {
+        ...state
+      }
+      break;
+    case `${MAKE_PAYMENT_FUlFILLED}_${PENDING}`:
+      return {
+        ...state,
+        isFetching: true,
+      }
+    case `${MAKE_PAYMENT_FUlFILLED}_${REJECTED}`:
+      return {
+        ...state,
+        isFetching: false
+      }
     case 'BANK_SELECTED':
       const bank_id = action.payload
       const newData = {
@@ -318,10 +334,6 @@ const payment = (state = {
         case 'cvv':
           return { ...state, cvv: action.payload.value }
       }
-    
-    case 'MAKE_PAYMENT':
-      console.log(action.payload)
-
     default:
       return state
   }

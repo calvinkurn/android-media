@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, TextInput, TouchableNativeFeedback, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions } from 'react-native'
-import { selectPaymentOptions } from '../actions/index'
+import { selectPaymentOptions, makePayment } from '../actions/index'
 import { ccFormat, getCardType } from '../lib/utility'
 import {NavigationModule} from 'NativeModules'
 import { Text } from '../common/TKPText'
@@ -72,8 +72,9 @@ class payment extends Component {
       errorMessage
     });
 
-//    this.props.navigation.navigate('PaymentProcessing', {})
-    NavigationModule.navigate("posapp://payment/process", "")
+   //this.props.navigation.navigate('PaymentProcessing', {})
+    this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
+      this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
   };
 
   _cardType = () => {
