@@ -965,9 +965,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
+                    initStatusBarLight();
                     initToolbarLight();
                     fabWishlist.hide();
                 } else {
+                    initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
@@ -1015,8 +1017,29 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
+    private void initStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                View decor = getActivity().getWindow().getDecorView();
+                decor.setSystemUiVisibility(0);
+
+            }
+        }
+    }
+
     private boolean getWindowValidation() {
         return getActivity() != null && getActivity().getWindow() != null;
+    }
+
+    private void initStatusBarLight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getWindowValidation()) {
+            View decor = getActivity().getWindow().getDecorView();
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.green_600));
+        }
     }
 
     private class EditClick implements View.OnClickListener {

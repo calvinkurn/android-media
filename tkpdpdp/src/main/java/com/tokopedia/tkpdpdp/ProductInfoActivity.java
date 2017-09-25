@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
@@ -52,6 +54,10 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_info_fragmented);
     }
