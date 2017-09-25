@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableStringBuilder;
@@ -67,7 +68,6 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     public static final String FROM_WIDGET_TAG = "from widget";
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     private TabLayout indicator;
     private TextView sellerTickerView;
@@ -191,7 +191,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setOffscreenPageLimit(5);
+        mViewPager.setOffscreenPageLimit(3);
         indicator = (TabLayout) findViewById(R.id.indicator);
     }
 
@@ -284,7 +284,6 @@ public class ActivitySellingTransaction extends TkpdActivity
                 getString(R.string.title_transaction_list),
                 getString(R.string.title_opportunity_list)};
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         fragmentList = new ArrayList<>();
 //        fragmentList.add(FragmentPeopleTxCenter.createInstance(FragmentPeopleTxCenter.SHOP));
 //        fragmentList.add(FragmentShopNewOrderV2.createInstance()); //TODO UNCOMMENT
@@ -300,7 +299,7 @@ public class ActivitySellingTransaction extends TkpdActivity
     }
 
     private void setAdapter() {
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(new SectionsPagerAdapter(getFragmentManager()));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -511,7 +510,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
