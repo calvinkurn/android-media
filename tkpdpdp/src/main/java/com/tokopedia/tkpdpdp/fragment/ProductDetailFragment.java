@@ -246,7 +246,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
-        initStatusBarDark();
         setHasOptionsMenu(true);
         initToolbarTransparant();
     }
@@ -1012,11 +1011,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    initStatusBarLight();
                     initToolbarLight();
                     fabWishlist.hide();
                 } else {
-                    initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
@@ -1031,18 +1028,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_share));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_notif));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart));
             }
         }
-        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
+        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more));
 
     }
 
@@ -1050,43 +1047,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundColor(Color.TRANSPARENT);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.share_thin_white));
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_white));
             }
-            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
-        }
-    }
-
-    private void initStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.black));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                View decor = getActivity().getWindow().getDecorView();
-                decor.setSystemUiVisibility(0);
-
-            }
+            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more_white));
         }
     }
 
     private boolean getWindowValidation() {
         return getActivity() != null && getActivity().getWindow() != null;
-    }
-
-    private void initStatusBarLight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getWindowValidation()) {
-            View decor = getActivity().getWindow().getDecorView();
-            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.white));
-        }
     }
 
     private class EditClick implements View.OnClickListener {

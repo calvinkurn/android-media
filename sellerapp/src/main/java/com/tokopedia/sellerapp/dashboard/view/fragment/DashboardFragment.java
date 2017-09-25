@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -379,8 +380,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
         tickerView.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
+        final ArrayList<String> backgrounds = new ArrayList<>();
         for (Ticker.Tickers ticker : tickers) {
             messages.add(ticker.getBasicMessage());
+            backgrounds.add(ticker.getColor());
         }
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
@@ -390,6 +393,22 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 Intent intent = new Intent(getActivity(), BannerWebView.class);
                 intent.putExtra("url", messageClick);
                 startActivity(intent);
+            }
+        });
+        tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {
+            @Override
+            public void onScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onSelected(int position) {
+                tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
+            }
+
+            @Override
+            public void onScrollStateChanged(int state) {
+
             }
         });
         tickerView.buildView();
