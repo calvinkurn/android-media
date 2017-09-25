@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -485,7 +484,11 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             }
             return true;
         } else if (item.getItemId() == R.id.menu_done) {
-            UnifyTracking.eventSortFeaturedProduct();
+            if(isFeaturedProductListChanged(gmFeaturedProductModelListFromServer, adapter.getData())) {
+                UnifyTracking.eventSortFeaturedProductChange();
+            }else{
+                UnifyTracking.eventSortFeaturedProductNotChange();
+            }
             onBackPressed();
             return true;
         }

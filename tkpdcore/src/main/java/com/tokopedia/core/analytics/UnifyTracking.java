@@ -6,7 +6,6 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -2541,8 +2540,12 @@ public class UnifyTracking extends TrackingUtils {
         eventFeaturedProduct(AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
     }
 
-    public static void eventSortFeaturedProduct(){
-        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT);
+    public static void eventSortFeaturedProductChange(){
+        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_CHANGE);
+    }
+
+    public static void eventSortFeaturedProductNotChange(){
+        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_NO_CHANGE);
     }
 
     public static void eventDeleteFeaturedProduct(){
