@@ -7,6 +7,7 @@ import android.app.Application;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
@@ -737,7 +738,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onButtonContactPickerClicked() {
-        DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
+        try {
+            DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
+        } catch (Exception e) {
+            if (e instanceof ActivityNotFoundException) {
+                NetworkErrorHelper.showSnackbar(getActivity(),
+                        getString(R.string.error_message_contact_not_found));
+            }
+        }
     }
 
     @Override

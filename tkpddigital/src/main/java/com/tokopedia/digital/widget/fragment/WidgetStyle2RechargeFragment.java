@@ -1,5 +1,6 @@
 package com.tokopedia.digital.widget.fragment;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.ClientNumber;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.router.SessionRouter;
@@ -117,8 +119,15 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         return new WidgetClientNumberView.OnButtonPickerListener() {
             @Override
             public void onButtonContactClicked() {
-                BaseWidgetRechargeFragmentPermissionsDispatcher
-                        .doLaunchContactPickerWithCheck(WidgetStyle2RechargeFragment.this);
+                try {
+                    BaseWidgetRechargeFragmentPermissionsDispatcher
+                            .doLaunchContactPickerWithCheck(WidgetStyle2RechargeFragment.this);
+                } catch (Exception e) {
+                    if (e instanceof ActivityNotFoundException) {
+                        NetworkErrorHelper.showSnackbar(getActivity(),
+                                getString(R.string.error_message_contact_not_found));
+                    }
+                }
             }
         };
     }
