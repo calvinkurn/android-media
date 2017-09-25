@@ -1,29 +1,27 @@
 package com.tokopedia.digital.widget.compoundview;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.category.Category;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.model.PreCheckoutDigitalWidget;
@@ -49,10 +47,14 @@ public class WidgetWrapperBuyView extends LinearLayout {
     CheckBox creditCheckbox;
     @BindView(R2.id.btn_buy)
     Button buyButton;
+    @BindView(R2.id.layout_checkbox)
+    RelativeLayout layoutCheckbox;
+    @BindView(R2.id.tooltip_instant_checkout)
+    ImageView tooltip;
 
     private Category category;
     private OnBuyButtonListener listener;
-    private String selectedOperatorName = "";
+    private BottomSheetView bottomSheetView;
 
     public WidgetWrapperBuyView(Context context) {
         super(context);
@@ -76,6 +78,7 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_widget_wrapper_buy, this);
         ButterKnife.bind(this);
+        setBottomSheetDialog();
         creditCheckbox.setOnCheckedChangeListener(checkedChangeListener());
     }
 
@@ -92,10 +95,6 @@ public class WidgetWrapperBuyView extends LinearLayout {
         };
     }
 
-    public void setSelectedOperatorName(String selectedOperatorName) {
-        this.selectedOperatorName = selectedOperatorName;
-    }
-
     public boolean isCreditCheckboxChecked() {
         return creditCheckbox.isChecked();
     }
@@ -106,7 +105,7 @@ public class WidgetWrapperBuyView extends LinearLayout {
     }
 
     private void setVisibilityCheckbox() {
-        creditCheckbox.setVisibility(
+        layoutCheckbox.setVisibility(
                 category.getAttributes().isInstantCheckoutAvailable() ? View.VISIBLE : View.GONE);
     }
 
@@ -176,16 +175,32 @@ public class WidgetWrapperBuyView extends LinearLayout {
                 .build();
     }
 
+    private void setBottomSheetDialog() {
+        bottomSheetView = new BottomSheetView(getContext());
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(getContext().getString(com.tokopedia.digital.R.string.title_tooltip_instan_payment))
+                .setBody(getContext().getString(com.tokopedia.digital.R.string.body_tooltip_instan_payment))
+                .setImg(com.tokopedia.digital.R.drawable.ic_digital_instant_payment)
+                .build());
+    }
+
     public void renderInstantCheckoutOption(boolean isInstantCheckoutAvailable) {
-        creditCheckbox.setVisibility(isInstantCheckoutAvailable ? View.VISIBLE : View.GONE);
         if (isInstantCheckoutAvailable) {
-            creditCheckbox.setVisibility(View.VISIBLE);
+            layoutCheckbox.setVisibility(View.VISIBLE);
             creditCheckbox.setOnCheckedChangeListener(checkedChangeListener());
             creditCheckbox.setChecked(listener.isRecentInstantCheckoutUsed(String.valueOf(category.getId())));
         } else {
             creditCheckbox.setChecked(false);
-            creditCheckbox.setVisibility(View.GONE);
+            layoutCheckbox.setVisibility(View.GONE);
         }
+
+        tooltip.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetView.show();
+            }
+        });
     }
 
     public interface OnBuyButtonListener {

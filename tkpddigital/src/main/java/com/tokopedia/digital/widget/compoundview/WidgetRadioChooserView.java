@@ -113,7 +113,7 @@ public class WidgetRadioChooserView extends LinearLayout {
         return new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     listener.onTrackingOperator();
                 }
                 return false;
@@ -123,7 +123,9 @@ public class WidgetRadioChooserView extends LinearLayout {
 
     public interface RadioChoserListener {
         void onCheckChange(RechargeOperatorModel selectedOperator);
+
         void onResetClientNumber();
+
         void onTrackingOperator();
     }
 }

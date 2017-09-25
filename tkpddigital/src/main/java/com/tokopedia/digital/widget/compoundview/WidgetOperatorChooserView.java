@@ -58,7 +58,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
     }
 
     public void renderDataView(final List<RechargeOperatorModel> operators, LastOrder lastOrder, int categoryId,
-                                String lastOperatorSelected) {
+                               String lastOperatorSelected) {
         WidgetOperatorAdapter adapterOperator = new WidgetOperatorAdapter(
                 getContext(), android.R.layout.simple_spinner_item, operators);
         spinnerOperator.setAdapter(adapterOperator);
@@ -86,7 +86,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
         return new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()== MotionEvent.ACTION_UP) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     listener.onTrackingOperator();
                 }
                 return false;
@@ -120,7 +120,9 @@ public class WidgetOperatorChooserView extends LinearLayout {
 
     public interface OperatorChoserListener {
         void onCheckChangeOperator(RechargeOperatorModel rechargeOperatorModel);
+
         void onResetOperator();
+
         void onTrackingOperator();
     }
 }

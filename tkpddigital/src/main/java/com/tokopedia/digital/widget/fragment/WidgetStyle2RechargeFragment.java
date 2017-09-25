@@ -105,6 +105,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         widgetClientNumberView.setHint(clientNumber.getPlaceholder());
         widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
         widgetWrapperBuyView.setCategory(category);
+        widgetWrapperBuyView.renderInstantCheckoutOption(
+                category.getAttributes().isInstantCheckoutAvailable());
         holderWidgetClientNumber.addView(widgetClientNumberView);
 
         presenter.fetchOperatorByCategory(category.getId());
@@ -269,14 +271,14 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     private void initClientNumber() {
-        if (SessionHandler.isV4Login(getActivity())
+        if (sessionHandler.isV4Login(getActivity())
                 && presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())) {
             renderLastOrder();
-        } else if (SessionHandler.isV4Login(getActivity())
+        } else if (sessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             presenter.getOperatorById(lastOperatorSelected);
-        } else if (!SessionHandler.isV4Login(getActivity())
+        } else if (!sessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             presenter.getOperatorById(lastOperatorSelected);
         }
@@ -324,7 +326,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderProduct(Product product) {
         selectedProduct = product;
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (sessionHandler.isV4Login(getActivity())) {
             if (widgetProductChooserView.checkStockProduct(selectedProduct))
                 widgetWrapperBuyView.goToNativeCheckout();
         } else {
@@ -346,7 +348,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderDataRecent(List<String> results) {
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (sessionHandler.isV4Login(getActivity())) {
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
     }
