@@ -50,6 +50,14 @@ class payment extends Component {
       this.props.ccNum.length < 19 ||
       getCardType(this.props.ccNum) === "") {
       errorMessage.ccNum = 'Nomor kartu kredit tidak valid'
+    } else if(!this.props.navigation.state.params.selectedBankData.validate_bin.find((value) => {
+            return this.props.ccNum.replace(' ', '').startsWith(value);
+      }))  {
+      errorMessage.ccNum = 'Nomor kartu kredit tidak sesuai dengan bank yang dipilih ' + this.props.navigation.state.params.selectBank;
+    } else if(!this.props.navigation.state.params.selectedBankData.installment_bin.find((value) => {
+               return this.props.ccNum.replace(' ', '').startsWith(value);
+         }))  {
+         errorMessage.ccNum = 'Nomor kartu kredit tidak boleh mengambil cicilan';
     }
 
     if (!this.props.mon || !this.props.year) {
