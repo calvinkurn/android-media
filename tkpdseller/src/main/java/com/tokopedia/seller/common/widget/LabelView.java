@@ -2,7 +2,6 @@ package com.tokopedia.seller.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
@@ -81,9 +80,9 @@ public class LabelView extends BaseCustomView {
     private void init() {
         View view;
         if (weighted) {
-            view = inflate(getContext(), R.layout.item_label_view_weighted, this);
+            view = inflate(getContext(), R.layout.widget_label_view_weighted, this);
         } else {
-            view = inflate(getContext(), R.layout.item_detail_topads_layout, this);
+            view = inflate(getContext(), R.layout.widget_label_view, this);
         }
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);

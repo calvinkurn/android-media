@@ -11,8 +11,8 @@ import com.tokopedia.core.R;
  */
 public class SnackbarRetry {
 
-    private Boolean isRetryClicked;
-    private Snackbar snackBar;
+    protected Boolean isRetryClicked;
+    protected Snackbar snackBar;
 
     public SnackbarRetry(Snackbar snackbar, final NetworkErrorHelper.RetryClickedListener listener) {
         isRetryClicked = true;

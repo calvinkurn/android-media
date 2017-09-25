@@ -732,7 +732,21 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @Override
     public boolean isLaunchedWithLocation() {
         return getArguments() != null && getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false);
+    }
 
+    @Override
+    public void setDestinationAndProcessList(PlacePassViewModel address) {
+        destination = address;
+        interactionListener.collapseBottomPanel();
+        isAlreadySelectDestination = true;
+        setDestinationLocationText(String.valueOf(destination.getTitle()));
+        proccessToRenderRideProduct();
+        hideMarkerCenter();
+    }
+
+    @Override
+    public PlacePassViewModel getSource() {
+        return source;
     }
 
     public void setMarkerText(String timeEst) {

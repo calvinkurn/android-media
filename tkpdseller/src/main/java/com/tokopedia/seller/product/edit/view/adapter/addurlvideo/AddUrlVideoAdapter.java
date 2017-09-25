@@ -47,7 +47,7 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case AddUrlVideoModel.TYPE:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.item_add_video_ll_2, viewGroup, false);
+                        .inflate(R.layout.item_product_add_video, viewGroup, false);
                 return new AddUrlVideoViewHolder(itemLayoutView, imageHandler);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);

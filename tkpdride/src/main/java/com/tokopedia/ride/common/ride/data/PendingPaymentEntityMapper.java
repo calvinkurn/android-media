@@ -2,7 +2,7 @@ package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.ride.common.ride.data.entity.PendingPaymentEntity;
 import com.tokopedia.ride.common.ride.data.entity.TopUpOptionEntity;
-import com.tokopedia.ride.completetrip.domain.model.PendingPayment;
+import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ public class PendingPaymentEntityMapper {
             pendingPayment.setTopupUrl(entity.getTopupUrl());
             pendingPayment.setOperatorId(entity.getOperatorId());
             pendingPayment.setCategoryId(entity.getCategoryId());
+            pendingPayment.setShowTopupOptions(entity.isShowTopupOptions());
         }
         return pendingPayment;
     }

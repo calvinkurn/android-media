@@ -44,7 +44,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case WholesaleModel.TYPE:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.item_wholesale_layout, viewGroup, false);
+                        .inflate(R.layout.item_product_wholesale, viewGroup, false);
                 return new ViewHolder(itemLayoutView);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);

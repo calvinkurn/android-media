@@ -61,4 +61,9 @@ public class EventTracking {
         this.eventTracking.put(key, value);
         return this;
     }
+
+    public EventTracking setCustomDimension(HashMap<String, String> customDimension) {
+        this.eventTracking.putAll(customDimension);
+        return this;
+    }
 }

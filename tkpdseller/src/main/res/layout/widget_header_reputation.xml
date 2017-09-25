@@ -27,7 +27,7 @@
             android:layout_height="19.5dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            app:srcCompat="@mipmap/ic_icon_calendar_02" />
+            android:src="@mipmap/ic_icon_calendar_02" />
 
         <TextView
             android:id="@+id/calendar_range"
@@ -45,8 +45,8 @@
 
         <ImageView
             android:id="@+id/calendar_arrow_icon"
-            android:layout_width="@dimen/topads_arrow_left_width"
-            android:layout_height="@dimen/topads_arrow_left_height"
+            android:layout_width="@dimen/image_width_xxxs"
+            android:layout_height="@dimen/image_width_xxs"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -54,8 +54,7 @@
             android:layout_marginEnd="6dp"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            app:srcCompat="@drawable/ic_arrow_up"
-            app:use_gradient="true" />
+            android:src="@drawable/ic_arrow_up" />
     </RelativeLayout>
 
     <View
