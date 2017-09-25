@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.firebase.perf.metrics.AddTrace;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
@@ -54,6 +55,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
+    @AddTrace(name = "onCreateTracePDP", enabled = true)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_info_fragmented);
