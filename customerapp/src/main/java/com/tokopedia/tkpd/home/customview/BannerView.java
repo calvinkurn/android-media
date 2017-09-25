@@ -271,6 +271,7 @@ public class BannerView extends BaseCustomView {
         public String promoUrl;
         public String promoId;
         public String promoTitle;
+        private String promoApplink;
 
         public String getImgUrl() {
             return imgUrl;
@@ -307,6 +308,14 @@ public class BannerView extends BaseCustomView {
         public PromoItem() {
         }
 
+        public void setPromoApplink(String promoApplink) {
+            this.promoApplink = promoApplink;
+        }
+
+        public String getPromoApplink() {
+            return promoApplink;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -318,6 +327,7 @@ public class BannerView extends BaseCustomView {
             dest.writeString(this.promoUrl);
             dest.writeString(this.promoId);
             dest.writeString(this.promoTitle);
+            dest.writeString(this.promoApplink);
         }
 
         protected PromoItem(Parcel in) {
@@ -325,6 +335,7 @@ public class BannerView extends BaseCustomView {
             this.promoUrl = in.readString();
             this.promoId = in.readString();
             this.promoTitle = in.readString();
+            this.promoApplink = in.readString();
         }
 
         public static final Creator<PromoItem> CREATOR = new Creator<PromoItem>() {

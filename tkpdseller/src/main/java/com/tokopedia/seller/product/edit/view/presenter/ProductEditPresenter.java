@@ -6,7 +6,7 @@ import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCa
 import com.tokopedia.seller.product.edit.domain.interactor.FetchEditProductWithVariantUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.seller.product.category.domain.interactor.FetchCategoryDisplayUseCase;
+import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;

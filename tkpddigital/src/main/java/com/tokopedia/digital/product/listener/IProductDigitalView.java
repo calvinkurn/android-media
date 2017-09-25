@@ -40,7 +40,6 @@ public interface IProductDigitalView extends IBaseView {
                                          HistoryClientNumber historyClientNumber);
     void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance);
 
-
     void renderErrorStyleNotSupportedProductDigitalData(String message);
 
     void renderErrorProductDigitalData(String message);

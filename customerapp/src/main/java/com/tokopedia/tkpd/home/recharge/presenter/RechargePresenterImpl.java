@@ -10,8 +10,6 @@ import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractorImpl;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeView;
 
 import java.util.ArrayList;
@@ -27,24 +25,23 @@ public class RechargePresenterImpl implements RechargePresenter,
         RechargeInteractor.OnGetListProductForOperator, RechargeInteractor.OnGetListOperatorByIdsListener,
         RechargeInteractor.OnGetProductById, RechargeInteractor.OnGetDetailProduct {
 
+    static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
+    static final String RECHARGE_CACHE_KEY = "PrimaryRechargeCache";
     private static final String RECHARGE_PHONEBOOK_CACHE_KEY = "RECHARGE_CACHE";
     private final LocalCacheHandler cacheHandlerPhoneBook;
     private final LocalCacheHandler cacheHandlerLastOrder;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
     private RechargeView view;
-    private RechargeNetworkInteractor interactor;
     private RechargeInteractor dbInteractor;
     private Context context;
 
     public RechargePresenterImpl(Context context, RechargeView view) {
         this.view = view;
-        this.interactor = new RechargeNetworkInteractorImpl();
         this.dbInteractor = new RechargeInteractorImpl();
         this.context = context;
         this.cacheHandlerPhoneBook = new LocalCacheHandler(this.context, RECHARGE_PHONEBOOK_CACHE_KEY);
         this.cacheHandlerLastOrder = new LocalCacheHandler(
-                this.context, RechargeCategoryPresenterImpl.RECHARGE_CACHE_KEY
-        );
+                this.context, RECHARGE_CACHE_KEY);
     }
 
 
@@ -95,13 +92,13 @@ public class RechargePresenterImpl implements RechargePresenter,
 
     @Override
     public boolean isAlreadyHaveLastOrderDataOnCache() {
-        return null != cacheHandlerLastOrder.getString(RechargeCategoryPresenterImpl.KEY_LAST_ORDER);
+        return null != cacheHandlerLastOrder.getString(KEY_LAST_ORDER);
     }
 
     @Override
     public LastOrder getLastOrderFromCache() {
         if (isAlreadyHaveLastOrderDataOnCache()) {
-            String temp = cacheHandlerLastOrder.getString(RechargeCategoryPresenterImpl.KEY_LAST_ORDER);
+            String temp = cacheHandlerLastOrder.getString(KEY_LAST_ORDER);
             return CacheUtil.convertStringToModel(temp, LastOrder.class);
         } else {
             return null;
@@ -111,7 +108,7 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public boolean isAlreadyHaveLastOrderDataOnCacheByCategoryId(int categoryId) {
         if (isAlreadyHaveLastOrderDataOnCache()) {
-            String temp = cacheHandlerLastOrder.getString(RechargeCategoryPresenterImpl.KEY_LAST_ORDER);
+            String temp = cacheHandlerLastOrder.getString(KEY_LAST_ORDER);
             try {
                 LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
                 return (lastOrder.getData().getAttributes().getCategory_id() == categoryId);

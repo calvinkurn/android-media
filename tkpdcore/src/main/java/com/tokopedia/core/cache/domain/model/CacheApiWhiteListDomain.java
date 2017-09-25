@@ -1,5 +1,7 @@
 package com.tokopedia.core.cache.domain.model;
 
+import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+
 /**
  * Created by normansyahputa on 8/14/17.
  */
@@ -9,9 +11,15 @@ public class CacheApiWhiteListDomain {
     private String path;
 
     /**
-     * this field in minute
+     * this field in seconds
      */
     private long expireTime;
+
+    public CacheApiWhiteListDomain(String host, String path, long expireTime) {
+        setHost(ApiCacheDataSource.generateCacheHost(host));
+        setPath(ApiCacheDataSource.generateCachePath(path));
+        setExpireTime(expireTime);
+    }
 
     public String getHost() {
         return host;

@@ -45,6 +45,7 @@ public class ManageProductSeller extends ManageProduct implements
 
     @Inject
     ProductDraftListCountPresenter productDraftListCountPresenter;
+
     private TextView tvDraftProductInfo;
 
     @Override

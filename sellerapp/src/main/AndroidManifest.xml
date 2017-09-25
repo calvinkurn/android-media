@@ -34,9 +34,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.view.SellerHomeActivity"
+            android:name=".dashboard.view.activity.DashboardActivity"
             android:exported="true"
-            android:label="Home"
+            android:label="@string/drawer_title_home"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3">

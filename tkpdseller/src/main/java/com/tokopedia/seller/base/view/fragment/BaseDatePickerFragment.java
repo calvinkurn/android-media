@@ -13,7 +13,7 @@ import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.common.widget.DateLabelView;
+import com.tokopedia.design.label.DateLabelView;
 
 import javax.inject.Inject;
 

@@ -21,6 +21,9 @@ public class ClientNumber implements Parcelable {
     @SerializedName("text")
     @Expose
     private String text;
+    @SerializedName("operator_style")
+    @Expose
+    private String operatorStyle;
 
     public String getHelp() {
         return help;
@@ -54,6 +57,14 @@ public class ClientNumber implements Parcelable {
         this.text = text;
     }
 
+    public String getOperatorStyle() {
+        return operatorStyle;
+    }
+
+    public void setOperatorStyle(String operatorStyle) {
+        this.operatorStyle = operatorStyle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -65,6 +76,7 @@ public class ClientNumber implements Parcelable {
         dest.writeByte(this.isShown ? (byte) 1 : (byte) 0);
         dest.writeString(this.placeholder);
         dest.writeString(this.text);
+        dest.writeString(this.operatorStyle);
     }
 
     public ClientNumber() {
@@ -75,6 +87,7 @@ public class ClientNumber implements Parcelable {
         this.isShown = in.readByte() != 0;
         this.placeholder = in.readString();
         this.text = in.readString();
+        this.operatorStyle = in.readString();
     }
 
     public static final Creator<ClientNumber> CREATOR = new Creator<ClientNumber>() {

@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.edit.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.product.edit.data.mapper.AddProductValidationInputMapper;
 import com.tokopedia.seller.product.edit.data.mapper.EditProductInputMapper;
@@ -49,8 +52,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource){
-        return new ProductDraftRepositoryImpl(productDraftDataSource);
+    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
+        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
     }
 
     @AddProductServiceScope
