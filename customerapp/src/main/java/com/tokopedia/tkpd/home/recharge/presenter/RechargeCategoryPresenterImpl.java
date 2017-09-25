@@ -13,7 +13,7 @@ import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.widget.WidgetRuntimeException;
+import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;

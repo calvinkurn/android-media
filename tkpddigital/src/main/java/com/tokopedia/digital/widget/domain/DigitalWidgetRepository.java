@@ -18,7 +18,7 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
-import com.tokopedia.digital.widget.WidgetRuntimeException;
+import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;

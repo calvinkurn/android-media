@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget;
+package com.tokopedia.digital.widget.errorhandle;
 
 /**
  * Created by nabillasabbaha on 7/27/17.

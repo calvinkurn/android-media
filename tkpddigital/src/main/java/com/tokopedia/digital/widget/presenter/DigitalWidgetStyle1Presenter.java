@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
 
@@ -21,6 +22,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     private final IDigitalWidgetInteractor widgetInteractor;
 
     private final IDigitalWidgetStyle1View view;
+    private Context context;
 
     public DigitalWidgetStyle1Presenter(Context context,
                                         IDigitalWidgetInteractor widgetInteractor,
@@ -28,6 +30,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         super(context);
         this.widgetInteractor = widgetInteractor;
         this.view = view;
+        this.context = context;
     }
 
     @Override
@@ -95,7 +98,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyProduct("Product List is Empty");
+                view.renderEmptyProduct(context.getString(R.string.error_message_product));
             }
 
             @Override
@@ -104,7 +107,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                     processOperatorById(products);
                     view.renderDataProducts(products);
                 } else {
-                    view.renderEmptyProduct("Product List is Empty");
+                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
                 }
             }
         };
@@ -127,7 +130,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyOperator("Empty operator");
+                view.renderEmptyOperator(context.getString(R.string.error_message_operator));
             }
 
             @Override
@@ -135,7 +138,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 if (rechargeOperatorModel != null)
                     view.renderDataOperator(rechargeOperatorModel);
                 else
-                    view.renderEmptyOperator("Empty operator");
+                    view.renderEmptyOperator(context.getString(R.string.error_message_operator));
             }
         };
     }
@@ -160,7 +163,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyProduct("Product List is Empty");
+                view.renderEmptyProduct(context.getString(R.string.error_message_product));
             }
 
             @Override
@@ -168,7 +171,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 if (!products.isEmpty()) {
                     processOperatorById(products);
                 } else {
-                    view.renderEmptyProduct("Product List is Empty");
+                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
                 }
             }
         };
@@ -188,7 +191,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                view.renderErrorProduct("Produk yang anda pilih saat ini tidak tersedia");
+                view.renderErrorProduct(context.getString(R.string.error_message_not_found_product));
             }
 
             @Override

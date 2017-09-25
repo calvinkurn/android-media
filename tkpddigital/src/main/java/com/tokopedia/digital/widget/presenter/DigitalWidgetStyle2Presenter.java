@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
 
@@ -22,12 +23,15 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
     private final IDigitalWidgetStyle2View view;
 
+    private Context context;
+
     public DigitalWidgetStyle2Presenter(Context context,
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle2View view) {
         super(context);
         this.widgetInteractor = widgetInteractor;
         this.view = view;
+        this.context = context;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyProduct("Product List is Empty");
+                view.renderEmptyProduct(context.getString(R.string.error_message_product));
             }
 
             @Override
@@ -72,7 +76,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                 if (!products.isEmpty()) {
                     view.renderDataProducts(products);
                 } else {
-                    view.renderEmptyProduct("Product List is Empty");
+                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
                 }
             }
         };
@@ -121,7 +125,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                view.renderErrorProduct("Produk yang anda pilih saat ini tidak tersedia");
+                view.renderErrorProduct(context.getString(R.string.error_message_not_found_product));
             }
 
             @Override
@@ -153,7 +157,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                 if (rechargeOperatorModels.size() > 0)
                     view.renderOperators(rechargeOperatorModels);
                 else
-                    view.renderEmptyOperators("Empty list");
+                    view.renderEmptyOperators(context.getString(R.string.error_message_operator));
             }
         };
     }
