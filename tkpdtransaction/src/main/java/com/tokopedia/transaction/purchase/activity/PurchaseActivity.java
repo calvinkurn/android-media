@@ -23,6 +23,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
+import com.tokopedia.transaction.purchase.dialog.CancelTransactionDialog;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
 
@@ -43,7 +44,8 @@ import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRou
  */
 public class PurchaseActivity extends DrawerPresenterActivity implements
         TxSummaryFragment.OnCenterMenuClickListener, NotificationReceivedListener,
-        PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
+        PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener,
+        CancelTransactionDialog.CancelPaymentDialogListener {
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -54,6 +56,8 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     private int drawerPosition;
     private String stateTxFilterID;
+
+    private PurchaseTabAdapter adapter;
 
     @DeepLink(Constants.Applinks.PURCHASE_VERIFICATION)
     public static Intent getCallingIntentPurchaseVerification(Context context, Bundle extras) {
@@ -134,7 +138,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     protected void setViewListener() {
         for (String tabContent : tabContents)
             indicator.addTab(indicator.newTab().setText(tabContent));
-        PurchaseTabAdapter adapter = new PurchaseTabAdapter(
+        adapter = new PurchaseTabAdapter(
                 getFragmentManager(), tabContents.size(), this
         );
         viewPager.setOffscreenPageLimit(tabContents.size());
@@ -242,6 +246,11 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                     break;
             }
         }
+    }
+
+    @Override
+    public void confirmCancelDialog(String paymentId) {
+        adapter.getVerificationFragment().confirmCancelPayment(paymentId);
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
