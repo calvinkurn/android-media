@@ -23,6 +23,7 @@ class PaymentBank extends Component {
       selectedBank: null,
       selectIdBank: null,
       selectedEmiId: null,
+      selectedBankDataselectedBankData: {},
       otherBank: null,
       paymentMethod: null,
       emiList: dsEmi.cloneWithRows([{
@@ -41,7 +42,9 @@ class PaymentBank extends Component {
   }
 
   _handleButtonPress = () => {
-    const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId)
+    const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId);
+     const selectedBankData = !this.state.selectedBankData ? {} : this.state.selectedBankData;
+
     if (this.state.paymentMethod === 'SCAN'){
       NavigationModule.navigate("posapp://payment/scan/3/6", "")
     } else {
@@ -50,6 +53,7 @@ class PaymentBank extends Component {
         selectBank: this.state.selectedBank,
         selectIdBank: this.state.selectIdBank,
         selectedEmiId: selected_installment,
+        selectedBankData: selectedBankData,
         total_payment: this.props.screenProps.total_payment
       })
     }
@@ -147,22 +151,12 @@ class PaymentBank extends Component {
       selectedBank: rowData.bank_name,
       otherBank: rowData.bank_logo,
       selectedEmiId: null,
+      selectedBankData:rowData,
       emiList: emiList
     }, () => {
       this.props.dispatch(selectBank(rowData.bank_id));
       this.popupDialog.dismiss();
     });
-    /*if (rowData.id > 9) {
-     this.setState({
-       selectedBank: rowData.bankName,
-       otherBank: rowData.bankImage
-     });
-    } else if (rowData.id <= 9) {
-     this.setState({
-       selectedBank: rowData.bankName,
-       otherBank: null
-     });
-   }*/
   }
 
   _onPressLogo(rowID, rowData) {
@@ -173,16 +167,6 @@ class PaymentBank extends Component {
       }]);
       
       if (rowData.allow_installment) {
-   /*   this.props.bankList.forEach((data) => {
-          if (data.bank_id == rowData.bank_id) {
-            emiList = this.state.dsEmi.cloneWithRows([...[{
-              text: "Tanpa Cicilan",
-              available: false
-            }], ...data.installment_list]);
-            return
-          }
-        });*/
-
          emiList = this.state.dsEmi.cloneWithRows([...[{
               text: "Tanpa Cicilan",
               available: false
@@ -196,6 +180,7 @@ class PaymentBank extends Component {
         selectIdBank: rowData.bank_id,
         otherBank: null,
         selectedEmiId: null,
+        selectedBankData:rowData,
         emiList: emiList
       });
     }
