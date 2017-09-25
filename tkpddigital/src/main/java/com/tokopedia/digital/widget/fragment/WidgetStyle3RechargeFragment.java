@@ -393,6 +393,11 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
+    public void renderDefaultError() {
+
+    }
+
+    @Override
     public void renderOperator(RechargeOperatorModel rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
         selectedOperatorId = String.valueOf(selectedOperator.operatorId);

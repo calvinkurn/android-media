@@ -356,6 +356,11 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
+    public void renderDefaultError() {
+
+    }
+
+    @Override
     public void renderDataRecent(List<String> results) {
         if (sessionHandler.isV4Login(getActivity())) {
             widgetClientNumberView.setDropdownAutoComplete(results);
