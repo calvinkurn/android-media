@@ -1,8 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 
 import rx.Subscriber;
@@ -11,7 +10,7 @@ import rx.Subscriber;
  * Created by yoasfs on 04/09/17.
  */
 
-public class CreateResoWithoutAttachmentSubscriber extends Subscriber<CreateResoStep1Domain> {
+public class CreateResoWithoutAttachmentSubscriber extends Subscriber<CreateResoWithoutAttachmentDomain> {
     private final CreateResolutionCenter.View mainView;
 
     public CreateResoWithoutAttachmentSubscriber(CreateResolutionCenter.View mainView) {
@@ -30,11 +29,11 @@ public class CreateResoWithoutAttachmentSubscriber extends Subscriber<CreateReso
     }
 
     @Override
-    public void onNext(CreateResoStep1Domain createResoStep1Domain) {
+    public void onNext(CreateResoWithoutAttachmentDomain createResoWithoutAttachmentDomain) {
         mainView.successCreateResoWithoutAttachment(String.valueOf(
-                createResoStep1Domain.getResolution().getId()),
-                createResoStep1Domain.getCacheKey(),
-                createResoStep1Domain.getSuccessMessage());
+                createResoWithoutAttachmentDomain.getResolution().getId()),
+                createResoWithoutAttachmentDomain.getCacheKey(),
+                createResoWithoutAttachmentDomain.getSuccessMessage());
     }
 
 }

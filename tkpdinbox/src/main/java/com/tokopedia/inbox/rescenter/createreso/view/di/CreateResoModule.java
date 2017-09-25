@@ -11,7 +11,7 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.inbox.rescenter.createreso.data.factory.CreateResolutionFactory;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.AppealSolutionMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoStep1Mapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoWithoutAttachmentMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
@@ -23,8 +23,8 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.AppealSolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.AppealSolutionRepositoryImpl;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep1Repository;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep1RepositoryImpl;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoWithoutAttachmentRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoWithoutAttachmentRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateValidateSubmitRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateValidateSubmitRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.EditSolutionRepository;
@@ -39,7 +39,7 @@ import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRe
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepositoryImpl;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep1UseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
@@ -130,8 +130,8 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    CreateResoStep1Mapper provideCreateResoStep1Mapper() {
-        return new CreateResoStep1Mapper();
+    CreateResoWithoutAttachmentMapper provideCreateResoStep1Mapper() {
+        return new CreateResoWithoutAttachmentMapper();
     }
 
     @CreateResoScope
@@ -145,7 +145,7 @@ public class CreateResoModule {
     CreateResolutionFactory provideProductProblemFactory(@ApplicationContext Context context,
                                                          GetProductProblemMapper getProductProblemMapper,
                                                          SolutionMapper solutionMapper,
-                                                         CreateResoStep1Mapper createResoStep1Mapper,
+                                                         CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper,
                                                          CreateValidateMapper createValidateMapper,
                                                          GenerateHostMapper generateHostMapper,
                                                          UploadMapper uploadMapper,
@@ -159,7 +159,7 @@ public class CreateResoModule {
         return new CreateResolutionFactory(context,
                 getProductProblemMapper,
                 solutionMapper,
-                createResoStep1Mapper,
+                createResoWithoutAttachmentMapper,
                 createValidateMapper,
                 generateHostMapper,
                 uploadMapper,
@@ -199,8 +199,8 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    CreateResoStep1Repository provideCreateResoStep1Repository(CreateResolutionFactory createResolutionFactory) {
-        return new CreateResoStep1RepositoryImpl(createResolutionFactory);
+    CreateResoWithoutAttachmentRepository provideCreateResoStep1Repository(CreateResolutionFactory createResolutionFactory) {
+        return new CreateResoWithoutAttachmentRepositoryImpl(createResolutionFactory);
     }
 
     @CreateResoScope
@@ -298,12 +298,12 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    CreateResoStep1UseCase provideCreateResoStep1UseCase(ThreadExecutor threadExecutor,
-                                                         PostExecutionThread postExecutionThread,
-                                                         CreateResoStep1Repository createResoStep1Repository) {
-        return new CreateResoStep1UseCase(threadExecutor,
+    CreateResoWithoutAttachmentUseCase provideCreateResoStep1UseCase(ThreadExecutor threadExecutor,
+                                                                     PostExecutionThread postExecutionThread,
+                                                                     CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository) {
+        return new CreateResoWithoutAttachmentUseCase(threadExecutor,
                 postExecutionThread,
-                createResoStep1Repository);
+                createResoWithoutAttachmentRepository);
     }
 
     @CreateResoScope

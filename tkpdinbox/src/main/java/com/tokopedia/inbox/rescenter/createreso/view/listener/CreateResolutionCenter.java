@@ -2,8 +2,6 @@ package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep2Domain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;

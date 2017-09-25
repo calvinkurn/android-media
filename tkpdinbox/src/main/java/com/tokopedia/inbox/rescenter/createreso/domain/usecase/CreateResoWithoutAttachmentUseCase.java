@@ -4,10 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoStep1Repository;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
+import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoWithoutAttachmentRepository;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 
 import org.json.JSONObject;
@@ -18,22 +16,22 @@ import rx.Observable;
  * Created by yoasfs on 16/08/17.
  */
 
-public class CreateResoStep1UseCase extends UseCase<CreateResoStep1Domain> {
+public class CreateResoWithoutAttachmentUseCase extends UseCase<CreateResoWithoutAttachmentDomain> {
     public static final String ORDER_ID = "order_id";
     public static final String PARAM_RESULT = "result";
 
-    private CreateResoStep1Repository createResoStep1Repository;
+    private CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository;
 
-    public CreateResoStep1UseCase(ThreadExecutor threadExecutor,
-                                  PostExecutionThread postExecutionThread,
-                                  CreateResoStep1Repository createResoStep1Repository) {
+    public CreateResoWithoutAttachmentUseCase(ThreadExecutor threadExecutor,
+                                              PostExecutionThread postExecutionThread,
+                                              CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository) {
         super(threadExecutor, postExecutionThread);
-        this.createResoStep1Repository = createResoStep1Repository;
+        this.createResoWithoutAttachmentRepository = createResoWithoutAttachmentRepository;
     }
 
     @Override
-    public Observable<CreateResoStep1Domain> createObservable(RequestParams requestParams) {
-        return createResoStep1Repository.createResoStep1(requestParams);
+    public Observable<CreateResoWithoutAttachmentDomain> createObservable(RequestParams requestParams) {
+        return createResoWithoutAttachmentRepository.createResoWithoutAttachment(requestParams);
     }
 
     public RequestParams createResoStep1Params(ResultViewModel resultViewModel) {

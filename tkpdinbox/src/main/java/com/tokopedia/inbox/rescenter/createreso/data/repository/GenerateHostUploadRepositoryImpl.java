@@ -1,10 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.createreso.data.factory.CreateResolutionFactory;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoStep1Domain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.UploadDomain;
 

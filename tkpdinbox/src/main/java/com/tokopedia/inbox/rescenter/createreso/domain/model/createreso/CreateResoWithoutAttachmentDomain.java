@@ -6,19 +6,23 @@ import javax.annotation.Nullable;
  * Created by yoasfs on 05/09/17.
  */
 
-public class CreateResoStep2Domain {
+public class CreateResoWithoutAttachmentDomain {
 
     @Nullable
     private ResolutionDomain resolution;
 
     @Nullable
-    private String successMessage;
+    private String cacheKey;
 
     @Nullable
     private boolean isSuccess;
 
-    public CreateResoStep2Domain(ResolutionDomain resolution, @Nullable String successMessage) {
+    @Nullable
+    private String successMessage;
+
+    public CreateResoWithoutAttachmentDomain(ResolutionDomain resolution, String cacheKey, String successMessage) {
         this.resolution = resolution;
+        this.cacheKey = cacheKey;
         this.successMessage = successMessage;
     }
 
@@ -32,12 +36,12 @@ public class CreateResoStep2Domain {
     }
 
     @Nullable
-    public String getSuccessMessage() {
-        return successMessage;
+    public String getCacheKey() {
+        return cacheKey;
     }
 
-    public void setSuccessMessage(@Nullable String successMessage) {
-        this.successMessage = successMessage;
+    public void setCacheKey(@Nullable String cacheKey) {
+        this.cacheKey = cacheKey;
     }
 
     @Nullable
@@ -47,5 +51,14 @@ public class CreateResoStep2Domain {
 
     public void setSuccess(@Nullable boolean success) {
         isSuccess = success;
+    }
+
+    @Nullable
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void setSuccessMessage(@Nullable String successMessage) {
+        this.successMessage = successMessage;
     }
 }

@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoStep1UseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 
 import rx.Observable;
 
@@ -25,8 +25,8 @@ public class CreateValidateCloudSource {
     public Observable<CreateValidateDomain> createValidate(RequestParams requestParams) {
         try {
             return resolutionApi.postCreateValidateResolution(requestParams.getString(
-                    CreateResoStep1UseCase.ORDER_ID, ""),
-                    requestParams.getString(CreateResoStep1UseCase.PARAM_RESULT, ""))
+                    CreateResoWithoutAttachmentUseCase.ORDER_ID, ""),
+                    requestParams.getString(CreateResoWithoutAttachmentUseCase.PARAM_RESULT, ""))
                     .map(createValidateMapper);
         } catch (Exception e) {
             e.printStackTrace();
