@@ -210,7 +210,7 @@ export const makePayment = (total_amount, installment_term, cc_no, expiry_date, 
 
 const postDataToNative = (data) => {
   console.log(data)
-  return PaymentModule.pay(data)
+  return PaymentModule.pay(data.toString())
     .then(response => {
       console.log(response)
     })
