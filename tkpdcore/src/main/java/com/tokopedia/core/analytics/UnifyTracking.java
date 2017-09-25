@@ -2515,4 +2515,37 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent()
         );
     }
+
+    public static void eventFeaturedProduct(String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SHOP_MANAGE,
+                AppEventTracking.Category.FEATURED_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventClickMenuFeaturedProduct(){
+        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
+    }
+
+    public static void eventClickAddFeaturedProduct(){
+        eventFeaturedProduct(AppEventTracking.EventLabel.ADD_FEATURED_PRODUCT);
+    }
+
+    public static void eventTickErrorFeaturedProduct(){
+        eventFeaturedProduct(AppEventTracking.EventLabel.TICK_ERROR);
+    }
+
+    public static void eventSavePickFeaturedProduct(String counterProduct){
+        eventFeaturedProduct(AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
+    }
+
+    public static void eventSortFeaturedProduct(){
+        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT);
+    }
+
+    public static void eventDeleteFeaturedProduct(){
+        eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
+    }
 }

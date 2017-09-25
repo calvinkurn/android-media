@@ -6,7 +6,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -46,6 +48,10 @@ public class CategoryProductStyle1View extends
     TextView btnBuyDigital;
     @BindView(R2.id.cb_instant_checkout)
     CheckBox cbInstantCheckout;
+    @BindView(R2.id.layout_checkout)
+    RelativeLayout layoutCheckout;
+    @BindView(R2.id.tooltip_instant_checkout)
+    ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
     private ClientNumberInputView clientNumberInputView;
@@ -155,15 +161,21 @@ public class CategoryProductStyle1View extends
      */
     private void renderInstantCheckoutOption() {
         if (data.isInstantCheckout()) {
-            cbInstantCheckout.setVisibility(VISIBLE);
+            layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
                     actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
             );
         } else {
             cbInstantCheckout.setChecked(false);
-            cbInstantCheckout.setVisibility(GONE);
+            layoutCheckout.setVisibility(GONE);
         }
+        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetView.show();
+            }
+        });
     }
 
     private void renderClientNumberInputForm() {
@@ -226,7 +238,7 @@ public class CategoryProductStyle1View extends
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cbInstantCheckout.isChecked())
+                if (cbInstantCheckout.isChecked())
                     UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
                 else
                     UnifyTracking.eventClickBeli(data.getName(), data.getName());
