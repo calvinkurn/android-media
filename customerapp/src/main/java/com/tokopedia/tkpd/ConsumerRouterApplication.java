@@ -69,6 +69,7 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
@@ -373,6 +374,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Fragment getReputationHistoryFragment() {
         return SellerReputationFragment.createInstance();
+    }
+
+    @Override
+    public android.app.Fragment getShopReputationFragment() {
+        return ShopReputationList.create();
     }
 
     @Override

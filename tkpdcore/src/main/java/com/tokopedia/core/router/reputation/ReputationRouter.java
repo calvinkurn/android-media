@@ -20,4 +20,6 @@ public interface ReputationRouter {
     Intent getInboxReputationHistoryIntent();
 
     Fragment getReputationHistoryFragment();
+
+    android.app.Fragment getShopReputationFragment();
 }

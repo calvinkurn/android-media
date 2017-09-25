@@ -68,6 +68,7 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
@@ -231,6 +232,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getReputationHistoryFragment() {
         return SellerReputationFragment.createInstance();
+    }
+
+    @Override
+    public android.app.Fragment getShopReputationFragment() {
+        return ShopReputationList.create();
     }
 
     @Override

@@ -30,8 +30,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
-import com.tokopedia.core.inboxreputation.interactor.InboxReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -42,6 +40,8 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.data.factory.ReputationProductDataFactory;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
+import com.tokopedia.core.reputationproduct.data.pojo.ViewHolderComment;
+import com.tokopedia.core.reputationproduct.data.pojo.ViewHolderMain;
 import com.tokopedia.core.reputationproduct.data.repository.DeleteCommentRepository;
 import com.tokopedia.core.reputationproduct.data.repository.DeleteCommentRepositoryImpl;
 import com.tokopedia.core.reputationproduct.data.repository.GetLikeDislikeRepository;
@@ -54,8 +54,6 @@ import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
 import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.core.reputationproduct.domain.usecase.DeleteCommentUseCase;
 import com.tokopedia.core.reputationproduct.domain.usecase.GetLikeDislikeUseCase;
-import com.tokopedia.core.reputationproduct.data.pojo.ViewHolderComment;
-import com.tokopedia.core.reputationproduct.data.pojo.ViewHolderMain;
 import com.tokopedia.core.reputationproduct.domain.usecase.LikeDislikeUseCase;
 import com.tokopedia.core.reputationproduct.domain.usecase.PostReportUseCase;
 import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewFragmentPresenter;
@@ -96,8 +94,6 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     private LabelUtils labelHeader;
     private LabelUtils labelResponder;
     private ImageUploadAdapter imageUploadAdapter;
-//    private ActReputationRetrofitInteractor actNetworkInteractor;
-    private InboxReputationRetrofitInteractor networkInteractor;
 
     private GetLikeDislikeRepository getLikeDislikeRepository;
     private LikeDislikeRepository likeDislikeRepository;
@@ -126,8 +122,6 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     @Override
     protected void initialPresenter() {
-//        actNetworkInteractor = new ActReputationRetrofitInteractorImpl();
-//        networkInteractor = new InboxReputationRetrofitInteractorImpl();
         likeDislikeDomainMapper = new LikeDislikeDomainMapper();
         actResultMapper = new ActResultMapper();
 

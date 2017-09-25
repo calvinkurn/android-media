@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
@@ -27,6 +25,7 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
@@ -43,23 +42,25 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         PdpApplinkModule.class,
         RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
-        ReputationApplinkModuleLoader.class
+        ReputationApplinkModule.class
 })
+
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
-        return new DeepLinkDelegate(
-                new ConsumerDeeplinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
-                new SellerApplinkModuleLoader(),
-                new TransactionApplinkModuleLoader(),
-                new DigitalApplinkModuleLoader(),
-                new PdpApplinkModuleLoader(),
-                new RideDeeplinkModuleLoader(),
-                new DiscoveryApplinkModuleLoader(),
-                new ReputationApplinkModuleLoader()
-        );
+        return
+                new DeepLinkDelegate(
+                        new ConsumerDeeplinkModuleLoader(),
+                        new CoreDeeplinkModuleLoader(),
+                        new InboxDeeplinkModuleLoader(),
+                        new SellerApplinkModuleLoader(),
+                        new TransactionApplinkModuleLoader(),
+                        new DigitalApplinkModuleLoader(),
+                        new PdpApplinkModuleLoader(),
+                        new RideDeeplinkModuleLoader(),
+                        new DiscoveryApplinkModuleLoader(),
+                        new ReputationApplinkModuleLoader()
+                );
     }
 
     @Override

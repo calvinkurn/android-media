@@ -2,12 +2,9 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.inboxreputation.interactor.InboxReputationRetrofitInteractor;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
 
 import rx.Observable;
