@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { PosCacheModule } from 'NativeModules'
+import { PosCacheModule, PaymentModule } from 'NativeModules'
 
 
 // ===================== Product List ======================= //
@@ -199,14 +199,24 @@ export const selectEmi = (id) => {
 //  ==================== Make Payment to Native ===================== //
 export const MAKE_PAYMENT = 'MAKE_PAYMENT'
 export const makePayment = (total_amount, installment_term, cc_no, expiry_date, cvv) => {
+  const data = { total_amount, installment_term, cc_no, expiry_date, cvv }
 
   // Please pass total_amount, installment_term, creditCard No, expired date, and cvv to this action
+  return {
+    type: MAKE_PAYMENT,
+    payload: postDataToNative(data)
+  }
+}
 
-   return {
-     type: MAKE_PAYMENT,
-     // TODO: call native method for payment
-    // payload: {}
-   }
+const postDataToNative = (data) => {
+  console.log(data)
+  return PaymentModule.pay(data)
+    .then(response => {
+      console.log(response)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
 
 
