@@ -4,7 +4,7 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
+import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.BankDb;
 import com.tokopedia.posapp.database.model.BankDb_Table;
@@ -84,19 +84,19 @@ public class BankDbManager extends PosDbOperation<BankDomain, BankDb> {
     }
 
     @Override
-    public Observable<DbStatus> delete(BankDomain domain) {
+    public Observable<DataStatus> delete(BankDomain domain) {
         return executeDelete(getDbClass(), ConditionGroup.clause().and(BankDb_Table.bankId.eq(domain.getBankId())));
     }
 
     @Override
-    public Observable<DbStatus> store(List<BankDomain> domains) {
+    public Observable<DataStatus> store(List<BankDomain> domains) {
         return Observable.just(domains)
-                .flatMap(new Func1<List<BankDomain>, Observable<DbStatus>>() {
+                .flatMap(new Func1<List<BankDomain>, Observable<DataStatus>>() {
                     @Override
-                    public Observable<DbStatus> call(final List<BankDomain> datas) {
-                        return Observable.create(new Observable.OnSubscribe<DbStatus>() {
+                    public Observable<DataStatus> call(final List<BankDomain> datas) {
+                        return Observable.create(new Observable.OnSubscribe<DataStatus>() {
                             @Override
-                            public void call(Subscriber<? super DbStatus> subscriber) {
+                            public void call(Subscriber<? super DataStatus> subscriber) {
                                 getDatabase().beginTransactionAsync(new ITransaction() {
                                     @Override
                                     public void execute(DatabaseWrapper databaseWrapper) {

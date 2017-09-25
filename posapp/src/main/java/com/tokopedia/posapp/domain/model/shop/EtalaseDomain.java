@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
  * Created by okasurya on 9/18/17.
  */
 
-public class ShopEtalaseDomain {
+public class EtalaseDomain {
     private String etalaseId;
     private String etalaseName;
     private String etalaseAlias;

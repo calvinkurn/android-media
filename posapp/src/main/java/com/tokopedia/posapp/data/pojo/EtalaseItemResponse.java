@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by okasurya on 9/18/17.
  */
 
-public class ShopEtalaseResponse {
+public class EtalaseItemResponse {
     @SerializedName("menu_id")
     private String menuId;
 

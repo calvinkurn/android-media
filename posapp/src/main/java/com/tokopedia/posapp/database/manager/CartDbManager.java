@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.database.manager;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
+import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.CartDb;
 import com.tokopedia.posapp.database.model.CartDb_Table;
@@ -79,7 +79,7 @@ public class CartDbManager extends PosDbOperation<CartDomain, CartDb> {
     }
 
     @Override
-    public Observable<DbStatus> delete(CartDomain data) {
+    public Observable<DataStatus> delete(CartDomain data) {
         return executeDelete(
                 CartDb.class,
                 ConditionGroup.clause().and(CartDb_Table.id.eq(data.getId()))

@@ -1,9 +1,8 @@
 package com.tokopedia.posapp.database.manager;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
+import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.manager.base.PosDbOperation;
-import com.tokopedia.posapp.database.model.BinDb_Table;
 import com.tokopedia.posapp.database.model.BinInstallmentDb;
 import com.tokopedia.posapp.database.model.BinInstallmentDb_Table;
 import com.tokopedia.posapp.domain.model.bank.BinDomain;
@@ -66,7 +65,7 @@ public class BinInstallmentDbManager extends PosDbOperation<BinDomain, BinInstal
     }
 
     @Override
-    public Observable<DbStatus> delete(BinDomain domain) {
+    public Observable<DataStatus> delete(BinDomain domain) {
         return executeDelete(getDbClass(), ConditionGroup.clause().and(BinInstallmentDb_Table.bankId.eq(domain.getBankId())));
     }
 }

@@ -1,24 +1,18 @@
 package com.tokopedia.posapp.di.module;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceAuth;
-import com.tokopedia.core.network.di.qualifier.AceQualifier;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ShopFactory;
-import com.tokopedia.posapp.data.mapper.GetShopEtalaseMapper;
-import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
+import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.repository.ShopRepository;
 import com.tokopedia.posapp.data.repository.ShopRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
-import com.tokopedia.posapp.data.source.cloud.api.TomeApi;
-import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
-import com.tokopedia.posapp.domain.usecase.GetShopUseCase;
 import com.tokopedia.posapp.di.scope.ShopScope;
+import com.tokopedia.posapp.domain.usecase.GetShopUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,12 +38,6 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
-        return retrofit.create(TomeApi.class);
-    }
-
-    @ShopScope
-    @Provides
     GetShopMapper provideGetShopMapper() {
         return new GetShopMapper();
     }
@@ -62,19 +50,11 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    GetShopEtalaseMapper provideGetShopEtalaseMapper(Gson gson) {
-        return new GetShopEtalaseMapper(gson);
-    }
-
-    @ShopScope
-    @Provides
     ShopFactory provideShopFactory(ShopApi shopApi,
                                    AceApi aceApi,
-                                   TomeApi tomeApi,
                                    GetShopMapper shopMapper,
-                                   GetShopProductMapper getShopProductMapper,
-                                   GetShopEtalaseMapper getShopEtalaseMapper) {
-        return new ShopFactory(shopApi, aceApi, tomeApi, shopMapper, getShopProductMapper, getShopEtalaseMapper);
+                                   GetShopProductMapper getShopProductMapper) {
+        return new ShopFactory(shopApi, aceApi, shopMapper, getShopProductMapper);
     }
 
     @ShopScope
@@ -86,8 +66,8 @@ public class ShopModule {
     @ShopScope
     @Provides
     GetShopUseCase provideShopUseCase(ThreadExecutor threadExecutor,
-                                          PostExecutionThread postExecutionThread,
-                                          ShopRepository shopRepository) {
+                                      PostExecutionThread postExecutionThread,
+                                      ShopRepository shopRepository) {
         return new GetShopUseCase(threadExecutor, postExecutionThread, shopRepository);
     }
 }

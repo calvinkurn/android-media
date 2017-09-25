@@ -1,7 +1,9 @@
 package com.tokopedia.posapp.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
+import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.domain.model.ListDomain;
+import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 
 import java.util.List;
 
@@ -12,5 +14,7 @@ import rx.Observable;
  */
 
 public interface EtalaseRepository {
-    Observable<List<ShopEtalaseDomain>> getEtalase(RequestParams requestParams);
+    Observable<List<EtalaseDomain>> getEtalase(RequestParams requestParams);
+
+    Observable<DataStatus> storeEtalaseToCache(ListDomain<EtalaseDomain> data);
 }

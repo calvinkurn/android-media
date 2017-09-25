@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.data.factory;
 
-import com.tokopedia.posapp.data.mapper.GetShopEtalaseMapper;
+import com.tokopedia.posapp.data.mapper.GetEtalaseMapper;
 import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
 import com.tokopedia.posapp.data.source.cloud.ShopCloudSource;
@@ -18,28 +18,22 @@ import javax.inject.Inject;
 public class ShopFactory {
     private ShopApi shopApi;
     private AceApi aceApi;
-    private TomeApi tomeApi;
     private GetShopMapper shopMapper;
     private GetShopProductMapper getShopProductMapper;
-    private GetShopEtalaseMapper getShopEtalaseMapper;
 
     @Inject
     public ShopFactory(ShopApi shopApi,
                        AceApi aceApi,
-                       TomeApi tomeApi,
                        GetShopMapper shopMapper,
-                       GetShopProductMapper getShopProductMapper,
-                       GetShopEtalaseMapper getShopEtalaseMapper) {
+                       GetShopProductMapper getShopProductMapper) {
         this.shopApi = shopApi;
         this.aceApi = aceApi;
-        this.tomeApi = tomeApi;
         this.shopMapper = shopMapper;
         this.getShopProductMapper = getShopProductMapper;
-        this.getShopEtalaseMapper = getShopEtalaseMapper;
     }
 
     public ShopCloudSource cloud() {
-        return new ShopCloudSource(shopApi, aceApi, tomeApi, shopMapper, getShopProductMapper, getShopEtalaseMapper);
+        return new ShopCloudSource(shopApi, aceApi, shopMapper, getShopProductMapper);
     }
 
     public ShopLocalSource local() {

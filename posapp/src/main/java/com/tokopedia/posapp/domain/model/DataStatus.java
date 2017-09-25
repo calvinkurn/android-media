@@ -1,28 +1,28 @@
-package com.tokopedia.posapp.database.manager.base;
+package com.tokopedia.posapp.domain.model;
 
 /**
  * Created by okasurya on 9/15/17.
  */
 
-public class DbStatus {
+public class DataStatus {
     public static int OK = 1;
     public static int ERROR = 2;
 
     private int status;
     private String message;
 
-    public static DbStatus defaultOkResult() {
-        DbStatus dbStatus = new DbStatus();
-        dbStatus.setStatus(OK);
-        dbStatus.setMessage("OK");
-        return dbStatus;
+    public static DataStatus defaultOkResult() {
+        DataStatus dataStatus = new DataStatus();
+        dataStatus.setStatus(OK);
+        dataStatus.setMessage("OK");
+        return dataStatus;
     }
 
-    public static DbStatus defaultErrorResult(Throwable e) {
-        DbStatus dbStatus = new DbStatus();
-        dbStatus.setStatus(ERROR);
-        dbStatus.setMessage(e.getMessage());
-        return dbStatus;
+    public static DataStatus defaultErrorResult(Throwable e) {
+        DataStatus dataStatus = new DataStatus();
+        dataStatus.setStatus(ERROR);
+        dataStatus.setMessage(e.getMessage());
+        return dataStatus;
     }
 
     public int getStatus() {
