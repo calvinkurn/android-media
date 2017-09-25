@@ -1,9 +1,6 @@
 package com.tokopedia.seller.product.edit.di.module;
 
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
-import com.tokopedia.core.network.apiservices.tome.TomeService;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.product.edit.data.mapper.EditProductFormMapper;
 import com.tokopedia.seller.product.edit.data.repository.EditProductFormRepositoryImpl;
@@ -12,10 +9,6 @@ import com.tokopedia.seller.product.edit.data.source.FetchVideoEditProductDataSo
 import com.tokopedia.seller.product.edit.data.source.cloud.api.EditProductFormApi;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.edit.domain.EditProductFormRepository;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
-import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
-import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
-import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;

@@ -10,9 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
@@ -43,6 +45,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     private ImageView arrowImageView;
     private View footerView;
     private View containerListView;
+    protected Button submitButton;
     private int maxItemSelection;
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -77,7 +80,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         bottomSheetTitleTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_title);
         bottomSheetContentTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_content);
         arrowImageView = (ImageView) findViewById(R.id.image_view_arrow);
-        View submitButton = findViewById(R.id.button_submit);
+        submitButton = (Button) findViewById(R.id.button_submit);
         bottomSheetHeaderView = findViewById(R.id.layout_bottom_sheet_header);
         bottomSheetHeaderView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +129,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     }
 
     protected void expandBottomSheet() {
+        CommonUtils.hideKeyboard(this, getWindow().getDecorView());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 

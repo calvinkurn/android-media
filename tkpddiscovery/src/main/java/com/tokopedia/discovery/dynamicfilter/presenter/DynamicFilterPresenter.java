@@ -30,14 +30,4 @@ public interface DynamicFilterPresenter {
     String EXTRA_FROM_CATEGORY = "EXTRA_FROM_CATEGORY";
     String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
     String EXTRA_ROOT_DEPARTMENT_ID = "EXTRA_ROOT_DEPARTMENT_ID";
-
-    void fetchExtras(Intent intent);
-
-    List<Breadcrumb> getBreadCrumb();
-
-    List<Filter> getFilterCategory();
-
-    String getCurrentCategory();
-
-    String getDepartmentId();
 }

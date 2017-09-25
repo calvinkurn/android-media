@@ -17,6 +17,7 @@ import rx.schedulers.Schedulers;
  * Created by normansyahputa on 3/17/17.
  */
 
+@Deprecated
 public class ShopInfoUseCase extends UseCase<ShopModel> {
     private ReputationReviewRepository reputationReviewRepository;
 

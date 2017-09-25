@@ -28,7 +28,8 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginTop="6dp"
-            android:text="5.1km"
+            android:minWidth="40dp"
+            android:text=""
             android:textColor="@color/grey_700"
             android:textSize="10sp"
             android:visibility="visible" />

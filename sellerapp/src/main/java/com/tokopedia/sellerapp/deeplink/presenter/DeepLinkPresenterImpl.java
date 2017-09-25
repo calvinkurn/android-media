@@ -18,13 +18,13 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
-import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailProductActivity;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

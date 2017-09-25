@@ -1,0 +1,16 @@
+<resources>
+    <string name="gm_featured_product_activity_title">Featured Product</string>
+    <string name="gm_featured_product_menu_label_delete">Hapus Produk</string>
+    <string name="gm_featured_product_menu_label_arrange">Atur Urutan Produk</string>
+    <string name="gm_featured_product_title_empty">Tidak ada produk di Produk Unggulan</string>
+    <string name="gm_featured_product_description_empty">Tambahkan hingga 5 produk terbaik Anda ke dalam Produk Unggulan untuk tampil lebih spesial pada halaman Toko Anda.</string>
+    <string name="gm_featured_product_add_title_empty">Tambah Produk Unggulan</string>
+    <string name="gm_featured_product_subtitle_counter">%1$d dari %2$d</string>
+    <string name="gm_featured_product_delete_title">Hapus Produk Unggulan</string>
+    <string name="gm_featured_product_delete_desc">Hapus %1$d produk dari Produk Unggulan?</string>
+    <string name="gm_featured_product_sort_title">Urutkan Produk Unggulan</string>
+    <string name="gm_featured_product_sort_desc">Yakin dengan urutan Produk Unggulan</string>
+
+    <string name="gm_featured_product_submit_failed_title">Submit gagal</string>
+    <string name="gm_featured_product_submit_failed_desc">Apakah anda ingin mencoba lagi ?</string>
+</resources>

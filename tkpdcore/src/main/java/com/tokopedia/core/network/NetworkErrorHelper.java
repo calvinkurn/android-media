@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,10 +27,6 @@ import com.tokopedia.core.R;
  */
 public class NetworkErrorHelper {
 
-
-    public interface RetryClickedListener {
-        void onRetryClicked();
-    }
 
     public static void showDialog(Context context, final RetryClickedListener listener) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -61,6 +58,12 @@ public class NetworkErrorHelper {
         Dialog finalDialog = dialog.create();
         finalDialog.setCanceledOnTouchOutside(false);
         finalDialog.show();
+    }
+
+    public static SnackbarRetry createSnackbarWithAction(CoordinatorLayout coordinatorLayout, final RetryClickedListener listener) {
+        return new SnackbarRetry(SnackbarManager.make(coordinatorLayout,
+                coordinatorLayout.getContext().getResources().getString(R.string.msg_network_error),
+                Snackbar.LENGTH_INDEFINITE), listener);
     }
 
     public static SnackbarRetry createSnackbarWithAction(Activity activity, final RetryClickedListener listener) {
@@ -234,6 +237,10 @@ public class NetworkErrorHelper {
             });
         }
         dialog.create().show();
+    }
+
+    public interface RetryClickedListener {
+        void onRetryClicked();
     }
 
 }

@@ -41,7 +41,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
     }
 
     @Override
-    protected int getStatusUpload() {
+    public int getStatusUpload() {
         return ProductStatus.EDIT;
     }
 

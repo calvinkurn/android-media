@@ -19,22 +19,22 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
+import com.tokopedia.seller.common.widget.DividerItemDecoration;
 
 import java.util.List;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
         BaseListViewListener<T>, BaseListAdapter.Callback<T> {
 
     private static final int START_PAGE = 1;
+    private static final int DEFAULT_TOTAL_ITEM = 0;
 
     protected BaseListAdapter<T> adapter;
     protected RecyclerView recyclerView;
@@ -43,13 +43,9 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     protected int totalItem;
     protected boolean searchMode;
     protected int currentPage;
-    private SnackbarRetry snackBarRetry;
+    protected SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
-
-    protected int getCurrentPage() {
-        return currentPage;
-    }
 
     public BaseListFragment() {
         // Required empty public constructor
@@ -65,6 +61,26 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
 
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
         return getEmptyViewDefaultBinder();
+    }
+
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new BaseRetryDataBinder(adapter);
+    }
+
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new DividerItemDecoration(getActivity());
+    }
+
+    protected int getStartPage() {
+        return START_PAGE;
+    }
+
+    protected boolean hasNextPage() {
+        return adapter.getDataSize() < totalItem && totalItem != DEFAULT_TOTAL_ITEM;
+    }
+
+    protected int getCurrentPage() {
+        return currentPage;
     }
 
     @Nullable
@@ -95,8 +111,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem &&
-                        totalItem != Integer.MAX_VALUE) {
+                if (lastItemPosition == visibleItem && hasNextPage()) {
                     setAndSearchForPage(currentPage + 1);
                     adapter.showRetryFull(false);
                     adapter.showLoading(true);
@@ -121,15 +136,10 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         }
     }
 
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getActivity());
-    }
-
     @Override
     protected void initialVar() {
         super.initialVar();
         currentPage = getStartPage();
-        totalItem = Integer.MAX_VALUE;
         searchMode = false;
         adapter = getNewAdapter();
         adapter.setCallback(this);
@@ -147,10 +157,6 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         adapter.setRetryView(retryDataBinder);
     }
 
-    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new TopAdsRetryDataBinder(adapter);
-    }
-
     @Override
     protected void setActionVar() {
         super.setActionVar();
@@ -166,6 +172,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     public void resetPageAndSearch() {
+        currentPage = getStartPage();
         searchForPage(getStartPage());
     }
 
@@ -180,7 +187,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         recyclerView.addOnScrollListener(onScrollListener);
         this.totalItem = totalItem;
         hideLoading();
-        if (totalItem <= 0) {
+        if (totalItem <= 0 && getCurrentPage() == getStartPage()) {
             if (searchMode) {
                 showViewSearchNoResult();
             } else {
@@ -247,10 +254,14 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
 
     private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
         if (snackBarRetry == null) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
+            initSnackbarRetry(listener);
             snackBarRetry.showRetrySnackbar();
             snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
+    }
+
+    protected void initSnackbarRetry(NetworkErrorHelper.RetryClickedListener listener) {
+        snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
     }
 
     private void hideSnackBarRetry() {
@@ -258,9 +269,5 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
-    }
-
-    protected int getStartPage() {
-        return START_PAGE;
     }
 }

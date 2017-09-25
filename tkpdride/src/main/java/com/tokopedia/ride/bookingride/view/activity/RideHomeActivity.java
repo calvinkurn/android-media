@@ -102,7 +102,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeMapFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener,
-        SeatAdapter.OnItemClickListener, RideHomeContract.View, HasComponent<RideComponent>  {
+        SeatAdapter.OnItemClickListener, RideHomeContract.View, HasComponent<RideComponent> {
     private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
     private static final String PRODUCTS_FRAGMENT_TAG = "products_fragment_tag";
     private static final String CONFIRM_FRAGMENT_TAG = "confirm_fragment_tag";
@@ -147,7 +147,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @DeepLink({Constants.Applinks.RIDE, Constants.Applinks.RIDE_DETAIL})
-    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
+    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
@@ -166,7 +166,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+        return destination;
     }
 
 

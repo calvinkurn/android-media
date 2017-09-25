@@ -21,7 +21,11 @@ public class ShopStatisticDetail extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_shop_statistic_detail);
-        getFragmentManager().beginTransaction().replace(R.id.fragment, ShopStatisticDetailFragment.createInstance(getIntent().getStringExtra(EXTRA_SHOP_INFO))).commit();
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction().replace(R.id.fragment,
+                    ShopStatisticDetailFragment.createInstance(
+                            getIntent().getStringExtra(EXTRA_SHOP_INFO))).commit();
+        }
     }
 
     @Override

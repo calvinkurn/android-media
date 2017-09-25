@@ -8,7 +8,7 @@ import com.tokopedia.seller.R;
  */
 
 public class MyEtalaseItemViewModel implements EtalaseViewModel {
-    public static final int LAYOUT = R.layout.etalase_picker_item_layout;
+    public static final int LAYOUT = R.layout.item_product_etalase_picker;
     private Integer etalaseId;
     private String etalaseName;
 
