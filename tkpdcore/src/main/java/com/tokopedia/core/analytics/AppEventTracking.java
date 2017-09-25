@@ -310,6 +310,7 @@ public interface AppEventTracking {
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
+        String SUBMIT = "Submit";
     }
 
     interface EventLabel {
@@ -678,7 +679,7 @@ public interface AppEventTracking {
         String EMAIL = "Email";
         String LOGIN_STATUS = "logged_in_status";
         String PRODUCTS_NUMBER = "number_of_products";
-        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY = "subcategory";
         String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "category";
         String CATEGORY_ID = "category_id";
@@ -714,7 +715,7 @@ public interface AppEventTracking {
         String CLICK_HOTLIST = "Clicked_Hotlist_Item";
         String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
         String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
-        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
+        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched";
         String CAT_SCREEN_OPEN = "Category_Screen_Launched";
         String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
         String PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";

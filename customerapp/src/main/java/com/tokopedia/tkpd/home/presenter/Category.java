@@ -16,7 +16,7 @@ public interface Category {
 
     void subscribe();
     void unSubscribe();
-    void fetchBanners(final FacadePromo.GetPromoListener listener);
+
     void fetchSlides(final FacadePromo.GetPromoListener listener);
     void fetchTickers(final FetchTickersListener listener);
     void closeTicker();

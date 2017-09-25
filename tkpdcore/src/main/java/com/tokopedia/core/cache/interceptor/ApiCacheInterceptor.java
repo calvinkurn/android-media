@@ -71,10 +71,10 @@ public class ApiCacheInterceptor implements Interceptor {
         requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, getFullRequestURL(request));
         requestParams.putString(BaseApiCacheInterceptorUseCase.METHOD, request.method());
 
-        String cacheData = getCacheDataUseCase.createObservableSync(requestParams).defaultIfEmpty(null).toBlocking().firstOrDefault(null);
         Boolean isInWhiteList = checkWhiteListUseCase.createObservableSync(requestParams).defaultIfEmpty(false).toBlocking().firstOrDefault(null);
 
         if (isInWhiteList != null && isInWhiteList) {
+            String cacheData = getCacheDataUseCase.createObservableSync(requestParams).defaultIfEmpty(null).toBlocking().firstOrDefault(null);
             if (cacheData == null || cacheData.equals("")) {
                 CommonUtils.dumper(request.url().toString() + " data is not here !!");
                 Response response;

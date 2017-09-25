@@ -38,6 +38,7 @@ import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
 import com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget;
@@ -224,10 +225,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             swipeRefreshLayout.setRefreshing(true);
         }
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-        sellerDashboardPresenter.refreshShopInfo();
-
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-        sellerDashboardPresenter.getNotification();
+        sellerDashboardPresenter.refreshShopInfo();
     }
 
     @Override
@@ -258,8 +257,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView.getContentView().setVisibility(View.INVISIBLE);
         View errorView = headerShopInfoLoadingStateView.getErrorView();
         EmptyCardContentView emptyCardContentView= (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
-        emptyCardContentView.setTitleText(getString(R.string.error_connection_problem));
-        emptyCardContentView.setTitleText(getString(R.string.msg_connection_timeout));
+        emptyCardContentView.setTitleText(getString(R.string.msg_network_error_1));
+        emptyCardContentView.setDescriptionText(getString(R.string.msg_network_error_2));
         emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
 
@@ -281,9 +280,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), InboxReputationActivity.class);
-                intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
-                startActivity(intent);
+                startActivity(new Intent(getContext(),SellerReputationInfoActivity.class));
             }
         });
         shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
@@ -360,6 +357,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 sellerDashboardPresenter.openShop();
             }
         });
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.green_ticker));
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
@@ -367,6 +365,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
         shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }

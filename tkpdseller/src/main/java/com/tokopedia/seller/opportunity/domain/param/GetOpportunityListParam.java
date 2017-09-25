@@ -14,18 +14,15 @@ import java.util.HashMap;
 public class GetOpportunityListParam implements Parcelable {
     private String page;
     private String query;
-    private String sort;
-    private String keySort;
     private ArrayList<FilterPass> listFilter;
 
     public GetOpportunityListParam() {
+        this.listFilter = new ArrayList<>();
     }
 
     protected GetOpportunityListParam(Parcel in) {
         page = in.readString();
         query = in.readString();
-        sort = in.readString();
-        keySort = in.readString();
         listFilter = in.createTypedArrayList(FilterPass.CREATOR);
     }
 
@@ -57,15 +54,6 @@ public class GetOpportunityListParam implements Parcelable {
         this.query = query;
     }
 
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String keySort, String sort) {
-        this.keySort = keySort;
-        this.sort = sort;
-    }
-
     public ArrayList<FilterPass> getListFilter() {
         return listFilter;
     }
@@ -74,13 +62,6 @@ public class GetOpportunityListParam implements Parcelable {
         this.listFilter = listFilter;
     }
 
-    public String getKeySort() {
-        return keySort;
-    }
-
-    public void setKeySort(String keySort) {
-        this.keySort = keySort;
-    }
 
     @Override
     public int describeContents() {
@@ -91,8 +72,10 @@ public class GetOpportunityListParam implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(page);
         dest.writeString(query);
-        dest.writeString(sort);
-        dest.writeString(keySort);
         dest.writeTypedList(listFilter);
+    }
+
+    public void setSort(FilterPass sort) {
+        this.listFilter.add(sort);
     }
 }

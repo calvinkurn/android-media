@@ -78,7 +78,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private List<Pair<Integer, GMFeaturedProductModel>> gmTemporaryDelete;
-    private Button buttonSave;
 
     public static GMFeaturedProductFragment createInstance() {
         return new GMFeaturedProductFragment();
@@ -149,14 +148,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             }
         });
         coordinatorLayoutContainer = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout_container);
-        buttonSave = (Button) view.findViewById(R.id.button_save);
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnifyTracking.eventSortFeaturedProduct();
-                onBackPressed();
-            }
-        });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -305,7 +296,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         adapter.notifyDataSetChanged();
         updateTitle();
         updateFabDisplay();
-        updateButtonSave();
     }
 
     @Override
@@ -345,19 +335,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 }
             }
             onSearchLoaded(gmFeaturedProductModelList, gmFeaturedProductModelList.size());
-        }
-    }
-
-    private void updateButtonSave() {
-        switch (featuredProductTypeView) {
-            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
-                buttonSave.setVisibility(View.VISIBLE);
-                break;
-            case GMFeaturedProductTypeView.DELETE_DISPLAY:
-            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
-            default:
-                buttonSave.setVisibility(View.GONE);
-                break;
         }
     }
 
@@ -484,6 +461,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 }
                 break;
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                inflater.inflate(R.menu.menu_gm_featured_product_arrange_mode, menu);
+                break;
             default:
                 break;
         }
@@ -504,6 +483,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             } else {
                 showDeleteDialog();
             }
+            return true;
+        } else if (item.getItemId() == R.id.menu_done) {
+            UnifyTracking.eventSortFeaturedProduct();
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
