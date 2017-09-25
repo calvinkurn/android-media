@@ -1,10 +1,9 @@
 package com.tokopedia.posapp.data.source.local;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.posapp.database.QueryParameter;
 import com.tokopedia.posapp.database.manager.CartDbManager;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
+import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.model.CartDb_Table;
 import com.tokopedia.posapp.database.model.ProductDb;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
@@ -83,12 +82,12 @@ public class CartLocalSource {
         );
     }
 
-    private Func1<DbStatus, ATCStatusDomain> getATCDefaultStatus() {
-        return new Func1<DbStatus, ATCStatusDomain>() {
+    private Func1<DataStatus, ATCStatusDomain> getATCDefaultStatus() {
+        return new Func1<DataStatus, ATCStatusDomain>() {
             @Override
-            public ATCStatusDomain call(DbStatus dbStatus) {
+            public ATCStatusDomain call(DataStatus dataStatus) {
                 ATCStatusDomain atcStatus = new ATCStatusDomain();
-                if(dbStatus.isOk()) {
+                if(dataStatus.isOk()) {
                     atcStatus.setStatus(ATCStatusDomain.RESULT_ADD_TO_CART_SUCCESS);
                     atcStatus.setMessage(ATCStatusDomain.DEFAULT_SUCCESS_MESSAGE);
                 } else {

@@ -2,10 +2,8 @@ package com.tokopedia.posapp.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.data.factory.ShopFactory;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
 import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
-import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
 import rx.Observable;

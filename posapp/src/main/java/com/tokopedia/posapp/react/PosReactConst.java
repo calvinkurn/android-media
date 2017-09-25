@@ -22,6 +22,7 @@ public interface PosReactConst {
         String PRODUCT = "PRODUCT";
         String CART = "CART";
         String BANK = "BANK";
+        String ETALASE = "ETALASE";
     }
 
     interface EventEmitter {

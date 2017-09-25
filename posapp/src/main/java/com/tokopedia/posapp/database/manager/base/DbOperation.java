@@ -9,6 +9,7 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import com.tokopedia.posapp.database.QueryParameter;
+import com.tokopedia.posapp.domain.model.DataStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +37,17 @@ public abstract class DbOperation<T, D extends BaseModel> {
 
     protected abstract Class<D> getDbClass();
 
-    public abstract Observable<DbStatus> delete(T domain);
+    public abstract Observable<DataStatus> delete(T domain);
 
-    public Observable<DbStatus> delete(ConditionGroup conditions) {
+    public Observable<DataStatus> delete(ConditionGroup conditions) {
         return executeDelete(getDbClass(), conditions);
     }
 
-    public Observable<DbStatus> deleteAll() {
+    public Observable<DataStatus> deleteAll() {
         return executeDeleteAll(getDbClass());
     }
 
-    public Observable<DbStatus> store(T domain) {
+    public Observable<DataStatus> store(T domain) {
         return Observable.just(domain)
                 .map(new Func1<T, D>() {
                     @Override
@@ -54,15 +55,15 @@ public abstract class DbOperation<T, D extends BaseModel> {
                         return mapToDb(domain);
                     }
                 })
-                .flatMap(new Func1<D, Observable<DbStatus>>() {
+                .flatMap(new Func1<D, Observable<DataStatus>>() {
                     @Override
-                    public Observable<DbStatus> call(D db) {
+                    public Observable<DataStatus> call(D db) {
                         return executeStore(db);
                     }
                 });
     }
 
-    public Observable<DbStatus> store(List<T> domains) {
+    public Observable<DataStatus> store(List<T> domains) {
         return Observable.just(domains)
                 .map(new Func1<List<T>, List<D>>() {
                     @Override
@@ -75,15 +76,15 @@ public abstract class DbOperation<T, D extends BaseModel> {
                         return dbs;
                     }
                 })
-                .flatMap(new Func1<List<D>, Observable<DbStatus>>() {
+                .flatMap(new Func1<List<D>, Observable<DataStatus>>() {
                     @Override
-                    public Observable<DbStatus> call(List<D> dbs) {
+                    public Observable<DataStatus> call(List<D> dbs) {
                         return executeStore(dbs);
                     }
                 });
     }
 
-    public Observable<DbStatus> update(T domain) {
+    public Observable<DataStatus> update(T domain) {
         return Observable.just(domain)
                 .map(new Func1<T, D>() {
                     @Override
@@ -91,9 +92,9 @@ public abstract class DbOperation<T, D extends BaseModel> {
                         return mapToDb(domain);
                     }
                 })
-                .flatMap(new Func1<D, Observable<DbStatus>>() {
+                .flatMap(new Func1<D, Observable<DataStatus>>() {
                     @Override
-                    public Observable<DbStatus> call(D db) {
+                    public Observable<DataStatus> call(D db) {
                         return executeUpdate(db);
                     }
                 });
@@ -149,10 +150,10 @@ public abstract class DbOperation<T, D extends BaseModel> {
                 });
     }
 
-    protected Observable<DbStatus> executeStore(final D data) {
-        return Observable.create(new Observable.OnSubscribe<DbStatus>() {
+    protected Observable<DataStatus> executeStore(final D data) {
+        return Observable.create(new Observable.OnSubscribe<DataStatus>() {
             @Override
-            public void call(Subscriber<? super DbStatus> subscriber) {
+            public void call(Subscriber<? super DataStatus> subscriber) {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
@@ -165,10 +166,10 @@ public abstract class DbOperation<T, D extends BaseModel> {
         });
     }
 
-    protected Observable<DbStatus> executeStore(final List<D> datas) {
-        return Observable.create(new Observable.OnSubscribe<DbStatus>() {
+    protected Observable<DataStatus> executeStore(final List<D> datas) {
+        return Observable.create(new Observable.OnSubscribe<DataStatus>() {
             @Override
-            public void call(Subscriber<? super DbStatus> subscriber) {
+            public void call(Subscriber<? super DataStatus> subscriber) {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
@@ -183,10 +184,10 @@ public abstract class DbOperation<T, D extends BaseModel> {
         });
     }
 
-    protected Observable<DbStatus> executeUpdate(final D data) {
-        return Observable.create(new Observable.OnSubscribe<DbStatus>() {
+    protected Observable<DataStatus> executeUpdate(final D data) {
+        return Observable.create(new Observable.OnSubscribe<DataStatus>() {
             @Override
-            public void call(Subscriber<? super DbStatus> subscriber) {
+            public void call(Subscriber<? super DataStatus> subscriber) {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
@@ -199,10 +200,10 @@ public abstract class DbOperation<T, D extends BaseModel> {
         });
     }
 
-    protected Observable<DbStatus> executeDeleteAll(final Class<D> clz) {
-        return Observable.create(new Observable.OnSubscribe<DbStatus>() {
+    protected Observable<DataStatus> executeDeleteAll(final Class<D> clz) {
+        return Observable.create(new Observable.OnSubscribe<DataStatus>() {
             @Override
-            public void call(Subscriber<? super DbStatus> subscriber) {
+            public void call(Subscriber<? super DataStatus> subscriber) {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
@@ -215,10 +216,10 @@ public abstract class DbOperation<T, D extends BaseModel> {
         });
     }
 
-    protected Observable<DbStatus> executeDelete(final Class<D> clz, final ConditionGroup conditions) {
-        return Observable.create(new Observable.OnSubscribe<DbStatus>() {
+    protected Observable<DataStatus> executeDelete(final Class<D> clz, final ConditionGroup conditions) {
+        return Observable.create(new Observable.OnSubscribe<DataStatus>() {
             @Override
-            public void call(Subscriber<? super DbStatus> subscriber) {
+            public void call(Subscriber<? super DataStatus> subscriber) {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
@@ -231,21 +232,21 @@ public abstract class DbOperation<T, D extends BaseModel> {
         });
     }
 
-    protected Transaction.Success defaultSuccessListener(final Subscriber<? super DbStatus> subscriber) {
+    protected Transaction.Success defaultSuccessListener(final Subscriber<? super DataStatus> subscriber) {
         return new Transaction.Success() {
             @Override
             public void onSuccess(Transaction transaction) {
-                subscriber.onNext(DbStatus.defaultOkResult());
+                subscriber.onNext(DataStatus.defaultOkResult());
             }
         };
     }
 
-    protected Transaction.Error defaultErrorListener(final Subscriber<? super DbStatus> subscriber) {
+    protected Transaction.Error defaultErrorListener(final Subscriber<? super DataStatus> subscriber) {
         return new Transaction.Error() {
             @Override
             public void onError(Transaction transaction, Throwable error) {
                 error.printStackTrace();
-                subscriber.onNext(DbStatus.defaultErrorResult(error));
+                subscriber.onNext(DataStatus.defaultErrorResult(error));
             }
         };
     }

@@ -1,8 +1,10 @@
 package com.tokopedia.posapp.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.posapp.data.factory.ShopFactory;
-import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
+import com.tokopedia.posapp.data.factory.EtalaseFactory;
+import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.domain.model.ListDomain;
+import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 
 import java.util.List;
 
@@ -13,14 +15,19 @@ import rx.Observable;
  */
 
 public class EtalaseRepositoryImpl implements EtalaseRepository {
-    ShopFactory shopFactory;
+    EtalaseFactory etalaseFactory;
 
-    public EtalaseRepositoryImpl(ShopFactory shopFactory) {
-        this.shopFactory = shopFactory;
+    public EtalaseRepositoryImpl(EtalaseFactory etalaseFactory) {
+        this.etalaseFactory = etalaseFactory;
     }
 
     @Override
-    public Observable<List<ShopEtalaseDomain>> getEtalase(RequestParams requestParams) {
-        return shopFactory.cloud().getShopEtalase(requestParams);
+    public Observable<List<EtalaseDomain>> getEtalase(RequestParams requestParams) {
+        return etalaseFactory.cloud().getEtalase(requestParams);
+    }
+
+    @Override
+    public Observable<DataStatus> storeEtalaseToCache(ListDomain<EtalaseDomain> data) {
+        return etalaseFactory.local().storeEtalase(data);
     }
 }

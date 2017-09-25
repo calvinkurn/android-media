@@ -2,17 +2,13 @@ package com.tokopedia.posapp.data.source.local;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.posapp.database.manager.BankDbManager;
-import com.tokopedia.posapp.database.manager.BinDbManager;
-import com.tokopedia.posapp.database.manager.BinInstallmentDbManager;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
+import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.model.BankDb_Table;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -34,12 +30,12 @@ public class BankLocalSource {
                     @Override
                     public Observable<BankSavedResult> call(final BankInstallmentDomain bankInstallmentDomain) {
                         return bankDbManager.store(bankInstallmentDomain.getBankDomainList())
-                                .map(new Func1<DbStatus, BankSavedResult>() {
+                                .map(new Func1<DataStatus, BankSavedResult>() {
                                     @Override
-                                    public BankSavedResult call(DbStatus dbStatus) {
+                                    public BankSavedResult call(DataStatus dataStatus) {
                                         BankSavedResult result = new BankSavedResult();
-                                        result.setStatus(dbStatus.isOk());
-                                        result.setMessage(dbStatus.getMessage());
+                                        result.setStatus(dataStatus.isOk());
+                                        result.setMessage(dataStatus.getMessage());
                                         return result;
                                     }
                                 });

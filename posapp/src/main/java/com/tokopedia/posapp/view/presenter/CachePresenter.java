@@ -6,11 +6,13 @@ import android.util.Log;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.domain.model.ListDomain;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
-import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
+import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
@@ -106,10 +108,32 @@ public class CachePresenter implements Cache.Presenter {
         RequestParams etalaseParams = RequestParams.create();
         etalaseParams.putString(SHOP_ID, SessionHandler.getShopID(context));
         getEtalaseUseCase.createObservable(etalaseParams)
-                .flatMap(new Func1<List<ShopEtalaseDomain>, Observable<?>>() {
+                .flatMap(new Func1<List<EtalaseDomain>, Observable<DataStatus>>() {
                     @Override
-                    public Observable<?> call(List<ShopEtalaseDomain> shopEtalaseDomains) {
-                        return null;
+                    public Observable<DataStatus> call(List<EtalaseDomain> etalaseDomains) {
+                        ListDomain<EtalaseDomain> data = new ListDomain<>();
+                        data.setList(etalaseDomains);
+
+                        RequestParams requestParams = RequestParams.create();
+                        requestParams.putObject(StoreEtalaseCacheUseCase.DATA, data);
+
+                        return storeEtalaseCacheUseCase.createObservable(requestParams);
+                    }
+                })
+                .subscribe(new Subscriber<DataStatus>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(DataStatus dataStatus) {
+                        Log.d("CachePresenter", dataStatus.getMessage());
                     }
                 });
     }

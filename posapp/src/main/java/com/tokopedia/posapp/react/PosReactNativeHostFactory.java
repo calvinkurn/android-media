@@ -3,15 +3,8 @@ package com.tokopedia.posapp.react;
 import android.app.Application;
 
 import com.facebook.react.ReactNativeHost;
-import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
-import com.microsoft.codepush.react.CodePush;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.tkpdreactnative.react.CoreReactPackage;
-import com.tokopedia.tkpdreactnative.react.ReactConst;
-
-import java.util.Arrays;
-import java.util.List;
+import com.tokopedia.posapp.react.host.PosReactNativeHostDev;
+import com.tokopedia.posapp.react.host.PosReactNativeHostLive;
 
 /**
  * Created by okasurya on 8/29/17.
@@ -20,63 +13,20 @@ import java.util.List;
 public class PosReactNativeHostFactory {
     private static PosReactNativeHostFactory instance;
 
-    protected PosReactNativeHostFactory() {}
+    private PosReactNativeHostFactory() {
+    }
 
     public static ReactNativeHost init(Application application) {
-        if(instance == null) instance = new PosReactNativeHostFactory();
+        if (instance == null) instance = new PosReactNativeHostFactory();
 
         return instance.createReactNativeHostDev(application);
     }
 
-    private ReactNativeHost createReactNativeHost(final Application application) {
-        return new ReactNativeHost(application) {
-            @Override
-            public boolean getUseDeveloperSupport() {
-                return GlobalConfig.isAllowDebuggingTools();
-            }
-
-            @Override
-            protected List<ReactPackage> getPackages() {
-                return getListPackages(application);
-            }
-
-            @Override
-            protected String getJSBundleFile() {
-                return CodePush.getJSBundleFile();
-            }
-        };
+    private ReactNativeHost createReactNativeHost(Application application) {
+        return new PosReactNativeHostLive(application);
     }
 
-    private ReactNativeHost createReactNativeHostDev(final Application application) {
-        return new ReactNativeHost(application) {
-            @Override
-            public boolean getUseDeveloperSupport() {
-                return true;
-            }
-
-            @Override
-            protected List<ReactPackage> getPackages() {
-                return getListPackages(application);
-            }
-
-            @Override
-            protected String getJSBundleFile() {
-                return "index.android.bundle";
-            }
-
-            @Override
-            protected String getJSMainModuleName() {
-                return "reactscript/index.android";
-            }
-        };
-    }
-
-    protected List<ReactPackage> getListPackages(Application application) {
-        return Arrays.<ReactPackage>asList(
-                new MainReactPackage(),
-                new CoreReactPackage(),
-                new PosReactPackage(),
-                new CodePush(ReactConst.CODE_PUSH_DEPLOYMENT_KEY, application, GlobalConfig.isAllowDebuggingTools())
-        );
+    private ReactNativeHost createReactNativeHostDev(Application application) {
+        return new PosReactNativeHostDev(application);
     }
 }

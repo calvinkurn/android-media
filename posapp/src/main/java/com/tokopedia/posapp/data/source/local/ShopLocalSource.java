@@ -3,12 +3,14 @@ package com.tokopedia.posapp.data.source.local;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.posapp.data.mapper.StoreProductMapper;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
+import com.tokopedia.posapp.database.manager.EtalaseDbManager;
+import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.model.ProductDb;
+import com.tokopedia.posapp.domain.model.ListDomain;
 import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.database.manager.DbManager;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
-import com.tokopedia.posapp.domain.model.shop.ShopEtalaseDomain;
+import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
 import java.util.ArrayList;
@@ -24,15 +26,9 @@ import rx.functions.Func1;
 
 public class ShopLocalSource {
     private ProductDbManager productDbManager;
-    private StoreProductMapper storeProductMapper;
 
     public ShopLocalSource() {
         productDbManager = new ProductDbManager();
-        storeProductMapper = new StoreProductMapper();
-    }
-
-    public Observable<ProductModel> getProductList(RequestParams params) {
-        return null;
     }
 
     public Observable<ProductSavedResult> storeProduct(ShopProductListDomain productListDomain) {
@@ -77,9 +73,5 @@ public class ShopLocalSource {
                         });
                     }
                 });
-    }
-
-    public Observable<DbStatus> storeEtalse(ShopEtalaseDomain shopEtalaseDomain) {
-        return null;
     }
 }

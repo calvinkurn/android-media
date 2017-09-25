@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.database.manager;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.posapp.database.manager.base.DbStatus;
+import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.ProductDb;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
@@ -85,7 +85,7 @@ public class ProductDbManager2 extends PosDbOperation<ProductDomain, ProductDb> 
     }
 
     @Override
-    public Observable<DbStatus> delete(ProductDomain domain) {
+    public Observable<DataStatus> delete(ProductDomain domain) {
         return executeDelete(
                 getDbClass(),
                 ConditionGroup.clause().and(ProductDb_Table.productId.eq(domain.getProductId()))
