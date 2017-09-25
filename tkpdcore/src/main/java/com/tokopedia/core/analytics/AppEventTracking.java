@@ -596,7 +596,8 @@ public interface AppEventTracking {
         String ADD_FEATURED_PRODUCT = "Add Featured Product";
         String TICK_ERROR = "Tick Error";
         String SAVE_FEATURED_PRODUCT_PICKER = "Simpan - ";
-        String SORT_FEATURED_PRODUCT = "Atur Urutan";
+        String SORT_FEATURED_PRODUCT_CHANGE = "Atur Urutan (Change)";
+        String SORT_FEATURED_PRODUCT_NO_CHANGE = "Atur Urutan (No Change)";
         String DELETE_FEATURED_PRODUCT = "Delete";
     }
 
