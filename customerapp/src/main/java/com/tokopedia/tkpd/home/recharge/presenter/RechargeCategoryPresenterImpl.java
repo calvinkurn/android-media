@@ -78,8 +78,9 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onNext(Status status) {
+                SessionHandler sessionHandler = new SessionHandler(activity);
                 if (status != null) {
-                    if (SessionHandler.isV4Login(activity)) {
+                    if (sessionHandler.isV4Login(activity)) {
                         fetchRecentNumberList();
                     }
                     if (status.getData().getAttributes().getIsMaintenance() || !isVersionMatch(status)) {
