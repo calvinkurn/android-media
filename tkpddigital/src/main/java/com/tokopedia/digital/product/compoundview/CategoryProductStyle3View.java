@@ -159,6 +159,7 @@ public class CategoryProductStyle3View extends
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
+        digitalOperatorChooserView.setLabelText(data.getOperatorLabel());
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());
         digitalOperatorChooserView.renderInitDataList(data.getOperatorList());
         holderChooserOperator.addView(digitalOperatorChooserView);

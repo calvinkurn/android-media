@@ -14,4 +14,6 @@ public interface ProductDraftListView extends BaseListViewListener<ProductDraftV
     void onSaveBulkDraftSuccess(List<Long> productIds);
     void onSaveBulkDraftError(Throwable throwable);
     void onSaveInstagramResolutionError(int position, String localPath);
+    void onSuccessDeleteAllDraft();
+    void onErrorDeleteAllDraft();
 }

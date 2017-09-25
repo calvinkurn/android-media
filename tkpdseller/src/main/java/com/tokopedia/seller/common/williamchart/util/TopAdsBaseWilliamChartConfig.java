@@ -1,7 +1,7 @@
 package com.tokopedia.seller.common.williamchart.util;
 
 import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
+import com.tokopedia.seller.common.williamchart.config.GrossGraphChartConfig;
 
 /**
  * Created by normansyahputa on 7/7/17.

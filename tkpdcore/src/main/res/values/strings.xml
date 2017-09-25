@@ -823,7 +823,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_activity_fragment_shop_detail">Detil Toko</string>
     <string name="title_activity_shop_location">Lokasi Toko</string>
     <string name="title_activity_shop_statistic">Detil Toko</string>
-    <string name="title_activity_manage_shop">ATUR TOKO</string>
+    <string name="title_activity_manage_shop">Atur Toko</string>
     <string name="title_activity_manage_general_desc">ATUR APLIKASI</string>
     <string name="title_activity_manage_general_about">TENTANG KAMI</string>
     <string name="title_activity_manage_shop_notes">Catatan Toko</string>
@@ -2056,5 +2056,7 @@ di Tokopedia Sekarang!</string>
     <string name="string_notreceived_check_courier">Tanya Kurir</string>
     <string name="shop_product_list_header_product_title">Produk</string>
     <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
+    <string name="cari_produk_atau_toko">Cari produk atau toko</string>
+    <string name="search_shop_info_hint">Cari produk di toko ini</string>
 
 </resources>

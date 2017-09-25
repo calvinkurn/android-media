@@ -40,6 +40,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView textDiscount;
     private LinearLayout linearDiscountTimerHolder;
     private TextView textDiscountTimer;
+    private LinearLayout textOfficialStore;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -65,6 +66,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         textDiscount = (TextView) findViewById(R.id.text_discount);
         linearDiscountTimerHolder = (LinearLayout) findViewById(R.id.linear_discount_timer_holder);
         textDiscountTimer = (TextView) findViewById(R.id.text_discount_timer);
+        textOfficialStore = (LinearLayout) findViewById(R.id.text_official_store);
 
     }
 
@@ -95,6 +97,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackTextView.setVisibility(VISIBLE);
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
+        }
+
+        if(data.getShopInfo().getShopIsOfficial() != null && data.getShopInfo().getShopIsOfficial() == 1) {
+            textOfficialStore.setVisibility(VISIBLE);
         }
     }
 
