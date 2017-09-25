@@ -198,14 +198,15 @@ export const selectEmi = (id) => {
 
 //  ==================== Make Payment to Native ===================== //
 export const MAKE_PAYMENT = 'MAKE_PAYMENT'
-export const makePayment = () => {
+export const makePayment = (total_amount, installment_term, cc_no, expiry_date, cvv) => {
 
   // Please pass total_amount, installment_term, creditCard No, expired date, and cvv to this action
 
-  // return {
-  //   type: MAKE_PAYMENT,
-  //   payload: fetchBankData()
-  // }
+   return {
+     type: MAKE_PAYMENT,
+     // TODO: call native method for payment
+    // payload: {}
+   }
 }
 
 
