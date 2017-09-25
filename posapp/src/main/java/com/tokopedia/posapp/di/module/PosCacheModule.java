@@ -10,7 +10,6 @@ import dagger.Module;
  */
 // TODO: 9/20/17 fix scope structure
 @PosCacheScope
-@ShopScope
 @Module(includes = {EtalaseModule.class, ShopProductModule.class, BankModule.class})
 public class PosCacheModule {
 

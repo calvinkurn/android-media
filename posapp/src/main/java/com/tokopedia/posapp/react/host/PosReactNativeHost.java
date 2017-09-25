@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by okasurya on 9/25/17.
  */
-
+// TODO: 9/25/17 make sure #getReactInstanceManager() is safe
 public abstract class PosReactNativeHost extends ReactNativeHost {
 
     protected PosReactNativeHost(Application application) {
