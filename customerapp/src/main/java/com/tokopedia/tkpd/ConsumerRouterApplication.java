@@ -56,7 +56,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
@@ -94,7 +93,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  * @author normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements
+public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter {
 
@@ -108,10 +107,6 @@ public class ConsumerRouterApplication extends MainApplication implements
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
-
-    public GoldMerchantComponent getGoldMerchantComponent() {
-        throw new RuntimeException("method used in sellerapp only");
-    }
 
     @Override
     public void onCreate() {
@@ -567,5 +562,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
         return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
+    }
+
+    @Override
+    public void goToGMSubscribe(Activity activity) {
+        Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
+        activity.startActivity(intent);
     }
 }

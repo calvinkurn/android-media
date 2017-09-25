@@ -27,8 +27,6 @@
     <color name="background_wish_list">#F33960</color>
     <color name="background_star_review">#FFC107</color>
 
-    <color name="font_top_ads_green">@color/tkpd_main_green</color>
-
     <color name="font_black_primary_70">#B3000000</color>
     <color name="font_black_secondary_54">#8C000000</color>
     <color name="font_black_disabled_38">#61000000</color>

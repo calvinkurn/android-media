@@ -25,23 +25,23 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
-import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import java.util.ArrayList;
 
@@ -246,7 +246,8 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0);
-        String gmString = SessionHandler.isGoldMerchant(context) ?
+        boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
+        String gmString = isGoldMerchant ?
                 context.getString(R.string.extend_gold_merchant) :
                 context.getString(R.string.upgrade_gold_merchant);
 
@@ -254,6 +255,12 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0));
+        if(isGoldMerchant) {
+            gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
+                    TkpdState.DrawerPosition.FEATURED_PRODUCT,
+                    true
+            ));
+        }
         return gmMenu;
     }
 
@@ -314,7 +321,7 @@ public class DrawerSellerHelper extends DrawerHelper
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     UnifyTracking.eventDrawerSellerHome();
-                    context.startActivity(SellerHomeActivity.getCallingIntent(context));
+                    context.startActivity(DashboardActivity.createInstance(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     UnifyTracking.eventClickGoldMerchantViaDrawer();
@@ -384,6 +391,10 @@ public class DrawerSellerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads();
                     intent = new Intent(context, TopAdsDashboardActivity.class);
+                    context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.FEATURED_PRODUCT:
+                    intent = new Intent(context, GMFeaturedProductActivity.class);
                     context.startActivity(intent);
                     break;
                 default:

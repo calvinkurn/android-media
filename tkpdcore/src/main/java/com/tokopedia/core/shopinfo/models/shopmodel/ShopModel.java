@@ -8,6 +8,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class ShopModel {
 
+    public static final int IS_OPEN = 1; //FROM API
+    public static final int IS_CLOSED = 2; //FROM API
+    public static final int IS_SCHEDULED_CLOSED = 3; //FROM API
+
     @SerializedName("owner")
     @Expose
     public Owner owner;
@@ -42,4 +46,47 @@ public class ShopModel {
     @Expose
     public int useAce;
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public Info getInfo() {
+        return info;
+    }
+
+    public List<Payment> getPayment() {
+        return payment;
+    }
+
+    public Stats getStats() {
+        return stats;
+    }
+
+    public ShopTxStats getShopTxStats() {
+        return shopTxStats;
+    }
+
+    public ClosedInfo getClosedInfo() {
+        return closedInfo;
+    }
+
+    public List<Shipment> getShipment() {
+        return shipment;
+    }
+
+    public Ratings getRatings() {
+        return ratings;
+    }
+
+    public int getIsOpen() {
+        return isOpen;
+    }
+
+    public List<Address> getAddress() {
+        return address;
+    }
+
+    public int getUseAce() {
+        return useAce;
+    }
 }

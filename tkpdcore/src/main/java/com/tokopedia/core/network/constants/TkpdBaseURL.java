@@ -133,7 +133,8 @@ public class TkpdBaseURL {
         public static final String URL_INVOICE = BASE_DOMAIN + "v4/";
         public static final String URL_MSISDN_ACTION = BASE_DOMAIN + "v4/action/msisdn/";
         public static final String URL_MSISDN = BASE_DOMAIN + "v4/msisdn/";
-        public static final String URL_NOTIFICATION = BASE_DOMAIN + "v4/notification/";
+        public static final String PATH_NOTIFICATION = "v4/notification/";
+        public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
         public static final String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
         public static final String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
         public static final String URL_SESSION = BASE_DOMAIN + "v4/session/";
@@ -274,7 +275,8 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP_ETALASE = BASE_DOMAIN + PATH_MY_SHOP_ETALASE;
         public static final String PATH_ACTION_MY_SHOP_ETALASE = "v4/action/myshop-etalase/";
         public static final String URL_MY_SHOP_ETALASE_ACTION = BASE_DOMAIN + PATH_ACTION_MY_SHOP_ETALASE;
-        public static final String URL_MY_SHOP_INFO_ACTION = BASE_DOMAIN + "v4/action/myshop-info/";
+        public static final String PATH_MY_SHOP_INFO = "v4/action/myshop-info/";
+        public static final String URL_MY_SHOP_INFO_ACTION = BASE_DOMAIN + PATH_MY_SHOP_INFO;
         public static final String URL_MY_SHOP_INFO = BASE_DOMAIN + "v4/myshop-info/";
         public static final String URL_MY_SHOP_NOTE = BASE_DOMAIN + "v4/myshop-note/";
         public static final String URL_MY_SHOP_NOTE_ACTION = BASE_DOMAIN + "v4/action/myshop-note/";
@@ -287,6 +289,7 @@ public class TkpdBaseURL {
         public static final String URL_NOTES = BASE_DOMAIN + "v4/notes/";
         public static final String URL_REPUTATION_ACTION = BASE_DOMAIN + "v4/action/reputation/";
         public static final String PATH_SHOP = "v4/shop/";
+        public static final String PATH_SHOP_TOME = "v1/web-service/shop/get_shop_info";
         public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
         public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + "v4/web-view/";
         public static final String URL_ACTION_SHOP_ORDER = "v4/myshop-order/";
@@ -443,7 +446,8 @@ public class TkpdBaseURL {
 
     public static class Transaction {
         public static final String URL_DEPOSIT_ACTION = BASE_DOMAIN + "v4/action/deposit/";
-        public static final String URL_DEPOSIT = BASE_DOMAIN + "v4/deposit/";
+        public static final String PATH_DEPOSIT = "v4/deposit/";
+        public static final String URL_DEPOSIT = BASE_DOMAIN + PATH_DEPOSIT;
         public static final String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "app/";
         public static final String URL_TRACKING_ORDER = BASE_DOMAIN + "v4/tracking-order/";
         public static final String URL_TX_ACTION = BASE_DOMAIN + "v4/action/tx/";

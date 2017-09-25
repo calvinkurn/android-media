@@ -8,7 +8,7 @@ import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 /**
  * Created by sebastianuskh on 3/8/17.
  */
-
+@Deprecated
 public class CategoryVersionCache {
     public static final String STORED_CATEGORY_HADES_VERSION = "STORED_CATEGORY_HADES_VERSION";
     public static final String VERSION_NUMBER = "VERSION_NUMBER";
