@@ -1,53 +1,31 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
 
-import java.util.List;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 
 /**
- * @author by nisie on 8/19/17.
+ * @author by nisie on 9/26/17.
  */
 
 public class InboxReputationDetailDomain {
+    InboxReputationDomain inboxReputationDomain;
+    ReviewDomain reviewDomain;
 
-    private List<InboxReputationDetailItemDomain> data = null;
-    private int reputationId;
-    private UserDataDomain userData;
-    private ShopDataDomain shopData;
-    private String invoiceRefNum;
-    private String invoiceTime;
-
-    public InboxReputationDetailDomain(List<InboxReputationDetailItemDomain> data,
-                                       int reputationId, UserDataDomain userData,
-                                       ShopDataDomain shopData, String invoiceRefNum,
-                                       String invoiceTime) {
-        this.data = data;
-        this.reputationId = reputationId;
-        this.userData = userData;
-        this.shopData = shopData;
-        this.invoiceRefNum = invoiceRefNum;
-        this.invoiceTime = invoiceTime;
+    public InboxReputationDetailDomain() {
     }
 
-    public List<InboxReputationDetailItemDomain> getData() {
-        return data;
+    public InboxReputationDomain getInboxReputationDomain() {
+        return inboxReputationDomain;
     }
 
-    public int getReputationId() {
-        return reputationId;
+    public ReviewDomain getReviewDomain() {
+        return reviewDomain;
     }
 
-    public UserDataDomain getUserData() {
-        return userData;
+    public void setInboxReputationDomain(InboxReputationDomain inboxReputationDomain) {
+        this.inboxReputationDomain = inboxReputationDomain;
     }
 
-    public ShopDataDomain getShopData() {
-        return shopData;
-    }
-
-    public String getInvoiceRefNum() {
-        return invoiceRefNum;
-    }
-
-    public String getInvoiceTime() {
-        return invoiceTime;
+    public void setReviewDomain(ReviewDomain reviewDomain) {
+        this.reviewDomain = reviewDomain;
     }
 }

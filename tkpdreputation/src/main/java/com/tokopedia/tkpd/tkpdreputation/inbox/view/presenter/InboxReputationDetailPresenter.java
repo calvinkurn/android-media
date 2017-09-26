@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
@@ -58,10 +57,6 @@ public class InboxReputationDetailPresenter
                 new GetInboxReputationDetailSubscriber(viewListener));
     }
 
-    @Override
-    public void getNextPage(int lastItemPosition, int visibleItem) {
-
-    }
 
     @Override
     public void sendSmiley(String reputationId, String score, int role) {

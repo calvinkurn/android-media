@@ -4,7 +4,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationDetailItemDomain {
+public class ReviewItemDomain {
     private ProductDataDomain productData;
     private int reviewInboxId;
     private int reviewId;
@@ -14,10 +14,10 @@ public class InboxReputationDetailItemDomain {
     private boolean reviewIsEditable;
     private ReviewDataDomain reviewData;
 
-    public InboxReputationDetailItemDomain(ProductDataDomain productData, int reviewInboxId,
-                                           int reviewId, boolean reviewHasReviewed,
-                                           boolean reviewIsSkippable, boolean reviewIsSkipped,
-                                           boolean reviewIsEditable, ReviewDataDomain reviewData) {
+    public ReviewItemDomain(ProductDataDomain productData, int reviewInboxId,
+                            int reviewId, boolean reviewHasReviewed,
+                            boolean reviewIsSkippable, boolean reviewIsSkipped,
+                            boolean reviewIsEditable, ReviewDataDomain reviewData) {
         this.productData = productData;
         this.reviewInboxId = reviewInboxId;
         this.reviewId = reviewId;

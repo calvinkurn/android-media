@@ -12,8 +12,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 
 import rx.Observable;
 
-import static com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment.PARAM_TAB;
-
 /**
  * @author by nisie on 8/18/17.
  */
@@ -41,6 +39,7 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
     private static final String PARAM_KEYWORD = "keyword";
 
     public final static String PARAM_TAB = "TAB";
+    public static final String PARAM_REPUTATION_ID = "reputation_id";
 
     protected ReputationRepository reputationRepository;
 
@@ -72,6 +71,18 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
                     readStatusFilter : DEFAULT_READ_STATUS);
         params.putInt(PARAM_STATUS, getStatus(tab));
         params.putInt(PARAM_TAB, tab);
+        return params;
+    }
+
+    public static RequestParams getSpecificReputation(String reputationId, int tab) {
+        RequestParams params = RequestParams.create();
+        params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
+        params.putInt(PARAM_PAGE, 1);
+        params.putInt(PARAM_ROLE, getRole(tab));
+        params.putString(PARAM_TIME_FILTER,DEFAULT_TIME_FILTER);
+        params.putInt(PARAM_STATUS, getStatus(tab));
+        params.putInt(PARAM_TAB, tab);
+        params.putString(PARAM_REPUTATION_ID, reputationId);
         return params;
     }
 

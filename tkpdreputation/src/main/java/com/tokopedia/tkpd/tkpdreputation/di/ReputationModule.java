@@ -20,6 +20,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetCacheI
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.ReportReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewSubmitUseCase;
@@ -129,14 +130,28 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    GetInboxReputationDetailUseCase
-    provideGetInboxReputationDetailUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread,
-                                           ReputationRepository reputationRepository) {
-        return new GetInboxReputationDetailUseCase(
+    GetReviewUseCase
+    provideGetReviewUseCase(ThreadExecutor threadExecutor,
+                            PostExecutionThread postExecutionThread,
+                            ReputationRepository reputationRepository) {
+        return new GetReviewUseCase(
                 threadExecutor,
                 postExecutionThread,
                 reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    GetInboxReputationDetailUseCase
+    provideGetInboxReputationDetailUseCase(ThreadExecutor threadExecutor,
+                                           PostExecutionThread postExecutionThread,
+                                           GetInboxReputationUseCase getInboxReputationUseCase,
+                                           GetReviewUseCase getReviewUseCase) {
+        return new GetInboxReputationDetailUseCase(
+                threadExecutor,
+                postExecutionThread,
+                getInboxReputationUseCase,
+                getReviewUseCase);
     }
 
     @ReputationScope

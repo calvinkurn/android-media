@@ -37,6 +37,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdet
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
@@ -141,8 +142,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private void prepareView() {
         listProduct.setLayoutManager(layoutManager);
         listProduct.setAdapter(adapter);
-
-        listProduct.addOnScrollListener(onScroll());
         swipeToRefresh.setOnRefreshListener(onRefresh());
 
     }
@@ -152,19 +151,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             @Override
             public void onRefresh() {
                 refreshPage();
-            }
-        };
-    }
-
-    private RecyclerView.OnScrollListener onScroll() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                int lastItemPosition = layoutManager.findLastVisibleItemPosition();
-                int visibleItem = layoutManager.getItemCount() - 1;
-                if (!adapter.isLoading())
-                    presenter.getNextPage(lastItemPosition, visibleItem);
             }
         };
     }
@@ -287,14 +273,36 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessRefreshGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+    public void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
+                                               RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
                                                RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
                                                List<Visitable> list) {
         adapter.clearList();
-        adapter.addHeader(createHeaderModel(passModel,
+        adapter.addHeader(createHeaderModel(inboxReputationViewModel,
                 revieweeBadgeCustomerViewModel, revieweeBadgeSellerViewModel));
         adapter.addList(list);
         adapter.notifyDataSetChanged();
+        getActivity().setResult(Activity.RESULT_OK);
+    }
+
+    private InboxReputationDetailHeaderViewModel createHeaderModel(
+            InboxReputationItemViewModel inboxReputationViewModel,
+            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
+        return new InboxReputationDetailHeaderViewModel(
+                inboxReputationViewModel.getRevieweePicture(),
+                inboxReputationViewModel.getRevieweeName(),
+                getTextDeadline(inboxReputationViewModel),
+                inboxReputationViewModel.getReputationDataViewModel(),
+                inboxReputationViewModel.getRole(),
+                revieweeBadgeCustomerViewModel,
+                revieweeBadgeSellerViewModel);
+    }
+
+    private String getTextDeadline(InboxReputationItemViewModel element) {
+        return MainApplication.getAppContext().getString(R.string.deadline_prefix)
+                + " " + element.getReputationDaysLeft() + " " +
+                MainApplication.getAppContext().getString(R.string.deadline_suffix);
     }
 
     @Override

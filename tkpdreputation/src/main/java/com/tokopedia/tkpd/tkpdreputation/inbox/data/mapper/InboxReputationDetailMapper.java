@@ -23,8 +23,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.UserData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.UserReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailItemDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ProductDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ResponseCreateTimeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewCreateTimeDomain;
@@ -46,9 +46,9 @@ import rx.functions.Func1;
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>, InboxReputationDetailDomain> {
+public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>, ReviewDomain> {
     @Override
-    public InboxReputationDetailDomain call(Response<TkpdResponse> response) {
+    public ReviewDomain call(Response<TkpdResponse> response) {
 
         if (response.isSuccessful()) {
             if (!response.body().isNullData()
@@ -75,8 +75,8 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
         }
     }
 
-    private InboxReputationDetailDomain mappingToDomain(InboxReputationDetailPojo data) {
-        return new InboxReputationDetailDomain(convertToListReview(data),
+    private ReviewDomain mappingToDomain(InboxReputationDetailPojo data) {
+        return new ReviewDomain(convertToListReview(data),
                 data.getReputationId(),
                 convertToUserDataDomain(data.getUserData()),
                 convertToShopDataDomain(data.getShopData()),
@@ -133,8 +133,8 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
         );
     }
 
-    private List<InboxReputationDetailItemDomain> convertToListReview(InboxReputationDetailPojo data) {
-        List<InboxReputationDetailItemDomain> list = new ArrayList<>();
+    private List<ReviewItemDomain> convertToListReview(InboxReputationDetailPojo data) {
+        List<ReviewItemDomain> list = new ArrayList<>();
         for (ReviewInboxDatum pojo : data.getReviewInboxData()) {
             list.add(convertToReputationItem(pojo));
         }
@@ -142,8 +142,8 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
         return list;
     }
 
-    private InboxReputationDetailItemDomain convertToReputationItem(ReviewInboxDatum pojo) {
-        return new InboxReputationDetailItemDomain(
+    private ReviewItemDomain convertToReputationItem(ReviewInboxDatum pojo) {
+        return new ReviewItemDomain(
                 convertToProductDataDomain(pojo.getProductData()),
                 pojo.getReviewInboxId(),
                 pojo.getReviewId(),

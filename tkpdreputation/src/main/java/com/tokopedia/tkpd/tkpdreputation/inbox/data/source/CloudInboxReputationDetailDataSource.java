@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 
 import rx.Observable;
 
@@ -25,7 +25,7 @@ public class CloudInboxReputationDetailDataSource {
         this.inboxReputationDetailMapper = inboxReputationDetailMapper;
     }
 
-    public Observable<InboxReputationDetailDomain> getInboxReputationDetail(RequestParams requestParams) {
+    public Observable<ReviewDomain> getInboxReputationDetail(RequestParams requestParams) {
         return reputationService.getApi().getInboxDetail(
                 AuthUtil.generateParamsNetwork2(
                         MainApplication.getAppContext(),

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
@@ -7,10 +8,8 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.CreateTimeFmt;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.InboxReputationPojo;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.Notification;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.OrderData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.Paging;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.ReputationBadge;
@@ -18,10 +17,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.ReputationData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.RevieweeBuyerBadge;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.RevieweeData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.RevieweeShopBadge;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.CreateTimeFmtDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.NotificationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.OrderDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.PagingDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
@@ -70,26 +67,20 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
 
     private InboxReputationDomain mappingToDomain(InboxReputationPojo data) {
         return new InboxReputationDomain(
-
                 mappingToListInboxReputation(data.getInboxReputation()),
-                mappingToNotification(data.getNotification()),
                 mappingToPaging(data.getPaging())
         );
     }
 
-    private PagingDomain mappingToPaging(Paging paging) {
-        return new PagingDomain(
-                paging.isHasNext(),
-                paging.isHasPrev()
-        );
-    }
+    private PagingDomain mappingToPaging(@Nullable Paging paging) {
+        if (paging != null)
+            return new PagingDomain(
+                    paging.isHasNext(),
+                    paging.isHasPrev()
+            );
+        else
+            return new PagingDomain(false, false);
 
-    private NotificationDomain mappingToNotification(Notification notification) {
-        return new NotificationDomain(
-                notification.getUnassessedBuyerReputation(),
-                notification.getUnassessedSellerReputation(),
-                notification.getUpdatedBuyerReputation()
-        );
     }
 
     private List<InboxReputationItemDomain> mappingToListInboxReputation(List<InboxReputation> inboxReputation) {
@@ -133,17 +124,6 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
                 orderData.getInvoiceRefNum(),
                 orderData.getCreateTimeFmt(),
                 orderData.getInvoiceUrl()
-        );
-    }
-
-    private CreateTimeFmtDomain mappingToCreateTimeFmt(CreateTimeFmt createTimeFmt) {
-        return new CreateTimeFmtDomain(
-                createTimeFmt.getDateTimeFmt1(),
-                createTimeFmt.getDateTimeFmt1x(),
-                createTimeFmt.getDateTimeFmt2(),
-                createTimeFmt.getDateTimeFmt3(),
-                createTimeFmt.getDateTimeFmt3x(),
-                createTimeFmt.getDateFmt1()
         );
     }
 

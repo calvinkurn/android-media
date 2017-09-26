@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
@@ -44,7 +46,8 @@ public interface InboxReputationDetail {
 
         void onErrorRefreshInboxDetail(String errorMessage);
 
-        void onSuccessRefreshGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
+        void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
+                                            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
                                             RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
                                             List<Visitable> visitables);
 
@@ -62,8 +65,6 @@ public interface InboxReputationDetail {
     interface Presenter extends CustomerPresenter<View> {
 
         void getInboxDetail(String id, int anInt);
-
-        void getNextPage(int lastItemPosition, int visibleItem);
 
         void sendSmiley(String reputationId, String score, int role);
     }

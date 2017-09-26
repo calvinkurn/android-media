@@ -10,23 +10,15 @@ public class InboxReputationDomain {
 
     private List<InboxReputationItemDomain> inboxReputation = null;
 
-    private NotificationDomain notification;
-
     private PagingDomain paging;
 
-    public InboxReputationDomain(List<InboxReputationItemDomain> inboxReputation,
-                                 NotificationDomain notification, PagingDomain paging) {
+    public InboxReputationDomain(List<InboxReputationItemDomain> inboxReputation, PagingDomain paging) {
         this.inboxReputation = inboxReputation;
-        this.notification = notification;
         this.paging = paging;
     }
 
     public List<InboxReputationItemDomain> getInboxReputation() {
         return inboxReputation;
-    }
-
-    public NotificationDomain getNotification() {
-        return notification;
     }
 
     public PagingDomain getPaging() {

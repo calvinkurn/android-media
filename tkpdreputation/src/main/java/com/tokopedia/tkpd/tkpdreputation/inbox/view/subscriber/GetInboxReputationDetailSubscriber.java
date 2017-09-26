@@ -7,7 +7,8 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailItemDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.UserReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
@@ -49,11 +50,11 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     public void onNext(InboxReputationDetailDomain inboxReputationDetailDomain) {
         viewListener.finishLoading();
         viewListener.onSuccessGetInboxDetail(
-                convertToRevieweeBadgeCustomerViewModel(inboxReputationDetailDomain.getUserData()
+                convertToRevieweeBadgeCustomerViewModel(inboxReputationDetailDomain.getReviewDomain().getUserData()
                         .getUserReputation()),
-                convertToRevieweeBadgeSellerViewModel(inboxReputationDetailDomain.getShopData()
+                convertToRevieweeBadgeSellerViewModel(inboxReputationDetailDomain.getReviewDomain().getShopData()
                         .getShopReputation()),
-                mappingToListItemViewModel(inboxReputationDetailDomain)
+                mappingToListItemViewModel(inboxReputationDetailDomain.getReviewDomain())
         );
     }
 
@@ -85,12 +86,12 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         );
     }
 
-    protected List<Visitable> mappingToListItemViewModel(InboxReputationDetailDomain
-                                                                 inboxReputationDetailDomain) {
+    protected List<Visitable> mappingToListItemViewModel(ReviewDomain
+                                                                 reviewDomain) {
         List<Visitable> list = new ArrayList<>();
-        if (inboxReputationDetailDomain.getData() != null) {
-            for (InboxReputationDetailItemDomain detailDomain : inboxReputationDetailDomain.getData()) {
-                list.add(convertToInboxReputationDetailItemViewModel(inboxReputationDetailDomain,
+        if (reviewDomain.getData() != null) {
+            for (ReviewItemDomain detailDomain : reviewDomain.getData()) {
+                list.add(convertToInboxReputationDetailItemViewModel(reviewDomain,
                         detailDomain));
             }
         }
@@ -99,7 +100,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     }
 
     private Visitable convertToInboxReputationDetailItemViewModel(
-            InboxReputationDetailDomain inboxDomain, InboxReputationDetailItemDomain detailDomain) {
+            ReviewDomain inboxDomain, ReviewItemDomain detailDomain) {
         return new InboxReputationDetailItemViewModel(
                 String.valueOf(detailDomain.getProductData().getProductId()),
                 detailDomain.getProductData().getProductName(),
