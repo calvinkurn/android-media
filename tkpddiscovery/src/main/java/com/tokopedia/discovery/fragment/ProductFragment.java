@@ -601,6 +601,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel) {
         topAdsRecyclerAdapter.setHasHeader(true);
         productAdapter.addHotListHeader(hotListBannerModel);
+        ((BrowseProductActivity) getActivity()).removeEmptyState();
         Log.d(TAG, "addHotListHeader");
     }
 
