@@ -738,14 +738,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onButtonContactPickerClicked() {
-        try {
-            DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
-        } catch (Exception e) {
-            if (e instanceof ActivityNotFoundException) {
-                NetworkErrorHelper.showSnackbar(getActivity(),
-                        getString(R.string.error_message_contact_not_found));
-            }
-        }
+        DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
     }
 
     @Override
@@ -902,9 +895,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         );
-        navigateToActivityRequest(
-                contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
-        );
+        try {
+            navigateToActivityRequest(
+                    contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+            );
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.error_message_contact_not_found));
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
