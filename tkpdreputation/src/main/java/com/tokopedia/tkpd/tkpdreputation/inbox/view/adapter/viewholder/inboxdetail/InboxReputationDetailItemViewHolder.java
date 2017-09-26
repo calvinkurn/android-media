@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spanned;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
@@ -33,6 +35,9 @@ public class InboxReputationDetailItemViewHolder extends
         AbstractViewHolder<InboxReputationDetailItemViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_item;
+    private static final int MAX_CHAR = 50;
+    private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
+
     private final InboxReputationDetail.View viewListener;
 
     TextView productName;
@@ -115,7 +120,16 @@ public class InboxReputationDetailItemViewHolder extends
             reviewerName.setText(getReviewerNameText(element.getReviewerName()));
             reviewTime.setText(element.getReviewTime());
             reviewStar.setRating(element.getReviewStar());
-            review.setText(element.getReview());
+            review.setText(getReview(element.getReview()));
+            review.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (review.getText().toString().endsWith(MainApplication.getAppContext().getString(R.string.more_to_complete))) {
+                        review.setText(element.getReview());
+                    }
+
+                }
+            });
             setOverflowButton(element);
         }
 
@@ -132,6 +146,16 @@ public class InboxReputationDetailItemViewHolder extends
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
 
+    }
+
+    private Spanned getReview(String review) {
+        if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
+            String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
+            return MethodChecker.fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "..."
+                    + MORE_DESCRIPTION);
+        } else {
+            return MethodChecker.fromHtml(review);
+        }
     }
 
     private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentViewModel> reviewAttachment) {

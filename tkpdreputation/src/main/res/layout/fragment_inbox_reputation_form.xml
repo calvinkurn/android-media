@@ -96,20 +96,6 @@
         <!--/>-->
         <!--</com.tkpd.library.ui.view.ExpandableTextView>-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@color/white"
-            android:fontFamily="sans-serif-medium"
-            android:lineSpacingExtra="7sp"
-            android:padding="@dimen/padding_activity"
-            android:text="@string/review"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/fonts"
-            android:textStyle="normal"
-            />
-
         <com.tokopedia.design.text.TkpdTextInputLayout
             android:id="@+id/review_layout"
             android:layout_width="match_parent"

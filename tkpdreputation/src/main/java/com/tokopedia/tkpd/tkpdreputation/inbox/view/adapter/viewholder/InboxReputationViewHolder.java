@@ -13,6 +13,10 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 /**
  * @author by nisie on 8/19/17.
  */
@@ -33,6 +37,9 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private TextView date;
     private TextView action;
     private View arrowNext;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
+    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
+
 
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
@@ -54,7 +61,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     public void bind(final InboxReputationItemViewModel element) {
 
         name.setText(element.getRevieweeName());
-        date.setText(element.getCreateTime());
+        date.setText(getDate(element.getCreateTime()));
         invoice.setText(element.getInvoice());
         ImageHandler.LoadImage(avatar, element.getRevieweePicture());
         setDeadline(element);
@@ -92,6 +99,15 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                         element.getRole());
             }
         });
+    }
+
+    private String getDate(String createTime) {
+        try {
+            return newSdf.format(sdf.parse(createTime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 

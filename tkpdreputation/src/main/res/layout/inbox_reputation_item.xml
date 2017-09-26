@@ -46,13 +46,30 @@
     </RelativeLayout>
 
 
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reputation"
+        android:layout_toRightOf="@id/avatar"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="6sp"
+        android:layout_marginTop="@dimen/margin_sm"
+
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/text_size_xsmall"
+        android:textStyle="normal"
+        tools:text="28 Mei"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_sm"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -109,20 +126,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/name"
             android:layout_toRightOf="@id/avatar"/>
-
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reputation"
-            android:layout_toRightOf="@id/avatar"
-            android:fontFamily="sans-serif"
-            android:lineSpacingExtra="6sp"
-            android:textColor="@color/black_38"
-            android:textSize="@dimen/text_size_xsmall"
-            android:textStyle="normal"
-            tools:text="28 Mei 2017, 20:15"
-            />
 
     </RelativeLayout>
 
