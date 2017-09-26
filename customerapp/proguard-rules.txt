@@ -310,3 +310,5 @@
 # play service
 -keep class com.google.android.gms.** { *; }
 
+-keep class android.content.pm.PackageManager
+
