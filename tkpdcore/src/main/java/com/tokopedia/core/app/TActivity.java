@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -124,6 +124,7 @@ public abstract class TActivity extends BaseActivity {
         }else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_new_action_overflow_black));
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
