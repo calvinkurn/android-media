@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
@@ -1541,6 +1542,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventMoRegister(String name, String mobileNo) {
+        CommonUtils.dumper("GAv4 moengage action "+name + " "+mobileNo);
         getMoEngine().sendRegisterEvent(name, mobileNo);
     }
 
