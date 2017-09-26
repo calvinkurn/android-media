@@ -193,3 +193,5 @@ public protected *;
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
 # -- End of Feeds --
+
+-dontwarn android.content.pm.PackageManager

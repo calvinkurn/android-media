@@ -472,7 +472,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onResume() {
-        rechargeCategoryPresenter.fetchStatusDigitalProductData();
         if (SessionHandler.isV4Login(getActivity())) {
             rechargeCategoryPresenter.fetchLastOrder();
         }
@@ -1004,6 +1003,20 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void renderErrorNetwork() {
+        if (messageSnackbar == null) {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    rechargeCategoryPresenter.fecthDataRechargeCategory();
+                }
+            });
+        }
+        messageSnackbar.showRetrySnackbar();
+    }
+
+    @Override
+    public void renderErrorMessage() {
 
     }
 

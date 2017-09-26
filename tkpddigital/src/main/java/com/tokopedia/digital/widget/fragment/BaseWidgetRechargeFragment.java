@@ -2,6 +2,7 @@ package com.tokopedia.digital.widget.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.model.WidgetContact;
 
@@ -258,7 +260,13 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         );
-        startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+        try {
+            startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.error_message_contact_not_found));
+        }
     }
 
     @Override
