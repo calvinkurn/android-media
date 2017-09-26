@@ -193,3 +193,6 @@ public protected *;
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
 # -- End of Feeds --
+
+-keep class android.content.pm.PackageManager
+-keep class com.google.android.gms.internal.** { *; }
