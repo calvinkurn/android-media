@@ -80,20 +80,17 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
         return checkVersion().flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
-                if (!aBoolean) {// if version is upgdated
+                deleteAllCache();
 
-                    deleteAllCache();
-
-                    Observable.from(cacheApiDatas)
-                            .flatMap(new Func1<CacheApiWhiteListDomain, Observable<CacheApiWhitelist>>() {
-                                @Override
-                                public Observable<CacheApiWhitelist> call(CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-                                    CacheApiWhitelist from = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
-                                    from.save();
-                                    return Observable.just(from);
-                                }
-                            }).toList().toBlocking().first();
-                }
+                Observable.from(cacheApiDatas)
+                        .flatMap(new Func1<CacheApiWhiteListDomain, Observable<CacheApiWhitelist>>() {
+                            @Override
+                            public Observable<CacheApiWhitelist> call(CacheApiWhiteListDomain cacheApiWhiteListDomain) {
+                                CacheApiWhitelist from = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
+                                from.save();
+                                return Observable.just(from);
+                            }
+                        }).toList().toBlocking().first();
                 return Observable.just(aBoolean);
             }
         });
