@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopFavoritedDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 
 import rx.Observable;
 
@@ -13,7 +13,7 @@ import rx.Observable;
  * @author by nisie on 9/26/17.
  */
 
-public class CheckShopFavoritedUseCase extends UseCase<ShopFavoritedDomain> {
+public class CheckShopFavoritedUseCase extends UseCase<CheckShopFavoriteDomain> {
 
     public static final String PARAM_USER_ID = "PARAM_USER_ID";
     public static final String PARAM_SHOP_ID = "PARAM_SHOP_ID";
@@ -27,7 +27,7 @@ public class CheckShopFavoritedUseCase extends UseCase<ShopFavoritedDomain> {
     }
 
     @Override
-    public Observable<ShopFavoritedDomain> createObservable(RequestParams requestParams) {
+    public Observable<CheckShopFavoriteDomain> createObservable(RequestParams requestParams) {
         return reputationRepository.checkIsShopFavorited(requestParams);
     }
 

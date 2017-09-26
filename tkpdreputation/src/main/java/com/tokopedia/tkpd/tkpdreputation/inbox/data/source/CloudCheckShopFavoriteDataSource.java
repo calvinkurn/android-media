@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopFavoritedDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 
 import rx.Observable;
 
@@ -22,7 +22,7 @@ public class CloudCheckShopFavoriteDataSource {
     }
 
 
-    public Observable<ShopFavoritedDomain> checkShopIsFavorited(RequestParams requestParams) {
+    public Observable<CheckShopFavoriteDomain> checkShopIsFavorited(RequestParams requestParams) {
         return tomeService.getApi()
                 .checkIsShopFavorited(
                         requestParams.getString(CheckShopFavoritedUseCase

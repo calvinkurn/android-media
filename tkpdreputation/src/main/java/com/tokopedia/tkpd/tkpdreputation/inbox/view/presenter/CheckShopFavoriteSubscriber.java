@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopFavoritedDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 
 import rx.Subscriber;
@@ -9,7 +9,7 @@ import rx.Subscriber;
  * @author by nisie on 9/26/17.
  */
 
-class CheckShopFavoriteSubscriber extends Subscriber<ShopFavoritedDomain> {
+class CheckShopFavoriteSubscriber extends Subscriber<CheckShopFavoriteDomain> {
 
     private final InboxReputationDetail.View viewListener;
 
@@ -28,7 +28,7 @@ class CheckShopFavoriteSubscriber extends Subscriber<ShopFavoritedDomain> {
     }
 
     @Override
-    public void onNext(ShopFavoritedDomain shopFavoritedDomain) {
-        viewListener.onSuccessCheckShopIsFavorited(shopFavoritedDomain.isShopFavorited() ? 1 : 0);
+    public void onNext(CheckShopFavoriteDomain checkShopFavoriteDomain) {
+        viewListener.onSuccessCheckShopIsFavorited(checkShopFavoriteDomain.isShopFavorited() ? 1 : 0);
     }
 }

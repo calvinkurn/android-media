@@ -31,6 +31,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     private static final int SMILEY_BAD = -1;
     private static final int SMILEY_NEUTRAL = 1;
     private static final int SMILEY_GOOD = 2;
+    private final ReputationAdapter.ReputationListener reputationListener;
 
     ImageView userAvatar;
     TextView name;
@@ -54,8 +55,9 @@ public class InboxReputationDetailHeaderViewHolder extends
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
 
     public InboxReputationDetailHeaderViewHolder(View itemView,
-                                                 ReputationAdapter.ReputationListener reputationListener) {
+                                                 final ReputationAdapter.ReputationListener reputationListener) {
         super(itemView);
+        this.reputationListener = reputationListener;
         userAvatar = (ImageView) itemView.findViewById(R.id.user_avatar);
         name = (TextView) itemView.findViewById(R.id.name);
         reputationView = (ReputationView) itemView.findViewById(R.id.reputation);
@@ -87,7 +89,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     @Override
-    public void bind(InboxReputationDetailHeaderViewModel element) {
+    public void bind(final InboxReputationDetailHeaderViewModel element) {
         ImageHandler.LoadImage(userAvatar, element.getAvatarImage());
         name.setText(element.getName());
         setReputation(element);
@@ -126,11 +128,18 @@ public class InboxReputationDetailHeaderViewHolder extends
                 InboxReputationItemViewModel.ROLE_SELLER) {
             favoriteButton.setVisibility(View.VISIBLE);
             setFavorite(element.getRevieweeBadgeSellerViewModel());
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reputationListener.onFavoriteShopClicked(element.getShopId());
+                }
+            });
         } else {
             favoriteButton.setVisibility(View.GONE);
         }
 
         setSmileyOpponent(element);
+
     }
 
     private void setFavorite(RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {

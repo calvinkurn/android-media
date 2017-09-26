@@ -4,10 +4,10 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
  * @author by nisie on 9/26/17.
  */
 
-public class ShopFavoritedDomain {
+public class CheckShopFavoriteDomain {
     boolean isShopFavorited;
 
-    public ShopFavoritedDomain(boolean isShopFavorited) {
+    public CheckShopFavoriteDomain(boolean isShopFavorited) {
         this.isShopFavorited = isShopFavorited;
     }
 

@@ -4,7 +4,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.apiservices.tome.FavoriteCheckResult;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopFavoritedDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -13,10 +13,10 @@ import rx.functions.Func1;
  * @author by nisie on 9/26/17.
  */
 
-public class ShopFavoritedMapper implements Func1<Response<FavoriteCheckResult>, ShopFavoritedDomain> {
+public class ShopFavoritedMapper implements Func1<Response<FavoriteCheckResult>, CheckShopFavoriteDomain> {
 
     @Override
-    public ShopFavoritedDomain call(Response<FavoriteCheckResult> response) {
+    public CheckShopFavoriteDomain call(Response<FavoriteCheckResult> response) {
         if (response.isSuccessful()) {
             if (response.body().getShopIds() != null) {
                 return mappingToDomain(!response.body().getShopIds().isEmpty());
@@ -29,7 +29,7 @@ public class ShopFavoritedMapper implements Func1<Response<FavoriteCheckResult>,
         }
     }
 
-    private ShopFavoritedDomain mappingToDomain(boolean isFavorited) {
-        return new ShopFavoritedDomain(isFavorited);
+    private CheckShopFavoriteDomain mappingToDomain(boolean isFavorited) {
+        return new CheckShopFavoriteDomain(isFavorited);
     }
 }

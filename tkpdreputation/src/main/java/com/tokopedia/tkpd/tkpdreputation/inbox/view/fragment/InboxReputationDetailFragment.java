@@ -359,7 +359,19 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     public void onSuccessCheckShopIsFavorited(int shopFavorited) {
         adapter.getHeader().getRevieweeBadgeSellerViewModel().setIsFavorited(shopFavorited);
         adapter.notifyItemChanged(0);
+    }
 
+    @Override
+    public void onErrorFavoriteShop(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessFavoriteShop() {
+        adapter.getHeader().getRevieweeBadgeSellerViewModel().setIsFavorited(
+                adapter.getHeader().getRevieweeBadgeSellerViewModel().getIsFavorited() == 1 ? 0 : 1
+        );
+        adapter.notifyItemChanged(0);
     }
 
     @Override
@@ -391,6 +403,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.show();
         }
+    }
+
+    @Override
+    public void onFavoriteShopClicked(int shopId) {
+        presenter.onFavoriteShopClicked(shopId);
     }
 
     private String getReputationSmileyMessage(String name) {

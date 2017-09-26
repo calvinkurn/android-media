@@ -3,9 +3,11 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.FavoriteShopSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendSmileySubscriber;
@@ -20,10 +22,12 @@ public class InboxReputationDetailPresenter
         extends BaseDaggerPresenter<InboxReputationDetail.View>
         implements InboxReputationDetail.Presenter {
 
+    private static final String SRC_INBOX_REPUTATION_DETAIL = "inbox_reputation_detail";
     private final GetInboxReputationDetailUseCase getInboxReputationDetailUseCase;
     private final SessionHandler sessionHandler;
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
     private final CheckShopFavoritedUseCase checkShopFavoritedUseCase;
+    private final FavoriteShopUseCase favoriteShopUseCase;
     private InboxReputationDetail.View viewListener;
 
     @Inject
@@ -31,10 +35,12 @@ public class InboxReputationDetailPresenter
             GetInboxReputationDetailUseCase getInboxReputationDetailUseCase,
             SendSmileyReputationUseCase sendSmileyReputationUseCase,
             CheckShopFavoritedUseCase checkShopFavoritedUseCase,
+            FavoriteShopUseCase favoriteShopUseCase,
             SessionHandler sessionHandler) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
         this.checkShopFavoritedUseCase = checkShopFavoritedUseCase;
+        this.favoriteShopUseCase = favoriteShopUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -75,6 +81,14 @@ public class InboxReputationDetailPresenter
     public void checkShopFavorited(int shopId) {
         checkShopFavoritedUseCase.execute(CheckShopFavoritedUseCase.getParam(sessionHandler
                 .getLoginID(), shopId), new CheckShopFavoriteSubscriber(viewListener));
+    }
+
+    @Override
+    public void onFavoriteShopClicked(int shopId) {
+        viewListener.showLoadingDialog();
+        favoriteShopUseCase.execute(FavoriteShopUseCase.getParam(shopId,
+                SRC_INBOX_REPUTATION_DETAIL),new
+                FavoriteShopSubscriber(viewListener));
     }
 
     public void refreshPage(String reputationId, int tab) {

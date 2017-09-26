@@ -61,6 +61,10 @@ public interface InboxReputationDetail {
         void onErrorCheckShopIsFavorited();
 
         void onSuccessCheckShopIsFavorited(int shopFavorited);
+
+        void onErrorFavoriteShop(String errorMessage);
+
+        void onSuccessFavoriteShop();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -70,5 +74,7 @@ public interface InboxReputationDetail {
         void sendSmiley(String reputationId, String score, int role);
 
         void checkShopFavorited(int shopId);
+
+        void onFavoriteShopClicked(int shopId);
     }
 }

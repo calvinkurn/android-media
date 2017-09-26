@@ -6,8 +6,10 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
+import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReportReviewMapper;
@@ -22,6 +24,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetCacheI
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.ReportReviewUseCase;
@@ -107,13 +110,17 @@ public class ReputationModule {
             SkipReviewMapper skipReviewMapper,
             ShopFavoritedMapper shopFavoritedMapper,
             ReportReviewMapper reportReviewMapper,
-            GlobalCacheManager globalCacheManager) {
+            GlobalCacheManager globalCacheManager,
+            FaveShopActService faveShopActService,
+            FaveShopMapper faveShopMapper) {
         return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
                 skipReviewMapper, reportReviewMapper,
                 shopFavoritedMapper,
-                globalCacheManager);
+                globalCacheManager,
+                faveShopActService,
+                faveShopMapper);
     }
 
 
@@ -422,5 +429,28 @@ public class ReputationModule {
     ) {
         return new CheckShopFavoritedUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
+
+    @ReputationScope
+    @Provides
+    FavoriteShopUseCase provideFavoriteShopUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ReputationRepository reputationRepository
+    ) {
+        return new FavoriteShopUseCase(threadExecutor, postExecutionThread, reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    FaveShopMapper provideFaveShopMapper() {
+        return new FaveShopMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    FaveShopActService provideFaveShopActService() {
+        return new FaveShopActService();
+    }
+
 
 }
