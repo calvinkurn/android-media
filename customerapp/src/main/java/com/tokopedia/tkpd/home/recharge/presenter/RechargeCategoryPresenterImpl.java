@@ -13,6 +13,7 @@ import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
@@ -73,7 +74,11 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                if (e instanceof WidgetRuntimeException) {
+                    view.renderErrorMessage();
+                } else {
+                    view.renderErrorNetwork();
+                }
             }
 
             @Override
@@ -102,7 +107,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderErrorMessage();
             }
 
             @Override
@@ -132,15 +137,13 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                     cacheHandler.putString(TkpdCache.Key.DIGITAL_LAST_ORDER,
                             CacheUtil.convertModelToString(lastOrder, LastOrder.class));
                     cacheHandler.applyEditor();
-                } else {
-                    onNetworkError();
                 }
             }
         };
     }
 
     public void onNetworkError() {
-        view.renderErrorNetwork();
+        view.renderErrorMessage();
     }
 
     private boolean isVersionMatch(Status status) {
