@@ -58,9 +58,19 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     public Boolean call(CategoryData categoryData) {
                         return categoryData != null &&
                                 categoryData.getData() != null &&
-                                !categoryData.getData().isEmpty();
+                                !categoryData.getData().isEmpty()
+                                && isCategoryDataNotCorrupt(categoryData);
                     }
                 });
+    }
+
+    private boolean isCategoryDataNotCorrupt(CategoryData categoryData) {
+        for (Category data : categoryData.getData()) {
+            if (data.getAttributes() == null || data.getAttributes().getClientNumber() == null
+                    || data.getAttributes().getClientNumber().getOperatorStyle() == null)
+                return false;
+        }
+        return true;
     }
 
 
