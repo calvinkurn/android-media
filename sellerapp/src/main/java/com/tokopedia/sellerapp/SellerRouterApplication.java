@@ -239,12 +239,6 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isSupportAppLinks(String appLinkScheme) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLinkScheme);
-    }
-
-    @Override
     public Intent getHomeIntent(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {

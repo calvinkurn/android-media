@@ -74,6 +74,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -189,9 +190,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void actionAppLinkWalletHeader(String redirectUrl, String appLinkScheme) {
-        ((IWalletRouter) getActivity().getApplication()).navigateAppLinkWallet(
-                this, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                appLinkScheme, redirectUrl,
+        WalletRouterUtil.navigateWallet(
+                getActivity().getApplication(),
+                this,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkScheme,
+                redirectUrl,
                 new Bundle()
         );
     }
@@ -656,14 +660,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (itemModel.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
                 && tokoCashData.getDrawerWalletAction().getTypeAction()
                 != DrawerWalletAction.TYPE_ACTION_BALANCE) {
-            if (getActivity().getApplication() instanceof IWalletRouter) {
-                ((IWalletRouter) getActivity().getApplication()).navigateAppLinkWallet(
-                        this, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                        tokoCashData.getDrawerWalletAction().getAppLinkActionButton(),
-                        tokoCashData.getDrawerWalletAction().getRedirectUrlActionButton(),
-                        new Bundle()
-                );
-            }
+            WalletRouterUtil.navigateWallet(
+                    getActivity().getApplication(),
+                    this,
+                    IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                    tokoCashData.getDrawerWalletAction().getAppLinkActionButton(),
+                    tokoCashData.getDrawerWalletAction().getRedirectUrlActionButton(),
+                    new Bundle()
+            );
         } else {
             DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
             if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {

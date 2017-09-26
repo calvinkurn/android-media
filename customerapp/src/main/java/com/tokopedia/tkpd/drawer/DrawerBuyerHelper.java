@@ -37,6 +37,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -536,18 +537,24 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance) {
-        ((IWalletRouter) context.getApplication()).navigateAppLinkWallet(
-                context, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                appLinkBalance, redirectUrlBalance,
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkBalance,
+                redirectUrlBalance,
                 new Bundle()
         );
     }
 
     @Override
     public void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton) {
-        ((IWalletRouter) context.getApplication()).navigateAppLinkWallet(
-                context, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                appLinkActionButton, redirectUrlActionButton,
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkActionButton,
+                redirectUrlActionButton,
                 new Bundle()
         );
     }

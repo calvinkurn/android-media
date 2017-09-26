@@ -29,6 +29,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
@@ -368,14 +369,14 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
                 )) && tokoCashData != null && tokoCashData.getLink() != 1) {
-
-            if (getActivity().getApplication() instanceof IWalletRouter)
-                ((IWalletRouter) getActivity().getApplication()).navigateAppLinkWallet(
-                        this, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                        tokoCashData.getAction().getmAppLinks(),
-                        tokoCashData.getAction().getmRedirectUrl(),
-                        new Bundle()
-                );
+            WalletRouterUtil.navigateWallet(
+                    getActivity().getApplication(),
+                    this,
+                    IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                    tokoCashData.getAction().getmAppLinks(),
+                    tokoCashData.getAction().getmRedirectUrl(),
+                    new Bundle()
+            );
         } else {
             if (getActivity().getApplication() instanceof IDigitalModuleRouter)
                 if (((IDigitalModuleRouter) getActivity().getApplication())
