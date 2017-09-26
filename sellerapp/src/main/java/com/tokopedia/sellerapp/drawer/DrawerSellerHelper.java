@@ -394,6 +394,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
+                    UnifyTracking.eventClickMenuFeaturedProduct();
                     intent = new Intent(context, GMFeaturedProductActivity.class);
                     context.startActivity(intent);
                     break;
