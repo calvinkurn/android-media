@@ -20,8 +20,13 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
 export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
   type: FETCH_ETALASE,
-  payload: axios.get(`https://tome.tokopedia.com/v1/web-service/shop/get_etalase?shop_id=${shopId}`)
+  payload: CacheModule.getDataAll("ETALASE")
+            .then(res => {
+
+            })
+            .catch(err => console.log(err))
 })
+
 
 export const PULL_TO_REFRESH = 'PULL_TO_REFRESH'
 export const pullToRefresh = () => {
