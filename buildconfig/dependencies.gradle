@@ -23,7 +23,7 @@ ext {
     tkpdRideVersion = '1.+'
     compileSdkVersion = 25
     minSdkVersion = 16
-    targetSdkVersion = 25
+    targetSdkVersion = 26
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
