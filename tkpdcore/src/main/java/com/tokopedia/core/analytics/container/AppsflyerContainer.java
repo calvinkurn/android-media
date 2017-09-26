@@ -12,6 +12,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.io.IOException;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setCurrencyCode("IDR");
         setUserID(userID);
         setAndroidID();
-        setAFLog(true);
+        setAFLog(GlobalConfig.isAllowDebuggingTools());
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
         setAppsFlyerKey(key);
     }
