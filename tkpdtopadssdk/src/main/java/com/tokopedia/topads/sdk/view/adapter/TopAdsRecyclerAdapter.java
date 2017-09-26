@@ -288,6 +288,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return position == placer.getItemList().indexOf(loadingViewModel);
     }
 
+    public boolean isLoading(){
+        return placer.getItemList().contains(loadingViewModel);
+    }
+
     public void reset() {
         loadMore = false;
         placer.reset();
