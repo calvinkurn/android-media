@@ -112,9 +112,10 @@
                         android:layout_height="240dp" />
                 </com.tokopedia.gm.statistic.view.widget.LineChartContainerWidget>
 
-                <TextView
-                    android:id="@+id/tv_see_topads"
+                <Button
+                    android:id="@+id/button_see_top_ads"
                     style="@style/TextView.Body1.Bold"
+                    android:layout_width="match_parent"
                     android:background="@drawable/rect_stroke_lighter_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
