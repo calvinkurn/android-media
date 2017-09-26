@@ -72,9 +72,11 @@ class payment extends Component {
       errorMessage
     });
 
-   //this.props.navigation.navigate('PaymentProcessing', {})
-    this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
-      this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
+    if (errorMessage != '') {
+      //this.props.navigation.navigate('PaymentProcessing', {})
+          this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
+            this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
+    }
   };
 
   _cardType = () => {
