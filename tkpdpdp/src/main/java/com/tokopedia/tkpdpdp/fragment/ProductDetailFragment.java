@@ -123,6 +123,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
+    public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -155,6 +156,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private ProductCampaign productCampaign;
+    private PromoAttributes promoAttributes;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -727,6 +729,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
+        presenter.saveStatePromoWidget(outState,STATE_PROMO_WIDGET,promoAttributes);
     }
 
     @Override
@@ -933,6 +936,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showPromoWidget(PromoAttributes promoAttributes) {
+        this.promoAttributes=promoAttributes;
         this.promoWidgetView.renderData(promoAttributes);
     }
 
