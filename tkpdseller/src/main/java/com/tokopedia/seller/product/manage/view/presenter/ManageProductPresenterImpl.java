@@ -40,18 +40,20 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
 
     @Override
     public void editPrice(String productId, String price, String priceCurrency) {
+        getView().showLoadingProgress();
         editPriceProductUseCase.execute(EditPriceProductUseCase.createRequestParams(price, priceCurrency, productId), getSubscriberEditPrice());
     }
 
     @Override
     public void deleteProduct(String productId) {
+        getView().showLoadingProgress();
         deleteProductUseCase.execute(DeleteProductUseCase.createRequestParams(productId), getSubscriberDeleteProduct());
     }
 
     @Override
-    public void getListProduct() {
-        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(0,
-                "", CatalogProductOption.NOT_USED, ConditionProductOption.NOT_USED, "", EtalaseProductOption.ALL_SHOWCASE,
+    public void getListProduct(int page, String keywordFilter) {
+        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(page,
+                keywordFilter, CatalogProductOption.NOT_USED, ConditionProductOption.NOT_USED, "", EtalaseProductOption.ALL_SHOWCASE,
                 PictureStatusProductOption.NOT_USED, SortProductOption.POSITION), getSubscriberGetListProduct());
     }
 
@@ -64,6 +66,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
 
             @Override
             public void onError(Throwable e) {
+                getView().hideLoadingProgress();
                 getView().onErrorDeleteProduct();
             }
 
@@ -74,6 +77,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
                 } else {
                     getView().onErrorDeleteProduct();
                 }
+                getView().hideLoadingProgress();
             }
         };
     }
@@ -87,6 +91,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
 
             @Override
             public void onError(Throwable e) {
+                getView().hideLoadingProgress();
                 getView().onErrorEditPrice();
             }
 
@@ -97,6 +102,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
                 } else {
                     getView().onErrorEditPrice();
                 }
+                getView().hideLoadingProgress();
             }
         };
     }

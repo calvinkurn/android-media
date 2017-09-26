@@ -5,6 +5,8 @@ import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.product.manage.data.model.ResponseDeleteProductData;
 import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.Observable;
 
@@ -16,6 +18,7 @@ public class ActionManageProductDataSourceCloud {
 
     private final ProductActionApi productActionApi;
 
+    @Inject
     public ActionManageProductDataSourceCloud(ProductActionApi productActionApi) {
         this.productActionApi = productActionApi;
     }

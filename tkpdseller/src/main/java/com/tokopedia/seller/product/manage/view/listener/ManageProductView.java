@@ -19,4 +19,8 @@ public interface ManageProductView extends CustomerView {
     void onGetProductList(ProductListManageModelView transform);
 
     void onErrorGetProductList(Throwable e);
+
+    void showLoadingProgress();
+
+    void hideLoadingProgress();
 }

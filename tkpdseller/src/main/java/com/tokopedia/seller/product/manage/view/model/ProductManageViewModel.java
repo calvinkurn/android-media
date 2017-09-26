@@ -11,14 +11,16 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
  */
 
 public class ProductManageViewModel implements ItemIdType, Parcelable {
-    public static final int TYPE = 432;
+    public static final int TYPE = 1934;
     public static final String STOCK_READY_VALUE = "1";
 
-    String productName;
-    String imageUrl;
-    String productId;
-    String productPrice;
-    String productStatus;
+    private String productName;
+    private String imageUrl;
+    private String productId;
+    private String productPrice;
+    private String productStatus;
+    private String productCurrencyId;
+    private String productUrl;
 
     @Override
     public int getType() {
@@ -85,6 +87,22 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productId = productId;
     }
 
+    public void setProductCurrencyId(String productCurrencyId) {
+        this.productCurrencyId = productCurrencyId;
+    }
+
+    public String getProductCurrencyId() {
+        return productCurrencyId;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -97,6 +115,8 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeString(this.productId);
         dest.writeString(this.productPrice);
         dest.writeString(this.productStatus);
+        dest.writeString(this.productCurrencyId);
+        dest.writeString(this.productUrl);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -105,6 +125,8 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productId = in.readString();
         this.productPrice = in.readString();
         this.productStatus = in.readString();
+        this.productCurrencyId = in.readString();
+        this.productUrl = in.readString();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {
