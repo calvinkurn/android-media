@@ -7,7 +7,6 @@ import {
   ToolbarAndroid,
   Dimensions,
   TextInput,
-  Modal,
   TouchableNativeFeedback,
   TouchableWithoutFeedback
 } from 'react-native'
@@ -43,53 +42,53 @@ export default class POS extends Component {
   }
 
   render() {
-    const navigationView = (
-      <View style={{ flex: 1, backgroundColor: '#fff' }}>
-        <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-        <TouchableNativeFeedback
-          onPress = {() => {
-            this.passwordPopup.show();
-            this.drawerPane.closeDrawer();
-          }}
-        >
-            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Riwayat Transaksi</Text>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback
-          onPress = {() => {
-           this.props.navigation.navigate('BankSelection', {})
-          }}
-        >
-        <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Bank Selection</Text>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback
-          onPress = {() => {
-           this.props.navigation.navigate('Payment', {})
-          }}
-        >
-            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment screen</Text>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback
-          onPress = {() => {
-           this.props.navigation.navigate('PaymentProcessing', {})
-          }}
-        >
-            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Processing</Text>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback
-          onPress = {() => {
-           this.props.navigation.navigate('PaymentInvoice', {})
-          }}
-        >
-            <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Invoice</Text>
-        </TouchableNativeFeedback>
-      </View>)
+    // const navigationView = (
+    //   <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    //     <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
+    //     <TouchableNativeFeedback
+    //       onPress = {() => {
+    //         this.passwordPopup.show();
+    //         this.drawerPane.closeDrawer();
+    //       }}
+    //     >
+    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Riwayat Transaksi</Text>
+    //     </TouchableNativeFeedback>
+    //     <TouchableNativeFeedback
+    //       onPress = {() => {
+    //        this.props.navigation.navigate('BankSelection', {})
+    //       }}
+    //     >
+    //     <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Bank Selection</Text>
+    //     </TouchableNativeFeedback>
+    //     <TouchableNativeFeedback
+    //       onPress = {() => {
+    //        this.props.navigation.navigate('Payment', {})
+    //       }}
+    //     >
+    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment screen</Text>
+    //     </TouchableNativeFeedback>
+    //     <TouchableNativeFeedback
+    //       onPress = {() => {
+    //        this.props.navigation.navigate('PaymentProcessing', {})
+    //       }}
+    //     >
+    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Processing</Text>
+    //     </TouchableNativeFeedback>
+    //     <TouchableNativeFeedback
+    //       onPress = {() => {
+    //        this.props.navigation.navigate('PaymentInvoice', {})
+    //       }}
+    //     >
+    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Invoice</Text>
+    //     </TouchableNativeFeedback>
+    //   </View>)
     return (
         <View style={styles.container}>
           <Ticker />
           <VisibleProductList />
           <PasswordPopup
-          navigation={this.props.navigation}
-           ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} />
+            navigation={this.props.navigation}
+            ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} />
         </View>
     )
     // return (

@@ -1,6 +1,8 @@
 import React from 'react'
-import { StyleSheet, View, Image } from 'react-native'
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
+import { NavigationModule } from 'NativeModules'
 import { Text } from '../../common/TKPText'
+
 
 const Ticker = () => {
   return (
@@ -14,7 +16,9 @@ const Ticker = () => {
         <Text style={{ fontSize: 13 }}>Selamat Datang di (Shop name here)</Text>
         <View style={styles.singleLineTextContainer}>
           <Text style={styles.textStyle}>Nikamati Cicilan 0% Gratis Biaya Admin,</Text>
-          <Text style={styles.linkText}> Cek Sekarang</Text>
+          <TouchableOpacity onPress={() => NavigationModule.navigate('posapp://installment', '')}>
+            <Text style={styles.linkText}> Cek Sekarang</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

@@ -39,7 +39,7 @@ export default class CartItemList extends Component {
   render() {
     const items = this.props.items
     const visible = this.props.visible
-    // const onBackPress = this.props.onBackPress
+    const onBackPress = this.props.onBackPress
     const totalPrice = this.props.totalPrice
     const onIncrQty = this.props.onIncrQty
     const onDecrQty = this.props.onDecrQty
@@ -47,17 +47,14 @@ export default class CartItemList extends Component {
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
     const { isFetching } = this.props
 
+    console.log(this.props)
+    
     return (
-      <Modal
-        animationType={'slide'}
-        transparent={true}
-        hardwareAccelerated={true}
-        visible={this.props.visible}
-        onRequestClose={this.onBackPress}>
+      <View>
         {
           isFetching ? null : (
             items && items.length > 0 ? (
-              !isFetching && (<View style={{ flex: 1 }}>
+              !isFetching && (<View>
                 <View style={styles.headerContainer}>
                   <View>
                     <TouchableWithoutFeedback onPress={this.onBackPress}>
@@ -73,7 +70,6 @@ export default class CartItemList extends Component {
                     </TouchableWithoutFeedback>
                   </View>
                 </View>
-                <View style={styles.container}>
                   <View>
                     <PopUp
                       visible={this.state.showPopUp}
@@ -88,41 +84,33 @@ export default class CartItemList extends Component {
                       onCloseIconTap={() => { this.toggleScreen(false) }}
                     />
                   </View>
-                  <ScrollView style={styles.itemListContainer}>
-                    {
-                      items.map(i => <CartItem
-                        item={i}
-                        key={i.id}
-                        onIncr={onIncrQty}
-                        onDecr={onDecrQty}
-                        onRemove={onRemoveFromCart}
-                      />)
-                    }
-                  </ScrollView>
+                  <View style={{ marginTop: 20, marginLeft: 20, marginRight: 20 }}>
+                    <ScrollView style={styles.itemListContainer}>
+                      {
+                        items.map(i => <CartItem
+                          item={i}
+                          key={i.id}
+                          onIncr={onIncrQty}
+                          onDecr={onDecrQty}
+                          onRemove={onRemoveFromCart}
+                        />)
+                      }
+                    </ScrollView>
+                  </View>
                   <View style={styles.paymentContainer}>
                     <Text style={styles.paymentText}>Total Pembayaran</Text>
                     <Text style={styles.paymentText}>Rp {(totalPrice).toLocaleString("id")}</Text>
                   </View>
-                  <View style={{ marginTop: 20 }}>
+                  <View style={{ marginTop: 20, marginLeft: 20, marginRight: 20 }}>
                     <Button
                       content='Checkout'
                       type='big'
                       onTap={() => { this.paymentCheckoutClicked() }}
                     />
                   </View>
-                </View></View>)
+                </View>)
             ) :
-              <View style={styles.emptyContainer}>
-                {/* <View style={styles.headerContainer}>
-              <View style={{ width: '10%', left: 10 }}>
-                <TouchableWithoutFeedback onPress={onBackPress}>
-                  <Image source={require('../img/icon_back.png')} />
-                </TouchableWithoutFeedback>
-              </View>
-              <View style={{left: -220}}>
-                <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Keranjang Belanja</Text>
-              </View>
-            </View> */}
+              <View>
                 <View style={styles.headerContainer}>
                   <View>
                     <TouchableWithoutFeedback onPress={this.onBackPress}>
@@ -138,32 +126,35 @@ export default class CartItemList extends Component {
                   <View style={{
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: '40%',
-                    backgroundColor: '#fff'
+                    backgroundColor: '#fff',
+                    borderRadius: 5
                   }}>
-                    <Image source={require('../img/shopping-basket.png')} style={{ width: 100, height: 100 }} />
-                    <Text>Tidak Ada barang dalam keranjang</Text>
+                    <Image source={require('../img/shopping-basket.png')} 
+                      style={{ width: 200, height: 200, marginBottom: 15, marginTop: 50 }} />
+                    <Text style={{ marginBottom: 50 }}>Tidak Ada barang dalam keranjang</Text>
                   </View>
-                  <View style={{ marginTop: 20 }}>
+                </View>
+                <View style={{ marginTop: 20, marginLeft: 20, marginRight: 20 }}>
                     <Button
                       content='Mulai Belanja'
                       type='big'
                       onTap={this.onBackPress}
                     />
                   </View>
-                </View>
               </View>
           )
         }
-      </Modal>
+      </View>
     )
+
+    
   }
 }
 
 const styles = {
   paymentContainer: {
+    marginTop: 10, marginLeft: 20, marginRight: 20,
     flexDirection: 'row',
-    marginTop: 10,
     backgroundColor: '#fff',
     justifyContent: 'space-between',
     paddingVertical: 20,
@@ -177,10 +168,13 @@ const styles = {
     borderColor: '#e0e0e0'
   },
   emptyList: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    backgroundColor: '#f1f1f1',
-    flex: 1
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 20,
+    // paddingVertical: 10,
+    // paddingHorizontal: 15,
+    // backgroundColor: '#f1f1f1',
+    // flex: 1
   },
   emptyContainer: {
     flex: 1,
