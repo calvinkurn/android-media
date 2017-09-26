@@ -54,7 +54,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setCurrencyCode("IDR");
         setUserID(userID);
         setAndroidID();
-        setAFLog(GlobalConfig.isAllowDebuggingTools());
+        setAFLog(false);
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
         setAppsFlyerKey(key);
     }
