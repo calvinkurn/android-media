@@ -17,6 +17,8 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
+import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
+import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 
 import java.util.List;
@@ -140,5 +142,15 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<CancelReasonsResponseEntity> getCancelReasons(TKPDMapParam<String, Object> parameters) {
         return mRideApi.cancelReasons(parameters);
+    }
+
+    @Override
+    public Observable<UpdateDestinationEntity> updateRequest(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.updateRequest(parameters);
+    }
+
+    @Override
+    public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.sendTip(parameters);
     }
 }

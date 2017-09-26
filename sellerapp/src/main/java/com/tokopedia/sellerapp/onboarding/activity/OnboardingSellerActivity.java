@@ -13,7 +13,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
 
 public class OnboardingSellerActivity extends OnboardingActivity {
@@ -75,12 +75,11 @@ public class OnboardingSellerActivity extends OnboardingActivity {
     @Override
     public void onDonePressed() {
         if (isUserHasShop() && SessionHandler.isMsisdnVerified()) {
-            startActivity(new Intent(this, SellerHomeActivity.class)
+            startActivity(DashboardActivity.createInstance(this)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
             SessionHandler.setFirstTimeUser(this, false);
         } else if (SessionHandler.isMsisdnVerified()) {
-            UnifyTracking.eventClickCreateShopOnBoardingSellerApp();
             Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
@@ -114,7 +113,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER && isUserHasShop()) {
-            startActivity(new Intent(this, SellerHomeActivity.class)
+            startActivity(DashboardActivity.createInstance(this)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
         } else if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER) {

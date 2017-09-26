@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 
 import java.util.Map;
@@ -89,6 +90,10 @@ public interface IGTMContainer {
     void eventNetworkError(String networkError);
 
     void eventTransaction(Purchase purchase);
+
+    GTMContainer eventBannerImpression(Promotion promotion);
+
+    GTMContainer eventBannerClick(Promotion promotion);
 
     void clearTransactionDataLayer(Purchase purchase);
 

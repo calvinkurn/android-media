@@ -55,9 +55,11 @@ public class OnboardingActivity extends BaseOnboardingActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
+
         setFlowAnimation();
-
-
+        showStatusBar(false);
+        setProgressButtonEnabled(true);
+        showSkipButton(false);
     }
 
     @Override

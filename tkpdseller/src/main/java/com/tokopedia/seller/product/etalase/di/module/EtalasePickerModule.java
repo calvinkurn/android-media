@@ -10,9 +10,6 @@ import com.tokopedia.seller.product.etalase.domain.interactor.AddNewEtalaseUseCa
 import com.tokopedia.seller.product.etalase.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenter;
 import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsEtalaseFactory;
-import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsEtalaseListRepositoryImpl;
-import com.tokopedia.seller.topads.dashboard.domain.TopAdsEtalaseListRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,11 +21,6 @@ import retrofit2.Retrofit;
 @EtalasePickerScope
 @Module
 public class EtalasePickerModule {
-    @EtalasePickerScope
-    @Provides
-    TopAdsEtalaseListRepository provideTopAdsEtalaseListRepository(TopAdsEtalaseFactory topadsEtalaseFactory){
-        return new TopAdsEtalaseListRepositoryImpl(topadsEtalaseFactory);
-    }
 
     @EtalasePickerScope
     @Provides

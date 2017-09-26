@@ -18,6 +18,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
+import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -177,5 +178,24 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         } else {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
+    }
+
+    protected void checkExpand(String key, int idPosition) {
+        if (drawerCache.getBoolean(key, false)) {
+            DrawerGroup group = findGroup(idPosition);
+            if (group != null)
+                adapter.getData().addAll(group.getPosition() + 1, group.getList());
+        }
+    }
+
+    protected DrawerGroup findGroup(int id) {
+        for (int i = 0; i < adapter.getData().size(); i++) {
+            if (adapter.getData().get(i) instanceof DrawerGroup
+                    && adapter.getData().get(i).getId() == id) {
+                adapter.getData().get(i).setPosition(i);
+                return (DrawerGroup) adapter.getData().get(i);
+            }
+        }
+        return null;
     }
 }

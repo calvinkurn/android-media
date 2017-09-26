@@ -255,7 +255,7 @@ public class RidePushNotificationBuildAndShow {
                     }
 
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.ic_stat_notify)
+                            .setSmallIcon(R.drawable.ic_stat_notify_white)
                             .setAutoCancel(true)
                             .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
                             .setPriority(Notification.PRIORITY_MAX)
@@ -297,7 +297,7 @@ public class RidePushNotificationBuildAndShow {
                 title = String.format("Your %s is arriving now", rideConfiguration.getActiveProductName());
             }
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
+                    .setSmallIcon(R.drawable.ic_stat_notify_white)
                     .setAutoCancel(true)
                     .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
                     .setPriority(Notification.PRIORITY_MAX)
@@ -337,7 +337,7 @@ public class RidePushNotificationBuildAndShow {
 
     public static void showDriverCancelledRide(Context context) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                 .setContentTitle(context.getString(R.string.ride_push_driver_cancel))
@@ -361,7 +361,7 @@ public class RidePushNotificationBuildAndShow {
 
     public static void showInProgressRide(Context context, final RideRequest rideRequest) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                 .setContentTitle(context.getString(R.string.ride_push_in_progress))
@@ -395,7 +395,7 @@ public class RidePushNotificationBuildAndShow {
             title += " Uber";
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                 .setProgress(0, 0, true)
@@ -444,7 +444,7 @@ public class RidePushNotificationBuildAndShow {
         );
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                 .setContentTitle(context.getString(R.string.ride_push_toolbar_trip_completed))
@@ -464,7 +464,7 @@ public class RidePushNotificationBuildAndShow {
     private static void showNoDriverFoundNotification(Context context) {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                 .setPriority(Notification.PRIORITY_HIGH)
