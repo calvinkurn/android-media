@@ -70,6 +70,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
             File file = new File(attachmentViewModelList.get(position).getFileLoc());
             holder.ivImage.setImageURI(Uri.fromFile(file));
             Glide.with(context).load(attachmentViewModelList.get(position).getFileLoc()).into(holder.ivImage);
+            holder.ivImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
