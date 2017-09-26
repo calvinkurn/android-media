@@ -41,6 +41,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 
@@ -287,6 +288,9 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         TooLargeTool.startLogging(this);
 
         addToWhiteList();
+
+        // initialize the Branch object
+         initBranch();
     }
 
 
@@ -391,5 +395,9 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+    }
+
+    private void initBranch() {
+        Branch.getAutoInstance(this);
     }
 }

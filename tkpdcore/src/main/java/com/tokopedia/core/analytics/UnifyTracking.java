@@ -6,7 +6,6 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -2514,5 +2513,14 @@ public class UnifyTracking extends TrackingUtils {
                 .setCustomDimension(customDimension)
                 .getEvent()
         );
+    }
+
+    public static void eventAppShare() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
+                AppEventTracking.Category.REFERRAL,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.APP_SHARE_LABEL
+        ).getEvent());
     }
 }
