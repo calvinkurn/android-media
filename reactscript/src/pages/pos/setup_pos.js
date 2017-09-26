@@ -24,10 +24,14 @@ import POS from './components/POS'
 
 
 class Root extends Component {
+    componentWillMount(){
+        console.log(this.props)
+    }
+
     render() {
         return (
             <Provider store={store}>
-                <POS />
+                <POS screenProps={this.props.data} />
             </Provider>
         )
     }
