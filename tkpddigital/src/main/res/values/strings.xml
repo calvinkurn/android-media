@@ -102,4 +102,7 @@
     <string name="label_cancel">Cancel</string>
     <string name="title_showcase_ussd">Cek Sisa Pulsa</string>
     <string name="message_showcase_ussd">Kini Anda bisa mengetahui sisa pulsa Anda sebelum membeli pulsa.</string>
+    
+    <string name="title_tooltip_instan_payment">Bayar Instan</string>
+    <string name="body_tooltip_instan_payment">Selesaikan transaksi dengan 1 klik saja menggunakan TokoCash.</string>
 </resources>

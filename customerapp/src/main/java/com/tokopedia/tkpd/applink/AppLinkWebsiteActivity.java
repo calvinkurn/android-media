@@ -69,7 +69,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        setTheme(R.style.WebViewActivity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -115,9 +114,11 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
-        if (fragment == null || !(fragment instanceof FragmentGeneralWebView))
+        if (fragment == null || !(fragment instanceof FragmentGeneralWebView)) {
+
             getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
-                    FragmentGeneralWebView.createInstance(Uri.encode(url), true)).commit();
+                    FragmentGeneralWebView.createInstance(getEncodedUrl(url), true)).commit();
+        }
     }
 
     @Override
@@ -168,5 +169,10 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
             startActivity(InboxRouter.getContactUsActivityIntent(this));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private static String getEncodedUrl(String url){
+        url = Uri.decode(url);
+        return Uri.encode(url);
     }
 }

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -53,6 +54,10 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        if (isLightToolbarThemes()) {
+            setLightToolbarStyle();
+        }
     }
 
     @Override
@@ -109,5 +114,27 @@ public abstract class TActivity extends BaseActivity {
 
     public void hideToolbar() {
         getSupportActionBar().hide();
+    }
+
+
+    private void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        }else {
+            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        }
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(
+                    com.tokopedia.core.R.drawable.ic_webview_back_button
+            );
+
+
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+    }
+
+    protected boolean isLightToolbarThemes() {
+        return false;
     }
 }

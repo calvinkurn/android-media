@@ -35,4 +35,10 @@ public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
         Object object = requestParams.getObject(DELETE_WHITELIST_DATA);
         return apiCacheRepository.singleDataDelete((CacheApiDataDomain) object);
     }
+
+    public static RequestParams createParams(CacheApiDataDomain cacheApiDataDomainToDelete){
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(DELETE_WHITELIST_DATA, cacheApiDataDomainToDelete);
+        return requestParams;
+    }
 }

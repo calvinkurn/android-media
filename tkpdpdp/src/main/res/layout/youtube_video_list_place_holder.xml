@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Descriptions"
-                android:textColor="@color/black_70"
+                android:textColor="@color/black_54"
                 android:textIsSelectable="false"
                 android:longClickable="false"
                 android:textSize="@dimen/fontm"

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.Toast;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
@@ -26,7 +27,9 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
     protected void setupFragment(Bundle savedInstance) {
         String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
         if (StringUtils.isBlank(productId)){
-            throw new RuntimeException("Product id is not selected");
+            Toast.makeText(this,getString(R.string.product_draft_error_cannot_load_draft), Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
         if (savedInstance == null) {
             inflateFragment();

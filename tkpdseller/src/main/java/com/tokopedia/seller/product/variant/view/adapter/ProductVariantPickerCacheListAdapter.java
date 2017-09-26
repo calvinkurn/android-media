@@ -35,12 +35,4 @@ public class ProductVariantPickerCacheListAdapter extends BaseItemPickerCacheAda
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
-
-    @Override
-    public void onRemove(ProductVariantViewModel productVariantViewModel) {
-        if (removeCallback != null) {
-            data.remove(productVariantViewModel);
-            removeCallback.onRemove(productVariantViewModel);
-        }
-    }
 }

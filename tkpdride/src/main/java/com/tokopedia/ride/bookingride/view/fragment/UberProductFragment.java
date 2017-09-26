@@ -68,6 +68,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     View errorView;
     @BindView(R2.id.layout_progress_view)
     View progressView;
+    @BindView(R2.id.tv_sort_fare)
+    TextView fareHeaderView;
 
     @Inject
     UberProductPresenter presenter;
@@ -338,6 +340,16 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void actionMinimumTimeEstResult(String timeEst) {
         interactionListener.onMinimumTimeEstCalculated(timeEst);
+    }
+
+    @Override
+    public void showFareListHeader() {
+        fareHeaderView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFareListHeader() {
+        fareHeaderView.setVisibility(View.GONE);
     }
 
     @Override

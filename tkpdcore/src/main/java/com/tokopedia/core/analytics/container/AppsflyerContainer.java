@@ -134,6 +134,23 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     @Override
+    public String getAdsIdDirect() {
+
+        AdvertisingIdClient.Info adInfo;
+        try {
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+            return adInfo.getId();
+        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+            return "";
+        } catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+
+    }
+
+    @Override
     public String getUniqueId() {
         return AppsFlyerLib.getInstance().getAppsFlyerUID(context);
     }
