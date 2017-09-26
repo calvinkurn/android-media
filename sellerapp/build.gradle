@@ -15,7 +15,8 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return true;
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            !project.hasProperty('tkpdBuildType');
 }
 
 def allowDistribution() {
@@ -157,10 +158,9 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
-        applicationId "com.tokopedia.tkpd"
+        applicationId "com.tokopedia.sellerapp"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
