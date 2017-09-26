@@ -60,7 +60,7 @@ public class SessionHandler {
     private static final String STATE_BROWSE = "STATE_BROWSE";
     private static final String FULL_NAME = "FULL_NAME";
     private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
-    private static final String LOGIN_SESSION = "LOGIN_SESSION";
+    protected static final String LOGIN_SESSION = "LOGIN_SESSION";
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
@@ -79,6 +79,7 @@ public class SessionHandler {
     private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
     private static final String USER_DATA = "USER_DATA";
     private static final String KEY_IV = "tokopedia1234567";
+    private static final String SHOP_NAME = "SHOP_NAME";
 
 
     private Context context;
@@ -128,6 +129,7 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, null);
         editor.putString(FULL_NAME, null);
         editor.putString(SHOP_ID, null);
+        editor.putString(SHOP_NAME, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
@@ -251,6 +253,16 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         shop_id = sharedPrefs.getString(SHOP_ID, "0");
         return shop_id;
+    }
+
+    public void setShopName(String name) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putString(SHOP_NAME, name).apply();
+    }
+
+    public static String getShopName(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(SHOP_NAME, "");
     }
 
     public static String getLoginName(Context context) {

@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.Outlet;
 import com.tokopedia.posapp.view.Shop;
@@ -25,6 +27,7 @@ import com.tokopedia.posapp.view.adapter.OutletAdapter;
 import com.tokopedia.posapp.di.component.DaggerOutletComponent;
 import com.tokopedia.posapp.view.presenter.OutletPresenter;
 import com.tokopedia.posapp.view.presenter.ShopPresenter;
+import com.tokopedia.posapp.view.viewmodel.outlet.OutletItemViewModel;
 import com.tokopedia.posapp.view.viewmodel.outlet.OutletViewModel;
 import com.tokopedia.posapp.view.viewmodel.shop.ShopViewModel;
 
@@ -89,13 +92,14 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
     }
 
     @Override
-    public void onOutletClicked(String outletId) {
+    public void onOutletClicked(final OutletItemViewModel outlet) {
         new AlertDialog.Builder(getContext())
                 .setTitle(R.string.outlet_chooser_dialog_title)
                 .setMessage(R.string.outlet_chooser_dialog_message)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        setChosenOutlet(outlet);
                         getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
                         getActivity().finish();
                     }
@@ -108,6 +112,11 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
                 })
                 .setCancelable(true)
                 .show();
+    }
+
+    private void setChosenOutlet(OutletItemViewModel outlet) {
+        PosSessionHandler.setOutletId(getContext(), outlet.getOutletId());
+        PosSessionHandler.setOutletName(getContext(), outlet.getOutletName());
     }
 
     @Override
@@ -125,6 +134,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
     public void onSuccessGetShop(ShopViewModel shop) {
         if(shop != null && shop.getShopInfo() != null && shop.getShopInfo().getShopName() != null) {
             textShopName.setText(shop.getShopInfo().getShopName());
+
         }
     }
 

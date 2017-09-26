@@ -31,8 +31,10 @@ public class ProductListActivity extends DrawerPresenterActivity {
     @DeepLink(Constants.Applinks.PRODUCT_LIST)
     public static Intent getApplinkIntent(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-        return new Intent(context, ProductListActivity.class)
+        Intent intent = new Intent(context, ProductListActivity.class)
                 .setData(uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
     }
 
     @Override

@@ -152,7 +152,7 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public void onLogout(AppComponent appComponent) {
-
+        PosSessionHandler.clearPosUserData(this);
     }
 
     @Override
