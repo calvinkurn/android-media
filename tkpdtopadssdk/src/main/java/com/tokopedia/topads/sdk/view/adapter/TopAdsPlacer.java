@@ -91,6 +91,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onChanged() {
+        reset();
         observerType = ObserverType.CHANGE;
         if (shouldLoadAds && adsItems.isEmpty()) {
             loadTopAds();
@@ -159,9 +160,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         mPage = 1;
         itemList.clear();
         adsItems.clear();
-        setShouldLoadAds(true);
-        if (hasHeader)
-            headerPlaced = false;
+//        setShouldLoadAds(true);
+//        if (hasHeader)
+//            headerPlaced = false;
     }
 
     @Override
