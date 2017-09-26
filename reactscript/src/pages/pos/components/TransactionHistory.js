@@ -156,7 +156,7 @@ class TransactionHistory extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{
+        {/* <View style={{
           height: 55,
           backgroundColor: '#42b549',
           flexDirection: 'row',
@@ -168,7 +168,7 @@ class TransactionHistory extends Component {
           <View style={{ width: '90%' }}>
             <Text style={{ fontSize: 20, color: '#fff' }}>Riwayat Transaksi</Text>
           </View>
-        </View>
+        </View> */}
 
         <ScrollView>
           <ListView
@@ -219,7 +219,7 @@ class TransactionHistory extends Component {
   }
 
   static navigationOptions = {
-    title: 'Payment Invoice',
+    header: null
   };
 
 }

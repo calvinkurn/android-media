@@ -201,7 +201,6 @@ export const MAKE_PAYMENT = 'MAKE_PAYMENT'
 export const makePayment = (total_amount, installment_term, cc_no, expiry_date, cvv) => {
   const data = { total_amount, installment_term, cc_no, expiry_date, cvv }
 
-  // Please pass total_amount, installment_term, creditCard No, expired date, and cvv to this action
   return {
     type: MAKE_PAYMENT,
     payload: postDataToNative(data)
@@ -209,9 +208,13 @@ export const makePayment = (total_amount, installment_term, cc_no, expiry_date, 
 }
 
 const postDataToNative = (data) => {
-  console.log(data)
-  return PaymentModule.pay(data.toString())
-    .then(response => {
+  return PaymentModule.pay(`{ 
+    total_amount: ${data.total_amount},
+    installment_term: ${data.installment_term},
+    cc_no: ${data.cc_no},
+    expiry_date: ${data.expiry_date},
+    cvv: ${data.cvv}
+  }`).then(response => {
       console.log(response)
     })
     .catch(err => {

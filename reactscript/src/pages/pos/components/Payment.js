@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, TextInput, TouchableNativeFeedback, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions } from 'react-native'
 import { selectPaymentOptions, makePayment } from '../actions/index'
 import { ccFormat, getCardType } from '../lib/utility'
-import {NavigationModule} from 'NativeModules'
+import { NavigationModule } from 'NativeModules'
 import { Text } from '../common/TKPText'
 class payment extends Component {
 
@@ -71,11 +71,12 @@ class payment extends Component {
     this.setState({
       errorMessage
     });
-
+    
     if (errorMessage.ccNum == '' && errorMessage.cvv == '' && errorMessage.date == '') {
       //this.props.navigation.navigate('PaymentProcessing', {})
           this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
             this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
+       NavigationModule.navigate('posapp://payment/process', '')
     }
   };
 
