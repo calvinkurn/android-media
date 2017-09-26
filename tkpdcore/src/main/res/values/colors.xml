@@ -102,4 +102,5 @@
     <color name="color_free_return_stroke">#bce8f1</color>
     <color name="color_free_return">#d5f9ff</color>
     <color name="digital_ussd_light_yellow">#fff5dd</color>
+    <color name="sparator_btn_promote">#33AFAFAF</color>
 </resources>
