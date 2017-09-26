@@ -26,9 +26,8 @@ public interface InboxReputationDetail {
 
         void onErrorGetInboxDetail(String errorMessage);
 
-        void onSuccessGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-                                     RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
-                                     List<Visitable> list);
+        void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
+                                     List<Visitable> visitables);
 
         void finishLoading();
 
@@ -47,8 +46,6 @@ public interface InboxReputationDetail {
         void onErrorRefreshInboxDetail(String errorMessage);
 
         void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
-                                            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-                                            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
                                             List<Visitable> visitables);
 
         void finishRefresh();
@@ -60,6 +57,7 @@ public interface InboxReputationDetail {
         void onGoToReportReview(int shopId, String reviewId);
 
         void onSuccessSendSmiley(int score);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

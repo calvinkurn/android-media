@@ -192,27 +192,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetInboxDetail(RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-                                        RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
+    public void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
                                         List<Visitable> list) {
         adapter.clearList();
-        adapter.addHeader(createHeaderModel(passModel,
-                revieweeBadgeCustomerViewModel, revieweeBadgeSellerViewModel));
+        adapter.addHeader(createHeaderModel(inboxReputationItemViewModel));
         adapter.addList(list);
         adapter.notifyDataSetChanged();
-    }
-
-    private InboxReputationDetailHeaderViewModel createHeaderModel(
-            InboxReputationDetailPassModel passModel,
-            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
-        return new InboxReputationDetailHeaderViewModel(
-                passModel.getRevieweeImage(),
-                passModel.getRevieweeName(), passModel.getDeadlineText(),
-                passModel.getReputationDataViewModel(),
-                passModel.getRole(),
-                revieweeBadgeCustomerViewModel,
-                revieweeBadgeSellerViewModel);
     }
 
     @Override
@@ -274,29 +259,24 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
-                                               RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-                                               RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
                                                List<Visitable> list) {
         adapter.clearList();
-        adapter.addHeader(createHeaderModel(inboxReputationViewModel,
-                revieweeBadgeCustomerViewModel, revieweeBadgeSellerViewModel));
+        adapter.addHeader(createHeaderModel(inboxReputationViewModel));
         adapter.addList(list);
         adapter.notifyDataSetChanged();
         getActivity().setResult(Activity.RESULT_OK);
     }
 
     private InboxReputationDetailHeaderViewModel createHeaderModel(
-            InboxReputationItemViewModel inboxReputationViewModel,
-            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
+            InboxReputationItemViewModel inboxReputationViewModel) {
         return new InboxReputationDetailHeaderViewModel(
                 inboxReputationViewModel.getRevieweePicture(),
                 inboxReputationViewModel.getRevieweeName(),
                 getTextDeadline(inboxReputationViewModel),
                 inboxReputationViewModel.getReputationDataViewModel(),
                 inboxReputationViewModel.getRole(),
-                revieweeBadgeCustomerViewModel,
-                revieweeBadgeSellerViewModel);
+                inboxReputationViewModel.getRevieweeBadgeCustomerViewModel(),
+                inboxReputationViewModel.getRevieweeBadgeSellerViewModel());
     }
 
     private String getTextDeadline(InboxReputationItemViewModel element) {

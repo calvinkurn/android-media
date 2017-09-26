@@ -4,7 +4,12 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationDataDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeCustomerDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeSellerDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
@@ -12,6 +17,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewIt
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.UserReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReputationBadgeViewModel;
@@ -50,10 +58,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     public void onNext(InboxReputationDetailDomain inboxReputationDetailDomain) {
         viewListener.finishLoading();
         viewListener.onSuccessGetInboxDetail(
-                convertToRevieweeBadgeCustomerViewModel(inboxReputationDetailDomain.getReviewDomain().getUserData()
-                        .getUserReputation()),
-                convertToRevieweeBadgeSellerViewModel(inboxReputationDetailDomain.getReviewDomain().getShopData()
-                        .getShopReputation()),
+                convertToReputationViewModel(inboxReputationDetailDomain.getInboxReputationDomain
+                        ()).getList().get(0),
                 mappingToListItemViewModel(inboxReputationDetailDomain.getReviewDomain())
         );
     }
@@ -134,5 +140,67 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
             ));
         }
         return list;
+    }
+
+
+    protected InboxReputationViewModel convertToReputationViewModel(InboxReputationDomain inboxReputationDomain) {
+        return new InboxReputationViewModel
+                (convertToInboxReputationList(inboxReputationDomain.getInboxReputation()),
+                        inboxReputationDomain.getPaging().isHasNext()
+                );
+    }
+
+    private List<InboxReputationItemViewModel> convertToInboxReputationList(List<InboxReputationItemDomain> inboxReputationDomain) {
+        List<InboxReputationItemViewModel> list = new ArrayList<>();
+        for (InboxReputationItemDomain domain : inboxReputationDomain) {
+            list.add(new InboxReputationItemViewModel(
+                    String.valueOf(domain.getReputationId()),
+                    domain.getRevieweeData().getRevieweeName(),
+                    domain.getOrderData().getCreateTimeFmt(),
+                    domain.getRevieweeData().getRevieweePicture(),
+                    String.valueOf(domain.getReputationData().getLockingDeadlineDays()),
+                    domain.getOrderData().getInvoiceRefNum(),
+                    convertToReputationViewModel(domain.getReputationData()),
+                    domain.getRevieweeData().getRevieweeRoleId(),
+                    convertToBuyerReputationViewModel(domain.getRevieweeData()
+                            .getRevieweeBadgeCustomer()),
+                    convertToSellerReputationViewModel(domain.getRevieweeData()
+                            .getRevieweeBadgeSeller())));
+        }
+        return list;
+    }
+
+    private RevieweeBadgeSellerViewModel convertToSellerReputationViewModel(RevieweeBadgeSellerDomain revieweeBadgeSeller) {
+        return new RevieweeBadgeSellerViewModel(revieweeBadgeSeller.getTooltip(),
+                revieweeBadgeSeller.getReputationScore(),
+                revieweeBadgeSeller.getScore(),
+                revieweeBadgeSeller.getMinBadgeScore(),
+                revieweeBadgeSeller.getReputationBadgeUrl(),
+                convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()));
+    }
+
+    private RevieweeBadgeCustomerViewModel convertToBuyerReputationViewModel(
+            RevieweeBadgeCustomerDomain revieweeBadgeCustomer) {
+        return new RevieweeBadgeCustomerViewModel(revieweeBadgeCustomer.getPositive(),
+                revieweeBadgeCustomer.getNeutral(), revieweeBadgeCustomer.getNegative(),
+                revieweeBadgeCustomer.getPositivePercentage(),
+                revieweeBadgeCustomer.getNoReputation());
+    }
+
+    private ReputationDataViewModel convertToReputationViewModel(ReputationDataDomain reputationData) {
+        return new ReputationDataViewModel(reputationData.getRevieweeScore(),
+                reputationData.getRevieweeScoreStatus(),
+                reputationData.isShowRevieweeScore(),
+                reputationData.getReviewerScore(),
+                reputationData.getReviewerScoreStatus(),
+                reputationData.isEditable(),
+                reputationData.isInserted(),
+                reputationData.isLocked(),
+                reputationData.isAutoScored(),
+                reputationData.isCompleted(),
+                reputationData.isShowLockingDeadline(),
+                reputationData.getLockingDeadlineDays(),
+                reputationData.isShowBookmark(),
+                reputationData.getActionMessage());
     }
 }

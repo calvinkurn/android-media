@@ -10,9 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -57,6 +54,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private InboxReputationAdapter adapter;
     private String timeFilter;
     private String statusFilter;
+    private View filterButton;
 
     @Inject
     InboxReputationPresenter presenter;
@@ -97,20 +95,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         initVar();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_filter_inbox_reputation, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_filter) {
-            openFilter();
-            return true;
-        } else
-            return super.onOptionsItemSelected(item);
-    }
-
     private void openFilter() {
 
         Intent intent = InboxReputationFilterActivity.createIntent(getActivity(),
@@ -134,6 +118,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         mainList = (RecyclerView) parentView.findViewById(R.id.review_list);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchView) parentView.findViewById(R.id.search);
+        filterButton = parentView.findViewById(R.id.filter_button);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -166,6 +151,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
                             getTab());
                 }
                 return false;
+            }
+        });
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilter();
             }
         });
     }

@@ -40,7 +40,7 @@ public class GetShopProductRetrofit {
 
     //    private ShopService shopService;
     private ShopService shopService;
-    private TomeService tomeService;
+    private pTomeService tomeService;
     private Context context;
     private String shopId;
     private String shopDomain;
