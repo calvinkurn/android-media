@@ -17,6 +17,7 @@ import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
 import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.view.fragment.ProductListFragment;
 
@@ -24,7 +25,7 @@ import com.tokopedia.posapp.view.fragment.ProductListFragment;
  * Created by okasurya on 8/24/17.
  */
 
-public class ProductListActivity extends DrawerPresenterActivity {
+public class ProductListActivity extends ReactDrawerPresenterActivity {
     LocalCacheHandler drawerCache;
     DrawerHelper drawerHelper;
 
@@ -38,14 +39,9 @@ public class ProductListActivity extends DrawerPresenterActivity {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        sessionHandler = new SessionHandler(this);
-        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
-        drawerHelper.initDrawer(this);
-        drawerHelper.setEnabled(true);
-        drawerHelper.setSelectedPosition(0);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initDrawer();
     }
 
     @Override
@@ -114,5 +110,14 @@ public class ProductListActivity extends DrawerPresenterActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initDrawer() {
+        sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
+        drawerHelper.initDrawer(this);
+        drawerHelper.setEnabled(true);
+        drawerHelper.setSelectedPosition(0);
     }
 }

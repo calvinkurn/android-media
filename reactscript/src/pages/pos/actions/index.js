@@ -20,9 +20,9 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
 export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
   type: FETCH_ETALASE,
-  payload: CacheModule.getDataAll("ETALASE")
+  payload: PosCacheModule.getDataAll("ETALASE")
             .then(res => {
-
+                console.log(res)
             })
             .catch(err => console.log(err))
 })

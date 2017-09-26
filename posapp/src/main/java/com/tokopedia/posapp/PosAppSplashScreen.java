@@ -16,13 +16,15 @@ import com.tokopedia.posapp.view.service.CacheService;
 public class PosAppSplashScreen extends SplashScreen {
     @Override
     public void finishSplashScreen() {
+        Intent intent;
         if(!SessionHandler.isV4Login(this)) {
-            startActivity(LoginActivity.getPosLoginIntent(this));
+           intent = LoginActivity.getPosLoginIntent(this);
         } else if(isOutletSelected()) {
-            startActivity(new Intent(this, ProductListActivity.class));
+            intent = new Intent(this, ProductListActivity.class);
         } else {
-            startActivity(new Intent(this, OutletActivity.class));
+            intent = new Intent(this, OutletActivity.class);
         }
+        startActivity(intent);
         finish();
     }
 
