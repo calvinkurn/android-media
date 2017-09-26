@@ -1014,11 +1014,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                if (scrollRange + verticalOffset == 0) {
+                if (scrollRange + verticalOffset == 0 && isAdded()) {
                     initStatusBarLight();
                     initToolbarLight();
                     fabWishlist.hide();
-                } else {
+                } else if (isAdded()) {
                     initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
