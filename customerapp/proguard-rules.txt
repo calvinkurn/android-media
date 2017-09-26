@@ -308,5 +308,5 @@
 -keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
 # play service
--keep com.google.android.gms.** { *; }
+-keep class com.google.android.gms.** { *; }
 
