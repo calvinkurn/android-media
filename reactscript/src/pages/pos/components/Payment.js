@@ -72,7 +72,7 @@ class payment extends Component {
       errorMessage
     });
 
-    if (errorMessage != '') {
+    if (errorMessage.ccNum == '' && errorMessage.cvv == '' && errorMessage.date == '') {
       //this.props.navigation.navigate('PaymentProcessing', {})
           this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
             this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
