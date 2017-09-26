@@ -71,10 +71,13 @@ class payment extends Component {
     this.setState({
       errorMessage
     });
-
-    this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
-      this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
-    NavigationModule.navigate('posapp://payment/process', '')
+    
+    if (errorMessage.ccNum == '' && errorMessage.cvv == '' && errorMessage.date == '') {
+      //this.props.navigation.navigate('PaymentProcessing', {})
+          this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
+            this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
+       NavigationModule.navigate('posapp://payment/process', '')
+    }
   };
 
   _cardType = () => {
