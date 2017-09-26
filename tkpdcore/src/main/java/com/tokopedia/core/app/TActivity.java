@@ -2,6 +2,7 @@ package com.tokopedia.core.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -124,7 +125,9 @@ public abstract class TActivity extends BaseActivity {
         }else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_new_action_overflow_black));
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
