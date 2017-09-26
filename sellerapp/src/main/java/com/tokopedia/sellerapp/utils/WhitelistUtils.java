@@ -24,14 +24,14 @@ public class WhitelistUtils {
 
     public static List<CacheApiWhiteListDomain> getWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        // Deposit
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+        // Depositc
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(
                 TkpdBaseURL.Transaction.URL_DEPOSIT + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, THIRTY_SECOND));
         // Ticker
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.MOJITO_DOMAIN,
                 TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, ONE_MINUTE));
         // Notification
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(
                 TkpdBaseURL.User.URL_NOTIFICATION + TkpdBaseURL.User.PATH_GET_NOTIFICATION, THIRTY_SECOND));
         // Shop info
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,

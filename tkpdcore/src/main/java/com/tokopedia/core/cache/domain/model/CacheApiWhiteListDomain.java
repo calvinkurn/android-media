@@ -1,6 +1,10 @@
 package com.tokopedia.core.cache.domain.model;
 
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import android.text.TextUtils;
+
+import com.tokopedia.core.cache.util.CacheApiUtils;
+
+import java.net.URL;
 
 /**
  * Created by normansyahputa on 8/14/17.
@@ -15,9 +19,19 @@ public class CacheApiWhiteListDomain {
      */
     private long expireTime;
 
+    public CacheApiWhiteListDomain(String fullPath, long expireTime) {
+        String host = CacheApiUtils.getDomain(fullPath);
+        String path = CacheApiUtils.getPath(fullPath);
+        if (!TextUtils.isEmpty(host) && !TextUtils.isEmpty(path)) {
+            setHost(CacheApiUtils.generateCacheHost(host));
+            setPath(CacheApiUtils.generateCachePath(path));
+            setExpireTime(expireTime);
+        }
+    }
+
     public CacheApiWhiteListDomain(String host, String path, long expireTime) {
-        setHost(ApiCacheDataSource.generateCacheHost(host));
-        setPath(ApiCacheDataSource.generateCachePath(path));
+        setHost(CacheApiUtils.generateCacheHost(host));
+        setPath(CacheApiUtils.generateCachePath(path));
         setExpireTime(expireTime);
     }
 

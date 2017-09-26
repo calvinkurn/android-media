@@ -1,10 +1,9 @@
 package com.tokopedia.core.cache.data.source;
 
-import android.util.Log;
-
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiData_Table;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
@@ -35,29 +34,14 @@ import rx.Observable;
  */
 
 public class ApiCacheDataSource {
-    public static final long DIVIDE_FOR_SECONDS = 1000L;
-    public static final String HTTPS = "https://";
-    public static final String COM_WITH_SLASH = ".com/";
-    public static final String COM1 = ".com";
-    private static final String TAG = "CacheHelper";
-    private static final Charset UTF8 = Charset.forName("UTF-8");
-    private long maxContentLength = 250000L;
+    private static final long DIVIDE_FOR_SECONDS = 1000L;
+    private static final long DAFEAULT_MAX_CONTENT_LENGTH = 250000L;
 
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private long maxContentLength = DAFEAULT_MAX_CONTENT_LENGTH;
 
     public ApiCacheDataSource() {
 
-    }
-
-    public static String generateCacheHost(String host) {
-        return (host.replace(HTTPS, "").replace(COM_WITH_SLASH, COM1));
-    }
-
-    public static String generateCachePath(String path) {
-        if (!path.startsWith("/")) {
-            return "/" + path;
-        } else {
-            return path;
-        }
     }
 
     public Observable<Boolean> addWhiteListData(CacheApiWhitelist cacheApiWhitelist) {
@@ -106,8 +90,7 @@ public class ApiCacheDataSource {
                 .where(CacheApiData_Table.host.eq(host))
                 .and(CacheApiData_Table.path.eq(path))
                 .and(CacheApiData_Table.request_param.eq(param));
-        Log.d(TAG, "queryDataFrom : " + and
-                .toString());
+        CommonUtils.dumper("queryDataFrom : " + and.toString());
         return and.querySingle();
     }
 
@@ -116,8 +99,7 @@ public class ApiCacheDataSource {
                 .from(CacheApiData.class)
                 .where(CacheApiData_Table.host.eq(host))
                 .and(CacheApiData_Table.path.eq(path));
-        Log.d(TAG, "queryDataFrom : " + and
-                .toString());
+        CommonUtils.dumper("queryDataFrom : " + and.toString());
         return and.queryList();
     }
 
@@ -228,7 +210,7 @@ public class ApiCacheDataSource {
             if (source.buffer().size() < maxContentLength) {
                 return getNativeSource(source, true);
             } else {
-                Log.w(TAG, "gzip encoded response was too long");
+                CommonUtils.dumper("gzip encoded response was too long");
             }
         }
         return response.body().source();

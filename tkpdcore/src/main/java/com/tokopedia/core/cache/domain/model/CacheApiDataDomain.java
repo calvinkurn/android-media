@@ -1,6 +1,6 @@
 package com.tokopedia.core.cache.domain.model;
 
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import com.tokopedia.core.cache.util.CacheApiUtils;
 
 /**
  * Created by normansyahputa on 8/24/17.
@@ -11,8 +11,8 @@ public class CacheApiDataDomain {
     private String path;
 
     public CacheApiDataDomain(String host, String path) {
-        setHost(ApiCacheDataSource.generateCacheHost(host));
-        setPath(ApiCacheDataSource.generateCachePath(path));
+        setHost(CacheApiUtils.generateCacheHost(host));
+        setPath(CacheApiUtils.generateCachePath(path));
     }
 
     public String getHost() {
