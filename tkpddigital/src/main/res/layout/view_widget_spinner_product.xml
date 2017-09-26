@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/nominal_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_vvs"
+        android:text="@string/title_nominal"
+        android:textSize="@dimen/fontvs"/>
+
+    <Spinner
+        android:id="@+id/spinner_nominal"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/margin_vl"
+        android:layout_gravity="bottom"
+        android:spinnerMode="dialog" />
+
+    <TextView
+        android:id="@+id/error_nominal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_vvs"
+        android:text="@string/title_empty_stock"
+        android:textColor="@color/red_600"
+        android:textSize="@dimen/fontvs"/>
+
+</LinearLayout>

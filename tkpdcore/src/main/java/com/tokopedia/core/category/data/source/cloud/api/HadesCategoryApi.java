@@ -10,7 +10,7 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 3/8/17.
  */
-
+@Deprecated
 public interface HadesCategoryApi {
     @GET(TkpdBaseURL.HadesCategory.CHECK_VERSION)
     Observable<Response<CategoryVersionServiceModel>> checkVersion();

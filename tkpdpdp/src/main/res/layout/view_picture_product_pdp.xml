@@ -24,7 +24,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="85dp"
         android:background="@drawable/cover_shadow_pdp">
 
     </RelativeLayout>

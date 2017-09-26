@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
@@ -19,11 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -72,7 +71,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 
@@ -106,6 +104,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private Trace homeTrace;
     private GetFingerprintUseCase getFingerprintUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
@@ -122,7 +121,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.HOME_FEED)
+    @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
     public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
@@ -191,6 +190,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
+
+        homeTrace = FirebasePerformance.getInstance().newTrace("trace_home_android");
+        homeTrace.start();
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
@@ -241,6 +243,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initCreate();
         adapter.notifyDataSetChanged();
 
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+
+        cacheHandler = new AnalyticsCacheHandler();
+
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -255,10 +261,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         });
 
         t.start();
-
-        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-
-        cacheHandler = new AnalyticsCacheHandler();
 
         checkAppUpdate();
     }
@@ -610,6 +612,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onStop");
         super.onStop();
         needToRefresh = true;
+        if(homeTrace!=null)
+            homeTrace.stop();
     }
 
     @Override

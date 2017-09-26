@@ -5,6 +5,7 @@
     android:background="@drawable/cards_ui_2"
     android:padding="@dimen/padding_small"
     android:gravity="center"
+    android:layout_marginBottom="@dimen/padding_small"
     android:orientation="vertical">
 
     <LinearLayout
