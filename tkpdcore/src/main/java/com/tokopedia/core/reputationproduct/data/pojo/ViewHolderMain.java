@@ -14,7 +14,6 @@ import android.widget.TextView;
 public class ViewHolderMain {
 
     public ImageView avatar;
-    public ImageView smiley;
     public ImageView overFlow;
     public LinearLayout starQuality;
     public LinearLayout starAccuracy;

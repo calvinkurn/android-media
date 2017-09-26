@@ -122,7 +122,6 @@ public class ReputationViewShop extends TActivity {
 
     private class ViewHolder {
         ImageView avatar;
-        ImageView smiley;
         ImageView overFlow;
         ImageView starQuality;
         ImageView starAccuracy;
@@ -221,7 +220,6 @@ public class ReputationViewShop extends TActivity {
         holder.avatar = (ImageView) findViewById(R.id.user_avatar);
         holder.username = (TextView) findViewById(R.id.username);
         holder.date = (TextView) findViewById(R.id.date);
-        holder.smiley = (ImageView) findViewById(R.id.smiley);
         holder.counterSmiley = (LinearLayout) findViewById(R.id.counter_smiley);
         holder.starQuality = (ImageView) findViewById(R.id.star_quality);
         holder.starAccuracy = (ImageView) findViewById(R.id.star_accuracy);
@@ -269,7 +267,6 @@ public class ReputationViewShop extends TActivity {
         holder.comment.setText(MethodChecker.fromHtml(model.comment).toString());
         labelHeader.giveSquareLabel(model.userLabel);
         setCounter();
-        setSmiley();
         setStar();
 
         if (isResponded()) {
@@ -948,10 +945,6 @@ public class ReputationViewShop extends TActivity {
         } else {
             holder.iconDislike.setImageResource(R.drawable.ic_icon_repsis_dislike);
         }
-    }
-
-    private void setSmiley() {
-        // holder.smiley.setImageResource(generateSmiley(model.smiley));
     }
 
     private int generateSmiley(int args) {

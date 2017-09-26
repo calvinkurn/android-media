@@ -44,16 +44,38 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/green_button_rounded"
-            android:text="@string/favorite_button"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:orientation="horizontal"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="gone">
+
+            <ImageView
+                android:id="@+id/favorite_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_new_action_plus"
+                android:layout_marginRight="@dimen/margin_small"/>
+
+            <TextView
+                android:id="@+id/favorite_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="end"
+                android:lineSpacingExtra="5sp"
+                android:text="@string/favorite_button"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="normal"
+
+                />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -139,10 +161,10 @@
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_toRightOf="@id/icon_locked"
                 android:fontFamily="sans-serif-medium"
+                android:text="@string/locked_reputation"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/text_size_xxsmall"
-                android:textStyle="normal"
-                android:text="@string/locked_reputation"/>
+                android:textStyle="normal"/>
 
         </RelativeLayout>
 

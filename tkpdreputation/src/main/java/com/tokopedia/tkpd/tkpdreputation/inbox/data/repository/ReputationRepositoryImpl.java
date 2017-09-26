@@ -5,6 +5,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReportReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopFavoritedDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
@@ -92,5 +93,12 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudReportReviewDataSource()
                 .reportReview(requestParams);
+    }
+
+    @Override
+    public Observable<ShopFavoritedDomain> checkIsShopFavorited(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudCheckShopFavoriteDataSource()
+                .checkShopIsFavorited(requestParams);
     }
 }

@@ -42,8 +42,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,6 +196,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         adapter.addHeader(createHeaderModel(inboxReputationItemViewModel));
         adapter.addList(list);
         adapter.notifyDataSetChanged();
+
+        checkIsShopFavorited(inboxReputationItemViewModel);
+    }
+
+    private void checkIsShopFavorited(InboxReputationItemViewModel inboxReputationItemViewModel) {
+        if (inboxReputationItemViewModel.getRole() == InboxReputationItemViewModel.ROLE_SELLER) {
+            presenter.checkShopFavorited(inboxReputationItemViewModel.getShopId());
+        }
     }
 
     @Override
@@ -276,7 +282,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 inboxReputationViewModel.getReputationDataViewModel(),
                 inboxReputationViewModel.getRole(),
                 inboxReputationViewModel.getRevieweeBadgeCustomerViewModel(),
-                inboxReputationViewModel.getRevieweeBadgeSellerViewModel());
+                inboxReputationViewModel.getRevieweeBadgeSellerViewModel(),
+                inboxReputationViewModel.getShopId());
     }
 
     private String getTextDeadline(InboxReputationItemViewModel element) {
@@ -341,6 +348,18 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             adapter.notifyItemChanged(0);
             getActivity().setResult(Activity.RESULT_OK);
         }
+    }
+
+    @Override
+    public void onErrorCheckShopIsFavorited() {
+
+    }
+
+    @Override
+    public void onSuccessCheckShopIsFavorited(int shopFavorited) {
+        adapter.getHeader().getRevieweeBadgeSellerViewModel().setIsFavorited(shopFavorited);
+        adapter.notifyItemChanged(0);
+
     }
 
     @Override

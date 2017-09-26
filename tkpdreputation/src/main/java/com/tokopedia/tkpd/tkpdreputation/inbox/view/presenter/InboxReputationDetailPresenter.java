@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
@@ -22,15 +23,18 @@ public class InboxReputationDetailPresenter
     private final GetInboxReputationDetailUseCase getInboxReputationDetailUseCase;
     private final SessionHandler sessionHandler;
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
+    private final CheckShopFavoritedUseCase checkShopFavoritedUseCase;
     private InboxReputationDetail.View viewListener;
 
     @Inject
     InboxReputationDetailPresenter(
             GetInboxReputationDetailUseCase getInboxReputationDetailUseCase,
             SendSmileyReputationUseCase sendSmileyReputationUseCase,
+            CheckShopFavoritedUseCase checkShopFavoritedUseCase,
             SessionHandler sessionHandler) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
+        this.checkShopFavoritedUseCase = checkShopFavoritedUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -65,6 +69,12 @@ public class InboxReputationDetailPresenter
                 score,
                 role),
                 new SendSmileySubscriber(viewListener, score));
+    }
+
+    @Override
+    public void checkShopFavorited(int shopId) {
+        checkShopFavoritedUseCase.execute(CheckShopFavoritedUseCase.getParam(sessionHandler
+                .getLoginID(), shopId), new CheckShopFavoriteSubscriber(viewListener));
     }
 
     public void refreshPage(String reputationId, int tab) {

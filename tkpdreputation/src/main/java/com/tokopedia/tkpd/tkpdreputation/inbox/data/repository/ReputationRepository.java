@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReportReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopFavoritedDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
@@ -36,4 +37,7 @@ public interface ReputationRepository {
     Observable<SendReviewSubmitDomain> editReviewSubmit(RequestParams requestParams);
 
     Observable<ReportReviewDomain> reportReview(RequestParams requestParams);
+
+    Observable<ShopFavoritedDomain> checkIsShopFavorited(RequestParams requestParams);
+
 }

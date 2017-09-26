@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 
@@ -14,6 +13,7 @@ public class InboxReputationDetailHeaderViewModel implements
 
     private final RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel;
     private final RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel;
+    private final int shopId;
     String avatarImage;
     String name;
     String deadline;
@@ -25,7 +25,8 @@ public class InboxReputationDetailHeaderViewModel implements
             ReputationDataViewModel reputationDataViewModel,
             int role,
             RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
+            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
+            int shopId) {
         this.avatarImage = avatarImage;
         this.name = name;
         this.deadline = deadline;
@@ -33,6 +34,7 @@ public class InboxReputationDetailHeaderViewModel implements
         this.role = role;
         this.revieweeBadgeCustomerViewModel = revieweeBadgeCustomerViewModel;
         this.revieweeBadgeSellerViewModel = revieweeBadgeSellerViewModel;
+        this.shopId = shopId;
     }
 
     public String getAvatarImage() {
@@ -51,6 +53,10 @@ public class InboxReputationDetailHeaderViewModel implements
         return role;
     }
 
+    public int getShopId() {
+        return shopId;
+    }
+
     public RevieweeBadgeCustomerViewModel getRevieweeBadgeCustomerViewModel() {
         return revieweeBadgeCustomerViewModel;
     }
@@ -62,6 +68,8 @@ public class InboxReputationDetailHeaderViewModel implements
     public ReputationDataViewModel getReputationDataViewModel() {
         return reputationDataViewModel;
     }
+
+
 
     @Override
     public int type(InboxReputationDetailTypeFactory typeFactory) {

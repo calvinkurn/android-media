@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
+import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
@@ -13,12 +14,14 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReportReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetCacheInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.ReportReviewUseCase;
@@ -94,6 +97,7 @@ public class ReputationModule {
     @ReputationScope
     @Provides
     ReputationFactory provideReputationFactory(
+            TomeService tomeService,
             ReputationService reputationService,
             InboxReputationMapper inboxReputationMapper,
             InboxReputationDetailMapper inboxReputationDetailMapper,
@@ -101,14 +105,17 @@ public class ReputationModule {
             SendReviewValidateMapper sendReviewValidateMapper,
             SendReviewSubmitMapper sendReviewSubmitMapper,
             SkipReviewMapper skipReviewMapper,
+            ShopFavoritedMapper shopFavoritedMapper,
             ReportReviewMapper reportReviewMapper,
             GlobalCacheManager globalCacheManager) {
-        return new ReputationFactory(reputationService, inboxReputationMapper,
+        return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
                 skipReviewMapper, reportReviewMapper,
+                shopFavoritedMapper,
                 globalCacheManager);
     }
+
 
     @ReputationScope
     @Provides
@@ -391,6 +398,29 @@ public class ReputationModule {
                                                                          PostExecutionThread postExecutionThread,
                                                                          ReputationRepository reputationRepository) {
         return new GetCacheInboxReputationUseCase(threadExecutor, postExecutionThread, reputationRepository);
+    }
+
+
+    @ReputationScope
+    @Provides
+    TomeService provideTomeService() {
+        return new TomeService();
+    }
+
+    @ReputationScope
+    @Provides
+    ShopFavoritedMapper provideShopFavoritedMapper() {
+        return new ShopFavoritedMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    CheckShopFavoritedUseCase provideCheckShopFavoritedUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ReputationRepository reputationRepository
+    ) {
+        return new CheckShopFavoritedUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
 }

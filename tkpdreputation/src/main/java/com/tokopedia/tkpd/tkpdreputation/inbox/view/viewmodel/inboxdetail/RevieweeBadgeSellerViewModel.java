@@ -15,6 +15,7 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
     private int minBadgeScore;
     private String reputationBadgeUrl;
     private ReputationBadgeViewModel reputationBadge;
+    private int isFavorited = -1;
 
     public RevieweeBadgeSellerViewModel(String tooltip, String reputationScore, int score,
                                         int minBadgeScore, String reputationBadgeUrl,
@@ -34,6 +35,23 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
         minBadgeScore = in.readInt();
         reputationBadgeUrl = in.readString();
         reputationBadge = in.readParcelable(ReputationBadgeViewModel.class.getClassLoader());
+        isFavorited = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(tooltip);
+        dest.writeString(reputationScore);
+        dest.writeInt(score);
+        dest.writeInt(minBadgeScore);
+        dest.writeString(reputationBadgeUrl);
+        dest.writeParcelable(reputationBadge, flags);
+        dest.writeInt(isFavorited);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<RevieweeBadgeSellerViewModel> CREATOR = new Creator<RevieweeBadgeSellerViewModel>() {
@@ -72,18 +90,11 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
         return reputationBadge;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setIsFavorited(int isFavorited) {
+        this.isFavorited = isFavorited;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(tooltip);
-        dest.writeString(reputationScore);
-        dest.writeInt(score);
-        dest.writeInt(minBadgeScore);
-        dest.writeString(reputationBadgeUrl);
-        dest.writeParcelable(reputationBadge, flags);
+    public int getIsFavorited() {
+        return isFavorited;
     }
 }

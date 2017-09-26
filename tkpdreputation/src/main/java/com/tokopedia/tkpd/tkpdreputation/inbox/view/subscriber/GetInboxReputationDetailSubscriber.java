@@ -165,7 +165,9 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                     convertToBuyerReputationViewModel(domain.getRevieweeData()
                             .getRevieweeBadgeCustomer()),
                     convertToSellerReputationViewModel(domain.getRevieweeData()
-                            .getRevieweeBadgeSeller())));
+                            .getRevieweeBadgeSeller()),
+                    domain.getShopId()
+            ));
         }
         return list;
     }

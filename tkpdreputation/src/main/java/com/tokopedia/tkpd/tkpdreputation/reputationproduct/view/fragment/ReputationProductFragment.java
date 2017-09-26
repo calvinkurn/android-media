@@ -180,7 +180,6 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         holder.avatar = (ImageView) rootView.findViewById(R.id.user_avatar);
         holder.username = (TextView) rootView.findViewById(R.id.username);
         holder.date = (TextView) rootView.findViewById(R.id.date);
-        holder.smiley = (ImageView) rootView.findViewById(R.id.smiley);
         holder.counterSmiley = (LinearLayout) rootView.findViewById(R.id.counter_smiley);
         holder.starQuality = (LinearLayout) rootView.findViewById(R.id.star_quality);
         holder.starAccuracy = (LinearLayout) rootView.findViewById(R.id.star_accuracy);
@@ -428,10 +427,6 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         } else {
             holder.iconDislike.setImageResource(R.drawable.ic_icon_repsis_dislike);
         }
-    }
-
-    private void setSmiley() {
-        holder.smiley.setImageResource(generateSmiley(model.detail.smiley));
     }
 
     private int generateSmiley(int args) {

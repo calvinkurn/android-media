@@ -6,19 +6,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.reputation.ReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
 /**
  * @author by nisie on 8/19/17.
@@ -39,7 +39,9 @@ public class InboxReputationDetailHeaderViewHolder extends
     TextView deadline;
     View lockedLayout;
     TextView promptMessage;
-    Button favoriteButton;
+    View favoriteButton;
+    TextView favoriteText;
+    ImageView favoriteIcon;
     TextView changeButton;
     RecyclerView smiley;
     TextView opponentSmileyText;
@@ -61,7 +63,9 @@ public class InboxReputationDetailHeaderViewHolder extends
         deadlineLayout = itemView.findViewById(R.id.deadline);
         lockedLayout = itemView.findViewById(R.id.locked);
         promptMessage = (TextView) itemView.findViewById(R.id.prompt_text);
-        favoriteButton = (Button) itemView.findViewById(R.id.favorite_button);
+        favoriteButton = itemView.findViewById(R.id.favorite_button);
+        favoriteText = (TextView) itemView.findViewById(R.id.favorite_text);
+        favoriteIcon = (ImageView) itemView.findViewById(R.id.favorite_icon);
         changeButton = (TextView) itemView.findViewById(R.id.change_button);
         smiley = (RecyclerView) itemView.findViewById(R.id.smiley);
         opponentSmileyText = (TextView) itemView.findViewById(R.id.opponent_smiley_text);
@@ -117,7 +121,34 @@ public class InboxReputationDetailHeaderViewHolder extends
         else
             changeButton.setVisibility(View.GONE);
 
+        if (element.getRevieweeBadgeSellerViewModel().getIsFavorited() != -1
+                && element.getRole() ==
+                InboxReputationItemViewModel.ROLE_SELLER) {
+            favoriteButton.setVisibility(View.VISIBLE);
+            setFavorite(element.getRevieweeBadgeSellerViewModel());
+        } else {
+            favoriteButton.setVisibility(View.GONE);
+        }
+
         setSmileyOpponent(element);
+    }
+
+    private void setFavorite(RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
+        if (revieweeBadgeSellerViewModel.getIsFavorited() == 1) {
+            MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
+                    .getContext(), R.drawable.white_button_rounded));
+            ImageHandler.loadImageWithId(favoriteIcon, R.drawable.shop_list_favorite_check);
+            favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
+                    .grey_500));
+            favoriteText.setText(R.string.already_favorite);
+        } else {
+            MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
+                    .getContext(), R.drawable.green_button_rounded));
+            ImageHandler.loadImageWithId(favoriteIcon, R.drawable.ic_new_action_plus);
+            favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
+                    .white));
+            favoriteText.setText(R.string.favorite_button);
+        }
     }
 
     private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element) {
@@ -142,7 +173,6 @@ public class InboxReputationDetailHeaderViewHolder extends
                 opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
                         .score_from_seller));
                 break;
-
         }
     }
 
