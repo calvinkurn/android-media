@@ -2,7 +2,6 @@ package com.tokopedia.core.cache.data.source.db;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.ContainerKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
@@ -16,32 +15,29 @@ import com.tokopedia.core.database.DbFlowDatabase;
         uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.REPLACE)})
 public class CacheApiData extends BaseModel {
     @PrimaryKey
-    @ContainerKey("request_param")
-    @Column
-    public String requestParam;
-    @ContainerKey("response_body")
-    @Column
-    public String responseBody;
-    @ContainerKey("response_date")
-    @Column
-    public long responseDate;
-    @Column
-    public long expiredDate;
-    @PrimaryKey
     @Column
     private String host;
     @PrimaryKey
     @Column
     private String path;
+    @PrimaryKey
+    @Column(name = "request_param")
+    public String requestParam;
+    @Column(name = "response_body")
+    public String responseBody;
+    @Column(name = "response_time")
+    public long responseTime;
+    @Column(name = "expired_time")
+    public long expiredTime;
     @Column
     private String method;
 
-    public long getExpiredDate() {
-        return expiredDate;
+    public long getExpiredTime() {
+        return expiredTime;
     }
 
-    public void setExpiredDate(long expiredDate) {
-        this.expiredDate = expiredDate;
+    public void setExpiredTime(long expiredTime) {
+        this.expiredTime = expiredTime;
     }
 
     public String getHost() {
@@ -84,11 +80,11 @@ public class CacheApiData extends BaseModel {
         this.responseBody = responseBody;
     }
 
-    public long getResponseDate() {
-        return responseDate;
+    public long getResponseTime() {
+        return responseTime;
     }
 
-    public void setResponseDate(long responseDate) {
-        this.responseDate = responseDate;
+    public void setResponseTime(long responseTime) {
+        this.responseTime = responseTime;
     }
 }

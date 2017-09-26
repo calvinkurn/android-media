@@ -105,7 +105,7 @@ public class ApiCacheDataSource {
                 .from(CacheApiData.class)
                 .where(CacheApiData_Table.host.eq(host))
                 .and(CacheApiData_Table.path.eq(path))
-                .and(CacheApiData_Table.requestParam.eq(param));
+                .and(CacheApiData_Table.request_param.eq(param));
         Log.d(TAG, "queryDataFrom : " + and
                 .toString());
         return and.querySingle();
@@ -132,7 +132,7 @@ public class ApiCacheDataSource {
 
     public void clearTimeout() {
         long currentTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
-        List<CacheApiData> cacheApiDatas = new Select().from(CacheApiData.class).where(CacheApiData_Table.expiredDate.lessThan(currentTime)).queryList();
+        List<CacheApiData> cacheApiDatas = new Select().from(CacheApiData.class).where(CacheApiData_Table.expired_time.lessThan(currentTime)).queryList();
         for (int i = 0; i < cacheApiDatas.size(); i++) {
             cacheApiDatas.get(i).delete();
         }
@@ -141,8 +141,8 @@ public class ApiCacheDataSource {
     public void updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
         Calendar instance = Calendar.getInstance();
         instance.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
-        cacheApiData.setResponseDate(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
-        cacheApiData.setExpiredDate(instance.getTimeInMillis() / DIVIDE_FOR_SECONDS);
+        cacheApiData.setResponseTime(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
+        cacheApiData.setExpiredTime(instance.getTimeInMillis() / DIVIDE_FOR_SECONDS);
 
         try {
             putResponseBody(cacheApiData, response);

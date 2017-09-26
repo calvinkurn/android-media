@@ -42,8 +42,8 @@ public class GetCacheDataUseCaseUseCase extends BaseApiCacheInterceptorUseCase<S
             public String call(CacheApiData cacheApiData) {
                 if (cacheApiData != null) {
 
-                    paramsCacheApiData.setResponseDate(cacheApiData.responseDate);
-                    paramsCacheApiData.setExpiredDate(cacheApiData.expiredDate);
+                    paramsCacheApiData.setResponseTime(cacheApiData.responseTime);
+                    paramsCacheApiData.setExpiredTime(cacheApiData.expiredTime);
                     paramsCacheApiData.setResponseBody(cacheApiData.responseBody);
                 }
                 return paramsCacheApiData.getResponseBody();
