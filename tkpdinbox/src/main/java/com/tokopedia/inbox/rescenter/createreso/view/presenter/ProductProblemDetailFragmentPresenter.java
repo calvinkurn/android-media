@@ -71,12 +71,12 @@ public class ProductProblemDetailFragmentPresenter
     public void initProblemResult(ProductProblemViewModel productProblemViewModel) {
         problemResult.type = productProblemViewModel.getProblem().getType();
         problemResult.isDelivered = true;
-        //init with first trouble item of undelivered status
+        //init with first trouble item of delivered status
         updateSpinner(problemResult.isDelivered);
         getCanShowNotArrived();
         problemResult.trouble = 0;
         problemResult.remark = "";
-        problemResult.quantity = 1;
+        problemResult.quantity = productProblemViewModel.getOrder().getProduct().getQuantity();
         problemResult.name = productProblemViewModel.getProblem().getName();
         problemResult.order.detail.id = productProblemViewModel.getOrder().getDetail().getId();
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
