@@ -46,10 +46,11 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean headerPlaced = false;
     private boolean isFeed = false;
     private boolean shouldLoadAds = true; //default load ads
-    private final RecyclerView.Adapter adapter;
+    private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    private static final int ROW_ADS_INDEX_FEED = 2;
 
-    public TopAdsPlacer(RecyclerView.Adapter adapter, Context context,
+    public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
         presenter = new TopAdsPresenter(context);
         this.adapter = adapter;
@@ -90,7 +91,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onChanged() {
-        reset();
         observerType = ObserverType.CHANGE;
         if (shouldLoadAds && adsItems.isEmpty()) {
             loadTopAds();
@@ -99,6 +99,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onItemRangeInserted(final int positionStart, final int itemCount) {
+        Log.d(TAG, "onItemRangeInserted positionStart " + positionStart + " itemCount " + itemCount);
         ajustedPositionStart = positionStart;
         ajustedItemCount = itemCount;
         observerType = ObserverType.ITEM_RANGE_INSERTED;
@@ -157,6 +158,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = 0;
         mPage = 1;
         itemList.clear();
+        adsItems.clear();
         setShouldLoadAds(true);
         if (hasHeader)
             headerPlaced = false;
@@ -178,12 +180,21 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         Log.d(TAG, "displayAds list size " + list.size());
         adsItems = list;
         if (isFeed) {
-            setTopAds(adsItems, itemList, getItemCount());
+            int tresHold = (ajustedItemCount - 1);
+            if (getItemCount() > tresHold) {
+                if (hasHeader && !headerPlaced) {
+                    headerPlaced = true;
+                    setTopAds(adsItems, itemList, ROW_ADS_INDEX_FEED);
+                } else {
+                    setTopAds(adsItems, itemList, getItemCount() - tresHold);
+                }
+            } else {
+                setTopAds(adsItems, itemList, getItemCount());
+            }
         } else {
             if (hasHeader && !headerPlaced) {
                 headerPlaced = true;
                 setTopAds(adsItems, itemList, 1);
-                adapter.notifyItemInserted(1);
             } else {
                 if (headerPlaced || position > 0) {
                     position = position - 1;

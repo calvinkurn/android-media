@@ -108,7 +108,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-
         <meta-data
             android:name="LOCALYTICS_APP_KEY"
             android:value="@string/key_localytics" />

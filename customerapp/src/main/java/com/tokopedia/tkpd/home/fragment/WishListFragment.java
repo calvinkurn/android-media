@@ -170,13 +170,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onResume() {
         super.onResume();
-        wishList.setLocalyticFlow(getActivity(), getString(R.string.home_wishlist));
-        if (wishList.isAfterRotation()) {
-            if (!wishList.isLoadedFirstPage())
-                wishList.refreshData(getActivity());
-        } else {
-            wishList.fetchDataFromCache(getActivity());
-        }
+        wishList.onResume(getActivity());
         UnifyTracking.eventViewWishlist();
     }
 

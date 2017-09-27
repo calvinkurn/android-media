@@ -221,6 +221,7 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
         String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
         String REFERRAL="Referral";
+        String FEATURED_PRODUCT = "Featured Product";
     }
 
     interface Action {
@@ -594,7 +595,17 @@ public interface AppEventTracking {
         String ADD_PROMO_PRODUCT = "Add Produk Promo";
         String ADD_PROMO_KEYWORD_POSITIF = "Add Positive Keyword";
         String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
+<<<<<<< HEAD
         String APP_SHARE_LABEL="Share";
+=======
+        String FEATURED_PRODUCT = "Featured Product";
+        String ADD_FEATURED_PRODUCT = "Add Featured Product";
+        String TICK_ERROR = "Tick Error";
+        String SAVE_FEATURED_PRODUCT_PICKER = "Simpan - ";
+        String SORT_FEATURED_PRODUCT_CHANGE = "Atur Urutan (Change)";
+        String SORT_FEATURED_PRODUCT_NO_CHANGE = "Atur Urutan (No Change)";
+        String DELETE_FEATURED_PRODUCT = "Delete";
+>>>>>>> upstream/release_candidate
     }
 
     interface SOCIAL_MEDIA {
