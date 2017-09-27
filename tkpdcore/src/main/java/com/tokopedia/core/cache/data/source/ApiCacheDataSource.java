@@ -1,8 +1,7 @@
 package com.tokopedia.core.cache.data.source;
 
-import android.text.TextUtils;
-
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.tkpd.library.utils.CommonUtils;
@@ -10,6 +9,7 @@ import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiData_Table;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist_Table;
+import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.cache.util.CacheApiUtils;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Collection;
 
 import okhttp3.MediaType;
 import okhttp3.Response;
@@ -28,6 +28,7 @@ import okio.Buffer;
 import okio.BufferedSource;
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 8/9/17.
@@ -42,17 +43,50 @@ public class ApiCacheDataSource {
 
     }
 
-    public CacheApiWhitelist getWhiteList(String host, String path) {
-        return new Select()
-                .from(CacheApiWhitelist.class)
-                .where(CacheApiWhitelist_Table.host.eq(host))
-                .and(CacheApiWhitelist_Table.path.eq(path))
-                .querySingle();
+    public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
+        return Observable.create(new Observable.OnSubscribe<CacheApiWhitelist>() {
+            @Override
+            public void call(Subscriber<? super CacheApiWhitelist> subscriber) {
+                subscriber.onNext(new Select()
+                        .from(CacheApiWhitelist.class)
+                        .where(CacheApiWhitelist_Table.host.eq(host))
+                        .and(CacheApiWhitelist_Table.path.eq(path))
+                        .querySingle());
+            }
+        });
     }
 
-    public boolean isInWhiteList(final String host, final String path) {
-        CacheApiWhitelist cacheApiWhitelist = getWhiteList(host, path);
-        return cacheApiWhitelist != null;
+    public Observable<Boolean> isInWhiteList(final String host, final String path) {
+        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
+                return Observable.just(cacheApiWhitelist != null);
+            }
+        });
+    }
+
+    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                for (CacheApiWhiteListDomain cacheApiWhiteListDomain: cacheApiDatas) {
+                    CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
+                    CommonUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
+                    whiteList.save();
+                }
+                subscriber.onNext(true);
+            }
+        });
+    }
+
+    public Observable<Boolean> deleteAllWhiteListData() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                SQLite.delete(CacheApiWhitelist.class).execute();
+                subscriber.onNext(true);
+            }
+        });
     }
 
     public Observable<CacheApiData> getCachedData(final String host, final String path, final String param) {
@@ -70,18 +104,25 @@ public class ApiCacheDataSource {
         });
     }
 
+    public Observable<Boolean> deleteAllCacheData() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                SQLite.delete(CacheApiData.class).execute();
+                subscriber.onNext(true);
+            }
+        });
+    }
+
     public Observable<Boolean> clearTimeout() {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 long currentTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
-                List<CacheApiData> cacheApiDatas = new Select()
+                new Delete()
                         .from(CacheApiData.class)
                         .where(CacheApiData_Table.expired_time.lessThan(currentTime))
-                        .queryList();
-                for (int i = 0; i < cacheApiDatas.size(); i++) {
-                    cacheApiDatas.get(i).delete();
-                }
+                        .execute();
                 subscriber.onNext(true);
             }
         });
@@ -102,27 +143,32 @@ public class ApiCacheDataSource {
     }
 
     public Observable<Boolean> deleteWhiteList(final CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return getWhiteList(cacheApiWhiteListDomain.getHost(), cacheApiWhiteListDomain.getPath()).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                CacheApiWhitelist cacheApiWhitelist = getWhiteList(cacheApiWhiteListDomain.getHost(), cacheApiWhiteListDomain.getPath());
+            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
                 cacheApiWhitelist.delete();
-                subscriber.onNext(true);
+                return Observable.just(true);
             }
         });
     }
 
-    public void updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
-        Calendar expiredCalendar = Calendar.getInstance();
-        expiredCalendar.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
-        cacheApiData.setResponseTime(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
-        cacheApiData.setExpiredTime(expiredCalendar.getTimeInMillis() / DIVIDE_FOR_SECONDS);
-        try {
-            putResponseBody(cacheApiData, response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cacheApiData.save();
+    public Observable<Boolean> updateResponse(final CacheApiData cacheApiData, final CacheApiWhitelist cacheApiWhitelist, final Response response) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                Calendar expiredCalendar = Calendar.getInstance();
+                expiredCalendar.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
+                cacheApiData.setResponseTime(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
+                cacheApiData.setExpiredTime(expiredCalendar.getTimeInMillis() / DIVIDE_FOR_SECONDS);
+                try {
+                    putResponseBody(cacheApiData, response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                cacheApiData.save();
+                subscriber.onNext(true);
+            }
+        });
     }
 
     private void putResponseBody(CacheApiData cacheApiData, Response response) throws IOException {

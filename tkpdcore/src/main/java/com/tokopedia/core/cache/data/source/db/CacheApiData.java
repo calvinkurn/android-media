@@ -23,14 +23,15 @@ public class CacheApiData extends BaseModel {
     @PrimaryKey
     @Column(name = "request_param")
     public String requestParam;
+    @PrimaryKey
+    @Column
+    private String method;
     @Column(name = "response_body")
     public String responseBody;
     @Column(name = "response_time")
     public long responseTime;
     @Column(name = "expired_time")
     public long expiredTime;
-    @Column
-    private String method;
 
     public long getExpiredTime() {
         return expiredTime;

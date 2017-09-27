@@ -19,11 +19,11 @@ import rx.Observable;
 public interface ApiCacheRepository {
 
     /**
-     * check version of api cache
+     * Check if it's need to update the white list
      *
-     * @return true if version is increased, otherwise false
+     * @return true if version is not increased, otherwise false
      */
-    Observable<Boolean> checkVersion();
+    Observable<Boolean> isNeedToUpdateWhiteList();
 
     /**
      * bulk insert
