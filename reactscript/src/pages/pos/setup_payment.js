@@ -9,42 +9,16 @@ import TransactionHistory from './components/TransactionHistory'
 import PasswordPopup from './components/PasswordPopup'
 import POS from './components/POS'
 import CartContainer from './containers/CartContainer'
-import { StackNavigator } from 'react-navigation';
-
-const prefix = 'pospayment://pospayment/'
+import { StackNavigator } from 'react-navigation'
 
 
-// // TODO: FOR UI testing purpose
 const PaymentApp = StackNavigator({
     BankSelection : { screen: PaymentBank },
-    Payment: { screen: Payment },
-    // PaymentProcessing: {
-    //   screen: PaymentProcessing,
-    //   path: 'PaymentProcessing/:data',
-    // },
-    // PaymentInvoice: {screen: PaymentInvoice},
-    // TransactionHistory: {screen: TransactionHistory},
-    // PasswordPopup: {screen: PasswordPopup}
-});
-// const PaymentApp = StackNavigator({
-//     BankSelection : { screen: PaymentBank },
-//     Payment: { screen: Payment },
-//     // PaymentProcessing: {screen: PaymentProcessing},
-//     PaymentProcessing: {
-//       screen: PaymentProcessing,
-//       path: 'PaymentProcessing',
-//     },
-//     PaymentInvoice: {screen: PaymentInvoice},
-//     TransactionHistory: {screen: TransactionHistory},
-//     PasswordPopup: {screen: PasswordPopup}
-// }, {headerMode: 'none'});
+    Payment: { screen: Payment }
+})
 
 
 class Root extends Component {
-    componentWillMount(){
-        console.log(this.props)
-    }
-
     render() {
         return (
             <Provider store={store}>
