@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { PosCacheModule, PaymentModule } from 'NativeModules'
+import { 
+  PosCacheModule, 
+  SessionModule,
+  PaymentModule 
+} from 'NativeModules'
 
 
 // ===================== Product List ======================= //
@@ -10,19 +14,36 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
     payload: PosCacheModule.getDataAll("PRODUCT")
              .then(response => {
                const jsonResponse = JSON.parse(response)
-               console.log(jsonResponse)
                return jsonResponse;
              })
              .catch(error => {})
   }
 }
 
+
+export const FETCH_SHOP_NAME = 'FETCH_SHOP_NAME'
+export const fetchShopName = () => ({
+  type: FETCH_SHOP_NAME,
+  payload: SessionModule.getShopName()
+            .then(res => {
+              return res
+            })
+            .catch(err => console.log(err))
+})
+
+export const FETCH_SHOP_ID = 'FETCH_SHOP_ID'
+export const fetchShopId = () => ({
+  type: FETCH_SHOP_ID,
+  payload: SessionModule.getShopId()
+})
+
 export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
   type: FETCH_ETALASE,
   payload: PosCacheModule.getDataAll("ETALASE")
             .then(res => {
-                console.log(res)
+              const jsonResponse = JSON.parse(res)
+              return jsonResponse
             })
             .catch(err => console.log(err))
 })
@@ -239,9 +260,9 @@ export const onSearchQueryType = (queryText) => {
 }
 
 export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
-export const fetchSearchProduct = (eId, queryText) => {
+export const fetchSearchProduct = (eId, queryText, shopId) => {
   const text = queryText.replace(' ', '+')
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=1987772&start=0&q=${text}`
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=${shopId}&start=0&q=${text}`
   
   const etalaseId = +eId || 0
   if (etalaseId) {
@@ -277,9 +298,9 @@ export const setSearchText = (q) => {
 }
 
 export const ON_SUBMIT_FETCH_SEARCH_PRODUCT = 'ON_SUBMIT_FETCH_SEARCH_PRODUCT'
-export const onSubmitFetchSearchProduct = (queryText, eId) => {
+export const onSubmitFetchSearchProduct = (queryText, eId, shopId) => {
   const text = queryText.replace(' ', '+')
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=1987772&start=0&q=${text}`
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=${shopId}&start=0&q=${text}`
   const etalaseId = +eId || 0
   if (etalaseId) {
     url += `&etalase=${etalaseId}`

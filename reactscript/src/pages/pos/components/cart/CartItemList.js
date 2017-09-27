@@ -46,8 +46,6 @@ export default class CartItemList extends Component {
     const onRemoveFromCart = this.props.onRemoveFromCart
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
     const { isFetching } = this.props
-
-    console.log(this.props)
     
     return (
       <View>
@@ -153,7 +151,7 @@ export default class CartItemList extends Component {
 
 const styles = {
   paymentContainer: {
-    marginTop: 10, marginLeft: 20, marginRight: 20,
+    marginTop: 10, marginLeft: 20, marginRight: 20, borderRadius: 5,
     flexDirection: 'row',
     backgroundColor: '#fff',
     justifyContent: 'space-between',
@@ -164,6 +162,7 @@ const styles = {
   },
   itemListContainer: {
     backgroundColor: '#fff',
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: '#e0e0e0'
   },
