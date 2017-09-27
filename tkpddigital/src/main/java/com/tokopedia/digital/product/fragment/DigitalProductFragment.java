@@ -564,7 +564,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public String getCategoryId() {
-        return categoryId;
+        return categoryId == null ? "" : categoryId;
     }
 
     @Override
