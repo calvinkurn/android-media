@@ -47,8 +47,8 @@ public class AppealSolutionResponse {
     public String toString() {
         return "AppealSolutionResponse{" +
                 "id='" + id + '\'' +
-                "name='" + name + '\'' +
-                "amount='" + amount.toString() + '\'' +
+                ", name='" + name + '\'' +
+                ", amount='" + amount.toString() + '\'' +
                 '}';
     }
 }

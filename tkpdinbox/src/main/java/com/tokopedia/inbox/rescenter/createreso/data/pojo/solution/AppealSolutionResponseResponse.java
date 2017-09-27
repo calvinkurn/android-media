@@ -33,11 +33,12 @@ public class AppealSolutionResponseResponse {
     public void setSolution(List<AppealSolutionResponse> solution) {
         this.solution = solution;
     }
+
     @Override
     public String toString() {
         return "AppealSolutionResponseResponse{" +
                 "solutionLists='" + solution.toString() + '\'' +
-                "freeReturn='" + freeReturn.toString() + '\'' +
+                ", freeReturn='" + freeReturn.toString() + '\'' +
                 '}';
     }
 }

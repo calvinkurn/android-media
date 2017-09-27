@@ -47,8 +47,8 @@ public class EditSolutionResponse {
     public String toString() {
         return "EditSolutionResponse{" +
                 "id='" + id + '\'' +
-                "name='" + name + '\'' +
-                "amount='" + amount.toString() + '\'' +
+                ", name='" + name + '\'' +
+                ", amount='" + amount.toString() + '\'' +
                 '}';
     }
 }

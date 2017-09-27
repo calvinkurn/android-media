@@ -20,6 +20,7 @@ public class CreateResoWithoutAttachmentDomain {
     @Nullable
     private String successMessage;
 
+
     public CreateResoWithoutAttachmentDomain(ResolutionDomain resolution, String cacheKey, String successMessage) {
         this.resolution = resolution;
         this.cacheKey = cacheKey;

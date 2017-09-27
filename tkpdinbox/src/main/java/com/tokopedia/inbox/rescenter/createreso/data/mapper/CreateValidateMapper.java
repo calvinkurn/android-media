@@ -33,15 +33,9 @@ public class CreateValidateMapper implements Func1<Response<TkpdResponse>, Creat
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 model.setSuccess(true);
             } else {
-                try {
-                    String msgError = "";
-                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        msgError += jsonArray.get(i).toString() + " ";
-                    }
-                    throw new ErrorMessageException(msgError);
-                } catch (Exception e) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
                     throw new ErrorMessageException(DEFAULT_ERROR);
                 }
             }

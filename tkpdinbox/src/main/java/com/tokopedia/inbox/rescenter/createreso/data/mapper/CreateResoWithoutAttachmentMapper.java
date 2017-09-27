@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoStep1Response;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoWithoutAttachmentResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ResolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.ResolutionDomain;
@@ -28,27 +28,21 @@ public class CreateResoWithoutAttachmentMapper implements Func1<Response<TkpdRes
     }
 
     private CreateResoWithoutAttachmentDomain mappingResponse(Response<TkpdResponse> response) {
-        CreateResoStep1Response createResoStep1Response =
-                response.body().convertDataObj(CreateResoStep1Response.class);
+        CreateResoWithoutAttachmentResponse createResoWithoutAttachmentResponse =
+                response.body().convertDataObj(CreateResoWithoutAttachmentResponse.class);
         CreateResoWithoutAttachmentDomain model = new CreateResoWithoutAttachmentDomain(
-                createResoStep1Response.getResolution() != null ?
-                        mappingResolutionDomain(createResoStep1Response.getResolution()) :
+                createResoWithoutAttachmentResponse.getResolution() != null ?
+                        mappingResolutionDomain(createResoWithoutAttachmentResponse.getResolution()) :
                         null,
-                createResoStep1Response.getCacheKey(),
-                createResoStep1Response.getSuccessMessage());
+                createResoWithoutAttachmentResponse.getCacheKey(),
+                createResoWithoutAttachmentResponse.getSuccessMessage());
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 model.setSuccess(true);
             } else {
-                try {
-                    String msgError = "";
-                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        msgError += jsonArray.get(i).toString() + " ";
-                    }
-                    throw new ErrorMessageException(msgError);
-                } catch (Exception e) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
                     throw new ErrorMessageException(DEFAULT_ERROR);
                 }
             }

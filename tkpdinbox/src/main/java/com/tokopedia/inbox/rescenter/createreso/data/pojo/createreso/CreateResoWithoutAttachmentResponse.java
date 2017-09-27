@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by yoasfs on 05/09/17.
  */
 
-public class CreateResoStep1Response {
+public class CreateResoWithoutAttachmentResponse {
 
     @SerializedName("resolution")
     @Expose
@@ -45,12 +45,13 @@ public class CreateResoStep1Response {
         this.successMessage = successMessage;
     }
 
+
     @Override
     public String toString() {
-        return "CreateResoStep1Response{" +
+        return "CreateResoWithoutAttachmentResponse{" +
                 "resolution='" + resolution + '\'' +
-                "cacheKey='" + cacheKey + '\'' +
-                "successMessage='" + successMessage + '\'' +
+                ", cacheKey='" + cacheKey + '\'' +
+                ", successMessage='" + successMessage + '\'' +
                 '}';
     }
 

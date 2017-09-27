@@ -17,7 +17,6 @@ public class EditSolutionResponseResponse {
     @SerializedName("freeReturn")
     @Expose
     private EditFreeReturnResponse freeReturn;
-
     public List<EditSolutionResponse> getSolution() {
         return solution;
     }
@@ -33,6 +32,7 @@ public class EditSolutionResponseResponse {
     public void setSolution(List<EditSolutionResponse> solution) {
         this.solution = solution;
     }
+
     @Override
     public String toString() {
         return "EditSolutionResponseResponse{" +

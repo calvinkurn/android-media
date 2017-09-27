@@ -16,6 +16,7 @@ public class CreateSubmitResponse {
     @Expose
     private String successMessage;
 
+
     public ResolutionResponse getResolution() {
         return resolution;
     }
@@ -36,7 +37,7 @@ public class CreateSubmitResponse {
     public String toString() {
         return "CreateResoStep2Response{" +
                 "resolution='" + resolution + '\'' +
-                "successMessage='" + successMessage + '\'' +
+                ", successMessage='" + successMessage + '\'' +
                 '}';
     }
 }

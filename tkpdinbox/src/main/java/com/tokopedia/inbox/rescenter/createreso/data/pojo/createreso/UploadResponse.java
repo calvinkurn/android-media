@@ -37,7 +37,7 @@ public class UploadResponse {
     public String toString() {
         return "UploadResponse{" +
                 "picObj='" + picObj + '\'' +
-                "picSrc='" + picSrc + '\'' +
+                ", picSrc='" + picSrc + '\'' +
                 '}';
     }
 

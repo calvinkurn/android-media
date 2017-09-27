@@ -44,12 +44,13 @@ public class SolutionResponseResponse {
         this.freeReturn = freeReturn;
     }
 
+
     @Override
     public String toString() {
         return "SolutionResponseResponse{" +
                 "solution='" + solution.toString() + '\'' +
-                "require='" + require.toString() + '\'' +
-                "freeReturn='" + freeReturn.toString() + '\'' +
+                ", require='" + require.toString() + '\'' +
+                ", freeReturn='" + freeReturn.toString() + '\'' +
                 '}';
     }
 }

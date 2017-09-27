@@ -49,8 +49,8 @@ public class GenerateHostResponse {
     public String toString() {
         return "GenerateHostResponse{" +
                 "serverId='" + serverId + '\'' +
-                "uploadHost='" + uploadHost + '\'' +
-                "token='" + token + '\'' +
+                ", uploadHost='" + uploadHost + '\'' +
+                ", token='" + token + '\'' +
                 '}';
     }
 
