@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
@@ -23,20 +22,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
  */
 
 public class SplashScreenActivity extends SplashScreen {
-    private View decorView;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
-    }
 
     @Override
     public void finishSplashScreen() {
@@ -89,20 +74,6 @@ public class SplashScreenActivity extends SplashScreen {
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             return intent;
-        }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 }
