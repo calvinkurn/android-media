@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputLayout;
@@ -45,6 +44,7 @@ import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReviewTipsAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationFormPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
@@ -82,7 +82,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     Switch shareFbSwitch;
     Switch anomymousSwitch;
     Button sendButton;
+    View tipsHeader;
+    ImageView tipsArrow;
+    RecyclerView reviewTips;
     ImageUploadAdapter adapter;
+    ReviewTipsAdapter tipsAdapter;
     boolean isValidRating = false;
     boolean isValidReview = false;
 
@@ -154,6 +158,9 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         shareFbSwitch = (Switch) parentView.findViewById(R.id.switch_facebook);
         anomymousSwitch = (Switch) parentView.findViewById(R.id.switch_anonym);
         sendButton = (Button) parentView.findViewById(R.id.send_button);
+        reviewTips = (RecyclerView) parentView.findViewById(R.id.review_tips);
+        tipsHeader = parentView.findViewById(R.id.expand_product_review_tips);
+        tipsArrow = (ImageView) parentView.findViewById(R.id.iv_expand_collapse);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -233,6 +240,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         listImageUpload.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         listImageUpload.setAdapter(adapter);
+
+        tipsAdapter = ReviewTipsAdapter.createInstance();
+        reviewTips.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
+                .VERTICAL, false));
+        reviewTips.setAdapter(tipsAdapter);
 
         uploadInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,6 +328,31 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 }
             }
         });
+
+        tipsHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTips();
+            }
+        });
+
+        tipsArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTips();
+            }
+        });
+
+    }
+
+    private void setTips() {
+        if (tipsAdapter.isExpanded()) {
+            tipsAdapter.collapse();
+            tipsArrow.setRotation(0);
+        } else {
+            tipsAdapter.expand();
+            tipsArrow.setRotation(180);
+        }
     }
 
     @Override

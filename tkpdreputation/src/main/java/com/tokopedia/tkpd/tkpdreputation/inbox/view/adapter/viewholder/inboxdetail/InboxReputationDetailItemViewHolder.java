@@ -151,7 +151,7 @@ public class InboxReputationDetailItemViewHolder extends
     private Spanned getReview(String review) {
         if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
-            return MethodChecker.fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "..."
+            return MethodChecker.fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
                     + MORE_DESCRIPTION);
         } else {
             return MethodChecker.fromHtml(review);

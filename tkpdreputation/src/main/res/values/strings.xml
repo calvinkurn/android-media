@@ -70,5 +70,12 @@
     <string name="success_skip_review">Sukses melewati ulasan</string>
     <string name="title_reputation_history">Penalti Reputasi</string>
     <string name="more_to_complete">Selengkapnya</string>
+    <string name="tips1_title">Kesesuaian dengan deskripsi</string>
+    <string name="tips1_tips">Ukuran dan warna sesuai dengan foto dan deskripsi produk yang dijual</string>
+    <string name="tips2_title">Fungsional Produk</string>
+    <string name="tips2_tips">Produk bekerja dengan baik, tidak cepat rusak walau sudah dipakai berkali-kali</string>
+    <string name="tips3_title">Rekomendasi Produk</string>
+    <string name="tips3_tips">Saya senang produknya dipaketkan dengan rapi dan tidak ada cacat. Recommended!</string>
+    <string name="review_tips">Tips Menulis Produk</string>
 
 </resources>
