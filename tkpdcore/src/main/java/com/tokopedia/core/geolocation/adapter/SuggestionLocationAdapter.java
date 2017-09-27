@@ -117,8 +117,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                 queryListener = new OnQueryListener() {
                     @Override
                     public void onQuerySubmit(String query) {
-                        if(query.length() >= 3)
-                            subscriber.onNext(String.valueOf(query));
+                        subscriber.onNext(String.valueOf(query));
                     }
                 };
             }
