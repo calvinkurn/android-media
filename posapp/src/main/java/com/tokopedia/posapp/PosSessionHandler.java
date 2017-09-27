@@ -3,8 +3,10 @@ package com.tokopedia.posapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.view.fragment.DialogPasswordFragment;
 
 /**
  * Created by okasurya on 9/26/17.
@@ -45,5 +47,21 @@ public class PosSessionHandler extends SessionHandler {
     public static String getOutletName(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(OUTLET_NAME, "");
+    }
+
+    public void showPasswordDialog(String title, PosSessionHandler.PasswordListener listener) {
+        if (getContext() != null && getContext() instanceof AppCompatActivity && getContext() instanceof onLogoutListener) {
+            if (((AppCompatActivity) getContext()).getFragmentManager().findFragmentByTag(DialogPasswordFragment.FRAGMENT_TAG) == null) {
+                DialogPasswordFragment dialogPasswordFragment = DialogPasswordFragment.newInstance(title);
+                dialogPasswordFragment.setListener(listener);
+                dialogPasswordFragment.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), DialogPasswordFragment.FRAGMENT_TAG);
+            }
+        }
+    }
+
+    public interface PasswordListener {
+        void onSuccess();
+
+        void onError(String message);
     }
 }

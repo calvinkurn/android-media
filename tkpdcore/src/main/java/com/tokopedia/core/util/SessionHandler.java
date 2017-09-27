@@ -658,4 +658,8 @@ public class SessionHandler {
     public interface onLogoutListener {
         void onLogout(Boolean success);
     }
+
+    protected Context getContext() {
+        return context;
+    }
 }

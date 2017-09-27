@@ -11,6 +11,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.fragment.OutletFragment;
 import com.tokopedia.posapp.view.service.CacheService;
@@ -25,7 +26,7 @@ public class OutletActivity extends DrawerPresenterActivity implements HasCompon
 
     @Override
     protected int setDrawerPosition() {
-        return 0;
+        return TkpdState.DrawerPosition.POS_OUTLET;
     }
 
     @Override
@@ -38,7 +39,6 @@ public class OutletActivity extends DrawerPresenterActivity implements HasCompon
         drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
         drawerHelper.initDrawer(this);
         drawerHelper.setEnabled(true);
-        drawerHelper.setSelectedPosition(0);
     }
 
     @Override

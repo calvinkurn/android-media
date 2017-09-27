@@ -41,7 +41,7 @@ public class AccountsService {
                                 .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
                                 .buildClientAccountsAuth(authKey, isUsingHMAC, isUsingBothAuthorization))
                         .build());
-}
+    }
 
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(AccountsApi.class);

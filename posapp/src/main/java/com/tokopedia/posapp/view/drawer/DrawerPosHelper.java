@@ -18,9 +18,11 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
+import com.tokopedia.posapp.view.fragment.DialogPasswordFragment;
 
 import java.util.ArrayList;
 
@@ -115,7 +117,7 @@ public class DrawerPosHelper extends DrawerHelper
         if(item.getId() == selectedPosition) {
             closeDrawer();
         } else {
-            Intent intent;
+            PosSessionHandler posSessionHandler = new PosSessionHandler(context);
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     break;
