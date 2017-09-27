@@ -3,7 +3,7 @@ package com.tokopedia.core.referral.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -26,7 +26,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     private ReferralPresenter presenter;
 
     @BindView(R2.id.btn_app_share)
-    Button appShareButton;
+    TextView appShareButton;
 
     public static FragmentReferral newInstance() {
         FragmentReferral fragmentReferral = new FragmentReferral();
