@@ -33,9 +33,9 @@ public class OnboardingSellerActivity extends OnboardingActivity {
                     getString(R.string.onb_3_desc), R.drawable.cover_onboard_3,
                     ContextCompat.getColor(getApplicationContext(), R.color.tkpd_bg_color_grery),
                     OnBoardingSellerFragment.VIEW_ENDING));
-            setProgressButtonEnabled(true);
+            showPagerIndicator(true);
         } else {
-            setProgressButtonEnabled(false);
+            showPagerIndicator(false);
         }
 
         decorView = getWindow().getDecorView();
