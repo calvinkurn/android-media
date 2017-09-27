@@ -1,4 +1,4 @@
-package com.tokopedia.core.geolocation.model;
+package com.tokopedia.core.geolocation.model.autocomplete;
 
 import android.os.Parcel;
 import android.os.Parcelable;
