@@ -62,7 +62,7 @@ public class ApiCacheInterceptor implements Interceptor {
                 new ApiCacheDataSource()
         );
 
-        new ClearTimeOutCache(threadExecutor, postExecutionThread, apiCacheRepository).createObservableSync(RequestParams.EMPTY);
+        new ClearTimeOutCache(threadExecutor, postExecutionThread, apiCacheRepository).executeSync(RequestParams.EMPTY);
 
         CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
         GetCacheDataUseCaseUseCase getCacheDataUseCase = new GetCacheDataUseCaseUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
@@ -73,18 +73,18 @@ public class ApiCacheInterceptor implements Interceptor {
         requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, CacheApiUtils.getFullRequestURL(request));
         requestParams.putString(BaseApiCacheInterceptorUseCase.METHOD, request.method());
 
-        boolean inWhiteList = checkWhiteListUseCase.createObservableSync(requestParams).defaultIfEmpty(false).toBlocking().firstOrDefault(null);
+        boolean inWhiteList = checkWhiteListUseCase.getData(requestParams);
 
         if (!inWhiteList) {
             CommonUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
             throw new Exception("Not registered in white list");
         }
-        String cacheData = getCacheDataUseCase.createObservableSync(requestParams).defaultIfEmpty(null).toBlocking().firstOrDefault(null);
+        String cacheData = getCacheDataUseCase.getData(requestParams);
         if (TextUtils.isEmpty(cacheData)) {
             CommonUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
             Response response = getDefaultResponse(chain);
             requestParams.putObject(SaveToDbUseCase.RESPONSE, response);
-            saveToDbUseCase.createObservableSync(requestParams).toBlocking().first();
+            saveToDbUseCase.executeSync(requestParams);
             return response;
         } else {
             CommonUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
