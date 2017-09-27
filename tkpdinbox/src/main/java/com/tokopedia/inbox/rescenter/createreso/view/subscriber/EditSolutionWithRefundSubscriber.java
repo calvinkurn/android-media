@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 
@@ -24,6 +25,7 @@ public class EditSolutionWithRefundSubscriber extends Subscriber<EditAppealResol
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
+        mainView.errorEditSolution(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

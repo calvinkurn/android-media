@@ -11,8 +11,9 @@ public class EditAppealResolutionSolutionDomain {
     @Nullable
     private boolean isSuccess;
 
-    public EditAppealResolutionSolutionDomain(boolean isSuccess) {
+    public EditAppealResolutionSolutionDomain(boolean isSuccess, String successMessage) {
         this.isSuccess = isSuccess;
+        this.message = successMessage;
     }
 
 

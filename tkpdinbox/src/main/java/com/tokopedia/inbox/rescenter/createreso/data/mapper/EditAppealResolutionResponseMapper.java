@@ -36,16 +36,23 @@ public class EditAppealResolutionResponseMapper
 
 
     private EditAppealResolutionSolutionDomain mappingResponse(Response<TkpdResponse> response) {
-            EditAppealResolutionSolutionDomain model =
-                new EditAppealResolutionSolutionDomain(response.isSuccessful());
+        EditAppealSolutionResponse editAppealSolutionResponse =
+                response.body().convertDataObj(EditAppealSolutionResponse.class);
+        EditAppealResolutionSolutionDomain model =
+                new EditAppealResolutionSolutionDomain(response.isSuccessful(),
+                        editAppealSolutionResponse != null ?
+                                editAppealSolutionResponse.getSuccessMessage() :
+                                null);
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
-                model.setSuccess(true);
-            } else {
-                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                if (response.body().isNullData()) {
+                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                    } else {
+                        throw new ErrorMessageException(DEFAULT_ERROR);
+                    }
                 } else {
-                    throw new ErrorMessageException(DEFAULT_ERROR);
+                    model.setSuccess(true);
                 }
             }
         } else {

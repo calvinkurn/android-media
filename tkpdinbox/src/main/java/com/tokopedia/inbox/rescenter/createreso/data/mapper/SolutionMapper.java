@@ -57,12 +57,14 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
                         mappingFreeReturnDomain(solutionResponseResponse.getFreeReturn()) : null);
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
-                model.setSuccess(true);
-            } else {
-                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                if (response.body().isNullData()) {
+                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                    } else {
+                        throw new ErrorMessageException(DEFAULT_ERROR);
+                    }
                 } else {
-                    throw new ErrorMessageException(DEFAULT_ERROR);
+                    model.setSuccess(true);
                 }
             }
         } else {

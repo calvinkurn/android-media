@@ -213,6 +213,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
     @Override
     public void errorEditSolution(String error) {
+        hideLoading();
         NetworkErrorHelper.showSnackbar(getActivity(), error);
 
     }
