@@ -1,7 +1,9 @@
 package com.tokopedia.ride.bookingride.di;
 
 import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
+import com.tokopedia.ride.bookingride.view.activity.AddCreditCardActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.bookingride.view.fragment.AddCreditCardFragment;
 import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
 import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
@@ -28,4 +30,6 @@ public interface BookingRideComponent {
     void inject(ApplyPromoFragment applyPromoFragment);
 
     void inject(PlaceAutocompleteFragment placeAutocompleteFragment);
+
+    void inject(AddCreditCardFragment addCreditCardFragment);
 }

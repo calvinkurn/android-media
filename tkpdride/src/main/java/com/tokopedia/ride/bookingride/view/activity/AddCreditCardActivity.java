@@ -1,0 +1,78 @@
+package com.tokopedia.ride.bookingride.view.activity;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.view.fragment.AddCreditCardFragment;
+import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
+import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+
+public class AddCreditCardActivity extends BaseActivity implements ApplyPromoFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
+    private RideComponent rideComponent;
+
+    public static Intent getCallingActivity(Activity activity) {
+        Intent intent = new Intent(activity, AddCreditCardActivity.class);
+        return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_credit_card);
+        setupToolbar();
+        AddCreditCardFragment fragment = AddCreditCardFragment.newInstance();
+        replaceFragment(R.id.fl_container, fragment);
+    }
+
+    private void replaceFragment(int containerViewId, Fragment fragment) {
+        if (!isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(containerViewId, fragment);
+            fragmentTransaction.commit();
+        }
+    }
+
+    private void setupToolbar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            mToolbar.setTitle(R.string.apply_promo_toolbar_title);
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            invalidateOptionsMenu();
+        }
+    }
+
+    @Override
+    public void openWebView(String url) {
+        String seamlessURL = URLGenerator.generateURLSessionLogin(
+                (Uri.encode(url)),
+                this
+        );
+        Intent intent = TokoCashWebViewActivity.getCallingIntent(this, seamlessURL);
+        startActivity(intent);
+    }
+
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null)
+            initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+    }
+}

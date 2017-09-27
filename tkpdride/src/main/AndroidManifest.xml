@@ -63,6 +63,10 @@
             android:name=".ontrip.view.TopupTokoCashChangeDestination"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
 
+        <activity
+            android:name=".bookingride.view.activity.AddCreditCardActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+
         <service android:name=".ontrip.view.service.ActivityRecognizedService"></service>
     </application>
 

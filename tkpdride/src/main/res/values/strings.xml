@@ -158,4 +158,11 @@
     <string name="change_destination_insufficient_balance_message">Please topup your Tokocash to\nchange your destination</string>
     <string name="add_tokocash">Add TokoCash</string>
     <string name="change_destination_insufficient_balance_screen_title">Insufficient TokoCash</string>
+    <string name="label_card_number">Card Number</string>
+    <string name="hint_pilih_salah_satu">Pilih Salah Satu</string>
+    <string name="label_expiration_date">Expiration Date</string>
+    <string name="hint_expiration_date">MM/YY</string>
+    <string name="label_cvv">CVV</string>
+    <string name="hint_cvv">123</string>
+    <string name="label_country">Country</string>
 </resources>
