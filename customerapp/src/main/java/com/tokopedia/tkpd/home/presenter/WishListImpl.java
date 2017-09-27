@@ -492,6 +492,10 @@ public class WishListImpl implements WishList {
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "onError: ", e);
+            if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
+                wishListView.displayPull(false);
+            }
+            wishListView.displayErrorNetwork(false);
         }
 
         @Override
