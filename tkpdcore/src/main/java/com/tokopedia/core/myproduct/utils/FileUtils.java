@@ -14,6 +14,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,6 +30,8 @@ import java.util.Random;
 public class FileUtils {
 
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
+    public static final String CROP_TEMP = "crop_temp";
+    public static final String JPG = ".jpg";
 
     /**
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/
@@ -98,6 +101,71 @@ public class FileUtils {
         return null;
     }
 
+    public static File writeTempStateStoreBitmap(Context context, Bitmap bitmap) {
+        try {
+            File file = File.createTempFile(CROP_TEMP + (System.currentTimeMillis() / 1000L), JPG, context.getCacheDir());
+            writeBitmapToUri(context, bitmap, Uri.fromFile(file), Bitmap.CompressFormat.JPEG, 95);
+            return file;
+        } catch (Exception e) {
+            Log.w("AIC", "Failed to write bitmap to temp file for image-cropper save instance state", e);
+            return null;
+        }
+    }
+
+    /**
+     * Write given bitmap to a temp file.
+     * If file already exists no-op as we already saved the file in this session.
+     * Uses JPEG 95% compression.
+     *
+     * @param uri the uri to write the bitmap to, if null
+     * @return the uri where the image was saved in, either the given uri or new pointing to temp file.
+     */
+    public static Uri writeTempStateStoreBitmap(Context context, Bitmap bitmap, Uri uri) {
+        try {
+            boolean needSave = true;
+            if (uri == null) {
+                uri = Uri.fromFile(File.createTempFile(CROP_TEMP + (System.currentTimeMillis() / 1000L), JPG, context.getCacheDir()));
+            } else if (new File(uri.getPath()).exists()) {
+                needSave = false;
+            }
+            if (needSave) {
+                writeBitmapToUri(context, bitmap, uri, Bitmap.CompressFormat.JPEG, 95);
+            }
+            return uri;
+        } catch (Exception e) {
+            Log.w("AIC", "Failed to write bitmap to temp file for image-cropper save instance state", e);
+            return null;
+        }
+    }
+
+    /**
+     * Write the given bitmap to the given uri using the given compression.
+     */
+    public static void writeBitmapToUri(Context context, Bitmap bitmap, Uri uri, Bitmap.CompressFormat compressFormat, int compressQuality) throws FileNotFoundException {
+        OutputStream outputStream = null;
+        try {
+            outputStream = context.getContentResolver().openOutputStream(uri);
+            bitmap.compress(compressFormat, compressQuality, outputStream);
+        } finally {
+            closeSafe(outputStream);
+        }
+    }
+
+    /**
+     * Close the given closeable object (Stream) in a safe way: check if it is null and catch-log
+     * exception thrown.
+     *
+     * @param closeable the closable object to close
+     */
+    private static void closeSafe(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
     @NonNull
     private static File getTkpdCacheFile(String fileName){
         String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -126,14 +194,30 @@ public class FileUtils {
         }
     }
 
-    public static String getRealPathFromURI(Context context, Uri uri) {
+    public static String getTkpdPathFromURI(Context context, Uri uri) {
         InputStream is = null;
         if (uri.getAuthority() != null) {
             try {
                 is = context.getContentResolver().openInputStream(uri);
+                String path = getPath(context, uri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
-                return writeToTempImageAndGetPathUri(context, bmp);
-            } catch (FileNotFoundException e) {
+                bmp = ImageHandler.RotatedBitmap(bmp, path);
+                ByteArrayOutputStream bao = new ByteArrayOutputStream();
+                byte[] bytes;
+                if (bmp != null) {
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+                    bytes = bao.toByteArray();
+                    String fileName = FileUtils.generateUniqueFileName(path);
+                    File file = writeImageToTkpdPath(bytes,fileName);
+                    if (file!= null) {
+                        return file.getAbsolutePath();
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -204,7 +288,17 @@ public class FileUtils {
     }
 
     public static byte[] compressImage(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
+        Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        if (tempPicToUpload != null) {
+            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, compressionQuality, bao);
+            return bao.toByteArray();
+        }
+        return null;
+    }
 
+
+    public static Bitmap compressImageToBitmap(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         BitmapFactory.Options checksize = new BitmapFactory.Options();
@@ -213,8 +307,7 @@ public class FileUtils {
         BitmapFactory.decodeFile(imagePathToCompress, checksize);
         options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
         Bitmap tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        Bitmap tempPicToUpload = null;
+        Bitmap tempPicToUpload;
         if (tempPic != null) {
             try {
                 tempPic = ImageHandler.RotatedBitmap(tempPic, imagePathToCompress);
@@ -226,8 +319,7 @@ public class FileUtils {
             } else {
                 tempPicToUpload = tempPic;
             }
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, compressionQuality, bao);
-            return bao.toByteArray();
+            return tempPicToUpload;
         }
         return null;
     }

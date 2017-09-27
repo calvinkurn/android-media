@@ -2,6 +2,7 @@ package com.tokopedia.seller.myproduct;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -82,6 +83,7 @@ import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
@@ -250,7 +252,7 @@ public class ManageProduct extends TkpdActivity implements
         return AppScreen.SCREEN_MANAGE_PROD;
     }
 
-    protected int getLayoutResource (){
+    protected int getLayoutResource() {
         return R.layout.activity_manage_product;
     }
 
@@ -350,7 +352,7 @@ public class ManageProduct extends TkpdActivity implements
 
     }
 
-    protected void onFabMenuItemClicked(int menuItemId){
+    protected void onFabMenuItemClicked(int menuItemId) {
         if (menuItemId == R.id.action_gallery) {
             ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
         } else if (menuItemId == R.id.action_camera) {
@@ -560,6 +562,7 @@ public class ManageProduct extends TkpdActivity implements
         // located on top right of the Product Settings page.
         return new AbsListViewScrollDetector() {
             ViewGroup fabParent;
+
             @Override
             public void onScrollUp() {
                 if (fabAddProduct.isShown()) {
@@ -570,7 +573,7 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public void onScrollDown() {
                 if (fabParent == null) {
-                    fabParent = (ViewGroup)fabAddProduct.getParent();
+                    fabParent = (ViewGroup) fabAddProduct.getParent();
                 }
                 if (!fabAddProduct.isShown() || fabAddProduct.getTop() >= fabParent.getMeasuredHeight()) {
                     fabAddProduct.show();
@@ -1560,36 +1563,48 @@ public class ManageProduct extends TkpdActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-            @Override
-            public void onSuccess(ArrayList<String> imageUrls) {
-                ProductAddActivity.start(ManageProduct.this,imageUrls);
+        switch (requestCode) {
+            case ImageEditorActivity.REQUEST_CODE: {
+                if (resultCode == Activity.RESULT_OK && data!= null && data.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
+                    ProductAddActivity.start(ManageProduct.this,
+                            data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH));
+                }
             }
+            break;
+            default: {
+                ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
+                    @Override
+                    public void onSuccess(ArrayList<String> imageUrls) {
+                        ImageEditorActivity.start(ManageProduct.this, imageUrls);
+                    }
 
-            @Override
-            public void onSuccess(String path, int position) {
-                ArrayList<String> imageUrls = new ArrayList<>();
-                imageUrls.add(path);
-                ProductAddActivity.start(ManageProduct.this,imageUrls);
+                    @Override
+                    public void onSuccess(String path, int position) {
+                        ArrayList<String> imageUrls = new ArrayList<>();
+                        imageUrls.add(path);
+                        ImageEditorActivity.start(ManageProduct.this, imageUrls);
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+                        Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public Context getContext() {
+                        return ManageProduct.this;
+                    }
+                }, requestCode, resultCode, data);
+
+                if (resultCode == RESULT_OK) {
+                    IsAllowShop = "1";
+                    ClearData();
+                }
             }
-
-            @Override
-            public void onFailed(String message) {
-                Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public Context getContext() {
-                return ManageProduct.this;
-            }
-        }, requestCode, resultCode, data);
-
-
-        if (resultCode == RESULT_OK) {
-            IsAllowShop = "1";
-            ClearData();
+            break;
         }
+
+
     }
 
     @Override

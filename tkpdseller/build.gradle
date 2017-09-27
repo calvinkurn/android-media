@@ -131,6 +131,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.chips
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
     compile rootProject.ext.miscDependencies.loaderviewlibrary
+    compile rootProject.ext.miscDependencies.imagecropper
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

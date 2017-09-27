@@ -2,7 +2,6 @@ package com.tokopedia.sellerapp.utils;
 
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.gm.statistic.constant.StatisticConstant;
 
 import java.util.ArrayList;
 import java.util.List;
