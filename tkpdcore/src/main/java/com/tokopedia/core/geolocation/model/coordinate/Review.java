@@ -17,13 +17,13 @@ public class Review {
     private String language;
     @SerializedName("rating")
     @Expose
-    private Integer rating;
+    private int rating;
     @SerializedName("text")
     @Expose
     private String text;
     @SerializedName("time")
     @Expose
-    private Integer time;
+    private int time;
 
     public String getAuthorName() {
         return authorName;
@@ -49,11 +49,11 @@ public class Review {
         this.language = language;
     }
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -65,11 +65,11 @@ public class Review {
         this.text = text;
     }
 
-    public Integer getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(Integer time) {
+    public void setTime(int time) {
         this.time = time;
     }
 

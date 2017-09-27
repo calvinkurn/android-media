@@ -346,26 +346,6 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         retrofitInteractor.generateLatLng(context,
                 AuthUtil.generateParamsNetwork(context, param),
                 latLongListener());
-        //PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeID);
-
-        //TODO move all listener from here to getLatLongListener
-        /*placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-            @Override
-            public void onResult(PlaceBuffer places) {
-                if (!places.getStatus().isSuccess()) {
-
-                    Log.d(TAG, "Place query did not complete.\n" +
-                            "Error: " + places.getStatus().toString());
-
-                    view.toastMessage("ERROR GOOGLE API CONNECTION");
-                } else {
-
-                    Place place = places.get(0);
-                    view.moveMap(place.getLatLng());
-                }
-                places.release();
-            }
-        });*/
     }
 
     @Override

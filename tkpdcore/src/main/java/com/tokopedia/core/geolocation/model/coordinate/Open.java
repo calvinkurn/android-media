@@ -8,16 +8,16 @@ public class Open {
 
     @SerializedName("day")
     @Expose
-    private Integer day;
+    private int day;
     @SerializedName("time")
     @Expose
     private String time;
 
-    public Integer getDay() {
+    public int getDay() {
         return day;
     }
 
-    public void setDay(Integer day) {
+    public void setDay(int day) {
         this.day = day;
     }
 

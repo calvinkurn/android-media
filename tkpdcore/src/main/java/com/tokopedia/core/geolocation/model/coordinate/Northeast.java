@@ -8,24 +8,24 @@ public class Northeast {
 
     @SerializedName("lat")
     @Expose
-    private Integer lat;
+    private int lat;
     @SerializedName("lng")
     @Expose
-    private Integer lng;
+    private int lng;
 
-    public Integer getLat() {
+    public int getLat() {
         return lat;
     }
 
-    public void setLat(Integer lat) {
+    public void setLat(int lat) {
         this.lat = lat;
     }
 
-    public Integer getLng() {
+    public int getLng() {
         return lng;
     }
 
-    public void setLng(Integer lng) {
+    public void setLng(int lng) {
         this.lng = lng;
     }
 

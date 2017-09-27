@@ -12,10 +12,10 @@ public class Photo {
     private String photoReference;
     @SerializedName("height")
     @Expose
-    private Integer height;
+    private int height;
     @SerializedName("width")
     @Expose
-    private Integer width;
+    private int width;
     @SerializedName("html_attributions")
     @Expose
     private List<String> htmlAttributions = null;
@@ -28,19 +28,19 @@ public class Photo {
         this.photoReference = photoReference;
     }
 
-    public Integer getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
-    public Integer getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setWidth(Integer width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
