@@ -210,7 +210,11 @@ public class SolutionListFragment extends BaseDaggerFragment
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.initResultViewModel(resultViewModel);
+                if (isEditAppeal) {
+                    presenter.initEditAppeal(editAppealSolutionModel);
+                } else {
+                    presenter.initResultViewModel(resultViewModel);
+                }
             }
         });
     }
