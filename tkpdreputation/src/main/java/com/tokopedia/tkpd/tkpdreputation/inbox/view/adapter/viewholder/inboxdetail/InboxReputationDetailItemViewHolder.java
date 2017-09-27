@@ -175,6 +175,7 @@ public class InboxReputationDetailItemViewHolder extends
             } else {
                 seeReplyText.setVisibility(View.GONE);
                 replyArrow.setVisibility(View.GONE);
+                sellerReplyLayout.setVisibility(View.GONE);
             }
 
 
@@ -196,7 +197,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     }
 
-    private void setSellerReply(InboxReputationDetailItemViewModel element) {
+    private void setSellerReply(final InboxReputationDetailItemViewModel element) {
         seeReplyText.setVisibility(View.VISIBLE);
         replyArrow.setVisibility(View.VISIBLE);
 
@@ -223,10 +224,25 @@ public class InboxReputationDetailItemViewHolder extends
             replyOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    PopupMenu popup = new PopupMenu(context, v);
-//                    popup.getMenu().add(1, R.id.menu_delete, 1,
-//                            MainApplication.getAppContext()
-//                            .getString(R.string.menu_delete));
+                    final PopupMenu popup = new PopupMenu(context, v);
+                    popup.getMenu().add(1, R.id.menu_delete, 1,
+                            MainApplication.getAppContext()
+                                    .getString(R.string.menu_delete));
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getItemId() == R.id.menu_delete) {
+                                viewListener.onDeleteReviewResponse(element);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    });
+
+                    popup.show();
+
                 }
             });
         } else

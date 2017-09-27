@@ -54,4 +54,9 @@ public interface ReputationApi {
     @POST(TkpdBaseURL.Reputation.PATH_REPORT_REVIEW)
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> reportReview(@FieldMap Map<String, Object> params);
+
+    @POST(TkpdBaseURL.Reputation.PATH_DELETE_REVIEW_RESPONSE)
+    @FormUrlEncoded
+    Observable<Response<TkpdResponse>> deleteReviewResponse(@FieldMap TKPDMapParam<String,
+            Object> params);
 }

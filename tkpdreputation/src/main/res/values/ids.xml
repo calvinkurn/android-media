@@ -2,5 +2,7 @@
 <resources>
     <item name="menu_edit" type="id">101</item>
     <item name="menu_report" type="id">102</item>
+    <item name="menu_delete" type="id">103</item>
+
 
 </resources>

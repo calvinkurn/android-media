@@ -80,5 +80,6 @@
     <string name="deadline_review">Batas Penilaian</string>
     <string name="see_reply">Lihat Balasan</string>
     <string name="close_reply">Tutup Balasan</string>
+    <string name="menu_delete">Hapus</string>
 
 </resources>

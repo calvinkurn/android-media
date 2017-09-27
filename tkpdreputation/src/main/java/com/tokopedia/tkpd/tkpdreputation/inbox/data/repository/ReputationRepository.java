@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReportReviewDomain;
@@ -43,5 +44,6 @@ public interface ReputationRepository {
 
     Observable<FavoriteShopDomain> favoriteShop(RequestParams requestParams);
 
+    Observable<DeleteReviewResponseDomain> deleteReviewResponse(RequestParams requestParams);
 
 }

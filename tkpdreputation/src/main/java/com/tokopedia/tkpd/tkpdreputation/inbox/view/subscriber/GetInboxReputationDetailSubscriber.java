@@ -112,6 +112,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     private Visitable convertToInboxReputationDetailItemViewModel(
             ReviewDomain inboxDomain, ReviewItemDomain detailDomain) {
         return new InboxReputationDetailItemViewModel(
+                inboxDomain.getReputationId(),
                 String.valueOf(detailDomain.getProductData().getProductId()),
                 detailDomain.getProductData().getProductName(),
                 detailDomain.getProductData().getProductImageUrl(),

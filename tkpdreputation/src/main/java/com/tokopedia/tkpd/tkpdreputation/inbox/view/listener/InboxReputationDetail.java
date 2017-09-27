@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
@@ -65,6 +66,12 @@ public interface InboxReputationDetail {
         void onErrorFavoriteShop(String errorMessage);
 
         void onSuccessFavoriteShop();
+
+        void onDeleteReviewResponse(InboxReputationDetailItemViewModel element);
+
+        void onErrorDeleteReviewResponse(String errorMessage);
+
+        void onSuccessDeleteReviewResponse();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -76,5 +83,8 @@ public interface InboxReputationDetail {
         void checkShopFavorited(int shopId);
 
         void onFavoriteShopClicked(int shopId);
+
+        void deleteReviewResponse(String reviewId, String productId, String shopId, String
+                reputationId);
     }
 }

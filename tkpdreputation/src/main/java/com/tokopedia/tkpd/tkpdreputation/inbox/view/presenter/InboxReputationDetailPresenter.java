@@ -3,10 +3,12 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.DeleteReviewResponseSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.FavoriteShopSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationDetailSubscriber;
@@ -28,6 +30,7 @@ public class InboxReputationDetailPresenter
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
     private final CheckShopFavoritedUseCase checkShopFavoritedUseCase;
     private final FavoriteShopUseCase favoriteShopUseCase;
+    private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
     private InboxReputationDetail.View viewListener;
 
     @Inject
@@ -36,11 +39,13 @@ public class InboxReputationDetailPresenter
             SendSmileyReputationUseCase sendSmileyReputationUseCase,
             CheckShopFavoritedUseCase checkShopFavoritedUseCase,
             FavoriteShopUseCase favoriteShopUseCase,
+            DeleteReviewResponseUseCase deleteReviewResponseUseCase,
             SessionHandler sessionHandler) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
         this.checkShopFavoritedUseCase = checkShopFavoritedUseCase;
         this.favoriteShopUseCase = favoriteShopUseCase;
+        this. deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -89,6 +94,17 @@ public class InboxReputationDetailPresenter
         favoriteShopUseCase.execute(FavoriteShopUseCase.getParam(shopId,
                 SRC_INBOX_REPUTATION_DETAIL),new
                 FavoriteShopSubscriber(viewListener));
+    }
+
+    @Override
+    public void deleteReviewResponse(String reviewId, String productId, String shopId, String
+            reputationId) {
+        viewListener.showLoadingDialog();
+        deleteReviewResponseUseCase.execute(DeleteReviewResponseUseCase.getParam(
+                reviewId,
+                productId,
+                shopId,
+                reputationId), new DeleteReviewResponseSubscriber(viewListener));
     }
 
     public void refreshPage(String reputationId, int tab) {

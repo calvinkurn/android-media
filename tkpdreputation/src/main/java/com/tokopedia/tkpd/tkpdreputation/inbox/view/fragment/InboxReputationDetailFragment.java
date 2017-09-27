@@ -28,6 +28,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
@@ -372,6 +373,25 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 adapter.getHeader().getRevieweeBadgeSellerViewModel().getIsFavorited() == 1 ? 0 : 1
         );
         adapter.notifyItemChanged(0);
+    }
+
+    @Override
+    public void onDeleteReviewResponse(InboxReputationDetailItemViewModel element) {
+        presenter.deleteReviewResponse(element.getReviewId(),
+                element.getProductId(),
+                String.valueOf(element.getShopId()),
+                String.valueOf(element.getReputationId())
+        );
+    }
+
+    @Override
+    public void onErrorDeleteReviewResponse(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessDeleteReviewResponse() {
+        refreshPage();
     }
 
     @Override
