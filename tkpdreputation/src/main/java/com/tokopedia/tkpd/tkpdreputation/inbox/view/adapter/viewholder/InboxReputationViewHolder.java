@@ -28,9 +28,8 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private final InboxReputation.View viewListener;
 
     private TextView textDeadline;
-    private View deadline;
+    private ImageView deadline;
     private TextView invoice;
-    private ImageView notification;
     private ImageView avatar;
     private TextView name;
     private ReputationView reputation;
@@ -44,9 +43,8 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
         textDeadline = (TextView) itemView.findViewById(R.id.deadline_text);
-        deadline = itemView.findViewById(R.id.deadline);
+        deadline = (ImageView) itemView.findViewById(R.id.icon_deadline);
         invoice = (TextView) itemView.findViewById(R.id.invoice);
-        notification = (ImageView) itemView.findViewById(R.id.notification);
         avatar = (ImageView) itemView.findViewById(R.id.avatar);
         name = (TextView) itemView.findViewById(R.id.name);
         reputation = (ReputationView) itemView.findViewById(R.id.reputation);
@@ -66,7 +64,6 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         ImageHandler.LoadImage(avatar, element.getRevieweePicture());
         setDeadline(element);
         setReputation(element);
-        setNotification(element.getReputationDataViewModel().isShowBookmark());
         setAction(element);
 
         action.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +103,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
             return newSdf.format(sdf.parse(createTime));
         } catch (ParseException e) {
             e.printStackTrace();
-            return "";
+            return createTime;
         }
     }
 
@@ -114,13 +111,6 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private void setAction(InboxReputationItemViewModel inboxReputationItemViewModel) {
         action.setText(inboxReputationItemViewModel.getReputationDataViewModel()
                 .getActionMessage());
-    }
-
-    private void setNotification(boolean showBookmark) {
-        if (showBookmark)
-            notification.setVisibility(View.VISIBLE);
-        else
-            notification.setVisibility(View.GONE);
     }
 
     private void setReputation(InboxReputationItemViewModel element) {
@@ -142,9 +132,12 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private void setDeadline(InboxReputationItemViewModel element) {
         if (element.getReputationDataViewModel().isShowLockingDeadline()) {
             deadline.setVisibility(View.VISIBLE);
-            textDeadline.setText(getTextDeadline(element));
+            textDeadline.setVisibility(View.VISIBLE);
+            setIconDeadline(deadline, element.getReputationDaysLeft());
         } else {
-            deadline.setVisibility(View.GONE);
+            deadline.setVisibility(View.INVISIBLE);
+            textDeadline.setVisibility(View.INVISIBLE);
+
         }
     }
 
@@ -153,4 +146,19 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                 + " " + element.getReputationDaysLeft() + " " +
                 MainApplication.getAppContext().getString(R.string.deadline_suffix);
     }
+
+    private void setIconDeadline(ImageView deadline, String reputationDaysLeft) {
+        switch (reputationDaysLeft) {
+            case "1":
+                ImageHandler.loadImageWithId(deadline, R.drawable.one_day_left);
+                break;
+            case "2":
+                ImageHandler.loadImageWithId(deadline, R.drawable.two_day_left);
+                break;
+            case "3":
+                ImageHandler.loadImageWithId(deadline, R.drawable.three_day_left);
+                break;
+        }
+    }
+
 }

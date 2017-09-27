@@ -24,8 +24,13 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageA
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import static com.moengage.pushbase.push.MoEngageNotificationUtils.getTime;
 
 /**
  * @author by nisie on 8/19/17.
@@ -39,6 +44,8 @@ public class InboxReputationDetailItemViewHolder extends
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
 
     private final InboxReputationDetail.View viewListener;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
+    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM ", Locale.getDefault());
 
     TextView productName;
     ImageView productAvatar;
@@ -118,7 +125,7 @@ public class InboxReputationDetailItemViewHolder extends
             viewReview.setVisibility(View.VISIBLE);
             giveReview.setVisibility(View.GONE);
             reviewerName.setText(getReviewerNameText(element.getReviewerName()));
-            reviewTime.setText(element.getReviewTime());
+            reviewTime.setText(getFormattedTime(element.getReviewTime()));
             reviewStar.setRating(element.getReviewStar());
             review.setText(getReview(element.getReview()));
             review.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +153,15 @@ public class InboxReputationDetailItemViewHolder extends
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
 
+    }
+
+    private String getFormattedTime(String reviewTime) {
+        try {
+            return newSdf.format(sdf.parse(reviewTime.replace("WIB", "")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return reviewTime;
+        }
     }
 
     private Spanned getReview(String review) {
