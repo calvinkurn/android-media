@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { Text } from '../common/TKPText'
 import Picker from '../components/product/EtalaseSelectPopUp'
-import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList } from '../actions/index'
+import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList, fetchShopId } from '../actions/index'
 import Product from '../components/product/Product'
 import SearchContainer from '../containers/SearchContainer'
 
@@ -41,6 +41,7 @@ class VisibleProductList extends Component {
     const { dispatch } = this.props
     const { start, rows } = this.props.products.pagination
     const queryText = this.props.queryText
+    dispatch(fetchShopId())
     dispatch(fetchEtalase(1987772))
     this.props.dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
   }
@@ -75,6 +76,7 @@ class VisibleProductList extends Component {
     const refreshing = this.props.products.refreshing
     const selectedEtalaseId = this.props.etalases.selected
     const selectedEtalase = etalases.filter(e => e.id == selectedEtalaseId)
+    const { shopId } = this.props
 
     return (
       <View style={styles.container}>
@@ -86,7 +88,7 @@ class VisibleProductList extends Component {
           options={etalases} />
         <View style={styles.productListHeader}>
           <View style={{ width: '55%', }}>
-            <SearchContainer />
+            <SearchContainer shopId={shopId} />
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', width: '45%', justifyContent: 'flex-end' }}>
             <Text style={styles.etalaseText}>Etalase: </Text>
@@ -124,10 +126,12 @@ const mapStateToProps = state => {
   const products = state.products
   const etalases = state.etalase
   const queryText = state.search.query
+  const shopId = state.shop.shopId
   return {
     products,
     etalases,
-    queryText
+    queryText,
+    shopId
   }
 }
 

@@ -20,7 +20,8 @@ import {
   FETCH_BANK_FUlFILLED,
   FETCH_EMI_FUlFILLED,
   MAKE_PAYMENT_FUlFILLED,
-  FETCH_SHOP_NAME
+  FETCH_SHOP_NAME,
+  FETCH_SHOP_ID,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -28,14 +29,20 @@ import { icons } from '../components/icon/index'
 
 
 const shop = (state = {
-  shopName: ''
+  shopName: '',
+  shopId: 0,
 }, action) => {
   switch (action.type) {
     case `${FETCH_SHOP_NAME}_${FULFILLED}`:
       return {
         shopName: action.payload
       }
-    
+    case `${FETCH_SHOP_ID}_${FULFILLED}`:
+      console.log('FETCH_SHOP_ID',action.payload)
+      return {
+        ...state,
+        shopId: action.payload
+      }
     default:
       return state
   }
@@ -121,10 +128,11 @@ const etalase = (state = {
     case `${FETCH_ETALASE}_${PENDING}`:
       return state
     case `${FETCH_ETALASE}_${FULFILLED}`:
-      const etalases = action.payload.data.data.map(e => ({
-        id: e.menu_id,
-        name: e.menu_name,
-        alias: e.menu_alias,
+      const data = action.payload.data.list || []
+      const etalases = data.map(e => ({
+        id: e.etalaseId,
+        name: e.etalaseName,
+        alias: e.etalaseAlias,
       }))
 
       return {

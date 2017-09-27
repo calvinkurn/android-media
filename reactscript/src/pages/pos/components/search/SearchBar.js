@@ -78,7 +78,7 @@ class SearchBar extends Component {
             underlineColorAndroid='transparent'
             onSubmitEditing={
               () => {
-                this.props.onSubmit(this.props.queryText, this.props.etalaseId)
+                this.props.onSubmit(this.props.queryText, this.props.etalaseId, this.props.shopId)
                 this.toggleResults(false)
               }
             }
@@ -90,7 +90,7 @@ class SearchBar extends Component {
                 } else {
                   this.toggleResults(true)
                   this.props.onSearchType(text)
-                  this.props.onSearch(text, this.props.etalaseId)
+                  this.props.onSearch(text, this.props.etalaseId, this.props.shopId)
                 }
               }
             }
