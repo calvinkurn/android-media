@@ -1,28 +1,35 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
 import { NavigationModule } from 'NativeModules'
 import { Text } from '../../common/TKPText'
+import { connect } from 'react-redux'
+import { fetchShopName } from '../../actions/index'
 
+class Ticker extends Component{
+  componentDidMount(){
+    this.props.dispatch(fetchShopName())
+  }
 
-const Ticker = () => {
-  return (
-    <View style={styles.container}>
-      <View>
-        <View style={styles.imageWrapper}>
-        <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/toped.png' }} style={styles.imageIcon} />
+  render() {
+    return (
+      <View style={styles.container}>
+        <View>
+          <View style={styles.imageWrapper}>
+          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/toped.png' }} style={styles.imageIcon} />
+          </View>
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={{ fontSize: 13 }}>Selamat Datang di {this.props.shopName}</Text>
+          <View style={styles.singleLineTextContainer}>
+            <Text style={styles.textStyle}>Nikmati Cicilan 0% Gratis Biaya Admin,</Text>
+            <TouchableOpacity onPress={() => NavigationModule.navigate('posapp://installment', '')}>
+              <Text style={styles.linkText}> Cek Sekarang</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-      <View style={styles.textContainer}>
-        <Text style={{ fontSize: 13 }}>Selamat Datang di (Shop name here)</Text>
-        <View style={styles.singleLineTextContainer}>
-          <Text style={styles.textStyle}>Nikamati Cicilan 0% Gratis Biaya Admin,</Text>
-          <TouchableOpacity onPress={() => NavigationModule.navigate('posapp://installment', '')}>
-            <Text style={styles.linkText}> Cek Sekarang</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  )
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -66,4 +73,10 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Ticker
+const mapStateToProps = (state) => {
+  return {
+    shopName: state.shop.shopName
+  }
+}
+
+export default connect(mapStateToProps)(Ticker)

@@ -42,46 +42,6 @@ export default class POS extends Component {
   }
 
   render() {
-    // const navigationView = (
-    //   <View style={{ flex: 1, backgroundColor: '#fff' }}>
-    //     <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-    //     <TouchableNativeFeedback
-    //       onPress = {() => {
-    //         this.passwordPopup.show();
-    //         this.drawerPane.closeDrawer();
-    //       }}
-    //     >
-    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Riwayat Transaksi</Text>
-    //     </TouchableNativeFeedback>
-    //     <TouchableNativeFeedback
-    //       onPress = {() => {
-    //        this.props.navigation.navigate('BankSelection', {})
-    //       }}
-    //     >
-    //     <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Bank Selection</Text>
-    //     </TouchableNativeFeedback>
-    //     <TouchableNativeFeedback
-    //       onPress = {() => {
-    //        this.props.navigation.navigate('Payment', {})
-    //       }}
-    //     >
-    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment screen</Text>
-    //     </TouchableNativeFeedback>
-    //     <TouchableNativeFeedback
-    //       onPress = {() => {
-    //        this.props.navigation.navigate('PaymentProcessing', {})
-    //       }}
-    //     >
-    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Processing</Text>
-    //     </TouchableNativeFeedback>
-    //     <TouchableNativeFeedback
-    //       onPress = {() => {
-    //        this.props.navigation.navigate('PaymentInvoice', {})
-    //       }}
-    //     >
-    //         <Text style={[{fontSize: 20, fontWeight: 'bold', margin: 10 }]}>Payment Invoice</Text>
-    //     </TouchableNativeFeedback>
-    //   </View>)
     return (
         <View style={styles.container}>
           <Ticker />
@@ -91,40 +51,6 @@ export default class POS extends Component {
             ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} />
         </View>
     )
-    // return (
-    //   <DrawerLayoutAndroid
-    //     drawerWidth={Dimensions.get('window').width / 2}
-    //     drawerPosition={DrawerLayoutAndroid.positions.Left}
-    //     ref={(drawer) => { this.drawerPane = drawer; }}
-    //     renderNavigationView={() => navigationView}>
-    //     <View style={styles.container}>
-    //       <CartContainer
-    //         visible={this.state.cartOpen}
-    //         onBackPress={() => { this.setState({ cartOpen: false }) }} />
-    //       <ToolbarAndroid style={{ width: '100%', height: 60, backgroundColor: '#000' }}
-    //         navIcon={require('./img/icon-burgermenu.png')}
-    //         onIconClicked={this.onIconClick}
-    //         actions={[
-    //           {
-    //             title: 'Credit Card',
-    //             icon: require('./img/icon-CreditCards-Info.png'),
-    //             show: 'always'
-    //           },
-    //           {
-    //             title: 'Cart',
-    //             icon: require('./img/icon-Cart.png'),
-    //             show: 'always'
-    //           },]}
-    //         onActionSelected={this.onActionSelected}>
-    //       </ToolbarAndroid>
-    //       <Ticker />
-    //       <VisibleProductList />
-    //       <PasswordPopup
-    //       navigation={this.props.navigation}
-    //        ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} />
-    //     </View>
-    //   </DrawerLayoutAndroid>
-    // )
   }
 }
 const styles = StyleSheet.create({
