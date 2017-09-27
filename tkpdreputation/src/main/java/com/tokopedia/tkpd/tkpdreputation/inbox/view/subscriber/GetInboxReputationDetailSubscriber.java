@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -14,6 +15,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAtt
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewItemDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewResponseDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.UserReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
@@ -23,6 +26,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataView
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReputationBadgeViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewResponseViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
 
@@ -124,8 +128,23 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 detailDomain.isReviewIsSkippable(),
                 detailDomain.isReviewIsSkipped(),
                 detailDomain.getProductData().getShopId(),
-                viewListener.getTab()
+                viewListener.getTab(),
+                convertToReviewResponseViewModel(inboxDomain.getShopData(),
+                        detailDomain.getReviewData()
+                                .getReviewResponse())
         );
+    }
+
+    private ReviewResponseViewModel convertToReviewResponseViewModel(@Nullable ShopDataDomain shopData,
+                                                                     @Nullable ReviewResponseDomain
+                                                                             reviewResponse) {
+        if (reviewResponse != null && shopData != null)
+            return new ReviewResponseViewModel(
+                    reviewResponse.getResponseMessage(),
+                    reviewResponse.getResponseCreateTime().getDateTimeFmt1(),
+                    shopData.getShopName()
+            );
+        else return null;
     }
 
     private ArrayList<ImageAttachmentViewModel>

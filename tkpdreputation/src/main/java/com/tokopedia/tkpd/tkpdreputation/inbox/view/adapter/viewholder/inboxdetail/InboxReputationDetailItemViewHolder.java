@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewResponseViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,22 +32,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.moengage.pushbase.push.MoEngageNotificationUtils.getTime;
-
 /**
  * @author by nisie on 8/19/17.
  */
 
 public class InboxReputationDetailItemViewHolder extends
         AbstractViewHolder<InboxReputationDetailItemViewModel> {
+
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_item;
     private static final int MAX_CHAR = 50;
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
+    private static final String BY = "Oleh";
 
     private final InboxReputationDetail.View viewListener;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
     private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM ", Locale.getDefault());
+    boolean isReplyOpened = false;
 
     TextView productName;
     ImageView productAvatar;
@@ -59,6 +62,17 @@ public class InboxReputationDetailItemViewHolder extends
     View giveReview;
     Context context;
     ImageUploadAdapter adapter;
+
+    View helpfulLayout;
+    TextView helpfulText;
+    TextView seeReplyText;
+    ImageView replyArrow;
+
+    View sellerReplyLayout;
+    TextView sellerName;
+    TextView sellerReplyTime;
+    TextView sellerReply;
+    ImageView replyOverflow;
 
     public InboxReputationDetailItemViewHolder(View itemView,
                                                InboxReputationDetail.View viewListener) {
@@ -81,6 +95,17 @@ public class InboxReputationDetailItemViewHolder extends
         reviewAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         reviewAttachment.setAdapter(adapter);
+
+        helpfulLayout = itemView.findViewById(R.id.review_detail_helpful_layout);
+        helpfulText = (TextView) helpfulLayout.findViewById(R.id.helpful_text);
+        seeReplyText = (TextView) helpfulLayout.findViewById(R.id.see_reply_button);
+        replyArrow = (ImageView) helpfulLayout.findViewById(R.id.reply_chevron);
+
+        sellerReplyLayout = itemView.findViewById(R.id.seller_reply_layout);
+        sellerName = (TextView) itemView.findViewById(R.id.seller_reply_name);
+        sellerReplyTime = (TextView) itemView.findViewById(R.id.seller_reply_time);
+        sellerReply = (TextView) itemView.findViewById(R.id.seller_reply);
+        replyOverflow = (ImageView) itemView.findViewById(R.id.reply_overflow);
     }
 
     private ImageUploadAdapter.ProductImageListener onImageClicked() {
@@ -109,7 +134,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     @Override
     public void bind(final InboxReputationDetailItemViewModel element) {
-        productName.setText(element.getProductName());
+        productName.setText(MethodChecker.fromHtml(element.getProductName()));
         ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
 
         if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
@@ -121,10 +146,12 @@ public class InboxReputationDetailItemViewHolder extends
 
         if (!element.isReviewHasReviewed()) {
             viewReview.setVisibility(View.GONE);
+            helpfulLayout.setVisibility(View.GONE);
         } else {
             viewReview.setVisibility(View.VISIBLE);
             giveReview.setVisibility(View.GONE);
-            reviewerName.setText(getReviewerNameText(element.getReviewerName()));
+            reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element
+                    .getReviewerName())));
             reviewTime.setText(getFormattedTime(element.getReviewTime()));
             reviewStar.setRating(element.getReviewStar());
             review.setText(getReview(element.getReview()));
@@ -138,6 +165,19 @@ public class InboxReputationDetailItemViewHolder extends
                 }
             });
             setOverflowButton(element);
+
+            helpfulLayout.setVisibility(View.VISIBLE);
+            helpfulText.setText("Nanti diisi");
+
+            if (element.getReviewResponseViewModel() != null
+                    && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
+                setSellerReply(element);
+            } else {
+                seeReplyText.setVisibility(View.GONE);
+                replyArrow.setVisibility(View.GONE);
+            }
+
+
         }
 
         giveReview.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +193,63 @@ public class InboxReputationDetailItemViewHolder extends
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
 
+
+    }
+
+    private void setSellerReply(InboxReputationDetailItemViewModel element) {
+        seeReplyText.setVisibility(View.VISIBLE);
+        replyArrow.setVisibility(View.VISIBLE);
+
+        seeReplyText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleReply();
+            }
+        });
+        replyArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleReply();
+            }
+        });
+
+        ReviewResponseViewModel reviewResponseViewModel = element.getReviewResponseViewModel();
+        sellerName.setText(MethodChecker.fromHtml(getFormattedReplyName(reviewResponseViewModel
+                .getResponseBy())));
+        sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
+        sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
+        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            replyOverflow.setVisibility(View.VISIBLE);
+            replyOverflow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    PopupMenu popup = new PopupMenu(context, v);
+//                    popup.getMenu().add(1, R.id.menu_delete, 1,
+//                            MainApplication.getAppContext()
+//                            .getString(R.string.menu_delete));
+                }
+            });
+        } else
+            replyOverflow.setVisibility(View.GONE);
+    }
+
+    private void toggleReply() {
+        isReplyOpened = !isReplyOpened;
+        if (isReplyOpened) {
+            seeReplyText.setText(MainApplication.getAppContext().getText(R.string.close_reply));
+            replyArrow.setRotation(180);
+            sellerReplyLayout.setVisibility(View.VISIBLE);
+        } else {
+            seeReplyText.setText(MainApplication.getAppContext().getText(R.string.see_reply));
+            replyArrow.setRotation(0);
+            sellerReplyLayout.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    private String getFormattedReplyName(String responseBy) {
+        return BY + " <b>" + responseBy + "</b>";
     }
 
     private String getFormattedTime(String reviewTime) {

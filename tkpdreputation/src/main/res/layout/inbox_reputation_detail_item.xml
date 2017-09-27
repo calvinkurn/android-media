@@ -56,11 +56,6 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300"/>
-
     <RelativeLayout
         android:id="@+id/add_reply_review_layout"
         android:layout_width="match_parent"
@@ -68,7 +63,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/reply_icon"
@@ -94,4 +89,16 @@
             />
 
     </RelativeLayout>
+
+    <include
+        android:id="@+id/review_detail_helpful_layout"
+        layout="@layout/review_detail_helpful_layout"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <include
+        android:id="@+id/seller_reply_layout"
+        layout="@layout/seller_reply_layout"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </LinearLayout>

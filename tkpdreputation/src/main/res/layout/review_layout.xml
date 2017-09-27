@@ -69,7 +69,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_activity"
         android:layout_marginRight="@dimen/padding_activity"
-        android:layout_marginTop="@dimen/margin_small"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="7sp"
 

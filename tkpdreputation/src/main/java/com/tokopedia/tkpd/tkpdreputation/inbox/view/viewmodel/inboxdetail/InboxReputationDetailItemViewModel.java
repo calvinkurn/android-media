@@ -1,14 +1,11 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail;
 
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author by nisie on 8/19/17.
@@ -22,6 +19,7 @@ public class InboxReputationDetailItemViewModel implements
     private final boolean reviewIsEditable;
     private final boolean reviewIsSkippable;
     private final int shopId;
+    private final ReviewResponseViewModel reviewResponseViewModel;
     String productId;
     String productName;
     String productAvatar;
@@ -43,7 +41,9 @@ public class InboxReputationDetailItemViewModel implements
                                               boolean reviewIsSkippable,
                                               boolean reviewIsSkipped,
                                               int shopId,
-                                              int tab) {
+                                              int tab,
+                                              @Nullable ReviewResponseViewModel
+                                                      reviewResponseViewModel) {
         this.productId = productId;
         this.productName = productName;
         this.productAvatar = productAvatar;
@@ -59,6 +59,7 @@ public class InboxReputationDetailItemViewModel implements
         this.reviewIsSkippable = reviewIsSkippable;
         this.shopId = shopId;
         this.tab = tab;
+        this.reviewResponseViewModel = reviewResponseViewModel;
     }
 
     public String getReviewId() {
@@ -119,6 +120,10 @@ public class InboxReputationDetailItemViewModel implements
 
     public int getTab() {
         return tab;
+    }
+
+    public ReviewResponseViewModel getReviewResponseViewModel() {
+        return reviewResponseViewModel;
     }
 
     @Override

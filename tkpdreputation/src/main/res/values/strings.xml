@@ -78,5 +78,7 @@
     <string name="tips3_tips">Saya senang produknya dipaketkan dengan rapi dan tidak ada cacat. Recommended!</string>
     <string name="review_tips">Tips Menulis Produk</string>
     <string name="deadline_review">Batas Penilaian</string>
+    <string name="see_reply">Lihat Balasan</string>
+    <string name="close_reply">Tutup Balasan</string>
 
 </resources>

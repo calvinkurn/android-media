@@ -44,6 +44,7 @@ public class ErrorHandler {
             case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                 Log.d(TAG, getErrorInfo(code, SERVER_INFO);
                 listener.onServerError(;
+
                 break;
             case ResponseStatus.SC_FORBIDDEN:
                 Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO);
