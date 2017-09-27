@@ -26,7 +26,10 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.model.ClientNumber;
+import com.tokopedia.digital.widget.adapter.AutoCompleteTVAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -166,10 +169,19 @@ public class WidgetClientNumberView extends LinearLayout {
     }
 
     public void setDropdownAutoComplete(List<String> numberList) {
-        String[] numberAutoCompleteList = new String[numberList.size()];
-        numberAutoCompleteList = numberList.toArray(numberAutoCompleteList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(), R.layout.simple_spinner_tv_res, numberAutoCompleteList);
+//        String[] numberAutoCompleteList = new String[numberList.size()];
+//        numberAutoCompleteList = numberList.toArray(numberAutoCompleteList);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                getContext(), R.layout.simple_spinner_tv_res, numberAutoCompleteList);
+        List<ClientNumber> clientNumbers = new ArrayList<>();
+        ClientNumber clientNumber1 = new ClientNumber();
+        clientNumber1.setName("Rizky");
+        clientNumber1.setText("081322867354");
+        clientNumbers.add(clientNumber1);
+//        ClientNumber clientNumber1 = new ClientNumber();
+//        clientNumbers[1] = clientNumber1;
+        AutoCompleteTVAdapter adapter = new AutoCompleteTVAdapter(getContext(),
+                R.layout.item_autocomplete, clientNumbers);
 
         pulsaAutocompleteView.setAdapter(adapter);
         pulsaAutocompleteView.setThreshold(1);
