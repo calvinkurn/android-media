@@ -995,7 +995,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
-    <string name="title_payment_verification">Ubah Pembayaran</string>
+    <string name="title_payment_verification">Status Pembayaran</string>
     <string name="title_payment_status">Status Pembayaran</string>
     <string name="title_order_status">Status Pemesanan</string>
     <string name="title_receive_confirmation">Konfirmasi Penerimaan</string>
