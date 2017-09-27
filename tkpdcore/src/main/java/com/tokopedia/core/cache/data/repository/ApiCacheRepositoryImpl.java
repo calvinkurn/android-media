@@ -1,6 +1,7 @@
 package com.tokopedia.core.cache.data.repository;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -14,6 +15,8 @@ import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.var.TkpdCache;
+
+import org.w3c.dom.Text;
 
 import java.util.Collection;
 
@@ -29,7 +32,6 @@ import rx.functions.Func1;
 
 public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
-    private static final String TAG = "ApiCacheRepositoryImpl";
     private LocalCacheHandler localCacheHandler;
     private String versionName;
     private ApiCacheDataSource apiCacheDataSource;
@@ -41,21 +43,8 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
         this.apiCacheDataSource = apiCacheDataSource;
     }
 
-    /**
-     * this is for older class.
-     * removed if no longer used
-     */
-    public static void DeleteAllCache() {
-        deleteAllCacheData();
-        deleteAllWhiteLists();
-    }
-
     protected static void deleteAllCacheData() {
         SQLite.delete(CacheApiData.class).execute();
-    }
-
-    protected static void deleteAllWhiteLists() {
-        SQLite.delete(CacheApiWhitelist.class).execute();
     }
 
     @Override
@@ -98,22 +87,22 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
     @Override
     public Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-        return Observable.just(apiCacheDataSource.singleDelete(cacheApiWhiteListDomain));
+        return apiCacheDataSource.deleteWhiteList(cacheApiWhiteListDomain);
     }
 
     @Override
-    public Observable<Boolean> singleDataDelete(@Nullable final CacheApiDataDomain cacheApiDataDomain) {
-        return Observable.just(apiCacheDataSource.singleDataDelete(cacheApiDataDomain));
+    public Observable<Boolean> singleDataDelete(@Nullable CacheApiDataDomain cacheApiDataDomain) {
+        return apiCacheDataSource.deleteCachedData(cacheApiDataDomain);
     }
 
     @Override
-    public Observable<Boolean> isInWhiteList(final String host, final String path) {
+    public Observable<Boolean> isInWhiteList(String host, String path) {
         return Observable.just(apiCacheDataSource.isInWhiteList(host, path));
     }
 
     @Override
-    public Observable<CacheApiWhitelist> isInWhiteListRaw(final String host, final String path) {
-        return Observable.just(apiCacheDataSource.queryFromRaw(host, path));
+    public Observable<CacheApiWhitelist> isInWhiteListRaw(String host, String path) {
+        return Observable.just(apiCacheDataSource.getWhiteList(host, path));
     }
 
     @Override
@@ -124,13 +113,12 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
     @Override
     public Observable<Boolean> clearTimeout() {
-        apiCacheDataSource.clearTimeout();
-        return Observable.just(true);
+        return apiCacheDataSource.clearTimeout();
     }
 
     @Override
     public Observable<CacheApiData> queryDataFrom(String host, String path, String requestParam) {
-        return Observable.just(apiCacheDataSource.queryDataFrom(host, path, requestParam));
+        return apiCacheDataSource.getCachedData(host, path, requestParam);
     }
 
     @Override
