@@ -31,6 +31,11 @@ export const fetchShopName = () => ({
             .catch(err => console.log(err))
 })
 
+export const FETCH_SHOP_ID = 'FETCH_SHOP_ID'
+export const fetchShopId = () => ({
+  type: FETCH_SHOP_ID,
+  payload: SessionModule.getShopId()
+})
 
 export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
@@ -255,9 +260,9 @@ export const onSearchQueryType = (queryText) => {
 }
 
 export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
-export const fetchSearchProduct = (eId, queryText) => {
+export const fetchSearchProduct = (eId, queryText, shopId) => {
   const text = queryText.replace(' ', '+')
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=1987772&start=0&q=${text}`
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=${shopId}&start=0&q=${text}`
   
   const etalaseId = +eId || 0
   if (etalaseId) {
@@ -293,9 +298,9 @@ export const setSearchText = (q) => {
 }
 
 export const ON_SUBMIT_FETCH_SEARCH_PRODUCT = 'ON_SUBMIT_FETCH_SEARCH_PRODUCT'
-export const onSubmitFetchSearchProduct = (queryText, eId) => {
+export const onSubmitFetchSearchProduct = (queryText, eId, shopId) => {
   const text = queryText.replace(' ', '+')
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=1987772&start=0&q=${text}`
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=${shopId}&start=0&q=${text}`
   const etalaseId = +eId || 0
   if (etalaseId) {
     url += `&etalase=${etalaseId}`
