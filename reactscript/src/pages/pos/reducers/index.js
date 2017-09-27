@@ -32,7 +32,6 @@ const shop = (state = {
 }, action) => {
   switch (action.type) {
     case `${FETCH_SHOP_NAME}_${FULFILLED}`:
-      console.log(action.payload)
       return {
         shopName: action.payload
       }
