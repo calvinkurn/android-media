@@ -7,6 +7,7 @@ import android.app.Application;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
@@ -894,9 +895,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         );
-        navigateToActivityRequest(
-                contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
-        );
+        try {
+            navigateToActivityRequest(
+                    contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+            );
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.error_message_contact_not_found));
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
