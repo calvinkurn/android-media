@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { PosCacheModule, PaymentModule } from 'NativeModules'
+import { 
+  PosCacheModule, 
+  SessionModule,
+  PaymentModule 
+} from 'NativeModules'
 
 
 // ===================== Product List ======================= //
@@ -10,19 +14,31 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
     payload: PosCacheModule.getDataAll("PRODUCT")
              .then(response => {
                const jsonResponse = JSON.parse(response)
-               console.log(jsonResponse)
                return jsonResponse;
              })
              .catch(error => {})
   }
 }
 
+
+export const FETCH_SHOP_NAME = 'FETCH_SHOP_NAME'
+export const fetchShopName = () => ({
+  type: FETCH_SHOP_NAME,
+  payload: SessionModule.getShopName()
+            .then(res => {
+              return res
+            })
+            .catch(err => console.log(err))
+})
+
+
 export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
   type: FETCH_ETALASE,
   payload: PosCacheModule.getDataAll("ETALASE")
             .then(res => {
-                console.log(res)
+              const jsonResponse = JSON.parse(res)
+              return jsonResponse
             })
             .catch(err => console.log(err))
 })

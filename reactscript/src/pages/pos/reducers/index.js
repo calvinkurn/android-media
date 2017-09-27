@@ -19,10 +19,28 @@ import {
   FETCH_CART_FROM_CACHE,
   FETCH_BANK_FUlFILLED,
   FETCH_EMI_FUlFILLED,
-  MAKE_PAYMENT_FUlFILLED
+  MAKE_PAYMENT_FUlFILLED,
+  FETCH_SHOP_NAME
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
+
+
+
+const shop = (state = {
+  shopName: ''
+}, action) => {
+  switch (action.type) {
+    case `${FETCH_SHOP_NAME}_${FULFILLED}`:
+      console.log(action.payload)
+      return {
+        shopName: action.payload
+      }
+    
+    default:
+      return state
+  }
+}
 
 
 const products = (state = {
@@ -33,7 +51,7 @@ const products = (state = {
   },
   isFetching: false,
   refreshing: false,
-  canLoadMore: false,
+  canLoadMore: false
 }, action) => {
   switch (action.type) {
     case `${FETCH_PRODUCTS}_${PENDING}`:
@@ -42,14 +60,6 @@ const products = (state = {
         isFetching: true,
       }
     case `${FETCH_PRODUCTS}_${FULFILLED}`:
-      // console.log(action.payload)
-      // const products = action.payload.data.data.products || []
-      // const items = [...state.items, ...products]
-      // const nextUrl = action.payload.data.data.paging.uri_next
-      // const pagination = {
-      //   ...state.pagination,
-      //   start: items.length
-      // }
       const products = action.payload.data.list || []
       const items = [...state.items, ...products]
       const nextUrl = action.payload.data.paging.uri_next
@@ -476,7 +486,8 @@ const rootReducer = combineReducers({
   payment,
   search,
   paymentInvoice,
-  transactionHistory
+  transactionHistory,
+  shop
 })
 
 export default rootReducer
