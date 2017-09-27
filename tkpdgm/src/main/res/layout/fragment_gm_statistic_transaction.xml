@@ -114,8 +114,10 @@
 
                 <Button
                     android:id="@+id/button_see_top_ads"
-                    style="@style/TextView.Body1.Bold"
+                    style="@style/Button.Submit.White"
                     android:layout_width="match_parent"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
                     android:background="@drawable/rect_stroke_lighter_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
