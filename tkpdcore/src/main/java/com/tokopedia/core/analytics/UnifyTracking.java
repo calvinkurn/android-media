@@ -2411,35 +2411,6 @@ public class UnifyTracking extends TrackingUtils {
         eventTopAdsProduct(AppEventTracking.EventLabel.KEYWORD);
     }
 
-    public static void eventSellerClickDashboard(String eventCategory, String eventLabel) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_DASHBOARD,
-                eventCategory,
-                AppEventTracking.Action.CLICK,
-                eventLabel
-        ).getEvent());
-    }
-
-    public static void eventSellerClickFabDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD, AppEventTracking.EventLabel.FAB_DASHBOARD);
-    }
-
-    public static void eventSellerClickAddProductDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.ADD_PRODUCT);
-    }
-
-    public static void eventSellerClickManageProductDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.MANAGE_PRODUCT);
-    }
-
-    public static void eventSellerClickEtalaseDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.ETALASE);
-    }
-
-    public static void eventSellerClickSettingDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.SETTING);
-    }
-
     public static void eventCheckoutGoldMerchant(String eventCategory, String eventLabel) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_GOLD_MERCHANT,
@@ -2515,6 +2486,15 @@ public class UnifyTracking extends TrackingUtils {
                 .setCustomDimension(customDimension)
                 .getEvent()
         );
+    }
+
+    public static void eventSellerHomeDashboardClick(String main, String item){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
+                AppEventTracking.Category.DASHBOARD,
+                AppEventTracking.Action.CLICK_DASHBOARD_CARD,
+                main + " " + item
+        ).getEvent());
     }
 
     public static void eventFeaturedProduct(String eventLabel){
