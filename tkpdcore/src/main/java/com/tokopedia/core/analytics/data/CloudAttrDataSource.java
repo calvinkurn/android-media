@@ -5,4 +5,7 @@ package com.tokopedia.core.analytics.data;
  */
 
 public class CloudAttrDataSource {
+
+
+
 }

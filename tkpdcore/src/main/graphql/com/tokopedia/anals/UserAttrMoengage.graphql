@@ -1,4 +1,4 @@
-query Query($userID: Int!){
+query UserAttribute($userID: Int!){
     shopInfoMoengage(userID: $userID){
       info {
         date_shop_created
