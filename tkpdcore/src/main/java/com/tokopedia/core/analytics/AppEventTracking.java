@@ -132,6 +132,7 @@ public interface AppEventTracking {
         String SELLER_WIDGET = "sellerWidget";
         String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
         String CLICK_CREATE_SHOP = "clickCreateShop";
+        String CLICK_APP_SHARE_REFERRAL = "clickReferral";
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
     }
 
@@ -219,6 +220,7 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_ATC = "Gold Merchant ATC";
         String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
         String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
+        String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
     }
 
@@ -417,6 +419,7 @@ public interface AppEventTracking {
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
         String PRODUCT = "Product - ";
+        String APPSHARE = "App share";
 
         String REGISTER = "Register";
         String CTA = "CTA";
@@ -593,6 +596,7 @@ public interface AppEventTracking {
         String ADD_PROMO_PRODUCT = "Add Produk Promo";
         String ADD_PROMO_KEYWORD_POSITIF = "Add Positive Keyword";
         String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
+        String APP_SHARE_LABEL="Share";
         String FEATURED_PRODUCT = "Featured Product";
         String ADD_FEATURED_PRODUCT = "Add Featured Product";
         String TICK_ERROR = "Tick Error";

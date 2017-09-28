@@ -31,6 +31,8 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.branch.referral.Branch;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -59,7 +61,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
-
+        // initialize the Branch object
+        initBranch();
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -169,5 +172,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SoLoader.init(this, false);
     }
 
-
+    private void initBranch() {
+        Branch.getAutoInstance(this);
+    }
 }
