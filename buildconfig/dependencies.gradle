@@ -1,6 +1,7 @@
 ext {
     supportLibraryVersion = '25.3.1'
-    playServiceVersion = '11.2.2'
+    playServiceVersion = '9.6.1'
+    fireBaseVersion = '11.2.2'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
@@ -59,17 +60,17 @@ ext {
     playServicesDependencies = [
             plus            : "com.google.android.gms:play-services-plus:${playServiceVersion}",
             base            : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing     : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
+            appIndexing     : "com.google.firebase:firebase-appindexing:${fireBaseVersion}",
             analytics       : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             gcm             : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
-            firebase        : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            firebase        : "com.google.firebase:firebase-messaging:${fireBaseVersion}",
             location        : "com.google.android.gms:play-services-location:${playServiceVersion}",
             maps            : "com.google.android.gms:play-services-maps:${playServiceVersion}",
             auth            : "com.google.android.gms:play-services-auth:${playServiceVersion}",
             places          : "com.google.android.gms:play-services-places:${playServiceVersion}",
             mapsUtils       : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig    : "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon         : "com.google.firebase:firebase-perf:${playServiceVersion}"
+            remoteConfig    : "com.google.firebase:firebase-config:${fireBaseVersion}",
+            perfMon         : "com.google.firebase:firebase-perf:${fireBaseVersion}"
     ]
 
     butterKnifeDependencies = [
