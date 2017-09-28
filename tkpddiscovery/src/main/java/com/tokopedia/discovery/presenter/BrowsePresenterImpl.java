@@ -386,6 +386,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             @Override
             public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
                 browseView.showFailedFetchAttribute();
+                isFetchingDynamicAttribute = false;
             }
 
             @Override
