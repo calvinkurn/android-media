@@ -603,5 +603,9 @@ public class TrackingUtils extends TrackingConfig {
     public static String getAdsId(){
         return getAFEngine().getAdsIdDirect();
     }
+
+    public static void startTrace(String traceName){
+        getFPMEngine(traceName).startTrace();
+    }
 }
 
