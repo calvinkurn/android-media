@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -102,6 +103,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
     View newFeed;
+    Trace trace;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -135,7 +137,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        TrackingUtils.startTrace("feed_trace");
+        trace = TrackingUtils.startTrace("feed_trace");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
             firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
@@ -320,6 +322,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+        if(trace!=null)
+            trace.stop();
+
         if (layoutManager != null)
             layoutManager = null;
     }
