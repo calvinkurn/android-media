@@ -60,11 +60,11 @@ public class GetOpportunityListParam implements Parcelable {
 
     public void setFilter(ArrayList<FilterPass> listFilter) {
         for (FilterPass filterPass : this.listFilter) {
-            if (!filterPass.getKey().equals(GetOpportunityFirstTimeUseCase.ORDER_BY)
-                    && !filterPass.getKey().equals(GetOpportunityFirstTimeUseCase.QUERY)) {
-                listFilter.remove(filterPass);
+            if (filterPass.getKey().equals(GetOpportunityFirstTimeUseCase.ORDER_BY)) {
+                listFilter.add(filterPass);
             }
         }
+        this.listFilter.clear();
         this.listFilter.addAll(listFilter);
     }
 
@@ -84,9 +84,8 @@ public class GetOpportunityListParam implements Parcelable {
     public void setSort(FilterPass sort) {
         for (FilterPass filterPass : this.listFilter) {
             if (filterPass.getKey().equals(sort.getKey())) {
-                this.listFilter.remove(filterPass);
+                filterPass.setValue(sort.getValue());
             }
         }
-        this.listFilter.add(sort);
     }
 }
