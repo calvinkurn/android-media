@@ -199,10 +199,10 @@ class PaymentBank extends Component {
     headerStyle: {
         backgroundColor: '#42B549'
     },
-    headerLeft: <Image 
-      source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png' }} 
-      style={{ width: 15, height: 15, marginLeft: 20 }} />
+    headerLeft: <TouchableOpacity><Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png' }}
+                style={{ width: 15, height: 15, marginLeft: 20 }} /></TouchableOpacity>
   };
+
 
   _choosePaymentMethod(paymentMethod) {
     this.setState({
