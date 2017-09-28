@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView, FlatList } from 'react-native';
+import { StyleSheet, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, FlatList } from 'react-native';
 import { emailValidation } from '../lib/utility'
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { getTransactionHistory } from '../actions/index';
@@ -23,9 +23,9 @@ class TransactionHistory extends Component {
     this.props.dispatch(getTransactionHistory());
   }
 
-  _toggleProduct(selectedOrder) {
+  _toggleProduct(id) {
     this.setState({
-      selectedOrder
+      selectedOrder: id
     });
   }
 
@@ -34,41 +34,38 @@ class TransactionHistory extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
         <View style={{ width: "15%", height: '20%' }}>
-          <Image source={{ uri: rowData.imageUrl }} style={styles.productImage} ></Image>
+          <Image source={{ uri: rowData.item.imageUrl }} style={styles.productImage} ></Image>
         </View>
         <View style={{ width: '70%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start' }}>
-          <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{rowData.name} </Text>
-          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {rowData.qty}</Text>
+          <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{rowData.item.name} </Text>
+          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {rowData.item.qty}</Text>
         </View>
-        <Text style={[styles.font14, styles.fontcolor71]}>{rowData.price}</Text>
+        <Text style={[styles.font14, styles.fontcolor71]}>{rowData.item.price}</Text>
       </View>
     );
   }
-  _renderTarnsactionHistory(rowData: string, sectionID: number, rowID: number) {
-    let ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
-    let itemListddd = ds.cloneWithRows(rowData.products);
-
+  _renderTarnsactionHistory(rowData) {
+   const rowItem = rowData.item;
+  const products = rowItem.products;
     return (
       <View style={styles.row}>
         <View style={styles.subRow1}>
-          <Text style={styles.orderName}>{rowData.orderName}</Text>
-          <Text style={styles.orderId}>{rowData.orderId}</Text>
+          <Text style={styles.orderName}>{rowItem.orderName}</Text>
+          <Text style={styles.orderId}>{rowItem.orderId}</Text>
         </View>
 
         <View style={styles.subRow2}>
           <View style={{ width: "22%" }}>
             <Text style={[styles.font13, styles.fontcolor61]}>Waktu Transaksi</Text>
-            <Text style={[styles.font15, styles.fontcolor54]}>{rowData.time}</Text>
+            <Text style={[styles.font15, styles.fontcolor54]}>{rowItem.time}</Text>
           </View>
           <View style={{ width: "40%" }}>
             <Text style={[styles.font13, styles.fontcolor61]}>Barang</Text>
-            <Text style={[styles.font15, styles.fontcolor54]}>{rowData.products[0].name.slice(0, 35)}...</Text>
+            <Text style={[styles.font15, styles.fontcolor54]}>{rowItem.products[0].name.slice(0, 35)}...</Text>
           </View>
           <View style={{ width: "25%" }}>
             <Text style={[styles.font13, styles.fontcolor61]}>Total Pembayaran</Text>
-            <Text style={[styles.font15, styles.fontcolor70]}>{rowData.totalPrice}</Text>
+            <Text style={[styles.font15, styles.fontcolor70]}>{rowItem.totalPrice}</Text>
           </View>
 
         </View>
@@ -76,22 +73,22 @@ class TransactionHistory extends Component {
         <View style={styles.subRow3}>
           <View>
             <Text style={[styles.font13, styles.fontcolor61]}>Status</Text>
-            <Text style={[styles.font15, styles.fontcolor54]}>Status {rowData.status}</Text>
+            <Text style={[styles.font15, styles.fontcolor54]}>Status {rowItem.status}</Text>
           </View>
           <View style={{ marginTop: 25, flexDirection: 'row' }}>
             <TouchableNativeFeedback
               onPress={() =>
-                this._toggleProduct(this.state.selectedOrder != rowData.orderId ? rowData.orderId : "")
+                this._toggleProduct(this.state.selectedOrder != rowItem.orderId ? rowItem.orderId : "")
               }
             >
-              <Text style={[styles.font15, { color: '#42b549' }]}> {(this.state.selectedOrder != rowData.orderId) ? "Lihat Details" : "Sembunyikan"}</Text>
+              <Text style={[styles.font15, { color: '#42b549' }]}> {(this.state.selectedOrder != rowItem.orderId) ? "Lihat Details" : "Sembunyikan"}</Text>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback
               onPress={() =>
-                this._toggleProduct(this.state.selectedOrder != rowData.orderId ? rowData.orderId : "")
+                this._toggleProduct(this.state.selectedOrder != rowItem.orderId ? rowItem.orderId : "")
               }
             >
-              {(this.state.selectedOrder != rowData.orderId) ?
+              {(this.state.selectedOrder != rowItem.orderId) ?
                 <Image source={require('./img/arrow-down.png')} style={{ height: 12, width: 12, resizeMode: 'cover', marginTop: 5, marginLeft: 7 }} />
                 :
                 <Image source={require('./img/arrow-up.png')} style={{ height: 12, width: 12, resizeMode: 'cover', marginTop: 5, marginLeft: 7 }} />
@@ -100,17 +97,17 @@ class TransactionHistory extends Component {
           </View>
 
         </View>
-        {(this.state.selectedOrder == rowData.orderId) ?
-
-          <ListView
-            contentContainerStyle={[styles.subRow4]}
-            dataSource={itemListddd}
-            enableEmptySections={true}
-            renderRow={this._renderProductList.bind(this)} />
+        {(this.state.selectedOrder == rowItem.orderId) ?
+             <View style={[styles.subRow4]}>
+                  <FlatList
+                       keyExtractor={(item, index) => item.id}
+                       data={products}
+                       renderItem={this._renderProductList.bind(this)} />
+               </View>
           : null
         }
 
-        {(this.state.selectedOrder == rowData.orderId) ?
+        {(this.state.selectedOrder == rowItem.orderId) ?
           <View style={styles.subRow5} >
             <View style={{ flexDirection: 'column' }}>
               <Text style={[styles.font13, styles.fontcolor61]}>Metode Pembayaran</Text>
@@ -122,15 +119,15 @@ class TransactionHistory extends Component {
             </View>
             <View style={{ flexDirection: 'row' }}>
               <Text style={[styles.font16, styles.fontcolor70]}>Total Pembayaran: </Text>
-              <Text style={[styles.font16, styles.fontcolor70]}> {rowData.totalPrice}</Text>
+              <Text style={[styles.font16, styles.fontcolor70]}> {rowItem.totalPrice}</Text>
             </View>
           </View>
           : null}
 
-        {(this.state.selectedOrder == rowData.orderId) ?
+        {(this.state.selectedOrder == rowItem.orderId) ?
           <View style={styles.subRow6} >
-            <Text style={[styles.font13, styles.fontcolor61]}> {(rowData.isCompleted) ? "Transaksi sudah melewati batas waktu untuk dibatalkan" : "Transaki dapat dibatalkan sebelum jam 19.00"}</Text>
-            {(!rowData.isCompleted) ?
+            <Text style={[styles.font13, styles.fontcolor61]}> {(rowItem.isCompleted) ? "Transaksi sudah melewati batas waktu untuk dibatalkan" : "Transaki dapat dibatalkan sebelum jam 19.00"}</Text>
+            {(!rowItem.isCompleted) ?
               <TouchableNativeFeedback onPress={() => { this.popupDialog.show() }}>
                 <View style={[styles.button]}>
                   <Text style={styles.buttonText}> Batalkan Transaksi </Text>
@@ -171,11 +168,13 @@ class TransactionHistory extends Component {
         </View> */}
 
         <ScrollView>
-          <ListView
-            contentContainerStyle={[styles.containers]}
-            dataSource={this.props.itemList}
-            enableEmptySections={true}
-            renderRow={this._renderTarnsactionHistory.bind(this)} />
+            <View style={[styles.containers]}>
+                 <FlatList
+                      keyExtractor={(item, index) => item.orderId}
+                      data={this.props.items}
+                      extraData={this.state}
+                      renderItem={this._renderTarnsactionHistory.bind(this)} />
+              </View>
         </ScrollView>
         <PopupDialog
           dialogTitle={
@@ -352,15 +351,9 @@ const styles = StyleSheet.create({
   }
 });
 
-const ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 !== r2
-});
-
 const mapStateToProps = state => {
-  const itemList = ds.cloneWithRows(state.transactionHistory.items);
   return {
-    ...state.transactionHistory,
-    itemList
+    ...state.transactionHistory
   }
 }
 
