@@ -790,6 +790,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         } else if (i == R.id.action_history) {
             actionNavigateToHistory();
             return true;
+        } else if (i == R.id.action_payment) {
+            actionNavigateToPayment();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -798,6 +801,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     private void actionNavigateToHistory() {
         Intent intent = RideHistoryActivity.getCallingIntent(this);
         startActivity(intent);
+    }
+
+    private void actionNavigateToPayment() {
+        startActivity(ManagePaymentOptionsActivity.getCallingActivity(this));
     }
 
     @Override

@@ -12,8 +12,7 @@
         android:id="@+id/payment_method_image"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="@dimen/new_margin_small"
         android:background="@drawable/ic_tokocash_icon"
         android:padding="8dp"
         android:src="@drawable/cabs_promo_ad_ic" />

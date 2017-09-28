@@ -10,24 +10,24 @@ import android.support.v7.widget.Toolbar;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.bookingride.view.fragment.AddCreditCardFragment;
+import com.tokopedia.ride.bookingride.view.fragment.ManagePaymentOptionsFragment;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 
-public class AddCreditCardActivity extends BaseActivity implements HasComponent<RideComponent> {
+public class ManagePaymentOptionsActivity extends BaseActivity implements HasComponent<RideComponent> {
     private RideComponent rideComponent;
 
     public static Intent getCallingActivity(Activity activity) {
-        Intent intent = new Intent(activity, AddCreditCardActivity.class);
+        Intent intent = new Intent(activity, ManagePaymentOptionsActivity.class);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_credit_card);
+        setContentView(R.layout.activity_manage_payment_options);
         setupToolbar();
-        AddCreditCardFragment fragment = AddCreditCardFragment.newInstance();
+        ManagePaymentOptionsFragment fragment = ManagePaymentOptionsFragment.newInstance();
         replaceFragment(R.id.fl_container, fragment);
     }
 
@@ -42,7 +42,7 @@ public class AddCreditCardActivity extends BaseActivity implements HasComponent<
     private void setupToolbar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-            mToolbar.setTitle(R.string.add_credit_card_toolbar_title);
+            mToolbar.setTitle(R.string.payment_toolbar_title);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             invalidateOptionsMenu();
