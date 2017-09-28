@@ -2058,5 +2058,11 @@ di Tokopedia Sekarang!</string>
     <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
     <string name="cari_produk_atau_toko">Cari produk atau toko</string>
     <string name="search_shop_info_hint">Cari produk di toko ini</string>
+    <string name="drawer_title_appshare">Share ke Teman</string>
+    <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
+    <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
+    <string name="app_share_label">Share ke Temanmu, Yuk!</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="app_share_btn_label">Undang Teman</string>
 
 </resources>
