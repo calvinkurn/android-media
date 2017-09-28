@@ -21,6 +21,7 @@ import com.facebook.FacebookSdk;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -134,6 +135,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        TrackingUtils.startTrace("feed_trace");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
             firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
