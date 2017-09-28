@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+// import { View, Text } from 'react-native'
 import Setup_pos from './setup_pos'
 import Setup_payment from './setup_payment'
 import Setup_cart from './setup_cart'

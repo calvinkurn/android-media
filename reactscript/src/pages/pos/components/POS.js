@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  Text,
+  // Text,
   View,
-  DrawerLayoutAndroid,
-  ToolbarAndroid,
-  Dimensions,
-  TextInput,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback
+  // DrawerLayoutAndroid,
+  // ToolbarAndroid,
+  // Dimensions,
+  // TextInput,
+  // TouchableNativeFeedback,
+  // TouchableWithoutFeedback
 } from 'react-native'
 import VisibleProductList from '../containers/VisibleProductList'
 import Ticker from '../components/product/Ticker'
 import CartContainer from '../containers/CartContainer'
 import SearchContainer from '../containers/SearchContainer'
-import PasswordPopup from './PasswordPopup'
+// import PasswordPopup from './PasswordPopup'
 
 export default class POS extends Component {
   constructor() {
@@ -46,9 +46,9 @@ export default class POS extends Component {
         <View style={styles.container}>
           <Ticker />
           <VisibleProductList />
-          <PasswordPopup
+          {/* <PasswordPopup
             navigation={this.props.navigation}
-            ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} />
+            ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} /> */}
         </View>
     )
   }
