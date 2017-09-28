@@ -121,8 +121,8 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 trackingBannerClick(view.getContext(), item, currentPosition);
 
                 if (view.getContext() != null
-                        &&
-                        ((IDigitalModuleRouter) view.getContext().getApplicationContext()).isSupportedDelegateDeepLink(item.getPromoApplink())) {
+                        && view.getContext().getApplicationContext() instanceof IDigitalModuleRouter
+                        && ((IDigitalModuleRouter) view.getContext().getApplicationContext()).isSupportedDelegateDeepLink(item.getPromoApplink())) {
                     ((IDigitalModuleRouter) view.getContext().getApplicationContext())
                             .actionNavigateByApplinksUrl((Activity) view.getContext(), item.getPromoApplink(), new Bundle());
                 } else {
