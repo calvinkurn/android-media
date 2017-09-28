@@ -349,6 +349,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public boolean sendQuery(String query, String depId) {
+        removeEmptyState();
         boolean redirectToOtherPage = browsePresenter.sendQuery(query, depId);
         if (!redirectToOtherPage) {
             toolbar.setTitle(query);
