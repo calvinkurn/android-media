@@ -5,7 +5,7 @@ import Setup_payment from './setup_payment'
 import Setup_cart from './setup_cart'
 import Setup_processing from './setup_processing'
 import Setup_history from './setup_history'
-import DetailCicilan from './components/DetailCicilan'
+import DetailCicilan from './setup_cicilan'
 
 class Root extends Component {
   componentWillMount() {
