@@ -3,6 +3,7 @@ package com.tokopedia.seller.opportunity.domain.param;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFirstTimeUseCase;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
@@ -59,10 +60,9 @@ public class GetOpportunityListParam implements Parcelable {
 
     public void setFilter(ArrayList<FilterPass> listFilter) {
         for (FilterPass filterPass : this.listFilter) {
-            for (FilterPass newFilter : listFilter) {
-                if (filterPass.getKey().equals(newFilter.getKey())) {
-                    this.listFilter.remove(filterPass);
-                }
+            if (!filterPass.getKey().equals(GetOpportunityFirstTimeUseCase.ORDER_BY)
+                    && !filterPass.getKey().equals(GetOpportunityFirstTimeUseCase.QUERY)) {
+                listFilter.remove(filterPass);
             }
         }
         this.listFilter.addAll(listFilter);
