@@ -20,9 +20,12 @@ public class PerfMonContainer implements IPerformanceMonitoring {
     }
 
     @Override
-    public void startTrace() {
+    public Trace startTrace() {
         if(trace!=null){
             trace.start();
+            return trace;
+        }else{
+            return null;
         }
     }
 

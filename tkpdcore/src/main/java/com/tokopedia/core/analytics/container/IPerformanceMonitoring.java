@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.container;
 
+import com.google.firebase.perf.metrics.Trace;
+
 /**
  * Created by Herdi_WORK on 28.09.17.
  */
@@ -7,7 +9,7 @@ package com.tokopedia.core.analytics.container;
 public interface IPerformanceMonitoring {
 
 
-    void startTrace();
+    Trace startTrace();
 
     void stopTrace();
 

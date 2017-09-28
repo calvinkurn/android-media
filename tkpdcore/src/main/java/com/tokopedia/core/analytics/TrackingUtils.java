@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
+import com.google.firebase.perf.metrics.Trace;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
@@ -604,8 +605,8 @@ public class TrackingUtils extends TrackingConfig {
         return getAFEngine().getAdsIdDirect();
     }
 
-    public static void startTrace(String traceName){
-        getFPMEngine(traceName).startTrace();
+    public static Trace startTrace(String traceName){
+        return getFPMEngine(traceName).startTrace();
     }
 }
 
