@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native'
 import { NavigationModule } from 'NativeModules'
 
 
@@ -10,14 +10,15 @@ class DetailCicilan extends Component {
 
     render() {
         const { titleTxt } = styles
-
         return (
             <View>
                 <View style={styles.headerContainer}>
                   <View>
-                    <TouchableWithoutFeedback onPress={this.onBackPress}>
-                      <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/icon_back.png' }} />
-                    </TouchableWithoutFeedback>
+                    <TouchableOpacity onPress={() => this.onBackPress()}>
+                      <Image 
+                        style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                        source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/icon_back.png' }} />
+                    </TouchableOpacity>
                   </View>
                   <View style={{ left: -220 }}>
                     <Text style={{ fontSize: 20, color: '#fff', fontWeight: '300' }}>Detail Cicilan</Text>
