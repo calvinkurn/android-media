@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { 
-  PosCacheModule, 
+import {
+  PosCacheModule,
   SessionModule,
-  PaymentModule 
+  PaymentModule
 } from 'NativeModules'
 
 
@@ -12,11 +12,26 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
   return {
     type: FETCH_PRODUCTS,
     payload: PosCacheModule.getDataAll("PRODUCT")
-             .then(response => {
-               const jsonResponse = JSON.parse(response)
-               return jsonResponse;
-             })
-             .catch(error => {})
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        return jsonResponse;
+      })
+      .catch(error => {})
+  }
+}
+
+// ==================== Search Product ==================== //
+export const SEARCH_PRODUCT = 'SEARCH_PRODUCT'
+export const searchProduct = (product, etalaseId) => {
+  return {
+    type: SEARCH_PRODUCT,
+    payload: ProductDiscoveryModule.search(`{ product: ${product}, etalase_id: ${etalaseId} }`)
+                .then(res => {
+                  const jsonResponse = JSON.parse(res)
+                  console.log(jsonResponse)
+                  return jsonResponse
+                })
+                .catch(err => {})
   }
 }
 
@@ -25,10 +40,10 @@ export const FETCH_SHOP_NAME = 'FETCH_SHOP_NAME'
 export const fetchShopName = () => ({
   type: FETCH_SHOP_NAME,
   payload: SessionModule.getShopName()
-            .then(res => {
-              return res
-            })
-            .catch(err => console.log(err))
+    .then(res => {
+      return res
+    })
+    .catch(err => console.log(err))
 })
 
 export const FETCH_SHOP_ID = 'FETCH_SHOP_ID'
@@ -41,11 +56,11 @@ export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
   type: FETCH_ETALASE,
   payload: PosCacheModule.getDataAll("ETALASE")
-            .then(res => {
-              const jsonResponse = JSON.parse(res)
-              return jsonResponse
-            })
-            .catch(err => console.log(err))
+    .then(res => {
+      const jsonResponse = JSON.parse(res)
+      return jsonResponse
+    })
+    .catch(err => console.log(err))
 })
 
 
@@ -106,14 +121,14 @@ export const removeFromCart = (pid) => {
   return {
     type: REMOVE_FROM_CART,
     payload: PosCacheModule.deleteItem('CART', pid.toString())
-              .then(response => {
-                const jsonResponse = JSON.parse(response)
-                console.log(response)
-                if (jsonResponse.data.status) {
-                  return {pid}
-                }
-              })
-              .catch(error => console.log(error))
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        console.log(response)
+        if (jsonResponse.data.status) {
+          return { pid }
+        }
+      })
+      .catch(error => console.log(error))
   }
 }
 
@@ -125,14 +140,14 @@ export const incrementQty = (id, pid, qty) => {
   return {
     type: INCREMENT_QTY,
     payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${quantity}}`)
-              .then(response => {
-                const jsonResponse = JSON.parse(response)
-                if (jsonResponse.data.status) {
-                  return { id, pid, quantity }
-                }
-              })
-              .catch(error => console.log(error))
-  } 
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        if (jsonResponse.data.status) {
+          return { id, pid, quantity }
+        }
+      })
+      .catch(error => console.log(error))
+  }
 }
 
 //  ==================== Decrement Quantity inside Cart ===================== //
@@ -143,13 +158,13 @@ export const decrementQty = (id, pid, qty) => {
   return {
     type: DECREMENT_QTY,
     payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${quantity}}`)
-              .then(response => {
-                const jsonResponse = JSON.parse(response)
-                if (jsonResponse.data.status) {
-                  return { id, pid, quantity }
-                }
-              })
-              .catch(error => console.log(error))
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        if (jsonResponse.data.status) {
+          return { id, pid, quantity }
+        }
+      })
+      .catch(error => console.log(error))
   }
 }
 
@@ -160,8 +175,8 @@ export const clearCart = () => {
   return {
     type: CLEAR_CART,
     payload: PosCacheModule.deleteAll('CART')
-              .then(response => {})
-              .catch(error => console.log(error))
+      .then(response => { })
+      .catch(error => console.log(error))
   }
 }
 
@@ -263,7 +278,7 @@ export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
 export const fetchSearchProduct = (eId, queryText, shopId) => {
   const text = queryText.replace(' ', '+')
   let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=${shopId}&start=0&q=${text}`
-  
+
   const etalaseId = +eId || 0
   if (etalaseId) {
     url += `&etalase=${etalaseId}`

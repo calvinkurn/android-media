@@ -41,9 +41,10 @@ class VisibleProductList extends Component {
     const { dispatch } = this.props
     const { start, rows } = this.props.products.pagination
     const queryText = this.props.queryText
+    dispatch(resetProductList())
     dispatch(fetchShopId())
     dispatch(fetchEtalase(1987772))
-    this.props.dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
+    dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
   }
 
   renderProduct = ({ item }) => {
