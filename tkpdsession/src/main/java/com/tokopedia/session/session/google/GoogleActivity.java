@@ -9,6 +9,9 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.Scopes;
@@ -122,8 +125,15 @@ public abstract class GoogleActivity extends AppCompatActivity implements
                 mShouldResolve = false;
             }
 
-            mIsResolving = false;
-            mGoogleApiClient.connect();
+
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                GoogleSignInAccount acct = result.getSignInAccount();
+                String idToken = acct.getIdToken();
+                Log.i("ID", idToken);
+                // TODO(user): send token to server and validate server-side
+            } else {
+            }
         }
     }
     // [END on_activity_result]

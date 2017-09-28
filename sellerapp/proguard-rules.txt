@@ -341,3 +341,4 @@
 -keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
 
+-dontwarn android.content.pm.PackageManager

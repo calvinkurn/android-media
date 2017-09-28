@@ -109,7 +109,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         ImageHandler.LoadImage(holder.shopAva, list.get(holder.getAdapterPosition()).getShopAva());
-        holder.shopName.setText(list.get(position).getShopName());
+        holder.shopName.setText(MethodChecker.fromHtml(list.get(position).getShopName()));
 
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());

@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;

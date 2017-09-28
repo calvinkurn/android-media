@@ -93,7 +93,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         categoryData.setOperatorStyle(
                 responseCategoryDetailData.getAttributes().getOperatorStyle()
         );
-
+        categoryData.setOperatorLabel(
+                responseCategoryDetailData.getAttributes().getOperatorLabel()
+        );
 
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
         for (com.tokopedia.digital.product.data.entity.response.Field field
@@ -147,6 +149,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                     Product productOperator = new Product();
                     productOperator.setDesc(product.getAttributes().getDesc());
                     productOperator.setDetail(product.getAttributes().getDetail());
+                    productOperator.setDetailUrl(product.getAttributes().getDetailUrl());
                     productOperator.setInfo(product.getAttributes().getInfo());
                     productOperator.setPrice(product.getAttributes().getPrice());
                     productOperator.setPricePlain(product.getAttributes().getPricePlain());

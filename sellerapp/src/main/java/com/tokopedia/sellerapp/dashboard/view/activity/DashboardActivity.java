@@ -48,13 +48,12 @@ public class DashboardActivity extends DrawerPresenterActivity
     protected void onResume() {
         super.onResume();
         new GCMHandler(this).actionRegisterOrUpdateDevice(this);
-        updateDrawerData();
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
     @Override
     public void onGCMSuccess(String gcmId) {
-        drawerDataManager.getNotification();
+        
     }
 
     @Override

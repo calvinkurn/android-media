@@ -114,6 +114,10 @@ public class Ticker {
         @Expose
         String updatedBy;
 
+        @SerializedName("color")
+        @Expose
+        private String color;
+
         public String getRedirectUrl() {
             return redirectUrl;
         }
@@ -230,6 +234,14 @@ public class Ticker {
                     ", updatedOn='" + updatedOn + '\'' +
                     ", updatedBy='" + updatedBy + '\'' +
                     '}';
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color;
         }
     }
 

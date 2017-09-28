@@ -30,6 +30,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -45,6 +46,7 @@ import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -63,10 +65,10 @@ import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -95,7 +97,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -531,6 +533,37 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public ReactNativeHost getReactNativeHost() {
         if (reactNativeHost == null) initDaggerInjector();
         return reactNativeHost;
+    }
+
+    @Override
+    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
+                                    String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+                customSubject, customMessage, source);
+
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, customMessage, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
+    }
+
+    @Override
+    public Intent getAskUserIntent(Context context, String userId, String userName, String source) {
+        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
     }
 
     @Override

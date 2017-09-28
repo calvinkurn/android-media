@@ -35,7 +35,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
     private ArrayList<ImageSelectModel> imageSelectModelList;
     private int limit;
-    private Drawable addPictureDrawable;
+    private int addPictureDrawableRes;
     private OnImageSelectionListener onImageSelectionListener;
     private String mainPrimaryImageString;
     private String addProductString;
@@ -53,13 +53,13 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
     public ImageSelectorAdapter(@NonNull ArrayList<ImageSelectModel> imageSelectModelList,
                                 int limit,
-                                Drawable addPictureDrawable,
+                                int addPictureDrawableRes,
                                 OnImageSelectionListener onImageSelectionListener,
                                 String mainPrimaryImageString,
                                 String addProductString) {
         this.imageSelectModelList = imageSelectModelList;
         this.limit = limit;
-        this.addPictureDrawable = addPictureDrawable;
+        this.addPictureDrawableRes = addPictureDrawableRes;
         this.onImageSelectionListener = onImageSelectionListener;
         this.mainPrimaryImageString = mainPrimaryImageString;
         this.addProductString = addProductString;
@@ -240,7 +240,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             super(itemView);
             addImageTextView = (TextView) itemView.findViewById(R.id.text_add_product);
             addImageTextView.setText(addProductString);
-            imageView.setImageDrawable(addPictureDrawable);
+            imageView.setImageResource(addPictureDrawableRes);
             itemView.setOnClickListener(this);
         }
 

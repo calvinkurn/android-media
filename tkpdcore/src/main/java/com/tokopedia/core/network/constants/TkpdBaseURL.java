@@ -54,7 +54,9 @@ public class TkpdBaseURL {
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
-
+    public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
+    public static String GALADRIEL = "https://galadriel.tokopedia.com/";
+    public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -132,7 +134,8 @@ public class TkpdBaseURL {
         public static final String URL_INVOICE = BASE_DOMAIN + "v4/";
         public static final String URL_MSISDN_ACTION = BASE_DOMAIN + "v4/action/msisdn/";
         public static final String URL_MSISDN = BASE_DOMAIN + "v4/msisdn/";
-        public static final String URL_NOTIFICATION = BASE_DOMAIN + "v4/notification/";
+        public static final String PATH_NOTIFICATION = "v4/notification/";
+        public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
         public static final String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
         public static final String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
         public static final String URL_SESSION = BASE_DOMAIN + "v4/session/";
@@ -444,7 +447,8 @@ public class TkpdBaseURL {
 
     public static class Transaction {
         public static final String URL_DEPOSIT_ACTION = BASE_DOMAIN + "v4/action/deposit/";
-        public static final String URL_DEPOSIT = BASE_DOMAIN + "v4/deposit/";
+        public static final String PATH_DEPOSIT = "v4/deposit/";
+        public static final String URL_DEPOSIT = BASE_DOMAIN + PATH_DEPOSIT;
         public static final String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "app/";
         public static final String URL_TRACKING_ORDER = BASE_DOMAIN + "v4/tracking-order/";
         public static final String URL_TX_ACTION = BASE_DOMAIN + "v4/action/tx/";
@@ -586,6 +590,11 @@ public class TkpdBaseURL {
         public static final String URL_CHECK_PROMO = "v1/promo/check";
     }
 
+    public static class Galadriel {
+        public static final String PATH_PROMO_WIDGET = "promo-suggestions/v1/widget";
+
+    }
+
     public static class Mojito {
         public static final String PATH_USER = "v1.0.3/users/";
         public static final String PATH_PRODUCT = "users/";
@@ -599,6 +608,7 @@ public class TkpdBaseURL {
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
         public static final String API_V2_BRANDS = "/os/api/v2/brands/list/widget/android";
+        public static final String API_V3_BRANDS = "/os/api/v3/brands/list/widget/android";
         public static final String API_V1_BRANDS_CATEGORY = "/os/api/v1/brands/category/android/{categoryId}";
         public static final String PATH_USER_WISHLIST = "/users";
         public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
@@ -820,15 +830,22 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
         public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
-
+        public static final String PATH_GET_CANCEL_TRANSACTION_DIALOG = "get_payment_status";
+        public static final String PATH_CANCEL_TRANSACTION = "cancel";
     }
 
     public static class FinTech {
         public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
 
     }
+
     public class TkpdCart {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
+    }
+
+    public class Maps {
+        public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
+        public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
     }
 }

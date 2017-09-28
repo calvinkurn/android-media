@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.sellerapp">
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove"/>
+
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="true"
@@ -124,6 +126,38 @@
                 <data
                     android:host="m.tokopedia.com"
                     android:pathPattern="/topads/manage"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPattern="/peluang"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern="peluang"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPattern="/peluang.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern="peluang.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="tokopedia.com"
+                    android:pathPattern="peluang"
+                    android:scheme="http" />
+                <data
+                    android:host="tokopedia.com"
+                    android:pathPattern="peluang.pl"
+                    android:scheme="http" />
+                <data
+                    android:host="tokopedia.com"
+                    android:pathPattern="peluang"
+                    android:scheme="https" />
+                <data
+                    android:host="tokopedia.com"
+                    android:pathPattern="peluang.pl"
                     android:scheme="https" />
             </intent-filter>
         </activity>

@@ -88,16 +88,10 @@ android {
             aidl.srcDirs = ['src/main/java']
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
         }
 
-        String sharedTestDir = 'src/sharedTest/java'
-        test {
-            java.srcDir sharedTestDir
-        }
-        androidTest {
-            java.srcDir sharedTestDir
-        }
-
+        instrumentTest.setRoot('tests')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -152,18 +146,21 @@ android {
         }
     }
 
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.sellerapp"
-        resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        // exclude 64bit lib for react-native support
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -176,30 +173,10 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
-    }
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
-
-    productFlavors {
-        staging {
-            applicationIdSuffix ".staging"
-            versionNameSuffix "-staging"
-        }
-        alpha {
-            applicationIdSuffix ".alpha"
-            versionNameSuffix "-alpha"
-        }
-        live {
-
-        }
     }
 
     configurations.all {
@@ -207,6 +184,19 @@ android {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
+
+    productFlavors {
+        staging {
+
+        }
+        alpha {
+        }
+        live {
+
+        }
+    }
+
+
 }
 
 repositories {

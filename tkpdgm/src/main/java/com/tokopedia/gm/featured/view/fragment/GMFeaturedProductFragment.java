@@ -18,9 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -77,7 +77,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private List<Pair<Integer, GMFeaturedProductModel>> gmTemporaryDelete;
-    private Button buttonSave;
 
     public static GMFeaturedProductFragment createInstance() {
         return new GMFeaturedProductFragment();
@@ -143,17 +142,11 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventClickAddFeaturedProduct();
                 moveToProductPicker();
             }
         });
         coordinatorLayoutContainer = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout_container);
-        buttonSave = (Button) view.findViewById(R.id.button_save);
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -302,7 +295,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         adapter.notifyDataSetChanged();
         updateTitle();
         updateFabDisplay();
-        updateButtonSave();
     }
 
     @Override
@@ -342,19 +334,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 }
             }
             onSearchLoaded(gmFeaturedProductModelList, gmFeaturedProductModelList.size());
-        }
-    }
-
-    private void updateButtonSave() {
-        switch (featuredProductTypeView) {
-            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
-                buttonSave.setVisibility(View.VISIBLE);
-                break;
-            case GMFeaturedProductTypeView.DELETE_DISPLAY:
-            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
-            default:
-                buttonSave.setVisibility(View.GONE);
-                break;
         }
     }
 
@@ -481,6 +460,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 }
                 break;
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                inflater.inflate(R.menu.menu_gm_featured_product_arrange_mode, menu);
+                break;
             default:
                 break;
         }
@@ -502,6 +483,14 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 showDeleteDialog();
             }
             return true;
+        } else if (item.getItemId() == R.id.menu_done) {
+            if(isFeaturedProductListChanged(gmFeaturedProductModelListFromServer, adapter.getData())) {
+                UnifyTracking.eventSortFeaturedProductChange();
+            }else{
+                UnifyTracking.eventSortFeaturedProductNotChange();
+            }
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -511,6 +500,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getTotalChecked()));
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                UnifyTracking.eventDeleteFeaturedProduct();
                 gmTemporaryDelete = ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
                 showSnackbarWithUndo();
                 reloadAfterDeleteAction();

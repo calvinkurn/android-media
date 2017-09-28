@@ -139,4 +139,9 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         String token = AuthUtil.md5(timeMillis);
         return SessionHandler.getLoginID(MainApplication.getAppContext()) + "_" + (token.isEmpty() ? timeMillis : token);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

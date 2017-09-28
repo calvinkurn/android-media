@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -58,7 +59,13 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
         super.setupLayout(savedInstanceState);
         bottomSheetContentTextView.setText(getString(R.string.product_list_featured_max_limit, ProductListPickerConstant.MAX_LIMIT_PRODUCT_LIST_FEATURED_PICKER));
         bottomSheetContentTextView.setVisibility(View.VISIBLE);
-        submitButton.setText(getString(R.string.label_add));
+        submitButton.setText(getString(R.string.title_save));
+    }
+
+    @Override
+    protected void submitButtonClicked() {
+        UnifyTracking.eventSavePickFeaturedProduct(String.valueOf(getCacheListSize()));
+        super.submitButtonClicked();
     }
 
     @Override
@@ -91,6 +98,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     private void showEmptyImageNotAllowedMessage() {
+        UnifyTracking.eventTickErrorFeaturedProduct();
         NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_list_picker_empty_stock_cannot_picked));
     }
 
@@ -118,17 +126,13 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     private void showMaxVariantReachedMessage(){
+        UnifyTracking.eventTickErrorFeaturedProduct();
         NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_list_picker_max_has_been_reached));
     }
 
     private void updateBottomSheetInfo() {
         bottomSheetTitleTextView.setText(getString(R.string.product_list_picker_variant_count,
                 getCacheListSize()));
-        if (getCacheListSize() > 0) {
-            showBottomSheetInfo(true);
-        } else {
-            showBottomSheetInfo(false);
-        }
     }
 
     private int getSearchListSize() {

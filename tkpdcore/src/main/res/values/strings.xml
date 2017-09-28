@@ -301,7 +301,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_weight">Berat</string>
     <string name="title_insurance">Asuransi</string>
     <string name="title_condition">Kondisi</string>
-    <string name="title_success_rate">Transaksi Sukses</string>
+    <string name="title_success_rate">Transaksi Berhasil</string>
     <string name="title_category">Kategori</string>
     <string name="title_etalase">Etalase</string>
     <string name="title_catalog">Katalog</string>
@@ -313,7 +313,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_speed">Kecepatan</string>
     <string name="title_accuracy">Akurasi</string>
     <string name="title_service">Pelayanan</string>
-    <string name="title_last_update_price">Last Update Price :</string>
+    <string name="title_last_update_price">Perubahan Harga Terakhir :</string>
     <string name="message_add_new_talk">Berhasil menambahkan Diskusi Produk</string>
     <string name="title_sending">Sedang mengirim...</string>
     <string name="title_dialog_delete">Apakah Anda ingin menghapus tkpd ini ?</string>
@@ -325,7 +325,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="message_prod_depository">Produk ini disimpan di gudang.</string>
     <string name="message_prod_depository_2">Produk ini tidak dapat dibeli sementara. Mohon hubungi pemilik Toko untuk lebih lanjut.</string>
     <string name="message_shop_moderated">Toko ini sedang dimoderasi</string>
-    <string name="title_buy">BELI</string>
+    <string name="title_buy">Beli</string>
     <string name="title_promo_topads">Promo TopAds</string>
     <string name="title_pre_order">PREORDER</string>
     <string name="title_total_prod">Total Produk : </string>
@@ -995,7 +995,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
-    <string name="title_payment_verification">Ubah Pembayaran</string>
+    <string name="title_payment_verification">Status Pembayaran</string>
     <string name="title_payment_status">Status Pembayaran</string>
     <string name="title_order_status">Status Pemesanan</string>
     <string name="title_receive_confirmation">Konfirmasi Penerimaan</string>
@@ -1811,7 +1811,7 @@ di Tokopedia Sekarang!</string>
     <string name="error_empty_home_menu">Data Home Menu Kosong</string>
     <string name="error_home_menu">Home Menu Error</string>
     <string name="title_home">Home</string>
-    <string name="try_again">Terjadi kesalahan. Mohon coba kembali.</string>
+    <string name="toast_try_again">Terjadi kesalahan. Mohon coba kembali.</string>
 
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
     <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
@@ -2056,5 +2056,13 @@ di Tokopedia Sekarang!</string>
     <string name="string_notreceived_check_courier">Tanya Kurir</string>
     <string name="shop_product_list_header_product_title">Produk</string>
     <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
+    <string name="cari_produk_atau_toko">Cari produk atau toko</string>
+    <string name="search_shop_info_hint">Cari produk di toko ini</string>
+    <string name="drawer_title_appshare">Share ke Teman</string>
+    <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
+    <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
+    <string name="app_share_label">Share ke Temanmu, Yuk!</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="app_share_btn_label">Undang Teman</string>
 
 </resources>

@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="24"
+        android:targetSdkVersion="25"
         tools:overrideLibrary="com.readystatesoftware.chuck" />
 
     <permission
@@ -29,8 +29,6 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -38,7 +36,7 @@
 
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
+        android:maxSdkVersion="22" />
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
@@ -87,7 +85,6 @@
         <meta-data
             android:name="net.hockeyapp.android.appIdentifier"
             android:value="528b17702bf941a581f15e188677306b " />
-
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -518,6 +515,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <activity android:name="com.tokopedia.core.referral.ReferralActivity" />
     </application>
 
 </manifest>
