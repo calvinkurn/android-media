@@ -252,6 +252,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
     }
 
