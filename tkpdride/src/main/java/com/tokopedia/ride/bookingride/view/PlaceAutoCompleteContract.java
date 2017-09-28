@@ -73,6 +73,9 @@ public interface PlaceAutoCompleteContract {
         void showClearButton();
 
         void hideClearButton();
+
+        void showErrorNoInternetConnectionMessage(String message);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
