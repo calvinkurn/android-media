@@ -907,7 +907,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         cacheInteractor.getPromoWidgetCache(targetType, userId, new CacheInteractor.GetPromoWidgetCacheListener() {
             @Override
             public void onSuccess(PromoAttributes result) {
-                viewListener.showPromoWidget(result);
+                if (result.getCode()!=null && result.getCodeHtml() !=null && result.getShortCondHtml()!=null
+                        && result.getShortDescHtml()!=null) {
+                    viewListener.showPromoWidget(result);
+                }
             }
 
             @Override
