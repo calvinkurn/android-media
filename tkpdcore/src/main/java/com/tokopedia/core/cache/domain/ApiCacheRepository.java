@@ -23,7 +23,7 @@ public interface ApiCacheRepository {
      *
      * @return true if version is not increased, otherwise false
      */
-    Observable<Boolean> isNeedToUpdateWhiteList();
+    Observable<Boolean> isWhiteListVersionUpdated();
 
     /**
      * bulk insert

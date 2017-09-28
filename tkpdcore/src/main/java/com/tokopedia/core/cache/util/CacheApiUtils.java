@@ -7,14 +7,11 @@ import com.tokopedia.core.cache.constant.HTTPMethodDef;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Buffer;
 import okio.BufferedSource;
@@ -31,31 +28,7 @@ public class CacheApiUtils {
     private static final String HTTPS = "https://";
     private static final String COM_WITH_SLASH = ".com/";
     private static final String COM1 = ".com";
-
-    public static String getFullRequestURL(Request request){
-        String s = "";
-        if (HTTPMethodDef.TYPE_POST.equalsIgnoreCase(request.method())) {
-            RequestBody requestBody = request.body();
-            if (requestBody instanceof FormBody) {
-                int size = ((FormBody) requestBody).size();
-                for (int i = 0; i < size; i++) {
-                    String key = ((FormBody) requestBody).encodedName(i);
-                    if (key.equals("hash") || key.equals("device_time")) {
-                        continue;
-                    }
-
-                    String value = ((FormBody) requestBody).encodedValue(i);
-                    if (TextUtils.isEmpty(s)) {
-                        s += "?";
-                    } else {
-                        s += "&";
-                    }
-                    s += key + "=" + value;
-                }
-            }
-        }
-        return request.url().toString() + s;
-    }
+    private static final String PARAM_SEPARATOR = "-";
 
     public static String generateCacheHost(String host) {
         return (host.replace(HTTPS, "").replace(COM_WITH_SLASH, COM1));
@@ -72,8 +45,8 @@ public class CacheApiUtils {
     public static String getDomain(String fullPath) {
         try {
             URL url = new URL(fullPath);
-            return  url.getAuthority();
-        } catch (MalformedURLException e) {
+            return url.getAuthority();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -82,11 +55,38 @@ public class CacheApiUtils {
     public static String getPath(String fullPath) {
         try {
             URL url = new URL(fullPath);
-            return  url.getPath();
-        } catch (MalformedURLException e) {
+            return url.getPath();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getRequestParam(Request request) {
+        String requestParam = "";
+        try {
+            URL url = new URL(request.url().toString());
+            if (!TextUtils.isEmpty(url.getQuery())) {
+                requestParam += url.getQuery();
+            }
+            if (HTTPMethodDef.TYPE_POST.equalsIgnoreCase(request.method()) && request.body() != null) {
+                String bodyText = getBodyRequest(request);
+                if (!TextUtils.isEmpty(requestParam) && !TextUtils.isEmpty(bodyText)) {
+                    requestParam += PARAM_SEPARATOR;
+                }
+                requestParam += bodyText;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return requestParam;
+    }
+
+    private static String getBodyRequest(final Request request) throws Exception {
+        final Request copy = request.newBuilder().build();
+        final Buffer buffer = new Buffer();
+        copy.body().writeTo(buffer);
+        return buffer.readUtf8();
     }
 
     public static String readFromBuffer(Buffer buffer, Charset charset) {

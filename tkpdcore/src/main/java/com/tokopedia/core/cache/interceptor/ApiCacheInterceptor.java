@@ -70,8 +70,10 @@ public class ApiCacheInterceptor implements Interceptor {
 
         RequestParams requestParams = RequestParams.create();
 
-        requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, CacheApiUtils.getFullRequestURL(request));
-        requestParams.putString(BaseApiCacheInterceptorUseCase.METHOD, request.method());
+        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_METHOD, request.method());
+        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_HOST, request.url().host());
+        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_PATH, CacheApiUtils.getPath(request.url().toString()));
+        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_REQUEST_PARAM, CacheApiUtils.getRequestParam(request));
 
         boolean inWhiteList = checkWhiteListUseCase.getData(requestParams);
 

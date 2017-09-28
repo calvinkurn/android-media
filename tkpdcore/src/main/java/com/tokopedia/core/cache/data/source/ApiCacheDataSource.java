@@ -69,6 +69,7 @@ public class ApiCacheDataSource {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
+                CommonUtils.dumper(String.format("Inserting White List"));
                 for (CacheApiWhiteListDomain cacheApiWhiteListDomain: cacheApiDatas) {
                     CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
                     CommonUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));

@@ -3,6 +3,7 @@ package com.tokopedia.core.cache.data.repository;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
@@ -41,36 +42,47 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public Observable<Boolean> isNeedToUpdateWhiteList() {
-        String storedVersionName = localCacheHandler.getString(TkpdCache.Key.VERSION_NAME_IN_CACHE);
+    public Observable<Boolean> isWhiteListVersionUpdated() {
+        String storedVersionName = localCacheHandler.getString(TkpdCache.Key.WHITE_LIST_VERSION);
+        CommonUtils.dumper(String.format("Current vs local version: %s - %s", storedVersionName, versionName));
         // Fresh install or different version
-        if (TextUtils.isEmpty(storedVersionName) || !storedVersionName.equals(versionName)) {
-            // Update version name
-            localCacheHandler.putString(TkpdCache.Key.VERSION_NAME_IN_CACHE, versionName);
-            localCacheHandler.applyEditor();
-            return Observable.just(true);
-        } else {
-            return Observable.just(false);
-        }
+        boolean whiteListVersionUpdated = TextUtils.isEmpty(storedVersionName) || !storedVersionName.equals(versionName);
+        return Observable.just(whiteListVersionUpdated);
     }
 
     @Override
     public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
-        return isNeedToUpdateWhiteList().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+        return isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
+                CommonUtils.dumper(String.format("Need to update white list: %b", aBoolean));
                 if (!aBoolean) {
                     return Observable.just(false);
                 }
                 return Observable.zip(apiCacheDataSource.deleteAllCacheData(), apiCacheDataSource.deleteAllWhiteListData(), new Func2<Boolean, Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
+                        CommonUtils.dumper(String.format("Delete white list and cache finished"));
                         return true;
                     }
                 }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
-                        return apiCacheDataSource.insertWhiteList(cacheApiDatas);
+                        return apiCacheDataSource.insertWhiteList(cacheApiDatas).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                            @Override
+                            public Observable<Boolean> call(Boolean aBoolean) {
+                                if (!aBoolean) {
+                                    return Observable.just(false);
+                                }
+                                return updateLocalCacheWhiteListVersion();
+                            }
+                        });
+                    }
+
+                    public Observable<Boolean> updateLocalCacheWhiteListVersion() {
+                        localCacheHandler.putString(TkpdCache.Key.WHITE_LIST_VERSION, versionName);
+                        localCacheHandler.applyEditor();
+                        return Observable.just(true);
                     }
                 });
             }
