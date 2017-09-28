@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.tokopedia.posapp.data.factory.ProductFactory;
 import com.tokopedia.posapp.data.pojo.Paging;
 import com.tokopedia.posapp.data.pojo.ShopProductResponse;
-import com.tokopedia.posapp.database.manager.ProductDbManager2;
 import com.tokopedia.posapp.domain.model.product.ProductDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
@@ -20,34 +19,37 @@ import rx.functions.Func1;
 
 public class ReactProductCacheSource implements ReactCacheSource {
     private Gson gson;
-    private ProductDbManager2 productDbManager;
     private ProductFactory productFactory;
 
-    public ReactProductCacheSource() {
-        gson = new Gson();
-        productDbManager = new ProductDbManager2();
+    public ReactProductCacheSource(ProductFactory productFactory, Gson gson) {
+        this.gson = gson;
+        this.productFactory = productFactory;
     }
 
     @Override
     public Observable<String> getData(String id) {
-        return null;
+        try {
+            int productId = Integer.parseInt(id);
+            return productFactory.local().getProduct(productId)
+                    .map(getProductMapper())
+                    .map(mapToJson());
+        } catch (Exception e) {
+            return Observable.error(e);
+        }
     }
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return null;
+        return productFactory.local().getListProduct(offset, limit)
+                .map(getListMapper())
+                .map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return productDbManager.getAllData()
-                .map(mapToResponse())
-                .map(new Func1<CacheResult, String>() {
-                    @Override
-                    public String call(CacheResult cacheResult) {
-                        return gson.toJson(cacheResult);
-                    }
-                });
+        return productFactory.local().getAllProduct()
+                .map(getListMapper())
+                .map(mapToJson());
     }
 
     @Override
@@ -65,40 +67,61 @@ public class ReactProductCacheSource implements ReactCacheSource {
         return null;
     }
 
-    public Observable<String> searchProduct(String keyword, String etalaseId) {
-        return productDbManager.search(keyword, etalaseId)
-                .map(mapToResponse())
-                .map(new Func1<CacheResult, String>() {
-                    @Override
-                    public String call(CacheResult cacheResult) {
-                        return gson.toJson(cacheResult);
-                    }
-                });
+    public Observable<String> search(String keyword, String etalaseId) {
+        return productFactory.local().searchProduct(keyword, etalaseId)
+                .map(getListMapper())
+                .map(mapToJson());
     }
 
-    private Func1<List<ProductDomain>, CacheResult> mapToResponse() {
+    private Func1<List<ProductDomain>, CacheResult> getListMapper() {
         return new Func1<List<ProductDomain>, CacheResult>() {
             @Override
             public CacheResult call(List<ProductDomain> productDomains) {
                 ShopProductResponse shopProductResponse = new ShopProductResponse();
                 List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
-                for (ProductDomain productDb : productDomains) {
-                    com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
-                    item.productName = productDb.getProductName();
-                    item.productPrice = productDb.getProductPrice();
-                    item.productId = productDb.getProductId();
-                    item.productImage = productDb.getProductImage();
-                    item.productImage300 = productDb.getProductImage300();
-                    item.productImageFull = productDb.getProductImageFull();
-                    productList.add(item);
+                for (ProductDomain productDomain : productDomains) {
+                    productList.add(domainToResponse(productDomain));
                 }
                 shopProductResponse.setList(productList);
                 shopProductResponse.setTotalData(productDomains.size());
                 shopProductResponse.setPaging(new Paging());
 
-                CacheResult<ShopProductResponse> response = new CacheResult<>();
-                response.setData(shopProductResponse);
-                return response;
+                CacheResult<ShopProductResponse> cacheResult = new CacheResult<>();
+                cacheResult.setData(shopProductResponse);
+                return cacheResult;
+            }
+        };
+    }
+
+    private Func1<ProductDomain, CacheResult> getProductMapper() {
+        return new Func1<ProductDomain, CacheResult>() {
+            @Override
+            public CacheResult call(ProductDomain productDomain) {
+                CacheResult<com.tokopedia.core.shopinfo.models.productmodel.List> cacheResult =
+                        new CacheResult<>();
+                cacheResult.setData(domainToResponse(productDomain));
+
+                return cacheResult;
+            }
+        };
+    }
+
+    private com.tokopedia.core.shopinfo.models.productmodel.List domainToResponse(ProductDomain productDomain) {
+        com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
+        item.productName = productDomain.getProductName();
+        item.productPrice = productDomain.getProductPrice();
+        item.productId = productDomain.getProductId();
+        item.productImage = productDomain.getProductImage();
+        item.productImage300 = productDomain.getProductImage300();
+        item.productImageFull = productDomain.getProductImageFull();
+        return item;
+    }
+
+    private Func1<CacheResult, String> mapToJson() {
+        return new Func1<CacheResult, String>() {
+            @Override
+            public String call(CacheResult cacheResult) {
+                return gson.toJson(cacheResult);
             }
         };
     }

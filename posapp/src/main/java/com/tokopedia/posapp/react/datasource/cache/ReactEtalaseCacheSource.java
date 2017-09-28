@@ -31,21 +31,12 @@ public class ReactEtalaseCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return null;
+        return etalaseFactory.local().getListEtalase(offset, limit).map(getListMapper()).map(toJson());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return etalaseFactory.local().getAllEtalase().map(new Func1<List<EtalaseDomain>, String>() {
-            @Override
-            public String call(List<EtalaseDomain> etalaseDomains) {
-                CacheResult<ListResult<EtalaseDomain>> result = new CacheResult<>();
-                ListResult<EtalaseDomain> list = new ListResult<>();
-                list.setList(etalaseDomains);
-                result.setData(list);
-                return gson.toJson(result);
-            }
-        });
+        return etalaseFactory.local().getAllEtalase().map(getListMapper()).map(toJson());
     }
 
     @Override
@@ -61,5 +52,27 @@ public class ReactEtalaseCacheSource implements ReactCacheSource {
     @Override
     public Observable<String> update(String data) {
         return null;
+    }
+
+    private Func1<List<EtalaseDomain>, CacheResult> getListMapper() {
+        return new Func1<List<EtalaseDomain>, CacheResult>() {
+            @Override
+            public CacheResult call(List<EtalaseDomain> etalaseDomains) {
+                CacheResult<ListResult<EtalaseDomain>> result = new CacheResult<>();
+                ListResult<EtalaseDomain> list = new ListResult<>();
+                list.setList(etalaseDomains);
+                result.setData(list);
+                return result;
+            }
+        };
+    }
+
+    private Func1<CacheResult, String> toJson() {
+        return new Func1<CacheResult, String>() {
+            @Override
+            public String call(CacheResult cacheResult) {
+                return gson.toJson(cacheResult);
+            }
+        };
     }
 }

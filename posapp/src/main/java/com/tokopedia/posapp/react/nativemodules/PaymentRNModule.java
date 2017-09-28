@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.react;
+package com.tokopedia.posapp.react.nativemodules;
 
 import android.util.Log;
 
@@ -11,8 +11,8 @@ import com.facebook.react.bridge.ReactMethod;
  * Created by okasurya on 9/22/17.
  */
 
-public class ReactPaymentModule extends ReactContextBaseJavaModule {
-    public ReactPaymentModule(ReactApplicationContext reactContext) {
+public class PaymentRNModule extends ReactContextBaseJavaModule {
+    public PaymentRNModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 

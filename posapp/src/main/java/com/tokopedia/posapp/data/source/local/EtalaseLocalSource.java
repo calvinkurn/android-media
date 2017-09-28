@@ -27,4 +27,8 @@ public class EtalaseLocalSource {
     public Observable<List<EtalaseDomain>> getAllEtalase() {
         return etalaseDbManager.getAllData();
     }
+
+    public Observable<List<EtalaseDomain>> getListEtalase(int offset, int limit) {
+        return etalaseDbManager.getListData(offset, limit);
+    }
 }

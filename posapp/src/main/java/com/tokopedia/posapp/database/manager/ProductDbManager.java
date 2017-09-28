@@ -1,104 +1,95 @@
 package com.tokopedia.posapp.database.manager;
 
-import com.raizlabs.android.dbflow.config.DatabaseDefinition;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
-import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-import com.tokopedia.posapp.database.PosDatabase;
+import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.ProductDb;
+import com.tokopedia.posapp.database.model.ProductDb_Table;
+import com.tokopedia.posapp.domain.model.product.ProductDomain;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.functions.Func2;
+
 /**
- * Created by okasurya on 8/30/17.
+ * Created by okasurya on 9/16/17.
  */
 
-public class ProductDbManager implements DbManager<ProductDb, ProductDb> {
+public class ProductDbManager extends PosDbOperation<ProductDomain, ProductDb> {
     @Override
-    public void store(ProductDb data, TransactionListener callback) {
-        data.save();
+    protected ProductDb mapToDb(ProductDomain data) {
+        if(data != null) {
+            ProductDb productDb = new ProductDb();
+            productDb.setProductId(data.getProductId());
+            productDb.setProductName(data.getProductName());
+            productDb.setProductPrice(data.getProductPrice());
+            productDb.setProductPriceUnformatted(data.getProductPriceUnformatted());
+            productDb.setProductDescription(data.getProductDescription());
+            productDb.setProductUrl(data.getProductUrl());
+            productDb.setProductImage(data.getProductImage());
+            productDb.setProductImage300(data.getProductImage300());
+            productDb.setProductImageFull(data.getProductImageFull());
+            return productDb;
+        }
+
+        return null;
     }
 
     @Override
-    public void store(final List<ProductDb> data, final TransactionListener callback) {
-        DatabaseDefinition database = FlowManager.getDatabase(PosDatabase.class);
-        Transaction transaction = database.beginTransactionAsync(new ITransaction() {
-            @Override
-            public void execute(DatabaseWrapper databaseWrapper) {
-                for(ProductDb product: data) {
-                    product.save();
-                }
+    protected List<ProductDb> mapToDb(List<ProductDomain> domains) {
+        List<ProductDb> productDbs = new ArrayList<>();
+        if(domains != null) {
+            for (ProductDomain domain : domains) {
+                ProductDb productDb = mapToDb(domain);
+                if(productDb != null)  productDbs.add(productDb);
             }
-        }).success(new Transaction.Success() {
-            @Override
-            public void onSuccess(Transaction transaction) {
-                callback.onTransactionSuccess();
+        }
+        return productDbs;
+    }
+
+    @Override
+    protected ProductDomain mapToDomain(ProductDb db) {
+        if(db != null) {
+            ProductDomain productDomain = new ProductDomain();
+            productDomain.setProductId(db.getProductId());
+            productDomain.setProductName(db.getProductName());
+            productDomain.setProductPrice(db.getProductPrice());
+            productDomain.setProductPriceUnformatted(db.getProductPriceUnformatted());
+            productDomain.setProductDescription(db.getProductDescription());
+            productDomain.setProductUrl(db.getProductUrl());
+            productDomain.setProductImage(db.getProductImage());
+            productDomain.setProductImage300(db.getProductImage300());
+            productDomain.setProductImageFull(db.getProductImageFull());
+            return productDomain;
+        }
+
+        return null;
+    }
+
+    @Override
+    protected List<ProductDomain> mapToDomain(List<ProductDb> dbs) {
+        List<ProductDomain> productDomains = new ArrayList<>();
+        if(dbs != null) {
+            for (ProductDb db : dbs) {
+                ProductDomain productDomain = mapToDomain(db);
+                if(productDomain != null)  productDomains.add(productDomain);
             }
-        }).error(new Transaction.Error() {
-            @Override
-            public void onError(Transaction transaction, Throwable error) {
-                callback.onError(error);
-            }
-        }).build();
-
-        transaction.execute();
+        }
+        return productDomains;
     }
 
     @Override
-    public void update(ProductDb data, TransactionListener callback) {
-        data.update();
+    protected Class<ProductDb> getDbClass() {
+        return ProductDb.class;
     }
 
     @Override
-    public void delete(ConditionGroup conditions, TransactionListener callback) {
-        ProductDb productDb = SQLite.select().from(ProductDb.class).where(conditions).querySingle();
-        if(productDb != null) productDb.delete();
-    }
-
-    @Override
-    public void delete(ProductDb data, TransactionListener callback) {
-
-    }
-
-    @Override
-    public void deleteAll(TransactionListener callback) {
-    }
-
-    @Override
-    public ProductDb first(ConditionGroup conditions) {
-        return SQLite.select().from(ProductDb.class).where(conditions).querySingle();
-    }
-
-    @Override
-    public ProductDb first() {
-        return SQLite.select().from(ProductDb.class).querySingle();
-    }
-
-    @Override
-    public List<ProductDb> getListData(ConditionGroup conditions) {
-        return SQLite.select().from(ProductDb.class).where(conditions).queryList();
-    }
-
-    @Override
-    public List<ProductDb> getListData(ConditionGroup conditions, int offset, int limit) {
-        return SQLite.select().from(ProductDb.class).where(conditions).offset(offset).limit(limit).queryList();
-    }
-
-    @Override
-    public List<ProductDb> getListData(int offset, int limit) {
-        return SQLite.select().from(ProductDb.class).offset(offset).limit(limit).queryList();
-    }
-
-    @Override
-    public List<ProductDb> getAllData() {
-        return SQLite.select().from(ProductDb.class).queryList();
-    }
-
-    @Override
-    public boolean isTableEmpty() {
-        return getAllData().size() == 0;
+    public Observable<DataStatus> delete(ProductDomain domain) {
+        return executeDelete(
+                getDbClass(),
+                ConditionGroup.clause().and(ProductDb_Table.productId.eq(domain.getProductId()))
+        );
     }
 }

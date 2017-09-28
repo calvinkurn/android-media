@@ -139,7 +139,7 @@ public class DrawerPosHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.POS_OUTLET:
                     posSessionHandler.showPasswordDialog(
-                            context.getString(R.string.drawer_title_pos_riwayat_tx),
+                            context.getString(R.string.drawer_title_pos_choose_outlet),
                             new PosSessionHandler.PasswordListener() {
                                 @Override
                                 public void onSuccess() {

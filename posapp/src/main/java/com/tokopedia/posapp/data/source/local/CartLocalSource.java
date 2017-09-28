@@ -5,7 +5,6 @@ import com.tokopedia.posapp.database.manager.CartDbManager;
 import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.database.model.CartDb_Table;
-import com.tokopedia.posapp.database.model.ProductDb;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
 import com.tokopedia.posapp.domain.model.cart.ATCStatusDomain;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by okasurya on 8/22/17.
@@ -46,7 +46,7 @@ public class CartLocalSource {
     }
 
     public Observable<List<CartDomain>> getAllCartProducts() {
-        return cartDbManager.getAllData().map(getProductData());
+        return cartDbManager.getAllData().flatMap(getProducts());
     }
 
     public Observable<CartDomain> getCartProduct(int productId) {
@@ -56,30 +56,7 @@ public class CartLocalSource {
     }
 
     public Observable<List<CartDomain>> getCartProducts(int offset, int limit) {
-        return cartDbManager.getListData(offset, limit).map(getProductData());
-    }
-
-    private ProductDomain mapToDomain(ProductDb productDb) {
-        if(productDb != null) {
-            ProductDomain productDomain = new ProductDomain();
-            productDomain.setProductId(productDb.getProductId());
-            productDomain.setProductName(productDb.getProductName());
-            productDomain.setProductUrl(productDb.getProductUrl());
-            productDomain.setProductPrice(productDb.getProductPrice());
-            productDomain.setProductPriceUnformatted(productDb.getProductPriceUnformatted());
-            productDomain.setProductImage(productDb.getProductImage());
-            productDomain.setProductImage300(productDb.getProductImage300());
-            productDomain.setProductImageFull(productDb.getProductImageFull());
-            return productDomain;
-        }
-
-        return null;
-    }
-
-    private ProductDb getProduct(int productId) {
-        return productDbManager.first(
-                ConditionGroup.clause().and(ProductDb_Table.productId.eq(productId))
-        );
+        return cartDbManager.getListData(offset, limit).flatMap(getProducts());
     }
 
     private Func1<DataStatus, ATCStatusDomain> getATCDefaultStatus() {
@@ -100,17 +77,34 @@ public class CartLocalSource {
         };
     }
 
-    private Func1<List<CartDomain>, List<CartDomain>> getProductData() {
-        return new Func1<List<CartDomain>, List<CartDomain>>() {
+    public Func1<List<CartDomain>,? extends Observable<List<CartDomain>>> getProducts() {
+        return new Func1<List<CartDomain>, Observable<List<CartDomain>>>() {
             @Override
-            public List<CartDomain> call(List<CartDomain> cartDomains) {
-                for (int i = 0; i < cartDomains.size(); i++) {
-                    ProductDomain productDomain = mapToDomain(getProduct(cartDomains.get(i).getProductId()));
-                    if (productDomain != null) {
-                        cartDomains.get(i).setProduct(productDomain);
-                    }
-                }
-                return cartDomains;
+            public Observable<List<CartDomain>> call(List<CartDomain> cartDomains) {
+                return Observable.just(cartDomains)
+                        .flatMapIterable(new Func1<List<CartDomain>, Iterable<CartDomain>>() {
+                            @Override
+                            public Iterable<CartDomain> call(List<CartDomain> cartDomains) {
+                                return cartDomains;
+                            }
+                        })
+                        .flatMap(new Func1<CartDomain, Observable<CartDomain>>() {
+                            @Override
+                            public Observable<CartDomain> call(CartDomain cartDomain) {
+                                return Observable.zip(
+                                    Observable.just(cartDomain),
+                                    productDbManager.getData(ConditionGroup.clause().and(ProductDb_Table.productId.eq(cartDomain.getProductId()))),
+                                    new Func2<CartDomain, ProductDomain, CartDomain>() {
+                                        @Override
+                                        public CartDomain call(CartDomain cartDomain, ProductDomain productDomain) {
+                                            cartDomain.setProduct(productDomain);
+                                            return cartDomain;
+                                        }
+                                    }
+                                );
+                            }
+                        })
+                        .toList();
             }
         };
     }

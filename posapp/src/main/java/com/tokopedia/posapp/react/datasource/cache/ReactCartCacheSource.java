@@ -24,7 +24,8 @@ public class ReactCartCacheSource implements ReactCacheSource {
     private Gson gson;
     private CartFactory cartFactory;
 
-    public ReactCartCacheSource(CartFactory cartFactory, Gson gson) {
+    public ReactCartCacheSource(CartFactory cartFactory,
+                                Gson gson) {
         this.gson = gson;
         this.cartFactory = cartFactory;
     }
@@ -81,7 +82,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
         };
     }
 
-    private Func1< List<CartDomain>,String> getCartListMapper() {
+    private Func1<List<CartDomain>, String> getCartListMapper() {
         return new Func1<List<CartDomain>, String>() {
             @Override
             public String call(List<CartDomain> cartDomains) {
@@ -89,7 +90,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
 
                 ListResult<CartResponse> list = new ListResult<>();
                 List<CartResponse> cartResponses = new ArrayList<>();
-                for(CartDomain cartDomain : cartDomains) {
+                for (CartDomain cartDomain : cartDomains) {
                     cartResponses.add(getCartResponse(cartDomain));
                 }
 
@@ -107,7 +108,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
             public String call(ATCStatusDomain atcStatusDomain) {
                 CacheResult<StatusResult> response = new CacheResult<>();
                 StatusResult statusResult = new StatusResult();
-                if(atcStatusDomain.getStatus() == ATCStatusDomain.RESULT_ADD_TO_CART_SUCCESS) {
+                if (atcStatusDomain.getStatus() == ATCStatusDomain.RESULT_ADD_TO_CART_SUCCESS) {
                     statusResult.setStatus(true);
                     statusResult.setMessage(atcStatusDomain.getMessage());
                 } else {

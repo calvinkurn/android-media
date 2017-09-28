@@ -1,7 +1,6 @@
 package com.tokopedia.posapp.di.module;
 
 import com.tokopedia.posapp.di.scope.PosCacheScope;
-import com.tokopedia.posapp.di.scope.ProductScope;
 
 import dagger.Module;
 
@@ -10,7 +9,6 @@ import dagger.Module;
  */
 // TODO: 9/20/17 fix scope structure
 @PosCacheScope
-@ProductScope
 @Module(includes = {EtalaseModule.class, ProductModule.class, BankModule.class})
 public class PosCacheModule {
 

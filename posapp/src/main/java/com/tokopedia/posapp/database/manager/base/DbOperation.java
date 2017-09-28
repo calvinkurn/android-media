@@ -8,7 +8,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-import com.tokopedia.posapp.database.QueryParameter;
 import com.tokopedia.posapp.domain.model.DataStatus;
 
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by okasurya on 9/15/17.
@@ -69,7 +69,7 @@ public abstract class DbOperation<T, D extends BaseModel> {
                     @Override
                     public List<D> call(List<T> domains) {
                         List<D> dbs = new ArrayList<D>();
-                        for(T domain: domains) {
+                        for (T domain : domains) {
                             D db = mapToDb(domain);
                             dbs.add(db);
                         }
@@ -118,26 +118,25 @@ public abstract class DbOperation<T, D extends BaseModel> {
                     @Override
                     public List<T> call(ConditionGroup conditions) {
                         return mapToDomain(
-                            SQLite.select().from(getDbClass()).where(conditions).queryList()
+                                SQLite.select().from(getDbClass()).where(conditions).queryList()
                         );
                     }
                 });
     }
 
     public Observable<List<T>> getListData(int offset, int limit) {
-        QueryParameter q = new QueryParameter();
-        q.setOffset(offset);
-        q.setLimit(limit);
-
-        return Observable.just(q)
-                .map(new Func1<QueryParameter, List<T>>() {
+        return Observable.zip(
+                Observable.just(offset),
+                Observable.just(limit),
+                new Func2<Integer, Integer, List<T>>() {
                     @Override
-                    public List<T> call(QueryParameter q) {
+                    public List<T> call(Integer offset, Integer limit) {
                         return mapToDomain(
-                            SQLite.select().from(getDbClass()).offset(q.getOffset()).limit(q.getLimit()).queryList()
+                                SQLite.select().from(getDbClass()).offset(offset).limit(limit).queryList()
                         );
                     }
-                });
+                }
+        );
     }
 
     public Observable<List<T>> getAllData() {
@@ -157,7 +156,7 @@ public abstract class DbOperation<T, D extends BaseModel> {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
-                        if(data != null) data.save();
+                        if (data != null) data.save();
                     }
                 }).success(defaultSuccessListener(subscriber))
                         .error(defaultErrorListener(subscriber))
@@ -173,8 +172,8 @@ public abstract class DbOperation<T, D extends BaseModel> {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
-                        for(D data : datas) {
-                            if(data != null) data.save();
+                        for (D data : datas) {
+                            if (data != null) data.save();
                         }
                     }
                 }).success(defaultSuccessListener(subscriber))
@@ -191,7 +190,7 @@ public abstract class DbOperation<T, D extends BaseModel> {
                 getDatabase().beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
-                        if(data != null) data.update();
+                        if (data != null) data.update();
                     }
                 }).success(defaultSuccessListener(subscriber))
                         .error(defaultErrorListener(subscriber))

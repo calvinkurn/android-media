@@ -1,10 +1,10 @@
-package com.tokopedia.posapp.database;
+package com.tokopedia.posapp.database.manager.base;
 
 /**
  * Created by okasurya on 8/28/17.
  */
 
-public class QueryParameter {
+class QueryParameter {
     private int offset;
     private int limit;
 

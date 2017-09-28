@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.react;
+package com.tokopedia.posapp.react.nativemodules;
 
 import android.content.Context;
 
@@ -13,10 +13,10 @@ import com.tokopedia.posapp.PosSessionHandler;
  * Created by okasurya on 9/14/17.
  */
 
-public class ReactSessionModule extends ReactContextBaseJavaModule {
+public class SessionRNModule extends ReactContextBaseJavaModule {
     private Context context;
 
-    public ReactSessionModule(ReactApplicationContext reactContext) {
+    public SessionRNModule(ReactApplicationContext reactContext) {
         super(reactContext);
         context = reactContext;
     }

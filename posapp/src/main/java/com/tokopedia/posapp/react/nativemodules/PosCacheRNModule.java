@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.react;
+package com.tokopedia.posapp.react.nativemodules;
 
 import android.content.Context;
 
@@ -20,13 +20,13 @@ import rx.schedulers.Schedulers;
  * Created by okasurya on 8/25/17.
  */
 
-public class ReactPosCacheModule extends ReactContextBaseJavaModule {
+public class PosCacheRNModule extends ReactContextBaseJavaModule {
     @Inject
     ReactCacheRepository reactCacheRepository;
 
     private Context context;
 
-    public ReactPosCacheModule(ReactApplicationContext reactContext) {
+    public PosCacheRNModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
         initInjection();

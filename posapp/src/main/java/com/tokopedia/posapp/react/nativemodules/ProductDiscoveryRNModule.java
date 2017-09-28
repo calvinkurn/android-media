@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.react;
+package com.tokopedia.posapp.react.nativemodules;
 
 import android.content.Context;
 
@@ -20,7 +20,7 @@ import rx.Subscriber;
  * Created by okasurya on 9/18/17.
  */
 
-public class ReactProductDiscoveryModule extends ReactContextBaseJavaModule {
+public class ProductDiscoveryRNModule extends ReactContextBaseJavaModule {
     private Context context;
 
     @Inject
@@ -29,7 +29,7 @@ public class ReactProductDiscoveryModule extends ReactContextBaseJavaModule {
     @Inject
     Gson gson;
 
-    public ReactProductDiscoveryModule(ReactApplicationContext reactContext) {
+    public ProductDiscoveryRNModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
         initInjection();
@@ -52,23 +52,24 @@ public class ReactProductDiscoveryModule extends ReactContextBaseJavaModule {
 
     public void search(String data, final Promise promise) {
         ProductSearchRequest request = gson.fromJson(data, ProductSearchRequest.class);
-        reactProductCacheSource.searchProduct(request.getKeyword(), request.getEtalaseId()).subscribe(
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+        reactProductCacheSource.search(request.getKeyword(), request.getEtalaseId())
+                .subscribe(
+                    new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        promise.reject(e);
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            promise.reject(e);
+                        }
 
-                    @Override
-                    public void onNext(String s) {
-                        promise.resolve(s);
+                        @Override
+                        public void onNext(String s) {
+                            promise.resolve(s);
+                        }
                     }
-                }
-        );
+                );
     }
 }
