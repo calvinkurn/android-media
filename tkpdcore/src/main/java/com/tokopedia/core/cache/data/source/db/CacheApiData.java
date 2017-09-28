@@ -11,8 +11,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
 /**
  * Created by normansyahputa on 8/9/17.
  */
-@Table(database = DbFlowDatabase.class,
-        uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.REPLACE)})
+@Table(database = DbFlowDatabase.class, updateConflict = ConflictAction.REPLACE, insertConflict = ConflictAction.REPLACE)
 public class CacheApiData extends BaseModel {
 
     @PrimaryKey

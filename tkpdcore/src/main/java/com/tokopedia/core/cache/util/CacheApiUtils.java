@@ -23,7 +23,9 @@ import okio.Okio;
  */
 
 public class CacheApiUtils {
-    private static final long DAFAULT_MAX_CONTENT_LENGTH = 250000L;
+    private static final long DEFAULT_MAX_CONTENT_LENGTH = 250000L;
+
+    private static final String[] UNUSED_PARAM = {"hash", "device_time", "device_id"};
 
     private static final String HTTPS = "https://";
     private static final String COM_WITH_SLASH = ".com/";
@@ -76,10 +78,11 @@ public class CacheApiUtils {
                 }
                 requestParam += bodyText;
             }
+            requestParam = getRemovedUnusedRequestParam(requestParam);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return requestParam;
+        return requestParam.trim();
     }
 
     private static String getBodyRequest(final Request request) throws Exception {
@@ -89,9 +92,16 @@ public class CacheApiUtils {
         return buffer.readUtf8();
     }
 
+    private static String getRemovedUnusedRequestParam(String url) {
+        for (String param: UNUSED_PARAM) {
+            url = url.replaceAll("[?&]" + param + ".*?(?=&|\\?|$)", "");
+        }
+        return url;
+    }
+
     public static String readFromBuffer(Buffer buffer, Charset charset) {
         long bufferSize = buffer.size();
-        long maxBytes = Math.min(bufferSize, DAFAULT_MAX_CONTENT_LENGTH);
+        long maxBytes = Math.min(bufferSize, DEFAULT_MAX_CONTENT_LENGTH);
         String body = "";
         try {
             body = buffer.readString(maxBytes, charset);
@@ -127,8 +137,8 @@ public class CacheApiUtils {
 
     public static BufferedSource getNativeSource(Response response) throws IOException {
         if (bodyGzipped(response.headers())) {
-            BufferedSource source = response.peekBody(DAFAULT_MAX_CONTENT_LENGTH).source();
-            if (source.buffer().size() < DAFAULT_MAX_CONTENT_LENGTH) {
+            BufferedSource source = response.peekBody(DEFAULT_MAX_CONTENT_LENGTH).source();
+            if (source.buffer().size() < DEFAULT_MAX_CONTENT_LENGTH) {
                 return getNativeSource(source, true);
             } else {
                 CommonUtils.dumper("gzip encoded response was too long");
