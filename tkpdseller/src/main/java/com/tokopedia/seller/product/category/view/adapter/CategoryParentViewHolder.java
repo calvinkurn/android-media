@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
+import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 
 /**
  * @author sebastianuskh on 4/4/17.
@@ -39,7 +39,7 @@ class CategoryParentViewHolder extends CategoryPickerViewHolder  {
         progressBar.setVisibility(View.GONE);
         imageChevron.setVisibility(View.VISIBLE);
         if (isSelected){
-            setView(context.getResources().getColor(R.color.font_top_ads_green), context
+            setView(context.getResources().getColor(R.color.tkpd_main_green), context
                     .getResources()
                     .getDrawable(R.drawable.chevron_up));
         } else {

@@ -99,6 +99,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
         if (confirmBookingViewModel != null && !TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             promoEditText.setText(String.valueOf(confirmBookingViewModel.getPromoCode()));
             descriptionTextView.setText(String.valueOf(confirmBookingViewModel.getPromoDescription()));
+            descriptionTextView.setVisibility(View.VISIBLE);
         } else {
             descriptionTextView.setVisibility(View.GONE);
         }

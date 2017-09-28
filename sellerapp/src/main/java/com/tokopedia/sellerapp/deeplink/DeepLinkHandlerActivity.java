@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -13,27 +12,34 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
+import com.tokopedia.gm.applink.GMApplinkModule;
+import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.topads.applink.TopAdsApplinkModule;
+import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 
 /**
  * @author rizkyfadillah on 26/07/17.
  */
 @DeepLinkHandler({
         DigitalApplinkModule.class,
-        SellerApplinkModule.class
+        SellerApplinkModule.class,
+        TopAdsApplinkModule.class,
+        GMApplinkModule.class
 })
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
                 new DigitalApplinkModuleLoader(),
-                new SellerApplinkModuleLoader()
+                new SellerApplinkModuleLoader(),
+                new TopAdsApplinkModuleLoader(),
+                new GMApplinkModuleLoader()
         );
     }
 

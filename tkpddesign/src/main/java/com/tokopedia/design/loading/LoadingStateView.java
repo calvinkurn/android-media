@@ -141,6 +141,10 @@ public class LoadingStateView extends FrameLayout {
         return emptyView;
     }
 
+    public View getErrorView() {
+        return errorView;
+    }
+
     public void setEmptyViewRes(@LayoutRes int layoutRes) {
         View emptyView = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
         setEmptyView(emptyView);

@@ -52,14 +52,13 @@ import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.model.NetworkParam;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.presenter.BrowsePresenter;
 import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
 import com.tokopedia.discovery.presenter.BrowseView;
@@ -460,10 +459,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                            String parentDepartment,
                            String departmentId,
                            Map<String, String> filters) {
-        DynamicFilterActivity.moveTo(BrowseProductActivity.this,
-                filters, getProductBreadCrumb(),
-                filterAttribute.getFilter(),
-                parentDepartment, source, departmentId);
+        RevampedDynamicFilterActivity.moveTo(BrowseProductActivity.this,
+                filterAttribute.getFilter());
     }
 
     @Override
@@ -499,7 +496,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_SORT:
-                case DynamicFilterView.REQUEST_CODE:
+                case RevampedDynamicFilterActivity.REQUEST_CODE:
                     browsePresenter.handleResultData(requestCode, data);
                     BrowseParentFragment parentFragment = (BrowseParentFragment)
                             fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
