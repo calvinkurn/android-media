@@ -76,6 +76,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        TrackingUtils.startTrace("favorite_trace");
         super.onCreate(savedInstanceState);
     }
 
