@@ -82,10 +82,15 @@ public class GetOpportunityListParam implements Parcelable {
     }
 
     public void setSort(FilterPass sort) {
-        for (FilterPass filterPass : this.listFilter) {
-            if (filterPass.getKey().equals(sort.getKey())) {
-                filterPass.setValue(sort.getValue());
+        int index = -1;
+        for (int i = 0; i < this.listFilter.size(); i++) {
+            if (this.listFilter.get(i).getKey().equals(sort.getKey())) {
+                index = i;
+                break;
             }
         }
+        if (index != -1)
+            this.listFilter.remove(index);
+        this.listFilter.add(sort);
     }
 }
