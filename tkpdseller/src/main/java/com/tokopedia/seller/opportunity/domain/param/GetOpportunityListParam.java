@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by nisie on 3/2/17.
@@ -58,8 +57,15 @@ public class GetOpportunityListParam implements Parcelable {
         return listFilter;
     }
 
-    public void setListFilter(ArrayList<FilterPass> listFilter) {
-        this.listFilter = listFilter;
+    public void setFilter(ArrayList<FilterPass> listFilter) {
+        for (FilterPass filterPass : this.listFilter) {
+            for (FilterPass newFilter : listFilter) {
+                if (filterPass.getKey().equals(newFilter.getKey())) {
+                    this.listFilter.remove(filterPass);
+                }
+            }
+        }
+        this.listFilter.addAll(listFilter);
     }
 
 
@@ -76,6 +82,11 @@ public class GetOpportunityListParam implements Parcelable {
     }
 
     public void setSort(FilterPass sort) {
+        for (FilterPass filterPass : this.listFilter) {
+            if (filterPass.getKey().equals(sort.getKey())) {
+                this.listFilter.remove(filterPass);
+            }
+        }
         this.listFilter.add(sort);
     }
 }

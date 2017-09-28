@@ -480,7 +480,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         ArrayList<FilterPass> listPass = opportunityFilterPassModel.getListPass();
 
         if (listPass != null) {
-            opportunityParam.setListFilter(listPass);
+            opportunityParam.setFilter(listPass);
             resetOpportunityList();
         }
     }
