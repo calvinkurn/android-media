@@ -17,7 +17,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.di.component.DaggerCheckPasswordComponent;
+import com.tokopedia.posapp.di.component.DaggerValidatePasswordComponent;
 import com.tokopedia.posapp.view.DialogPassword;
 import com.tokopedia.posapp.view.presenter.DialogPasswordPresenter;
 
@@ -81,12 +81,12 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
 
     private void initInjector() {
         AppComponent appComponent = ((MainApplication) getContext().getApplicationContext()).getApplicationComponent();
-        DaggerCheckPasswordComponent daggerCheckPasswordComponent =
-                (DaggerCheckPasswordComponent) DaggerCheckPasswordComponent.builder()
+        DaggerValidatePasswordComponent daggerValidatePasswordComponent =
+                (DaggerValidatePasswordComponent) DaggerValidatePasswordComponent.builder()
                         .appComponent(appComponent)
                         .build();
 
-        daggerCheckPasswordComponent.inject(this);
+        daggerValidatePasswordComponent.inject(this);
     }
 
     private View getDialogView() {

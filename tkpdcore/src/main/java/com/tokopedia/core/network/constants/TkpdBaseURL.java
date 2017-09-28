@@ -261,6 +261,8 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+
+        public static final String PATH_VALIDATE_PASSWORD = "api/v1/validate-password";
     }
 
     public static class Shop {

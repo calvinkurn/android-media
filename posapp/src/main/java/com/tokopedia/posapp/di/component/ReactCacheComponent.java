@@ -4,6 +4,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.module.ReactCacheModule;
 import com.tokopedia.posapp.di.scope.ReactCacheScope;
 import com.tokopedia.posapp.react.ReactPosCacheModule;
+import com.tokopedia.posapp.react.ReactProductDiscoveryModule;
 
 import dagger.Component;
 
@@ -18,4 +19,5 @@ import dagger.Component;
 )
 public interface ReactCacheComponent {
     void inject(ReactPosCacheModule reactPosCacheModule);
+    void inject(ReactProductDiscoveryModule reactProductDiscoveryModule);
 }

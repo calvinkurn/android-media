@@ -122,11 +122,37 @@ public class DrawerPosHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     break;
                 case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
-                    startIntent(context, TransactionHistoryActivity.class);
+                    posSessionHandler.showPasswordDialog(
+                        context.getString(R.string.drawer_title_pos_riwayat_tx),
+                        new PosSessionHandler.PasswordListener() {
+                            @Override
+                            public void onSuccess() {
+                                startIntent(context, TransactionHistoryActivity.class);
+                            }
+
+                            @Override
+                            public void onError(String message) {
+
+                            }
+                        }
+                    );
                     break;
                 case TkpdState.DrawerPosition.POS_OUTLET:
-                    startIntent(context, OutletActivity.class);
-                    context.finish();
+                    posSessionHandler.showPasswordDialog(
+                            context.getString(R.string.drawer_title_pos_riwayat_tx),
+                            new PosSessionHandler.PasswordListener() {
+                                @Override
+                                public void onSuccess() {
+                                    startIntent(context, OutletActivity.class);
+                                    context.finish();
+                                }
+
+                                @Override
+                                public void onError(String message) {
+
+                                }
+                            }
+                    );
                     break;
                 default:
                     super.onItemClicked(item);

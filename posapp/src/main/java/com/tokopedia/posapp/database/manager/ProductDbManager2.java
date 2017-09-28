@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func2;
 
 /**
  * Created by okasurya on 9/16/17.
@@ -90,5 +91,16 @@ public class ProductDbManager2 extends PosDbOperation<ProductDomain, ProductDb> 
                 getDbClass(),
                 ConditionGroup.clause().and(ProductDb_Table.productId.eq(domain.getProductId()))
         );
+    }
+
+    public Observable<List<ProductDomain>> search(String keyword, String etalaseId) {
+        if(etalaseId != null && !etalaseId.isEmpty()) {
+            return getListData(ConditionGroup.clause()
+                    .and(ProductDb_Table.productName.like(keyword))
+                    .and(ProductDb_Table.etalaseId.eq(etalaseId)));
+        } else {
+            return getListData(ConditionGroup.clause()
+                    .and(ProductDb_Table.productName.like(keyword)));
+        }
     }
 }

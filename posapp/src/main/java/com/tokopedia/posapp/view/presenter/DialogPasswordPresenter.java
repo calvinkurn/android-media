@@ -10,7 +10,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.domain.model.CheckPasswordDomain;
-import com.tokopedia.posapp.domain.usecase.CheckPasswordUseCase;
+import com.tokopedia.posapp.domain.usecase.ValidatePasswordUseCase;
 import com.tokopedia.posapp.view.DialogPassword;
 import com.tokopedia.posapp.view.subscriber.CheckPasswordSubscriber;
 import com.tokopedia.session.session.presenter.Login;
@@ -37,43 +37,22 @@ public class DialogPasswordPresenter implements DialogPassword.Presenter {
     private static final String PARAM_TIMESTAMP = "device_time";
 
     private Context context;
-    private ProfileUseCase profileUseCase;
-    private CheckPasswordUseCase checkPasswordUseCase;
+    private ValidatePasswordUseCase validatePasswordUseCase;
     private DialogPassword.View viewListener;
 
     @Inject
     public DialogPasswordPresenter(@ApplicationContext Context context,
-                                   ProfileUseCase profileUseCase,
-                                   CheckPasswordUseCase checkPasswordUseCase) {
+                                   ValidatePasswordUseCase validatePasswordUseCase) {
         this.context = context;
-        this.profileUseCase = profileUseCase;
-        this.checkPasswordUseCase = checkPasswordUseCase;
+        this.validatePasswordUseCase = validatePasswordUseCase;
     }
 
     @Override
     public void checkPassword(final String password) {
-        Observable.zip(
-            profileUseCase.createObservable(RequestParams.EMPTY),
-            Observable.just(password),
-            new Func2<ProfileModel, String, RequestParams>() {
-                @Override
-                public RequestParams call(ProfileModel profileModel, String password) {
-                    return getUserParams(
-                        profileModel.getProfileData().getUserInfo().getUserEmail(),
-                        password
-                    );
-                }
-            }
-        )
-        .flatMap(new Func1<RequestParams, Observable<CheckPasswordDomain>>() {
-            @Override
-            public Observable<CheckPasswordDomain> call(RequestParams params) {
-                return checkPasswordUseCase.createObservable(params);
-            }
-        })
-        .subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new CheckPasswordSubscriber(viewListener));
+        RequestParams params = RequestParams.create();
+        params.putString("password", password);
+
+        validatePasswordUseCase.execute(params, new CheckPasswordSubscriber(viewListener));
     }
 
     private RequestParams getUserParams(String email, String password) {

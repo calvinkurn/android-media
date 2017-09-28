@@ -16,6 +16,7 @@ public interface PosReactConst {
         String LOCAL_CART = "LOCAL_CART";
         String PAYMENT_PROCESSING = "PROCESSING";
         String TRANSACTION_HISTORY = "HISTORY";
+        String INSTALLMENT = "CICILAN";
     }
 
     interface CacheTable {

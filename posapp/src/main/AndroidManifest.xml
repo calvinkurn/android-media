@@ -30,7 +30,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".PosAppSplashScreen">
+        <activity android:name=".PosAppSplashScreen"
+            android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -73,6 +74,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.TransactionHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.ReactInstallmentActivity"
             android:screenOrientation="portrait" />
     </application>
 

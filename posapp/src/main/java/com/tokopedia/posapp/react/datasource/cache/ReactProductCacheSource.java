@@ -1,14 +1,11 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.posapp.data.factory.ProductFactory;
 import com.tokopedia.posapp.data.pojo.Paging;
 import com.tokopedia.posapp.data.pojo.ShopProductResponse;
-import com.tokopedia.posapp.database.manager.ProductDbManager;
-import com.tokopedia.posapp.database.model.ProductDb;
-import com.tokopedia.posapp.database.model.ProductDb_Table;
+import com.tokopedia.posapp.database.manager.ProductDbManager2;
+import com.tokopedia.posapp.domain.model.product.ProductDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
@@ -23,11 +20,12 @@ import rx.functions.Func1;
 
 public class ReactProductCacheSource implements ReactCacheSource {
     private Gson gson;
-    private ProductDbManager productDbManager;
+    private ProductDbManager2 productDbManager;
+    private ProductFactory productFactory;
 
     public ReactProductCacheSource() {
         gson = new Gson();
-        productDbManager = new ProductDbManager();
+        productDbManager = new ProductDbManager2();
     }
 
     @Override
@@ -42,31 +40,12 @@ public class ReactProductCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> getDataAll() {
-        List<ProductDb> productDbs = productDbManager.getAllData();
-        ShopProductResponse shopProductResponse = new ShopProductResponse();
-        List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
-        for(ProductDb productDb : productDbs) {
-            com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
-            item.productName = productDb.getProductName();
-            item.productPrice = productDb.getProductPrice();
-            item.productId = productDb.getProductId();
-            item.productImage = productDb.getProductImage();
-            item.productImage300 = productDb.getProductImage300();
-            item.productImageFull = productDb.getProductImageFull();
-            productList.add(item);
-        }
-        shopProductResponse.setList(productList);
-        shopProductResponse.setTotalData(productDbs.size());
-        shopProductResponse.setPaging(new Paging());
-
-        final CacheResult<ShopProductResponse> response = new CacheResult<>();
-        response.setData(shopProductResponse);
-
-        return Observable.just(response)
+        return productDbManager.getAllData()
+                .map(mapToResponse())
                 .map(new Func1<CacheResult, String>() {
                     @Override
-                    public String call(CacheResult response) {
-                        return gson.toJson(response);
+                    public String call(CacheResult cacheResult) {
+                        return gson.toJson(cacheResult);
                     }
                 });
     }
@@ -86,11 +65,41 @@ public class ReactProductCacheSource implements ReactCacheSource {
         return null;
     }
 
-    public Observable<String> searchProduct(String keyword, String etalaseId, int offset, int limit) {
-//        ConditionGroup conditions = ConditionGroup.clause()
-//                .and(ProductDb_Table.productName.like(keyword))
-//                .and(ProductDb_Table.)
-//        productDbManager.getDataList()
-        return null;
+    public Observable<String> searchProduct(String keyword, String etalaseId) {
+        return productDbManager.search(keyword, etalaseId)
+                .map(mapToResponse())
+                .map(new Func1<CacheResult, String>() {
+                    @Override
+                    public String call(CacheResult cacheResult) {
+                        return gson.toJson(cacheResult);
+                    }
+                });
+    }
+
+    private Func1<List<ProductDomain>, CacheResult> mapToResponse() {
+        return new Func1<List<ProductDomain>, CacheResult>() {
+            @Override
+            public CacheResult call(List<ProductDomain> productDomains) {
+                ShopProductResponse shopProductResponse = new ShopProductResponse();
+                List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
+                for (ProductDomain productDb : productDomains) {
+                    com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
+                    item.productName = productDb.getProductName();
+                    item.productPrice = productDb.getProductPrice();
+                    item.productId = productDb.getProductId();
+                    item.productImage = productDb.getProductImage();
+                    item.productImage300 = productDb.getProductImage300();
+                    item.productImageFull = productDb.getProductImageFull();
+                    productList.add(item);
+                }
+                shopProductResponse.setList(productList);
+                shopProductResponse.setTotalData(productDomains.size());
+                shopProductResponse.setPaging(new Paging());
+
+                CacheResult<ShopProductResponse> response = new CacheResult<>();
+                response.setData(shopProductResponse);
+                return response;
+            }
+        };
     }
 }

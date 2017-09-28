@@ -10,13 +10,12 @@ import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.domain.model.ListDomain;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
-import com.tokopedia.posapp.domain.model.result.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
-import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
+import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
 import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
-import com.tokopedia.posapp.domain.usecase.GetShopProductListUseCase;
+import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreBankUsecase;
 import com.tokopedia.posapp.domain.usecase.StoreEtalaseCacheUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
@@ -48,7 +47,7 @@ public class CachePresenter implements Cache.Presenter {
     private static final String WHOLESALE = "wholesale";
 
     private Context context;
-    private GetShopProductListUseCase getShopProductListUseCase;
+    private GetProductListUseCase getProductListUseCase;
     private StoreProductCacheUseCase storeProductCacheUseCase;
     private GetBankUseCase getBankUseCase;
     private StoreBankUsecase storeBankUsecase;
@@ -63,7 +62,7 @@ public class CachePresenter implements Cache.Presenter {
 
     @Inject
     public CachePresenter(@ApplicationContext Context context,
-                          GetShopProductListUseCase getShopProductListUseCase,
+                          GetProductListUseCase getProductListUseCase,
                           StoreProductCacheUseCase storeProductCacheUseCase,
                           GetBankUseCase getBankUseCase,
                           StoreBankUsecase storeBankUsecase,
@@ -71,7 +70,7 @@ public class CachePresenter implements Cache.Presenter {
                           StoreEtalaseCacheUseCase storeEtalaseCacheUseCase
     ) {
         this.context = context;
-        this.getShopProductListUseCase = getShopProductListUseCase;
+        this.getProductListUseCase = getProductListUseCase;
         this.storeProductCacheUseCase = storeProductCacheUseCase;
         this.getBankUseCase = getBankUseCase;
         this.storeBankUsecase = storeBankUsecase;
@@ -139,11 +138,11 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private void getProduct() {
-        Observable.defer(new Func0<Observable<ShopProductListDomain>>() {
+        Observable.defer(new Func0<Observable<ProductListDomain>>() {
             @Override
-            public Observable<ShopProductListDomain> call() {
+            public Observable<ProductListDomain> call() {
                 if(isRequestNextProduct) {
-                    return getShopProductListUseCase.createObservable(getProductParam(productPage));
+                    return getProductListUseCase.createObservable(getProductParam(productPage));
                 }
 
                 return Observable.error(null);
@@ -213,7 +212,7 @@ public class CachePresenter implements Cache.Presenter {
 
     }
 
-    private class ProductSubscriber extends Subscriber<ShopProductListDomain> {
+    private class ProductSubscriber extends Subscriber<ProductListDomain> {
         @Override
         public void onCompleted() {
             Log.d("oka", "onCompleted");
@@ -225,8 +224,8 @@ public class CachePresenter implements Cache.Presenter {
         }
 
         @Override
-        public void onNext(ShopProductListDomain shopProductListDomain) {
-            if(shopProductListDomain.getNextUri() != null && !shopProductListDomain.getNextUri().isEmpty()) {
+        public void onNext(ProductListDomain productListDomain) {
+            if(productListDomain.getNextUri() != null && !productListDomain.getNextUri().isEmpty()) {
                 productPage++;
                 isRequestNextProduct = true;
             } else {
@@ -234,12 +233,12 @@ public class CachePresenter implements Cache.Presenter {
                 isRequestNextProduct = false;
             }
 
-            storeProductCacheUseCase.createObservable(shopProductListDomain).subscribe(new SaveProductSubscriber());
+            storeProductCacheUseCase.createObservable(productListDomain).subscribe(new SaveProductSubscriber());
             onCompleted();
         }
     }
 
-    private class SaveProductSubscriber extends Subscriber<ProductSavedResult> {
+    private class SaveProductSubscriber extends Subscriber<DataStatus> {
 
         @Override
         public void onCompleted() {
@@ -252,8 +251,8 @@ public class CachePresenter implements Cache.Presenter {
         }
 
         @Override
-        public void onNext(ProductSavedResult productSavedResult) {
-            Log.d("oka save result", String.valueOf(productSavedResult.isStatus()));
+        public void onNext(DataStatus dataStatus) {
+            Log.d("oka save result", String.valueOf(dataStatus.getMessage()));
         }
     }
 }

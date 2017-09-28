@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,20 +23,18 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.view.AddToCart;
 import com.tokopedia.posapp.view.Product;
-import com.tokopedia.posapp.view.activity.InstallmentSimulationActivity;
 import com.tokopedia.posapp.view.activity.LocalCartActivity;
+import com.tokopedia.posapp.view.activity.ReactInstallmentActivity;
 import com.tokopedia.posapp.view.presenter.AddToCartPresenter;
 import com.tokopedia.posapp.view.presenter.ProductPresenter;
-import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
 import com.tokopedia.posapp.view.widget.HeaderInfoView;
+import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.customview.PictureView;
@@ -129,7 +126,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(productPass!=null) {
+        if (productPass != null) {
             productPresenter.getProduct(productPass);
         }
     }
@@ -324,10 +321,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onInstallmentClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, InstallmentSimulationActivity.class);
+        Intent intent = new Intent(context, ReactInstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
@@ -335,7 +332,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override

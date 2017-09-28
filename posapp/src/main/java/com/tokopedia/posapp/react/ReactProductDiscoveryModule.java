@@ -5,7 +5,14 @@ import android.content.Context;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.google.gson.Gson;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.posapp.di.component.DaggerReactCacheComponent;
 import com.tokopedia.posapp.react.datasource.cache.ReactProductCacheSource;
+import com.tokopedia.posapp.react.datasource.model.ProductSearchRequest;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -15,11 +22,27 @@ import rx.Subscriber;
 
 public class ReactProductDiscoveryModule extends ReactContextBaseJavaModule {
     private Context context;
-    private ReactProductCacheSource reactProductCacheSource;
+
+    @Inject
+    ReactProductCacheSource reactProductCacheSource;
+
+    @Inject
+    Gson gson;
 
     public ReactProductDiscoveryModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
+        initInjection();
+    }
+
+    private void initInjection() {
+        AppComponent appComponent = ((MainApplication) context.getApplicationContext()).getAppComponent();
+        DaggerReactCacheComponent daggerReactCacheComponent =
+                (DaggerReactCacheComponent) DaggerReactCacheComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerReactCacheComponent.inject(this);
     }
 
     @Override
@@ -27,8 +50,9 @@ public class ReactProductDiscoveryModule extends ReactContextBaseJavaModule {
         return "ProductDiscoveryModule";
     }
 
-    public void searchProduct(String keyword, String etalaseId, int offset, int limit, final Promise promise) {
-        reactProductCacheSource.searchProduct(keyword, etalaseId, offset, limit).subscribe(
+    public void search(String data, final Promise promise) {
+        ProductSearchRequest request = gson.fromJson(data, ProductSearchRequest.class);
+        reactProductCacheSource.searchProduct(request.getKeyword(), request.getEtalaseId()).subscribe(
                 new Subscriber<String>() {
                     @Override
                     public void onCompleted() {

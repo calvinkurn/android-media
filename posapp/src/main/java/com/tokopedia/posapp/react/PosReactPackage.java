@@ -21,6 +21,7 @@ public class PosReactPackage implements ReactPackage {
         modules.add(new ReactPosCacheModule(reactContext));
         modules.add(new ReactSessionModule(reactContext));
         modules.add(new ReactPaymentModule(reactContext));
+        modules.add(new ReactProductDiscoveryModule(reactContext));
         return modules;
     }
 

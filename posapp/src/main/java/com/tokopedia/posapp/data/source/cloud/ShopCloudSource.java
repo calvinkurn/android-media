@@ -1,17 +1,12 @@
 package com.tokopedia.posapp.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.posapp.data.mapper.GetEtalaseMapper;
 import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
-import com.tokopedia.posapp.data.source.cloud.api.TomeApi;
-import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
-import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
-
-import java.util.List;
+import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
 
 import rx.Observable;
 
@@ -37,9 +32,5 @@ public class ShopCloudSource {
 
     public Observable<ShopDomain> getShop(RequestParams params) {
         return shopApi.getInfo(params.getParamsAllValueInString()).map(getShopMapper);
-    }
-
-    public Observable<ShopProductListDomain> getShopProduct(RequestParams params) {
-        return aceApi.getShopProduct(params.getParamsAllValueInString()).map(getShopProductMapper);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by okasurya on 8/29/17.
  */
 
-public class ShopProductListDomain implements DefaultParams {
+public class ProductListDomain implements DefaultParams {
     private java.util.List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<com.tokopedia.core.shopinfo.models.productmodel.List>();
     private String nextUri;
 
