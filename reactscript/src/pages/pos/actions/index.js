@@ -20,6 +20,21 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
   }
 }
 
+// ==================== Search Product ==================== //
+export const SEARCH_PRODUCT = 'SEARCH_PRODUCT'
+export const searchProduct = (product, etalaseId) => {
+  return {
+    type: SEARCH_PRODUCT,
+    payload: ProductDiscoveryModule.search(`{ product: ${product}, etalase_id: ${etalaseId} }`)
+                .then(res => {
+                  const jsonResponse = JSON.parse(res)
+                  console.log(jsonResponse)
+                  return jsonResponse
+                })
+                .catch(err => {})
+  }
+}
+
 
 export const FETCH_SHOP_NAME = 'FETCH_SHOP_NAME'
 export const fetchShopName = () => ({
