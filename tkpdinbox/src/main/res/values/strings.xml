@@ -57,6 +57,7 @@
     <string name="error_reply_discussion_resolution_not_support">Extensi file belum disupport</string>
     <string name="error_reply_discussion_resolution_file_not_allowed">Maaf, file Extension tidak disupport</string>
     <string name="error_reply_discussion_resolution_reach_max_size">Maksimum ukuran file adalah 20mb</string>
+    <string name="error_reply_discussion_resolution_min_size">Ukuran panjang dan lebar minimal adalah 300px</string>
     <string name="is_it_helpful">Apakah jawaban ini membantu?</string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>

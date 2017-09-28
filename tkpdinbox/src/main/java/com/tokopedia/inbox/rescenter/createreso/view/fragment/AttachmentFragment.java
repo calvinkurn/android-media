@@ -57,7 +57,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     private static final int REQUEST_CODE_GALLERY = 1243;
-    private static final int COUNT_MAX_ATTACHMENT = 3;
+    private static final int COUNT_MAX_ATTACHMENT = 5;
 
     private TkpdTextInputLayout tilInformation;
     private EditText etInformation;

@@ -296,8 +296,8 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
         textView.setText(solutionViewModel.getAmount() != null ?
-                context.getString(R.string.string_returning) + solutionViewModel.getAmount().getIdr()
-                        + context.getString(R.string.string_to_buyer) :
+                context.getString(R.string.string_returning) + " " +solutionViewModel.getAmount().getIdr()
+                        + " "+ context.getString(R.string.string_to_buyer) :
                 solutionViewModel.getName());
     }
 
