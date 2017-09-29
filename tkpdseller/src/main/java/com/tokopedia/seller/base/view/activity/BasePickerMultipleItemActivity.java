@@ -204,6 +204,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         }
     }
 
+
     public void showFooterAndInfo(boolean show) {
         bottomSheetContainerView.setVisibility(show ? View.VISIBLE : View.GONE);
         footerView.setVisibility(show ? View.VISIBLE : View.GONE);
