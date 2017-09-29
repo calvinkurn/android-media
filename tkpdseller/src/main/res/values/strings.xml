@@ -159,5 +159,6 @@
     <string name="shop_score_point_value">%1s poin</string>
     <string name="shop_score_title_widget_home">Performa Toko</string>
     <string name="product_picker_empty_search_description">Ubah pencarian untuk memilih Produk Unggulan</string>
+    <string name="title_picture_product">Gambar Produk</string>
 
 </resources>

@@ -11,4 +11,5 @@ public interface ManageProductPresenter extends CustomerPresenter<ManageProductV
     void editPrice(String productId, String price, String priceCurrency);
     void deleteProduct(String productId);
     void getListProduct(int page, String keywordFilter);
+    void getListFeaturedProduct();
 }

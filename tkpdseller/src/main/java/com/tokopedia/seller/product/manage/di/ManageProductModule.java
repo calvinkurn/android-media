@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
@@ -40,8 +41,9 @@ public class ManageProductModule {
     public ManageProductPresenter provideManageProductPresenter(GetProductListSellingUseCase getProductListSellingUseCase,
                                                                 EditPriceProductUseCase editPriceProductUseCase,
                                                                 DeleteProductUseCase deleteProductUseCase,
-                                                                GetProductListManageMapperView getProductListManageMapperView){
-        return new ManageProductPresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView);
+                                                                GetProductListManageMapperView getProductListManageMapperView,
+                                                                SellerModuleRouter sellerModuleRouter){
+        return new ManageProductPresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter);
     }
 
     @Provides
@@ -78,5 +80,15 @@ public class ManageProductModule {
     @ManageProductScope
     public TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
+    }
+
+    @Provides
+    @ManageProductScope
+    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
+        if(context instanceof SellerModuleRouter){
+            return ((SellerModuleRouter)context);
+        }else{
+            return null;
+        }
     }
 }

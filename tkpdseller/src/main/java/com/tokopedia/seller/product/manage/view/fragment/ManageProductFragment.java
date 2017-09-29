@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.seller.R;
@@ -18,8 +17,6 @@ import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
-import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
@@ -30,6 +27,8 @@ import com.tokopedia.seller.product.manage.view.listener.ManageProductView;
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ManageProductPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -87,6 +86,9 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
 
     @Override
     protected void searchForPage(int page) {
+        if(page == getStartPage()){
+            manageProductPresenter.getListFeaturedProduct();
+        }
         manageProductPresenter.getListProduct(page, keywordFilter);
         hasNextPage = false;
     }
@@ -151,6 +153,17 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
     @Override
     public void hideLoadingProgress() {
         progressDialog.hide();
+    }
+
+    @Override
+    public void onGetFeaturedProductList(List<String> data) {
+        ((ManageProductListAdapter)adapter).setFeaturedProduct(data);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorGetFeaturedProductList() {
+
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {

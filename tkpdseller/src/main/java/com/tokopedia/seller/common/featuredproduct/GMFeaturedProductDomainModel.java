@@ -1,4 +1,4 @@
-package com.tokopedia.gm.featured.domain.model;
+package com.tokopedia.seller.common.featuredproduct;
 
 import java.util.List;
 

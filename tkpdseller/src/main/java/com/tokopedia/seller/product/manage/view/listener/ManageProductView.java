@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.manage.view.listener;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
 
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
@@ -23,4 +25,8 @@ public interface ManageProductView extends CustomerView {
     void showLoadingProgress();
 
     void hideLoadingProgress();
+
+    void onGetFeaturedProductList(List<String> data);
+
+    void onErrorGetFeaturedProductList();
 }

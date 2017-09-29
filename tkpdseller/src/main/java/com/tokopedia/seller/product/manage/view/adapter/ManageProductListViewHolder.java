@@ -48,6 +48,10 @@ public class ManageProductListViewHolder extends BaseViewHolder<ProductManageVie
         });
     }
 
+    public void bindFeaturedProduct(boolean isFeaturedProduct) {
+
+    }
+
     public void setClickOptionCallbackHolder(ClickOptionCallbackHolder clickOptionCallbackHolder) {
         this.clickOptionCallbackHolder = clickOptionCallbackHolder;
     }

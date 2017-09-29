@@ -7,6 +7,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
@@ -18,6 +21,12 @@ public class ManageProductListAdapter extends BaseListAdapter<ProductManageViewM
     }
 
     private ClickOptionCallback clickOptionCallback;
+
+    private List<String> featuredProduct;
+
+    public ManageProductListAdapter() {
+        featuredProduct = new ArrayList<>();
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -32,6 +41,12 @@ public class ManageProductListAdapter extends BaseListAdapter<ProductManageViewM
         }
      }
 
+    @Override
+    protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
+        super.bindData(position, viewHolder);
+        ((ManageProductListViewHolder)viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
+    }
+
     public void setClickOptionCallback(ClickOptionCallback clickOptionCallback) {
         this.clickOptionCallback = clickOptionCallback;
     }
@@ -41,5 +56,14 @@ public class ManageProductListAdapter extends BaseListAdapter<ProductManageViewM
         if(clickOptionCallback != null){
             clickOptionCallback.onClickOptionItem(productManageViewModel);
         }
+    }
+
+    public void setFeaturedProduct(List<String> featuredProduct) {
+        if(featuredProduct != null)
+        this.featuredProduct = featuredProduct;
+    }
+
+    public boolean isFeaturedProduct(String productId){
+        return featuredProduct.contains(productId);
     }
 }

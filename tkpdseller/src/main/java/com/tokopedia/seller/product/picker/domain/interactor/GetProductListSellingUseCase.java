@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.EtalaseProductOption;
@@ -23,6 +24,7 @@ import rx.Observable;
 
 public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel> {
     private final GetProductListSellingRepository getProductListSellingRepository;
+    SellerModuleRouter sellerModuleRouter;
 
     @Inject
     public GetProductListSellingUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
