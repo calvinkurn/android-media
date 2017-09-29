@@ -73,10 +73,23 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         mCropImageView.setOnSetImageUriCompleteListener(this);
         mCropImageView.setOnCropImageCompleteListener(this);
 
-        if (savedInstanceState == null) {
-            File imgFile = new  File(localPath);
-            if(imgFile.exists()){
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        File imgFile = new File(localPath);
+        if(imgFile.exists()){
+            Bitmap myBitmap = null;
+            BitmapFactory.Options options;
+
+            try {
+                myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            } catch (OutOfMemoryError e) {
+                try {
+                    options = new BitmapFactory.Options();
+                    options.inSampleSize = 2;
+                    myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath(), options);
+                } catch(Exception ef) {
+
+                }
+            }
+            if (myBitmap != null) {
                 mCropImageView.setImageBitmap(myBitmap);
             }
         }

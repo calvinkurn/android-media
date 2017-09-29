@@ -16,6 +16,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -272,6 +274,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
             case ImageGallery.TOKOPEDIA_GALLERY:
+                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case ImageEditorActivity.REQUEST_CODE:
                 productImageViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
             case ProductDetailViewHolder.REQUEST_CODE_ETALASE:
@@ -529,6 +534,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void clickEditImagePath(int position) {
                 GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+            }
+
+            @Override
+            public void clickImageEditor(int position) {
+                String uriOrPath = productImageViewHolder.getImagesSelectView().getImageAt(position).getUriOrPath();
+                if (!TextUtils.isEmpty(uriOrPath)) {
+                    ImageEditorActivity.start(getContext(), ProductAddFragment.this, uriOrPath);
+                }
             }
 
             @Override

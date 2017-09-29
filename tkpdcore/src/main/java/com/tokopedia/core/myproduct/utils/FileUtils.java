@@ -35,11 +35,12 @@ public class FileUtils {
 
     /**
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/
+     *
      * @param root
      * @return
      */
-    public static String getFolderPathForUpload(String root){
-        return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/"+(System.currentTimeMillis() / 1000L)+new Random().nextInt(1000) + "/";
+    public static String getFolderPathForUpload(String root) {
+        return root + "/Android/data/" + MainApplication.PACKAGE_NAME + "/" + (System.currentTimeMillis() / 1000L) + new Random().nextInt(1000) + "/";
     }
 
     public static String getFolderPathForUploadNoRand(String root) {
@@ -55,6 +56,10 @@ public class FileUtils {
         return fileName;
     }
 
+    public static String generateUniqueFileName() {
+        return String.valueOf(System.currentTimeMillis() / 1000L) + new Random().nextInt(1000);
+    }
+
     public static String generateUniqueFileName(String path) {
         return String.valueOf(path.hashCode()).replaceAll("-", "");
     }
@@ -62,7 +67,8 @@ public class FileUtils {
     /**
      * will wrte the buffer to Tkpdpath with the filename supply. Extension will be .jpg
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/cache/tokopedia/IMG_451274244.jpg
-     * @param buffer result of compressed image in jpeg
+     *
+     * @param buffer   result of compressed image in jpeg
      * @param fileName name of file to write to Tkpd Path
      * @return
      */
@@ -86,6 +92,18 @@ public class FileUtils {
             }
         }
         return null;
+    }
+
+    public static File writeImageToTkpdPath(Bitmap bitmap, String fileName) {
+        if (bitmap != null) {
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+            byte[] bytes;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+            bytes = bao.toByteArray();
+            return writeImageToTkpdPath(bytes, fileName);
+        } else {
+            return null;
+        }
     }
 
     public static File writeImageToTkpdPath(InputStream source, String fileName) {
@@ -167,7 +185,7 @@ public class FileUtils {
     }
 
     @NonNull
-    private static File getTkpdCacheFile(String fileName){
+    private static File getTkpdCacheFile(String fileName) {
         String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         String tkpdFolderPath = FileUtils.getFolderPathForUploadNoRand(externalDirPath);
 
@@ -175,7 +193,11 @@ public class FileUtils {
         if (!tkpdRootdirectory.exists()) {
             tkpdRootdirectory.mkdirs();
         }
-        return new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA+fileName +".jpg");
+        File tkpdCachedirectory = new File(tkpdFolderPath + CACHE_TOKOPEDIA);
+        if (!tkpdCachedirectory.exists()) {
+            tkpdCachedirectory.mkdirs();
+        }
+        return new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA + fileName + ".jpg");
     }
 
     // URI starts with "content://gmail-ls/"
@@ -202,18 +224,10 @@ public class FileUtils {
                 String path = getPath(context, uri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
                 bmp = ImageHandler.RotatedBitmap(bmp, path);
-                ByteArrayOutputStream bao = new ByteArrayOutputStream();
-                byte[] bytes;
-                if (bmp != null) {
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, bao);
-                    bytes = bao.toByteArray();
-                    String fileName = FileUtils.generateUniqueFileName(path);
-                    File file = writeImageToTkpdPath(bytes,fileName);
-                    if (file!= null) {
-                        return file.getAbsolutePath();
-                    } else {
-                        return null;
-                    }
+                String fileName = FileUtils.generateUniqueFileName(path);
+                File file = writeImageToTkpdPath(bmp, fileName);
+                if (file!= null) {
+                    return file.getAbsolutePath();
                 } else {
                     return null;
                 }
@@ -266,6 +280,7 @@ public class FileUtils {
         }
 
     }
+
     private static boolean writeStreamToFile(InputStream source, File file) {
         OutputStream outStream;
         try {
@@ -326,19 +341,20 @@ public class FileUtils {
 
     /**
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/image.jpg
+     *
      * @param root
      * @param output
      * @param extension
      * @return
      */
-    public static String getPathForUpload(String root, String output, String extension){
-        return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/"+(System.currentTimeMillis() / 1000L) + "/"+output+"."+extension;
+    public static String getPathForUpload(String root, String output, String extension) {
+        return root + "/Android/data/" + MainApplication.PACKAGE_NAME + "/" + (System.currentTimeMillis() / 1000L) + "/" + output + "." + extension;
     }
 
     public static void writeStringAsFileExt(Context context, final String fileContents, String fileName) {
         try {
             File root = android.os.Environment.getExternalStorageDirectory();
-            FileWriter out = new FileWriter(new File(root.getAbsolutePath())+"/"+ fileName);//new File(context.getExternalFilesDir(null)
+            FileWriter out = new FileWriter(new File(root.getAbsolutePath()) + "/" + fileName);//new File(context.getExternalFilesDir(null)
             out.write(fileContents);
             out.close();
         } catch (IOException e) {

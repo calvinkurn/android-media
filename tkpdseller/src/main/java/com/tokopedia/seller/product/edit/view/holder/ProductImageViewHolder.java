@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.view.holder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,8 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.common.imageeditor.ImageEditorFragment;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputViewModel;
@@ -121,6 +124,14 @@ public class ProductImageViewHolder extends ProductViewHolder {
             if (imageUrls != null) {
                 imagesSelectView.addImagesString(imageUrls);
             }
+        } else if (resultCode == Activity.RESULT_OK && requestCode == ImageEditorActivity.REQUEST_CODE && data != null) {
+            List<String> resultImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH);
+            if (resultImageUrl!= null && resultImageUrl.size() > 0) {
+                String imageUrl = resultImageUrl.get(0);
+                if (!TextUtils.isEmpty(imageUrl)) {
+                    imagesSelectView.changeImagePath(imageUrl);
+                }
+            }
         }
     }
 
@@ -135,9 +146,9 @@ public class ProductImageViewHolder extends ProductViewHolder {
             ImageSelectModel selectModel = selectModelList.get(i);
 
             if (selectModel.isValidURL()) {
-                imageViewModel.setUrl(selectModel.getUri());
+                imageViewModel.setUrl(selectModel.getUriOrPath());
             } else {
-                imageViewModel.setImagePath(selectModel.getUri());
+                imageViewModel.setImagePath(selectModel.getUriOrPath());
             }
 
             imageViewModel.setImageDescription(selectModel.getDescription());

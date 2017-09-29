@@ -1565,7 +1565,7 @@ public class ManageProduct extends TkpdActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ImageEditorActivity.REQUEST_CODE: {
-                if (resultCode == Activity.RESULT_OK && data!= null && data.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
+                if (data!= null && data.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
                     ProductAddActivity.start(ManageProduct.this,
                             data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH));
                 }
@@ -1575,14 +1575,12 @@ public class ManageProduct extends TkpdActivity implements
                 ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
                     @Override
                     public void onSuccess(ArrayList<String> imageUrls) {
-                        ImageEditorActivity.start(ManageProduct.this, imageUrls);
+                        ProductAddActivity.start(ManageProduct.this, imageUrls);
                     }
 
                     @Override
                     public void onSuccess(String path, int position) {
-                        ArrayList<String> imageUrls = new ArrayList<>();
-                        imageUrls.add(path);
-                        ImageEditorActivity.start(ManageProduct.this, imageUrls);
+                        ImageEditorActivity.start(ManageProduct.this, path);
                     }
 
                     @Override

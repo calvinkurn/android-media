@@ -10,5 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cropMinCropResultWidthPX="@integer/min_crop_result_width"
-        app:cropMinCropResultHeightPX="@integer/min_crop_result_width"/>
+        app:cropMinCropResultHeightPX="@integer/min_crop_result_width"
+        app:cropInitialCropWindowPaddingRatio="0"/>
 </LinearLayout>
