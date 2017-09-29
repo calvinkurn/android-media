@@ -139,11 +139,11 @@ public class InboxReputationDetailPresenter
                 new RefreshInboxReputationDetailSubscriber(viewListener));
     }
 
-    public void likeDislikeReview(String reviewId, int formerLikeStatus, String productId, String shopId) {
+    public void likeDislikeReview(int adapterPosition, String reviewId, int formerLikeStatus, String productId, String shopId) {
         viewListener.showLoadingDialog();
         likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(
                 reviewId, getNewLikeStatus(formerLikeStatus), productId, shopId
-        ), new LikeDislikeReviewSubscriber(viewListener));
+        ), new LikeDislikeReviewSubscriber(viewListener, adapterPosition));
     }
 
     private int getNewLikeStatus(int formerLikeStatus) {

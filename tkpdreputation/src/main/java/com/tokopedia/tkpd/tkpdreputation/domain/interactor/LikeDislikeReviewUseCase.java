@@ -19,8 +19,8 @@ public class LikeDislikeReviewUseCase extends UseCase<LikeDislikeDomain> {
 
     private static final String PARAM_REVIEW_ID = "review_id";
     private static final String PARAM_LIKE_STATUS = "like_status";
-    private static final String PARAM_PRODUCT_ID = "p_id";
-    private static final String PARAM_SHOP_ID = "s_id";
+    private static final String PARAM_PRODUCT_ID = "product_id";
+    private static final String PARAM_SHOP_ID = "shop_id";
     public static final int DEFAULT_NOT_LIKED = 0;
     public static final int STATUS_LIKE = 1;
     public static final int STATUS_DISLIKE= 2;

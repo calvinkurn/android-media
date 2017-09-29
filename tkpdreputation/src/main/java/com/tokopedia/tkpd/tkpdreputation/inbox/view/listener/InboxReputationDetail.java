@@ -82,11 +82,11 @@ public interface InboxReputationDetail {
 
         void onShareReview(String productName, String productAvatar, String productUrl, String review);
 
-        void onLikeReview(String reviewId, int formerLikeStatus, String productId, String shopId);
+        void onLikeReview(int adapterPosition, String reviewId, int formerLikeStatus, String productId, String shopId);
 
         void onErrorLikeDislikeReview(String errorMessage);
 
-        void onSuccessLikeDislikeReview();
+        void onSuccessLikeDislikeReview(int adapterPosition, int likeStatus, int totalLike);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -33,4 +33,12 @@ public class LikeDislikeViewModel {
     public int getLikeStatus() {
         return likeStatus;
     }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public void setLikeStatus(int likeStatus) {
+        this.likeStatus = likeStatus;
+    }
 }

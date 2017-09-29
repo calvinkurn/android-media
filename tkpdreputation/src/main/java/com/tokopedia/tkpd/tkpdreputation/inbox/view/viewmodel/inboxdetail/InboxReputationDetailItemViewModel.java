@@ -16,6 +16,7 @@ import static com.tokopedia.core.database.model.ProductDB_Table.productUrl;
 public class InboxReputationDetailItemViewModel implements
         Visitable<InboxReputationDetailTypeFactory> {
 
+    public static final int IS_LIKED = 1;
     private final String reviewId;
     private final boolean reviewHasReviewed;
     private final boolean reviewIsEditable;

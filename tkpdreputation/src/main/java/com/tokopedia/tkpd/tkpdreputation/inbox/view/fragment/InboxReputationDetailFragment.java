@@ -439,9 +439,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeReview(String reviewId, int formerLikeStatus, String productId, String
+    public void onLikeReview(int adapterPosition, String reviewId, int formerLikeStatus, String productId, String
             shopId) {
-        presenter.likeDislikeReview(reviewId, formerLikeStatus, productId, shopId);
+        presenter.likeDislikeReview(adapterPosition, reviewId, formerLikeStatus, productId, shopId);
     }
 
     @Override
@@ -450,7 +450,18 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessLikeDislikeReview() {
+    public void onSuccessLikeDislikeReview(int adapterPosition, int likeStatus, int totalLike) {
+        if (adapter.getList().size() < adapterPosition
+                && adapter.getList().get(adapterPosition) != null
+                && adapter.getList().get(adapterPosition) instanceof InboxReputationDetailItemViewModel) {
+            InboxReputationDetailItemViewModel detailItemViewModel =
+                    (InboxReputationDetailItemViewModel) adapter.getList().get(adapterPosition);
+            detailItemViewModel.getLikeDislikeViewModel().setTotalLike(totalLike);
+            detailItemViewModel.getLikeDislikeViewModel().setLikeStatus(likeStatus);
+            adapter.notifyItemChanged(adapterPosition);
+        } else {
+            refreshPage();
+        }
 
     }
 

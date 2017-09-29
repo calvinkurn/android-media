@@ -12,9 +12,11 @@ import rx.Subscriber;
 
 public class LikeDislikeReviewSubscriber extends Subscriber<LikeDislikeDomain> {
     private final InboxReputationDetail.View viewListener;
+    private final int adapterPosition;
 
-    public LikeDislikeReviewSubscriber(InboxReputationDetail.View viewListener) {
+    public LikeDislikeReviewSubscriber(InboxReputationDetail.View viewListener, int adapterPosition) {
         this.viewListener = viewListener;
+        this.adapterPosition = adapterPosition;
     }
 
     @Override
@@ -31,6 +33,8 @@ public class LikeDislikeReviewSubscriber extends Subscriber<LikeDislikeDomain> {
     @Override
     public void onNext(LikeDislikeDomain likeDislikeDomain) {
         viewListener.finishLoadingDialog();
-        viewListener.onSuccessLikeDislikeReview();
+        viewListener.onSuccessLikeDislikeReview(adapterPosition,
+                likeDislikeDomain.getLikeStatus(),
+                likeDislikeDomain.getTotalLike());
     }
 }

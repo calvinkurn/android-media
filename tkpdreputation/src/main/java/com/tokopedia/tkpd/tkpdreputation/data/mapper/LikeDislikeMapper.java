@@ -45,6 +45,10 @@ public class LikeDislikeMapper implements Func1<Response<TkpdResponse>, LikeDisl
     }
 
     private LikeDislikeDomain mappingToDomain(LikeDislikePojo data) {
-        return new LikeDislikeDomain();
+        return new LikeDislikeDomain(
+                data.getTotalLike(),
+                data.getTotalDislike(),
+                data.getLikeStatus()
+        );
     }
 }

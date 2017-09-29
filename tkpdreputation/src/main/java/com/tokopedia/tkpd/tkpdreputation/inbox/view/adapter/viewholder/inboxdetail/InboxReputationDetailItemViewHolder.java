@@ -406,21 +406,38 @@ public class InboxReputationDetailItemViewHolder extends
 
     public void setHelpful(final InboxReputationDetailItemViewModel element) {
         final LikeDislikeViewModel likeDislike = element.getLikeDislikeViewModel();
-        if (likeDislike != null && likeDislike.getTotalLike() != 0) {
-            helpfulText.setText(likeDislike.getTotalDislike() + " " + MainApplication.getAppContext()
-                    .getString(R.string.people_helped));
+        String helpfulString = "";
+
+        if (likeDislike != null
+                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
+                    .ic_icon_repsis_like_active);
+            helpfulString += MainApplication.getAppContext().getString(R.string.You_and);
         } else {
-            helpfulText.setText(MainApplication.getAppContext().getString(R.string
-                    .helpful_question));
+            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
+                    .ic_icon_repsis_like);
         }
+
+        if (likeDislike != null && likeDislike.getTotalLike() != 0) {
+            helpfulString += likeDislike.getTotalDislike() + " " + MainApplication.getAppContext()
+                    .getString(R.string.people_helped);
+        } else {
+            helpfulString += MainApplication.getAppContext().getString(R.string
+                    .helpful_question);
+        }
+
+        helpfulText.setText(helpfulString);
+
         helpfulIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onLikeReview(element.getReviewId(),
+                viewListener.onLikeReview(getAdapterPosition(),
+                        element.getReviewId(),
                         likeDislike.getLikeStatus(),
                         element.getProductId(),
                         String.valueOf(element.getShopId()));
             }
         });
+
     }
 }
