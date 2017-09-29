@@ -67,7 +67,7 @@ public class SearchInputView extends BaseCustomView {
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SearchInputView);
         try {
             searchDrawable = styledAttributes.getDrawable(R.styleable.SearchInputView_siv_search_icon);
             searchText = styledAttributes.getString(R.styleable.SearchInputView_siv_search_text);

@@ -115,4 +115,8 @@ public class OnboardingActivity extends BaseOnboardingActivity {
 //        }
 //    }
 
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_onboarding;
+    }
 }
