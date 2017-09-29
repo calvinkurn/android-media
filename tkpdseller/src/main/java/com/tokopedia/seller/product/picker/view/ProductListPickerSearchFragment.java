@@ -49,7 +49,6 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
         if (getActivity() instanceof ProductListPickerMultipleItem) {
             productListPickerMultipleItem = (ProductListPickerMultipleItem<ProductListPickerViewModel>) getActivity();
         }
-
         productListPickerViewModels = getActivity().getIntent().getParcelableArrayListExtra(ProductListPickerConstant.PRODUCT_LIST_PICKER_MODEL_EXTRA);
     }
 
@@ -100,20 +99,16 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
 
     @Override
     public void onSearchSubmitted(String text) {
-        this.keywordFilter = text;
+        super.onSearchSubmitted(text);
+        keywordFilter = text;
         resetPageAndSearch();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        this.keywordFilter = text;
+        super.onSearchTextChanged(text);
+        keywordFilter = text;
         resetPageAndSearch();
-    }
-
-    @Override
-    public void resetPageAndSearch() {
-        super.resetPageAndSearch();
-
     }
 
     @Override
@@ -128,41 +123,15 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     }
 
     @Override
-    public void onErrorGetProductList(Throwable e) {
-        onLoadSearchError(e);
-        productListPickerMultipleItem.validateFooterAndInfoView();
-    }
-
-    @Override
-    protected void showViewEmptyList() {
-        super.showViewEmptyList();
-        productListPickerMultipleItem.validateFooterAndInfoView();
-    }
-
-    @Override
-    protected void showViewSearchNoResult() {
-        super.showViewSearchNoResult();
+    public void onSearchLoaded(@NonNull List<ProductListPickerViewModel> list, int totalItem, boolean hasNext) {
+        onSearchLoaded(list, totalItem);
+        hasNextPage = hasNext;
         productListPickerMultipleItem.validateFooterAndInfoView();
     }
 
     @Override
     public void onLoadSearchError(Throwable t) {
         super.onLoadSearchError(t);
-        if (adapter.getDataSize() < 1) {
-            showSearchView(false);
-        }
-    }
-
-    @Override
-    public void onSuccessGetProductList(ProductListSellerModelView productListSellerModelView) {
-        onSearchLoaded(productListSellerModelView.getProductListPickerViewModels(), productListSellerModelView.getProductListPickerViewModels().size());
-        hasNextPage = productListSellerModelView.isHasNextPage();
-    }
-
-    @Override
-    protected void showViewList(@NonNull List<ProductListPickerViewModel> list) {
-        super.showViewList(list);
-        showSearchView(true);
         productListPickerMultipleItem.validateFooterAndInfoView();
     }
 
