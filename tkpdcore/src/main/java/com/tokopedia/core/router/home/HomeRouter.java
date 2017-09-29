@@ -34,7 +34,7 @@ public class HomeRouter {
     private static final String ACTIVITY_BANNER_WEBVIEW = "com.tokopedia.core.home.BannerWebView";
     private static final String FCM_NOTIFICATIONRECEIVER = "com.tokopedia.tkpd.fcm.AppNotificationReceiver";
 
-
+    @Deprecated
     public static Intent getHomeActivity(Context context) {
         return RouterUtils.getActivityIntent(context, ACTIVITY_PARENT_INDEX_HOME);
     }

@@ -51,13 +51,18 @@ public class GMStatGetTransactionGraphUseCase extends UseCase<GMTransactionGraph
         final long startDate = requestParams.getLong(START_DATE, -1);
         final long endDate = requestParams.getLong(END_DATE, -1);
         final String shopId = requestParams.getString(SHOP_ID, "");
-        return gmStatRepository.getTransactionGraph(startDate, endDate)
-                .zipWith(gmModuleRouter.getDataDeposit(shopId), new Func2<GMTransactionGraphMergeModel, DataDeposit, GMTransactionGraphMergeModel>() {
-                    @Override
-                    public GMTransactionGraphMergeModel call(GMTransactionGraphMergeModel gmTransactionGraphMergeModel, DataDeposit dataDeposit) {
-                        gmTransactionGraphMergeModel.dataDeposit = dataDeposit;
-                        return gmTransactionGraphMergeModel;
-                    }
-                });
+
+        if(shopId.isEmpty()){
+            return gmStatRepository.getTransactionGraph(startDate, endDate);
+        }else {
+            return gmStatRepository.getTransactionGraph(startDate, endDate)
+                    .zipWith(gmModuleRouter.getDataDeposit(shopId), new Func2<GMTransactionGraphMergeModel, DataDeposit, GMTransactionGraphMergeModel>() {
+                        @Override
+                        public GMTransactionGraphMergeModel call(GMTransactionGraphMergeModel gmTransactionGraphMergeModel, DataDeposit dataDeposit) {
+                            gmTransactionGraphMergeModel.dataDeposit = dataDeposit;
+                            return gmTransactionGraphMergeModel;
+                        }
+                    });
+        }
     }
 }

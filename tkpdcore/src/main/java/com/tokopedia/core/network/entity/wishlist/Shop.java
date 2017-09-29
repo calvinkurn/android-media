@@ -1,11 +1,14 @@
 package com.tokopedia.core.network.entity.wishlist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by ricoharisin on 4/15/16.
  */
-public class Shop {
+public class Shop implements Parcelable {
     @SerializedName("id")
     String Id;
     @SerializedName("name")
@@ -76,4 +79,45 @@ public class Shop {
     public void setLuckyMerchant(String luckyMerchant) {
         LuckyMerchant = luckyMerchant;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.Id);
+        dest.writeString(this.Name);
+        dest.writeString(this.Url);
+        dest.writeValue(this.IsGoldMerchant);
+        dest.writeString(this.Location);
+        dest.writeString(this.Status);
+        dest.writeString(this.LuckyMerchant);
+    }
+
+    public Shop() {
+    }
+
+    protected Shop(Parcel in) {
+        this.Id = in.readString();
+        this.Name = in.readString();
+        this.Url = in.readString();
+        this.IsGoldMerchant = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.Location = in.readString();
+        this.Status = in.readString();
+        this.LuckyMerchant = in.readString();
+    }
+
+    public static final Parcelable.Creator<Shop> CREATOR = new Parcelable.Creator<Shop>() {
+        @Override
+        public Shop createFromParcel(Parcel source) {
+            return new Shop(source);
+        }
+
+        @Override
+        public Shop[] newArray(int size) {
+            return new Shop[size];
+        }
+    };
 }

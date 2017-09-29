@@ -335,7 +335,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void showFailedFetchAttribute() {
-        CommonUtils.UniversalToast(BrowseProductActivity.this, getString(R.string.try_again));
+        CommonUtils.UniversalToast(BrowseProductActivity.this, getString(R.string.toast_try_again));
     }
 
     @Override
@@ -349,6 +349,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public boolean sendQuery(String query, String depId) {
+        removeEmptyState();
         boolean redirectToOtherPage = browsePresenter.sendQuery(query, depId);
         if (!redirectToOtherPage) {
             toolbar.setTitle(query);
