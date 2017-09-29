@@ -208,7 +208,7 @@
             android:textColor="@color/medium_green"
             android:textSize="14sp"
             android:textStyle="normal"
-            tools:text="Ubah"
+            android:text="@string/change"
             />
     </RelativeLayout>
 

@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
@@ -60,6 +61,24 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
                             @Override
                             public Observable<InboxReputationDetailDomain> call
                                     (GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
+                                int i = 0;
+                                int j = 0;
+                                while (i < domain.getReviewDomain().getData().size()) {
+                                    ReviewItemDomain reviewItemDomain = domain.getReviewDomain()
+                                            .getData().get(i);
+                                    LikeDislikeListDomain likeDislikeListDomain =
+                                            getLikeDislikeReviewDomain.getList()
+                                                    .get(j);
+                                    if (reviewItemDomain.getReviewId() == 0) {
+                                        i++;
+                                    } else if (reviewItemDomain.getReviewId() ==
+                                            likeDislikeListDomain.getReviewId()
+                                            ) {
+                                        reviewItemDomain.setLikeDislikeDomain(likeDislikeListDomain);
+                                        j++;
+                                        i++;
+                                    }
+                                }
                                 return Observable.just(domain);
                             }
                         });
@@ -70,10 +89,11 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
     private String getListReviewId(List<ReviewItemDomain> data) {
         String reviewIds = "";
         for (ReviewItemDomain itemDomain : data) {
-            if (data.size() > 1)
+            if (data.size() > 1 && itemDomain.getReviewId() != 0) {
                 reviewIds += itemDomain.getReviewId() + "~";
-            else
+            } else if (itemDomain.getReviewId() != 0) {
                 reviewIds += itemDomain.getReviewId();
+            }
         }
         return reviewIds;
     }

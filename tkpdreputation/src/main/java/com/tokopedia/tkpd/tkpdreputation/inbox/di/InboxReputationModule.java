@@ -8,13 +8,15 @@ import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
+import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.ReportReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.InboxReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
@@ -121,7 +123,8 @@ public class InboxReputationModule {
             FaveShopMapper faveShopMapper,
             DeleteReviewResponseMapper deleteReviewResponseMapper,
             ReplyReviewMapper replyReviewMapper,
-            GetLikeDislikeMapper getLikeDislikeMapper) {
+            GetLikeDislikeMapper getLikeDislikeMapper,
+            LikeDislikeMapper likeDislikeMapper) {
         return new InboxReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
@@ -132,7 +135,8 @@ public class InboxReputationModule {
                 faveShopMapper,
                 deleteReviewResponseMapper,
                 replyReviewMapper,
-                getLikeDislikeMapper);
+                getLikeDislikeMapper,
+                likeDislikeMapper);
     }
 
 
@@ -500,6 +504,22 @@ public class InboxReputationModule {
 
     @InboxReputationScope
     @Provides
+    LikeDislikeReviewUseCase provideLikeDislikeReviewUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            InboxReputationRepository reputationRepository) {
+        return new LikeDislikeReviewUseCase(threadExecutor, postExecutionThread,
+                reputationRepository);
+    }
+
+    @InboxReputationScope
+    @Provides
+    GetLikeDislikeMapper provideGetLikeDislikeMapper() {
+        return new GetLikeDislikeMapper();
+    }
+
+    @InboxReputationScope
+    @Provides
     GetLikeDislikeReviewUseCase provideGetLikeDislikeReviewUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
@@ -508,10 +528,11 @@ public class InboxReputationModule {
                 reputationRepository);
     }
 
+
     @InboxReputationScope
     @Provides
-    GetLikeDislikeMapper provideGetLikeDislikeMapper() {
-        return new GetLikeDislikeMapper();
+    LikeDislikeMapper provideLikeDislikeMapper() {
+        return new LikeDislikeMapper();
     }
 
 }

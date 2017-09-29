@@ -9,10 +9,8 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -29,6 +27,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.LikeDislikeViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewResponseViewModel;
 
 import java.text.ParseException;
@@ -71,6 +70,7 @@ public class InboxReputationDetailItemViewHolder extends
     View helpfulLayout;
     TextView helpfulText;
     TextView seeReplyText;
+    ImageView helpfulIcon;
     ImageView replyArrow;
 
     View sellerReplyLayout;
@@ -119,6 +119,7 @@ public class InboxReputationDetailItemViewHolder extends
         sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout);
         sellerAddReplyEditText = (EditText) itemView.findViewById(R.id.seller_reply_edit_text);
         sendReplyButton = (ImageView) itemView.findViewById(R.id.send_button);
+        helpfulIcon = (ImageView) itemView.findViewById(R.id.helpful_icon);
 
         sellerAddReplyEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -203,7 +204,7 @@ public class InboxReputationDetailItemViewHolder extends
             reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
 
             helpfulLayout.setVisibility(View.VISIBLE);
-            helpfulText.setText("Nanti diisi");
+            setHelpful(element);
 
             if (element.getReviewResponseViewModel() != null
                     && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
@@ -381,7 +382,7 @@ public class InboxReputationDetailItemViewHolder extends
                                     element.getReviewId()
                             );
                             return true;
-                        }else if (item.getItemId() == R.id.menu_share) {
+                        } else if (item.getItemId() == R.id.menu_share) {
                             viewListener.onShareReview(
                                     element.getProductName(),
                                     element.getProductAvatar(),
@@ -403,4 +404,23 @@ public class InboxReputationDetailItemViewHolder extends
         };
     }
 
+    public void setHelpful(final InboxReputationDetailItemViewModel element) {
+        final LikeDislikeViewModel likeDislike = element.getLikeDislikeViewModel();
+        if (likeDislike != null && likeDislike.getTotalLike() != 0) {
+            helpfulText.setText(likeDislike.getTotalDislike() + " " + MainApplication.getAppContext()
+                    .getString(R.string.people_helped));
+        } else {
+            helpfulText.setText(MainApplication.getAppContext().getString(R.string
+                    .helpful_question));
+        }
+        helpfulIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onLikeReview(element.getReviewId(),
+                        likeDislike.getLikeStatus(),
+                        element.getProductId(),
+                        String.valueOf(element.getShopId()));
+            }
+        });
+    }
 }

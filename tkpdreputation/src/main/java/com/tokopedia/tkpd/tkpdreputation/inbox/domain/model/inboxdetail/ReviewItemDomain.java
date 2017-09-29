@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail;
 
+import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
+
 /**
  * @author by nisie on 8/19/17.
  */
@@ -13,6 +15,7 @@ public class ReviewItemDomain {
     private boolean reviewIsSkipped;
     private boolean reviewIsEditable;
     private ReviewDataDomain reviewData;
+    private LikeDislikeListDomain likeDislikeDomain;
 
     public ReviewItemDomain(ProductDataDomain productData, int reviewInboxId,
                             int reviewId, boolean reviewHasReviewed,
@@ -58,5 +61,13 @@ public class ReviewItemDomain {
 
     public ReviewDataDomain getReviewData() {
         return reviewData;
+    }
+
+    public void setLikeDislikeDomain(LikeDislikeListDomain likeDislikeDomain) {
+        this.likeDislikeDomain = likeDislikeDomain;
+    }
+
+    public LikeDislikeListDomain getLikeDislikeDomain() {
+        return likeDislikeDomain;
     }
 }

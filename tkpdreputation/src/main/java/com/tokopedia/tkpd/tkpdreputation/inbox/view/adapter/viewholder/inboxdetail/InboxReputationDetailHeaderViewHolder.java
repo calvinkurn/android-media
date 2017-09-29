@@ -28,9 +28,9 @@ public class InboxReputationDetailHeaderViewHolder extends
         AbstractViewHolder<InboxReputationDetailHeaderViewModel> {
 
     private static final int NO_REPUTATION = 0;
-    private static final int SMILEY_BAD = -1;
-    private static final int SMILEY_NEUTRAL = 1;
-    private static final int SMILEY_GOOD = 2;
+    public static final int SMILEY_BAD = -1;
+    public static final int SMILEY_NEUTRAL = 1;
+    public static final int SMILEY_GOOD = 2;
     private final ReputationAdapter.ReputationListener reputationListener;
 
     ImageView userAvatar;
@@ -79,13 +79,6 @@ public class InboxReputationDetailHeaderViewHolder extends
                 .HORIZONTAL, false);
         smiley.setLayoutManager(gridLayout);
         smiley.setAdapter(adapter);
-
-        changeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapter.showChangeSmiley();
-            }
-        });
     }
 
     @Override
@@ -118,8 +111,15 @@ public class InboxReputationDetailHeaderViewHolder extends
             promptMessage.setText(getPromptText(element));
         }
 
-        if (element.getReputationDataViewModel().isEditable())
+        if (element.getReputationDataViewModel().isEditable()) {
             changeButton.setVisibility(View.VISIBLE);
+            changeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    adapter.showChangeSmiley(element.getReputationDataViewModel().getReviewerScore());
+                }
+            });
+        }
         else
             changeButton.setVisibility(View.GONE);
 
@@ -146,14 +146,14 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (revieweeBadgeSellerViewModel.getIsFavorited() == 1) {
             MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
                     .getContext(), R.drawable.white_button_rounded));
-            ImageHandler.loadImageWithId(favoriteIcon, R.drawable.shop_list_favorite_check);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(favoriteIcon, R.drawable.shop_list_favorite_check);
             favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
                     .grey_500));
             favoriteText.setText(R.string.already_favorite);
         } else {
             MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
                     .getContext(), R.drawable.green_button_rounded));
-            ImageHandler.loadImageWithId(favoriteIcon, R.drawable.ic_new_action_plus);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(favoriteIcon, R.drawable.ic_new_action_plus);
             favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
                     .white));
             favoriteText.setText(R.string.favorite_button);
@@ -163,22 +163,22 @@ public class InboxReputationDetailHeaderViewHolder extends
     private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element) {
         switch (element.getReputationDataViewModel().getRevieweeScore()) {
             case NO_REPUTATION:
-                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_empty);
+                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_empty);
                 opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
                         .seller_has_not_review));
                 break;
             case SMILEY_BAD:
-                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_bad);
+                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_bad);
                 opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
                         .score_from_seller));
                 break;
             case SMILEY_NEUTRAL:
-                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_netral);
+                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_netral);
                 opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
                         .score_from_seller));
                 break;
             case SMILEY_GOOD:
-                ImageHandler.loadImageWithId(opponentSmiley, R.drawable.ic_smiley_good);
+                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_good);
                 opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
                         .score_from_seller));
                 break;

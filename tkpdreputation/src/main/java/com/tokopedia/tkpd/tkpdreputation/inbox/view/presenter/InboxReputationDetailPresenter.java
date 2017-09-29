@@ -2,16 +2,18 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReplyReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReplyReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.DeleteReviewResponseSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.FavoriteShopSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.LikeDislikeReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.ReplyReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendSmileySubscriber;
@@ -34,6 +36,7 @@ public class InboxReputationDetailPresenter
     private final FavoriteShopUseCase favoriteShopUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
     private final SendReplyReviewUseCase sendReplyReviewUseCase;
+    private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private InboxReputationDetail.View viewListener;
 
     @Inject
@@ -44,13 +47,15 @@ public class InboxReputationDetailPresenter
             FavoriteShopUseCase favoriteShopUseCase,
             DeleteReviewResponseUseCase deleteReviewResponseUseCase,
             SendReplyReviewUseCase sendReplyReviewUseCase,
+            LikeDislikeReviewUseCase likeDislikeReviewUseCase,
             SessionHandler sessionHandler) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
         this.checkShopFavoritedUseCase = checkShopFavoritedUseCase;
         this.favoriteShopUseCase = favoriteShopUseCase;
-        this. deleteReviewResponseUseCase = deleteReviewResponseUseCase;
+        this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.sendReplyReviewUseCase = sendReplyReviewUseCase;
+        this.likeDislikeReviewUseCase = likeDislikeReviewUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -97,7 +102,7 @@ public class InboxReputationDetailPresenter
     public void onFavoriteShopClicked(int shopId) {
         viewListener.showLoadingDialog();
         favoriteShopUseCase.execute(FavoriteShopUseCase.getParam(shopId,
-                SRC_INBOX_REPUTATION_DETAIL),new
+                SRC_INBOX_REPUTATION_DETAIL), new
                 FavoriteShopSubscriber(viewListener));
     }
 
@@ -133,4 +138,20 @@ public class InboxReputationDetailPresenter
                         tab),
                 new RefreshInboxReputationDetailSubscriber(viewListener));
     }
+
+    public void likeDislikeReview(String reviewId, int formerLikeStatus, String productId, String shopId) {
+        viewListener.showLoadingDialog();
+        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(
+                reviewId, getNewLikeStatus(formerLikeStatus), productId, shopId
+        ), new LikeDislikeReviewSubscriber(viewListener));
+    }
+
+    private int getNewLikeStatus(int formerLikeStatus) {
+        if (formerLikeStatus == LikeDislikeReviewUseCase.DEFAULT_NOT_LIKED)
+            return LikeDislikeReviewUseCase.STATUS_LIKE;
+        else
+            return LikeDislikeReviewUseCase.STATUS_RESET;
+    }
+
 }
+

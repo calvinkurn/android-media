@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
@@ -80,6 +81,12 @@ public interface InboxReputationDetail {
         void onSuccessReplyReview();
 
         void onShareReview(String productName, String productAvatar, String productUrl, String review);
+
+        void onLikeReview(String reviewId, int formerLikeStatus, String productId, String shopId);
+
+        void onErrorLikeDislikeReview(String errorMessage);
+
+        void onSuccessLikeDislikeReview();
     }
 
     interface Presenter extends CustomerPresenter<View> {

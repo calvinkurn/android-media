@@ -1,9 +1,9 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
+package com.tokopedia.tkpd.tkpdreputation.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.GetLikeDislikeMapper;
+import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 
 import rx.Observable;
 

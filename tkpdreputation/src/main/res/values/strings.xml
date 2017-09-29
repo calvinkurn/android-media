@@ -82,5 +82,8 @@
     <string name="close_reply">Tutup Balasan</string>
     <string name="menu_delete">Hapus</string>
     <string name="menu_share">Bagikan</string>
+    <string name="helpful_question">Terbantu?</string>
+    <string name="people_helped">Orang terbantu</string>
+    <string name="change">Ubah</string>
 
 </resources>

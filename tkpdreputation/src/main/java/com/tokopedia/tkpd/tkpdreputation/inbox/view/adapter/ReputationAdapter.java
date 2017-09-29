@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.SmileyModel;
 
 import java.util.ArrayList;
@@ -82,7 +83,8 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHandler.loadImageWithId(holder.smiley, list.get(position).getResId());
+        ImageHandler.loadImageWithIdWithoutPlaceholder(holder.smiley,
+                list.get(position).getResId());
         holder.smileyText.setText(list.get(position).getName());
     }
 
@@ -140,8 +142,10 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
         this.canGiveReputation = false;
     }
 
-    public void showChangeSmiley() {
-        if (list.get(0).getScore().equals(SMILEY_BAD)) {
+    public void showChangeSmiley(int reviewerScore) {
+        this.canGiveReputation = true;
+
+        if (reviewerScore == InboxReputationDetailHeaderViewHolder.SMILEY_BAD) {
             this.list.clear();
             this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
                     MainApplication.getAppContext().getString(R.string.smiley_bad),
@@ -155,8 +159,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
                     MainApplication.getAppContext().getString(R.string.smiley_good),
                     SMILEY_GOOD,
                     true));
-            this.canGiveReputation = true;
-        } else if (list.get(0).getScore().equals(SMILEY_NEUTRAL)) {
+        } else if (reviewerScore == InboxReputationDetailHeaderViewHolder.SMILEY_NEUTRAL) {
             this.list.clear();
             this.list.add(new SmileyModel(R.drawable.ic_smiley_bad_empty,
                     MainApplication.getAppContext().getString(R.string.smiley_bad),
@@ -170,8 +173,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
                     MainApplication.getAppContext().getString(R.string.smiley_good),
                     SMILEY_GOOD,
                     true));
-            this.canGiveReputation = true;
-            notifyDataSetChanged();
         }
+        notifyDataSetChanged();
     }
 }

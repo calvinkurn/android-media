@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.InboxReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
@@ -131,6 +132,13 @@ public class InboxReputationRepositoryImpl implements InboxReputationRepository 
     public Observable<GetLikeDislikeReviewDomain> getLikeDislikeReview(RequestParams requestParams) {
         return reputationFactory
                 .createCloudGetLikeDislikeDataSource()
+                .getLikeDislikeReview(requestParams);
+    }
+
+    @Override
+    public Observable<LikeDislikeDomain> likeDislikeReview(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudLikeDislikeDataSource()
                 .getLikeDislikeReview(requestParams);
     }
 }

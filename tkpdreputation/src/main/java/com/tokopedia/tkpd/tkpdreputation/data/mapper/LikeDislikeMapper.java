@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
+package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 
 import android.text.TextUtils;
 
@@ -7,8 +7,8 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.GetLikeDislikePojo;
+import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.LikeDislikePojo;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -17,14 +17,13 @@ import rx.functions.Func1;
  * @author by nisie on 9/29/17.
  */
 
-public class GetLikeDislikeMapper implements Func1<Response<TkpdResponse>,
-        GetLikeDislikeReviewDomain> {
+public class LikeDislikeMapper implements Func1<Response<TkpdResponse>, LikeDislikeDomain> {
     @Override
-    public GetLikeDislikeReviewDomain call(Response<TkpdResponse> response) {
+    public LikeDislikeDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if (!response.body().isNullData()) {
-                GetLikeDislikePojo data = response.body().convertDataObj(
-                        GetLikeDislikePojo.class);
+                LikeDislikePojo data = response.body().convertDataObj(
+                        LikeDislikePojo.class);
                 return mappingToDomain(data);
             } else {
                 if (response.body().getErrorMessages() != null
@@ -45,7 +44,7 @@ public class GetLikeDislikeMapper implements Func1<Response<TkpdResponse>,
         }
     }
 
-    private GetLikeDislikeReviewDomain mappingToDomain(GetLikeDislikePojo data) {
-        return new GetLikeDislikeReviewDomain();
+    private LikeDislikeDomain mappingToDomain(LikeDislikePojo data) {
+        return new LikeDislikeDomain();
     }
 }

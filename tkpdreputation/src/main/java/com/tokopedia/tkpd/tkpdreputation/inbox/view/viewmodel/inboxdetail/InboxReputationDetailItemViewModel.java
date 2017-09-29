@@ -23,6 +23,7 @@ public class InboxReputationDetailItemViewModel implements
     private final int shopId;
     private final ReviewResponseViewModel reviewResponseViewModel;
     private final int reputationId;
+    private final LikeDislikeViewModel likeDislikeViewModel;
     String productId;
     String productName;
     String productAvatar;
@@ -49,7 +50,9 @@ public class InboxReputationDetailItemViewModel implements
                                               int shopId,
                                               int tab,
                                               @Nullable ReviewResponseViewModel
-                                                      reviewResponseViewModel) {
+                                                      reviewResponseViewModel,
+                                              @Nullable LikeDislikeViewModel
+                                              likeDislikeViewModel) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;
@@ -68,6 +71,7 @@ public class InboxReputationDetailItemViewModel implements
         this.shopId = shopId;
         this.tab = tab;
         this.reviewResponseViewModel = reviewResponseViewModel;
+        this.likeDislikeViewModel = likeDislikeViewModel;
     }
 
     public String getReviewId() {
@@ -149,5 +153,9 @@ public class InboxReputationDetailItemViewModel implements
 
     public void setProductUrl(String productUrl) {
         this.productUrl = productUrl;
+    }
+
+    public LikeDislikeViewModel getLikeDislikeViewModel() {
+        return likeDislikeViewModel;
     }
 }

@@ -37,6 +37,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetai
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShareReviewDialog;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
@@ -345,11 +346,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (adapter.getHeader() != null) {
             InboxReputationDetailHeaderViewModel header = adapter.getHeader();
             header.getReputationDataViewModel()
-                    .setReviewerScore(Integer.parseInt(ReputationAdapter.SMILEY_BAD));
+                    .setReviewerScore(score);
             header.getReputationDataViewModel()
                     .setInserted(true);
             header.getReputationDataViewModel()
-                    .setEditable(!header.getReputationDataViewModel().isEditable());
+                    .setEditable(score != InboxReputationDetailHeaderViewHolder.SMILEY_GOOD);
             adapter.getList().remove(0);
             adapter.getList().add(0, header);
             adapter.notifyItemChanged(0);
@@ -435,6 +436,22 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             ));
             shareReviewDialog.show();
         }
+    }
+
+    @Override
+    public void onLikeReview(String reviewId, int formerLikeStatus, String productId, String
+            shopId) {
+        presenter.likeDislikeReview(reviewId, formerLikeStatus, productId, shopId);
+    }
+
+    @Override
+    public void onErrorLikeDislikeReview(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessLikeDislikeReview() {
+
     }
 
     @Override
