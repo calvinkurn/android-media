@@ -1,4 +1,4 @@
-package com.tokopedia.core.inboxreputation.model;
+package com.tokopedia.core.widgets;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;

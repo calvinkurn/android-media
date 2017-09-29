@@ -5,10 +5,15 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -74,6 +79,10 @@ public class InboxReputationDetailItemViewHolder extends
     TextView sellerReply;
     ImageView replyOverflow;
 
+    View sellerAddReplyLayout;
+    EditText sellerAddReplyEditText;
+    ImageView sendReplyButton;
+
     public InboxReputationDetailItemViewHolder(View itemView,
                                                InboxReputationDetail.View viewListener) {
         super(itemView);
@@ -106,6 +115,33 @@ public class InboxReputationDetailItemViewHolder extends
         sellerReplyTime = (TextView) itemView.findViewById(R.id.seller_reply_time);
         sellerReply = (TextView) itemView.findViewById(R.id.seller_reply);
         replyOverflow = (ImageView) itemView.findViewById(R.id.reply_overflow);
+
+        sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout);
+        sellerAddReplyEditText = (EditText) itemView.findViewById(R.id.seller_reply_edit_text);
+        sendReplyButton = (ImageView) itemView.findViewById(R.id.send_button);
+
+        sellerAddReplyEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(sellerAddReplyEditText.getText().toString())) {
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(sendReplyButton, R.drawable.ic_send_grey_transparent);
+                    sendReplyButton.setEnabled(false);
+                } else {
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(sendReplyButton, R.drawable.ic_send_green);
+                    sendReplyButton.setEnabled(true);
+                }
+
+            }
+        });
     }
 
     private ImageUploadAdapter.ProductImageListener onImageClicked() {
@@ -164,7 +200,7 @@ public class InboxReputationDetailItemViewHolder extends
 
                 }
             });
-            setOverflowButton(element);
+            reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
 
             helpfulLayout.setVisibility(View.VISIBLE);
             helpfulText.setText("Nanti diisi");
@@ -172,10 +208,16 @@ public class InboxReputationDetailItemViewHolder extends
             if (element.getReviewResponseViewModel() != null
                     && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
                 setSellerReply(element);
+            } else if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+                seeReplyText.setVisibility(View.GONE);
+                replyArrow.setVisibility(View.GONE);
+                sellerReplyLayout.setVisibility(View.GONE);
+                sellerAddReplyLayout.setVisibility(View.VISIBLE);
             } else {
                 seeReplyText.setVisibility(View.GONE);
                 replyArrow.setVisibility(View.GONE);
                 sellerReplyLayout.setVisibility(View.GONE);
+                sellerAddReplyLayout.setVisibility(View.GONE);
             }
 
 
@@ -193,6 +235,12 @@ public class InboxReputationDetailItemViewHolder extends
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
+        sendReplyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onSendReplyReview(element, sellerAddReplyEditText.getText().toString());
+            }
+        });
 
 
     }
@@ -303,17 +351,7 @@ public class InboxReputationDetailItemViewHolder extends
         return MainApplication.getAppContext().getString(R.string.by) + " " + reviewerName;
     }
 
-    public void setOverflowButton(InboxReputationDetailItemViewModel element) {
-        if (element.isReviewIsEditable()
-                || element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            reviewOverflow.setVisibility(View.VISIBLE);
-            reviewOverflow.setOnClickListener(onOverflowClicked(element));
-        } else {
-            reviewOverflow.setVisibility(View.GONE);
-        }
-    }
-
-    private View.OnClickListener onOverflowClicked(final InboxReputationDetailItemViewModel element) {
+    private View.OnClickListener onReviewOverflowClicked(final InboxReputationDetailItemViewModel element) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -326,6 +364,10 @@ public class InboxReputationDetailItemViewHolder extends
                     popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
                             .getString(R.string.menu_report));
 
+                if (element.getTab() != InboxReputationActivity.TAB_BUYER_REVIEW)
+                    popup.getMenu().add(1, R.id.menu_share, 3, MainApplication.getAppContext()
+                            .getString(R.string.menu_share));
+
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
@@ -337,6 +379,14 @@ public class InboxReputationDetailItemViewHolder extends
                             viewListener.onGoToReportReview(
                                     element.getShopId(),
                                     element.getReviewId()
+                            );
+                            return true;
+                        }else if (item.getItemId() == R.id.menu_share) {
+                            viewListener.onShareReview(
+                                    element.getProductName(),
+                                    element.getProductAvatar(),
+                                    element.getProductUrl(),
+                                    element.getReview()
                             );
                             return true;
                         } else {

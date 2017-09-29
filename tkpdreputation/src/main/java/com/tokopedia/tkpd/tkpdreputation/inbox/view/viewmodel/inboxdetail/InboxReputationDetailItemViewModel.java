@@ -7,6 +7,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdet
 
 import java.util.ArrayList;
 
+import static com.tokopedia.core.database.model.ProductDB_Table.productUrl;
+
 /**
  * @author by nisie on 8/19/17.
  */
@@ -31,9 +33,12 @@ public class InboxReputationDetailItemViewModel implements
     int reviewStar;
     boolean reviewIsSkipped;
     int tab;
+    private String productUrl;
 
     public InboxReputationDetailItemViewModel(int reputationId, String productId, String productName,
-                                              String productAvatar, String reviewId,
+                                              String productAvatar,
+                                              String productUrl,
+                                              String reviewId,
                                               String reviewerName, String reviewTime,
                                               ArrayList<ImageAttachmentViewModel> reviewAttachment,
                                               String review, int reviewStar,
@@ -49,6 +54,7 @@ public class InboxReputationDetailItemViewModel implements
         this.productId = productId;
         this.productName = productName;
         this.productAvatar = productAvatar;
+        this.productUrl = productUrl;
         this.reviewId = reviewId;
         this.reviewerName = reviewerName;
         this.reviewTime = reviewTime;
@@ -135,5 +141,13 @@ public class InboxReputationDetailItemViewModel implements
     @Override
     public int type(InboxReputationDetailTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
     }
 }

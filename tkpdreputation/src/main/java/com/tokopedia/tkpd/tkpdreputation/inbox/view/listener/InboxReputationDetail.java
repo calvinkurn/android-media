@@ -72,6 +72,14 @@ public interface InboxReputationDetail {
         void onErrorDeleteReviewResponse(String errorMessage);
 
         void onSuccessDeleteReviewResponse();
+
+        void onSendReplyReview(InboxReputationDetailItemViewModel element, String replyReview);
+
+        void onErrorReplyReview(String errorMessage);
+
+        void onSuccessReplyReview();
+
+        void onShareReview(String productName, String productAvatar, String productUrl, String review);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -86,5 +94,8 @@ public interface InboxReputationDetail {
 
         void deleteReviewResponse(String reviewId, String productId, String shopId, String
                 reputationId);
+
+        void sendReplyReview(int reputationId, String productId, int shopId,
+                             String reviewId, String replyReview);
     }
 }

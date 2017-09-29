@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
@@ -116,5 +117,12 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudDeleteReviewResponseDataSource()
                 .deleteReviewResponse(requestParams);
+    }
+
+    @Override
+    public Observable<SendReplyReviewDomain> insertReviewResponse(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudReplyReviewDataSource()
+                .insertReviewResponse(requestParams);
     }
 }

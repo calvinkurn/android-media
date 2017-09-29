@@ -13,6 +13,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.DeleteReviewResponseM
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReportReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
@@ -30,6 +31,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.Fav
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.ReportReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReplyReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewSubmitUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
@@ -115,7 +117,8 @@ public class ReputationModule {
             GlobalCacheManager globalCacheManager,
             FaveShopActService faveShopActService,
             FaveShopMapper faveShopMapper,
-            DeleteReviewResponseMapper deleteReviewResponseMapper) {
+            DeleteReviewResponseMapper deleteReviewResponseMapper,
+            ReplyReviewMapper replyReviewMapper) {
         return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
@@ -124,7 +127,8 @@ public class ReputationModule {
                 globalCacheManager,
                 faveShopActService,
                 faveShopMapper,
-                deleteReviewResponseMapper);
+                deleteReviewResponseMapper,
+                replyReviewMapper);
     }
 
 
@@ -470,6 +474,23 @@ public class ReputationModule {
     @Provides
     DeleteReviewResponseMapper provideDeleteReviewResponseMapper() {
         return new DeleteReviewResponseMapper();
+    }
+
+    @ReputationScope
+    @Provides
+    SendReplyReviewUseCase provideSendReplyReviewUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ReputationRepository reputationRepository) {
+        return new SendReplyReviewUseCase(threadExecutor, postExecutionThread,
+                reputationRepository);
+    }
+
+
+    @ReputationScope
+    @Provides
+    ReplyReviewMapper provideReplyReviewMapper() {
+        return new ReplyReviewMapper();
     }
 
 }

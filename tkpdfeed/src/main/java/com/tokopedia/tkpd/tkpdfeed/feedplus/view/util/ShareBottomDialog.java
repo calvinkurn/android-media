@@ -21,12 +21,12 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.inboxreputation.model.ShareItem;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.widgets.ShareItem;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.ShareFeedAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 

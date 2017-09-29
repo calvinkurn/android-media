@@ -93,13 +93,13 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     public void showAllSmiley() {
         this.list.clear();
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_bad_empty,
                 MainApplication.getAppContext().getString(R.string.smiley_bad),
                 SMILEY_BAD));
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_netral_empty,
                 MainApplication.getAppContext().getString(R.string.smiley_netral),
                 SMILEY_NEUTRAL));
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+        this.list.add(new SmileyModel(R.drawable.ic_smiley_good_empty,
                 MainApplication.getAppContext().getString(R.string.smiley_good),
                 SMILEY_GOOD));
         notifyDataSetChanged();
@@ -134,7 +134,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     public void showLockedSmiley() {
         this.list.clear();
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_empty,
+        this.list.add(new SmileyModel(R.drawable.ic_lock,
                 "",
                 ""));
         this.canGiveReputation = false;
@@ -143,18 +143,30 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     public void showChangeSmiley() {
         if (list.get(0).getScore().equals(SMILEY_BAD)) {
             this.list.clear();
-            this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
+                    MainApplication.getAppContext().getString(R.string.smiley_bad),
+                    SMILEY_BAD,
+                    true));
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_netral_empty,
                     MainApplication.getAppContext().getString(R.string.smiley_netral),
                     SMILEY_NEUTRAL,
                     true));
-            this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_good_empty,
                     MainApplication.getAppContext().getString(R.string.smiley_good),
                     SMILEY_GOOD,
                     true));
             this.canGiveReputation = true;
         } else if (list.get(0).getScore().equals(SMILEY_NEUTRAL)) {
             this.list.clear();
-            this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_bad_empty,
+                    MainApplication.getAppContext().getString(R.string.smiley_bad),
+                    SMILEY_BAD,
+                    true));
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
+                    MainApplication.getAppContext().getString(R.string.smiley_netral),
+                    SMILEY_NEUTRAL,
+                    true));
+            this.list.add(new SmileyModel(R.drawable.ic_smiley_good_empty,
                     MainApplication.getAppContext().getString(R.string.smiley_good),
                     SMILEY_GOOD,
                     true));

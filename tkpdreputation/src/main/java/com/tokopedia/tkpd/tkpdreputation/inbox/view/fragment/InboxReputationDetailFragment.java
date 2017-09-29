@@ -17,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.facebook.CallbackManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -28,7 +30,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
@@ -36,6 +37,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetai
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShareReviewDialog;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
@@ -43,6 +45,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;
     private InboxReputationDetailAdapter adapter;
+    private ShareReviewDialog shareReviewDialog;
+    private CallbackManager callbackManager;
     View mainView;
 
     TkpdProgressDialog progressDialog;
@@ -116,6 +121,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
+        callbackManager = CallbackManager.Factory.create();
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
                 (this);
@@ -395,6 +401,43 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSendReplyReview(InboxReputationDetailItemViewModel element, String replyReview) {
+        presenter.sendReplyReview(element.getReputationId(), element.getProductId(),
+                element.getShopId(), element.getReviewId(), replyReview);
+    }
+
+    @Override
+    public void onErrorReplyReview(String errorMessage) {
+        NetworkErrorHelper.showSnackbar
+
+                (getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessReplyReview() {
+        refreshPage();
+    }
+
+    @Override
+    public void onShareReview(String productName, String productAvatar, String productUrl, String review) {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        if (shareReviewDialog == null && callbackManager != null) {
+            shareReviewDialog = new ShareReviewDialog(getActivity(), callbackManager,
+                    this);
+        }
+
+        if (shareReviewDialog != null) {
+            shareReviewDialog.setModel(new ShareModel(
+                    productName,
+                    review,
+                    productUrl,
+                    productAvatar
+            ));
+            shareReviewDialog.show();
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
@@ -441,6 +484,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
@@ -462,6 +506,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     .success_report_review));
         } else
             super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     private void refreshPage() {
@@ -473,5 +518,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+        callbackManager = null;
     }
 }

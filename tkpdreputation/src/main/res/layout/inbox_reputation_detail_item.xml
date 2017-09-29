@@ -100,5 +100,11 @@
         android:id="@+id/seller_reply_layout"
         layout="@layout/seller_reply_layout"
         android:visibility="gone"
+        tools:visibility="gone"/>
+
+    <include
+        android:id="@+id/seller_add_reply_layout"
+        layout="@layout/seller_add_reply_layout"
+        android:visibility="gone"
         tools:visibility="visible"/>
 </LinearLayout>
