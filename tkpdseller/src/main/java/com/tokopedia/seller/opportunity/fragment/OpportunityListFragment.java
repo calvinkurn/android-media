@@ -522,9 +522,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected String getScreenName() {
-        if (pagingHandler != null)
-            return AppScreen.SCREEN_OPPORTUNITY_TAB + pagingHandler.getPage();
-        else
             return AppScreen.SCREEN_OPPORTUNITY_TAB;
     }
 }

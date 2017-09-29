@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.analytics.ScreenTracking;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -133,6 +135,14 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
             Log.d(TAG, "ON ACTIVITY CREATE FIRST");
         } else {
             Log.d(TAG, "ON ACTIVITY CREATE");
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isAdded() && getActivity() !=null) {
+            ScreenTracking.screen(getScreenName());
         }
     }
 
