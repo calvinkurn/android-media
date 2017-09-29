@@ -17,6 +17,7 @@ class DetailCicilan extends Component {
   render() {
     const { titleTxt } = styles
     const banks = this.props.banks
+    console.log(banks)
     const termMap = [3, 6, 12, 18, 24]
     return (
       <View>
@@ -80,7 +81,7 @@ class DetailCicilan extends Component {
               <View style={{ flex: 3, flexDirection: 'row' }}>
                 <Image source={{ uri: b.bank_logo || 'http://via.placeholder.com/50x27' }}
                   style={{ width: 50, resizeMode: 'contain', marginLeft: 30 }} />
-                <Text style={{ fontSize: 20, fontWeight: '200', marginLeft: 20 }}>ANZ</Text>
+                <Text style={{ fontSize: 20, fontWeight: '200', marginLeft: 20 }}>{b.bank_name}</Text>
               </View>
               {
                 termMap.map(t => {
