@@ -15,6 +15,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.CacheUtil;
@@ -236,7 +237,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                                 AppEventTracking.Action.SCROLL,
                                 OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
-                                );
+                        );
                     }
                 });
 
@@ -522,6 +523,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected String getScreenName() {
-            return AppScreen.SCREEN_OPPORTUNITY_TAB;
+        return AppScreen.SCREEN_OPPORTUNITY_TAB;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
+        }
     }
 }
