@@ -19,13 +19,6 @@ import rx.Observable;
 public interface ApiCacheRepository {
 
     /**
-     * Check if it's need to update the white list
-     *
-     * @return true if version is not increased, otherwise false
-     */
-    Observable<Boolean> isWhiteListVersionUpdated();
-
-    /**
      * bulk insert
      * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
      *

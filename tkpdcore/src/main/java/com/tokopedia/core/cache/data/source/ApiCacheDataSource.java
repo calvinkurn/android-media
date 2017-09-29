@@ -1,24 +1,32 @@
 package com.tokopedia.core.cache.data.source;
 
+import android.text.TextUtils;
+
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiData_Table;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist_Table;
+import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
+import com.tokopedia.core.cache.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.cache.util.CacheApiUtils;
+import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Calendar;
 import java.util.Collection;
+
+import javax.inject.Inject;
 
 import okhttp3.MediaType;
 import okhttp3.Response;
@@ -29,6 +37,7 @@ import okio.BufferedSource;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by normansyahputa on 8/9/17.
@@ -39,8 +48,59 @@ public class ApiCacheDataSource {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    public ApiCacheDataSource() {
+    private LocalCacheHandler localCacheHandler;
+    private String versionName;
 
+    @Inject
+    public ApiCacheDataSource(@ApiCacheQualifier LocalCacheHandler localCacheHandler, @VersionNameQualifier String versionName) {
+        this.versionName = versionName;
+        this.localCacheHandler = localCacheHandler;
+    }
+
+    private Observable<Boolean> isWhiteListVersionUpdated() {
+        String storedVersionName = localCacheHandler.getString(TkpdCache.Key.WHITE_LIST_VERSION);
+        CommonUtils.dumper(String.format("Current vs local version: %s - %s", storedVersionName, versionName));
+        // Fresh install or different version
+        boolean whiteListVersionUpdated = TextUtils.isEmpty(storedVersionName) || !storedVersionName.equals(versionName);
+        return Observable.just(whiteListVersionUpdated);
+    }
+
+    public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
+        return isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Boolean aBoolean) {
+                CommonUtils.dumper(String.format("Need to update white list: %b", aBoolean));
+                if (!aBoolean) {
+                    return Observable.just(false);
+                }
+                return Observable.zip(deleteAllCacheData(), deleteAllWhiteListData(), new Func2<Boolean, Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
+                        CommonUtils.dumper(String.format("Delete white list and cache finished"));
+                        return true;
+                    }
+                }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        return insertWhiteList(cacheApiDatas).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                            @Override
+                            public Observable<Boolean> call(Boolean aBoolean) {
+                                if (!aBoolean) {
+                                    return Observable.just(false);
+                                }
+                                return updateLocalCacheWhiteListVersion();
+                            }
+                        });
+                    }
+
+                    private Observable<Boolean> updateLocalCacheWhiteListVersion() {
+                        localCacheHandler.putString(TkpdCache.Key.WHITE_LIST_VERSION, versionName);
+                        localCacheHandler.applyEditor();
+                        return Observable.just(true);
+                    }
+                });
+            }
+        });
     }
 
     public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {

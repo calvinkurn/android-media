@@ -57,9 +57,7 @@ public class ApiCacheInterceptor implements Interceptor {
         PostExecutionThread postExecutionThread = new UIThread();
         String versionName = MainApplication.getAppContext().getPackageManager().getPackageInfo(MainApplication.getAppContext().getPackageName(), 0).versionName;
         ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(
-                new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API),
-                versionName,
-                new ApiCacheDataSource()
+                new ApiCacheDataSource(new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API), versionName)
         );
 
         new ClearTimeOutCache(threadExecutor, postExecutionThread, apiCacheRepository).executeSync(RequestParams.EMPTY);

@@ -43,10 +43,8 @@ public class CacheModule {
     }
 
     @Provides
-    ApiCacheRepository provideApiCacheRepository(@ApiCacheQualifier LocalCacheHandler localCacheHandler,
-                                                 @VersionNameQualifier String versionName,
-                                                 ApiCacheDataSource cacheHelper) {
-        return new ApiCacheRepositoryImpl(localCacheHandler, versionName, cacheHelper);
+    ApiCacheRepository provideApiCacheRepository(ApiCacheDataSource apiCacheDataSource) {
+        return new ApiCacheRepositoryImpl(apiCacheDataSource);
     }
 
     @Provides
@@ -58,7 +56,8 @@ public class CacheModule {
     }
 
     @Provides
-    ApiCacheDataSource provideCacheHelper() {
-        return new ApiCacheDataSource();
+    ApiCacheDataSource provideCacheHelper(@ApiCacheQualifier LocalCacheHandler localCacheHandler,
+                                          @VersionNameQualifier String versionName) {
+        return new ApiCacheDataSource(localCacheHandler, versionName);
     }
 }

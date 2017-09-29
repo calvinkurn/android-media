@@ -1,19 +1,13 @@
 package com.tokopedia.core.cache.data.repository;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
-import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
-import com.tokopedia.core.cache.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.core.var.TkpdCache;
 
 import java.util.Collection;
 
@@ -21,8 +15,6 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by normansyahputa on 8/14/17.
@@ -30,63 +22,16 @@ import rx.functions.Func2;
 
 public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
-    private LocalCacheHandler localCacheHandler;
-    private String versionName;
     private ApiCacheDataSource apiCacheDataSource;
 
     @Inject
-    public ApiCacheRepositoryImpl(@ApiCacheQualifier LocalCacheHandler localCacheHandler, @VersionNameQualifier String versionName, ApiCacheDataSource apiCacheDataSource) {
-        this.localCacheHandler = localCacheHandler;
-        this.versionName = versionName;
+    public ApiCacheRepositoryImpl(ApiCacheDataSource apiCacheDataSource) {
         this.apiCacheDataSource = apiCacheDataSource;
     }
 
     @Override
-    public Observable<Boolean> isWhiteListVersionUpdated() {
-        String storedVersionName = localCacheHandler.getString(TkpdCache.Key.WHITE_LIST_VERSION);
-        CommonUtils.dumper(String.format("Current vs local version: %s - %s", storedVersionName, versionName));
-        // Fresh install or different version
-        boolean whiteListVersionUpdated = TextUtils.isEmpty(storedVersionName) || !storedVersionName.equals(versionName);
-        return Observable.just(whiteListVersionUpdated);
-    }
-
-    @Override
     public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
-        return isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                CommonUtils.dumper(String.format("Need to update white list: %b", aBoolean));
-                if (!aBoolean) {
-                    return Observable.just(false);
-                }
-                return Observable.zip(apiCacheDataSource.deleteAllCacheData(), apiCacheDataSource.deleteAllWhiteListData(), new Func2<Boolean, Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
-                        CommonUtils.dumper(String.format("Delete white list and cache finished"));
-                        return true;
-                    }
-                }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Boolean aBoolean) {
-                        return apiCacheDataSource.insertWhiteList(cacheApiDatas).flatMap(new Func1<Boolean, Observable<Boolean>>() {
-                            @Override
-                            public Observable<Boolean> call(Boolean aBoolean) {
-                                if (!aBoolean) {
-                                    return Observable.just(false);
-                                }
-                                return updateLocalCacheWhiteListVersion();
-                            }
-                        });
-                    }
-
-                    public Observable<Boolean> updateLocalCacheWhiteListVersion() {
-                        localCacheHandler.putString(TkpdCache.Key.WHITE_LIST_VERSION, versionName);
-                        localCacheHandler.applyEditor();
-                        return Observable.just(true);
-                    }
-                });
-            }
-        });
+        return apiCacheDataSource.bulkInsert(cacheApiDatas);
     }
 
     @Override
