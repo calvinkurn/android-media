@@ -2489,12 +2489,14 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventSellerHomeDashboardClick(String main, String item){
-        sendGTMEvent(new EventTracking(
+        EventTracking eventTracking = new EventTracking(
                 AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
                 AppEventTracking.Category.DASHBOARD,
                 AppEventTracking.Action.CLICK_DASHBOARD_CARD,
                 main + " - " + item
-        ).getEvent());
+        );
+        eventTracking.setUserId();
+        sendGTMEvent(eventTracking.getEvent());
     }
 
     public static void eventAppShare() {
