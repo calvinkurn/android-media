@@ -9,6 +9,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author normansyahputa on 5/17/17.
@@ -17,7 +18,13 @@ import java.util.List;
 
 public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> implements SearchInputView.Listener {
 
+    private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
+
     protected SearchInputView searchInputView;
+
+    protected long getDelayTextChanged() {
+        return DEFAULT_DELAY_TEXT_CHANGED;
+    }
 
     @Override
     protected int getFragmentLayout() {
@@ -28,6 +35,7 @@ public abstract class BaseSearchListFragment<P, T extends ItemType> extends Base
     protected void initView(View view) {
         super.initView(view);
         searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
+        searchInputView.setDelayTextChanged(getDelayTextChanged());
         searchInputView.setListener(this);
     }
 
@@ -76,9 +84,9 @@ public abstract class BaseSearchListFragment<P, T extends ItemType> extends Base
     }
 
     private void showSearchView(boolean isVisible) {
-        if(isVisible) {
+        if (isVisible) {
             searchInputView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             searchInputView.setVisibility(View.GONE);
         }
     }

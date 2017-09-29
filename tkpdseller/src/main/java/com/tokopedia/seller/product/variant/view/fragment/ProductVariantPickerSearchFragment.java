@@ -288,4 +288,9 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
     public long getSelectedUnitId() {
         return selectedVariantUnitId;
     }
+
+    @Override
+    protected long getDelayTextChanged() {
+        return 0;
+    }
 }
