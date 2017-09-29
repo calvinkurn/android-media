@@ -87,6 +87,9 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<CustomerWrapper>() {
             @Override
             public void onSuccess(CustomerWrapper value) {
+
+                CommonUtils.dumper("MoEngage check user "+value.getCustomerId());
+
                 MoEHelper helper = MoEHelper.getInstance(context);
                 helper.setFullName(value.getFullName());
                 helper.setUniqueId(value.getCustomerId());
@@ -107,7 +110,7 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<JSONObject>() {
             @Override
             public void onSuccess(JSONObject value) {
-                CommonUtils.dumper("MoEngage send event "+value.toString());
+                CommonUtils.dumper("MoEngage check user "+value.toString());
                 MoEHelper.getInstance(context).trackEvent(eventName, value);
             }
 
@@ -132,6 +135,7 @@ public class MoEngageContainer implements IMoengageContainer {
 
     @Override
     public void sendRegisterEvent(String fullName, String mobileNo) {
+        CommonUtils.dumper("MoEngage check user "+fullName);
         sendEvent(
                 new PayloadBuilder()
                     .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
