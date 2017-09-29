@@ -118,6 +118,7 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.maps
     compile rootProject.ext.playServicesDependencies.auth
     compile rootProject.ext.playServicesDependencies.places
+    compile rootProject.ext.playServicesDependencies.perfMon
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
@@ -178,10 +179,9 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.debugToolsDependencies.stetho
-
-    compile (rootProject.ext.miscDependencies.reactNative)
-    compile (rootProject.ext.miscDependencies.codePushReactNative)
-
+    compile(rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

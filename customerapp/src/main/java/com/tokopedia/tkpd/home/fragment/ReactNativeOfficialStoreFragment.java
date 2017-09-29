@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.home.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.app.ReactNativeFragment;
-import com.tokopedia.core.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
 /**
  * Created by alvarisi on 8/31/17.

@@ -35,7 +35,13 @@ public class USSDAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (event == null) {
+            return;
+        }
         AccessibilityNodeInfo source = event.getSource();
+        if (source == null) {
+            return;
+        }
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) {
             return;
         }
@@ -53,6 +59,8 @@ public class USSDAccessibilityService extends AccessibilityService {
         } else {
             eventText = Collections.singletonList(source.getText());
         }
+        if (eventText == null)
+            return;
 
         String result = processUSSDText(eventText);
         if (TextUtils.isEmpty(result))
@@ -108,19 +116,30 @@ public class USSDAccessibilityService extends AccessibilityService {
     }
 
     private void closeSystemDialog(AccessibilityNodeInfo source) {
+        if (source == null) {
+            return;
+        }
         List<AccessibilityNodeInfo> list = source
                 .findAccessibilityNodeInfosByText(getString(R.string.label_cancel));
         boolean isClosed = false;
-        for (AccessibilityNodeInfo node : list) {
-            node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            isClosed = true;
+        if (list != null) {
+            for (AccessibilityNodeInfo node : list) {
+                if (node != null) {
+                    node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    isClosed = true;
+                }
+            }
         }
         if (!isClosed) {
             list = source
                     .findAccessibilityNodeInfosByText(getString(R.string.ok));
-            for (AccessibilityNodeInfo node : list) {
-                node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                isClosed = true;
+            if (list != null) {
+                for (AccessibilityNodeInfo node : list) {
+                    if (node != null) {
+                        node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        isClosed = true;
+                    }
+                }
             }
         }
         if (!isClosed && startFromApp && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN)

@@ -129,6 +129,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
             @Override
             public void onClick(View v) {
                 if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
+                        && scroogeWebView.getUrl() != null
                         && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment()))
                     scroogeWebView.loadUrl("javascript:handlePopAndroid();");
                 else

@@ -1,8 +1,11 @@
 package com.tokopedia.core.cache.interceptor;
 
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -21,11 +24,15 @@ import com.tokopedia.core.cache.domain.interactor.SaveToDbUseCase;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.HashMap;
 
+import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -34,7 +41,6 @@ import okhttp3.ResponseBody;
  */
 
 public class ApiCacheInterceptor implements Interceptor {
-    private static final String LOG_TAG = "ApiCacheInterceptor";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -46,7 +52,7 @@ public class ApiCacheInterceptor implements Interceptor {
         try {
             versionName = MainApplication.getAppContext().getPackageManager().getPackageInfo(MainApplication.getAppContext().getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            return null;
+            e.printStackTrace();
         }
         ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(
                 new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API),
@@ -61,15 +67,16 @@ public class ApiCacheInterceptor implements Interceptor {
         SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, request.url().toString());
+
+        requestParams.putString(BaseApiCacheInterceptorUseCase.FULL_URL, getFullRequestURL(request));
         requestParams.putString(BaseApiCacheInterceptorUseCase.METHOD, request.method());
 
-        String cacheData = getCacheDataUseCase.createObservableSync(requestParams).defaultIfEmpty(null).toBlocking().firstOrDefault(null);
         Boolean isInWhiteList = checkWhiteListUseCase.createObservableSync(requestParams).defaultIfEmpty(false).toBlocking().firstOrDefault(null);
 
         if (isInWhiteList != null && isInWhiteList) {
+            String cacheData = getCacheDataUseCase.createObservableSync(requestParams).defaultIfEmpty(null).toBlocking().firstOrDefault(null);
             if (cacheData == null || cacheData.equals("")) {
-                Log.d(LOG_TAG, request.url().toString() + " data is not here !!");
+                CommonUtils.dumper(request.url().toString() + " data is not here !!");
                 Response response;
                 try {
                     response = chain.proceed(request);
@@ -83,7 +90,7 @@ public class ApiCacheInterceptor implements Interceptor {
 
                 return response;
             } else {
-                Log.d(LOG_TAG, request.url().toString() + " already in here !!");
+                CommonUtils.dumper(request.url().toString() + " already in here !!");
                 Response.Builder builder = new Response.Builder();
                 builder.request(request);
                 builder.protocol(Protocol.HTTP_1_1);
@@ -92,8 +99,8 @@ public class ApiCacheInterceptor implements Interceptor {
                 builder.body(ResponseBody.create(MediaType.parse("application/json"), cacheData));
                 return builder.build();
             }
-        }else{
-            Log.d(LOG_TAG, String.format("%s just hit another network !!", request.url().toString()));
+        } else {
+            CommonUtils.dumper(String.format("%s just hit another network !!", request.url().toString()));
             Response response;
             try {
                 response = chain.proceed(request);
@@ -105,5 +112,28 @@ public class ApiCacheInterceptor implements Interceptor {
         }
     }
 
+    private String getFullRequestURL(Request request){
+        String s = "";
+        if (request.method().equals("POST")) {
+            RequestBody requestBody = request.body();
+            if (requestBody instanceof FormBody) {
+                int size = ((FormBody) requestBody).size();
+                for (int i = 0; i < size; i++) {
+                    String key = ((FormBody) requestBody).encodedName(i);
+                    if (key.equals("hash") || key.equals("device_time")) {
+                        continue;
+                    }
 
+                    String value = ((FormBody) requestBody).encodedValue(i);
+                    if (TextUtils.isEmpty(s)) {
+                        s += "?";
+                    } else {
+                        s += "&";
+                    }
+                    s += key + "=" + value;
+                }
+            }
+        }
+        return request.url().toString() + s;
+    }
 }

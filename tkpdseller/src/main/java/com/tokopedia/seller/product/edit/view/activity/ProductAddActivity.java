@@ -6,14 +6,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -43,6 +42,7 @@ import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
@@ -269,12 +269,12 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         if (hasDataAdded()) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setMessage(getString(getCancelMessageRes()))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             ProductAddActivity.super.onBackPressed();
                         }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                             // no op, just dismiss
                         }
@@ -337,7 +337,10 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
                 imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
             } else { // get extras for import from gallery
-                imageUrls.add(FileUtils.getRealPathFromURI(this, imageUri));
+                String url = FileUtils.getTkpdPathFromURI(this, imageUri);
+                if (!TextUtils.isEmpty(url)) {
+                    imageUrls.add(url);
+                }
             }
         }
         dismissDialog();
@@ -404,19 +407,28 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     public void startUploadProduct(long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         finish();
     }
 
+    private void startUploadProductService(long productId){
+        ProductAddFragment productAddFragment = getProductAddFragment();
+        boolean isAdd = true;
+        if (productAddFragment!= null) {
+            isAdd = productAddFragment.getStatusUpload() == ProductStatus.ADD;
+        }
+        startService(UploadProductService.getIntent(this, productId, isAdd));
+    }
+
     public void startUploadProductWithShare(long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
     }
 
     @Override
     public void startUploadProductAndAdd(Long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         start(this);
         finish();
     }
@@ -429,7 +441,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
 
     @Override
     public void startUploadProductAndAddWithShare(Long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         start(this);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();

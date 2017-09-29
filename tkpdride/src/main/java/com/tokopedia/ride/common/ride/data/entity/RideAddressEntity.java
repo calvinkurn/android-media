@@ -30,6 +30,9 @@ public class RideAddressEntity {
     @SerializedName("longitude")
     @Expose
     private String longitude;
+    @SerializedName("prefill")
+    @Expose
+    private boolean prefill;
 
     public RideAddressEntity() {
     }
@@ -52,5 +55,9 @@ public class RideAddressEntity {
 
     public String getAddressDescription() {
         return addressDescription;
+    }
+
+    public boolean getPrefill() {
+        return prefill;
     }
 }

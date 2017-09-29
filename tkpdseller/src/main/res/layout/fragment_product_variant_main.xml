@@ -18,7 +18,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/line_separator_medium"/>
+        android:background="@drawable/bg_line_separator"/>
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_view_variant_level_two"

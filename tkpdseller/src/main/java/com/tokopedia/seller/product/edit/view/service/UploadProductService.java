@@ -39,6 +39,7 @@ public class UploadProductService extends BaseService implements AddProductServi
     public static final String TAG = "upload_product";
     ;
     public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
+    public static final String IS_ADD = "IS_ADD";
 
     public static final String ACTION_DRAFT_CHANGED = "com.tokopedia.draft.changed";
 
@@ -48,9 +49,10 @@ public class UploadProductService extends BaseService implements AddProductServi
     HashMap<String, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
     HashMap<String, Integer> progressMap = new HashMap<>();
 
-    public static Intent getIntent(Context context, long productId) {
+    public static Intent getIntent(Context context, long productId, boolean isAdd) {
         Intent intent = new Intent(context, UploadProductService.class);
         intent.putExtra(PRODUCT_DRAFT_ID, productId);
+        intent.putExtra(IS_ADD, isAdd);
         return intent;
     }
 
@@ -72,7 +74,8 @@ public class UploadProductService extends BaseService implements AddProductServi
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         long productDraftId = intent.getLongExtra(PRODUCT_DRAFT_ID, -1);
-        presenter.uploadProduct(productDraftId);
+        boolean isAdd = intent.getBooleanExtra(IS_ADD, true);
+        presenter.uploadProduct(productDraftId, isAdd);
         return START_NOT_STICKY;
     }
 
@@ -209,6 +212,9 @@ public class UploadProductService extends BaseService implements AddProductServi
             pendingIntent = ProductDraftEditActivity.createInstance(this, productDraftId);
         }
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if(notificationBuilderMap.get(productDraftId) == null){
+            createNotification(productDraftId, "");
+        }
         return notificationBuilderMap.get(productDraftId)
                 .setContentText(errorMessage)
                 .setStyle(new NotificationCompat

@@ -50,6 +50,8 @@ public class TkpdCache {
     public static String LAST_MANDIRI = "LAST_MANDIRI";
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
+    public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
+    public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -194,6 +196,7 @@ public class TkpdCache {
         public static final String DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY = "DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY_";
 
         public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
+        public static final String DIGITAL_LAST_ORDER = "DIGITAL_LAST_ORDER";
 
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
@@ -203,6 +206,9 @@ public class TkpdCache {
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
 
         public static final String VERSION_NAME_IN_CACHE = "VERSION_NAME_IN_CACHE";
+
+        public static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "SHOW_HIDE_APP_SHARE_BUTTON_KEY";
+        public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
     }
 
 }

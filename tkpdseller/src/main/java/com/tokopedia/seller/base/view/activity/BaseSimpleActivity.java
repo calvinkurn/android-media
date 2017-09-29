@@ -3,8 +3,6 @@ package com.tokopedia.seller.base.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 
 /**
@@ -29,6 +27,9 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity{
     }
 
     protected void inflateFragment() {
+        if (getNewFragment() == null)
+            return;
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, getNewFragment(), getTagFragment())
                 .commit();
