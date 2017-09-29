@@ -38,7 +38,6 @@ const shop = (state = {
         shopName: action.payload
       }
     case `${FETCH_SHOP_ID}_${FULFILLED}`:
-      console.log('FETCH_SHOP_ID',action.payload)
       return {
         ...state,
         shopId: action.payload
