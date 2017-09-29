@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.manage.data.source;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
@@ -9,6 +10,8 @@ import com.tokopedia.seller.product.manage.data.mapper.DeleteProductCloudMapper;
 import com.tokopedia.seller.product.manage.data.model.ResponseDeleteProductData;
 import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;
 import com.tokopedia.seller.product.manage.data.mapper.EditPriceCloudMapper;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -20,7 +23,8 @@ public class ActionManageProductDataSource {
     private ActionManageProductDataSourceCloud actionManageProductDataSourceCloud;
     private Context context;
 
-    public ActionManageProductDataSource(ActionManageProductDataSourceCloud actionManageProductDataSourceCloud, Context context) {
+    @Inject
+    public ActionManageProductDataSource(ActionManageProductDataSourceCloud actionManageProductDataSourceCloud, @ApplicationContext Context context) {
         this.actionManageProductDataSourceCloud = actionManageProductDataSourceCloud;
         this.context = context;
     }

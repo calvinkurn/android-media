@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.manage.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.EtalaseProductOption;
@@ -12,6 +14,9 @@ import com.tokopedia.seller.product.manage.view.listener.ManageProductView;
 import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -25,33 +30,41 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
     private final EditPriceProductUseCase editPriceProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
     private final GetProductListManageMapperView getProductListManageMapperView;
+    private final SellerModuleRouter sellerModuleRouter;
 
     public ManageProductPresenterImpl(GetProductListSellingUseCase getProductListSellingUseCase,
                                       EditPriceProductUseCase editPriceProductUseCase,
                                       DeleteProductUseCase deleteProductUseCase,
-                                      GetProductListManageMapperView getProductListManageMapperView) {
+                                      GetProductListManageMapperView getProductListManageMapperView,
+                                      SellerModuleRouter sellerModuleRouter) {
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
         this.getProductListManageMapperView = getProductListManageMapperView;
+        this.sellerModuleRouter = sellerModuleRouter;
     }
 
-
+    @Override
+    public void getListFeaturedProduct() {
+        sellerModuleRouter.getFeaturedProduct().subscribe(getSubscriberGetListFeaturedProduct());
+    }
 
     @Override
     public void editPrice(String productId, String price, String priceCurrency) {
+        getView().showLoadingProgress();
         editPriceProductUseCase.execute(EditPriceProductUseCase.createRequestParams(price, priceCurrency, productId), getSubscriberEditPrice());
     }
 
     @Override
     public void deleteProduct(String productId) {
+        getView().showLoadingProgress();
         deleteProductUseCase.execute(DeleteProductUseCase.createRequestParams(productId), getSubscriberDeleteProduct());
     }
 
     @Override
-    public void getListProduct() {
-        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(0,
-                "", CatalogProductOption.NOT_USED, ConditionProductOption.NOT_USED, "", EtalaseProductOption.ALL_SHOWCASE,
+    public void getListProduct(int page, String keywordFilter) {
+        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(page,
+                keywordFilter, CatalogProductOption.NOT_USED, ConditionProductOption.NOT_USED, "", EtalaseProductOption.ALL_SHOWCASE,
                 PictureStatusProductOption.NOT_USED, SortProductOption.POSITION), getSubscriberGetListProduct());
     }
 
@@ -64,6 +77,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
 
             @Override
             public void onError(Throwable e) {
+                getView().hideLoadingProgress();
                 getView().onErrorDeleteProduct();
             }
 
@@ -74,6 +88,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
                 } else {
                     getView().onErrorDeleteProduct();
                 }
+                getView().hideLoadingProgress();
             }
         };
     }
@@ -87,6 +102,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
 
             @Override
             public void onError(Throwable e) {
+                getView().hideLoadingProgress();
                 getView().onErrorEditPrice();
             }
 
@@ -97,6 +113,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
                 } else {
                     getView().onErrorEditPrice();
                 }
+                getView().hideLoadingProgress();
             }
         };
     }
@@ -118,6 +135,35 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
                 getView().onGetProductList(getProductListManageMapperView.transform(productListSellerModel));
             }
         };
+    }
+
+    private Subscriber<GMFeaturedProductDomainModel> getSubscriberGetListFeaturedProduct() {
+        return new Subscriber<GMFeaturedProductDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()) {
+                    getView().onErrorGetFeaturedProductList();
+                }
+            }
+
+            @Override
+            public void onNext(GMFeaturedProductDomainModel gmFeaturedProductDomainModel) {
+                getView().onGetFeaturedProductList(transform(gmFeaturedProductDomainModel.getData()));
+            }
+        };
+    }
+
+    private List<String> transform(List<GMFeaturedProductDomainModel.Datum> datas) {
+        List<String> productIds = new ArrayList<>();
+        for(GMFeaturedProductDomainModel.Datum data : datas){
+            productIds.add(String.valueOf(data.getProductId()));
+        }
+        return productIds;
     }
 
     @Override

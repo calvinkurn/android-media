@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.design.text.SpinnerCounterInputView
+        android:id="@+id/spinner_counter_input_view_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:spinner_decimal_entries="@array/product_currency_entries"
+        app:spinner_decimal_hint="@string/product_label_product_price"
+        app:spinner_decimal_max_length="@integer/product_max_counter_length"
+        app:spinner_decimal_show_counter_button="false"
+        app:spinner_decimal_values="@array/product_currency_values" />
+
+</LinearLayout>

@@ -224,6 +224,21 @@
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".product.manage.view.activity.SortManageProductActivity"
+            android:label="@string/title_sort_by"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.manage.view.activity.ManageProductActivity"
+            android:label="@string/title_activity_manage_product"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.manage.view.activity.FilterManageProductActivity"
+            android:label="@string/title_filter_but"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".selling.SellingService"
             android:exported="false" />

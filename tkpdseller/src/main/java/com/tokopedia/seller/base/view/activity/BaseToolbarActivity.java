@@ -51,7 +51,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
 
-    private void setToolbarColorWhite() {
+    protected void setToolbarColorWhite() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = getWindow().getDecorView();
             int flags = view.getSystemUiVisibility();

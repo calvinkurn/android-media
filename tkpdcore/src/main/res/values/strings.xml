@@ -511,6 +511,17 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
         <item>11</item>
     </string-array>
 
+    <string name="sort_position">Posisi</string>
+    <string name="sort_last">Pembaruan Terakhir</string>
+    <string name="sort_new_product">Produk Baru</string>
+    <string name="sort_product_name">Nama Produk</string>
+    <string name="sort_most_viewed">Dilihat Terbanyak</string>
+    <string name="sort_most_discussed">Diskusi Terbanyak</string>
+    <string name="sort_most_reviewed">Ulasan Terbanyak</string>
+    <string name="sort_most_buy">Pembelian Terbanyak</string>
+    <string name="sort_lowest_price">Harga Terendah</string>
+    <string name="sort_highest_price">Harga Tertinggi</string>
+
     <string name="error_permission">Anda tidak memiliki Akses untuk mengakses ini</string>
     <!-- Strings related manage prod -->
 

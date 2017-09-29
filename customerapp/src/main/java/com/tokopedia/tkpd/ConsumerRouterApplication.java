@@ -54,6 +54,7 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
@@ -82,6 +83,8 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import rx.Observable;
 
 import javax.inject.Inject;
 
@@ -537,5 +540,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToGMSubscribe(Activity activity) {
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
+        return Observable.just(new GMFeaturedProductDomainModel().setData(new ArrayList<GMFeaturedProductDomainModel.Datum>()));
     }
 }

@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -17,6 +19,7 @@ public class EditPriceProductUseCase extends UseCase<Boolean> {
     private ActionManageProductRepository actionManageProductRepository;
     private ShopInfoRepository shopInfoRepository;
 
+    @Inject
     public EditPriceProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                    ActionManageProductRepository actionManageProductRepository,
                                    ShopInfoRepository shopInfoRepository) {
