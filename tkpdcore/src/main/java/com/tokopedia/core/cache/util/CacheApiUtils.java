@@ -2,8 +2,11 @@ package com.tokopedia.core.cache.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.cache.constant.CacheApiConstant;
 import com.tokopedia.core.cache.constant.HTTPMethodDef;
+import com.tokopedia.core.network.retrofit.response.BaseResponseError;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -13,6 +16,7 @@ import java.nio.charset.Charset;
 import okhttp3.Headers;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.GzipSource;
@@ -23,6 +27,8 @@ import okio.Okio;
  */
 
 public class CacheApiUtils {
+    private static final int BYTE_COUNT = 2048;
+
     private static final long DEFAULT_MAX_CONTENT_LENGTH = 250000L;
 
     private static final String[] UNUSED_PARAM = {"hash", "device_time", "device_id"};
@@ -159,5 +165,29 @@ public class CacheApiUtils {
         } else {
             return input;
         }
+    }
+
+    public static boolean isResponseValidToBeCached(Response response) {
+        if (response.code() != CacheApiConstant.CODE_OK) {
+            return false;
+        }
+        if (isResponseErrorStatusOk(response)) {
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean isResponseErrorStatusOk(Response response) {
+        try {
+            Gson gson = new Gson();
+            ResponseBody responseBody = response.peekBody(BYTE_COUNT);
+            BaseResponseError responseError = gson.fromJson(responseBody.string(), BaseResponseError.class);
+            if (responseError == null) {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

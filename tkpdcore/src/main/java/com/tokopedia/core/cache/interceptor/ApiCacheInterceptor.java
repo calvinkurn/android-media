@@ -73,7 +73,6 @@ public class ApiCacheInterceptor implements Interceptor {
         requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_METHOD, request.method());
         requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_HOST, request.url().host());
         requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_PATH, CacheApiUtils.getPath(request.url().toString()));
-        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_REQUEST_PARAM, CacheApiUtils.getRequestParam(request));
 
         boolean inWhiteList = checkWhiteListUseCase.getData(requestParams);
 
@@ -81,12 +80,15 @@ public class ApiCacheInterceptor implements Interceptor {
             CommonUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
             throw new Exception("Not registered in white list");
         }
+        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_REQUEST_PARAM, CacheApiUtils.getRequestParam(request));
         String cacheData = getCacheDataUseCase.getData(requestParams);
         if (TextUtils.isEmpty(cacheData)) {
             CommonUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
             Response response = getDefaultResponse(chain);
-            requestParams.putObject(SaveToDbUseCase.RESPONSE, response);
-            saveToDbUseCase.executeSync(requestParams);
+            if (CacheApiUtils.isResponseValidToBeCached(response)) {
+                requestParams.putObject(SaveToDbUseCase.RESPONSE, response);
+                saveToDbUseCase.executeSync(requestParams);
+            }
             return response;
         } else {
             CommonUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));

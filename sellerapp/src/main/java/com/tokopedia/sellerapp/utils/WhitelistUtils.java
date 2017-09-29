@@ -2,7 +2,6 @@ package com.tokopedia.sellerapp.utils;
 
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.gm.statistic.constant.StatisticConstant;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class WhitelistUtils {
-
+    
     private static final long THIRTY_SECOND = TimeUnit.SECONDS.toSeconds(30);
     private static final long ONE_MINUTE = TimeUnit.MINUTES.toSeconds(1);
     private static final long FIVE_MINUTE = TimeUnit.MINUTES.toSeconds(5);
@@ -27,7 +26,7 @@ public class WhitelistUtils {
     public static List<CacheApiWhiteListDomain> getWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
         // Depositc
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(httpfac
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(
                 TkpdBaseURL.Transaction.URL_DEPOSIT + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, THIRTY_SECOND));
         // Ticker
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.MOJITO_DOMAIN,
@@ -51,6 +50,10 @@ public class WhitelistUtils {
                 TkpdBaseURL.Ace.PATH_SEARCH + TkpdBaseURL.Ace.PATH_CATALOG, ONE_DAY));
 
         // TopAds
+        // TopAds Deposit
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+                TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, THIRTY_SECOND));
+
         // TopAds Statistic
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
                 TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC, FIVE_MINUTE));
