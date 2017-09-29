@@ -1,11 +1,19 @@
 import React, { Component } from 'react'
 import { View, Text, Image } from 'react-native'
-
+import { NavigationModule } from 'NativeModules'
+import { connect } from 'react-redux'
+import { makePaymentToNative } from '../actions/index'
 
 
 class Processing extends Component {
     componentDidMount(){
-        console.log(this.props)
+        this.props.dispatch(makePaymentToNative())
+
+        setTimeout(
+            () => {
+                NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
+            },  4000
+        )
     }
 
     render() {
@@ -20,5 +28,11 @@ class Processing extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    console.log(state)
+    return {
+        data: state
+    }
+}
 
-export default Processing
+export default connect(mapStateToProps)(Processing)

@@ -1,9 +1,12 @@
 import axios from 'axios'
 import {
   PosCacheModule,
+  NetworkModule,
   SessionModule,
   PaymentModule
 } from 'NativeModules'
+import { BASE_API_URL } from '../lib/api.js'
+
 
 
 // ===================== Product List ======================= //
@@ -113,6 +116,96 @@ const fetchCart = () => {
     })
     .catch(error => console.log(error))
 }
+
+
+// ===================== Make Payment 1 ===================== //
+export const MAKE_PAYMENT_TO_NATIVE = 'MAKE_PAYMENT_TO_NATIVE'
+export const makePaymentToNative = () => {
+  return {
+    type: MAKE_PAYMENT_TO_NATIVE,
+    payload: doPayment()
+  }
+}
+
+const doPayment = async () => {
+  const env = await getEnv()
+  const api_url = await getBaseAPI(env)
+  const user_id = await getUserId()
+  const addr_id = await getAddrId()
+  const shop_id = await getShopId()
+  const cart = await getCart()
+  
+  // const makePaymentToNative = await makePaymentToNativeStepOne(api_url)
+  console.log(env, api_url, user_id, addr_id, shop_id, cart)
+}
+
+
+const getUserId = () => {
+  return SessionModule.getUserId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getAddrId = () => {
+  return SessionModule.getAddrId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getShopId = () => {
+  return SessionModule.getShopId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getCart = async () => {
+  let objData = []
+  const cart = await fetchCart()
+  
+  console.log(cart)
+  cart.list.map((data) => {
+    objData.push({
+      product_id: data.product_id,
+      quantity: data.quantity
+    })
+  })
+  console.log(objData)
+  return objData
+}
+
+const getEnv = () => {
+  return SessionModule.getEnv()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getBaseAPI = (env) => {
+  let api_url;
+  if (env === 'production'){
+    api_url = `${BASE_API_URL.PRODUCTION}`
+    return api_url
+  } else {
+    api_url = `${BASE_API_URL.STAGING}`
+    return api_url
+  }
+}
+
+const makePaymentToNativeStepOne = (base_api_url, user_id, os_type, addr_id, client_id, shop_id, cart) => {
+  // return NetworkModule.getResponse(`/o2o/get_payment_params`, `POST`, `{
+  //   user_id: ${user_id}, os_type: ${os_type}, addr_id: ${addr_id}, 
+  //   client_id: ${client_id}, shop_id: ${shop_id}, cart: ${cart}
+  // }`, true)
+  //   .then(response => {
+  //     const jsonResponse = JSON.parse(response)
+  //     console.log(jsonResponse)
+  //   })
+  //   .catch(err => console.log(err))
+}
+
+
+
+
+
 
 
 //  ==================== Remove 1 item inside Cart ===================== //
