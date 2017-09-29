@@ -93,4 +93,9 @@ public class ActivateTokoCashActivity extends BasePresenterActivity
         else
             super.onBackPressed();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -160,7 +160,6 @@ android {
         resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // exclude 64bit lib for react-native support

@@ -38,6 +38,8 @@ public interface GMStatRepository {
 
     Observable<GetShopCategory> getShopCategory(long startDate, long endDate);
 
+    Observable<Boolean> clearCache();
+
     Observable<GetProductTable> getProductTable(long startDate, long endDate);
 
     Observable<GetBuyerTable> getBuyerTable(long startDate, long endDate);

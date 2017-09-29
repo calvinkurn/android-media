@@ -77,10 +77,18 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
         checkBoxGM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
-                } else {
-                    gmFeaturedContainer.setBackgroundResource(android.R.color.white);
+                switch (useCaseListener.getFeaturedProductType()) {
+                    case GMFeaturedProductTypeView.DELETE_DISPLAY:
+                        if (isChecked) {
+                            gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
+                        } else {
+                            gmFeaturedContainer.setBackgroundResource(android.R.color.white);
+                        }
+                        break;
+                    case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+                    case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
+                    default:
+                        break;
                 }
             }
         });
@@ -136,11 +144,20 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     public void setChecked(boolean checked) {
         checkBoxGM.setChecked(checked);
 
-        if(checked){
-            gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
-        }else{
-            gmFeaturedContainer.setBackgroundResource(android.R.color.white);
+        switch (useCaseListener.getFeaturedProductType()) {
+            case GMFeaturedProductTypeView.DELETE_DISPLAY:
+                if (checked) {
+                    gmFeaturedContainer.setBackgroundResource(R.color.gmfeatured_selection_color);
+                } else {
+                    gmFeaturedContainer.setBackgroundResource(android.R.color.white);
+                }
+                break;
+            case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
+            case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
+            default:
+                break;
         }
+
     }
 
     public interface PostDataListener {

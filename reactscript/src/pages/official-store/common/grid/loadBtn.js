@@ -10,7 +10,6 @@ import {
   StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import { NavigationModule } from 'NativeModules'
-import { icons } from '../../../../icons/index'
 
 
 // const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/load-more.png?alt=media&token=bbc027ae-dea6-4a81-a319-776c4c3effbe'

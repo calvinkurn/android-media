@@ -49,6 +49,7 @@ import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
+import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -299,6 +300,7 @@ public abstract class SellerRouterApplication extends MainApplication
         cacheApiClearAllUseCase.getExecuteObservable(RequestParams.EMPTY).toBlocking().first();
 
         TkpdSellerLogout.onLogOut(appComponent);
+        GMLogout.onLogOut(appComponent);
     }
 
     @Override

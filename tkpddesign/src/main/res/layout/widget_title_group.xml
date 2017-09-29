@@ -16,7 +16,7 @@
         android:layout_height="@dimen/image_width_xs"
         android:layout_marginEnd="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
-        tools:src="@drawable/ic_search" />
+        tools:src="@drawable/ic_search_grey" />
 
     <TextView
         android:id="@+id/text_view_title"

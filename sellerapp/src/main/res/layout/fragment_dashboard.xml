@@ -44,7 +44,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_med">
 
-                <include layout="@layout/partial_dashboard_navigation_list" />
+                <com.tokopedia.design.loading.LoadingStateView
+                    android:id="@+id/loading_state_view_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:lsv_loading_layout="@layout/partial_dashboard_footer_loading_view">
+
+                    <include layout="@layout/partial_dashboard_navigation_list" />
+
+                </com.tokopedia.design.loading.LoadingStateView>
 
             </FrameLayout>
 

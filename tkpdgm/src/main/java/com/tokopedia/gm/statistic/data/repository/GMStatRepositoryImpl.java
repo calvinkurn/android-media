@@ -94,6 +94,11 @@ public class GMStatRepositoryImpl implements GMStatRepository {
     }
 
     @Override
+    public Observable<Boolean> clearCache() {
+        return gmStatDataSource.clearAllCache();
+    }
+
+    @Override
     public Observable<GetProductTable> getProductTable(long startDate, long endDate) {
         String shopId = shopInfoRepository.getShopId();
         return gmStatDataSource.getProductTable(shopId, startDate, endDate);

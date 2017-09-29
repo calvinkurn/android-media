@@ -20,11 +20,11 @@
         android:paddingRight="@dimen/padding_small"
         android:paddingTop="@dimen/padding_small">
 
-        <android.support.v7.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/image_view_search"
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
-            app:srcCompat="@drawable/ic_search" />
+            android:src="@drawable/ic_search_grey" />
 
         <EditText
             android:id="@+id/edit_text_search"

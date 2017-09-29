@@ -2067,5 +2067,7 @@ di Tokopedia Sekarang!</string>
     <string name="string_notreceived_check_courier">Tanya Kurir</string>
     <string name="shop_product_list_header_product_title">Produk</string>
     <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
+    <string name="cari_produk_atau_toko">Cari produk atau toko</string>
+    <string name="search_shop_info_hint">Cari produk di toko ini</string>
 
 </resources>
