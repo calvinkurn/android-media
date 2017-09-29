@@ -2493,7 +2493,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
                 AppEventTracking.Category.DASHBOARD,
                 AppEventTracking.Action.CLICK_DASHBOARD_CARD,
-                main + " " + item
+                main + " - " + item
         ).getEvent());
     }
 
