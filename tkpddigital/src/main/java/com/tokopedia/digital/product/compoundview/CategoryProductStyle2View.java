@@ -6,7 +6,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -46,6 +48,10 @@ public class CategoryProductStyle2View extends
     CheckBox cbInstantCheckout;
     @BindView(R2.id.btn_buy_digital)
     TextView btnBuyDigital;
+    @BindView(R2.id.layout_checkout)
+    RelativeLayout layoutCheckout;
+    @BindView(R2.id.tooltip_instant_checkout)
+    ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
     private DigitalOperatorRadioChooserView digitalOperatorRadioChooserView;
@@ -88,7 +94,16 @@ public class CategoryProductStyle2View extends
         tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         clearHolder(holderRadioChooserOperator);
         renderInstantCheckoutOptions();
-        renderOperatorChooserOptions();
+        if (!data.getOperatorStyle().equals(CategoryData.STYLE_PRODUCT_CATEGORY_99)) {
+            renderOperatorChooserOptions();
+        } else {
+            for (Operator operator : data.getOperatorList()) {
+                if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
+                    operatorSelected = operator;
+                    renderClientNumberInputForm();
+                }
+            }
+        }
         btnBuyDigital.setOnClickListener(getButtonBuyListener());
     }
 
@@ -143,15 +158,21 @@ public class CategoryProductStyle2View extends
 
     private void renderInstantCheckoutOptions() {
         if (data.isInstantCheckout()) {
-            cbInstantCheckout.setVisibility(VISIBLE);
+            layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
                     actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
             );
         } else {
             cbInstantCheckout.setChecked(false);
-            cbInstantCheckout.setVisibility(GONE);
+            layoutCheckout.setVisibility(GONE);
         }
+        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetView.show();
+            }
+        });
     }
 
     private void renderOperatorChooserOptions() {
