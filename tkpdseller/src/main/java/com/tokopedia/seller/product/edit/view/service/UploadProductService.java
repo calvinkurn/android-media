@@ -212,6 +212,9 @@ public class UploadProductService extends BaseService implements AddProductServi
             pendingIntent = ProductDraftEditActivity.createInstance(this, productDraftId);
         }
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if(notificationBuilderMap.get(productDraftId) == null){
+            createNotification(productDraftId, "");
+        }
         return notificationBuilderMap.get(productDraftId)
                 .setContentText(errorMessage)
                 .setStyle(new NotificationCompat
