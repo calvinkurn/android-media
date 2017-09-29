@@ -11,12 +11,13 @@ import java.util.List;
  * @author sebastianuskh on 5/2/17.
  */
 
-public class TkpdV4ResponseError extends BaseResponseError{
+public class TkpdV4ResponseError extends BaseResponseError {
+
     private static final String ERROR_KEY = "message_error";
 
     @SerializedName(ERROR_KEY)
     @Expose
-    private List<String> errors = null;
+    private List<String> messageError = null;
 
     @Override
     public String getErrorKey() {
@@ -25,11 +26,11 @@ public class TkpdV4ResponseError extends BaseResponseError{
 
     @Override
     public boolean hasBody() {
-        return (errors!= null && errors.size() > 0);
+        return messageError != null && messageError.size() > 0;
     }
 
     @Override
     public IOException createException() {
-        return new ResponseV4ErrorException(errors);
+        return new ResponseV4ErrorException(messageError);
     }
 }
