@@ -6,6 +6,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.PosSessionHandler;
 
@@ -42,22 +43,32 @@ public class SessionRNModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getOutletId(Promise promise) {
+    public void getAddrId(Promise promise) {
         promise.resolve(PosSessionHandler.getOutletId(context));
     }
 
     @ReactMethod
-    public void getOutletName(Promise promise) {
+    public void getAddressName(Promise promise) {
         promise.resolve(PosSessionHandler.getOutletName(context));
     }
 
     @ReactMethod
-    public void getLoginName(Promise promise) {
+    public void getUserName(Promise promise) {
         promise.resolve(SessionHandler.getLoginName(context));
     }
 
     @ReactMethod
-    public void getLoginId(Promise promise) {
+    public void getUserId(Promise promise) {
         promise.resolve(SessionHandler.getLoginID(context));
+    }
+
+    @ReactMethod
+    public void getEnv(Promise promise) {
+        promise.resolve(GlobalConfig.FLAVOR);
+    }
+
+    @ReactMethod
+    public void isAllowDebuggingTools(Promise promise) {
+        promise.resolve(GlobalConfig.isAllowDebuggingTools());
     }
 }

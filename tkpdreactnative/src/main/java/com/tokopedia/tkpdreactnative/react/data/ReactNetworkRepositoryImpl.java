@@ -65,6 +65,11 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
         }
     }
 
+    @Override
+    public Observable<String> getResponse(String url, String method, String body, Boolean isAuth) throws UnknownMethodException {
+        return null;
+    }
+
     private Boolean isWSV4(String url) {
         return url.contains("ws.tokopedia.com");
     }

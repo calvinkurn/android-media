@@ -1,19 +1,15 @@
 package com.tokopedia.posapp.view.drawer;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.util.SessionHandler;
@@ -22,7 +18,6 @@ import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
-import com.tokopedia.posapp.view.fragment.DialogPasswordFragment;
 
 import java.util.ArrayList;
 
@@ -42,8 +37,8 @@ public class DrawerPosHelper extends DrawerHelper
     private SessionHandler sessionHandler;
 
     public DrawerPosHelper(Activity activity,
-                              SessionHandler sessionHandler,
-                              LocalCacheHandler drawerCache) {
+                           SessionHandler sessionHandler,
+                           LocalCacheHandler drawerCache) {
         super(activity);
         this.sessionHandler = sessionHandler;
         this.drawerCache = drawerCache;
@@ -55,8 +50,8 @@ public class DrawerPosHelper extends DrawerHelper
     }
 
     public static DrawerPosHelper createInstance(Activity activity,
-                                                   SessionHandler sessionHandler,
-                                                   LocalCacheHandler drawerCache) {
+                                                 SessionHandler sessionHandler,
+                                                 LocalCacheHandler drawerCache) {
         return new DrawerPosHelper(activity, sessionHandler, drawerCache);
     }
 
@@ -114,7 +109,7 @@ public class DrawerPosHelper extends DrawerHelper
 
     @Override
     public void onItemClicked(DrawerItem item) {
-        if(item.getId() == selectedPosition) {
+        if (item.getId() == selectedPosition) {
             closeDrawer();
         } else {
             PosSessionHandler posSessionHandler = new PosSessionHandler(context);
@@ -123,18 +118,18 @@ public class DrawerPosHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
                     posSessionHandler.showPasswordDialog(
-                        context.getString(R.string.drawer_title_pos_riwayat_tx),
-                        new PosSessionHandler.PasswordListener() {
-                            @Override
-                            public void onSuccess() {
-                                startIntent(context, TransactionHistoryActivity.class);
-                            }
+                            context.getString(R.string.drawer_title_pos_riwayat_tx),
+                            new PosSessionHandler.PasswordListener() {
+                                @Override
+                                public void onSuccess() {
+                                    startIntent(context, TransactionHistoryActivity.class);
+                                }
 
-                            @Override
-                            public void onError(String message) {
+                                @Override
+                                public void onError(String message) {
 
+                                }
                             }
-                        }
                     );
                     break;
                 case TkpdState.DrawerPosition.POS_OUTLET:

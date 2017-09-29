@@ -51,6 +51,11 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getResponse(String url, String method, String request, Boolean isAuth, final Promise promise) {
+        getResponse(url, method, request, isAuth, "", promise);
+    }
+
+    @ReactMethod
+    public void getResponse(String url, String method, String request, Boolean isAuth, String requestType, final Promise promise) {
         try {
             CommonUtils.dumper(url + " " + request);
             Subscription subscribe = reactNetworkRepository.getResponse(url, method, convertStringRequestToHashMap(request), isAuth)
@@ -81,7 +86,6 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
             promise.reject(e);
         }
     }
-
 
     private static TKPDMapParam<String, String> convertStringRequestToHashMap(String request) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();

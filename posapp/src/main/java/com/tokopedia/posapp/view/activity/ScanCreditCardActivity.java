@@ -28,10 +28,8 @@ public class ScanCreditCardActivity extends BasePresenterActivity {
 
     @DeepLink(Constants.Applinks.PAYMENT_SCAN_CC)
     public static Intent getIntentFromDeeplink(Context context, Bundle bundle) {
-        String bankId = bundle.getString(BANK_ID, "");
-        String term = bundle.getString(TERM, "");
-
         Uri uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon().build();
+
         return new Intent(context, ScanCreditCardActivity.class)
                 .setData(uri)
                 .putExtras(bundle);

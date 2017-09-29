@@ -33,14 +33,14 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void navigate(String appLinks, String extra) {
         ((TkpdCoreRouter) context.getApplicationContext())
-                .actionApplink(this.getCurrentActivity(), appLinks);
+                .actionApplink(this.getCurrentActivity(), appLinks, extra);
     }
 
     @ReactMethod
     public void navigateWithMobileUrl(String appLinks, String mobileUrl, String extra) {
         if (((IDigitalModuleRouter) context.getApplicationContext()).isSupportedDelegateDeepLink(appLinks)) {
             ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionApplink(this.getCurrentActivity(), appLinks);
+                    .actionApplink(this.getCurrentActivity(), appLinks, extra);
         } else {
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionOpenGeneralWebView(this.getCurrentActivity(), mobileUrl);

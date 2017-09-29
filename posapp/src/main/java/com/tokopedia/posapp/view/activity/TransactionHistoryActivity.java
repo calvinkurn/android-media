@@ -7,18 +7,13 @@ import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
-import com.tokopedia.posapp.react.PosReactConst;
-import com.tokopedia.posapp.view.fragment.ProductListFragment;
 import com.tokopedia.posapp.view.fragment.TransactionHistoryFragment;
-import com.tokopedia.tkpdreactnative.react.ReactConst;
-import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
 
 /**
  * Created by okasurya on 9/20/17.
