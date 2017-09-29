@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
 
 import rx.Observable;
@@ -21,11 +21,11 @@ public class SkipReviewUseCase extends UseCase<SkipReviewDomain> {
     public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_USER_ID = "user_id";
 
-    private ReputationRepository reputationRepository;
+    private InboxReputationRepository reputationRepository;
 
     public SkipReviewUseCase(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
-                             ReputationRepository reputationRepository) {
+                             InboxReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

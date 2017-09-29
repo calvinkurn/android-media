@@ -2,8 +2,6 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.di.DaggerInboxReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationReviewDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationReviewDetailPresenter;
 
@@ -43,8 +41,8 @@ public class InboxReputationReviewDetailFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerReputationComponent reputationComponent =
-                (DaggerReputationComponent) DaggerReputationComponent
+        DaggerInboxReputationComponent reputationComponent =
+                (DaggerInboxReputationComponent) DaggerInboxReputationComponent
                         .builder()
                         .appComponent(appComponent)
                         .build();

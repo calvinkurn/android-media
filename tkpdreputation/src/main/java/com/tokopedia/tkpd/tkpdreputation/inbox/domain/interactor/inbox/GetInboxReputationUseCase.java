@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 
@@ -41,11 +41,11 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
     public final static String PARAM_TAB = "TAB";
     public static final String PARAM_REPUTATION_ID = "reputation_id";
 
-    protected ReputationRepository reputationRepository;
+    protected InboxReputationRepository reputationRepository;
 
     public GetInboxReputationUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
-                                     ReputationRepository reputationRepository) {
+                                     InboxReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
 

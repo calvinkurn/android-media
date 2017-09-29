@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 
@@ -16,7 +16,6 @@ import java.util.List;
 
 import rx.Observable;
 
-import static com.google.zxing.integration.android.IntentIntegrator.DEFAULT_NO;
 import static com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase.IMAGE;
 
 /**
@@ -43,10 +42,10 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
     private static final String DEFAULT_NO_IMAGE = "0";
     private static final String DEFAULT_HAS_IMAGE = "1";
 
-    protected ReputationRepository reputationRepository;
+    protected InboxReputationRepository reputationRepository;
 
     public SendReviewValidateUseCase(ThreadExecutor threadExecutor, PostExecutionThread
-            postExecutionThread, ReputationRepository reputationRepository) {
+            postExecutionThread, InboxReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

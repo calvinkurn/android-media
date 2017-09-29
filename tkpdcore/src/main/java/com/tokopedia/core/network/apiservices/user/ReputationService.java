@@ -11,7 +11,7 @@ import retrofit2.Retrofit;
  */
 
 public class ReputationService extends AuthService<ReputationApi> {
-    private static final String TAG = InboxReviewService.class.getSimpleName();
+    private static final String TAG = ReputationService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

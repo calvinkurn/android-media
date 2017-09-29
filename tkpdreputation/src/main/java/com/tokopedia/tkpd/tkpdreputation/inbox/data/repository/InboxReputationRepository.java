@@ -1,12 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReportReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
@@ -19,7 +20,7 @@ import rx.Observable;
  * @author by nisie on 8/14/17.
  */
 
-public interface ReputationRepository {
+public interface InboxReputationRepository {
 
     Observable<InboxReputationDomain> getInboxReputationFromCloud(RequestParams requestParams);
 
@@ -48,4 +49,6 @@ public interface ReputationRepository {
     Observable<DeleteReviewResponseDomain> deleteReviewResponse(RequestParams requestParams);
 
     Observable<SendReplyReviewDomain> insertReviewResponse(RequestParams requestParams);
+
+    Observable<GetLikeDislikeReviewDomain> getLikeDislikeReview(RequestParams requestParams);
 }

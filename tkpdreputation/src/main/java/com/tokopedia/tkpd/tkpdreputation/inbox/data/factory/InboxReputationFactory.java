@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
@@ -15,10 +16,10 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMap
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudCheckShopFavoriteDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudDeleteReviewResponseDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudFaveShopDataSource;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudGetLikeDislikeDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudInboxReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudInboxReputationDetailDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudReplyReviewDataSource;
@@ -33,7 +34,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.LocalInboxReputationD
  * @author by nisie on 8/14/17.
  */
 
-public class ReputationFactory {
+public class InboxReputationFactory {
 
     private final ReputationService reputationService;
     private final TomeService tomeService;
@@ -50,22 +51,24 @@ public class ReputationFactory {
     private final FaveShopMapper faveShopMapper;
     private final DeleteReviewResponseMapper deleteReviewResponseMapper;
     private final ReplyReviewMapper replyReviewMapper;
+    private final GetLikeDislikeMapper getLikeDislikeMapper;
 
-    public ReputationFactory(TomeService tomeService,
-                             ReputationService reputationService,
-                             InboxReputationMapper inboxReputationMapper,
-                             InboxReputationDetailMapper inboxReputationDetailMapper,
-                             SendSmileyReputationMapper sendSmileyReputationMapper,
-                             SendReviewValidateMapper sendReviewValidateMapper,
-                             SendReviewSubmitMapper sendReviewSubmitMapper,
-                             SkipReviewMapper skipReviewMapper,
-                             ReportReviewMapper reportReviewMapper,
-                             ShopFavoritedMapper shopFavoritedMapper,
-                             GlobalCacheManager globalCacheManager,
-                             FaveShopActService faveShopActService,
-                             FaveShopMapper faveShopMapper,
-                             DeleteReviewResponseMapper deleteReviewResponseMapper,
-                             ReplyReviewMapper replyReviewMapper) {
+    public InboxReputationFactory(TomeService tomeService,
+                                  ReputationService reputationService,
+                                  InboxReputationMapper inboxReputationMapper,
+                                  InboxReputationDetailMapper inboxReputationDetailMapper,
+                                  SendSmileyReputationMapper sendSmileyReputationMapper,
+                                  SendReviewValidateMapper sendReviewValidateMapper,
+                                  SendReviewSubmitMapper sendReviewSubmitMapper,
+                                  SkipReviewMapper skipReviewMapper,
+                                  ReportReviewMapper reportReviewMapper,
+                                  ShopFavoritedMapper shopFavoritedMapper,
+                                  GlobalCacheManager globalCacheManager,
+                                  FaveShopActService faveShopActService,
+                                  FaveShopMapper faveShopMapper,
+                                  DeleteReviewResponseMapper deleteReviewResponseMapper,
+                                  ReplyReviewMapper replyReviewMapper,
+                                  GetLikeDislikeMapper getLikeDislikeMapper) {
         this.reputationService = reputationService;
         this.globalCacheManager = globalCacheManager;
         this.inboxReputationMapper = inboxReputationMapper;
@@ -81,6 +84,7 @@ public class ReputationFactory {
         this.faveShopMapper = faveShopMapper;
         this.deleteReviewResponseMapper = deleteReviewResponseMapper;
         this.replyReviewMapper = replyReviewMapper;
+        this.getLikeDislikeMapper = getLikeDislikeMapper;
     }
 
     public CloudInboxReputationDataSource createCloudInboxReputationDataSource() {
@@ -137,5 +141,12 @@ public class ReputationFactory {
     public CloudReplyReviewDataSource createCloudReplyReviewDataSource() {
         return new CloudReplyReviewDataSource(reputationService,
                 replyReviewMapper);
+    }
+
+    public CloudGetLikeDislikeDataSource createCloudGetLikeDislikeDataSource() {
+        return new CloudGetLikeDislikeDataSource(
+                reputationService,
+                getLikeDislikeMapper
+        );
     }
 }

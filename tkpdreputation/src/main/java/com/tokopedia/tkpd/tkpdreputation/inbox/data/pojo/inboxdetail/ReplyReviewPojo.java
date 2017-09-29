@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo;
+package com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

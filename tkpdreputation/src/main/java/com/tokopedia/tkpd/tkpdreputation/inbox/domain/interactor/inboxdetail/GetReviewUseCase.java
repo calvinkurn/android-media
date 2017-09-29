@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 
@@ -22,11 +22,11 @@ public class GetReviewUseCase extends UseCase<ReviewDomain> {
     protected static final int ROLE_BUYER = 1;
     protected static final int ROLE_SELLER = 2;
 
-    protected ReputationRepository reputationRepository;
+    protected InboxReputationRepository reputationRepository;
 
     public GetReviewUseCase(ThreadExecutor threadExecutor,
                             PostExecutionThread postExecutionThread,
-                            ReputationRepository reputationRepository) {
+                            InboxReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

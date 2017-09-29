@@ -4,11 +4,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author by nisie on 9/20/17.
@@ -16,11 +15,11 @@ import rx.functions.Func1;
 
 public class GetCacheInboxReputationUseCase extends UseCase<InboxReputationDomain> {
 
-    protected ReputationRepository reputationRepository;
+    protected InboxReputationRepository reputationRepository;
 
     public GetCacheInboxReputationUseCase(ThreadExecutor threadExecutor,
                                           PostExecutionThread postExecutionThread,
-                                          ReputationRepository reputationRepository) {
+                                          InboxReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

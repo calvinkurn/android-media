@@ -11,8 +11,9 @@ import rx.Observable;
 
 /**
  * Created by yoasfs on 18/07/17.
+ * @deprecated use ReportReviewUseCase instead
  */
-
+@Deprecated
 public class PostReportUseCase extends UseCase<ActResultDomain> {
     public static final String PARAM_REVIEW_ID = "review_id";
     public static final String PARAM_SHOP_ID = "shop_id";

@@ -1,13 +1,13 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo;
+package com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author by nisie on 9/12/17.
+ * @author by nisie on 8/31/17.
  */
 
-public class SkipReviewPojo {
+public class SendSmileyPojo {
 
     @SerializedName("is_success")
     @Expose

@@ -21,7 +21,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.di.DaggerInboxReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
@@ -79,8 +79,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
 
-        DaggerReputationComponent reputationComponent =
-                (DaggerReputationComponent) DaggerReputationComponent
+        DaggerInboxReputationComponent reputationComponent =
+                (DaggerInboxReputationComponent) DaggerInboxReputationComponent
                         .builder()
                         .appComponent(appComponent)
                         .build();

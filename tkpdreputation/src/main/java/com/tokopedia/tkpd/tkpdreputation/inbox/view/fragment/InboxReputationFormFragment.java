@@ -40,7 +40,7 @@ import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.di.DaggerInboxReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
@@ -134,8 +134,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerReputationComponent reputationComponent =
-                (DaggerReputationComponent) DaggerReputationComponent
+        DaggerInboxReputationComponent reputationComponent =
+                (DaggerInboxReputationComponent) DaggerInboxReputationComponent
                         .builder()
                         .appComponent(appComponent)
                         .build();

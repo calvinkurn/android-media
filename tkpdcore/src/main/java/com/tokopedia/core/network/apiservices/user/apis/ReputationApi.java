@@ -60,4 +60,13 @@ public interface ReputationApi {
     @POST(TkpdBaseURL.Reputation.PATH_INSERT_REVIEW_RESPONSE)
     @FormUrlEncoded
     Observable<Response<TkpdResponse>> insertReviewResponse(@FieldMap Map<String, Object> params);
+
+    @GET(TkpdBaseURL.Reputation.PATH_GET_LIKE_DISLIKE_REVIEW)
+    Observable<Response<TkpdResponse>> getLikeDislikeReview(@QueryMap Map<String, Object>
+                                                                    parameters);
+
+    @POST(TkpdBaseURL.Reputation.PATH_LIKE_DISLIKE_REVIEW)
+    @FormUrlEncoded
+    Observable<Response<TkpdResponse>> likeDislikeReview(@FieldMap Map<String, Object> params);
+
 }

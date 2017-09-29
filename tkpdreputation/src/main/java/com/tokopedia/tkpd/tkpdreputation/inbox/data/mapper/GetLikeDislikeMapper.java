@@ -7,23 +7,24 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.SendSmileyPojo;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.GetLikeDislikePojo;
 
 import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * @author by nisie on 8/31/17.
+ * @author by nisie on 9/29/17.
  */
 
-public class SendSmileyReputationMapper implements Func1<Response<TkpdResponse>,
-        SendSmileyReputationDomain> {
+public class GetLikeDislikeMapper implements Func1<Response<TkpdResponse>,
+        GetLikeDislikeReviewDomain> {
     @Override
-    public SendSmileyReputationDomain call(Response<TkpdResponse> response) {
+    public GetLikeDislikeReviewDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if (!response.body().isNullData()) {
-                SendSmileyPojo data = response.body().convertDataObj(SendSmileyPojo.class);
+                GetLikeDislikePojo data = response.body().convertDataObj(
+                        GetLikeDislikePojo.class);
                 return mappingToDomain(data);
             } else {
                 if (response.body().getErrorMessages() != null
@@ -44,7 +45,7 @@ public class SendSmileyReputationMapper implements Func1<Response<TkpdResponse>,
         }
     }
 
-    private SendSmileyReputationDomain mappingToDomain(SendSmileyPojo data) {
-        return new SendSmileyReputationDomain(data.getIsSuccess());
+    private GetLikeDislikeReviewDomain mappingToDomain(GetLikeDislikePojo data) {
+        return new GetLikeDislikeReviewDomain();
     }
 }

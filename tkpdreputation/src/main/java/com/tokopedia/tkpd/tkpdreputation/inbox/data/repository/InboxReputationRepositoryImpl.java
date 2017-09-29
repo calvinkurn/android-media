@@ -1,13 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.InboxReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReportReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
@@ -20,11 +21,11 @@ import rx.Observable;
  * @author by nisie on 8/14/17.
  */
 
-public class ReputationRepositoryImpl implements ReputationRepository {
+public class InboxReputationRepositoryImpl implements InboxReputationRepository {
 
-    ReputationFactory reputationFactory;
+    InboxReputationFactory reputationFactory;
 
-    public ReputationRepositoryImpl(ReputationFactory reputationFactory) {
+    public InboxReputationRepositoryImpl(InboxReputationFactory reputationFactory) {
         this.reputationFactory = reputationFactory;
     }
 
@@ -124,5 +125,12 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudReplyReviewDataSource()
                 .insertReviewResponse(requestParams);
+    }
+
+    @Override
+    public Observable<GetLikeDislikeReviewDomain> getLikeDislikeReview(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudGetLikeDislikeDataSource()
+                .getLikeDislikeReview(requestParams);
     }
 }

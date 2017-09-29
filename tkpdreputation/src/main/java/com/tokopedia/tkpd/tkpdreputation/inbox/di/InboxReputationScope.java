@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.di;
+package com.tokopedia.tkpd.tkpdreputation.inbox.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,5 +11,5 @@ import javax.inject.Scope;
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-@interface ReputationScope {
+@interface InboxReputationScope {
 }

@@ -834,5 +834,9 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/response/delete";
         public static final String PATH_INSERT_REVIEW_RESPONSE = "review/api/"
                 + REPUTATION_VERSION + "/response/insert";
+        public static final String PATH_GET_LIKE_DISLIKE_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/likedislike";
+        public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/likedislike";
     }
 }

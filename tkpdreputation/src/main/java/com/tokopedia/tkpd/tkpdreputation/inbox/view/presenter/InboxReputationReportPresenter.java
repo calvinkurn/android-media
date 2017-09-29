@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.ReportReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.ReportReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationReport;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.ReportReviewSubscriber;
 

@@ -7,7 +7,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.SkipReviewPojo;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.SkipReviewPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
 
 import retrofit2.Response;

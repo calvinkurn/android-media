@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 
 import rx.Observable;
@@ -24,11 +24,11 @@ public class SendReplyReviewUseCase extends UseCase<SendReplyReviewDomain> {
     private static final String ACTION_ = "action";
 
 
-    ReputationRepository reputationRepository;
+    InboxReputationRepository reputationRepository;
 
     public SendReplyReviewUseCase(ThreadExecutor threadExecutor,
                                   PostExecutionThread postExecutionThread,
-                                  ReputationRepository reputationRepository) {
+                                  InboxReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

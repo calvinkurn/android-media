@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
+import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.reputationproduct.data.repository.DeleteCommentRepository;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
 
@@ -12,8 +13,9 @@ import rx.Observable;
 
 /**
  * Created by yoasfs on 18/07/17.
+ * @deprecated use DeleteReviewResponseUseCase instead
  */
-
+@Deprecated
 public class DeleteCommentUseCase extends UseCase<ActResultDomain> {
     protected DeleteCommentRepository deleteCommentRepository;
 
