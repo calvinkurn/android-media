@@ -1163,5 +1163,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if(trace!=null)
+            trace.stop();
     }
 }
