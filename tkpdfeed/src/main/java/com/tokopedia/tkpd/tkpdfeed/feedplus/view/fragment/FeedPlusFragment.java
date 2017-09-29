@@ -310,6 +310,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.fetchFirstPage();
+        if(trace!=null)
+            trace.stop();
     }
 
     @Override
@@ -322,8 +324,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
-        if(trace!=null)
-            trace.stop();
 
         if (layoutManager != null)
             layoutManager = null;
