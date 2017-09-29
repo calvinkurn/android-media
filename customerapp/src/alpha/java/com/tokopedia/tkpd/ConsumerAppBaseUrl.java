@@ -35,4 +35,5 @@ public class ConsumerAppBaseUrl {
     public static final String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay-staging.tokopedia.id/";
     public static final String PAYMENT_DOMAIN = "https://payment-staging.tokopedia.com/";
     public static final String GALADRIEL = "https://galadriel-staging.tokopedia.com/";
+    public static final String CHAT_DOMAIN = "https://chat-alpha.tokopedia.com";
 }

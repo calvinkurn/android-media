@@ -262,33 +262,34 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                if (item.getItemId() == R.id.action_move_achieve) {
-                    presenter.moveInbox(ARCHIVE_ALL);
-                    mode.finish();
-                    return true;
-                } else if (item.getItemId() == R.id.action_move_trash) {
-                    presenter.moveInbox(DELETE_ALL);
-                    mode.finish();
-                    return true;
-                } else if (item.getItemId() == R.id.action_delete) {
-                    presenter.moveInbox(DELETE_FOREVER);
-                    mode.finish();
-                    return true;
-                } else if (item.getItemId() == R.id.action_move_inbox) {
-                    presenter.moveInbox(MOVE_ALL);
-                    mode.finish();
-                    return true;
-                } else if (item.getItemId() == R.id.action_mark_as_read) {
-                    presenter.markAsRead();
-                    mode.finish();
-                    return true;
-                } else if (item.getItemId() == R.id.action_mark_as_unread) {
-                    presenter.markAsUnread();
-                    mode.finish();
-                    return true;
-                } else {
-                    return false;
-                }
+//                if (item.getItemId() == R.id.action_move_achieve) {
+//                    presenter.moveInbox(ARCHIVE_ALL);
+//                    mode.finish();
+//                    return true;
+//                } else if (item.getItemId() == R.id.action_move_trash) {
+//                    presenter.moveInbox(DELETE_ALL);
+//                    mode.finish();
+//                    return true;
+//                } else if (item.getItemId() == R.id.action_delete) {
+//                    presenter.moveInbox(DELETE_FOREVER);
+//                    mode.finish();
+//                    return true;
+//                } else if (item.getItemId() == R.id.action_move_inbox) {
+//                    presenter.moveInbox(MOVE_ALL);
+//                    mode.finish();
+//                    return true;
+//                } else if (item.getItemId() == R.id.action_mark_as_read) {
+//                    presenter.markAsRead();
+//                    mode.finish();
+//                    return true;
+//                } else if (item.getItemId() == R.id.action_mark_as_unread) {
+//                    presenter.markAsUnread();
+//                    mode.finish();
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+                return false;
             }
 
             @Override
@@ -528,11 +529,11 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
         final ActInboxMessagePass pass = resultData.getParcelable(PARAM_ARCHIVE_MESSAGE);
         if (pass != null) {
-            getAdapter().setListMove(pass.getListMove());
-            listMoveOnUndo = new ArrayList<InboxMessageItem>();
-            for (InboxMessageItem item : getAdapter().getListMove()) {
-                listMoveOnUndo.add(item);
-            }
+//            getAdapter().setListMove(pass.getListMove());
+//            listMoveOnUndo = new ArrayList<InboxMessageItem>();
+//            for (InboxMessageItem item : getAdapter().getListMove()) {
+//                listMoveOnUndo.add(item);
+//            }
             getAdapter().removeAllChecked();
             if (getAdapter().getList().size() == 0) {
                 getAdapter().showEmptyFull(true);
@@ -559,7 +560,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         ActInboxMessagePass pass = resultData.getParcelable(PARAM_UNDO_ARCHIVE_MESSAGE);
         if (pass != null) {
             for (InboxMessageItem item : pass.getListMove()) {
-                getAdapter().getList().add(item.getPosition(), item);
+//                getAdapter().getList().add(item.getPosition(), item);
             }
             getAdapter().notifyDataSetChanged();
         }
@@ -572,7 +573,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
         final ActInboxMessagePass pass = resultData.getParcelable(PARAM_MOVE_TO_INBOX);
         if (pass != null) {
-            getAdapter().setListMove(pass.getListMove());
+//            getAdapter().setListMove(pass.getListMove());
             listMoveOnUndo = new ArrayList<InboxMessageItem>();
             for (InboxMessageItem item : pass.getListMove()) {
                 listMoveOnUndo.add(item);
@@ -604,7 +605,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         if (pass != null) {
 
             for (InboxMessageItem item : pass.getListMove()) {
-                getAdapter().getList().add(item.getPosition(), item);
+//                getAdapter().getList().add(item.getPosition(), item);
             }
             getAdapter().notifyDataSetChanged();
         }
@@ -617,7 +618,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
         final ActInboxMessagePass pass = resultData.getParcelable(PARAM_DELETE_MESSAGE);
         if (pass != null) {
-            getAdapter().setListMove(pass.getListMove());
+//            getAdapter().setListMove(pass.getListMove());
             listMoveOnUndo = new ArrayList<InboxMessageItem>();
             for (InboxMessageItem item : pass.getListMove()) {
                 listMoveOnUndo.add(item);
@@ -648,7 +649,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         final ActInboxMessagePass pass = resultData.getParcelable(PARAM_UNDO_DELETE_MESSAGE);
         if (pass != null) {
             for (InboxMessageItem item : pass.getListMove()) {
-                getAdapter().getList().add(item.getPosition(), item);
+//                getAdapter().getList().add(item.getPosition(), item);
             }
             getAdapter().notifyDataSetChanged();
         }
@@ -661,8 +662,8 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
         final ActInboxMessagePass pass = resultData.getParcelable(PARAM_DELETE_FOREVER);
         if (pass != null) {
-            getAdapter().setListMove(pass.getListMove());
-            getAdapter().removeAllChecked();
+//            getAdapter().setListMove(pass.getListMove());
+//            getAdapter().removeAllChecked();
         }
     }
 
@@ -775,7 +776,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OPEN_DETAIL_MESSAGE && resultCode == Activity.RESULT_OK) {
-            presenter.setMessageRead(data);
+//            presenter.setMessageRead(data);
             if (data.getExtras().getBoolean(MUST_REFRESH))
                 presenter.refreshData();
         }
@@ -806,8 +807,8 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
         final ActInboxMessagePass pass = resultData.getParcelable(PARAM_MARK_AS_READ);
         if (pass != null) {
-            getAdapter().setListMove(pass.getListMove());
-            getAdapter().markAsRead();
+//            getAdapter().setListMove(pass.getListMove());
+//            getAdapter().markAsRead();
         }
     }
 
@@ -818,8 +819,8 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
         final ActInboxMessagePass pass = resultData.getParcelable(PARAM_MARK_AS_UNREAD);
         if (pass != null) {
-            getAdapter().setListMove(pass.getListMove());
-            getAdapter().markAsUnread();
+//            getAdapter().setListMove(pass.getListMove());
+//            getAdapter().markAsUnread();
         }
     }
 }

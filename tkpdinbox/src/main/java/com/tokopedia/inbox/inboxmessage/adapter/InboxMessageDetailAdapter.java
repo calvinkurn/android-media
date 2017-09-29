@@ -1,8 +1,11 @@
 package com.tokopedia.inbox.inboxmessage.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
+import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxmessage.adapter.databinder.LoadMoreDataBinder;
 import com.tokopedia.inbox.inboxmessage.adapter.databinder.MyMessageDataBinder;
 import com.tokopedia.inbox.inboxmessage.adapter.databinder.TheirMessageDataBinder;
@@ -10,6 +13,7 @@ import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDet
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,12 +33,12 @@ public class InboxMessageDetailAdapter extends BaseLinearRecyclerViewAdapter {
     private TheirMessageDataBinder theirMessageDataBinder;
     private LoadMoreDataBinder loadMoreDataBinder;
 
-    ArrayList<InboxMessageDetailItem> data;
+    ArrayList<ListReply> data;
     Context context;
     int canLoadMore = 0;
 
     public InboxMessageDetailAdapter(Context context,
-                                     InboxMessageDetailFragmentPresenter presenter) {
+                                     ChatRoomPresenter presenter) {
         super();
         this.context = context;
         this.data = new ArrayList<>();
@@ -47,6 +51,12 @@ public class InboxMessageDetailAdapter extends BaseLinearRecyclerViewAdapter {
 
     public static InboxMessageDetailAdapter createAdapter(Context context,
                                                           InboxMessageDetailFragmentPresenter presenter) {
+//        return new InboxMessageDetailAdapter(context, presenter);
+        return null;
+    }
+
+    public static InboxMessageDetailAdapter createAdapter(Context context,
+                                                          ChatRoomPresenter presenter) {
         return new InboxMessageDetailAdapter(context, presenter);
     }
 
@@ -68,9 +78,9 @@ public class InboxMessageDetailAdapter extends BaseLinearRecyclerViewAdapter {
             return VIEW_LOADING;
         } else if (canLoadMore == 1 && position == 0) {
             return VIEW_LOAD_MORE;
-        } else if (data.get(position - canLoadMore).getMessageCreateBy() != null
-                && !data.get(position - canLoadMore).getMessageCreateBy().equals("0")
-                && !data.get(position - canLoadMore).getMessageCreateBy().equals(SessionHandler.getLoginID(context))) {
+        } else if (data.get(position - canLoadMore).getSenderId() != null
+                && !data.get(position - canLoadMore).getSenderId().equals("0")
+                && !data.get(position - canLoadMore).getSenderId().equals(SessionHandler.getLoginID(context))) {
             return VIEW_THEIR_MESSAGE;
         } else {
             return VIEW_MY_MESSAGE;
@@ -102,8 +112,8 @@ public class InboxMessageDetailAdapter extends BaseLinearRecyclerViewAdapter {
 
     }
 
-    public void setList(List<InboxMessageDetailItem> list) {
-        Collections.reverse(list);
+    public void setList(List<ListReply> list) {
+//        Collections.reverse(list);
         this.data.addAll(0, list);
         this.myMessageDataBinder.addAll(list);
         this.theirMessageDataBinder.addAll(list);
@@ -111,13 +121,20 @@ public class InboxMessageDetailAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     public void addReply(InboxMessageDetailItem item) {
+//        this.data.add(item);
+//        this.myMessageDataBinder.addReply(item);
+//        this.theirMessageDataBinder.addReply(item);
+//        notifyDataSetChanged();
+    }
+
+    public void addReply(ListReply item) {
         this.data.add(item);
         this.myMessageDataBinder.addReply(item);
         this.theirMessageDataBinder.addReply(item);
         notifyDataSetChanged();
     }
 
-    public ArrayList<InboxMessageDetailItem> getData() {
+    public ArrayList<ListReply> getData() {
         return data;
     }
 
@@ -156,10 +173,10 @@ public class InboxMessageDetailAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     public void add(int position, InboxMessageDetailItem inboxMessageDetailItem) {
-        this.data.add(position, inboxMessageDetailItem);
-        theirMessageDataBinder.add(position, inboxMessageDetailItem);
-        myMessageDataBinder.add(position, inboxMessageDetailItem);
-        notifyDataSetChanged();
+//        this.data.add(position, inboxMessageDetailItem);
+//        theirMessageDataBinder.add(position, inboxMessageDetailItem);
+//        myMessageDataBinder.add(position, inboxMessageDetailItem);
+//        notifyDataSetChanged();
     }
 
     public void setNav(String nav) {
@@ -169,4 +186,6 @@ public class InboxMessageDetailAdapter extends BaseLinearRecyclerViewAdapter {
     public int canLoadMore() {
         return this.canLoadMore;
     }
+
+
 }

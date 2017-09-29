@@ -45,6 +45,8 @@ public class InboxRouter {
     private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity";
     private static final String INBOX_TICKET_FRAGMENT = "com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment";
 
+    private static final String INBOX_CHAT_ACTIVITY = "com.tokopedia.inbox.inboxchat.activity.InboxChatActivity";
+
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
     private static final String INBOX_MESSAGE_FRAGMENT = "com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment";
     public static final java.lang.String PARAM_OWNER_FULLNAME = "owner_fullname";

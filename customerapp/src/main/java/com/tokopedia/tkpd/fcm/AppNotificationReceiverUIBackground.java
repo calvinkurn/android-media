@@ -23,6 +23,7 @@ import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -123,7 +124,13 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                                 == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                             listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                         } else {
-                            prepareAndExecuteApplinkNotification(data);
+                            if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                                    && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof InboxMessageActivity) {
+                                listener.onGetNotif(data);
+                            }
+                            else{
+                                prepareAndExecuteApplinkNotification(data);
+                            }
                         }
                     } else {
                         prepareAndExecuteApplinkNotification(data);

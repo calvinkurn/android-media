@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
+import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageDetailAdapter;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetail;
 import com.tokopedia.core.util.RefreshHandler;
@@ -15,7 +17,7 @@ import com.tokopedia.core.util.RefreshHandler;
 public interface InboxMessageDetailFragmentView {
     InboxMessageDetailAdapter getAdapter();
 
-    void setHeader(InboxMessageDetail inboxMessageDetail);
+    void setHeader();
 
     void finishLoading();
 
@@ -64,4 +66,10 @@ public interface InboxMessageDetailFragmentView {
     void showEmptyState();
 
     void showEmptyState(String error);
+
+    void onSuccessSendReply(ReplyActionData replyData, String reply);
+
+    void setOnlineDesc(String s);
+
+    void setTextAreaReply(boolean textAreaReply);
 }

@@ -4,16 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
@@ -25,6 +27,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.ToolTipUtils;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
+import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageDetailAdapter;
 import com.tokopedia.inbox.inboxmessage.listener.InboxMessageDetailFragmentView;
@@ -41,6 +45,9 @@ import butterknife.BindView;
  */
 public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessageDetailFragmentPresenter>
         implements InboxMessageDetailFragmentView, InboxMessageConstant {
+
+    private ImageView avatar, onlineStatus;
+    private TextView user, onlineDesc, label;
 
     public interface DoActionInboxMessageListener {
         void sendReply(Bundle param);
@@ -120,7 +127,13 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_discovery, menu);
     }
 
     @Override
@@ -259,12 +272,12 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
                         || ((layoutManager.findFirstVisibleItemPosition() == 0 && adapter.canLoadMore() == 1)
                         || adapter.getData().get(
                         layoutManager.findFirstVisibleItemPosition()
-                                - adapter.canLoadMore()).getMessageReplyTimeFmt() == null)) {
+                                - adapter.canLoadMore()).getReplyTime() == null)) {
                     headerDate.setVisibility(View.GONE);
                 } else {
                     headerDate.setText(adapter.getData().get(
                             layoutManager.findFirstVisibleItemPosition() - adapter.canLoadMore())
-                            .getMessageReplyDateFmt());
+                            .getReplyTime());
                 }
             }
         };
@@ -287,22 +300,42 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
     }
 
     @Override
-    public void setHeader(InboxMessageDetail inboxMessageDetail) {
-        title.setText(inboxMessageDetail.getMessageTitle());
+    public void setHeader() {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
 
-        if (toolbar != null && inboxMessageDetail.getConversationBetween() != null) {
-            toolbar.setTitle(inboxMessageDetail.getOpponent().getUserName());
-            InboxMessageItem messageItem = getArguments().getParcelable(PARAM_MESSAGE);
-            if (messageItem != null)
-                toolbar.setSubtitle(messageItem.getUserLabel());
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            avatar = (ImageView) toolbar.findViewById(R.id.user_avatar);
+            user = (TextView) toolbar.findViewById(R.id.title);
+            onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
+            label = (TextView) toolbar.findViewById(R.id.label);
+//            onlineStatus = (ImageView) toolbar.findViewById(R.id.online_status);
+            ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
+            user.setText(getArguments().getString(PARAM_SENDER_NAME));
+            label.setText(getArguments().getString(PARAM_SENDER_TAG));
+            setOnlineDesc("baru saja");
         }
 
-        if (inboxMessageDetail.getTextareaReply() != 1) {
+//        if (inboxMessageDetail.getTextareaReply() != 1) {
+//            replyView.setVisibility(View.GONE);
+//        }
+    }
+
+    public void setOnlineDesc(final String when){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                onlineDesc.setText(when);
+            }
+        });
+    }
+
+    @Override
+    public void setTextAreaReply(boolean textAreaReply) {
+        if (textAreaReply) {
+            replyView.setVisibility(View.VISIBLE);
+        }else {
             replyView.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -354,7 +387,7 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         sendButton.setEnabled(isEnabled);
         mainList.setEnabled(isEnabled);
         if (isEnabled) {
-            header.setVisibility(View.VISIBLE);
+//            header.setVisibility(View.VISIBLE);
             replyView.setVisibility(View.VISIBLE);
         }
 
@@ -404,6 +437,21 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             getActivity().setResult(Activity.RESULT_OK, intent);
             UnifyTracking.eventMessageSend(getArguments().getString(PARAM_NAV, "N/A"));
         }
+    }
+
+
+    @Override
+    public void onSuccessSendReply(ReplyActionData replyData, String reply) {
+        ListReply item = new ListReply();
+        item.setMsg(replyData.getChat().getMsg());
+        item.setReplyTime(replyData.getChat().getReplyTime());
+        adapter.remove(getAdapter().getData().size() - 1);
+        setViewEnabled(true);
+        getAdapter().addReply(item);
+        getAdapter().notifyDataSetChanged();
+        finishLoading();
+        getReplyMessage().setText("");
+        scrollToBottom();
     }
 
     @Override
@@ -488,9 +536,9 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
 
     @Override
     public void addTempMessage() {
-        InboxMessageDetailItem tempMessage = new InboxMessageDetailItem();
-        tempMessage.setMessageReply(getReplyMessage().getText().toString());
-        adapter.addReply(tempMessage);
+        ListReply listReply = new ListReply();
+        listReply.setMsg(getReplyMessage().getText().toString());
+        adapter.addReply(listReply);
         scrollToBottom();
     }
 

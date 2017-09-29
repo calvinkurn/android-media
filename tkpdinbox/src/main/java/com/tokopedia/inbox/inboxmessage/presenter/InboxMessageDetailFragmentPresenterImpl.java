@@ -4,12 +4,33 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.network.apiservices.chat.ChatService;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
+import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
+import com.tokopedia.inbox.inboxchat.data.factory.WebSocketFactory;
+import com.tokopedia.inbox.inboxchat.data.mapper.ChatEventMapper;
+import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
+import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
+import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.data.repository.WebSocketRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
+import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.ListenWebSocketUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
@@ -33,11 +54,20 @@ import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import java.util.ArrayList;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
+import rx.Subscriber;
+
 /**
  * Created by Nisie on 5/19/16.
  */
 public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDetailFragmentPresenter,
-        InboxMessageConstant {
+        InboxMessageConstant, WebSocketInterface {
+
+    private final ChatService chatService;
+    private final ReplyFactory replyFactory;
+    private final ReplyRepositoryImpl replyRepo;
 
     InboxMessageDetailFragmentView viewListener;
     InboxMessageRetrofitInteractor networkInteractor;
@@ -46,6 +76,14 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
     PagingHandler pagingHandler;
     InboxMessageDetailFragment.DoActionInboxMessageListener listener;
 
+    private GetReplyListUseCase getReplyListUseCase;
+    private ReplyMessageUseCase replyMessageUseCase;
+
+    private WebSocketRepositoryImpl webSocketRepo;
+    private WebSocketFactory webSocketFactory;
+    private final ListenWebSocketUseCase listenWebSocketUseCase;
+    private OkHttpClient client;
+
     public InboxMessageDetailFragmentPresenterImpl(InboxMessageDetailFragment viewListener) {
         this.viewListener = viewListener;
         this.networkInteractor = new InboxMessageRetrofitInteractorImpl();
@@ -53,6 +91,17 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
         this.cacheInteractor = new InboxMessageCacheInteractorImpl();
         this.pagingHandler = new PagingHandler();
         this.listener = (InboxMessageDetailActivity) viewListener.getActivity();
+
+        chatService = new ChatService();
+        replyFactory = new ReplyFactory(chatService, new GetReplyMapper(), new ReplyMessageMapper());
+        replyRepo = new ReplyRepositoryImpl(replyFactory);
+
+        getReplyListUseCase = new GetReplyListUseCase(new JobExecutor(), new UIThread(), replyRepo);
+        replyMessageUseCase = new ReplyMessageUseCase(new JobExecutor(), new UIThread(), replyRepo);
+
+        webSocketFactory = new WebSocketFactory(chatService, new ChatEventMapper());
+        webSocketRepo = new WebSocketRepositoryImpl(webSocketFactory);
+        listenWebSocketUseCase = new ListenWebSocketUseCase(new JobExecutor(), new UIThread(), webSocketRepo);
     }
 
     @Override
@@ -71,6 +120,19 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
                         getMessageDetail();
                     }
                 });
+
+        client = new OkHttpClient();
+        String magicString = "wss://chat-staging.tokopedia.com/connect?" +
+                "os_type=1" +
+                "&device_id="+ GCMHandler.getRegistrationId(viewListener.getActivity()) +
+                "&user_id="+ SessionHandler.getLoginID(viewListener.getActivity());
+        Request request = new Request.Builder().url(magicString)
+                .header("Origin", "https://staging.tokopedia.com")
+                .build();
+        ChatWebSocketListenerImpl listener = new ChatWebSocketListenerImpl(this);
+        WebSocket ws = client.newWebSocket(request, listener);
+        client.dispatcher().executorService().shutdown();
+
         NotificationModHandler.clearCacheIfFromNotification(
                 Constants.ARG_NOTIFICATION_APPLINK_MESSAGE,
                 viewListener.getArguments().getString(PARAM_MESSAGE_ID)
@@ -94,79 +156,105 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
         showLoading();
         viewListener.setViewEnabled(false);
 
-        networkInteractor.getInboxMessageDetail(viewListener.getActivity(),
-                getMessageDetailParam(),
-                new InboxMessageRetrofitInteractor.GetInboxMessageDetailListener() {
-                    @Override
-                    public void onSuccess(InboxMessageDetail result) {
-                        viewListener.setViewEnabled(true);
+//        networkInteractor.getInboxMessageDetail(viewListener.getActivity(),
+//                getMessageDetailParam(),
+//                new InboxMessageRetrofitInteractor.GetInboxMessageDetailListener() {
+//                    @Override
+//                    public void onSuccess(InboxMessageDetail result) {
+//                        viewListener.setViewEnabled(true);
+//
+//                        if (pagingHandler.getPage() == 1) {
+//                            viewListener.getAdapter().clearData();
+//                            cacheInteractor.setInboxMessageDetailCache(viewListener.getArguments().getString(PARAM_MESSAGE_ID), result);
+//                        }
+//
+//                        viewListener.finishLoading();
+//                        setResult(result);
+//
+//                    }
+//
+//                    @Override
+//                    public void onTimeout(String message) {
+//                        if (viewListener.getAdapter().getData().size() == 0) {
+//                            viewListener.finishLoading();
+//                            viewListener.showEmptyState();
+//                        } else {
+//                            viewListener.setRetry(viewListener.getString(R.string.msg_connection_timeout),
+//                                    new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//
+//                                            getMessageDetail();
+//                                        }
+//                                    });
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(String error) {
+//                        if (viewListener.getAdapter().getData().size() == 0) {
+//                            viewListener.finishLoading();
+//                            viewListener.showEmptyState(error);
+//                        } else {
+//                            viewListener.setRetry(error,
+//                                    new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//                                            getMessageDetail();
+//                                        }
+//                                    });
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onNullData() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNoConnectionError() {
+//                        if (viewListener.getAdapter().getData().size() == 0) {
+//                            viewListener.finishLoading();
+//                            viewListener.showEmptyState();
+//                        } else {
+//                            viewListener.setRetry(viewListener.getString(R.string.msg_no_connection),
+//                                    new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//                                            getMessageDetail();
+//                                        }
+//                                    });
+//                        }
+//
+//                    }
+//                });
 
-                        if (pagingHandler.getPage() == 1) {
-                            viewListener.getAdapter().clearData();
-                            cacheInteractor.setInboxMessageDetailCache(viewListener.getArguments().getString(PARAM_MESSAGE_ID), result);
-                        }
+        getReplyListUseCase.execute(GetReplyListUseCase.generateParam(viewListener.getArguments().getString(PARAM_MESSAGE_ID), pagingHandler.getPage()), new Subscriber<ReplyData>() {
+            @Override
+            public void onCompleted() {
 
-                        viewListener.finishLoading();
-                        setResult(result);
+            }
 
-                    }
+            @Override
+            public void onError(Throwable e) {
 
-                    @Override
-                    public void onTimeout(String message) {
-                        if (viewListener.getAdapter().getData().size() == 0) {
-                            viewListener.finishLoading();
-                            viewListener.showEmptyState();
-                        } else {
-                            viewListener.setRetry(viewListener.getString(R.string.msg_connection_timeout),
-                                    new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
+            }
 
-                                            getMessageDetail();
-                                        }
-                                    });
-                        }
+            @Override
+            public void onNext(ReplyData model) {
+                viewListener.setViewEnabled(true);
 
-                    }
+                if (pagingHandler.getPage() == 1) {
+                    viewListener.getAdapter().clearData();
+//                    cacheInteractor.setInboxMessageDetailCache(viewListener.getArguments().getString(PARAM_MESSAGE_ID), result);
+                }
 
-                    @Override
-                    public void onError(String error) {
-                        if (viewListener.getAdapter().getData().size() == 0) {
-                            viewListener.finishLoading();
-                            viewListener.showEmptyState(error);
-                        } else {
-                            viewListener.setRetry(error,
-                                    new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            getMessageDetail();
-                                        }
-                                    });
-                        }
-                    }
-
-                    @Override
-                    public void onNullData() {
-
-                    }
-
-                    @Override
-                    public void onNoConnectionError() {
-                        if (viewListener.getAdapter().getData().size() == 0) {
-                            viewListener.finishLoading();
-                            viewListener.showEmptyState();
-                        } else {
-                            viewListener.setRetry(viewListener.getString(R.string.msg_no_connection),
-                                    new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            getMessageDetail();
-                                        }
-                                    });
-                        }
-
-                    }
-                });
+                viewListener.finishLoading();
+                viewListener.setTextAreaReply(model.getTextAreaReply()==1);
+                setResult(model);
+            }
+        });
     }
 
     private void showLoading() {
@@ -183,13 +271,26 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
 
     @Override
     public void setResult(InboxMessageDetail inboxMessageDetail) {
-        pagingHandler.setHasNext(PagingHandler.CheckHasNext(inboxMessageDetail.getPaging()));
-        viewListener.getAdapter().setCanLoadMore(pagingHandler.CheckNextPage());
-        viewListener.getAdapter().setList(inboxMessageDetail.getList());
-        viewListener.setHeader(inboxMessageDetail);
+//        pagingHandler.setHasNext(PagingHandler.CheckHasNext(inboxMessageDetail.getPaging()));
+//        viewListener.getAdapter().setCanLoadMore(pagingHandler.CheckNextPage());
+//        viewListener.getAdapter().setList(inboxMessageDetail.getList());
+//        viewListener.setHeader(inboxMessageDetail);
+//        setReputation();
+//        if (pagingHandler.getPage() == 1)
+//            viewListener.scrollTo();
+
+    }
+
+
+    private void setResult(ReplyData replyData) {
+        viewListener.getAdapter().setList(replyData.getList());
+        viewListener.setHeader();
         setReputation();
         if (pagingHandler.getPage() == 1)
             viewListener.scrollToBottom();
+
+        pagingHandler.setHasNext(replyData.isHasNext());
+        viewListener.getAdapter().setCanLoadMore(pagingHandler.CheckNextPage());
 
     }
 
@@ -252,7 +353,28 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
 
             Bundle param = new Bundle();
             param.putParcelable(PARAM_SEND_REPLY, pass);
-            listener.sendReply(param);
+//            listener.sendReply(param);
+
+            final String reply = (viewListener.getReplyMessage().getText().toString());
+            String messageId = (viewListener.getArguments().getString(PARAM_MESSAGE_ID));
+
+            RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
+            replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(ReplyActionData data) {
+                    viewListener.onSuccessSendReply(data, reply);
+                }
+            });
         }
     }
 
@@ -384,10 +506,25 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
         return pass;
     }
 
-
     @Override
     public void onDestroyView() {
         actNetworkinteractor.unSubscribeObservable();
         networkInteractor.unSubscribeObservable();
+    }
+
+    public void onIncomingEvent(WebSocketResponse response) {
+
+        switch (response.getCode()){
+            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING :
+                viewListener.setOnlineDesc("sedang mengetik");
+
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
+                viewListener.setOnlineDesc("baru saja");
+                break;
+            default:
+                break;
+        }
+
     }
 }

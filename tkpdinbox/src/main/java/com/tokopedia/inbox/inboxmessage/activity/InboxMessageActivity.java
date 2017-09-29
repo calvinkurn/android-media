@@ -10,6 +10,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
@@ -18,6 +20,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.MessagePagerAdapter;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
@@ -39,7 +42,8 @@ import butterknife.BindView;
  */
 public class InboxMessageActivity extends DrawerPresenterActivity
         implements InboxMessageFragment.DoActionInboxMessageListener,
-        InboxMessageConstant, InboxMessageResultReceiver.Receiver {
+        InboxMessageConstant, InboxMessageResultReceiver.Receiver,
+        NotificationReceivedListener{
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -107,8 +111,10 @@ public class InboxMessageActivity extends DrawerPresenterActivity
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
-        indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_message_all)));
-        indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_sent)));
+//        indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_message_all)));
+        indicator.addTab(indicator.newTab().setCustomView(R.layout.circle_text));
+        ((TextView)indicator.getTabAt(indicator.getTabCount()-1).getCustomView().findViewById(R.id.tab_title)).setText("PERCAKAPAN");
+//        indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_sent)));
         indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_archive)));
         indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_trash)));
 
@@ -144,7 +150,7 @@ public class InboxMessageActivity extends DrawerPresenterActivity
     public List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_ALL));
-        fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_SENT));
+//        fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_SENT));
         fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_ARCHIVE));
         fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_TRASH));
         return fragmentList;
@@ -331,4 +337,15 @@ public class InboxMessageActivity extends DrawerPresenterActivity
         super.onBackPressed();
 
     }
+
+    @Override
+    public void onGetNotif(Bundle data) {
+        super.onGetNotif();
+        reStackList(data);
+    }
+
+    private void reStackList(Bundle data) {
+        Log.i("", "reStackList: ");
+    }
+
 }

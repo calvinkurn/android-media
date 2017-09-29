@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
@@ -37,7 +38,7 @@ public class LoadMoreDataBinder extends DataBinder<LoadMoreDataBinder.ViewHolder
         }
     }
 
-    InboxMessageDetailFragmentPresenter presenter;
+    ChatRoomPresenter presenter;
     Boolean isLoading = false;
 
 
@@ -79,7 +80,7 @@ public class LoadMoreDataBinder extends DataBinder<LoadMoreDataBinder.ViewHolder
         return 1;
     }
 
-    public void setPresenter(InboxMessageDetailFragmentPresenter presenter) {
+    public void setPresenter(ChatRoomPresenter presenter) {
         this.presenter = presenter;
     }
 

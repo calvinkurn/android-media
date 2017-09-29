@@ -3,19 +3,30 @@ package com.tokopedia.inbox.inboxmessage.activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService;
@@ -31,6 +42,53 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
 
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
     InboxMessageResultReceiver mReceiver;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setToolbarColor();
+    }
+
+    @Override
+    protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        LayoutInflater mInflater=LayoutInflater.from(this);
+        View mCustomView = mInflater.inflate(R.layout.header_chat, null);
+        toolbar.addView(mCustomView);
+
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                .getColor(R.color.white)));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        setTitle("");
+        toolbar.setContentInsetStartWithNavigation(0);
+        toolbar.setContentInsetEndWithActions(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+        }
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+        if (upArrow != null) {
+            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }
+    }
+
+    private void setToolbarColor() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View view = getWindow().getDecorView();
+            int flags = view.getSystemUiVisibility();
+
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            view.setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
+    }
 
     @DeepLink(Constants.Applinks.MESSAGE_DETAIL)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -76,8 +134,8 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
-        getFragmentManager().beginTransaction()
-                .add(R.id.container, InboxMessageDetailFragment.createInstance(getIntent().getExtras()),
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, ChatRoomFragment.createInstance(getIntent().getExtras()),
                         TAG)
                 .commit();
     }

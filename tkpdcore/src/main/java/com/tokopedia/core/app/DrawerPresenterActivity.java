@@ -184,6 +184,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     }
 
+    @Override
+    public void onGetNotif(Bundle data) {
+
+    }
+
     public void setDrawerEnabled(boolean isEnabled) {
         drawerHelper.setEnabled(isEnabled);
     }

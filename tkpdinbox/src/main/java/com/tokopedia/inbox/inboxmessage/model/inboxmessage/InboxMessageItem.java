@@ -78,6 +78,9 @@ public class InboxMessageItem implements Parcelable{
     private boolean isChecked;
     private int position;
 
+    public InboxMessageItem() {
+    }
+
     protected InboxMessageItem(Parcel in) {
         withUser = in.readParcelable(WithUser.class.getClassLoader());
         messageId = in.readInt();
