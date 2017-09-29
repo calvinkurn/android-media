@@ -5,13 +5,15 @@ import Button from '../../common/TKPPrimaryBtn'
 import PopUp from '../../common/TKPPopupModal'
 import { Text } from '../../common/TKPText'
 import { NavigationModule } from 'NativeModules'
+import Processing from '../Processing'
 
 
 export default class CartItemList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showPopUp: false
+      showPopUp: false,
+      showLoadingPage: false
     }
   }
 
@@ -26,7 +28,10 @@ export default class CartItemList extends Component {
 
   paymentCheckoutClicked = () => {
     console.log("checkout clicked, total: " + this.props.totalPrice)
-    NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
+    this.setState({
+      showLoadingPage: true
+    })
+    // NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
   }
 
   onBackPress = () => {
@@ -47,6 +52,10 @@ export default class CartItemList extends Component {
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
     const { isFetching } = this.props
     
+    if (this.state.showLoadingPage){
+      return <Processing />
+    }
+
     return (
       <View>
         {
