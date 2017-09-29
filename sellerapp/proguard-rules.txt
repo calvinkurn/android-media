@@ -342,3 +342,4 @@
 
 
 -dontwarn android.content.pm.PackageManager
+-dontwarn com.crashlytics.android.answers.shim.**
