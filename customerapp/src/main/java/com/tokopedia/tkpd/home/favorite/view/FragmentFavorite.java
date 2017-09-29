@@ -99,9 +99,12 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        if(trace!=null)
-            trace.stop();
         favoritePresenter.detachView();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -224,6 +227,8 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
         recylerviewScrollListener.resetState();
+        if(trace!=null)
+            trace.stop();
     }
 
 

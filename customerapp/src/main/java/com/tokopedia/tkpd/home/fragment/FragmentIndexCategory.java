@@ -925,9 +925,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
 
-        if(trace!=null)
-            trace.stop();
-
         category.unSubscribe();
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
@@ -1161,5 +1158,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public String getUserId() {
         SessionHandler sessionHandler = new SessionHandler(getActivity());
         return sessionHandler.getLoginID();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }
