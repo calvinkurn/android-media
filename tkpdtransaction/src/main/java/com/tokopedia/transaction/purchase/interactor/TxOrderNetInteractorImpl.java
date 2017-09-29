@@ -360,6 +360,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                             public void onError(Throwable e) {
                                 if(e instanceof ResponseRuntimeException)
                                     listener.onError(e.getMessage());
+                                else listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                             }
 
                             @Override
@@ -388,6 +389,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                             public void onError(Throwable e) {
                                 if(e instanceof ResponseRuntimeException)
                                     listener.onError(e.getMessage());
+                                else listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                             }
 
                             @Override
