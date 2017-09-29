@@ -54,6 +54,11 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     }
 
     @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_picker_product_list;
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         productListPickerMultipleItem.validateFooterAndInfoView();

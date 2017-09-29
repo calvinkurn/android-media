@@ -72,7 +72,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private ItemTouchHelper mItemTouchHelper;
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayoutContainer;
-    private SnackbarRetry snackbarUndo;
     @GMFeaturedProductTypeView
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
@@ -150,7 +149,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
-        resetPageAndSearch();
     }
 
     private void showSnackbarWithUndo() {
@@ -162,7 +160,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             new GMSnackbarRetry(
                     SnackbarManager.make(coordinatorLayoutContainer,
                             textToPresent,
-                            Snackbar.LENGTH_INDEFINITE,
+                            Snackbar.LENGTH_LONG,
                             android.R.color.white,
                             com.tokopedia.core.R.color.black_seventy_percent_),
                     new NetworkErrorHelper.RetryClickedListener() {
