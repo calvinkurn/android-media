@@ -8,6 +8,7 @@ import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.manage.data.repository.ActionManageProductRepositoryImpl;
 import com.tokopedia.seller.product.manage.data.source.ActionManageProductDataSource;
@@ -80,6 +81,12 @@ public class ManageProductModule {
     @ManageProductScope
     public TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
+    }
+
+    @Provides
+    @ManageProductScope
+    public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(ShopApi.class);
     }
 
     @Provides

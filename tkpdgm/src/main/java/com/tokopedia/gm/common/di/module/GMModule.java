@@ -6,6 +6,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.gm.featured.data.GMFeaturedProductDataSource;
 import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
 import com.tokopedia.gm.featured.di.scope.GMFeaturedProductScope;
@@ -24,6 +25,7 @@ import com.tokopedia.seller.base.view.presenter.DatePickerPresenterImpl;
 import com.tokopedia.gm.common.di.scope.GMScope;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 
@@ -86,4 +88,10 @@ public class GMModule {
     TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
     }
+    @Provides
+    @GMScope
+    public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(ShopApi.class);
+    }
+
 }

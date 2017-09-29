@@ -10,7 +10,7 @@
         <item
             android:id="@+id/duplicat_product_menu"
             android:title="@string/title_activity_duplicate_product"
-            android:icon="@drawable/ic_search"
+            android:icon="@drawable/ic_edit_green"
             />
         <item
             android:id="@+id/delete_product_menu"
@@ -23,7 +23,7 @@
         <item
             android:id="@+id/change_price_product_menu"
             android:title="@string/title_edit_price"
-            android:icon="@drawable/ic_search"
+            android:icon="@drawable/ic_edit_green"
             />
         <item
             android:id="@+id/share_product_menu"
