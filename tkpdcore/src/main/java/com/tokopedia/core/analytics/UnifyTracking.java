@@ -1542,7 +1542,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventMoRegister(String name, String mobileNo) {
-        CommonUtils.dumper("GAv4 moengage action "+name + " "+mobileNo);
+        CommonUtils.dumper("GAv4 moengage action " + name + " " + mobileNo);
         getMoEngine().sendRegisterEvent(name, mobileNo);
     }
 
@@ -2476,8 +2476,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventOpportunityCustom(String event, String category,
-                                        String action, String label,
-                                        HashMap<String, String> customDimension) {
+                                              String action, String label,
+                                              HashMap<String, String> customDimension) {
         sendGTMEvent(new EventTracking(
                 event,
                 category,
@@ -2488,15 +2488,14 @@ public class UnifyTracking extends TrackingUtils {
         );
     }
 
-    public static void eventSellerHomeDashboardClick(String main, String item){
-        EventTracking eventTracking = new EventTracking(
-                AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
-                AppEventTracking.Category.DASHBOARD,
-                AppEventTracking.Action.CLICK_DASHBOARD_CARD,
-                main + " - " + item
-        );
-        eventTracking.setUserId();
-        sendGTMEvent(eventTracking.getEvent());
+    public static void eventSellerHomeDashboardClick(String main, String item) {
+        sendGTMEvent(new EventTracking(
+                        AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
+                        AppEventTracking.Category.DASHBOARD,
+                        AppEventTracking.Action.CLICK + " " + main,
+                        item)
+                        .setUserId()
+                        .getEvent());
     }
 
     public static void eventAppShare() {
@@ -2508,7 +2507,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFeaturedProduct(String eventLabel){
+    public static void eventFeaturedProduct(String eventLabel) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.FEATURED_PRODUCT,
@@ -2517,31 +2516,31 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickMenuFeaturedProduct(){
+    public static void eventClickMenuFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
     }
 
-    public static void eventClickAddFeaturedProduct(){
+    public static void eventClickAddFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.ADD_FEATURED_PRODUCT);
     }
 
-    public static void eventTickErrorFeaturedProduct(){
+    public static void eventTickErrorFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.TICK_ERROR);
     }
 
-    public static void eventSavePickFeaturedProduct(String counterProduct){
+    public static void eventSavePickFeaturedProduct(String counterProduct) {
         eventFeaturedProduct(AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
     }
 
-    public static void eventSortFeaturedProductChange(){
+    public static void eventSortFeaturedProductChange() {
         eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_CHANGE);
     }
 
-    public static void eventSortFeaturedProductNotChange(){
+    public static void eventSortFeaturedProductNotChange() {
         eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_NO_CHANGE);
     }
 
-    public static void eventDeleteFeaturedProduct(){
+    public static void eventDeleteFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
     }
 }
