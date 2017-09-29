@@ -14,6 +14,8 @@ public interface ReactConst {
     String CODE_PUSH_DEPLOYMENT_KEY_STAGING = "KVr25gFyi1fzn-AA9KP88Ly2dRoeb85766e2-9e25-4371-8aa3-080b8952449b";
     String CODE_PUSH_DEPLOYMENT_KEY = "mZj7iHeXLW9NvlYFf7vANLKYJ7jub85766e2-9e25-4371-8aa3-080b8952449b";
 
+    String JSON = "JSON";
+
     interface Screen {
         String HOTLIST = "HotList";
         String OFFICIAL_STORE = "official-store";

@@ -27,6 +27,10 @@ public class ReactNetworkDataSource {
         return commonService.post(url, params);
     }
 
+    public Observable<String> post(String url, String params) {
+        return commonService.post(url, params);
+    }
+
     public Observable<String> delete(String url) {
         return commonService.delete(url);
     }

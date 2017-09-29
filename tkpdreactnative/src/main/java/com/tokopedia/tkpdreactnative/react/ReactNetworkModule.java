@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -27,6 +28,7 @@ import rx.schedulers.Schedulers;
  * @author ricoharisin .
  */
 public class ReactNetworkModule extends ReactContextBaseJavaModule {
+
 
     @Inject
     ReactNetworkRepository reactNetworkRepository;
@@ -58,8 +60,14 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     public void getResponse(String url, String method, String request, Boolean isAuth, String requestType, final Promise promise) {
         try {
             CommonUtils.dumper(url + " " + request);
-            Subscription subscribe = reactNetworkRepository.getResponse(url, method, convertStringRequestToHashMap(request), isAuth)
-                    .subscribeOn(Schedulers.newThread())
+            Observable<String> repository;
+            if(requestType.equals(ReactConst.JSON)) {
+                repository = reactNetworkRepository.getResponse(url, method, request, isAuth);
+            } else {
+                repository = reactNetworkRepository.getResponse(url, method, convertStringRequestToHashMap(request), isAuth);
+            }
+
+            Subscription subscribe = repository.subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
                         @Override
                         public void onCompleted() {

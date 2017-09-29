@@ -66,8 +66,16 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
     }
 
     @Override
-    public Observable<String> getResponse(String url, String method, String body, Boolean isAuth) throws UnknownMethodException {
-        return null;
+    public Observable<String> getResponse(String url, String method, String params, Boolean isAuth) throws UnknownMethodException {
+        switch(method) {
+            case ReactConst.POST:
+                if (isAuth) {
+                    return reactNetworkAuthFactory.createReactNetworkDataSource().post(url, params);
+                }
+                else return reactNetworkFactory.createReactNetworkDataSource().post(url, params);
+            default:
+                throw new UnknownMethodException();
+        }
     }
 
     private Boolean isWSV4(String url) {
