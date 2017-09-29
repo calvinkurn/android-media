@@ -137,14 +137,16 @@ public class OkHttpClientModule {
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
                                                        ChuckInterceptor chuckInterceptor,
-                                                      DebugInterceptor debugInterceptor) {
+                                                      DebugInterceptor debugInterceptor,
+                                                      ApiCacheInterceptor apiCacheInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
                 topAdsAuthInterceptor,
                 okHttpRetryPolicy,
                 errorResponseInterceptor,
                 chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @WsV4Auth
