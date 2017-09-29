@@ -185,22 +185,22 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
             if (getItemCount() > tresHold) {
                 if (hasHeader && !headerPlaced) {
                     headerPlaced = true;
-                    setTopAds(adsItems, itemList, ROW_ADS_INDEX_FEED);
+                    setTopAds(adsItems, ROW_ADS_INDEX_FEED);
                 } else {
-                    setTopAds(adsItems, itemList, getItemCount() - tresHold);
+                    setTopAds(adsItems, getItemCount() - tresHold);
                 }
             } else {
-                setTopAds(adsItems, itemList, getItemCount());
+                setTopAds(adsItems, getItemCount());
             }
         } else {
             if (hasHeader && !headerPlaced) {
                 headerPlaced = true;
-                setTopAds(adsItems, itemList, 1);
+                setTopAds(adsItems, 1);
             } else {
                 if (headerPlaced || position > 0) {
                     position = position - 1;
                 }
-                setTopAds(adsItems, itemList, position);
+                setTopAds(adsItems, position);
                 if (recyclerView != null && position == 0) {
                     recyclerView.scrollToPosition(position);
                 }
@@ -221,7 +221,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         itemList.addAll(arrayList);
         if (hasHeader && !adsItems.isEmpty() && !headerPlaced) {
             headerPlaced = true;
-            setTopAds(adsItems, itemList, 1);
+            setTopAds(adsItems, 1);
         }
         observer.onStreamLoaded(observerType);
     }
@@ -264,11 +264,11 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         return presenter.getConfig();
     }
 
-    private void setTopAds(List<Item> list, List<Item> arrayList, int pos) {
+    private void setTopAds(List<Item> list, int pos) {
         Log.d(TAG, "setTopAds size " + list.size() + " pos " + pos);
         if (pos > 0) {
             if (list.size() > 0) {
-                arrayList.add(pos, new TopAdsViewModel(list));
+                itemList.add(pos, new TopAdsViewModel(list));
                 adapter.notifyItemInserted(pos);
             } else {
                 setShouldLoadAds(false);
