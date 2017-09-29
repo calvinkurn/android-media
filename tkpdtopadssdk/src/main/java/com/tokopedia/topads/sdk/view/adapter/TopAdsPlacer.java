@@ -263,11 +263,13 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private void setTopAds(List<Item> list, List<Item> arrayList, int pos) {
         Log.d(TAG, "setTopAds size " + list.size() + " pos " + pos);
-        if (list.size() > 0) {
-            arrayList.add(pos, new TopAdsViewModel(list));
-            adapter.notifyItemInserted(pos);
-        } else {
-            setShouldLoadAds(false);
+        if (pos > 0) {
+            if (list.size() > 0) {
+                arrayList.add(pos, new TopAdsViewModel(list));
+                adapter.notifyItemInserted(pos);
+            } else {
+                setShouldLoadAds(false);
+            }
         }
     }
 
