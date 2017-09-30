@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -149,7 +148,7 @@ public class ImagesSelectView extends BaseCustomView {
     private void handleResolutionFromList(List<ImageSelectModel> imageSelectModelList) {
         for (int i = imageSelectModelList.size() - 1; i >= 0; i--) {
             ImageSelectModel imageSelectModel = imageSelectModelList.get(i);
-            if (!successHandleResolution(imageSelectModel.getUri())) {
+            if (!successHandleResolution(imageSelectModel.getUriOrPath())) {
                 imageSelectModelList.remove(i);
             }
         }
@@ -165,7 +164,7 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public void addImage(ImageSelectModel imageSelectModel) {
-        if (successHandleResolution(imageSelectModel.getUri())) {
+        if (successHandleResolution(imageSelectModel.getUriOrPath())) {
             imageSelectorAdapter.addImage(imageSelectModel);
             updateTotalImageListener();
         }
@@ -231,14 +230,14 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public void changeImage(ImageSelectModel imageSelectModel) {
-        if (successHandleResolution(imageSelectModel.getUri())) {
+        if (successHandleResolution(imageSelectModel.getUriOrPath())) {
             imageSelectorAdapter.changeImage(imageSelectModel);
             updateTotalImageListener();
         }
     }
 
     public void changeImage(ImageSelectModel imageSelectModel, int position) {
-        if (successHandleResolution(imageSelectModel.getUri())) {
+        if (successHandleResolution(imageSelectModel.getUriOrPath())) {
             imageSelectorAdapter.changeImage(imageSelectModel, position);
             updateTotalImageListener();
         }

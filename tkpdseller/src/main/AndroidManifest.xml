@@ -55,6 +55,20 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name=".common.imageeditor.ImageEditorActivity"
+            android:label="@string/title_activity_image_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            android:exported="true"/>
+
+        <activity
+            android:name=".common.imageeditor.CropResultActivity"
+            android:label="@string/title_activity_image_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            android:exported="true"/>
+
+        <activity
             android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait">

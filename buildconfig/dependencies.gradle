@@ -131,7 +131,6 @@ ext {
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
             dagger                : "com.google.dagger:dagger:2.5",
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
-            smoothAppBarLayout    : "me.henrytao:smooth-app-bar-layout:24.1.1.0",
             trueCaller            : "true.caller.sdk:truecaller:0.5",
             bcaOneClick           : "com.bca.widget:oneclick:1.0@aar",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
@@ -139,6 +138,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0",
+            imagecropper         : "com.theartofdev.edmodo:android-image-cropper:2.5.0",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:react-native-codepush:1.0@aar"
     ]
