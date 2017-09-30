@@ -10,6 +10,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import com.tokopedia.core.cache.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.cache.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
@@ -30,7 +31,6 @@ public class CacheModule {
     public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, TkpdCache.CACHE_API);
     }
-
 
     @VersionNameQualifier
     @Provides
@@ -56,8 +56,13 @@ public class CacheModule {
     }
 
     @Provides
-    ApiCacheDataSource provideCacheHelper(@ApiCacheQualifier LocalCacheHandler localCacheHandler,
-                                          @VersionNameQualifier String versionName) {
-        return new ApiCacheDataSource(localCacheHandler, versionName);
+    ApiCacheDataSource provideCacheHelper(CacheApiVersionCache cacheApiVersionCache) {
+        return new ApiCacheDataSource(cacheApiVersionCache);
+    }
+
+    @Provides
+    CacheApiVersionCache provideCacheApiDataCache(@ApiCacheQualifier LocalCacheHandler localCacheHandler,
+                                                  @VersionNameQualifier String versionName) {
+        return new CacheApiVersionCache(localCacheHandler, versionName);
     }
 }

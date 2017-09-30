@@ -1,24 +1,19 @@
 package com.tokopedia.core.cache.data.source;
 
-import android.text.TextUtils;
-
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.cache.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiData_Table;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist_Table;
-import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
-import com.tokopedia.core.cache.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.cache.util.CacheApiUtils;
-import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -48,25 +43,15 @@ public class ApiCacheDataSource {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private LocalCacheHandler localCacheHandler;
-    private String versionName;
+    private CacheApiVersionCache cacheApiVersionCache;
 
     @Inject
-    public ApiCacheDataSource(@ApiCacheQualifier LocalCacheHandler localCacheHandler, @VersionNameQualifier String versionName) {
-        this.versionName = versionName;
-        this.localCacheHandler = localCacheHandler;
-    }
-
-    private Observable<Boolean> isWhiteListVersionUpdated() {
-        String storedVersionName = localCacheHandler.getString(TkpdCache.Key.WHITE_LIST_VERSION);
-        CommonUtils.dumper(String.format("Current vs local version: %s - %s", storedVersionName, versionName));
-        // Fresh install or different version
-        boolean whiteListVersionUpdated = TextUtils.isEmpty(storedVersionName) || !storedVersionName.equals(versionName);
-        return Observable.just(whiteListVersionUpdated);
+    public ApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache) {
+        this.cacheApiVersionCache = cacheApiVersionCache;
     }
 
     public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
-        return isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+        return cacheApiVersionCache.isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
                 CommonUtils.dumper(String.format("Need to update white list: %b", aBoolean));
@@ -88,15 +73,9 @@ public class ApiCacheDataSource {
                                 if (!aBoolean) {
                                     return Observable.just(false);
                                 }
-                                return updateLocalCacheWhiteListVersion();
+                                return cacheApiVersionCache.updateCacheWhiteListVersion();
                             }
                         });
-                    }
-
-                    private Observable<Boolean> updateLocalCacheWhiteListVersion() {
-                        localCacheHandler.putString(TkpdCache.Key.WHITE_LIST_VERSION, versionName);
-                        localCacheHandler.applyEditor();
-                        return Observable.just(true);
                     }
                 });
             }
