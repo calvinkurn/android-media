@@ -6,17 +6,21 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.cache.constant.CacheApiConstant;
 import com.tokopedia.core.cache.constant.HTTPMethodDef;
+import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.network.retrofit.response.BaseResponseError;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 
 import okhttp3.Headers;
+import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.internal.http.HttpHeaders;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.GzipSource;
@@ -30,6 +34,8 @@ public class CacheApiUtils {
     private static final int BYTE_COUNT = 2048;
 
     private static final long DEFAULT_MAX_CONTENT_LENGTH = 250000L;
+
+    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     private static final String[] UNUSED_PARAM = {"hash", "device_time", "device_id"};
 
@@ -105,67 +111,7 @@ public class CacheApiUtils {
         return url;
     }
 
-    public static String readFromBuffer(Buffer buffer, Charset charset) {
-        long bufferSize = buffer.size();
-        long maxBytes = Math.min(bufferSize, DEFAULT_MAX_CONTENT_LENGTH);
-        String body = "";
-        try {
-            body = buffer.readString(maxBytes, charset);
-        } catch (EOFException e) {
-            e.printStackTrace();
-        }
-        return body;
-    }
 
-    /**
-     * Returns true if the body in question probably contains human readable text. Uses a small sample
-     * of code points to detect unicode control characters commonly used in binary file signatures.
-     */
-    public static boolean isPlaintext(Buffer buffer) {
-        try {
-            Buffer prefix = new Buffer();
-            long byteCount = buffer.size() < 64 ? buffer.size() : 64;
-            buffer.copyTo(prefix, 0, byteCount);
-            for (int i = 0; i < 16; i++) {
-                if (prefix.exhausted()) {
-                    break;
-                }
-                int codePoint = prefix.readUtf8CodePoint();
-                if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (EOFException e) {
-            return false; // Truncated UTF-8 sequence.
-        }
-    }
-
-    public static BufferedSource getNativeSource(Response response) throws IOException {
-        if (bodyGzipped(response.headers())) {
-            BufferedSource source = response.peekBody(DEFAULT_MAX_CONTENT_LENGTH).source();
-            if (source.buffer().size() < DEFAULT_MAX_CONTENT_LENGTH) {
-                return getNativeSource(source, true);
-            } else {
-                CommonUtils.dumper("gzip encoded response was too long");
-            }
-        }
-        return response.body().source();
-    }
-
-    private static boolean bodyGzipped(Headers headers) {
-        String contentEncoding = headers.get("Content-Encoding");
-        return "gzip".equalsIgnoreCase(contentEncoding);
-    }
-
-    private static BufferedSource getNativeSource(BufferedSource input, boolean isGzipped) {
-        if (isGzipped) {
-            GzipSource source = new GzipSource(input);
-            return Okio.buffer(source);
-        } else {
-            return input;
-        }
-    }
 
     public static boolean isResponseValidToBeCached(Response response) {
         if (response.code() != CacheApiConstant.CODE_OK) {
@@ -189,5 +135,89 @@ public class CacheApiUtils {
             return false;
         }
         return true;
+    }
+
+    public static String getResponseBody(Response response) {
+        try {
+            ResponseBody responseBody = response.body();
+            if (HttpHeaders.hasBody(response)) {
+                BufferedSource source = CacheApiUtils.getNativeSource(response);
+                source.request(Long.MAX_VALUE);
+                Buffer buffer = source.buffer();
+                Charset charset = UTF8;
+                MediaType contentType = responseBody.contentType();
+                if (contentType != null) {
+                    charset = contentType.charset(UTF8);
+                }
+                if (isPlaintext(buffer)) {
+                    return readFromBuffer(buffer.clone(), charset));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static String readFromBuffer(Buffer buffer, Charset charset) {
+        long bufferSize = buffer.size();
+        long maxBytes = Math.min(bufferSize, DEFAULT_MAX_CONTENT_LENGTH);
+        String body = "";
+        try {
+            body = buffer.readString(maxBytes, charset);
+        } catch (EOFException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
+
+    /**
+     * Returns true if the body in question probably contains human readable text. Uses a small sample
+     * of code points to detect unicode control characters commonly used in binary file signatures.
+     */
+    private static boolean isPlaintext(Buffer buffer) {
+        try {
+            Buffer prefix = new Buffer();
+            long byteCount = buffer.size() < 64 ? buffer.size() : 64;
+            buffer.copyTo(prefix, 0, byteCount);
+            for (int i = 0; i < 16; i++) {
+                if (prefix.exhausted()) {
+                    break;
+                }
+                int codePoint = prefix.readUtf8CodePoint();
+                if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (EOFException e) {
+            return false; // Truncated UTF-8 sequence.
+        }
+    }
+
+    private static BufferedSource getNativeSource(Response response) throws IOException {
+        if (bodyGzipped(response.headers())) {
+            BufferedSource source = response.peekBody(DEFAULT_MAX_CONTENT_LENGTH).source();
+            if (source.buffer().size() < DEFAULT_MAX_CONTENT_LENGTH) {
+                return getNativeSource(source, true);
+            } else {
+                CommonUtils.dumper("gzip encoded response was too long");
+            }
+        }
+        return response.body().source();
+    }
+
+    private static boolean bodyGzipped(Headers headers) {
+        String contentEncoding = headers.get("Content-Encoding");
+        return "gzip".equalsIgnoreCase(contentEncoding);
+    }
+
+    private static BufferedSource getNativeSource(BufferedSource input, boolean isGzipped) {
+        if (isGzipped) {
+            GzipSource source = new GzipSource(input);
+            return Okio.buffer(source);
+        } else {
+            return input;
+        }
     }
 }

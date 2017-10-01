@@ -1,5 +1,7 @@
 package com.tokopedia.core.cache.data.source.db;
 
+import android.text.TextUtils;
+
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -10,20 +12,12 @@ import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.cache.util.CacheApiUtils;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.Calendar;
 import java.util.Collection;
 
 import javax.inject.Inject;
 
-import okhttp3.MediaType;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpHeaders;
-import okio.Buffer;
-import okio.BufferedSource;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -35,8 +29,6 @@ import rx.functions.Func1;
 public class CacheApiDataManager {
 
     private static final long DIVIDE_FOR_SECONDS = 1000L;
-
-    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @Inject
     public CacheApiDataManager() {
@@ -157,39 +149,19 @@ public class CacheApiDataManager {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
+                String responseBody = CacheApiUtils.getResponseBody(response);
+                if (TextUtils.isEmpty(responseBody)) {
+                    subscriber.onNext(false);
+                    return;
+                }
                 Calendar expiredCalendar = Calendar.getInstance();
                 expiredCalendar.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
                 cacheApiData.setResponseTime(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
                 cacheApiData.setExpiredTime(expiredCalendar.getTimeInMillis() / DIVIDE_FOR_SECONDS);
-                try {
-                    putResponseBody(cacheApiData, response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                cacheApiData.setResponseBody(responseBody);
                 cacheApiData.save();
                 subscriber.onNext(true);
             }
         });
-    }
-
-    private void putResponseBody(CacheApiData cacheApiData, Response response) throws IOException {
-        ResponseBody responseBody = response.body();
-        if (HttpHeaders.hasBody(response)) {
-            BufferedSource source = CacheApiUtils.getNativeSource(response);
-            source.request(Long.MAX_VALUE);
-            Buffer buffer = source.buffer();
-            Charset charset = UTF8;
-            MediaType contentType = responseBody.contentType();
-            if (contentType != null) {
-                try {
-                    charset = contentType.charset(UTF8);
-                } catch (UnsupportedCharsetException e) {
-//                    update(transaction, transactionUri);
-                }
-            }
-            if (CacheApiUtils.isPlaintext(buffer)) {
-                cacheApiData.setResponseBody(CacheApiUtils.readFromBuffer(buffer.clone(), charset));
-            }
-        }
     }
 }
