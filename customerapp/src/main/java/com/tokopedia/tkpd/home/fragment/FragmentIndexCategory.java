@@ -346,8 +346,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             @Override
             public void OnError() {
-                if (holder.MainView.getParent() != null
-                        && holder.bannerView != null) {
+                if (holder.bannerView != null) {
                     holder.bannerView.setVisibility(View.GONE);
                 }
                 showGetHomeMenuNetworkError();
@@ -360,7 +359,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             holder.bannerView.setPromoList(mappingListBannerPromo(promoList));
             holder.bannerView.buildView();
         } else {
-            ((ViewGroup) holder.bannerView.getParent()).removeView(holder.bannerView);
+            if (holder.bannerView != null) {
+                holder.bannerView.setVisibility(View.GONE);
+            }
         }
     }
 
