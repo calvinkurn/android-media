@@ -4,12 +4,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import javax.inject.Inject;
 

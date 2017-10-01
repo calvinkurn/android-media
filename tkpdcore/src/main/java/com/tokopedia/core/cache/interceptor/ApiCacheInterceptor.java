@@ -14,6 +14,7 @@ import com.tokopedia.core.cache.constant.CacheApiConstant;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.cache.CacheApiVersionCache;
+import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 import com.tokopedia.core.cache.domain.interactor.BaseApiCacheInterceptorUseCase;
 import com.tokopedia.core.cache.domain.interactor.CheckWhiteListUseCase;
@@ -59,7 +60,7 @@ public class ApiCacheInterceptor implements Interceptor {
         String versionName = MainApplication.getAppContext().getPackageManager().getPackageInfo(MainApplication.getAppContext().getPackageName(), 0).versionName;
         ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(
                 new ApiCacheDataSource(new CacheApiVersionCache(
-                        new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API), versionName))
+                        new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API), versionName), new CacheApiDataManager())
         );
 
         new ClearTimeOutCache(threadExecutor, postExecutionThread, apiCacheRepository).executeSync(RequestParams.EMPTY);

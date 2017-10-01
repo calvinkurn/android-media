@@ -11,6 +11,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.cache.CacheApiVersionCache;
+import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
 import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.cache.di.qualifier.VersionNameQualifier;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
@@ -26,6 +27,7 @@ import dagger.Provides;
 
 @Module
 public class CacheModule {
+
     @ApiCacheQualifier
     @Provides
     public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
@@ -43,6 +45,11 @@ public class CacheModule {
     }
 
     @Provides
+    CacheApiDataManager provideCacheApiDataManager() {
+        return new CacheApiDataManager();
+    }
+
+    @Provides
     ApiCacheRepository provideApiCacheRepository(ApiCacheDataSource apiCacheDataSource) {
         return new ApiCacheRepositoryImpl(apiCacheDataSource);
     }
@@ -56,8 +63,8 @@ public class CacheModule {
     }
 
     @Provides
-    ApiCacheDataSource provideCacheHelper(CacheApiVersionCache cacheApiVersionCache) {
-        return new ApiCacheDataSource(cacheApiVersionCache);
+    ApiCacheDataSource provideApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
+        return new ApiCacheDataSource(cacheApiVersionCache, cacheApiDataManager);
     }
 
     @Provides
