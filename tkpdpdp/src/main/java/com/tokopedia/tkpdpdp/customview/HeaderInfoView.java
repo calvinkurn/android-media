@@ -110,12 +110,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 ViewCompat.setBackgroundTintList(cashbackTextView, tint);
             }
             cashbackTextView.setVisibility(VISIBLE);
+            cashbackTextView.invalidate();
         }
 
         if(data.getShopInfo().getShopIsOfficial() != null && data.getShopInfo().getShopIsOfficial() == 1) {
             textOfficialStore.setVisibility(VISIBLE);
         }
-
         setVisibility(VISIBLE);
     }
 
