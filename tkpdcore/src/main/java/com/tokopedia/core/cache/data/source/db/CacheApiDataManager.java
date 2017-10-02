@@ -152,7 +152,7 @@ public class CacheApiDataManager {
         });
     }
 
-    public Observable<Boolean> updateResponse(final CacheApiData cacheApiData, final CacheApiWhitelist cacheApiWhitelist, final Response response) {
+    public Observable<Boolean> updateResponse(final Response response, final int expiredTime) {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -161,12 +161,16 @@ public class CacheApiDataManager {
                     subscriber.onNext(false);
                     return;
                 }
-                Calendar expiredCalendar = Calendar.getInstance();
-                expiredCalendar.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
-                cacheApiData.setResponseTime(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
-                cacheApiData.setExpiredTime(expiredCalendar.getTimeInMillis() / DIVIDE_FOR_SECONDS);
-                responseBody = getEncrypted(responseBody);
-                cacheApiData.setResponseBody(responseBody);
+                long responseTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
+
+                CacheApiData cacheApiData = new CacheApiData();
+                cacheApiData.setMethod(response.request().method());
+                cacheApiData.setHost(response.request().url().host());
+                cacheApiData.setPath(CacheApiUtils.getPath(response.request().url().toString()));
+                cacheApiData.setRequestParam(CacheApiUtils.getRequestParam(response.request()));
+                cacheApiData.setResponseBody(getEncrypted(responseBody));
+                cacheApiData.setResponseTime(responseTime);
+                cacheApiData.setExpiredTime(responseTime + expiredTime);
                 cacheApiData.save();
                 subscriber.onNext(true);
             }

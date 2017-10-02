@@ -36,6 +36,14 @@ public class CacheApiUtils {
     private static final String[] UNUSED_PARAM = {"hash", "device_time", "device_id"};
     private static final String PARAM_SEPARATOR = "-";
 
+    public static String generateCachePath(String path) {
+        if (!path.startsWith("/")) {
+            return "/" + path;
+        } else {
+            return path;
+        }
+    }
+
     public static String getHost(String fullUrl) {
         try {
             URL url = new URL(fullUrl);

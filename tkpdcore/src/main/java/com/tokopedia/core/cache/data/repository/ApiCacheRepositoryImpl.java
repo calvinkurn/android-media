@@ -67,7 +67,7 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public Observable<Boolean> updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
-        return apiCacheDataSource.updateResponse(cacheApiData, cacheApiWhitelist, response);
+    public Observable<Boolean> updateResponse(Response response, int expiredTime) {
+        return apiCacheDataSource.updateResponse(response, expiredTime);
     }
 }

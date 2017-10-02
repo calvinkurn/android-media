@@ -39,7 +39,7 @@ public interface ApiCacheRepository {
      */
     Observable<Boolean> deleteWhiteList(String host, String path);
 
-    Observable<Boolean> updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response);
+    Observable<Boolean> updateResponse(Response response, int expiredTime);
 
     /**
      * Delete cached data

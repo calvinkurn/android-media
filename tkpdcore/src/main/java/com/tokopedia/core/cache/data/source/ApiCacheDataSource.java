@@ -91,8 +91,7 @@ public class ApiCacheDataSource {
         return cacheApiDataManager.deleteWhiteList(host, path);
     }
 
-    public Observable<Boolean> updateResponse(
-            CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
-        return cacheApiDataManager.updateResponse(cacheApiData, cacheApiWhitelist, response);
+    public Observable<Boolean> updateResponse(Response response, int expiredTime) {
+        return cacheApiDataManager.updateResponse(response, expiredTime);
     }
 }
