@@ -570,6 +570,8 @@ public class TkpdBaseURL {
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
+        public static final String PATH_SEARCH_V3_1 = "search/product/v3.1";
+
     }
 
     public static class Merlin {

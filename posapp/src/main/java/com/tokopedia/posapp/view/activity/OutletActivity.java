@@ -32,7 +32,6 @@ public class OutletActivity extends DrawerPresenterActivity implements HasCompon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startService(CacheService.getServiceIntent(this)); // TODO: 9/15/17 temporary
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);

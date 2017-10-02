@@ -17,7 +17,7 @@ import javax.inject.Inject;
  * @author okasurya on 8/28/2017
  */
 public class CacheService extends IntentService implements Cache.CallbackListener {
-    private static final String ACTION_START = "com.tokopedia.posapp.view.service.action.START";
+    private static final String ACTION_START = "com.tokopedia.posapp.view.CacheService.action.START";
 
     @Inject
     CachePresenter presenter;

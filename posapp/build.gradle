@@ -3,6 +3,18 @@ apply plugin: 'android-apt'
 apply from: "../node_modules/react-native/react.gradle"
 apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
 
+def getDpiId(String density) {
+
+    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
+    if (density != null)
+        return DPI_ID.get(density);
+    return 0;
+}
+
+def allowSplit() {
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            !project.hasProperty('tkpdBuildType');
+}
 
 def allowDistribution() {
     if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -11,9 +23,47 @@ def allowDistribution() {
     return "false";
 }
 
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+def archiveAPK(variant, output) {
+
+    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+    def originZipAlignedApkFile = output.outputFile;
+    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
+    copy {
+        from "$originZipAlignedApkFile"
+        into getAPKArchiveFolder(variant)
+        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
+    }
+}
+
+def renameAPKFile(variant, density, versionCode) {
+    def fileName = variant.name.toUpperCase()
+    fileName += "-" + variant.mergedFlavor.versionName;
+    fileName += "-V" + versionCode;
+    fileName += "-" + density;
+    fileName += ".apk";
+    return fileName;
+}
+
+def getAPKArchiveFolder(variant) {
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
+
+    project.ext {
+        defaultVersionCode = 1;
+        defaultVersionName = "1.0";
+    }
 
     defaultConfig {
         applicationId "com.tokopedia.posapp"
@@ -31,15 +81,49 @@ android {
         }
 
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
+            zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
+                }
+            } else {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                    }
+                }
+            }
         }
     }
     dexOptions {

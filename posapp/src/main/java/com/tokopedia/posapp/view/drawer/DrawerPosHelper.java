@@ -1,17 +1,21 @@
 package com.tokopedia.posapp.view.drawer;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.preference.Preference;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.PosSessionHandler;
@@ -75,6 +79,13 @@ public class DrawerPosHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_developer_option),
+                    TkpdState.DrawerPosition.DEVELOPER_OPTIONS,
+                    true));
+        }
+
         shopLayout.setVisibility(View.VISIBLE);
         footerShadow.setVisibility(View.VISIBLE);
         return data;

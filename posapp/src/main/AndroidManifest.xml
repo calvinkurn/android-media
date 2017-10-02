@@ -21,6 +21,10 @@
             android:name=".view.service.CacheService"
             android:exported="false" />
 
+        <service
+            android:name=".view.service.SchedulerService"
+            android:exported="false" />
+
         <receiver
             android:name=".view.service.StartUpReceiver"
             android:enabled="true"

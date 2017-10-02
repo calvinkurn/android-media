@@ -29,7 +29,9 @@ import com.tokopedia.posapp.di.component.DaggerReactNativeComponent;
 import com.tokopedia.posapp.di.component.ReactNativeComponent;
 import com.tokopedia.posapp.di.module.PosReactNativeModule;
 import com.tokopedia.posapp.view.activity.OutletActivity;
+import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.drawer.DrawerPosHelper;
+import com.tokopedia.posapp.view.service.SchedulerService;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import javax.inject.Inject;
@@ -147,7 +149,14 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getHomeIntent(Context context) {
-        return new Intent(context, OutletActivity.class);
+        startService(SchedulerService.getDefaultServiceIntent(this));
+        Intent intent;
+        if(isOutletSelected(context)) {
+            intent = new Intent(this, ProductListActivity.class);
+        } else {
+            intent = new Intent(this, OutletActivity.class);
+        }
+        return intent;
     }
 
     @Override
@@ -274,6 +283,11 @@ public class PosRouterApplication extends MainApplication implements
     public ReactNativeHost getReactNativeHost() {
         if (reactNativeHost == null) initDaggerInjector();
         return reactNativeHost;
+    }
+
+    public boolean isOutletSelected(Context context) {
+        return PosSessionHandler.getOutletId(context) != null
+                && !PosSessionHandler.getOutletId(context).equals("");
     }
 
     private void initializeDagger() {
